@@ -108,16 +108,14 @@ public class Bugsnag : MonoBehaviour {
 	}
 		
 	void Awake() {
-        Debug.Log("Starting bugsnag notifier");
-		DontDestroyOnLoad(this);
-        AddToTab("user", "name", "Simon Maynard");
+        DontDestroyOnLoad(this);
         NativeBugsnag.Register(ApiKey);
         NativeBugsnag.SetUseSSL(UseSSL);
         NativeBugsnag.SetAutoNotify(AutoNotify);
 	}
 	
 	void OnEnable () {
-    	Application.RegisterLogCallback(HandleLog);
+        Application.RegisterLogCallback(HandleLog);
 	}
 	
 	void OnDisable () {
@@ -170,7 +168,7 @@ public class Bugsnag : MonoBehaviour {
 	}
 		
 	public static void Notify(Exception e) {
-		NativeBugsnag.Notify(e.GetType().ToString(), e.StackTrace, e.StackTrace);
+        NativeBugsnag.Notify(e.GetType().ToString(), e.StackTrace, e.StackTrace);
  	}
         
     public static void AddToTab(string tabName, string attributeName, string attributeValue) {
