@@ -8,7 +8,7 @@ using System.Collections;
 using System.Text.RegularExpressions;
 
 public class Bugsnag : MonoBehaviour {
-	public class NativeBugsnag {
+    public class NativeBugsnag {
         #if UNITY_IPHONE
             [DllImport ("__Internal")]
             public static extern void SetUserId(string userId);
@@ -75,101 +75,101 @@ public class Bugsnag : MonoBehaviour {
             public static void ClearTab(string tabName) {}
         #endif
     }
-		
-	// We dont use the LogType enum in Unity as the numerical order doesnt suit our purposes
-	public enum LogSeverity {
-		Log,
-		Warning,
-		Assert,
-		Error,
-		Exception
-	}
         
+    // We dont use the LogType enum in Unity as the numerical order doesnt suit our purposes
+    public enum LogSeverity {
+        Log,
+        Warning,
+        Assert,
+        Error,
+        Exception
+    }
+    
     public bool AutoNotify = true;
-	public bool UseSSL = true;
-	public string ApiKey = "";
-	public LogSeverity NotifyLevel = LogSeverity.Exception;
-	public string UserId {
-		set {
-			NativeBugsnag.SetUserId(value);
-		}
-	}
-		
-	public string ReleaseStage {
-		set {
-			NativeBugsnag.SetReleaseStage(value);
-		}
-	}
-		
-	public string Context { 
-		set {
-			NativeBugsnag.SetContext(value);
-		}
-	}
-		
-	void Awake() {
+    public bool UseSSL = true;
+    public string ApiKey = "";
+    public LogSeverity NotifyLevel = LogSeverity.Exception;
+    public string UserId {
+        set {
+            NativeBugsnag.SetUserId(value);
+        }
+    }
+        
+    public string ReleaseStage {
+        set {
+            NativeBugsnag.SetReleaseStage(value);
+        }
+    }
+        
+    public string Context { 
+        set {
+            NativeBugsnag.SetContext(value);
+        }
+    }
+        
+    void Awake() {
         DontDestroyOnLoad(this);
         NativeBugsnag.Register(ApiKey);
         NativeBugsnag.SetUseSSL(UseSSL);
         NativeBugsnag.SetAutoNotify(AutoNotify);
-	}
-	
-	void OnEnable () {
+    }
+    
+    void OnEnable () {
         Application.RegisterLogCallback(HandleLog);
-	}
-	
-	void OnDisable () {
-    	// Remove callback when object goes out of scope
-	    Application.RegisterLogCallback(null);
-	}
+    }
+    
+    void OnDisable () {
+        // Remove callback when object goes out of scope
+        Application.RegisterLogCallback(null);
+    }
         
     void OnLevelWasLoaded(int level) {
         NativeBugsnag.SetContext(string.Format("{0}: Level {1}", Application.loadedLevelName, level));
     }
-	
-	void HandleLog (string logString, string stackTrace, LogType type) {
-		LogSeverity severity = LogSeverity.Exception;
-			
-		switch (type) {
-		case LogType.Assert:
-			severity = LogSeverity.Assert;
-			break;
-		case LogType.Error:
-			severity = LogSeverity.Error;
-			break;
-		case LogType.Exception:
-			severity = LogSeverity.Exception;
-			break;
-		case LogType.Log:
-			severity = LogSeverity.Log;
-			break;
-		case LogType.Warning:
-			severity = LogSeverity.Warning;
-			break;
-		default:
-		    break;
-		}
-			
-		if(severity >= NotifyLevel && AutoNotify) {
-			string errorClass, errorMessage = null;
-			
-			Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)");
-			Match match = exceptionRegEx.Match(logString);
-			
-			if(match.Success) {
-				errorClass = match.Groups["errorClass"].Value;
-				errorMessage = match.Groups["message"].Value.Trim();
-			} else {
-				errorClass = logString;
-			}
+    
+    void HandleLog (string logString, string stackTrace, LogType type) {
+        LogSeverity severity = LogSeverity.Exception;
+        
+        switch (type) {
+        case LogType.Assert:
+            severity = LogSeverity.Assert;
+            break;
+        case LogType.Error:
+            severity = LogSeverity.Error;
+            break;
+        case LogType.Exception:
+            severity = LogSeverity.Exception;
+            break;
+        case LogType.Log:
+            severity = LogSeverity.Log;
+            break;
+        case LogType.Warning:
+            severity = LogSeverity.Warning;
+            break;
+        default:
+            break;
+        }
+
+        if(severity >= NotifyLevel && AutoNotify) {
+            string errorClass, errorMessage = null;
+            
+            Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)");
+            Match match = exceptionRegEx.Match(logString);
+
+            if(match.Success) {
+                errorClass = match.Groups["errorClass"].Value;
+                errorMessage = match.Groups["message"].Value.Trim();
+            } else {
+                errorClass = logString;
+            }
                 
             NativeBugsnag.Notify(errorClass, stackTrace, stackTrace);
-		}
-	}
-		
-	public static void Notify(Exception e) {
+        }
+    }
+
+    public static void Notify(Exception e) {
         NativeBugsnag.Notify(e.GetType().ToString(), e.StackTrace, e.StackTrace);
- 	}
+    }
         
     public static void AddToTab(string tabName, string attributeName, string attributeValue) {
         NativeBugsnag.AddToTab(tabName, attributeName, attributeValue);
