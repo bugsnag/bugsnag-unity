@@ -1,6 +1,7 @@
 #!/bin/bash
 UNITY=/Applications/Unity/Unity.app/Contents/MacOS/Unity
 EXEC_PATH=`pwd`
+ANDROID_PATH="$EXEC_PATH/../bugsnag-android/"
 TEMP_UNITY_PATH="$EXEC_PATH/temp.unityproject"
 BUILD_PATH="$EXEC_PATH/build"
 
@@ -19,10 +20,20 @@ fi
 
 echo "Copying required files into new project"
 cp -r src/Assets $TEMP_UNITY_PATH
-if [ $? -ne 0 ]; then
-    echo "Error! Exiting"
-    exit 1
-fi
+
+echo "Copying iOS files into new project"
+mkdir -p $TEMP_UNITY_PATH/Assets/Plugins/iOS/
+cp -r ../bugsnag-ios/Unity/* $TEMP_UNITY_PATH/Assets/Plugins/iOS/
+cp -r ../bugsnag-ios/Bugsnag\ Plugin/* $TEMP_UNITY_PATH/Assets/Plugins/iOS/
+
+echo "Copying android files into new project"
+cd ../bugsnag-android
+ant ndk
+ant unity
+cd $EXEC_PATH
+mkdir -p $TEMP_UNITY_PATH/Assets/Plugins/Android
+cp ../bugsnag-android/bugsnag-*-unity.jar $TEMP_UNITY_PATH/Assets/Plugins/Android/bugsnag-unity.jar
+cp ../bugsnag-android/build/libs/armeabi/libbugsnag_bridge.so $TEMP_UNITY_PATH/Assets/Plugins/Android/libbugsnag.so
 
 echo "Exporting unitypackage from temporary unity3d project"
 ${UNITY} -batchmode -quit -projectpath "$TEMP_UNITY_PATH" -exportpackage Assets "$BUILD_PATH/bugsnag.unitypackage"
