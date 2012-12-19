@@ -16,7 +16,9 @@ Installation & Setup
 
 Install the Bugsnag notifier from within the Asset Store [here]().
 
-Once you have installed the notifier, import it into your project. Then attach the Bugsnag notifier to a GameObject in your first scene.
+Alternatively you can download the unitypackage file from within our [Github repository](https://github.com/bugsnag/bugsnag-unity/raw/master/bugsnag.unitypackage). Once the package has downloaded, double click it to import the Bugsnag notifier into your Unity project.
+
+Then select a GameObject within your first scene. This scene should be the first scene loaded when starting your game, i.e. the loading scene for example. With a GameObject selected, click "Add Component" within the inspector in the Unity editor. Then select Scripts and then Bugsnag from the dropdown.
 
 Finally you should configure your ApiKey by selecting the GameObject in the Unity editor and setting the ApiKey in the inspector.
 
@@ -62,10 +64,9 @@ Configuration
 
 Bugsnag uses the concept of "contexts" to help display and group your
 errors. Contexts represent what was happening in your application at the
-time an error occurs. In an android app, it is useful to set this to be 
-your currently active `Activity`.
-    
-If you are using `BugsnagActivity` then this is set automatically for you.
+time an error occurs. In a Unity game, it is useful to set this to be 
+your currently active `Scene`.
+
 If you would like to set the bugsnag context manually, you can set the 
 `Context` property:
 
