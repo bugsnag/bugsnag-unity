@@ -23,6 +23,14 @@ Then select a GameObject within your first scene. This scene should be the first
 Finally you should configure your ApiKey by selecting the GameObject in the Unity editor and setting the ApiKey in the inspector.
 
 
+iOS Specific Setup
+------------------
+
+When building for iOS, in order to be notified of uncaught exceptions in Unity, the player setting "Script Call Optimization" setting should be set to "Slow and Safe". This may affect your game performance so you may not wish to do this on production. It is worth noting that this step is not required on Android, so uncaught Unity exceptions will still be reported from your Android clients.
+
+You also need to enable the "Enable Objective-C Exceptions" build setting in your Xcode project.
+
+
 Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
 
