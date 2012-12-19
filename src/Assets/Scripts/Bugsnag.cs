@@ -163,12 +163,12 @@ public class Bugsnag : MonoBehaviour {
                 errorClass = logString;
             }
                 
-            NativeBugsnag.Notify(errorClass, stackTrace, stackTrace);
+            NativeBugsnag.Notify(errorClass, errorMessage, stackTrace);
         }
     }
 
     public static void Notify(Exception e) {
-        NativeBugsnag.Notify(e.GetType().ToString(), e.StackTrace, e.StackTrace);
+        NativeBugsnag.Notify(e.GetType().ToString(), e.Message, e.StackTrace);
     }
         
     public static void AddToTab(string tabName, string attributeName, string attributeValue) {

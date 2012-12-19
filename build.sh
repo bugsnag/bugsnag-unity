@@ -29,7 +29,17 @@ cp -r ../bugsnag-ios/Bugsnag\ Plugin/* $TEMP_UNITY_PATH/Assets/Plugins/iOS/
 echo "Copying android files into new project"
 cd ../bugsnag-android
 ant ndk
+if [ $? -ne 0 ]; then
+    echo "Error! Exiting"
+    exit 1
+fi
+
 ant unity
+if [ $? -ne 0 ]; then
+    echo "Error! Exiting"
+    exit 1
+fi
+
 cd $EXEC_PATH
 mkdir -p $TEMP_UNITY_PATH/Assets/Plugins/Android
 cp ../bugsnag-android/bugsnag-*-unity.jar $TEMP_UNITY_PATH/Assets/Plugins/Android/bugsnag-unity.jar
@@ -41,5 +51,3 @@ if [ $? -ne 0 ]; then
     echo "Error! Exiting"
     exit 1
 fi
-
-rm -rf $TEMP_UNITY_PATH
