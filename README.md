@@ -14,7 +14,7 @@ and mobile apps, helping you to understand and resolve them as fast as possible.
 Installation & Setup
 --------------------
 
-1.  **Download & Import Package**
+1.  **Download & Import the Bugsnag Package**
 
     Download the latest [Bugsnag Unity Notifier](https://github.com/bugsnag/bugsnag-unity/raw/master/Bugsnag.unitypackage).
     Double click the `.unitypackage` file, then click the *import* button to
@@ -32,7 +32,7 @@ Installation & Setup
     
     ![Create GameObject](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/create-gameobject.png)
 
-3.  **Add the Bugsnag Component to GameObject**
+3.  **Add the Bugsnag Component to Your GameObject**
 
     With your new GameObject selected, add the Bugsnag component 
     (Component Menu -> Scripts -> Bugsnag). 
