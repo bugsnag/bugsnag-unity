@@ -14,13 +14,18 @@ capturing exceptions from your applications.
 Installation & Setup
 --------------------
 
-Install the Bugsnag notifier from within the Asset Store [here]().
+1.  Install the Bugsnag Unity notifier
+    
+    The easiest way is to install directly from the [Unity Asset Store](TODO).
 
-Alternatively you can download the unitypackage file from within our [Github repository](https://github.com/bugsnag/bugsnag-unity/raw/master/bugsnag.unitypackage). Once the package has downloaded, double click it to import the Bugsnag notifier into your Unity project.
+    Alternatively you can download the `.unitypackage` file directly [here](https://github.com/bugsnag/bugsnag-unity/raw/master/bugsnag.unitypackage).
+    Once the package has downloaded, double click it to import the Bugsnag notifier into your Unity project.
 
-Then select a GameObject within your first scene. This scene should be the first scene loaded when starting your game, i.e. the loading scene for example. With a GameObject selected, click "Add Component" within the inspector in the Unity editor. Then select Scripts and then Bugsnag from the dropdown.
+2.  Create a new `GameObject` within your first/main scene by selecting `Create Empty` from the `GameObject` menu. Make sure to rename this game object to something like `Bugsnag`.
 
-Finally you should configure your ApiKey by selecting the GameObject in the Unity editor and setting the ApiKey in the inspector.
+3.  With your new GameObject selected, add the Bugsnag component (Component Menu -> Scripts -> Bugsnag). 
+
+4.  Finally, configure your Bugsnag API Key in the component inspector. You can find your API key on your Bugsnag dashboard.
 
 
 iOS Specific Setup
