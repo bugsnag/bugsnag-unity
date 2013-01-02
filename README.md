@@ -15,19 +15,29 @@ Installation & Setup
 --------------------
 
 1.  Download the latest [Bugsnag Unity Notifier](https://github.com/bugsnag/bugsnag-unity/raw/master/Bugsnag.unitypackage),
-    double click the `.unitypackage` file to import into your Unity project.
+    then double click the `.unitypackage` file to import into your 
+    Unity project.
     
-    Alternatively, you can install from the [Unity Asset Store](TODO).
+    TODO: Screenshot
+    
+    Alternatively, you can install Bugsnag from the
+    [Unity Asset Store](TODO).
 
 2.  Create a new `GameObject` within your first/main scene
-    (GameObject Menu -> Create Empty), name the GameObject `Bugsnag`.
+    (GameObject Menu -> Create Empty), and rename it to *Bugsnag*.
+    
+    TODO: Screenshot
 
 3.  With your new GameObject selected, add the Bugsnag component 
     (Component Menu -> Scripts -> Bugsnag). 
+    
+    TODO: Screenshot
 
 4.  Finally, configure your Bugsnag API Key in the component inspector.
     You can find your API key on the *Project Settings* page on your 
     [Bugsnag dashboard](https://bugsnag.com).
+    
+    TODO: Screenshot
 
 
 Additional iOS Steps
@@ -52,11 +62,14 @@ Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
 
 If you would like to send non-fatal exceptions to Bugsnag, you can pass any
-`Throwable` object to Bugsnag's `notify` method:
+`Throwable` object to Bugsnag's `notify` method in your Unity scripts:
 
 ```csharp
 Bugsnag.Notify(new System.InvalidOperationException("Non-fatal"));
 ```
+
+Alternatively, you can change the Bugsnag [NotifyLevel](#notifylevel) setting
+(see below) to send `Debug.Log*` events to Bugsnag.
 
 
 Adding Custom Data to Bugsnag Error Reports
@@ -96,8 +109,8 @@ Bugsnag.AutoNotify = false;
 ###NotifyLevel
 
 By default, Bugsnag will be notified about any Exception logged to 
-Debug.LogException. You can send additional log information to Bugsnag 
-(eg. all Debug.LogError calls) by changing the *Notify Level* property
+`Debug.LogException`. You can send additional log information to Bugsnag 
+(eg. all `Debug.LogError` messages) by changing the *Notify Level* property
 in the Unity Inspector.
 
 You can also change this setting in your scripts as follows:
@@ -108,10 +121,10 @@ Bugsnag.NotifyLevel = LogSeverity.Error;
 
 ###Context
 
-Bugsnag uses the concept of "contexts" to help display and group your
+Bugsnag uses the concept of *contexts* to help display and group your
 errors. Contexts represent what was happening in your game at the
 time an error occurs. By default, this will be set to be your currently
-active `Scene`.
+active Unity Scene.
 
 If you would like to set the Bugsnag context manually, you can set the 
 `Context` property in your scripts:
@@ -124,7 +137,7 @@ Bugsnag.Context = "Space Port";
 
 If you would like to distinguish between errors that happen in different
 stages of your game's release process (development, qa, production, etc)
-you can set the `ReleaseStage` that is reported to Bugsnag:
+you can set the `ReleaseStage` in your scripts:
 
 ```csharp
 Bugsnag.ReleaseStage = "development";
@@ -137,12 +150,17 @@ and *development* for a development build.
 Building from Source
 --------------------
 
-To build `Bugsnag.unitypackage` file from source, you'll need to clone the 
+To build the Unity notifier from source, you'll need to clone the 
 [bugsnag-android](https://github.com/bugsnag/bugsnag-android), 
 [bugsnag-ios](https://github.com/bugsnag/bugsnag-ios) and 
-[bugsnag-unity](https://github.com/bugsnag/bugsnag-unity) repositories.
+[bugsnag-unity](https://github.com/bugsnag/bugsnag-unity) repositories into
+the same folder.
 
-Then, within the *bugsnag-unity* repository, run `./build.sh`.
+Then, within the *bugsnag-unity* repository, run:
+
+    ./build.sh
+    
+This will generate a `Bugsnag.unitypackage` file.
 
 
 Reporting Bugs or Feature Requests
