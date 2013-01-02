@@ -11,8 +11,8 @@ and mobile apps, helping you to understand and resolve them as fast as possible.
 [Create a free account](http://bugsnag.com) to start capturing exceptions today.
 
 
-Installation & Setup
---------------------
+Basic Installation & Setup
+--------------------------
 
 1.  **Download & Import the Bugsnag Unity Package**
 
@@ -48,10 +48,12 @@ Installation & Setup
     ![Set API Key](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/set-api-key.png)
 
 
-Additional iOS Steps
---------------------
+Additional Setup (iOS/Android)
+------------------------------
 
-When building for iOS, you'll need to make sure to enable a couple of settings
+### iOS
+
+When building for iOS, you'll need to make sure to enable settings
 which allow uncaught exceptions to be sent to Bugsnag.
 
 1.  On the *iOS* tab of the Unity *Player Settings* screen, make sure 
@@ -64,6 +66,14 @@ which allow uncaught exceptions to be sent to Bugsnag.
     is set to *Yes* (it will be set to *No* by default).
 
     ![Enable Objective-C Exceptions](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/ios-enable-objective-c-exceptions.png)
+
+### Android
+
+When building for Android, you'll need to make sure that Internet Access is 
+enabled. On the *Android* tab of the Unity *Player Settings* screen, make sure
+*Internet Acess* is set to *Require*.
+
+![Enable Internet Access](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/android-internet-access.png)
 
 
 How to Send Non-Fatal Exceptions to Bugsnag
