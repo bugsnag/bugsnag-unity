@@ -33,12 +33,14 @@ Installation & Setup
     ![Create GameObject](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/create-gameobject.png)
 
 3.  **Add the Bugsnag Component to GameObject**
+
     With your new GameObject selected, add the Bugsnag component 
     (Component Menu -> Scripts -> Bugsnag). 
     
     ![Add Bugsnag Component](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/add-bugsnag-component.png)
 
 4.  **Configure Your API Key**
+
     Finally, configure your Bugsnag API Key in the component inspector.
     You can find your API key on the *Project Settings* page on your 
     [Bugsnag dashboard](https://bugsnag.com).
