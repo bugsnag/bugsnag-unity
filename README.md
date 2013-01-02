@@ -57,17 +57,17 @@ which allow uncaught exceptions to be sent to Bugsnag.
 1.  On the *iOS* tab of the Unity *Player Settings* screen, make sure 
     *Script Call Optimization* is set to "Slow and Safe" (it should be 
     on this by default).
-    
-    TODO: Screenshot
+
+    ![Script Call Optimization](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/ios-script-call-optimization.png)
 
 2.  In XCode's *Build Settings* section, ensure that *Enable Objective-C Exceptions*
     is set to *Yes* (it will be set to *No* by default).
-    
-    TODO: Screenshot
+
+    ![Enable Objective-C Exceptions](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/ios-enable-objective-c-exceptions.png)
 
 
-Send Non-Fatal Exceptions to Bugsnag
-------------------------------------
+How to Send Non-Fatal Exceptions to Bugsnag
+-------------------------------------------
 
 If you would like to send non-fatal exceptions to Bugsnag, you can pass any
 `Throwable` object to Bugsnag's `notify` method in your Unity scripts:
@@ -80,8 +80,8 @@ Alternatively, you can change the Bugsnag [NotifyLevel](#notifylevel) setting
 (see below) to send `Debug.Log*` events to Bugsnag.
 
 
-Adding Custom Data to Bugsnag Error Reports
--------------------------------------------
+How to Add Custom Data to Bugsnag Error Reports
+-----------------------------------------------
 
 If you would like to add custom data to your Bugsnag error reports, you can
 use the `AddToTab` method. Custom data is displayed inside tabs on each 
