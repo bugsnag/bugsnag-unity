@@ -46,8 +46,14 @@ cp ../bugsnag-android/bugsnag-*-unity.jar $TEMP_UNITY_PATH/Assets/Plugins/Androi
 cp ../bugsnag-android/build/libs/armeabi/libbugsnag_bridge.so $TEMP_UNITY_PATH/Assets/Plugins/Android/libbugsnag.so
 
 echo "Exporting unitypackage from temporary unity3d project"
-${UNITY} -batchmode -quit -projectpath "$TEMP_UNITY_PATH" -exportpackage Assets "$BUILD_PATH/bugsnag.unitypackage"
+${UNITY} -batchmode -quit -projectpath "$TEMP_UNITY_PATH" -exportpackage Assets "$BUILD_PATH/Bugsnag.unitypackage"
 if [ $? -ne 0 ]; then
     echo "Error! Exiting"
     exit 1
 fi
+
+# Remove the temporary build directory
+rm -rf $TEMP_UNITY_PATH
+
+# Copy the built unitypackage to the root
+cp "$BUILD_PATH/Bugsnag.unitypackage" .

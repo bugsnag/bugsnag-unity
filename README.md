@@ -2,149 +2,147 @@ Bugsnag Notifier for Unity
 ============================
 
 The Bugsnag Notifier for Unity gives you instant notification of exceptions
-thrown from your Unity applications on iOS and Android devices. 
-The notifier automatically notifies about uncaught exceptions in C#, as well as native code.
+thrown from your Unity games on iOS and Android devices. Exceptions in your 
+Unity code (JS, C# and Boo) as well as native crashes (Objective C, Java) are
+automatically detected and sent to Bugsnag.
 
-[Bugsnag](http://bugsnag.com) captures errors in real-time from your web, 
-mobile and desktop applications, helping you to understand and resolve them 
-as fast as possible. [Create a free account](http://bugsnag.com) to start 
-capturing exceptions from your applications.
+[Bugsnag](http://bugsnag.com) captures errors in real-time from your web 
+and mobile apps, helping you to understand and resolve them as fast as possible.
+[Create a free account](http://bugsnag.com) to start capturing exceptions today.
 
 
 Installation & Setup
 --------------------
 
-1.  Install the Bugsnag Unity notifier
+1.  Download the latest [Bugsnag Unity Notifier](https://github.com/bugsnag/bugsnag-unity/raw/master/Bugsnag.unitypackage),
+    double click the `.unitypackage` file to import into your Unity project.
     
-    The easiest way is to install directly from the [Unity Asset Store](TODO).
+    Alternatively, you can install from the [Unity Asset Store](TODO).
 
-    Alternatively you can download the `.unitypackage` file directly [here](https://github.com/bugsnag/bugsnag-unity/raw/master/bugsnag.unitypackage).
-    Once the package has downloaded, double click it to import the Bugsnag notifier into your Unity project.
+2.  Create a new `GameObject` within your first/main scene
+    (GameObject Menu -> Create Empty), name the GameObject `Bugsnag`.
 
-2.  Create a new `GameObject` within your first/main scene by selecting `Create Empty` from the `GameObject` menu. Make sure to rename this game object to something like `Bugsnag`.
+3.  With your new GameObject selected, add the Bugsnag component 
+    (Component Menu -> Scripts -> Bugsnag). 
 
-3.  With your new GameObject selected, add the Bugsnag component (Component Menu -> Scripts -> Bugsnag). 
+4.  Finally, configure your Bugsnag API Key in the component inspector.
+    You can find your API key on the *Project Settings* page on your 
+    [Bugsnag dashboard](https://bugsnag.com).
 
-4.  Finally, configure your Bugsnag API Key in the component inspector. You can find your API key on your Bugsnag dashboard.
 
+Additional iOS Steps
+--------------------
 
-iOS Specific Setup
-------------------
+When building for iOS, you'll need to make sure to enable a couple of settings
+which allow uncaught exceptions to be sent to Bugsnag.
 
-When building for iOS, in order to be notified of uncaught exceptions in Unity, the player setting "Script Call Optimization" setting should be set to "Slow and Safe". This may affect your game performance so you may not wish to do this on production. It is worth noting that this step is not required on Android, so uncaught Unity exceptions will still be reported from your Android clients.
+1.  On the *iOS* tab of the Unity *Player Settings* screen, make sure 
+    *Script Call Optimization* is set to "Slow and Safe" (it should be 
+    on this by default).
+    
+    TODO: Screenshot
 
-You also need to enable the "Enable Objective-C Exceptions" build setting in your Xcode project.
+2.  In XCode's *Build Settings* section, ensure that *Enable Objective-C Exceptions*
+    is set to *Yes* (it will be set to *No* by default).
+    
+    TODO: Screenshot
 
 
 Send Non-Fatal Exceptions to Bugsnag
 ------------------------------------
 
 If you would like to send non-fatal exceptions to Bugsnag, you can pass any
-`Throwable` object to the `notify` method:
+`Throwable` object to Bugsnag's `notify` method:
 
 ```csharp
 Bugsnag.Notify(new System.InvalidOperationException("Non-fatal"));
 ```
 
-Adding Tabs to Bugsnag Error Reports
-------------------------------------
 
-If you want to add a tab to your Bugsnag error report, you can call the `addToTab` method:
+Adding Custom Data to Bugsnag Error Reports
+-------------------------------------------
+
+If you would like to add custom data to your Bugsnag error reports, you can
+use the `AddToTab` method. Custom data is displayed inside tabs on each 
+exception on your Bugsnag dashboard.
 
 ```csharp
 Bugsnag.AddToTab("user", "username", "bob-hoskins");
 Bugsnag.AddToTab("user", "registered_user", "yes");
 ```
 
-This will add a user tab to the error report on bugsnag.com that contains the username and whether the user was registered or not.
+This will add a *user* tab to the error report on your Bugsnag dashboard
+containing the username and registration status of your user.
 
-You can clear a single attribute on a tab by calling:
 
-```csharp
-Bugsnag.AddToTab("user", "username", null);
-```
+Optional Configuration
+----------------------
 
-or you can clear the entire tab:
-
-```csharp
-Bugsnag.ClearTab("user");
-```
-
-Configuration
--------------
-
-###Context
-
-Bugsnag uses the concept of "contexts" to help display and group your
-errors. Contexts represent what was happening in your application at the
-time an error occurs. In a Unity game, it is useful to set this to be 
-your currently active `Scene`.
-
-If you would like to set the bugsnag context manually, you can set the 
-`Context` property:
-
-```csharp
-Bugsnag.Context = "MyActivity";
-```
-
-###UserId
-
-Bugsnag helps you understand how many of your users are affected by each
-error. In order to do this, we send along a userId with every exception. 
-By default we will generate a unique ID and send this ID along with every 
-exception from an individual device.
-    
-If you would like to override this `userId`, for example to set it to be a
-username of your currently logged in user, you can set the `UserId` property:
-
-```csharp
-Bugsnag.UserId = "leeroy-jenkins";
-```
-
-###ReleaseStage
-
-If you would like to distinguish between errors that happen in different
-stages of the application release process (development, production, etc)
-you can set the `ReleaseStage` that is reported to Bugsnag.
-
-```csharp
-Bugsnag.ReleaseStage = "development";
-```
-    
-By default this is set to be "production" if the build is a release build, and "development" for a development build.
+Most Bugsnag settings can be configured from the Unity Inspector, but you can
+also change settings inside your scripts:
 
 ###AutoNotify
 
 By default, we will automatically notify Bugsnag of any fatal exceptions
-in your application. If you want to stop this from happening, you can set the 
-`AutoNotify` property:
+(crashes) in your game. If you want to stop this from happening, you can set
+the *Auto Notify* property in the Unity Inspector.
+
+You can also change this setting in your scripts as follows:
     
 ```csharp
 Bugsnag.AutoNotify = false;
 ```
 
-You can also set this as a property on the attached GameObject within the Unity editor.
-
 ###NotifyLevel
 
-By default, bugsnag will be notified about Exceptions that are logged to Debug.LogException. You can lower the notify level to Error if you want to notify bugsnag of all Debug.LogError calls as well by setting the NotifyLevel property:
+By default, Bugsnag will be notified about any Exception logged to 
+Debug.LogException. You can send additional log information to Bugsnag 
+(eg. all Debug.LogError calls) by changing the *Notify Level* property
+in the Unity Inspector.
+
+You can also change this setting in your scripts as follows:
 
 ```csharp
 Bugsnag.NotifyLevel = LogSeverity.Error;
 ```
 
-You can also set this as a property on the attached GameObject within the Unity editor.
+###Context
+
+Bugsnag uses the concept of "contexts" to help display and group your
+errors. Contexts represent what was happening in your game at the
+time an error occurs. By default, this will be set to be your currently
+active `Scene`.
+
+If you would like to set the Bugsnag context manually, you can set the 
+`Context` property in your scripts:
+
+```csharp
+Bugsnag.Context = "Space Port";
+```
+
+###ReleaseStage
+
+If you would like to distinguish between errors that happen in different
+stages of your game's release process (development, qa, production, etc)
+you can set the `ReleaseStage` that is reported to Bugsnag:
+
+```csharp
+Bugsnag.ReleaseStage = "development";
+```
+    
+By default this is set to be *production* if the build is a release build, 
+and *development* for a development build.
+
 
 Building from Source
 --------------------
 
-To build a `.unitypackage` file from source, clone the [bugsnag-android](https://github.com/bugsnag/bugsnag-android) repository, the [bugsnag-ios](https://github.com/bugsnag/bugsnag-ios) repository and the [bugsnag-unity](https://github.com/bugsnag/bugsnag-unity) repository. Then, within the bugsnag-unity repository, run:
+To build `Bugsnag.unitypackage` file from source, you'll need to clone the 
+[bugsnag-android](https://github.com/bugsnag/bugsnag-android), 
+[bugsnag-ios](https://github.com/bugsnag/bugsnag-ios) and 
+[bugsnag-unity](https://github.com/bugsnag/bugsnag-unity) repositories.
 
-```bash
-./build.sh
-```
-
-This will generate a file named `build/bugsnag.unitypackage`.
+Then, within the *bugsnag-unity* repository, run `./build.sh`.
 
 
 Reporting Bugs or Feature Requests
