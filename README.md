@@ -14,7 +14,7 @@ and mobile apps, helping you to understand and resolve them as fast as possible.
 Installation & Setup
 --------------------
 
-1.  **Download & Import the Bugsnag Package**
+1.  **Download & Import the Bugsnag Unity Package**
 
     Download the latest [Bugsnag Unity Notifier](https://github.com/bugsnag/bugsnag-unity/raw/master/Bugsnag.unitypackage).
     Double click the `.unitypackage` file, then click the *import* button to
