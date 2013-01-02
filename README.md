@@ -14,30 +14,30 @@ and mobile apps, helping you to understand and resolve them as fast as possible.
 Installation & Setup
 --------------------
 
-1.  Download the latest [Bugsnag Unity Notifier](https://github.com/bugsnag/bugsnag-unity/raw/master/Bugsnag.unitypackage),
-    then double click the `.unitypackage` file to import into your 
-    Unity project.
+1.  Download the latest [Bugsnag Unity Notifier](https://github.com/bugsnag/bugsnag-unity/raw/master/Bugsnag.unitypackage).
+    Double click the `.unitypackage` file, then click the *import* button to
+    import Bugsnag into your Unity project.
     
-    TODO: Screenshot
+    ![Import Package](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/import-package.png)
     
     Alternatively, you can install Bugsnag from the
-    [Unity Asset Store](TODO).
+    [Unity Asset Store](http://u3d.as/content/bugsnag/bugsnag/TODO).
 
 2.  Create a new `GameObject` within your first/main scene
     (GameObject Menu -> Create Empty), and rename it to *Bugsnag*.
     
-    TODO: Screenshot
+    ![Create GameObject](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/create-gameobject.png)
 
 3.  With your new GameObject selected, add the Bugsnag component 
     (Component Menu -> Scripts -> Bugsnag). 
     
-    TODO: Screenshot
+    ![Add Bugsnag Component](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/add-bugsnag-component.png)
 
 4.  Finally, configure your Bugsnag API Key in the component inspector.
     You can find your API key on the *Project Settings* page on your 
     [Bugsnag dashboard](https://bugsnag.com).
-    
-    TODO: Screenshot
+
+    ![Set API Key](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/set-api-key.png)
 
 
 Additional iOS Steps
