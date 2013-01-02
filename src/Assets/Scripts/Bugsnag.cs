@@ -84,10 +84,10 @@ public class Bugsnag : MonoBehaviour {
         Error,
         Exception
     }
-    
+
+    public string BugsnagApiKey = "";
     public bool AutoNotify = true;
     public bool UseSSL = true;
-    public string ApiKey = "";
     public LogSeverity NotifyLevel = LogSeverity.Exception;
     public string UserId {
         set {
@@ -109,7 +109,7 @@ public class Bugsnag : MonoBehaviour {
         
     void Awake() {
         DontDestroyOnLoad(this);
-        NativeBugsnag.Register(ApiKey);
+        NativeBugsnag.Register(BugsnagApiKey);
         NativeBugsnag.SetUseSSL(UseSSL);
         NativeBugsnag.SetAutoNotify(AutoNotify);
     }
