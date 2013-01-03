@@ -89,6 +89,7 @@ public class Bugsnag : MonoBehaviour {
     public bool AutoNotify = true;
     public bool UseSSL = true;
     public LogSeverity NotifyLevel = LogSeverity.Exception;
+    
     public string UserId {
         set {
             NativeBugsnag.SetUserId(value);
@@ -168,7 +169,9 @@ public class Bugsnag : MonoBehaviour {
     }
 
     public static void Notify(Exception e) {
-        NativeBugsnag.Notify(e.GetType().ToString(), e.Message, e.StackTrace);
+        if(e != null && e.StackTrace != null) {
+            NativeBugsnag.Notify(e.GetType().ToString(), e.Message, e.StackTrace);
+        }
     }
         
     public static void AddToTab(string tabName, string attributeName, string attributeValue) {
