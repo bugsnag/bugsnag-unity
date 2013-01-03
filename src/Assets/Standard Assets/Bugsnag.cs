@@ -111,6 +111,14 @@ public class Bugsnag : MonoBehaviour {
     void Awake() {
         DontDestroyOnLoad(this);
         NativeBugsnag.Register(BugsnagApiKey);
+        
+        if(Debug.isDebugBuild) {
+            ReleaseStage = "development";
+        } else {
+            ReleaseStage = "production";
+        }
+        
+        NativeBugsnag.SetContext(Application.loadedLevelName);
         NativeBugsnag.SetUseSSL(UseSSL);
         NativeBugsnag.SetAutoNotify(AutoNotify);
     }
@@ -125,7 +133,7 @@ public class Bugsnag : MonoBehaviour {
     }
         
     void OnLevelWasLoaded(int level) {
-        NativeBugsnag.SetContext(string.Format("{0}: Level {1}", Application.loadedLevelName, level));
+        NativeBugsnag.SetContext(Application.loadedLevelName);
     }
     
     void HandleLog (string logString, string stackTrace, LogType type) {
