@@ -23,8 +23,29 @@ cp -r src/Assets $TEMP_UNITY_PATH
 
 echo "Copying iOS files into new project"
 mkdir -p $TEMP_UNITY_PATH/Assets/Plugins/iOS/
-cp -r ../bugsnag-ios/Unity/* $TEMP_UNITY_PATH/Assets/Plugins/iOS/
+cp -r iOS/* $TEMP_UNITY_PATH/Assets/Plugins/iOS/
 cp -r ../bugsnag-ios/Bugsnag\ Plugin/* $TEMP_UNITY_PATH/Assets/Plugins/iOS/
+mv $TEMP_UNITY_PATH/Assets/Plugins/iOS/Categories/* $TEMP_UNITY_PATH/Assets/Plugins/iOS/
+mv $TEMP_UNITY_PATH/Assets/Plugins/iOS/Dependencies/* $TEMP_UNITY_PATH/Assets/Plugins/iOS/
+rm -rf $TEMP_UNITY_PATH/Assets/Plugins/iOS/Categories
+rm -rf $TEMP_UNITY_PATH/Assets/Plugins/iOS/Dependencies
+
+echo "Making categories Unity safe"
+for i in $TEMP_UNITY_PATH/Assets/Plugins/iOS/*
+do
+  new_filename=$(echo $i | sed -e 's/\+/\-/')
+  mv $i $new_filename
+  
+  old_filename=$(basename $i)
+  # Escape the periods
+  old_filename=$(echo $old_filename | sed -e 's/\./\\\./g')
+  
+  new_filename=$(basename $new_filename)
+  # Escape the periods
+  new_filename=$(echo $new_filename | sed -e 's/\./\\\./g')
+  
+  sed -i "" -e s/"$old_filename"/"$new_filename"/ $TEMP_UNITY_PATH/Assets/Plugins/iOS/*
+done
 
 echo "Copying android files into new project"
 cd ../bugsnag-android
