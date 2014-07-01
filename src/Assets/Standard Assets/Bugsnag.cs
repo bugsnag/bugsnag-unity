@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 public class Bugsnag : MonoBehaviour {
     public class NativeBugsnag {
-        #if UNITY_IPHONE
+        #if UNITY_IPHONE && !UNITY_EDITOR
             [DllImport ("__Internal")]
             public static extern void SetUserId(string userId);
         
@@ -36,7 +36,7 @@ public class Bugsnag : MonoBehaviour {
                 
             [DllImport ("__Internal")]
             public static extern void ClearTab(string tabName);
-        #elif UNITY_ANDROID
+        #elif UNITY_ANDROID && !UNITY_EDITOR
             [DllImport ("bugsnag")]
             public static extern void SetUserId(string userId);
         
