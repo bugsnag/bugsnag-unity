@@ -63,7 +63,7 @@ which allow uncaught exceptions to be sent to Bugsnag.
     ![Script Call Optimization](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/ios-script-call-optimization.png)
 
 2.  In XCode's *Build Settings* section, ensure that *Enable Objective-C Exceptions*
-    is set to *Yes* (it will be set to *No* by default).
+    is set to *Yes* (it should be on this by default).
 
     ![Enable Objective-C Exceptions](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/ios-enable-objective-c-exceptions.png)
 
