@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 public class Bugsnag : MonoBehaviour {
     public class NativeBugsnag {
-        #if UNITY_IPHONE                
+        #if UNITY_IPHONE && !UNITY_EDITOR
             [DllImport ("__Internal")]
             public static extern void Register(string apiKey);
 
@@ -17,14 +17,14 @@ public class Bugsnag : MonoBehaviour {
             public static extern void Notify(string errorClass, string errorMessage, string stackTrace);
 
             [DllImport ("__Internal")]
-            public static extern void SetNotifyUrl(bool useSSL);
-        
+            public static extern void SetNotifyUrl(string notifyUrl);
+
             [DllImport ("__Internal")]
             public static extern void SetAutoNotify(bool autoNotify);
 
             [DllImport ("__Internal")]
             public static extern void SetContext(string context);
-        
+
             [DllImport ("__Internal")]
             public static extern void SetReleaseStage(string releaseStage);
 
@@ -33,49 +33,47 @@ public class Bugsnag : MonoBehaviour {
 
             [DllImport ("__Internal")]
             public static extern void AddToTab(string tabName, string attributeName, string attributeValue);
-                
+
             [DllImport ("__Internal")]
             public static extern void ClearTab(string tabName);
-        #elif UNITY_ANDROID
+        #elif UNITY_ANDROID && !UNITY_EDITOR
             [DllImport ("bugsnag")]
             public static extern void SetUserId(string userId);
-        
+
             [DllImport ("bugsnag")]
             public static extern void SetContext(string context);
-        
+
             [DllImport ("bugsnag")]
-            public static extern void SetNotifyUrl(string releaseStage);
-        
+            public static extern void SetNotifyUrl(string notifyUrl);
+
             [DllImport ("bugsnag")]
             public static extern void Notify(string errorClass, string errorMessage, string stackTrace);
-                
+
             [DllImport ("bugsnag")]
             public static extern void Register(string apiKey);
-                
-            [DllImport ("bugsnag")]
-            public static extern void SetUseSSL(bool useSSL);
-            
+
             [DllImport ("bugsnag")]
             public static extern void SetAutoNotify(bool autoNotify);
-                
+
             [DllImport ("bugsnag")]
             public static extern void AddToTab(string tabName, string attributeName, string attributeValue);
-                
+
             [DllImport ("bugsnag")]
             public static extern void ClearTab(string tabName);
         #else
             public static void SetUserId(string userId) {}
             public static void SetContext(string context) {}
             public static void SetReleaseStage(string releaseStage) {}
+            public static void SetNotifyReleaseStages(string releaseStages) {}
             public static void Notify(string errorClass, string errorMessage, string stackTrace) {}
             public static void Register(string apiKey) {}
-            public static void SetUseSSL(bool useSSL) {}
+            public static void SetNotifyUrl(string notifyUrl) {}
             public static void SetAutoNotify(bool autoNotify) {}
             public static void AddToTab(string tabName, string attributeName, string attributeValue) {}
             public static void ClearTab(string tabName) {}
         #endif
     }
-        
+
     // We dont use the LogType enum in Unity as the numerical order doesnt suit our purposes
     public enum LogSeverity {
         Log,
@@ -88,20 +86,20 @@ public class Bugsnag : MonoBehaviour {
     public string BugsnagApiKey = "";
     public bool AutoNotify = true;
     public LogSeverity NotifyLevel = LogSeverity.Exception;
-    
+
     public string UserId {
         set {
             NativeBugsnag.AddToTab("user", "id", value);
         }
     }
-        
+
     public string ReleaseStage {
         set {
             NativeBugsnag.SetReleaseStage(value);
         }
     }
-        
-    public string Context { 
+
+    public string Context {
         set {
             NativeBugsnag.SetContext(value);
         }
@@ -115,40 +113,40 @@ public class Bugsnag : MonoBehaviour {
 
     public string[] NotifyReleaseStages {
         set {
-            NativeBugsnag.SetNotifyReleaseStages(String.Join (",", value))
+            NativeBugsnag.SetNotifyReleaseStages(String.Join (",", value));
         }
     }
-        
+
     void Awake() {
         DontDestroyOnLoad(this);
         NativeBugsnag.Register(BugsnagApiKey);
-        
+
         if(Debug.isDebugBuild) {
             ReleaseStage = "development";
         } else {
             ReleaseStage = "production";
         }
-        
+
         NativeBugsnag.SetContext(Application.loadedLevelName);
         NativeBugsnag.SetAutoNotify(AutoNotify);
     }
-    
+
     void OnEnable () {
         Application.RegisterLogCallback(HandleLog);
     }
-    
+
     void OnDisable () {
         // Remove callback when object goes out of scope
         Application.RegisterLogCallback(null);
     }
-        
+
     void OnLevelWasLoaded(int level) {
         NativeBugsnag.SetContext(Application.loadedLevelName);
     }
-    
+
     void HandleLog (string logString, string stackTrace, LogType type) {
         LogSeverity severity = LogSeverity.Exception;
-        
+
         switch (type) {
         case LogType.Assert:
             severity = LogSeverity.Assert;
@@ -171,7 +169,7 @@ public class Bugsnag : MonoBehaviour {
 
         if(severity >= NotifyLevel && AutoNotify) {
             string errorClass, errorMessage = null;
-            
+
             Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)");
             Match match = exceptionRegEx.Match(logString);
 
@@ -181,7 +179,7 @@ public class Bugsnag : MonoBehaviour {
             } else {
                 errorClass = logString;
             }
-                
+
             NativeBugsnag.Notify(errorClass, errorMessage, stackTrace);
         }
     }
@@ -198,11 +196,11 @@ public class Bugsnag : MonoBehaviour {
             NativeBugsnag.Notify(e.GetType().ToString(), e.Message, e.StackTrace);
         }
     }
-        
+
     public static void AddToTab(string tabName, string attributeName, string attributeValue) {
         NativeBugsnag.AddToTab(tabName, attributeName, attributeValue);
     }
-        
+
     public static void ClearTab(string tabName) {
         NativeBugsnag.ClearTab(tabName);
     }
