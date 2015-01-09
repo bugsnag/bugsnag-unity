@@ -9,34 +9,34 @@ using System.Text.RegularExpressions;
 
 public class Bugsnag : MonoBehaviour {
     public class NativeBugsnag {
-        #if UNITY_IPHONE && !UNITY_EDITOR
+        #if UNITY_IPHONE                
             [DllImport ("__Internal")]
-            public static extern void SetUserId(string userId);
+            public static extern void Register(string apiKey);
+
+            [DllImport ("__Internal")]
+            public static extern void Notify(string errorClass, string errorMessage, string stackTrace);
+
+            [DllImport ("__Internal")]
+            public static extern void SetNotifyUrl(bool useSSL);
         
+            [DllImport ("__Internal")]
+            public static extern void SetAutoNotify(bool autoNotify);
+
             [DllImport ("__Internal")]
             public static extern void SetContext(string context);
         
             [DllImport ("__Internal")]
             public static extern void SetReleaseStage(string releaseStage);
-        
+
             [DllImport ("__Internal")]
-            public static extern void Notify(string errorClass, string errorMessage, string stackTrace);
-                
-            [DllImport ("__Internal")]
-            public static extern void Register(string apiKey);
-                
-            [DllImport ("__Internal")]
-            public static extern void SetUseSSL(bool useSSL);
-            
-            [DllImport ("__Internal")]
-            public static extern void SetAutoNotify(bool autoNotify);
-                
+            public static extern void SetNotifyReleaseStages(string releaseStages);
+
             [DllImport ("__Internal")]
             public static extern void AddToTab(string tabName, string attributeName, string attributeValue);
                 
             [DllImport ("__Internal")]
             public static extern void ClearTab(string tabName);
-        #elif UNITY_ANDROID && !UNITY_EDITOR
+        #elif UNITY_ANDROID
             [DllImport ("bugsnag")]
             public static extern void SetUserId(string userId);
         
@@ -44,7 +44,7 @@ public class Bugsnag : MonoBehaviour {
             public static extern void SetContext(string context);
         
             [DllImport ("bugsnag")]
-            public static extern void SetReleaseStage(string releaseStage);
+            public static extern void SetNotifyUrl(string releaseStage);
         
             [DllImport ("bugsnag")]
             public static extern void Notify(string errorClass, string errorMessage, string stackTrace);
@@ -87,12 +87,11 @@ public class Bugsnag : MonoBehaviour {
 
     public string BugsnagApiKey = "";
     public bool AutoNotify = true;
-    public bool UseSSL = true;
     public LogSeverity NotifyLevel = LogSeverity.Exception;
     
     public string UserId {
         set {
-            NativeBugsnag.SetUserId(value);
+            NativeBugsnag.AddToTab("user", "id", value);
         }
     }
         
@@ -107,6 +106,18 @@ public class Bugsnag : MonoBehaviour {
             NativeBugsnag.SetContext(value);
         }
     }
+
+    public string NotifyUrl {
+        set {
+            NativeBugsnag.SetNotifyUrl(value);
+        }
+    }
+
+    public string[] NotifyReleaseStages {
+        set {
+            NativeBugsnag.SetNotifyReleaseStages(String.Join (",", value))
+        }
+    }
         
     void Awake() {
         DontDestroyOnLoad(this);
@@ -119,7 +130,6 @@ public class Bugsnag : MonoBehaviour {
         }
         
         NativeBugsnag.SetContext(Application.loadedLevelName);
-        NativeBugsnag.SetUseSSL(UseSSL);
         NativeBugsnag.SetAutoNotify(AutoNotify);
     }
     
