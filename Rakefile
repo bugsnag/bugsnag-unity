@@ -34,3 +34,5 @@ task :build do
 
   cp path + "/Bugsnag.unitypackage", "."
 end
+
+task default: [:build]
