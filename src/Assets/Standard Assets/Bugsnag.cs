@@ -14,7 +14,7 @@ public class Bugsnag : MonoBehaviour {
             public static extern void Register(string apiKey);
 
             [DllImport ("__Internal")]
-            public static extern void Notify(string errorClass, string errorMessage, string stackTrace);
+            public static extern void Notify(string errorClass, string errorMessage, string severity, string stackTrace);
 
             [DllImport ("__Internal")]
             public static extern void SetNotifyUrl(string notifyUrl);
@@ -37,35 +37,118 @@ public class Bugsnag : MonoBehaviour {
             [DllImport ("__Internal")]
             public static extern void ClearTab(string tabName);
         #elif UNITY_ANDROID && !UNITY_EDITOR
-            [DllImport ("bugsnag")]
-            public static extern void SetUserId(string userId);
+            public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
 
-            [DllImport ("bugsnag")]
-            public static extern void SetContext(string context);
+            public static void Register(string apiKey) {
+                // Get the current Activity
+                AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+                AndroidJavaObject activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
+                AndroidJavaObject app = activity.Call<AndroidJavaObject>("getApplicationContext");
 
-            [DllImport ("bugsnag")]
-            public static extern void SetNotifyUrl(string notifyUrl);
+                Bugsnag.CallStatic<AndroidJavaObject> ("init", app, apiKey);
+            }
 
-            [DllImport ("bugsnag")]
-            public static extern void Notify(string errorClass, string errorMessage, string stackTrace);
+            public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace) {
+                var unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
-            [DllImport ("bugsnag")]
-            public static extern void Register(string apiKey);
+                var stackFrames = new ArrayList ();
 
-            [DllImport ("bugsnag")]
-            public static extern void SetAutoNotify(bool autoNotify);
+                foreach (Match frameMatch in unityExpression.Matches(stackTrace)) {
 
-            [DllImport ("bugsnag")]
-            public static extern void AddToTab(string tabName, string attributeName, string attributeValue);
+                    var method = frameMatch.Groups[1].Value;
+                    var className = "";
+                    if (method == "") {
+                        method = "Unknown method";
+                    } else {
+                        var index = method.LastIndexOf(".");
+                        className = method.Substring (0, index);
+                        method = method.Substring (index + 1);
+                    }
+                    var file = frameMatch.Groups[2].Value;
+                    if (file == "" || file == "<filename unknown>") {
+                        file = "unknown file";
+                    }
+                    var line = frameMatch.Groups[3].Value;
+                    if (line == "") {
+                        line = "0";
+                    }
 
-            [DllImport ("bugsnag")]
-            public static extern void ClearTab(string tabName);
+                    var stackFrame = new AndroidJavaObject("java.lang.StackTraceElement", className, method, file, Convert.ToInt32(line));
+                    stackFrames.Add (stackFrame);
+                }
+
+                if (stackFrames.Count > 0) {
+
+                    IntPtr stackFrameArrayObject  = AndroidJNI.NewObjectArray(stackFrames.Count, ((AndroidJavaObject)(stackFrames[0])).GetRawClass(), ((AndroidJavaObject)(stackFrames[0])).GetRawObject());
+
+                    for (var i = 1; i < stackFrames.Count; i++) {
+                        AndroidJNI.SetObjectArrayElement(stackFrameArrayObject, i, ((AndroidJavaObject)(stackFrames[i])).GetRawObject());
+                    }
+
+                    var Severity = new AndroidJavaClass("com.bugsnag.android.Severity");
+                    var severityInstance = Severity.GetStatic<AndroidJavaObject>("ERROR");
+
+                    if (severity == "info") {
+                        severityInstance = Severity.GetStatic<AndroidJavaObject>("INFO");
+                    } else if (severity == "warning") {
+                        severityInstance = Severity.GetStatic<AndroidJavaObject>("WARNING");
+                    }
+
+                    var metaData = new AndroidJavaObject("com.bugsnag.android.MetaData");
+
+                    // Build the arguments
+                    jvalue[] args =  new jvalue[5] {
+                        new jvalue() { l = AndroidJNI.NewStringUTF(errorClass) },
+                        new jvalue() { l = AndroidJNI.NewStringUTF(errorMessage) },
+                        new jvalue() { l = (IntPtr)stackFrameArrayObject },
+                        new jvalue() { l = severityInstance.GetRawObject() },
+                        new jvalue() { l = metaData.GetRawObject() }
+                    };
+
+                    // Call Android's notify method
+                    IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(Bugsnag.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Lcom/bugsnag/android/MetaData;)V");
+                    AndroidJNI.CallStaticObjectMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
+
+                }
+            }
+
+            public static void SetNotifyUrl(string notifyUrl) {
+                Bugsnag.CallStatic ("setEndpoint", notifyUrl);
+            }
+
+            public static void SetAutoNotify(bool autoNotify) {
+                if (autoNotify) {
+                    Bugsnag.CallStatic ("enableExceptionHandler");
+                } else {
+                    Bugsnag.CallStatic ("disableExceptionHandler");
+                }
+            }
+
+            public static void SetContext(string context) {
+                Bugsnag.CallStatic ("setContext", context);
+            }
+
+            public static void SetReleaseStage(string releaseStage) {
+                Bugsnag.CallStatic ("setReleaseStage", releaseStage);
+            }
+
+            public static void SetNotifyReleaseStages(string releaseStages) {
+                Bugsnag.CallStatic ("setNotifyReleaseStages", releaseStages.Split (','));
+            }
+
+            public static void AddToTab(string tabName, string attributeName, string attributeValue) {
+                Bugsnag.CallStatic ("addToTab", tabName, attributeName, attributeValue);
+            }
+
+            public static void ClearTab(string tabName) {
+                Bugsnag.CallStatic ("clearTab", tabName);
+            }
         #else
             public static void SetUserId(string userId) {}
             public static void SetContext(string context) {}
             public static void SetReleaseStage(string releaseStage) {}
             public static void SetNotifyReleaseStages(string releaseStages) {}
-            public static void Notify(string errorClass, string errorMessage, string stackTrace) {}
+            public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace) {}
             public static void Register(string apiKey) {}
             public static void SetNotifyUrl(string notifyUrl) {}
             public static void SetAutoNotify(bool autoNotify) {}
@@ -146,6 +229,7 @@ public class Bugsnag : MonoBehaviour {
 
     void HandleLog (string logString, string stackTrace, LogType type) {
         LogSeverity severity = LogSeverity.Exception;
+        var bugsnagSeverity = "error";
 
         switch (type) {
         case LogType.Assert:
@@ -159,9 +243,12 @@ public class Bugsnag : MonoBehaviour {
             break;
         case LogType.Log:
             severity = LogSeverity.Log;
+            bugsnagSeverity = "info";
+
             break;
         case LogType.Warning:
             severity = LogSeverity.Warning;
+            bugsnagSeverity = "warning";
             break;
         default:
             break;
@@ -180,7 +267,7 @@ public class Bugsnag : MonoBehaviour {
                 errorClass = logString;
             }
 
-            NativeBugsnag.Notify(errorClass, errorMessage, stackTrace);
+            NativeBugsnag.Notify(errorClass, errorMessage, bugsnagSeverity, stackTrace);
         }
     }
 
@@ -193,7 +280,7 @@ public class Bugsnag : MonoBehaviour {
                     e = ex;
                 }
             }
-            NativeBugsnag.Notify(e.GetType().ToString(), e.Message, e.StackTrace);
+            NativeBugsnag.Notify(e.GetType().ToString(),e.Message, "warning", e.StackTrace);
         }
     }
 
@@ -205,3 +292,4 @@ public class Bugsnag : MonoBehaviour {
         NativeBugsnag.ClearTab(tabName);
     }
 }
+
