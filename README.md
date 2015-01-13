@@ -180,7 +180,7 @@ Building from Source
 
 Firs clone this repository
 
-    git clone git@github.com:bugsnag/bugsnag-unity
+    git clone --recursive git@github.com:bugsnag/bugsnag-unity
 
 Then run the Rake task:
 
