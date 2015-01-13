@@ -26,7 +26,7 @@ task :build do
     sh "./gradlew clean :build"
   end
 
-  Dir["bugsnag-android/build/outputs/jar/*"].each do |file|
+  Dir["bugsnag-android/build/outputs/jar/*.jar"].each do |file|
     cp file, android_dir
   end
 
