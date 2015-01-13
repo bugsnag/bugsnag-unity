@@ -19,11 +19,8 @@ Basic Installation & Setup
     Download the latest [Bugsnag Unity Notifier](https://github.com/bugsnag/bugsnag-unity/raw/master/Bugsnag.unitypackage).
     Double click the `.unitypackage` file, then click the *import* button to
     import Bugsnag into your Unity project.
-    
+
     ![Import Package](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/import-package.png)
-    
-    Alternatively, you can install Bugsnag from the
-    [Unity Asset Store](http://u3d.as/content/bugsnag/bugsnag/TODO).
 
 2.  **Create a Bugsnag GameObject**
 
