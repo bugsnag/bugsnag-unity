@@ -178,17 +178,15 @@ and *development* for a development build.
 Building from Source
 --------------------
 
-To build the Unity notifier from source, you'll need to clone the 
-[bugsnag-android](https://github.com/bugsnag/bugsnag-android), 
-[bugsnag-ios](https://github.com/bugsnag/bugsnag-ios) and 
-[bugsnag-unity](https://github.com/bugsnag/bugsnag-unity) repositories into
-the same folder.
+Firs clone this repository
 
-Then, within the *bugsnag-unity* repository, run:
+    git clone git@github.com:bugsnag/bugsnag-unity
 
-    ./build.sh
-    
-This will generate a `Bugsnag.unitypackage` file.
+Then run the Rake task:
+
+    rake build
+
+This will generate a `Bugsnag.unitypackage` file which you can drag into your Unity projects.
 
 
 Reporting Bugs or Feature Requests
