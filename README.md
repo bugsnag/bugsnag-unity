@@ -137,6 +137,16 @@ You can also change this setting in your scripts as follows:
 Bugsnag.NotifyLevel = LogSeverity.Error;
 ```
 
+###NotifyUrl
+
+By default Bugsnag sends exceptions to bugsnag.com, if you're running
+[Bugsnag Enterprise](https://bugsnag.com/enterprise), you can change
+this to point to your local Bugsnag server:
+
+```csharp
+Bugsnag.NotifyUrl = 'http://bugsnag.internal.example.com';
+```
+
 ###Context
 
 Bugsnag uses the concept of *contexts* to help display and group your
