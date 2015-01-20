@@ -45,26 +45,8 @@ Basic Installation & Setup
     ![Set API Key](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/set-api-key.png)
 
 
-Additional Setup (iOS/Android)
+Additional Setup (Android)
 ------------------------------
-
-### iOS
-
-When building for iOS, you'll need to make sure to enable settings
-which allow uncaught exceptions to be sent to Bugsnag.
-
-1.  On the *iOS* tab of the Unity *Player Settings* screen, make sure 
-    *Script Call Optimization* is set to "Slow and Safe" (it should be 
-    on this by default).
-
-    ![Script Call Optimization](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/ios-script-call-optimization.png)
-
-2.  In XCode's *Build Settings* section, ensure that *Enable Objective-C Exceptions*
-    is set to *Yes* (it should be on this by default).
-
-    ![Enable Objective-C Exceptions](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/ios-enable-objective-c-exceptions.png)
-
-### Android
 
 When building for Android, you'll need to make sure that Internet Access is 
 enabled. On the *Android* tab of the Unity *Player Settings* screen, make sure
