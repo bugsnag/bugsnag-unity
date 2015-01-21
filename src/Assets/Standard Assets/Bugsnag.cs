@@ -144,12 +144,22 @@ public class Bugsnag : MonoBehaviour {
                 Bugsnag.CallStatic ("clearTab", tabName);
             }
         #else
+            private static string apiKey_;
+
             public static void SetUserId(string userId) {}
             public static void SetContext(string context) {}
             public static void SetReleaseStage(string releaseStage) {}
             public static void SetNotifyReleaseStages(string releaseStages) {}
-            public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace) {}
-            public static void Register(string apiKey) {}
+            public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace) {
+                if (apiKey_ == null || apiKey_ == "") {
+                    Debug.Log("ERROR: would not notify Bugsnag as no API key was set","BUGSNAG")
+                } else {
+                    Debug.Log("Would notify Bugsnag about " + errorClass + ": " + errorMessage, "BUGSNAG")
+                }
+            }
+            public static void Register(string apiKey) {
+                apiKey_ = apiKey;
+            }
             public static void SetNotifyUrl(string notifyUrl) {}
             public static void SetAutoNotify(bool autoNotify) {}
             public static void AddToTab(string tabName, string attributeName, string attributeValue) {}
