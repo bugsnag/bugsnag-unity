@@ -170,31 +170,31 @@ public class Bugsnag : MonoBehaviour {
     public bool AutoNotify = true;
     public LogSeverity NotifyLevel = LogSeverity.Exception;
 
-    public string UserId {
+    public static string UserId {
         set {
             NativeBugsnag.AddToTab("user", "id", value);
         }
     }
 
-    public string ReleaseStage {
+    public static string ReleaseStage {
         set {
             NativeBugsnag.SetReleaseStage(value);
         }
     }
 
-    public string Context {
+    public static string Context {
         set {
             NativeBugsnag.SetContext(value);
         }
     }
 
-    public string NotifyUrl {
+    public static string NotifyUrl {
         set {
             NativeBugsnag.SetNotifyUrl(value);
         }
     }
 
-    public string[] NotifyReleaseStages {
+    public static string[] NotifyReleaseStages {
         set {
             NativeBugsnag.SetNotifyReleaseStages(String.Join (",", value));
         }
