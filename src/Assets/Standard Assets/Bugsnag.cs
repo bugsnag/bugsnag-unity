@@ -152,9 +152,9 @@ public class Bugsnag : MonoBehaviour {
             public static void SetNotifyReleaseStages(string releaseStages) {}
             public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace) {
                 if (apiKey_ == null || apiKey_ == "") {
-                    Debug.Log("ERROR: would not notify Bugsnag as no API key was set","BUGSNAG")
+                    Debug.Log("BUGSNAG: ERROR: would not notify Bugsnag as no API key was set");
                 } else {
-                    Debug.Log("Would notify Bugsnag about " + errorClass + ": " + errorMessage, "BUGSNAG")
+                    Debug.Log("BUGSNAG: Would notify Bugsnag about " + errorClass + ": " + errorMessage);
                 }
             }
             public static void Register(string apiKey) {
@@ -234,7 +234,7 @@ public class Bugsnag : MonoBehaviour {
         }
 
         Bugsnag.Context = Application.loadedLevelName;
-        Bugsnag.AutoNotify = AutoNotify;
+        NativeBugsnag.SetAutoNotify (AutoNotify);
     }
 
     void OnEnable () {
@@ -329,7 +329,7 @@ public class Bugsnag : MonoBehaviour {
         if (stackTrace == null) {
             return;
         }
-        NativeBugsnag.Notify (errorClass, message, severity, stackTrace)
+        NativeBugsnag.Notify (errorClass, message, severity, stackTrace);
     }
 }
 
