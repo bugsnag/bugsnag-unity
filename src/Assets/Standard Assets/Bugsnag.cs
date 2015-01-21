@@ -273,14 +273,12 @@ public class Bugsnag : MonoBehaviour {
 
     public static void Notify(Exception e) {
         if(e != null) {
-            if(e.StackTrace == null) {
-                try {
-                    throw e;
-                } catch(Exception ex) {
-                    e = ex;
-                }
+            var stackTrace = e.StackTrace;
+            if (stackTrace == null) {
+                stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
-            NativeBugsnag.Notify(e.GetType().ToString(),e.Message, "warning", e.StackTrace);
+
+            NativeBugsnag.Notify(e.GetType().ToString(),e.Message, "warning", stackTrace);
         }
     }
 
