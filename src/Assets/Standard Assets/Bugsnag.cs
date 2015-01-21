@@ -182,24 +182,37 @@ public class Bugsnag : MonoBehaviour {
 
     public static string UserId {
         set {
+            if (value == null) {
+                value = "";
+            }
             NativeBugsnag.AddToTab("user", "id", value);
         }
     }
 
     public static string ReleaseStage {
         set {
+            if (value == null) {
+                value = "production";
+            }
             NativeBugsnag.SetReleaseStage(value);
         }
     }
 
     public static string Context {
         set {
+            if (value == null) {
+                value = "";
+            }
             NativeBugsnag.SetContext(value);
         }
     }
 
     public static string NotifyUrl {
         set {
+            if (value == null) {
+                value = "https://notify.bugsnag.com/";
+            }
+
             NativeBugsnag.SetNotifyUrl(value);
         }
     }
@@ -215,13 +228,13 @@ public class Bugsnag : MonoBehaviour {
         NativeBugsnag.Register(BugsnagApiKey);
 
         if(Debug.isDebugBuild) {
-            ReleaseStage = "development";
+            Bugsnag.ReleaseStage = "development";
         } else {
-            ReleaseStage = "production";
+            Bugsnag.ReleaseStage = "production";
         }
 
-        NativeBugsnag.SetContext(Application.loadedLevelName);
-        NativeBugsnag.SetAutoNotify(AutoNotify);
+        Bugsnag.Context = Application.loadedLevelName;
+        Bugsnag.AutoNotify = AutoNotify;
     }
 
     void OnEnable () {
@@ -234,7 +247,7 @@ public class Bugsnag : MonoBehaviour {
     }
 
     void OnLevelWasLoaded(int level) {
-        NativeBugsnag.SetContext(Application.loadedLevelName);
+        Bugsnag.Context = Application.loadedLevelName;
     }
 
     void HandleLog (string logString, string stackTrace, LogType type) {
@@ -277,7 +290,7 @@ public class Bugsnag : MonoBehaviour {
                 errorClass = logString;
             }
 
-            NativeBugsnag.Notify(errorClass, errorMessage, bugsnagSeverity, stackTrace);
+            NotifySafely (errorClass, errorMessage, bugsnagSeverity, stackTrace);
         }
     }
 
@@ -288,7 +301,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NativeBugsnag.Notify(e.GetType().ToString(),e.Message, "warning", stackTrace);
+            NotifySafely (e.GetType ().ToString (),e.Message, "warning", stackTrace);
         }
     }
 
@@ -298,6 +311,25 @@ public class Bugsnag : MonoBehaviour {
 
     public static void ClearTab(string tabName) {
         NativeBugsnag.ClearTab(tabName);
+    }
+
+    private static void NotifySafely(string errorClass, string message, string severity, string stackTrace) {
+        if (errorClass == null) {
+            errorClass = "Error";
+        }
+
+        if (message == null) {
+            message = "";
+        }
+
+        if (severity == null) {
+            severity = "error";
+        }
+
+        if (stackTrace == null) {
+            return;
+        }
+        NativeBugsnag.Notify (errorClass, message, severity, stackTrace)
     }
 }
 
