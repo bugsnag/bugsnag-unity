@@ -19,7 +19,7 @@ public class NotifyButtonScript : MonoBehaviour {
 #if UNITY_EDITOR
 
 	// Build a folder containing unity3d file and html file
-	[MenuItem ("Build/BuildiOS")]
+	[MenuItem ("Build/Build iOS")]
 	public static void BuildIos(){
 		string[] levels = {"Assets/Buttons.unity"};
 		BuildPipeline.BuildPlayer(levels, "bugsnag-unity-ios", 
@@ -37,7 +37,6 @@ public class NotifyButtonScript : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Bugsnag.NotifyUrl = "http://192.168.1.2:8000/";
 		Bugsnag.Context = null;
 		Bugsnag.UserId = null;
 		Bugsnag.ReleaseStage = null;
