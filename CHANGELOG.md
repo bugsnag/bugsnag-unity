@@ -1,3 +1,9 @@
+2.2.0
+-----
+
+- Fix LogHandler in non-debug builds.
+- Make Bugsnag methods static.
+- Fix crashes caused by passing unexpected nulls into Bugsnag.
 
 2.1.0
 -----
