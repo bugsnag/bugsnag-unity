@@ -61,8 +61,10 @@ public class Bugsnag : MonoBehaviour {
                         method = "Unknown method";
                     } else {
                         var index = method.LastIndexOf(".");
-                        className = method.Substring (0, index);
-                        method = method.Substring (index + 1);
+                        if (index >= 0) {
+                            className = method.Substring (0, index);
+                            method = method.Substring (index + 1);
+                        }
                     }
                     var file = frameMatch.Groups[2].Value;
                     if (file == "" || file == "<filename unknown>") {
@@ -278,7 +280,7 @@ public class Bugsnag : MonoBehaviour {
         }
 
         if(severity >= NotifyLevel && AutoNotify) {
-            string errorClass, errorMessage = null;
+            string errorClass, errorMessage = "";
 
             Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)");
             Match match = exceptionRegEx.Match(logString);
@@ -288,6 +290,10 @@ public class Bugsnag : MonoBehaviour {
                 errorMessage = match.Groups["message"].Value.Trim();
             } else {
                 errorClass = logString;
+            }
+
+            if (stackTrace == null || stackTrace == "") {
+                stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
             NotifySafely (errorClass, errorMessage, bugsnagSeverity, stackTrace);
@@ -306,10 +312,19 @@ public class Bugsnag : MonoBehaviour {
     }
 
     public static void AddToTab(string tabName, string attributeName, string attributeValue) {
+        if (tabName == null || attributeName == null) {
+            return;
+        }
+        if (attributeValue == null) {
+            attributeValue = "null";
+        }
         NativeBugsnag.AddToTab(tabName, attributeName, attributeValue);
     }
 
     public static void ClearTab(string tabName) {
+        if (tabName == null) {
+            return;
+        }
         NativeBugsnag.ClearTab(tabName);
     }
 

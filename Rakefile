@@ -1,33 +1,49 @@
 require 'shellwords'
 
+$UNITY = "/Applications/Unity/Unity.app/Contents/MacOS/Unity"
+
 desc "Build the plugin"
 task :build do
 
   $path = Dir.pwd + "/temp.unityproject"
   sh "rm -r temp.unityproject" if File.exist? "temp.unityproject"
-  sh "/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -quit -createproject #{Shellwords.escape($path)}"
+  sh "#$UNITY -batchmode -quit -createproject #{Shellwords.escape($path)}"
 
   Rake::Task[:copy_into_project].invoke
 
-  sh "/Applications/Unity/Unity.app/Contents/MacOS/Unity -batchmode -quit -projectpath #{Shellwords.escape($path)} -exportpackage Assets Bugsnag.unitypackage"
+  sh "#$UNITY -batchmode -quit -projectpath #{Shellwords.escape($path)} -exportpackage Assets Bugsnag.unitypackage"
   cp $path + "/Bugsnag.unitypackage", "."
 
 end
 
-desc "Update the example app"
-task :update_example do
+desc "Update the example app's C# scripts"
+task :update do
+  cp_r "src/Assets", Dir.pwd + "/example"
+end
+
+namespace :build do
+
+  desc "Build and run the iOS app"
+  task :ios do
+    Dir.chdir "example" do
+      sh "#$UNITY -batchmode -quit -executeMethod NotifyButtonScript.BuildIos"
+    end
+  end
+
+  desc "Build and run the Android app"
+  task :android do
+    Dir.chdir "example" do
+      sh "#$UNITY -batchmode -quit -executeMethod NotifyButtonScript.BuildAndroid"
+    end
+  end
+
+end
+
+
+desc "Update the example app's dependencies"
+task :update_example_plugins do
   $path = Dir.pwd + "/example"
   Rake::Task[:copy_into_project].invoke
-
-  Dir.chdir "example/Assets/Standard Assets" do
-    sh "rm Bugsnag.cs"
-    sh "ln -s #{Shellwords.escape("../../../src/Assets/Standard Assets/Bugsnag.cs")}"
-  end
-
-  Dir.chdir "example/Assets/Standard Assets/Editor" do
-    sh "rm BugsnagPostProcess.cs"
-    sh "ln -s #{Shellwords.escape("../../../src/Assets/Standard Assets/Editor/BugsnagPostProcess.cs")}"
-  end
 end
 
 task :copy_into_project do
