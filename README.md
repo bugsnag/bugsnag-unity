@@ -53,15 +53,6 @@ enabled. On the *Android* tab of the Unity *Player Settings* screen, make sure
 
 ![Enable Internet Access](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/android-internet-access.png)
 
-Additional Setup (iOS)
-----------------------
-
-When building for iOS, you'll need to ensure that script call optimization is
-set to "Slow and safe" (the default).  If you switch this to "Fast but no
-exceptions" then any exceptions raised in Objective-C will cause the app to
-hang rather than crash. Bugsnag will still report the error regardless of which
-setting you choose.
-
 How to Send Non-Fatal Exceptions to Bugsnag
 -------------------------------------------
 
