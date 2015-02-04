@@ -38,6 +38,7 @@ public class Bugsnag : MonoBehaviour {
             public static extern void ClearTab(string tabName);
         #elif UNITY_ANDROID && !UNITY_EDITOR
             public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
+            public static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
             public static void Register(string apiKey) {
                 // Get the current Activity
@@ -46,11 +47,14 @@ public class Bugsnag : MonoBehaviour {
                 AndroidJavaObject app = activity.Call<AndroidJavaObject>("getApplicationContext");
 
                 Bugsnag.CallStatic<AndroidJavaObject> ("init", app, apiKey);
+                Notify("errorClass", "error message", "error", new System.Diagnostics.StackTrace (1, true).ToString (), true);
             }
 
             public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace) {
-                var unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+              Notify(errorClass, errorMessage, severity, stackTrace, false);
+            }
 
+            public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace, bool warmup) {
                 var stackFrames = new ArrayList ();
 
                 foreach (Match frameMatch in unityExpression.Matches(stackTrace)) {
@@ -79,7 +83,7 @@ public class Bugsnag : MonoBehaviour {
                     stackFrames.Add (stackFrame);
                 }
 
-                if (stackFrames.Count > 0) {
+                if (stackFrames.Count > 0 && warmup == false) {
 
                     IntPtr stackFrameArrayObject  = AndroidJNI.NewObjectArray(stackFrames.Count, ((AndroidJavaObject)(stackFrames[0])).GetRawClass(), ((AndroidJavaObject)(stackFrames[0])).GetRawObject());
 
@@ -109,8 +113,7 @@ public class Bugsnag : MonoBehaviour {
 
                     // Call Android's notify method
                     IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(Bugsnag.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Lcom/bugsnag/android/MetaData;)V");
-                    AndroidJNI.CallStaticObjectMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
-
+                    if(warmup == false) AndroidJNI.CallStaticObjectMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
                 }
             }
 
@@ -344,7 +347,7 @@ public class Bugsnag : MonoBehaviour {
         if (stackTrace == null) {
             return;
         }
-        NativeBugsnag.Notify (errorClass, message, severity, stackTrace);
+
+        NativeBugsnag.Notify(errorClass, message, severity, stackTrace);
     }
 }
-
