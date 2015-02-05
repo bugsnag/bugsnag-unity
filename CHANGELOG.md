@@ -1,3 +1,8 @@
+2.2.1
+-----
+
+- Improve speed during manual notifies on android and ios.
+
 2.2.0
 -----
 
