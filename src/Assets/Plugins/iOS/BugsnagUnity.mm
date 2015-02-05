@@ -1,4 +1,5 @@
 #import "Bugsnag.h"
+#import "KSCrash.h"
 
 extern "C" {
     void SetContext(char *context);
@@ -71,14 +72,17 @@ extern "C" {
 
         NSDictionary *metaData = @{@"_bugsnag_unity_exception":@{@"stacktrace": stacktrace,
                                                                  @"notifier": notifier}};
-
-        [Bugsnag notify:[NSException exceptionWithName:ns_errorClass reason: ns_errorMessage userInfo: NULL] withData: metaData atSeverity: ns_severity];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^ {
+            [Bugsnag notify:[NSException exceptionWithName:ns_errorClass reason: ns_errorMessage userInfo: NULL] withData: metaData atSeverity: ns_severity];
+        });
     }
 
     void Register(char *apiKey) {
         NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
-        [Bugsnag startBugsnagWithApiKey:ns_apiKey];
 
+        [KSCrash sharedInstance].suspendThreadsForUserReported = NO;
+
+        [Bugsnag startBugsnagWithApiKey:ns_apiKey];
     }
 
     NSMutableArray *parseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex) {
