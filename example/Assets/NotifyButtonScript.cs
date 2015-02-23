@@ -69,8 +69,10 @@ public class NotifyButtonScript : MonoBehaviour {
 	}
 
 	public void OnNotifyClick () {
+		Bugsnag.Context = "NotifyClocked";
 		Debug.Log ("Notify clicked");
 		Bugsnag.Notify (new System.Exception ("Notify clicked!"));
+		Bugsnag.Context = null;
 	}
 
 	public void OnDivideByZeroClick () {
