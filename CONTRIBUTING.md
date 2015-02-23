@@ -60,3 +60,11 @@
     git tag "v2.x.x"
     git push origin master --tags
 
+- Add a new release on Github
+
+    - https://github.com/bugsnag/bugsnag-cocoa/releases/new?tag=v2.x.x
+    - set the title to the tag name
+    - copy the CHANGELOG entry to the release notes
+    - upload `Bugsnag.unityframework`
+
+
