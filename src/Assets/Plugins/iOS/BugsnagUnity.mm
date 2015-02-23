@@ -1,5 +1,6 @@
 #import "Bugsnag.h"
 #import "KSCrash.h"
+#import "NSDictionary+Merge.h"
 
 extern "C" {
     void SetContext(char *context);
@@ -71,7 +72,11 @@ extern "C" {
                                    };
 
         NSDictionary *metaData = @{@"_bugsnag_unity_exception":@{@"stacktrace": stacktrace,
-                                                                 @"notifier": notifier}};
+                                                                 @"notifier": notifier},
+                                    @"context":[Bugsnag configuration].context};
+
+        metaData = [metaData mergedInto: [[Bugsnag configuration].metaData toDictionary]];
+
         dispatch_async(dispatch_get_global_queue(0, 0), ^ {
             [Bugsnag notify:[NSException exceptionWithName:ns_errorClass reason: ns_errorMessage userInfo: NULL] withData: metaData atSeverity: ns_severity];
         });
