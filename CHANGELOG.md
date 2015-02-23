@@ -1,3 +1,8 @@
+2.2.2
+-----
+
+- Make metaData thread safe
+
 2.2.1
 -----
 
