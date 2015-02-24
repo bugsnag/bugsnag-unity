@@ -1,3 +1,8 @@
+2.2.3
+-----
+
+- Make context thread safe too
+
 2.2.2
 -----
 
