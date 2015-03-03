@@ -1,3 +1,8 @@
+2.2.4
+-----
+
+- Fix use-after-free on NSNotification
+
 2.2.3
 -----
 
