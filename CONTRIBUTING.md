@@ -25,8 +25,8 @@
 - Update the submodule
 
     ```
-    cd bugsnag-cocoa; git pull
-    cd bugsnag-android; git pull
+    cd bugsnag-cocoa; git pull origin master; cd ..
+    cd bugsnag-android; git pull origin master; cd ..
     cd ..; git commit -am "updating notifiers"
     ```
     
