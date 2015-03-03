@@ -66,7 +66,7 @@ task :copy_into_project do
   end
 
   cd 'bugsnag-android' do
-    sh "./gradlew build"
+    sh "./gradlew clean build"
   end
 
   Dir["bugsnag-android/build/outputs/jar/*.jar"].each do |file|
