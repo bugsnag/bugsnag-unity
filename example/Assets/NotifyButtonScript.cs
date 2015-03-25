@@ -71,7 +71,7 @@ public class NotifyButtonScript : MonoBehaviour {
 	public void OnNotifyClick () {
 		Bugsnag.Context = "NotifyClocked";
 		Debug.Log ("Notify clicked");
-		Bugsnag.Notify (new System.Exception ("Notify clicked!"));
+		Bugsnag.Notify (new System.Exception ("Notify clicked!"), "NotifyClacked");
 		Bugsnag.Context = null;
 	}
 

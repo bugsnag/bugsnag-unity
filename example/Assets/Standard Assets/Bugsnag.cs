@@ -14,7 +14,7 @@ public class Bugsnag : MonoBehaviour {
             public static extern void Register(string apiKey);
 
             [DllImport ("__Internal")]
-            public static extern void Notify(string errorClass, string errorMessage, string severity, string stackTrace);
+            public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace);
 
             [DllImport ("__Internal")]
             public static extern void SetNotifyUrl(string notifyUrl);
@@ -47,14 +47,14 @@ public class Bugsnag : MonoBehaviour {
                 AndroidJavaObject app = activity.Call<AndroidJavaObject>("getApplicationContext");
 
                 Bugsnag.CallStatic<AndroidJavaObject> ("init", app, apiKey);
-                Notify("errorClass", "error message", "error", new System.Diagnostics.StackTrace (1, true).ToString (), true);
+                Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), true);
             }
 
-            public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace) {
-              Notify(errorClass, errorMessage, severity, stackTrace, false);
+            public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace) {
+              Notify(errorClass, errorMessage, severity, context, stackTrace, false);
             }
 
-            public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace, bool warmup) {
+            public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, bool warmup) {
                 var stackFrames = new ArrayList ();
 
                 foreach (Match frameMatch in unityExpression.Matches(stackTrace)) {
@@ -103,16 +103,17 @@ public class Bugsnag : MonoBehaviour {
                     var metaData = new AndroidJavaObject("com.bugsnag.android.MetaData");
 
                     // Build the arguments
-                    jvalue[] args =  new jvalue[5] {
+                    jvalue[] args =  new jvalue[6] {
                         new jvalue() { l = AndroidJNI.NewStringUTF(errorClass) },
                         new jvalue() { l = AndroidJNI.NewStringUTF(errorMessage) },
+                        new jvalue() { l = AndroidJNI.NewStringUTF(context) },
                         new jvalue() { l = (IntPtr)stackFrameArrayObject },
                         new jvalue() { l = severityInstance.GetRawObject() },
                         new jvalue() { l = metaData.GetRawObject() }
                     };
 
                     // Call Android's notify method
-                    IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(Bugsnag.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Lcom/bugsnag/android/MetaData;)V");
+                    IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(Bugsnag.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Lcom/bugsnag/android/MetaData;)V");
                     if(warmup == false) AndroidJNI.CallStaticObjectMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
                 }
             }
@@ -155,7 +156,7 @@ public class Bugsnag : MonoBehaviour {
             public static void SetContext(string context) {}
             public static void SetReleaseStage(string releaseStage) {}
             public static void SetNotifyReleaseStages(string releaseStages) {}
-            public static void Notify(string errorClass, string errorMessage, string severity, string stackTrace) {
+            public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace) {
                 if (apiKey_ == null || apiKey_ == "") {
                     Debug.Log("BUGSNAG: ERROR: would not notify Bugsnag as no API key was set");
                 } else {
@@ -299,18 +300,28 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (errorClass, errorMessage, bugsnagSeverity, stackTrace);
+            NotifySafely (errorClass, errorMessage, bugsnagSeverity, "", stackTrace);
         }
     }
 
     public static void Notify(Exception e) {
+		if(e != null) {
+			var stackTrace = e.StackTrace;
+			if (stackTrace == null) {
+				stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
+			}
+			
+			NotifySafely (e.GetType ().ToString (),e.Message, "warning", "", stackTrace);
+		}    }
+	
+	public static void Notify(Exception e, string context) {
         if(e != null) {
             var stackTrace = e.StackTrace;
             if (stackTrace == null) {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (e.GetType ().ToString (),e.Message, "warning", stackTrace);
+            NotifySafely (e.GetType ().ToString (),e.Message, "warning", context, stackTrace);
         }
     }
 
@@ -331,7 +342,7 @@ public class Bugsnag : MonoBehaviour {
         NativeBugsnag.ClearTab(tabName);
     }
 
-    private static void NotifySafely(string errorClass, string message, string severity, string stackTrace) {
+    private static void NotifySafely(string errorClass, string message, string severity, string context, string stackTrace) {
         if (errorClass == null) {
             errorClass = "Error";
         }
@@ -344,10 +355,14 @@ public class Bugsnag : MonoBehaviour {
             severity = "error";
         }
 
+        if (context == null) {
+            context = "";
+        }
+
         if (stackTrace == null) {
             return;
         }
 
-        NativeBugsnag.Notify(errorClass, message, severity, stackTrace);
+        NativeBugsnag.Notify(errorClass, message, severity, context, stackTrace);
     }
 }
