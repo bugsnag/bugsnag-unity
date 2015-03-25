@@ -1,3 +1,8 @@
+2.2.5
+-----
+
+- Allow passing Context as a second argument to Bugsnag.Notify
+
 2.2.4
 -----
 
