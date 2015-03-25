@@ -6,7 +6,7 @@ extern "C" {
     void SetContext(char *context);
     void SetReleaseStage(char *releaseStage);
     void SetAutoNotify(int autoNotify);
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *stackTrace);
+    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace);
     void Register(char *apiKey);
     void AddToTab(char *tabName, char *attributeName, char *attributeValue);
     void ClearTab(char *tabName);
@@ -52,10 +52,11 @@ extern "C" {
         [Bugsnag clearTabWithName:ns_tabName];
     }
 
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *stackTrace) {
+    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace) {
         NSString *ns_errorClass = [NSString stringWithUTF8String:errorClass];
         NSString *ns_errorMessage = [NSString stringWithUTF8String:errorMessage];
         NSString *ns_severity = [NSString stringWithUTF8String:severity];
+        NSString *ns_context = [NSString stringWithUTF8String:context];
 
         NSString *ns_stackTrace = [NSString stringWithUTF8String:stackTrace];
 
@@ -71,9 +72,13 @@ extern "C" {
                                    @"url":@"https://bugsnag.com/"
                                    };
 
+        if ([ns_context isEqualToString: @""]) {
+            ns_context = [Bugsnag configuration].context;
+        }
+
         NSDictionary *metaData = @{@"_bugsnag_unity_exception":@{@"stacktrace": stacktrace,
                                                                  @"notifier": notifier},
-                                    @"context":[Bugsnag configuration].context};
+                                    @"context":ns_context};
 
         metaData = [metaData mergedInto: [[Bugsnag configuration].metaData toDictionary]];
 
