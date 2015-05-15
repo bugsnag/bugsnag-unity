@@ -114,7 +114,7 @@ public class Bugsnag : MonoBehaviour {
 
                     // Call Android's notify method
                     IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(Bugsnag.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Lcom/bugsnag/android/MetaData;)V");
-                    if(warmup == false) AndroidJNI.CallStaticObjectMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
+                    if(warmup == false) AndroidJNI.CallStaticVoidMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
                 }
             }
 
@@ -310,10 +310,10 @@ public class Bugsnag : MonoBehaviour {
 			if (stackTrace == null) {
 				stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
 			}
-			
+
 			NotifySafely (e.GetType ().ToString (),e.Message, "warning", "", stackTrace);
 		}    }
-	
+
 	public static void Notify(Exception e, string context) {
         if(e != null) {
             var stackTrace = e.StackTrace;
