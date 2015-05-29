@@ -1,3 +1,8 @@
+2.2.6
+-----
+
+- Fix compilation under arm64
+
 2.2.5
 -----
 
