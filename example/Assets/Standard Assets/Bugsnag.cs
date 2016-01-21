@@ -7,6 +7,14 @@ using System.Collections;
 
 using System.Text.RegularExpressions;
 
+#ifndef UNITY_3
+#define UNITY_3 UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5
+#endif
+
+#ifndef UNITY_4
+#define UNITY_4 UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6
+#endif
+
 public class Bugsnag : MonoBehaviour {
     public class NativeBugsnag {
         #if UNITY_IPHONE && !UNITY_EDITOR
@@ -244,12 +252,20 @@ public class Bugsnag : MonoBehaviour {
     }
 
     void OnEnable () {
+#if UNITY_2_6 || UNITY_3 || UNITY_4
         Application.RegisterLogCallback(HandleLog);
+#else
+        Application.logMessageReceived += HandleLog;
+#endif
     }
 
     void OnDisable () {
         // Remove callback when object goes out of scope
+#if UNITY_2_6 || UNITY_3 || UNITY_4
         Application.RegisterLogCallback(null);
+#else
+        Application.logMessageReceived -= HandleLog;
+#endif
     }
 
     void OnLevelWasLoaded(int level) {
