@@ -1,3 +1,25 @@
+# Changelog
+
+## 2.3.0
+
+This release includes significant updates to the underlying android and cocoa
+libraries.
+
+### Enhancements
+
+* Upgrade bugsnag-android from 3.2.5 -> 3.4.0
+* Upgrade bugsnag-cocoa from 4.0.7 -> 4.1.0
+
+### Bug Fixes
+
+* Fix crash resulting from use of deprecated method
+  [Simon Maynard](https://github.com/snmaynard)
+  [#13](https://github.com/bugsnag/bugsnag-unity/pull/13)
+
+* Update callback registration method to remove deprecations
+  [Delisa Mason](https://github.com/kattrali)
+  [#20](https://github.com/bugsnag/bugsnag-unity/pull/20)
+
 2.2.6
 -----
 
