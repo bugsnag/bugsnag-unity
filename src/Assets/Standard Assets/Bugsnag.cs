@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 
 public class Bugsnag : MonoBehaviour {
     public class NativeBugsnag {
-        #if UNITY_IPHONE && !UNITY_EDITOR
+        #if (UNITY_IPHONE || UNITY_IOS) && !UNITY_EDITOR
             [DllImport ("__Internal")]
             public static extern void Register(string apiKey);
 
