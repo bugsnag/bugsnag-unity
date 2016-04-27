@@ -1,3 +1,6 @@
 build
 .DS_store
 temp.unityproject
+bugsnag-osx/bugsnag-osx/Bugsnag.framework
+xcuserdata
+xcodebuild.log

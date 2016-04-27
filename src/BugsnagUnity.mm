@@ -1,5 +1,4 @@
-#import "Bugsnag.h"
-#import "KSCrash.h"
+#import <Bugsnag/Bugsnag.h>
 #import "NSDictionary+Merge.h"
 
 extern "C" {
@@ -90,7 +89,11 @@ extern "C" {
     void Register(char *apiKey) {
         NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
 
-        [KSCrash sharedInstance].suspendThreadsForUserReported = NO;
+        // Disable thread suspension so there is no noticable lag in sending Bugsnags
+        [Bugsnag setSuspendThreadsForUserReported:false];
+
+        // Set reporting of Bugsnags when debugger is attached
+        [Bugsnag setReportWhenDebuggerIsAttached:true];
 
         [Bugsnag startBugsnagWithApiKey:ns_apiKey];
     }
@@ -119,7 +122,8 @@ extern "C" {
                 }
 
                 if(result.numberOfRanges >= 3 && [result rangeAtIndex:3].location != NSNotFound) {
-                    [lineDetails setObject:[NSNumber numberWithInt:[[stackTrace substringWithRange:[result rangeAtIndex:3]] integerValue]] forKey:@"lineNumber"];
+                    int lineNumber = (int)[[stackTrace substringWithRange:[result rangeAtIndex:3]] integerValue];
+                    [lineDetails setObject:[NSNumber numberWithInt:lineNumber] forKey:@"lineNumber"];
                 } else {
                     [lineDetails setObject:[NSNumber numberWithInt:0] forKey:@"lineNumber"];
                 }

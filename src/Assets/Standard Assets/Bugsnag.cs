@@ -40,6 +40,33 @@ public class Bugsnag : MonoBehaviour {
 
             [DllImport ("__Internal")]
             public static extern void ClearTab(string tabName);
+        #elif UNITY_STANDALONE_OSX && !UNITY_EDITOR
+            [DllImport ("bugsnag-osx")]
+		        public static extern void Register(string apiKey);
+
+            [DllImport ("bugsnag-osx")]
+		        public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace);
+
+            [DllImport ("bugsnag-osx")]
+		        public static extern void SetNotifyUrl(string notifyUrl);
+
+            [DllImport ("bugsnag-osx")]
+		        public static extern void SetAutoNotify(bool autoNotify);
+
+            [DllImport ("bugsnag-osx")]
+		        public static extern void SetContext(string context);
+
+            [DllImport ("bugsnag-osx")]
+		        public static extern void SetReleaseStage(string releaseStage);
+
+            [DllImport ("bugsnag-osx")]
+		        public static extern void SetNotifyReleaseStages(string releaseStages);
+
+            [DllImport ("bugsnag-osx")]
+		        public static extern void AddToTab(string tabName, string attributeName, string attributeValue);
+
+            [DllImport ("bugsnag-osx")]
+		        public static extern void ClearTab(string tabName);
         #elif UNITY_ANDROID && !UNITY_EDITOR
             public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
             public static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
