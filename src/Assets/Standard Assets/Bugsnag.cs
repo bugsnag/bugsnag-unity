@@ -3,6 +3,7 @@
 #endif
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Runtime.InteropServices;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using System.Text.RegularExpressions;
 
 public class Bugsnag : MonoBehaviour {
     public class NativeBugsnag {
-        #if (UNITY_IPHONE || UNITY_IOS) && !UNITY_EDITOR
+        #if (UNITY_IPHONE || UNITY_IOS || UNITY_WEBGL) && !UNITY_EDITOR
             [DllImport ("__Internal")]
             public static extern void Register(string apiKey);
 
@@ -260,6 +261,14 @@ public class Bugsnag : MonoBehaviour {
         }
     }
 
+    string GetLevelName() {
+#if UNITY_LT_5
+      return Application.loadedLevelName;
+#else
+      return SceneManager.GetActiveScene().name;
+#endif
+    }
+
     void Awake() {
         DontDestroyOnLoad(this);
         NativeBugsnag.Register(BugsnagApiKey);
@@ -270,7 +279,7 @@ public class Bugsnag : MonoBehaviour {
             Bugsnag.ReleaseStage = "production";
         }
 
-        Bugsnag.Context = Application.loadedLevelName;
+        Bugsnag.Context = GetLevelName();
         NativeBugsnag.SetAutoNotify (AutoNotify);
     }
 
@@ -292,7 +301,7 @@ public class Bugsnag : MonoBehaviour {
     }
 
     void OnLevelWasLoaded(int level) {
-        Bugsnag.Context = Application.loadedLevelName;
+        Bugsnag.Context = GetLevelName();
     }
 
     void HandleLog (string logString, string stackTrace, LogType type) {

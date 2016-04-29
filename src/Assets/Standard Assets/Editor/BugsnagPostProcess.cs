@@ -31,9 +31,28 @@ public class BugsnagBuilder : MonoBehaviour {
     [PostProcessBuild(1400)]
     public static void OnPostProcessBuild(BuildTarget target, string path)
     {
-        if (target != BuildTarget.iPhone) {
+        if (target != BuildTarget.iOS && target != BuildTarget.WebGL) {
             return;
         }
+
+    		if (target == BuildTarget.WebGL) {
+
+            // Read the index.html file and replace it line by line
+    			  var indexPath = Path.Combine (path, "index.html");
+    			  var indexLines = File.ReadAllLines  (indexPath);
+    			  var sbWeb = new StringBuilder ();
+    			  foreach (var line in indexLines) {
+    			      sbWeb.AppendLine (line);
+
+                // Add an extra line below the first script tag, linking to the js notifier
+    				    if (line.Contains ("<script src=\"TemplateData/UnityProgress.js\"></script>")) {
+    					      var extra = line.Replace ("TemplateData/UnityProgress.js", "//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js");
+    					      sbWeb.AppendLine (extra);
+    				    }
+    			  }
+    			  File.WriteAllText(indexPath, sbWeb.ToString());
+    			  return;
+    		}
 
         Regex fileMatcher = getFileMatcher ();
 
