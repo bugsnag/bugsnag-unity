@@ -63,12 +63,36 @@ var BugsnagPlugin = {
         if (Bugsnag.metaData[strTabName] == null) {
             Bugsnag.metaData[strTabName] = {};
         }
-        
+
         Bugsnag.metaData[strTabName][strAttrName] = strAttrValue;
     },
     ClearTab: function(tabName)
     {
         delete Bugsnag.metaData[Pointer_stringify(tabName)];
+    },
+    LeaveBreadcrumb: function(breadcrumb)
+    {
+        // Do nothing as we don't support breadcrumbs for the js notifier
+    },
+    SetBreadcrumbCapacity: function(capacity)
+    {
+        // Do nothing as we don't support breadcrumbs for the js notifier
+    },
+    SetAppVersion: function(version)
+    {
+        Bugsnag.appVersion = Pointer_stringify(version)
+    },
+    SetUser: function(userId, userName, userEmail)
+    {
+        var strUserId = Pointer_stringify(userId);
+        var strUserName = Pointer_stringify(userName);
+        var strUserEmail = Pointer_stringify(userEmail);
+
+        Bugsnag.user = {
+          id: strUserId,
+          name: strUserName,
+          email: strUserEmail
+        };
     }
 };
 

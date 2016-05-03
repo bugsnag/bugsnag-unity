@@ -9,6 +9,10 @@ extern "C" {
     void Register(char *apiKey);
     void AddToTab(char *tabName, char *attributeName, char *attributeValue);
     void ClearTab(char *tabName);
+    void LeaveBreadcrumb(char *breadcrumb);
+    void SetBreadcrumbCapacity(int capacity);
+    void SetAppVersion(char *version);
+    void SetUser(char *userId, char *userName, char *userEmail);
     NSMutableArray *parseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex);
 
     void SetContext(char *context) {
@@ -96,6 +100,25 @@ extern "C" {
         [Bugsnag setReportWhenDebuggerIsAttached:true];
 
         [Bugsnag startBugsnagWithApiKey:ns_apiKey];
+    }
+
+    void LeaveBreadcrumb(char *breadcrumb) {
+        [Bugsnag leaveBreadcrumbWithMessage: [NSString stringWithUTF8String:breadcrumb]];
+    }
+
+    void SetBreadcrumbCapacity(int capacity) {
+        [Bugsnag setBreadcrumbCapacity: (NSUInteger)capacity];
+    }
+
+    void SetAppVersion(char *version) {
+        [Bugsnag configuration].appVersion = [NSString stringWithUTF8String:version];
+    }
+
+    void SetUser(char *userId, char *userName, char *userEmail) {
+        NSString *ns_userId = [NSString stringWithUTF8String: userId];
+        NSString *ns_userName = [NSString stringWithUTF8String: userName];
+        NSString *ns_userEmail = [NSString stringWithUTF8String: userEmail];
+        [[Bugsnag configuration] setUser:ns_userId withName:ns_userName andEmail:ns_userEmail];
     }
 
     NSMutableArray *parseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex) {
