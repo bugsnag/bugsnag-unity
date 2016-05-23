@@ -1,3 +1,7 @@
+#if UNITY_2_6 || UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6
+#define UNITY_LT_5
+#endif
+
 using UnityEngine;
 using System.Runtime.InteropServices;
 using System;
@@ -6,14 +10,6 @@ using System.Text;
 using System.Collections;
 
 using System.Text.RegularExpressions;
-
-#ifndef UNITY_3
-#define UNITY_3 UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5
-#endif
-
-#ifndef UNITY_4
-#define UNITY_4 UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6
-#endif
 
 public class Bugsnag : MonoBehaviour {
     public class NativeBugsnag {
@@ -122,7 +118,7 @@ public class Bugsnag : MonoBehaviour {
 
                     // Call Android's notify method
                     IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(Bugsnag.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Lcom/bugsnag/android/MetaData;)V");
-                    if(warmup == false) AndroidJNI.CallStaticObjectMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
+                    if(warmup == false) AndroidJNI.CallStaticVoidMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
                 }
             }
 
@@ -252,7 +248,7 @@ public class Bugsnag : MonoBehaviour {
     }
 
     void OnEnable () {
-#if UNITY_2_6 || UNITY_3 || UNITY_4
+#if UNITY_LT_5
         Application.RegisterLogCallback(HandleLog);
 #else
         Application.logMessageReceived += HandleLog;
@@ -261,7 +257,7 @@ public class Bugsnag : MonoBehaviour {
 
     void OnDisable () {
         // Remove callback when object goes out of scope
-#if UNITY_2_6 || UNITY_3 || UNITY_4
+#if UNITY_LT_5
         Application.RegisterLogCallback(null);
 #else
         Application.logMessageReceived -= HandleLog;
@@ -326,10 +322,10 @@ public class Bugsnag : MonoBehaviour {
 			if (stackTrace == null) {
 				stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
 			}
-			
+
 			NotifySafely (e.GetType ().ToString (),e.Message, "warning", "", stackTrace);
 		}    }
-	
+
 	public static void Notify(Exception e, string context) {
         if(e != null) {
             var stackTrace = e.StackTrace;

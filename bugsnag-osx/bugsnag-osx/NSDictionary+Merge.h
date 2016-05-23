@@ -1,9 +1,9 @@
 //
-//  BugsnagMetaData.h
+//  NSDictionary+Merge.h
 //
-//  Created by Conrad Irwin on 2014-10-01.
+//  Created by Karl Stenerud on 2012-10-01.
 //
-//  Copyright (c) 2014 Bugsnag, Inc. All rights reserved.
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,21 +24,29 @@
 // THE SOFTWARE.
 //
 
+
 #import <Foundation/Foundation.h>
 
-@protocol BugsnagMetaDataDelegate;
 
-@interface BugsnagMetaData : NSObject < NSMutableCopying >
+/** Adds dictionary merging capabilities.
+ */
+@interface NSDictionary (KSMerge)
 
-- (id) initWithDictionary:(NSMutableDictionary*)dict;
-- (NSMutableDictionary *) getTab:(NSString*)tabName;
-- (void) clearTab:(NSString*)tabName;
-- (NSDictionary*) toDictionary;
-- (void) addAttribute:(NSString*)attributeName withValue:(id)value toTabWithName:(NSString*)tabName;
-@property(unsafe_unretained) id<BugsnagMetaDataDelegate> delegate;
+/** Recursively merge this dictionary into the destination dictionary.
+ * If the same key exists in both dictionaries, the following occurs:
+ * - If both entries are dictionaries, the sub-dictionaries are merged and
+ *   placed into the merged dictionary.
+ * - Otherwise the entry from this dictionary overrides the entry from the
+ *   destination in the merged dictionary.
+ *
+ * Note: Neither this dictionary nor the destination will be modified by this
+ *       operation.
+ *
+ * @param dest The dictionary to merge into. Can be nil or empty, in which case
+ *             this dictionary is returned.
+ *
+ * @return The merged dictionary.
+ */
+- (NSDictionary*) mergedInto:(NSDictionary*) dest;
 
-@end
-
-@protocol BugsnagMetaDataDelegate <NSObject>
-- (void) metaDataChanged: (BugsnagMetaData *) metaData;
 @end

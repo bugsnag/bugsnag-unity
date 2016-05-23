@@ -12,6 +12,8 @@ public class BugsnagBuilder : MonoBehaviour {
     //
     // D8A1C700dE80637F000160D4 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C700dE80637F100160D4 /* Bugsnag.m */; };
     // D8A1C700dE80637F000160D4 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C700dE80637F100160D4 /* Bugsnag.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
+    //
+    // We also need to disable ARC on KSZombie.m using -fno-objc-arc
     static string[] BUGSNAG_FILES = {
         "Bugsnag.m",
         "BugsnagConfiguration.m",
@@ -20,7 +22,8 @@ public class BugsnagBuilder : MonoBehaviour {
         "BugsnagUnity.mm",
         "BugsnagMetaData.m",
         "BugsnagNotifier.m",
-        "BugsnagSink.m"
+        "BugsnagSink.m",
+        "KSZombie.m"
     };
     static Regex _matcher = null;
 
@@ -28,10 +31,28 @@ public class BugsnagBuilder : MonoBehaviour {
     [PostProcessBuild(1400)]
     public static void OnPostProcessBuild(BuildTarget target, string path)
     {
-
-        if (target != BuildTarget.iPhone) {
+        if (target != BuildTarget.iOS && target != BuildTarget.WebGL) {
             return;
         }
+
+    		if (target == BuildTarget.WebGL) {
+
+            // Read the index.html file and replace it line by line
+    			  var indexPath = Path.Combine (path, "index.html");
+    			  var indexLines = File.ReadAllLines  (indexPath);
+    			  var sbWeb = new StringBuilder ();
+    			  foreach (var line in indexLines) {
+    			      sbWeb.AppendLine (line);
+
+                // Add an extra line below the first script tag, linking to the js notifier
+    				    if (line.Contains ("<script src=\"TemplateData/UnityProgress.js\"></script>")) {
+    					      var extra = line.Replace ("TemplateData/UnityProgress.js", "//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js");
+    					      sbWeb.AppendLine (extra);
+    				    }
+    			  }
+    			  File.WriteAllText(indexPath, sbWeb.ToString());
+    			  return;
+    		}
 
         Regex fileMatcher = getFileMatcher ();
 
@@ -54,10 +75,17 @@ public class BugsnagBuilder : MonoBehaviour {
 
 
         foreach (var line in xcodeProjectLines) {
-            // Enable ARC where required
+            // Enable / Disable ARC where required
             if (fileMatcher.IsMatch (line)) {
                 var index = line.LastIndexOf("}");
-                var newLine = line.Substring (0, index) + "settings = {COMPILER_FLAGS = \"-fobjc-arc\"; }; " + line.Substring(index);
+                var newLine = "";
+                // Disable ARC for KSZombie.m only
+                if (line.Contains("KSZombie.m")) {
+                    newLine = line.Substring (0, index) + "settings = {COMPILER_FLAGS = \"-fno-objc-arc\"; }; " + line.Substring(index);
+                } else {
+                    newLine = line.Substring (0, index) + "settings = {COMPILER_FLAGS = \"-fobjc-arc\"; }; " + line.Substring(index);
+                }
+
 
                 sb.AppendLine(newLine);
 

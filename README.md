@@ -2,11 +2,11 @@ Bugsnag Notifier for Unity
 ============================
 
 The Bugsnag Notifier for Unity gives you instant notification of exceptions
-thrown from your Unity games on iOS and Android devices. Exceptions in your 
-Unity code (JS, C# and Boo) as well as native crashes (Objective C, Java) are
-automatically detected and sent to Bugsnag.
+thrown from your Unity games on iOS and Android devices, as well as standalone
+Mac and WebGL deployments. Exceptions in your Unity code (JS, C# and Boo) as
+well as native crashes (Objective C, Java) are automatically detected and sent to Bugsnag.
 
-[Bugsnag](http://bugsnag.com) captures errors in real-time from your web 
+[Bugsnag](http://bugsnag.com) captures errors in real-time from your web
 and mobile apps, helping you to understand and resolve them as fast as possible.
 [Create a free account](http://bugsnag.com) to start capturing exceptions today.
 
@@ -147,10 +147,53 @@ you can set the `ReleaseStage` in your scripts:
 ```csharp
 Bugsnag.ReleaseStage = "development";
 ```
-    
-By default this is set to be *production* if the build is a release build, 
+
+By default this is set to be *production* if the build is a release build,
 and *development* for a development build.
 
+###NotifyReleaseStages
+
+By default, we notify Bugsnag of all exceptions that happen in your app. If you would like to change which release stages notify Bugsnag of exceptions you can set the notifyReleaseStages property:
+
+```csharp
+Bugsnag.NotifyReleaseStages = ["staging", "production"];
+```
+
+###AppVersion
+
+If you want to manually track in which versions of your application each exception happens, you can set `AppVersion`.
+
+```csharp
+Bugsnag.AppVersion = "1.2.3-alpha";
+```
+
+###Logging breadcrumbs
+
+You can add custom log messages called "breadcrumbs" to document what user interactions occurred in your application prior to a crash. Each breadcrumb also records the time at which it was left. To record a breadcrumb:
+
+```csharp
+Bugsnag.LeaveBreadcrumb("Player won");
+Bugsnag.LeaveBreadcrumb("Button was clicked");
+```
+
+By default, we'll store and send the last 20 breadcrumbs you leave before errors are sent to Bugsnag. If you'd like to increase this number, you can call `SetBreadcrumbCapacity`
+
+```csharp
+Bugsnag.BreadcrumbCapacity = 50;
+```
+Please note that breadcrumbs are not supported for WebGL deployments.
+
+###User
+
+Bugsnag helps you understand how many of your users are affected by each error. In order to do this, we send along a userId with every exception. By default we will generate a unique ID and send this ID along with every exception from an individual device.
+
+If you would like to override this userId, for example to set it to be a username of your currently logged in user, you can set the userId property:
+
+```csharp
+Bugsnag.SetUser("userId", "User Name", "user@email.com");
+```
+
+You can also set the email and name of the user and these will be searchable in the dashboard.
 
 Building from Source
 --------------------

@@ -105,7 +105,7 @@ static NSString* BugsnagSeverityInfo    = @"info";
  *
  * @param attributeName  The name of the data.
  *
- * @param value          It's value.
+ * @param value          Its value.
  *
  * @param tabName        The tab to show it on on the Bugsnag dashboard.
  */
@@ -116,5 +116,28 @@ static NSString* BugsnagSeverityInfo    = @"info";
  * @param tabName        The tab to clear.
  */
 + (void) clearTabWithName:(NSString*) tabName;
+
+/**
+ * Leave a "breadcrumb" log message, representing an action that occurred
+ * in your app, to aid with debugging. Must be called from the main thread.
+ *
+ * @param message  the log message to leave (max 140 chars)
+ */
++ (void) leaveBreadcrumbWithMessage:(NSString*)message;
+
+/**
+ * Set the maximum number of breadcrumbs to keep and sent to Bugsnag.
+ * By default, we'll keep and send the 20 most recent breadcrumb log
+ * messages. Must be called from the main thread.
+ *
+ * @param max  number of breadcrumb log messages to send
+ */
++ (void) setBreadcrumbCapacity:(NSUInteger)capacity;
+
+/**
+ * Clear any breadcrumbs that have been left so far. Must be called from
+ * the main thread.
+ */
++ (void) clearBreadcrumbs;
 
 @end
