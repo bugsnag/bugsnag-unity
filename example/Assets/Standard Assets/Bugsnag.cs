@@ -3,6 +3,7 @@
 #endif
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Runtime.InteropServices;
 using System;
 using System.Collections.Generic;
@@ -12,34 +13,53 @@ using System.Collections;
 using System.Text.RegularExpressions;
 
 public class Bugsnag : MonoBehaviour {
+
+#if UNITY_STANDALONE_OSX
+    private const string dllName = "bugsnag-osx";
+#else
+    private const string dllName = "__Internal";
+#endif
+
     public class NativeBugsnag {
-        #if UNITY_IPHONE && !UNITY_EDITOR
-            [DllImport ("__Internal")]
+        #if (UNITY_IPHONE || UNITY_IOS || UNITY_WEBGL || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+            [DllImport (dllName)]
             public static extern void Register(string apiKey);
 
-            [DllImport ("__Internal")]
+            [DllImport (dllName)]
             public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace);
 
-            [DllImport ("__Internal")]
+            [DllImport (dllName)]
             public static extern void SetNotifyUrl(string notifyUrl);
 
-            [DllImport ("__Internal")]
+            [DllImport (dllName)]
             public static extern void SetAutoNotify(bool autoNotify);
 
-            [DllImport ("__Internal")]
+            [DllImport (dllName)]
             public static extern void SetContext(string context);
 
-            [DllImport ("__Internal")]
+            [DllImport (dllName)]
             public static extern void SetReleaseStage(string releaseStage);
 
-            [DllImport ("__Internal")]
+            [DllImport (dllName)]
             public static extern void SetNotifyReleaseStages(string releaseStages);
 
-            [DllImport ("__Internal")]
+            [DllImport (dllName)]
             public static extern void AddToTab(string tabName, string attributeName, string attributeValue);
 
-            [DllImport ("__Internal")]
+            [DllImport (dllName)]
             public static extern void ClearTab(string tabName);
+
+            [DllImport (dllName)]
+            public static extern void LeaveBreadcrumb(string breadcrumb);
+
+            [DllImport (dllName)]
+            public static extern void SetBreadcrumbCapacity(int capacity);
+
+            [DllImport (dllName)]
+            public static extern void SetAppVersion(string appVersion);
+
+            [DllImport (dllName)]
+            public static extern void SetUser(string userId, string userName, string userEmail);
         #elif UNITY_ANDROID && !UNITY_EDITOR
             public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
             public static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -153,10 +173,25 @@ public class Bugsnag : MonoBehaviour {
             public static void ClearTab(string tabName) {
                 Bugsnag.CallStatic ("clearTab", tabName);
             }
+
+            public static void LeaveBreadcrumb(string breadcrumb) {
+                Bugsnag.CallStatic ("leaveBreadcrumb", breadcrumb);
+            }
+
+            public static void SetBreadcrumbCapacity(int capacity) {
+                Bugsnag.CallStatic ("setMaxBreadcrumbs", capacity);
+            }
+
+            public static void SetAppVersion(string version) {
+                Bugsnag.CallStatic ("setAppVersion", version);
+            }
+
+            public static void SetUser(string userId, string userName, string userEmail) {
+                Bugsnag.CallStatic ("setUser", userId, userEmail, userName);
+            }
         #else
             private static string apiKey_;
 
-            public static void SetUserId(string userId) {}
             public static void SetContext(string context) {}
             public static void SetReleaseStage(string releaseStage) {}
             public static void SetNotifyReleaseStages(string releaseStages) {}
@@ -174,6 +209,10 @@ public class Bugsnag : MonoBehaviour {
             public static void SetAutoNotify(bool autoNotify) {}
             public static void AddToTab(string tabName, string attributeName, string attributeValue) {}
             public static void ClearTab(string tabName) {}
+            public static void LeaveBreadcrumb(string breadcrumb) {}
+            public static void SetBreadcrumbCapacity(int capacity) {}
+            public static void SetAppVersion(string version) {}
+            public static void SetUser(string userId, string userName, string userEmail) {}
         #endif
     }
 
@@ -189,15 +228,6 @@ public class Bugsnag : MonoBehaviour {
     public string BugsnagApiKey = "";
     public bool AutoNotify = true;
     public LogSeverity NotifyLevel = LogSeverity.Exception;
-
-    public static string UserId {
-        set {
-            if (value == null) {
-                value = "";
-            }
-            NativeBugsnag.AddToTab("user", "id", value);
-        }
-    }
 
     public static string ReleaseStage {
         set {
@@ -233,6 +263,14 @@ public class Bugsnag : MonoBehaviour {
         }
     }
 
+    string GetLevelName() {
+#if UNITY_LT_5
+      return Application.loadedLevelName;
+#else
+      return SceneManager.GetActiveScene().name;
+#endif
+    }
+
     void Awake() {
         DontDestroyOnLoad(this);
         NativeBugsnag.Register(BugsnagApiKey);
@@ -243,8 +281,15 @@ public class Bugsnag : MonoBehaviour {
             Bugsnag.ReleaseStage = "production";
         }
 
-        Bugsnag.Context = Application.loadedLevelName;
+        Bugsnag.Context = GetLevelName();
         NativeBugsnag.SetAutoNotify (AutoNotify);
+        NativeBugsnag.AddToTab("Unity", "unityVersion", Application.unityVersion.ToString());
+        NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.bundleIdentifier.ToString());
+        NativeBugsnag.AddToTab("Unity", "version", Application.version.ToString());
+        NativeBugsnag.AddToTab("Unity", "companyName", Application.companyName.ToString());
+        NativeBugsnag.AddToTab("Unity", "platform", Application.platform.ToString());
+        NativeBugsnag.AddToTab("Unity", "productName", Application.productName.ToString());
+        NativeBugsnag.AddToTab("Unity", "osLanguage", Application.systemLanguage.ToString());
     }
 
     void OnEnable () {
@@ -265,7 +310,7 @@ public class Bugsnag : MonoBehaviour {
     }
 
     void OnLevelWasLoaded(int level) {
-        Bugsnag.Context = Application.loadedLevelName;
+        Bugsnag.Context = GetLevelName();
     }
 
     void HandleLog (string logString, string stackTrace, LogType type) {
@@ -317,16 +362,17 @@ public class Bugsnag : MonoBehaviour {
     }
 
     public static void Notify(Exception e) {
-		if(e != null) {
-			var stackTrace = e.StackTrace;
-			if (stackTrace == null) {
-				stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
-			}
+        if(e != null) {
+            var stackTrace = e.StackTrace;
+            if (stackTrace == null) {
+                stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
+            }
 
-			NotifySafely (e.GetType ().ToString (),e.Message, "warning", "", stackTrace);
-		}    }
+            NotifySafely (e.GetType ().ToString (),e.Message, "warning", "", stackTrace);
+        }
+    }
 
-	public static void Notify(Exception e, string context) {
+    public static void Notify(Exception e, string context) {
         if(e != null) {
             var stackTrace = e.StackTrace;
             if (stackTrace == null) {
@@ -352,6 +398,42 @@ public class Bugsnag : MonoBehaviour {
             return;
         }
         NativeBugsnag.ClearTab(tabName);
+    }
+
+    public static void LeaveBreadcrumb(string breadcrumb) {
+        if (breadcrumb == null) {
+            return;
+        }
+        NativeBugsnag.LeaveBreadcrumb(breadcrumb);
+    }
+
+    public static int BreadcrumbCapacity {
+        set { NativeBugsnag.SetBreadcrumbCapacity(value); }
+    }
+
+    public static string AppVersion {
+        set {
+          if (value == null) {
+              value = "";
+          }
+          NativeBugsnag.SetAppVersion(value);
+        }
+    }
+
+    public static void SetUser(string userId, string userName, string userEmail) {
+        if (userId == null) {
+            userId = "[unknown]";
+        }
+
+        if (userName == null) {
+            userName = "[unknown]";
+        }
+
+        if (userEmail == null) {
+            userEmail = "[unknown]";
+        }
+
+        NativeBugsnag.SetUser(userId, userName, userEmail);
     }
 
     private static void NotifySafely(string errorClass, string message, string severity, string context, string stackTrace) {
