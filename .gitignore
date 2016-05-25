@@ -4,3 +4,4 @@ temp.unityproject
 bugsnag-osx/bugsnag-osx/Bugsnag.framework
 xcuserdata
 xcodebuild.log
+build.log
