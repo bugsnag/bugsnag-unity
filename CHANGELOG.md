@@ -1,11 +1,17 @@
 # Changelog
 
-## 2.3.0
+## 3.0.0
 
 This release includes significant updates to the underlying android and cocoa
 libraries.
 
 ### Enhancements
+
+* Add support for WebGL
+* Add support for OS X
+* Add support for setting user metadata
+* Add support for setting app version
+* Add support for setting breadcrumbs
 
 * Upgrade bugsnag-android from 3.2.5 -> 3.4.0
 * Upgrade bugsnag-cocoa from 4.0.7 -> 4.1.0
