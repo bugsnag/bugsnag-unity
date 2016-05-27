@@ -26,14 +26,14 @@ namespace :build do
   desc "Build and run the iOS app"
   task :ios do
     Dir.chdir "example" do
-      sh "#$UNITY -batchmode -quit -executeMethod NotifyButtonScript.BuildIos"
+      sh "#$UNITY -batchmode -quit -logFile build.log -executeMethod NotifyButtonScript.BuildIos"
     end
   end
 
   desc "Build and run the Android app"
   task :android do
     Dir.chdir "example" do
-      sh "#$UNITY -batchmode -quit -executeMethod NotifyButtonScript.BuildAndroid"
+      sh "#$UNITY -batchmode -quit -logFile build.log -executeMethod NotifyButtonScript.BuildAndroid"
     end
   end
 
