@@ -115,9 +115,7 @@ task :create_android_plugin do
     sh "./gradlew clean build"
   end
 
-  Dir["bugsnag-android/build/outputs/jar/*.jar"].each do |file|
-    cp file, android_dir
-  end
+  cp "bugsnag-android/build/outputs/aar/bugsnag-android-release.aar", android_dir
 end
 
 task :create_osx_plugin do
