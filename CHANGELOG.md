@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.0.1 (24 Jun 2016)
+
+#### Fixes
+
+* Includes Android plugin correctly which is now in `aar` format 
+  | [#24](https://github.com/bugsnag/bugsnag-unity/pull/24)
+
 ## 3.0.0
 
 This release includes significant updates to the underlying android and cocoa
