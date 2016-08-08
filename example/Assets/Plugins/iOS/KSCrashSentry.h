@@ -61,6 +61,9 @@ typedef struct KSCrash_SentryContext
     
     /** If true, will suspend threads for user reported exceptions. */
     bool suspendThreadsForUserReported;
+    
+    /** If true, will send reports even if debugger is attached. */
+    bool reportWhenDebuggerIsAttached;
 
     // Implementation defined values. Caller does not initialize these.
 
@@ -140,6 +143,9 @@ typedef struct KSCrash_SentryContext
         /** The exception name. */
         const char* name;
 
+        /** The language the exception occured in. */
+        const char* language;
+        
         /** The line of code where the exception occurred. Can be NULL. */
         const char* lineOfCode;
 

@@ -1,89 +1,423 @@
+//===--- Demangle.h - Interface to Swift symbol demangling ------*- C++ -*-===//
 //
-//  Demangle.h
+// This source file is part of the Swift.org open source project
 //
-//  Created by Karl Stenerud on 2013-10-02.
+// Copyright (c) 2014 - 2016 Apple Inc. and the Swift project authors
+// Licensed under Apache License v2.0 with Runtime Library Exception
 //
-//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
+// See http://swift.org/LICENSE.txt for license information
+// See http://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall remain in place
-// in this source code.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
+//===----------------------------------------------------------------------===//
 
-#ifndef HDR_Demangle_H
-#define HDR_Demangle_H
+#ifndef SWIFT_BASIC_DEMANGLE_H
+#define SWIFT_BASIC_DEMANGLE_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <memory>
+#include <string>
+#include <vector>
+#include <cassert>
+#include <cstdint>
+#include "StringRef.h"
+#include "Malloc.h"
 
-
-#include <sys/types.h>
-
-
-#define DEMANGLE_STATUS_SUCCESS 0
-#define DEMANGLE_STATUS_ALLOC_FAILURE -1
-#define DEMANGLE_STATUS_INVALID_NAME -2
-#define DEMANGLE_STATUS_INVALID_ARG -3
-#define DEMANGLE_STATUS_TOO_SMALL -4
-
-
-/**
- * C interface to the C++ ABI's cxa_demangle.
- *
- * @param mangled_name A NUL-terminated character string containing the name to be demangled.
- * @param output_buffer A region of memory, allocated with malloc, of *length bytes, into which
- *                      the demangled name is stored. If output_buffer is not long enough, it is
- *                      expanded using realloc. output_buffer may instead be NULL; in that case,
- *                      the demangled name is placed in a region of memory allocated with malloc.
- * @param length If length is non-NULL, the length of the buffer containing the demangled name is
- *               placed in *length.
- * @param status *status is set to one of the following values:
- *                   0: The demangling operation succeeded.
- *                  -1: A memory allocation failiure occurred.
- *                  -2: mangled_name is not a valid name under the C++ ABI mangling rules.
- *                  -3: One of the arguments is invalid.
- * @return A pointer to the start of the NUL-terminated demangled name, or NULL if the demangling
- *         fails. The caller is responsible for deallocating this memory using free.
- */
-char* cpp_demangle(const char* mangled_name, char* output_buffer, size_t* length, int* status);
-
-/**
- * Demangle in an async-safe manner.
- * This function will only demangle if the output buffer is large enough to hold the
- * demangled name. In this case, it just checks to make sure the output buffer is
- * at least as long as the mangled name.
- *
- * @param mangled_name A null-terminated character string containing the name to be demangled.
- * @param output_buffer Buffer to store the demangled name.
- * @param buffer_length The length of the output buffer.
- * @return True if demangling was successful.
- * @return One of the following values:
- *          0: The demangling operation succeeded.
- *         -1: A memory allocation failiure occurred.
- *         -2: mangled_name is not a valid name under the C++ ABI mangling rules.
- *         -3: One of the arguments is invalid.
- *         -4: The buffer was not big enough to hold the demangled name.
- */
-bool safe_demangle(const char* mangled_name, char* output_buffer, size_t buffer_length);
-
-
-#ifdef __cplusplus
+namespace llvm {
+  class raw_ostream;
 }
+
+namespace swift {
+namespace Demangle {
+
+struct DemangleOptions {
+  bool SynthesizeSugarOnTypes = false;
+  bool DisplayTypeOfIVarFieldOffset = true;
+  bool DisplayDebuggerGeneratedModule = true;
+  bool QualifyEntities = true;
+  bool DisplayExtensionContexts = true;
+  bool DisplayUnmangledSuffix = true;
+  bool DisplayModuleNames = true;
+  bool DisplayGenericSpecializations = true;
+  bool DisplayProtocolConformances = true;
+  bool DisplayWhereClauses = true;
+  bool DisplayEntityTypes = true;
+  bool ShortenPartialApply = false;
+  bool ShortenThunk = false;
+  bool ShortenValueWitness = false;
+  bool ShortenArchetype = false;
+
+  DemangleOptions() {}
+
+  static DemangleOptions SimplifiedUIDemangleOptions() {
+    auto Opt = DemangleOptions();
+    Opt.SynthesizeSugarOnTypes = true;
+    Opt.QualifyEntities = true;
+    Opt.DisplayExtensionContexts = false;
+    Opt.DisplayUnmangledSuffix = false;
+    Opt.DisplayModuleNames = false;
+    Opt.DisplayGenericSpecializations = false;
+    Opt.DisplayProtocolConformances = false;
+    Opt.DisplayWhereClauses = false;
+    Opt.DisplayEntityTypes = false;
+    Opt.ShortenPartialApply = true;
+    Opt.ShortenThunk = true;
+    Opt.ShortenValueWitness = true;
+    Opt.ShortenArchetype = true;
+    return Opt;
+  };
+};
+
+class Node;
+typedef std::shared_ptr<Node> NodePointer;
+
+enum class FunctionSigSpecializationParamKind : unsigned {
+  // Option Flags use bits 0-5. This give us 6 bits implying 64 entries to
+  // work with.
+  ConstantPropFunction = 0,
+  ConstantPropGlobal = 1,
+  ConstantPropInteger = 2,
+  ConstantPropFloat = 3,
+  ConstantPropString = 4,
+  ClosureProp = 5,
+  BoxToValue = 6,
+  BoxToStack = 7,
+
+  // Option Set Flags use bits 6-31. This gives us 26 bits to use for option
+  // flags.
+  Dead = 1 << 6,
+  OwnedToGuaranteed = 1 << 7,
+  SROA = 1 << 8,
+};
+
+/// The pass that caused the specialization to occur. We use this to make sure
+/// that two passes that generate similar changes do not yield the same
+/// mangling. This currently cannot happen, so this is just a safety measure
+/// that creates separate name spaces.
+enum class SpecializationPass : uint8_t {
+  AllocBoxToStack,
+  ClosureSpecializer,
+  CapturePromotion,
+  CapturePropagation,
+  FunctionSignatureOpts,
+  GenericSpecializer,
+};
+
+static inline char encodeSpecializationPass(SpecializationPass Pass) {
+  return char(uint8_t(Pass)) + '0';
+}
+
+enum class ValueWitnessKind {
+  AllocateBuffer,
+  AssignWithCopy,
+  AssignWithTake,
+  DeallocateBuffer,
+  Destroy,
+  DestroyBuffer,
+  InitializeBufferWithCopyOfBuffer,
+  InitializeBufferWithCopy,
+  InitializeWithCopy,
+  InitializeBufferWithTake,
+  InitializeWithTake,
+  ProjectBuffer,
+  InitializeBufferWithTakeOfBuffer,
+  DestroyArray,
+  InitializeArrayWithCopy,
+  InitializeArrayWithTakeFrontToBack,
+  InitializeArrayWithTakeBackToFront,
+  StoreExtraInhabitant,
+  GetExtraInhabitantIndex,
+  GetEnumTag,
+  DestructiveProjectEnumData
+};
+
+enum class Directness {
+  Direct, Indirect
+};
+
+class Node : public std::enable_shared_from_this<Node> {
+public:
+  enum class Kind : uint16_t {
+#define NODE(ID) ID,
+#include "DemangleNodes.h"
+  };
+
+  typedef uint64_t IndexType;
+
+private:
+  Kind NodeKind;
+
+  enum class PayloadKind : uint8_t {
+    None, Text, Index
+  };
+  PayloadKind NodePayloadKind;
+
+  union {
+    std::string TextPayload;
+    IndexType IndexPayload;
+  };
+
+  // FIXME: use allocator.
+  typedef std::vector<NodePointer> NodeVector;
+  NodeVector Children;
+
+  Node(Kind k)
+      : NodeKind(k), NodePayloadKind(PayloadKind::None) {
+  }
+  Node(Kind k, std::string &&t)
+      : NodeKind(k), NodePayloadKind(PayloadKind::Text) {
+    new (&TextPayload) std::string(std::move(t));
+  }
+  Node(Kind k, IndexType index)
+      : NodeKind(k), NodePayloadKind(PayloadKind::Index) {
+    IndexPayload = index;
+  }
+  Node(const Node &) = delete;
+  Node &operator=(const Node &) = delete;
+
+  friend struct NodeFactory;
+
+public:
+  ~Node();
+
+  Kind getKind() const { return NodeKind; }
+
+  bool hasText() const { return NodePayloadKind == PayloadKind::Text; }
+  const std::string &getText() const {
+    assert(hasText());
+    return TextPayload;
+  }
+
+  bool hasIndex() const { return NodePayloadKind == PayloadKind::Index; }
+  uint64_t getIndex() const {
+    assert(hasIndex());
+    return IndexPayload;
+  }
+  
+  typedef NodeVector::iterator iterator;
+  typedef NodeVector::const_iterator const_iterator;
+  typedef NodeVector::size_type size_type;
+
+  bool hasChildren() const { return !Children.empty(); }
+  size_t getNumChildren() const { return Children.size(); }
+  iterator begin() { return Children.begin(); }
+  iterator end() { return Children.end(); }
+  const_iterator begin() const { return Children.begin(); }
+  const_iterator end() const { return Children.end(); }
+
+  NodePointer getFirstChild() const { return Children.front(); }
+  NodePointer getChild(size_t index) const { return Children[index]; }
+
+  /// Add a new node as a child of this one.
+  ///
+  /// \param child - should have no parent or siblings
+  /// \returns child
+  NodePointer addChild(NodePointer child) {
+    assert(child && "adding null child!");
+    Children.push_back(child);
+    return child;
+  }
+
+  /// A convenience method for adding two children at once.
+  void addChildren(NodePointer child1, NodePointer child2) {
+    addChild(std::move(child1));
+    addChild(std::move(child2));
+  }
+};
+
+/// \brief Demangle the given string as a Swift symbol.
+///
+/// Typical usage:
+/// \code
+///   NodePointer aDemangledName =
+/// swift::Demangler::demangleSymbolAsNode("SomeSwiftMangledName")
+/// \endcode
+///
+/// \param mangledName The mangled string.
+/// \param options An object encapsulating options to use to perform this demangling.
+///
+///
+/// \returns A parse tree for the demangled string - or a null pointer
+/// on failure.
+///
+NodePointer
+demangleSymbolAsNode(const char *mangledName, size_t mangledNameLength,
+                     const DemangleOptions &options = DemangleOptions());
+
+inline NodePointer
+demangleSymbolAsNode(const std::string &mangledName,
+                     const DemangleOptions &options = DemangleOptions()) {
+  return demangleSymbolAsNode(mangledName.data(), mangledName.size(), options);
+}
+
+/// \brief Demangle the given string as a Swift symbol.
+///
+/// Typical usage:
+/// \code
+///   std::string aDemangledName =
+/// swift::Demangler::demangleSymbol("SomeSwiftMangledName")
+/// \endcode
+///
+/// \param mangledName The mangled string.
+/// \param options An object encapsulating options to use to perform this demangling.
+///
+///
+/// \returns A string representing the demangled name.
+///
+std::string
+demangleSymbolAsString(const char *mangledName, size_t mangledNameLength,
+                       const DemangleOptions &options = DemangleOptions());
+
+inline std::string
+demangleSymbolAsString(const std::string &mangledName,
+                       const DemangleOptions &options = DemangleOptions()) {
+  return demangleSymbolAsString(mangledName.data(), mangledName.size(),
+                                options);
+}
+
+/// \brief Demangle the given string as a Swift type.
+///
+/// Typical usage:
+/// \code
+///   NodePointer aDemangledName =
+/// swift::Demangler::demangleTypeAsNode("SomeSwiftMangledName")
+/// \endcode
+///
+/// \param mangledName The mangled string.
+/// \param options An object encapsulating options to use to perform this demangling.
+///
+///
+/// \returns A parse tree for the demangled string - or a null pointer
+/// on failure.
+///
+NodePointer
+demangleTypeAsNode(const char *mangledName, size_t mangledNameLength,
+                   const DemangleOptions &options = DemangleOptions());
+
+inline NodePointer
+demangleTypeAsNode(const std::string &mangledName,
+                   const DemangleOptions &options = DemangleOptions()) {
+  return demangleTypeAsNode(mangledName.data(), mangledName.size(), options);
+}
+
+/// \brief Demangle the given string as a Swift type mangling.
+///
+/// \param mangledName The mangled string.
+/// \param options An object encapsulating options to use to perform this demangling.
+///
+///
+/// \returns A string representing the demangled name.
+std::string
+demangleTypeAsString(const char *mangledName, size_t mangledNameLength,
+                     const DemangleOptions &options = DemangleOptions());
+
+inline std::string
+demangleTypeAsString(const std::string &mangledName,
+                     const DemangleOptions &options = DemangleOptions()) {
+  return demangleTypeAsString(mangledName.data(), mangledName.size(), options);
+}
+
+enum class OperatorKind {
+  NotOperator,
+  Prefix,
+  Postfix,
+  Infix
+};
+
+/// \brief Mangle an identifier using Swift's mangling rules.
+void mangleIdentifier(const char *data, size_t length,
+                      OperatorKind operatorKind, std::string &out,
+                      bool usePunycode = true);
+
+/// \brief Remangle a demangled parse tree.
+///
+/// This should always round-trip perfectly with demangleSymbolAsNode.
+std::string mangleNode(const NodePointer &root);
+
+/// \brief Transform the node structure in a string.
+///
+/// Typical usage:
+/// \code
+///   std::string aDemangledName =
+/// swift::Demangler::nodeToString(aNode)
+/// \endcode
+///
+/// \param Root A pointer to a parse tree generated by the demangler.
+/// \param Options An object encapsulating options to use to perform this demangling.
+///
+/// \returns A string representing the demangled name.
+///
+std::string nodeToString(NodePointer Root,
+                         const DemangleOptions &Options = DemangleOptions());
+
+struct NodeFactory {
+  static NodePointer create(Node::Kind K) {
+    return NodePointer(new Node(K));
+  }
+  static NodePointer create(Node::Kind K, Node::IndexType Index) {
+    return NodePointer(new Node(K, Index));
+  }
+  static NodePointer create(Node::Kind K, llvm::StringRef Text) {
+    return NodePointer(new Node(K, Text));
+  }
+  static NodePointer create(Node::Kind K, std::string &&Text) {
+    return NodePointer(new Node(K, std::move(Text)));
+  }
+  template <size_t N>
+  static NodePointer create(Node::Kind K, const char (&Text)[N]) {
+    return NodePointer(new Node(K, llvm::StringRef(Text)));
+  }
+};
+
+  /// A class for printing to a std::string.
+class DemanglerPrinter {
+public:
+  DemanglerPrinter(std::string &out) : Stream(out) {}
+  DemanglerPrinter(std::string &&out) : Stream(out) {}
+
+  DemanglerPrinter &operator<<(llvm::StringRef Value) & {
+    Stream.append(Value.data(), Value.size());
+    return *this;
+  }
+  
+  DemanglerPrinter &operator<<(char c) & {
+    Stream.push_back(c);
+    return *this;
+  }
+  DemanglerPrinter &operator<<(unsigned long long n) &;
+  DemanglerPrinter &operator<<(long long n) &;
+  DemanglerPrinter &operator<<(unsigned long n) & {
+    return *this << (unsigned long long)n;
+  }
+  DemanglerPrinter &operator<<(long n) & {
+    return *this << (long long)n;
+  }
+  DemanglerPrinter &operator<<(unsigned n) & {
+    return *this << (unsigned long long)n;
+  }
+  DemanglerPrinter &operator<<(int n) & {
+    return *this << (long long)n;
+  }
+  
+  template<typename T>
+  DemanglerPrinter &&operator<<(T &&x) && {
+    return std::move(*this << std::forward<T>(x));
+  }
+  
+  std::string &&str() && { return std::move(Stream); }
+  
+private:
+  std::string &Stream;
+};
+
+/// Is a character considered a digit by the demangling grammar?
+///
+/// Yes, this is equivalent to the standard C isdigit(3), but some platforms
+/// give isdigit suboptimal implementations.
+static inline bool isDigit(int c) {
+  return c >= '0' && c <= '9';
+}
+  
+} // end namespace Demangle
+} // end namespace swift
+
 #endif
 
-#endif // HDR_Demangle_H

@@ -27,14 +27,15 @@
 
 #import "KSCrashReportStore.h"
 
-#import "ARCSafe_MemMgmt.h"
 #import "KSCrashReportFields.h"
 #import "KSJSONCodecObjC.h"
 #import "KSSafeCollections.h"
 #import "NSDictionary+Merge.h"
 #import "NSError+SimpleConstructor.h"
+#import "NSString+Demangle.h"
 #import "RFC3339DateTool.h"
 #import "KSCrashDoctor.h"
+#import "KSCrashReportVersion.h"
 
 //#define KSLogger_LocalLevel TRACE
 #import "KSLogger.h"
@@ -78,25 +79,17 @@
 + (KSCrashReportInfo*) reportInfoWithID:(NSString*) reportID
                            creationDate:(NSDate*) creationDate
 {
-    return as_autorelease([[self alloc] initWithID:reportID
-                                      creationDate:creationDate]);
+    return [[self alloc] initWithID:reportID creationDate:creationDate];
 }
 
 - (id) initWithID:(NSString*) reportID creationDate:(NSDate*) creationDate
 {
     if((self = [super init]))
     {
-        _reportID = as_retain(reportID);
-        _creationDate = as_retain(creationDate);
+        _reportID = reportID;
+        _creationDate = creationDate;
     }
     return self;
-}
-
-- (void) dealloc
-{
-    as_release(_reportID);
-    as_release(_creationDate);
-    as_superdealloc();
 }
 
 - (NSComparisonResult) compare:(KSCrashReportInfo*) other
@@ -131,7 +124,7 @@
 
 + (KSCrashReportStore*) storeWithPath:(NSString*) path
 {
-    return as_autorelease([[self alloc] initWithPath:path]);
+    return [[self alloc] initWithPath:path];
 }
 
 - (id) initWithPath:(NSString*) path
@@ -142,13 +135,6 @@
         self.bundleName = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleName"];
     }
     return self;
-}
-
-- (void) dealloc
-{
-    as_release(_path);
-    as_release(_bundleName);
-    as_superdealloc();
 }
 
 #pragma mark API
@@ -270,6 +256,67 @@
 
 #pragma mark Utility
 
+- (void) performOnFields:(NSArray*) fieldPath inReport:(NSMutableDictionary*) report operation:(void (^)(id parent, id field)) operation okIfNotFound:(BOOL) isOkIfNotFound
+{
+    if(fieldPath.count == 0)
+    {
+        KSLOG_ERROR(@"Unexpected end of field path");
+        return;
+    }
+
+    NSString* currentField = fieldPath[0];
+    if(fieldPath.count > 1)
+    {
+        fieldPath = [fieldPath subarrayWithRange:NSMakeRange(1, fieldPath.count - 1)];
+    }
+    else
+    {
+        fieldPath = @[];
+    }
+
+    id field = report[currentField];
+    if(field == nil)
+    {
+        if(!isOkIfNotFound)
+        {
+            KSLOG_ERROR(@"%@: No such field in report. Candidates are: %@", currentField, report.allKeys);
+        }
+        return;
+    }
+
+    if([field isKindOfClass:NSMutableDictionary.class])
+    {
+        [self performOnFields:fieldPath inReport:field operation:operation okIfNotFound:isOkIfNotFound];
+    }
+    else if([field isKindOfClass:[NSMutableArray class]])
+    {
+        for(id subfield in field)
+        {
+            if([subfield isKindOfClass:NSMutableDictionary.class])
+            {
+                [self performOnFields:fieldPath inReport:subfield operation:operation okIfNotFound:isOkIfNotFound];
+            }
+            else
+            {
+                operation(field, subfield);
+            }
+        }
+    }
+    else
+    {
+        operation(report, field);
+    }
+}
+
+- (void) symbolicateField:(NSArray*) fieldPath inReport:(NSMutableDictionary*) report okIfNotFound:(BOOL) isOkIfNotFound
+{
+    NSString* lastPath = fieldPath[fieldPath.count - 1];
+    [self performOnFields:fieldPath inReport:report operation:^(NSMutableDictionary* parent, NSString* field)
+    {
+        parent[lastPath] = [field demangledSymbol];
+    } okIfNotFound:isOkIfNotFound];
+}
+
 - (NSMutableDictionary*) fixupCrashReport:(NSDictionary*) report
 {
     if(![report isKindOfClass:[NSDictionary class]])
@@ -278,8 +325,8 @@
         return nil;
     }
 
-    NSMutableDictionary* mutableReport = as_autorelease([report mutableCopy]);
-    NSMutableDictionary* mutableInfo = as_autorelease([[report objectForKey:@KSCrashField_Report] mutableCopy]);
+    NSMutableDictionary* mutableReport = [report mutableCopy];
+    NSMutableDictionary* mutableInfo = [[report objectForKey:@KSCrashField_Report] mutableCopy];
     [mutableReport setObjectIfNotNil:mutableInfo forKey:@KSCrashField_Report];
 
     // Timestamp gets stored as a unix timestamp. Convert it to rfc3339.
@@ -293,10 +340,13 @@
            intoDictWithKey:@KSCrashField_User
                   inReport:mutableReport];
 
-    NSMutableDictionary* crashReport = as_autorelease([[report objectForKey:@KSCrashField_Crash] mutableCopy]);
+    NSMutableDictionary* crashReport = [[report objectForKey:@KSCrashField_Crash] mutableCopy];
     [mutableReport setObjectIfNotNil:crashReport forKey:@KSCrashField_Crash];
     KSCrashDoctor* doctor = [KSCrashDoctor doctor];
     [crashReport setObjectIfNotNil:[doctor diagnoseCrash:report] forKey:@KSCrashField_Diagnosis];
+
+    [self symbolicateField:@[@"threads", @"backtrace", @"contents", @"symbol_name"] inReport:crashReport okIfNotFound:YES];
+    [self symbolicateField:@[@"error", @"cpp_exception", @"name"] inReport:crashReport okIfNotFound:YES];
 
     return mutableReport;
 }
@@ -364,7 +414,7 @@
 
 - (NSString*) reportIDFromFilename:(NSString*) filename
 {
-    if([filename length] == 0)
+    if([filename length] == 0 || [[filename pathExtension] isEqualToString:@"json"] == NO)
     {
         return nil;
     }
@@ -372,12 +422,13 @@
     NSString* prefix = [NSString stringWithFormat:@"%@" kCrashReportSuffix,
                         self.bundleName];
     NSString* suffix = @".json";
-    if([filename rangeOfString:prefix].location == 0 &&
-       [filename rangeOfString:suffix].location != NSNotFound)
+
+    NSRange prefixRange = [filename rangeOfString:prefix];
+    NSRange suffixRange = [filename rangeOfString:suffix options:NSBackwardsSearch];
+    if(prefixRange.location == 0 && suffixRange.location != NSNotFound)
     {
-        NSUInteger prefixLength = [prefix length];
-        NSUInteger suffixLength = [suffix length];
-        NSRange range = NSMakeRange(prefixLength, [filename length] - prefixLength - suffixLength);
+        NSUInteger prefixEnd = NSMaxRange(prefixRange);
+        NSRange range = NSMakeRange(prefixEnd, suffixRange.location - prefixEnd);
         return [filename substringWithRange:range];
     }
     return nil;
@@ -393,6 +444,17 @@
 {
     NSString* filename = [self recrashReportFilenameWithID:reportID];
     return [self.path stringByAppendingPathComponent:filename];
+}
+
+- (NSString*) getReportType:(NSDictionary*) report
+{
+    NSDictionary* reportSection = report[@KSCrashField_Report];
+    if(reportSection)
+    {
+        return reportSection[@KSCrashField_Type];
+    }
+    KSLOG_ERROR(@"Expected a report section in the report.");
+    return nil;
 }
 
 - (NSMutableDictionary*) readReport:(NSString*) path error:(NSError* __autoreleasing *) error
@@ -411,19 +473,62 @@
         return nil;
     }
 
-    NSMutableDictionary* report = [self fixupCrashReport:[KSJSONCodec decode:jsonData
-                                                                     options:KSJSONDecodeOptionIgnoreNullInArray |
-                                                          KSJSONDecodeOptionIgnoreNullInObject |
-                                                          KSJSONDecodeOptionKeepPartialObject
-                                                                       error:error]];
+    NSMutableDictionary* report = [KSJSONCodec decode:jsonData
+                                              options:KSJSONDecodeOptionIgnoreNullInArray |
+                                   KSJSONDecodeOptionIgnoreNullInObject |
+                                   KSJSONDecodeOptionKeepPartialObject
+                                                error:error];
     if(error != nil && *error != nil)
     {
         
         KSLOG_ERROR(@"Error decoding JSON data from %@: %@", path, *error);
         [report setObject:[NSNumber numberWithBool:YES] forKey:@KSCrashField_Incomplete];
     }
+    
+    NSString* reportType = [self getReportType:report];
+    if([reportType isEqualToString:@KSCrashReportType_Standard] || [reportType isEqualToString:@KSCrashReportType_Minimal])
+    {
+        report = [self fixupCrashReport:report];
+    }
 
     return report;
+}
+
+- (void) addReportSectionForCustomReport:(NSMutableDictionary*) report
+{
+    NSMutableDictionary* reportSection = [NSMutableDictionary new];
+    reportSection[@KSCrashField_Version] = @KSCRASH_REPORT_VERSION;
+    reportSection[@KSCrashField_ID] = [NSUUID UUID].UUIDString;
+    reportSection[@KSCrashField_ProcessName] = [NSProcessInfo processInfo].processName;
+    reportSection[@KSCrashField_Timestamp] = [NSNumber numberWithLong:time(NULL)];
+    reportSection[@KSCrashField_Type] = @KSCrashReportType_Custom;
+
+    report[@KSCrashField_Report] = reportSection;
+}
+
+- (NSString*) addCustomReport:(NSDictionary*) report
+{
+    NSMutableDictionary* mutableReport = [report mutableCopy];
+    [self addReportSectionForCustomReport:mutableReport];
+    NSError* error = nil;
+    NSData* data = [KSJSONCodec encode:mutableReport options:0 error:&error];
+    if(error)
+    {
+        KSLOG_ERROR(@"Error encoding custom report: %@", error);
+        return nil;
+    }
+
+    NSString* identifier = mutableReport[@KSCrashField_Report][@KSCrashField_ID];
+    NSString* path = [self pathToCrashReportWithID:identifier];
+    error = nil;
+    BOOL didWriteFile = [data writeToFile:path options:0 error:&error];
+    if(!didWriteFile || error)
+    {
+        KSLOG_ERROR(@"Could not write custom report to %@: %@", path, error);
+        return nil;
+    }
+    
+    return identifier;
 }
 
 @end

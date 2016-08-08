@@ -40,6 +40,10 @@ extern "C" {
 #include <stdbool.h>
 #include <sys/types.h>
 
+/* Tells the encoder to automatically determine the length of a field value.
+ * Currently, this is done using strlen().
+ */
+#define KSJSON_SIZE_AUTOMATIC ((size_t)~0)
 
 enum
 {
@@ -198,7 +202,7 @@ int ksjson_addNullElement(KSJSONEncodeContext* context,
  *
  * @param value The element's value.
  *
- * @param lengththe length of the string.
+ * @param length the length of the string, or KSJSON_SIZE_AUTOMATIC.
  *
  * @return KSJSON_OK if the process was successful.
  */
@@ -333,6 +337,32 @@ int ksjson_beginObject(KSJSONEncodeContext* context,
  */
 int ksjson_beginArray(KSJSONEncodeContext* context,
                       const char* name);
+
+/** Begin a generic JSON element, adding any necessary JSON preamble text,
+ *  including commas and names.
+ *  Note: This does not add any object or array specifiers ('{', '[').
+ *
+ * @param context The JSON context.
+ *
+ * @param The name of the next element (only needed if parent is a dictionary).
+ */
+int ksjson_beginElement(KSJSONEncodeContext* const context,
+                        const char* const name);
+
+/** Add JSON data manually.
+ * This function just passes your data directly through, even if it's malforned.
+ *
+ * @param context The encoding context.
+ *
+ * @param data The data to write.
+ *
+ * @param length The length of the data.
+ *
+ * @return KSJSON_OK if the process was successful.
+ */
+int ksjson_addRawJSONData(KSJSONEncodeContext* const context,
+                          const char* const data,
+                          const size_t length);
 
 /** End the current container and return to the next higher level.
  *

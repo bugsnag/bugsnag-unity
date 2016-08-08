@@ -24,13 +24,15 @@
 // THE SOFTWARE.
 //
 
-
 #include "KSCrashSentry_MachException.h"
 #include "KSCrashSentry_Private.h"
 #include "KSMach.h"
+#include "KSSystemCapabilities.h"
 
 //#define KSLogger_LocalLevel TRACE
 #include "KSLogger.h"
+
+#if KSCRASH_HAS_MACH
 
 #include <pthread.h>
 
@@ -518,3 +520,17 @@ void kscrashsentry_uninstallMachHandler(void)
     KSLOG_DEBUG("Mach exception handlers uninstalled.");
     g_installed = 0;
 }
+
+#else
+
+bool kscrashsentry_installMachHandler(__unused KSCrash_SentryContext* const context)
+{
+    KSLOG_WARN("Mach exception handler not available on this platform.");
+    return false;
+}
+
+void kscrashsentry_uninstallMachHandler(void)
+{
+}
+
+#endif

@@ -152,6 +152,12 @@ typedef enum
  */
 @property(nonatomic,readwrite,assign) bool suspendThreadsForUserReported;
 
+/** If YES, reports will be sent even if a debugger is attached
+ *
+ * Default: NO
+ */
+@property(nonatomic,readwrite,assign) bool reportWhenDebuggerIsAttached;
+
 /** Get the singleton instance of the crash reporter.
  */
 + (KSCrash*) sharedInstance;
@@ -190,6 +196,8 @@ typedef enum
  *
  * @param reason A description of why the exception occurred.
  *
+ * @param language A unique language identifier.
+ *
  * @param lineOfCode A copy of the offending line of code (nil = ignore).
  *
  * @param stackTrace An array of strings representing the call stack leading to the exception (nil = ignore).
@@ -198,8 +206,15 @@ typedef enum
  */
 - (void) reportUserException:(NSString*) name
                       reason:(NSString*) reason
+                    language:(NSString*) language
                   lineOfCode:(NSString*) lineOfCode
                   stackTrace:(NSArray*) stackTrace
             terminateProgram:(BOOL) terminateProgram;
 
 @end
+
+//! Project version number for KSCrashFramework.
+FOUNDATION_EXPORT double KSCrashFrameworkVersionNumber;
+
+//! Project version string for KSCrashFramework.
+FOUNDATION_EXPORT const unsigned char KSCrashFrameworkVersionString[];

@@ -139,8 +139,12 @@ KSCrashType kscrash_install(const char* const crashReportFilePath,
     g_installed = 1;
 
     ksmach_init();
-    ksobjc_init();
-
+    
+    if(context->config.introspectionRules.enabled)
+    {
+        ksobjc_init();
+    }
+    
     kscrash_reinstall(crashReportFilePath,
                       recrashReportFilePath,
                       stateFilePath,
@@ -181,30 +185,15 @@ void kscrash_reinstall(const char* const crashReportFilePath,
 
 KSCrashType kscrash_setHandlingCrashTypes(KSCrashType crashTypes)
 {
-    if((crashTypes & KSCrashTypeDebuggerUnsafe) && ksmach_isBeingTraced())
-    {
-        KSLOGBASIC_WARN("KSCrash: App is running in a debugger. The following crash types have been disabled:");
-        KSCrashType disabledCrashTypes = crashTypes & KSCrashTypeDebuggerUnsafe;
-        for(int i = 0; i < 31; i++)
-        {
-            KSCrashType type = 1 << i;
-            if(disabledCrashTypes & type)
-            {
-                KSLOGBASIC_WARN("* %s", kscrashtype_name(type));
-            }
-        }
-
-        crashTypes &= KSCrashTypeDebuggerSafe;
-    }
-
     KSCrash_Context* context = crashContext();
     context->config.handlingCrashTypes = crashTypes;
-
+    
     if(g_installed)
     {
         kscrashsentry_uninstall(~crashTypes);
         crashTypes = kscrashsentry_installWithContext(&context->crash, crashTypes, kscrash_i_onCrash);
     }
+
     return crashTypes;
 }
 
@@ -290,6 +279,11 @@ void kscrash_setSuspendThreadsForUserReported(bool suspendThreadsForUserReported
     crashContext()->crash.suspendThreadsForUserReported = suspendThreadsForUserReported;
 }
 
+void kscrash_setReportWhenDebuggerIsAttached(bool reportWhenDebuggerIsAttached)
+{
+    crashContext()->crash.reportWhenDebuggerIsAttached = reportWhenDebuggerIsAttached;
+}
+
 void kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify)
 {
     KSLOG_TRACE("Set onCrashNotify to %p", onCrashNotify);
@@ -298,6 +292,7 @@ void kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify)
 
 void kscrash_reportUserException(const char* name,
                                  const char* reason,
+                                 const char* language,
                                  const char* lineOfCode,
                                  const char** stackTrace,
                                  size_t stackTraceCount,
@@ -305,6 +300,7 @@ void kscrash_reportUserException(const char* name,
 {
     kscrashsentry_reportUserException(name,
                                       reason,
+                                      language,
                                       lineOfCode,
                                       stackTrace,
                                       stackTraceCount,

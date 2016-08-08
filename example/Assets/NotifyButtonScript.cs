@@ -23,7 +23,7 @@ public class NotifyButtonScript : MonoBehaviour {
 	public static void BuildIos(){
 		string[] levels = {"Assets/Buttons.unity"};
 		BuildPipeline.BuildPlayer(levels, "bugsnag-unity-ios", 
-		                          BuildTarget.iPhone, BuildOptions.AutoRunPlayer); 
+		                          BuildTarget.iOS, BuildOptions.AutoRunPlayer); 
 	}
 
 	// Build a folder containing unity3d file and html file
@@ -38,13 +38,13 @@ public class NotifyButtonScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Bugsnag.Context = null;
-		Bugsnag.UserId = null;
 		Bugsnag.ReleaseStage = null;
 		Bugsnag.AddToTab (null, null, null);
-		Bugsnag.AddToTab ("this", "null", null);
+		Bugsnag.AddToTab ("My Data", "myKey", "myValue");
 		Bugsnag.ClearTab (null);
-		Bugsnag.UserId = "four";
+		Bugsnag.SetUser ("user-id", "User Name", "user@email.com");
 		Bugsnag.ReleaseStage = "staging";
+		Bugsnag.AppVersion = "1.2.3-alpha";
 	}
 	
 	// Update is called once per frame
