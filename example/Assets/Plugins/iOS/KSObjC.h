@@ -78,6 +78,20 @@ void ksobjc_init(void);
 #pragma mark - Basic Objective-C Queries -
 //======================================================================
 
+/** Check if a pointer is a tagged pointer or not.
+ *
+ * @param pointer The pointer to check.
+ * @return true if it's a tagged pointer.
+ */
+bool ksobjc_isTaggedPointer(const void* const pointer);
+
+/** Check if a pointer is a valid tagged pointer.
+ *
+ * @param pointer The pointer to check.
+ * @return true if it's a valid tagged pointer.
+ */
+bool ksobjc_isValidTaggedPointer(const void* const pointer);
+    
 /** Query a pointer to see what kind of object it points to.
  * If the pointer points to a class, this method will verify that its basic
  * class data and ivars are valid,
@@ -160,6 +174,15 @@ bool ksobjc_isRootClass(const void* classPtr);
  */
 const char* ksobjc_className(const void* classPtr);
 
+/** Get the name of an object's class.
+ * This also handles tagged pointers.
+ *
+ * @param objectPointer Pointer to a valid object.
+ *
+ * @return the name, or NULL if the name is inaccessible.
+ */
+const char* ksobjc_objectClassName(const void* objectPtr);
+
 /** Check if a class has a specific name.
  *
  * @param classPtr Pointer to a valid class.
@@ -224,6 +247,14 @@ bool ksobjc_ivarNamed(const void* const classPtr, const char* name, KSObjCIvar* 
  * @return true if the operation was successful.
  */
 bool ksobjc_ivarValue(const void* objectPtr, size_t ivarIndex, void* dst);
+
+/* Get the payload from a tagged pointer.
+ *
+ * @param objectPtr Pointer to a valid object.
+ *
+ * @return the payload value.
+ */
+uintptr_t ksobjc_taggedPointerPayload(const void* taggedObjectPtr);
 
 /** Generate a description of an object.
  *

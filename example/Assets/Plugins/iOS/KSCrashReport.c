@@ -38,7 +38,7 @@
 #include "KSSignalInfo.h"
 #include "KSZombie.h"
 #include "KSString.h"
-#include "Demangle.h"
+#include "KSCrashReportVersion.h"
 
 //#define KSLogger_LocalLevel TRACE
 #include "KSLogger.h"
@@ -67,10 +67,6 @@
 #pragma mark - Constants -
 // ============================================================================
 
-/** Version number written to the report. */
-#define kReportVersionMajor 3
-#define kReportVersionMinor 0
-
 /** Maximum depth allowed for a backtrace. */
 #define kMaxBacktraceDepth 150
 
@@ -98,9 +94,6 @@
 
 /** The minimum length for a valid string. */
 #define kMinStringLength 4
-
-/** Leave lots of room for C++ demangling */
-#define DEMANGLE_BUFFER_LENGTH 2000
 
 
 // ============================================================================
@@ -172,7 +165,7 @@ void kscrw_i_addStringElement(const KSCrashReportWriter* const writer,
                               const char* const key,
                               const char* const value)
 {
-    ksjson_addStringElement(getJsonContext(writer), key, value, strlen(value));
+    ksjson_addStringElement(getJsonContext(writer), key, value, KSJSON_SIZE_AUTOMATIC);
 }
 
 void kscrw_i_addTextFileElement(const KSCrashReportWriter* const writer,
@@ -307,13 +300,47 @@ void kscrw_i_addJSONElement(const KSCrashReportWriter* const writer,
         ksjson_addStringElement(getJsonContext(writer),
                                 KSCrashField_Error,
                                 errorBuff,
-                                strlen(errorBuff));
+                                KSJSON_SIZE_AUTOMATIC);
         ksjson_addStringElement(getJsonContext(writer),
                                 KSCrashField_JSONData,
                                 jsonElement,
-                                strlen(jsonElement));
+                                KSJSON_SIZE_AUTOMATIC);
         ksjson_endContainer(getJsonContext(writer));
     }
+}
+
+void kscrw_i_addJSONElementFromFile(const KSCrashReportWriter* const writer,
+                                    const char* const key,
+                                    const char* const filePath)
+{
+    const int fd = open(filePath, O_RDONLY);
+    if(fd < 0)
+    {
+        KSLOG_ERROR("Could not open file %s: %s", filePath, strerror(errno));
+        return;
+    }
+    
+    if(ksjson_beginElement(getJsonContext(writer), key) != KSJSON_OK)
+    {
+        KSLOG_ERROR("Could not start JSON element");
+        goto done;
+    }
+    
+    char buffer[512];
+    ssize_t bytesRead;
+    while((bytesRead = read(fd, buffer, sizeof(buffer))) > 0)
+    {
+        if(ksjson_addRawJSONData(getJsonContext(writer),
+                                 buffer,
+                                 (size_t)bytesRead) != KSJSON_OK)
+        {
+            KSLOG_ERROR("Could not append JSON data");
+            goto done;
+        }
+    }
+    
+done:
+    close(fd);
 }
 
 void kscrw_i_beginObject(const KSCrashReportWriter* const writer,
@@ -599,7 +626,6 @@ void kscrw_i_logBacktraceEntry(const int entryNum,
 {
     char faddrBuff[20];
     char saddrBuff[20];
-    char demangleBuff[DEMANGLE_BUFFER_LENGTH];
 
     const char* fname = ksfu_lastPathEntry(dlInfo->dli_fname);
     if(fname == NULL)
@@ -610,14 +636,7 @@ void kscrw_i_logBacktraceEntry(const int entryNum,
 
     uintptr_t offset = address - (uintptr_t)dlInfo->dli_saddr;
     const char* sname = dlInfo->dli_sname;
-    if(sname != NULL)
-    {
-        if(safe_demangle(sname, demangleBuff, sizeof(demangleBuff)) == DEMANGLE_STATUS_SUCCESS)
-        {
-            sname = demangleBuff;
-        }
-    }
-    else
+    if(sname == NULL)
     {
         sprintf(saddrBuff, POINTER_SHORT_FMT, (uintptr_t)dlInfo->dli_fbase);
         sname = saddrBuff;
@@ -664,7 +683,7 @@ void kscrw_i_logCrashThreadBacktrace(const KSCrash_SentryContext* const crash)
                                                                  thread,
                                                                  &concreteMachineContext);
 
-    int skippedEntries;
+    int skippedEntries = 0;
     uintptr_t* backtrace = kscrw_i_getBacktrace(crash,
                                                 thread,
                                                 machineContext,
@@ -847,75 +866,82 @@ void kscrw_i_writeUnknownObjectContents(const KSCrashReportWriter* const writer,
     
     writer->beginObject(writer, key);
     {
-        const void* class = ksobjc_isaPointer(object);
-        size_t ivarCount = ksobjc_ivarList(class, ivars, sizeof(ivars)/sizeof(*ivars));
-        *limit -= (int)ivarCount;
-        for(size_t i = 0; i < ivarCount; i++)
+        if(ksobjc_isTaggedPointer(object))
         {
-            KSObjCIvar* ivar = &ivars[i];
-            switch(ivar->type[0])
+            writer->addIntegerElement(writer, "tagged_payload", ksobjc_taggedPointerPayload(object));
+        }
+        else
+        {
+            const void* class = ksobjc_isaPointer(object);
+            size_t ivarCount = ksobjc_ivarList(class, ivars, sizeof(ivars)/sizeof(*ivars));
+            *limit -= (int)ivarCount;
+            for(size_t i = 0; i < ivarCount; i++)
             {
-                case 'c':
-                    ksobjc_ivarValue(object, ivar->index, &s8);
-                    writer->addIntegerElement(writer, ivar->name, s8);
-                    break;
-                case 'i':
-                    ksobjc_ivarValue(object, ivar->index, &sInt);
-                    writer->addIntegerElement(writer, ivar->name, sInt);
-                    break;
-                case 's':
-                    ksobjc_ivarValue(object, ivar->index, &s16);
-                    writer->addIntegerElement(writer, ivar->name, s16);
-                    break;
-                case 'l':
-                    ksobjc_ivarValue(object, ivar->index, &s32);
-                    writer->addIntegerElement(writer, ivar->name, s32);
-                    break;
-                case 'q':
-                    ksobjc_ivarValue(object, ivar->index, &s64);
-                    writer->addIntegerElement(writer, ivar->name, s64);
-                    break;
-                case 'C':
-                    ksobjc_ivarValue(object, ivar->index, &u8);
-                    writer->addUIntegerElement(writer, ivar->name, u8);
-                    break;
-                case 'I':
-                    ksobjc_ivarValue(object, ivar->index, &uInt);
-                    writer->addUIntegerElement(writer, ivar->name, uInt);
-                    break;
-                case 'S':
-                    ksobjc_ivarValue(object, ivar->index, &u16);
-                    writer->addUIntegerElement(writer, ivar->name, u16);
-                    break;
-                case 'L':
-                    ksobjc_ivarValue(object, ivar->index, &u32);
-                    writer->addUIntegerElement(writer, ivar->name, u32);
-                    break;
-                case 'Q':
-                    ksobjc_ivarValue(object, ivar->index, &u64);
-                    writer->addUIntegerElement(writer, ivar->name, u64);
-                    break;
-                case 'f':
-                    ksobjc_ivarValue(object, ivar->index, &f32);
-                    writer->addFloatingPointElement(writer, ivar->name, f32);
-                    break;
-                case 'd':
-                    ksobjc_ivarValue(object, ivar->index, &f64);
-                    writer->addFloatingPointElement(writer, ivar->name, f64);
-                    break;
-                case 'B':
-                    ksobjc_ivarValue(object, ivar->index, &b);
-                    writer->addBooleanElement(writer, ivar->name, b);
-                    break;
-                case '*':
-                case '@':
-                case '#':
-                case ':':
-                    ksobjc_ivarValue(object, ivar->index, &pointer);
-                    kscrw_i_writeMemoryContents(writer, ivar->name, (uintptr_t)pointer, limit);
-                    break;
-                default:
-                    KSLOG_DEBUG("%s: Unknown ivar type [%s]", ivar->name, ivar->type);
+                KSObjCIvar* ivar = &ivars[i];
+                switch(ivar->type[0])
+                {
+                    case 'c':
+                        ksobjc_ivarValue(object, ivar->index, &s8);
+                        writer->addIntegerElement(writer, ivar->name, s8);
+                        break;
+                    case 'i':
+                        ksobjc_ivarValue(object, ivar->index, &sInt);
+                        writer->addIntegerElement(writer, ivar->name, sInt);
+                        break;
+                    case 's':
+                        ksobjc_ivarValue(object, ivar->index, &s16);
+                        writer->addIntegerElement(writer, ivar->name, s16);
+                        break;
+                    case 'l':
+                        ksobjc_ivarValue(object, ivar->index, &s32);
+                        writer->addIntegerElement(writer, ivar->name, s32);
+                        break;
+                    case 'q':
+                        ksobjc_ivarValue(object, ivar->index, &s64);
+                        writer->addIntegerElement(writer, ivar->name, s64);
+                        break;
+                    case 'C':
+                        ksobjc_ivarValue(object, ivar->index, &u8);
+                        writer->addUIntegerElement(writer, ivar->name, u8);
+                        break;
+                    case 'I':
+                        ksobjc_ivarValue(object, ivar->index, &uInt);
+                        writer->addUIntegerElement(writer, ivar->name, uInt);
+                        break;
+                    case 'S':
+                        ksobjc_ivarValue(object, ivar->index, &u16);
+                        writer->addUIntegerElement(writer, ivar->name, u16);
+                        break;
+                    case 'L':
+                        ksobjc_ivarValue(object, ivar->index, &u32);
+                        writer->addUIntegerElement(writer, ivar->name, u32);
+                        break;
+                    case 'Q':
+                        ksobjc_ivarValue(object, ivar->index, &u64);
+                        writer->addUIntegerElement(writer, ivar->name, u64);
+                        break;
+                    case 'f':
+                        ksobjc_ivarValue(object, ivar->index, &f32);
+                        writer->addFloatingPointElement(writer, ivar->name, f32);
+                        break;
+                    case 'd':
+                        ksobjc_ivarValue(object, ivar->index, &f64);
+                        writer->addFloatingPointElement(writer, ivar->name, f64);
+                        break;
+                    case 'B':
+                        ksobjc_ivarValue(object, ivar->index, &b);
+                        writer->addBooleanElement(writer, ivar->name, b);
+                        break;
+                    case '*':
+                    case '@':
+                    case '#':
+                    case ':':
+                        ksobjc_ivarValue(object, ivar->index, &pointer);
+                        kscrw_i_writeMemoryContents(writer, ivar->name, (uintptr_t)pointer, limit);
+                        break;
+                    default:
+                        KSLOG_DEBUG("%s: Unknown ivar type [%s]", ivar->name, ivar->type);
+                }
             }
         }
     }
@@ -955,7 +981,6 @@ void kscrw_i_writeMemoryContents(const KSCrashReportWriter* const writer,
 {
     (*limit)--;
     const void* object = (const void*)address;
-    const void* class;
     writer->beginObject(writer, key);
     {
         writer->addUIntegerElement(writer, KSCrashField_Address, address);
@@ -988,8 +1013,7 @@ void kscrw_i_writeMemoryContents(const KSCrashReportWriter* const writer,
             case KSObjCTypeObject:
             {
                 writer->addStringElement(writer, KSCrashField_Type, KSCrashMemType_Object);
-                class = ksobjc_isaPointer(object);
-                const char* className = ksobjc_className(class);
+                const char* className = ksobjc_objectClassName(object);
                 writer->addStringElement(writer, KSCrashField_Class, className);
                 if(!kscrw_i_isRestrictedClass(className))
                 {
@@ -1033,12 +1057,30 @@ void kscrw_i_writeMemoryContents(const KSCrashReportWriter* const writer,
             }
             case KSObjCTypeBlock:
                 writer->addStringElement(writer, KSCrashField_Type, KSCrashMemType_Block);
-                class = ksobjc_isaPointer(object);
-                writer->addStringElement(writer, KSCrashField_Class, ksobjc_className(class));
+                const char* className = ksobjc_objectClassName(object);
+                writer->addStringElement(writer, KSCrashField_Class, className);
                 break;
         }
     }
     writer->endContainer(writer);
+}
+
+bool kscrw_i_isValidPointer(const uintptr_t address)
+{
+    if(address == (uintptr_t)NULL)
+    {
+        return false;
+    }
+
+    if(ksobjc_isTaggedPointer((const void*)address))
+    {
+        if(!ksobjc_isValidTaggedPointer((const void*)address))
+        {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 /** Write the contents of a memory location only if it contains notable data.
@@ -1054,11 +1096,12 @@ void kscrw_i_writeMemoryContentsIfNotable(const KSCrashReportWriter* const write
                                           const char* const key,
                                           const uintptr_t address)
 {
-    const void* object = (const void*)address;
-    if(object == NULL)
+    if(!kscrw_i_isValidPointer(address))
     {
         return;
     }
+
+    const void* object = (const void*)address;
     
     if(ksobjc_objectType(object) == KSObjCTypeUnknown &&
        kszombie_className(object) == NULL &&
@@ -1111,7 +1154,6 @@ void kscrw_i_writeBacktraceEntry(const KSCrashReportWriter* const writer,
                                  const uintptr_t address,
                                  const Dl_info* const info)
 {
-    char demangleBuff[DEMANGLE_BUFFER_LENGTH];
     writer->beginObject(writer, key);
     {
         if(info->dli_fname != NULL)
@@ -1122,10 +1164,6 @@ void kscrw_i_writeBacktraceEntry(const KSCrashReportWriter* const writer,
         if(info->dli_sname != NULL)
         {
             const char* sname = info->dli_sname;
-            if(safe_demangle(sname, demangleBuff, sizeof(demangleBuff)) == DEMANGLE_STATUS_SUCCESS)
-            {
-                sname = demangleBuff;
-            }
             writer->addStringElement(writer, KSCrashField_SymbolName, sname);
         }
         writer->addUIntegerElement(writer, KSCrashField_SymbolAddr, (uintptr_t)info->dli_saddr);
@@ -1863,6 +1901,10 @@ void kscrw_i_writeError(const KSCrashReportWriter* const writer,
                 writer->beginObject(writer, KSCrashField_UserReported);
                 {
                     writer->addStringElement(writer, KSCrashField_Name, crash->userException.name);
+                    if(crash->userException.language != NULL)
+                    {
+                        writer->addStringElement(writer, KSCrashField_Language, crash->userException.language);
+                    }
                     if(crash->userException.lineOfCode != NULL)
                     {
                         writer->addStringElement(writer, KSCrashField_LineOfCode, crash->userException.lineOfCode);
@@ -1984,13 +2026,7 @@ void kscrw_i_writeReportInfo(const KSCrashReportWriter* const writer,
 {
     writer->beginObject(writer, key);
     {
-        writer->beginObject(writer, KSCrashField_Version);
-        {
-            writer->addIntegerElement(writer, KSCrashField_Major, kReportVersionMajor);
-            writer->addIntegerElement(writer, KSCrashField_Minor, kReportVersionMinor);
-        }
-        writer->endContainer(writer);
-
+        writer->addStringElement(writer, KSCrashField_Version, KSCRASH_REPORT_VERSION);
         writer->addStringElement(writer, KSCrashField_ID, reportID);
         writer->addStringElement(writer, KSCrashField_ProcessName, processName);
         writer->addIntegerElement(writer, KSCrashField_Timestamp, time(NULL));
@@ -2017,6 +2053,7 @@ void kscrw_i_prepareReportWriter(KSCrashReportWriter* const writer,
     writer->addUIntegerElement = kscrw_i_addUIntegerElement;
     writer->addStringElement = kscrw_i_addStringElement;
     writer->addTextFileElement = kscrw_i_addTextFileElement;
+    writer->addJSONFileElement = kscrw_i_addJSONElementFromFile;
     writer->addDataElement = kscrw_i_addDataElement;
     writer->beginDataElement = kscrw_i_beginDataElement;
     writer->appendDataElement = kscrw_i_appendDataElement;

@@ -22,9 +22,10 @@
 // THE SOFTWARE.
 //
 
+#import <Foundation/Foundation.h>
+
 #include "KSCrashSentry_CPPException.h"
 #include "KSCrashSentry_Private.h"
-#include "Demangle.h"
 #include "KSMach.h"
 
 //#define KSLogger_LocalLevel TRACE
@@ -40,7 +41,6 @@
 
 
 #define STACKTRACE_BUFFER_LENGTH 30
-#define DEMANGLE_BUFFER_LENGTH 2000
 #define DESCRIPTION_BUFFER_LENGTH 1000
 
 
@@ -99,7 +99,6 @@ static void CPPExceptionTerminate(void)
     KSLOG_DEBUG(@"Trapped c++ exception");
 
     bool isNSException = false;
-    char nameDemangled[DEMANGLE_BUFFER_LENGTH];
     char descriptionBuff[DESCRIPTION_BUFFER_LENGTH];
     const char* name = NULL;
     const char* description = NULL;
@@ -109,10 +108,6 @@ static void CPPExceptionTerminate(void)
     if(tinfo != NULL)
     {
         name = tinfo->name();
-        if(safe_demangle(name, nameDemangled, sizeof(nameDemangled)) == DEMANGLE_STATUS_SUCCESS)
-        {
-            name = nameDemangled;
-        }
     }
 
     description = descriptionBuff;
@@ -152,7 +147,6 @@ catch(TYPE value)\
     CATCH_VALUE(double,               f)
     CATCH_VALUE(long double,         Lf)
     CATCH_VALUE(char*,                s)
-    CATCH_VALUE(const char*,          s)
     catch(...)
     {
         description = NULL;

@@ -174,6 +174,12 @@ void kscrash_setDoNotIntrospectClasses(const char** doNotIntrospectClasses, size
  */
 void kscrash_setSuspendThreadsForUserReported(bool suspendThreadsForUserReported);
     
+/** If YES, user reported exceptions even if a debugger is attached
+ *
+ * Default: NO
+ */
+void kscrash_setReportWhenDebuggerIsAttached(bool reportWhenDebuggerIsAttached);
+    
 /** Set the callback to invoke upon a crash.
  *
  * WARNING: Only call async-safe functions from this function! DO NOT call
@@ -193,7 +199,11 @@ void kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify);
  * If terminateProgram is true, all sentries will be uninstalled and the application will
  * terminate with an abort().
  *
+ * @param name The exception name (for namespacing exception types).
+ *
  * @param reason A description of why the exception occurred.
+ *
+ * @param language A unique language identifier.
  *
  * @param lineOfCode A copy of the offending line of code (NULL = ignore).
  *
@@ -205,6 +215,7 @@ void kscrash_setCrashNotifyCallback(const KSReportWriteCallback onCrashNotify);
  */
 void kscrash_reportUserException(const char* name,
                                  const char* reason,
+                                 const char* language,
                                  const char* lineOfCode,
                                  const char** stackTrace,
                                  size_t stackTraceCount,

@@ -24,20 +24,20 @@
 // THE SOFTWARE.
 //
 
+#import "KSCrashAdvanced.h"
 
 #import "Bugsnag.h"
-#import "ARCSafe_MemMgmt.h"
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagNotifier.h"
+#import "BugsnagCollections.h"
 #import "BugsnagSink.h"
-#import "KSCrash.h"
-#import "KSCrashAdvanced.h"
-#import "KSCrashReportWriter.h"
-#import "KSJSONCodecObjC.h"
-#import "KSSafeCollections.h"
-#import "NSDictionary+Merge.h"
 
-NSString *const NOTIFIER_VERSION = @"4.1.0";
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#include <sys/utsname.h>
+#endif
+
+NSString *const NOTIFIER_VERSION = @"5.1.0";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSTabConfig = @"config";
@@ -87,7 +87,7 @@ void BSSerializeDataCrashHandler(const KSCrashReportWriter *writer) {
  */
 void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     NSError *error;
-    NSData *json = [KSJSONCodec encode: dictionary options:0 error:&error];
+    NSData *json = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
 
     if (!json) {
         NSLog(@"Bugsnag could not serialize metaData: %@", error);
@@ -100,6 +100,10 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         (*destination)[[json length]] = '\0';
     }
 }
+
+@interface NSDictionary (BSGKSMerge)
+- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest;
+@end
 
 @implementation BugsnagNotifier
 
@@ -122,7 +126,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
         [self metaDataChanged: self.configuration.metaData];
         [self metaDataChanged: self.configuration.config];
         [self metaDataChanged: self.state];
-        g_bugsnag_data.onCrash = self.configuration.onCrashHandler;
+        g_bugsnag_data.onCrash = (void (*)(const KSCrashReportWriter *))self.configuration.onCrashHandler;
     }
 
     return self;
@@ -140,6 +144,23 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     }
 
     [self performSelectorInBackground:@selector(sendPendingReports) withObject:nil];
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+  [self.details setValue: @"iOS Bugsnag Notifier" forKey:@"name"];
+
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryStateDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(batteryChanged:) name:UIDeviceBatteryLevelDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(lowMemoryWarning:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+
+  [UIDevice currentDevice].batteryMonitoringEnabled = TRUE;
+  [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+
+  [self batteryChanged:nil];
+  [self orientationChanged:nil];
+#elif TARGET_OS_MAC
+  [self.details setValue: @"OSX Bugsnag Notifier" forKey:@"name"];
+#endif
 }
 
 - (void)notify:(NSException *)exception withData:(NSDictionary *)metaData atSeverity:(NSString *)severity atDepth:(NSUInteger) depth {
@@ -147,7 +168,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     if (!metaData) {
         metaData = [[NSDictionary alloc] init];
     }
-    metaData = [metaData mergedInto: [self.configuration.metaData toDictionary]];
+    metaData = [metaData BSG_mergedInto: [self.configuration.metaData toDictionary]];
     if (!severity) {
         severity = BugsnagSeverityWarning;
     }
@@ -157,7 +178,7 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     [self.state addAttribute:BSAttributeSeverity withValue:severity toTabWithName:BSTabCrash];
     [self.state addAttribute:BSAttributeDepth withValue:@(depth + 3) toTabWithName:BSTabCrash];
     NSString *exceptionName = [exception name] ?: NSStringFromClass([NSException class]);
-    [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
+    [[KSCrash sharedInstance] reportUserException:exceptionName reason:[exception reason] language:@"" lineOfCode:@"" stackTrace:@[] terminateProgram:NO];
 
     // Restore metaData to pre-crash state.
     [self.metaDataLock unlock];
@@ -177,7 +198,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     @autoreleasepool {
         @try {
             [[KSCrash sharedInstance] sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
-                NSLog(@"Bugsnag reports sent.");
+                if (filteredReports.count > 0)
+                    NSLog(@"Bugsnag reports sent.");
             }];
         }
         @catch (NSException* e) {
@@ -200,6 +222,108 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
     } else {
         NSLog(@"Unknown metadata dictionary changed");
     }
+}
+
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+- (void) batteryChanged:(NSNotification *)notif {
+  NSNumber *batteryLevel = [NSNumber numberWithFloat:[UIDevice currentDevice].batteryLevel];
+  NSNumber *charging = [NSNumber numberWithBool: [UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging];
+
+  [[self state] addAttribute: @"batteryLevel" withValue: batteryLevel toTabWithName:@"deviceState"];
+  [[self state] addAttribute: @"charging" withValue: charging toTabWithName:@"deviceState"];
+}
+
+- (void)orientationChanged:(NSNotification *)notif {
+  NSString *orientation;
+  switch([UIDevice currentDevice].orientation) {
+    case UIDeviceOrientationPortraitUpsideDown:
+      orientation = @"portraitupsidedown";
+      break;
+    case UIDeviceOrientationPortrait:
+      orientation = @"portrait";
+      break;
+    case UIDeviceOrientationLandscapeRight:
+      orientation = @"landscaperight";
+      break;
+    case UIDeviceOrientationLandscapeLeft:
+      orientation = @"landscapeleft";
+      break;
+    case UIDeviceOrientationFaceUp:
+      orientation = @"faceup";
+      break;
+    case UIDeviceOrientationFaceDown:
+      orientation = @"facedown";
+      break;
+    case UIDeviceOrientationUnknown:
+    default:
+      orientation = @"unknown";
+  }
+  [[self state] addAttribute:@"orientation" withValue:orientation toTabWithName:@"deviceState"];
+}
+
+- (void)lowMemoryWarning:(NSNotification *)notif {
+  [[self state] addAttribute: @"lowMemoryWarning" withValue: [[Bugsnag payloadDateFormatter] stringFromDate:[NSDate date]] toTabWithName:@"deviceState"];
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+#endif
+
+@end
+
+//
+//  NSDictionary+Merge.m
+//
+//  Created by Karl Stenerud on 2012-10-01.
+//
+//  Copyright (c) 2012 Karl Stenerud. All rights reserved.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall remain in place
+// in this source code.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+@implementation NSDictionary (BSGKSMerge)
+
+- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest
+{
+  if([dest count] == 0)
+  {
+    return self;
+  }
+  if([self count] == 0)
+  {
+    return dest;
+  }
+
+  NSMutableDictionary* dict = [dest mutableCopy];
+  for(id key in [self allKeys])
+  {
+    id srcEntry = [self objectForKey:key];
+    id dstEntry = [dest objectForKey:key];
+    if([dstEntry isKindOfClass:[NSDictionary class]] &&
+       [srcEntry isKindOfClass:[NSDictionary class]])
+    {
+      srcEntry = [srcEntry BSG_mergedInto:dstEntry];
+    }
+    [dict setObject:srcEntry forKey:key];
+  }
+  return dict;
 }
 
 @end

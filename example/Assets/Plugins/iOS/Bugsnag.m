@@ -30,22 +30,7 @@
 #import "BugsnagNotifier.h"
 #import "BugsnagSink.h"
 #import "KSCrashAdvanced.h"
-
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-    // iOS Simulator or iOS device
-    #import "BugsnagIosNotifier.h"
-    static NSString *notifierClass = @"BugsnagIosNotifier";
-#elif TARGET_OS_MAC
-    // Other kinds of Mac OS
-    #import "BugsnagOSXNotifier.h"
-    static NSString *notifierClass = @"BugsnagOSXNotifier";
-#else
-
-#pragma warn "Unsupported platform"
-    // Unsupported platform
-    #import "BugsnagNotifier.h"
-    static NSString *notifierClass = @"BugsnagNotifier";
-#endif
+#import "KSCrash.h"
 
 static BugsnagNotifier* g_bugsnag_notifier = NULL;
 
@@ -64,7 +49,7 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 }
 
 + (void)startBugsnagWithConfiguration:(BugsnagConfiguration*) configuration {
-    g_bugsnag_notifier = [[NSClassFromString(notifierClass) alloc] initWithConfiguration:configuration];
+    g_bugsnag_notifier = [[BugsnagNotifier alloc] initWithConfiguration:configuration];
     [g_bugsnag_notifier start];
 }
 
@@ -128,6 +113,24 @@ static BugsnagNotifier* g_bugsnag_notifier = NULL;
 + (void) clearBreadcrumbs {
     [self.notifier.configuration.breadcrumbs clearBreadcrumbs];
     [self.notifier serializeBreadcrumbs];
+}
+
++ (NSDateFormatter *)payloadDateFormatter {
+    static NSDateFormatter *formatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [NSDateFormatter new];
+        formatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ssZZZ";
+    });
+    return formatter;
+}
+
++ (void)setSuspendThreadsForUserReported:(bool)suspendThreadsForUserReported {
+    [[KSCrash sharedInstance] setSuspendThreadsForUserReported:suspendThreadsForUserReported];
+}
+
++ (void)setReportWhenDebuggerIsAttached:(bool)reportWhenDebuggerIsAttached {
+    [[KSCrash sharedInstance] setReportWhenDebuggerIsAttached:reportWhenDebuggerIsAttached];
 }
 
 @end

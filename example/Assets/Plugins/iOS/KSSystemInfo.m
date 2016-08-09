@@ -28,18 +28,18 @@
 #import "KSSystemInfo.h"
 #import "KSSystemInfoC.h"
 
-#import "ARCSafe_MemMgmt.h"
 #import "KSDynamicLinker.h"
 #import "KSMach.h"
 #import "KSSafeCollections.h"
 #import "KSSysCtl.h"
 #import "KSJSONCodecObjC.h"
+#import "KSSystemCapabilities.h"
 
 //#define KSLogger_LocalLevel TRACE
 #import "KSLogger.h"
 
 #import <CommonCrypto/CommonDigest.h>
-#ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
+#if KSCRASH_HAS_UIKIT
 #import <UIKit/UIKit.h>
 #endif
 
@@ -132,10 +132,10 @@
 + (NSString*) uuidBytesToString:(const uint8_t*) uuidBytes
 {
     CFUUIDRef uuidRef = CFUUIDCreateFromUUIDBytes(NULL, *((CFUUIDBytes*)uuidBytes));
-    NSString* str = (as_bridge_transfer NSString*)CFUUIDCreateString(NULL, uuidRef);
+    NSString* str = (__bridge_transfer NSString*)CFUUIDCreateString(NULL, uuidRef);
     CFRelease(uuidRef);
 
-    return as_autorelease(str);
+    return str;
 }
 
 /** Get this application's executable path.
@@ -164,6 +164,11 @@
     if(exePath != nil)
     {
         const uint8_t* uuidBytes = ksdl_imageUUID([exePath UTF8String], true);
+        if(uuidBytes == NULL)
+        {
+            // OSX app image path is a lie.
+            uuidBytes = ksdl_imageUUID([exePath.lastPathComponent UTF8String], false);
+        }
         if(uuidBytes != NULL)
         {
             result = [self uuidBytesToString:uuidBytes];
@@ -183,7 +188,7 @@
 {
     NSMutableData* data = nil;
 
-#ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
+#if KSCRASH_HAS_UIDEVICE
     if([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)])
     {
         data = [NSMutableData dataWithLength:16];
@@ -197,9 +202,9 @@
     }
 
     // Append some device-specific data.
-    [data appendData:[[self stringSysctl:@"hw.machine"] dataUsingEncoding:NSUTF8StringEncoding]];
-    [data appendData:[[self stringSysctl:@"hw.model"] dataUsingEncoding:NSUTF8StringEncoding]];
-    [data appendData:[[self currentCPUArch] dataUsingEncoding:NSUTF8StringEncoding]];
+    [data appendData:(NSData* _Nonnull )[[self stringSysctl:@"hw.machine"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [data appendData:(NSData* _Nonnull )[[self stringSysctl:@"hw.model"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [data appendData:(NSData* _Nonnull )[[self currentCPUArch] dataUsingEncoding:NSUTF8StringEncoding]];
 
     // Append the bundle ID.
     NSData* bundleID = [[[NSBundle mainBundle] bundleIdentifier]
@@ -266,23 +271,6 @@
     return result ?:[NSString stringWithUTF8String:ksmach_currentCPUArch()];
 }
 
-/** Get the name of a process.
- *
- * @param pid The process ID.
- *
- * @return The process name, or "unknown" if none was found.
- */
-+ (NSString*) processName:(int) pid
-{
-    struct kinfo_proc procInfo;
-    if(kssysctl_getProcessInfo(pid, &procInfo))
-    {
-        return [NSString stringWithCString:procInfo.kp_proc.p_comm
-                                  encoding:NSUTF8StringEncoding];
-    }
-    return @"unknown";
-}
-
 /** Check if the current device is jailbroken.
  *
  * @return YES if the device is jailbroken.
@@ -305,9 +293,22 @@
     NSDictionary* infoDict = [mainBundle infoDictionary];
     const struct mach_header* header = _dyld_get_image_header(0);
 
-#ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
+#if KSCRASH_HAS_UIDEVICE
     [sysInfo safeSetObject:[UIDevice currentDevice].systemName forKey:@KSSystemField_SystemName];
     [sysInfo safeSetObject:[UIDevice currentDevice].systemVersion forKey:@KSSystemField_SystemVersion];
+#else
+    [sysInfo safeSetObject:@"Mac OS" forKey:@KSSystemField_SystemName];
+    NSOperatingSystemVersion version =[NSProcessInfo processInfo].operatingSystemVersion;
+    NSString* systemVersion;
+    if(version.patchVersion == 0)
+    {
+        systemVersion = [NSString stringWithFormat:@"%ld.%ld", version.majorVersion, version.minorVersion];
+    }
+    else
+    {
+        systemVersion = [NSString stringWithFormat:@"%ld.%ld.%ld", version.majorVersion, version.minorVersion, version.patchVersion];
+    }
+    [sysInfo safeSetObject:systemVersion forKey:@KSSystemField_SystemVersion];
 #endif
     [sysInfo safeSetObject:[self stringSysctl:@"hw.machine"] forKey:@KSSystemField_Machine];
     [sysInfo safeSetObject:[self stringSysctl:@"hw.model"] forKey:@KSSystemField_Model];
@@ -332,7 +333,6 @@
     [sysInfo safeSetObject:[NSProcessInfo processInfo].processName forKey:@KSSystemField_ProcessName];
     [sysInfo safeSetObject:[NSNumber numberWithInt:[NSProcessInfo processInfo].processIdentifier] forKey:@KSSystemField_ProcessID];
     [sysInfo safeSetObject:[NSNumber numberWithInt:getppid()] forKey:@KSSystemField_ParentProcessID];
-    [sysInfo safeSetObject:[self processName:getppid()] forKey:@KSSystemField_ParentProcessName];
     [sysInfo safeSetObject:[self deviceAndAppHash] forKey:@KSSystemField_DeviceAppHash];
 
     NSDictionary* memory = [NSDictionary dictionaryWithObject:[self int64Sysctl:@"hw.memsize"] forKey:@KSSystemField_Size];
