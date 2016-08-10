@@ -45,6 +45,7 @@ public class NotifyButtonScript : MonoBehaviour {
 		Bugsnag.SetUser ("user-id", "User Name", "user@email.com");
 		Bugsnag.ReleaseStage = "staging";
 		Bugsnag.AppVersion = "1.2.3-alpha";
+		Bugsnag.NotifyLevel = Bugsnag.LogSeverity.Warning;
 	}
 	
 	// Update is called once per frame

@@ -218,16 +218,18 @@ public class Bugsnag : MonoBehaviour {
 
     // We dont use the LogType enum in Unity as the numerical order doesnt suit our purposes
     public enum LogSeverity {
-        Log,
-        Warning,
-        Assert,
-        Error,
-        Exception
+        Log = 0,
+        Warning = 1,
+        Assert = 2,
+        Error = 3,
+        Exception = 4
     }
 
     public string BugsnagApiKey = "";
     public bool AutoNotify = true;
-    public LogSeverity NotifyLevel = LogSeverity.Exception;
+
+    // Allow the notify level to be set for all Bugsnag objects
+    public static LogSeverity NotifyLevel = LogSeverity.Exception;
 
     public static string ReleaseStage {
         set {
