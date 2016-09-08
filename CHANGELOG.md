@@ -1,10 +1,18 @@
 # Changelog
 
+## 3.0.2 (8 Sep 2016)
+
+### Bug fixes
+
+* Fix NotifyLevel to be static
+  [Ben Ibison](https://github.com/CodeHex)
+  [#29](https://github.com/bugsnag/bugsnag-unity/pull/29)
+
 ## 3.0.1 (24 Jun 2016)
 
 #### Fixes
 
-* Includes Android plugin correctly which is now in `aar` format 
+* Includes Android plugin correctly which is now in `aar` format
   | [#24](https://github.com/bugsnag/bugsnag-unity/pull/24)
 
 ## 3.0.0
