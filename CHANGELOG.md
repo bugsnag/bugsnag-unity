@@ -1,11 +1,17 @@
 # Changelog
 
+## 3.0.3 (16 Sep 2016)
+
+### Bug fixes
+
+* Fixed incorrect reference to then Unity version of the bugsnag-cocoa notifier
+
 ## 3.0.2 (8 Sep 2016)
 
 ### Bug fixes
 
 * Fix NotifyLevel to be static
-  [Ben Ibison](https://github.com/CodeHex)
+  [Ben Ibinson](https://github.com/CodeHex)
   [#29](https://github.com/bugsnag/bugsnag-unity/pull/29)
 
 ## 3.0.1 (24 Jun 2016)
