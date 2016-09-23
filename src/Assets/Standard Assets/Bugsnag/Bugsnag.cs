@@ -1,9 +1,8 @@
-#if UNITY_2_6 || UNITY_3_0 || UNITY_3_1 || UNITY_3_2 || UNITY_3_3 || UNITY_3_4 || UNITY_3_5 || UNITY_4_0 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6
-#define UNITY_LT_5
+#if UNITY_5_3_OR_NEWER || UNITY_5
+#define UNITY_5_OR_NEWER
 #endif
 
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using System.Runtime.InteropServices;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,9 @@ using System.Text;
 using System.Collections;
 
 using System.Text.RegularExpressions;
+#if UNITY_5_OR_NEWER
+using UnityEngine.SceneManagement;
+#endif
 
 public class Bugsnag : MonoBehaviour {
 
@@ -225,6 +227,16 @@ public class Bugsnag : MonoBehaviour {
         Exception = 4
     }
 
+	// Defines the available severities in Bugsnag
+	public enum Severity {
+		Info = 0,
+		Error = 1,
+		Warning = 2
+	}
+
+	// Defines the strings used for the severities
+	public static string[] SeverityValues = new string[]{"info", "error", "warning"};
+
     public string BugsnagApiKey = "";
     public bool AutoNotify = true;
 
@@ -266,10 +278,10 @@ public class Bugsnag : MonoBehaviour {
     }
 
     string GetLevelName() {
-#if UNITY_LT_5
-      return Application.loadedLevelName;
+#if UNITY_5_OR_NEWER
+	return SceneManager.GetActiveScene().name;
 #else
-      return SceneManager.GetActiveScene().name;
+	return Application.loadedLevelName;
 #endif
     }
 
@@ -286,38 +298,53 @@ public class Bugsnag : MonoBehaviour {
         Bugsnag.Context = GetLevelName();
         NativeBugsnag.SetAutoNotify (AutoNotify);
         NativeBugsnag.AddToTab("Unity", "unityVersion", Application.unityVersion.ToString());
-        NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.bundleIdentifier.ToString());
-        NativeBugsnag.AddToTab("Unity", "version", Application.version.ToString());
-        NativeBugsnag.AddToTab("Unity", "companyName", Application.companyName.ToString());
         NativeBugsnag.AddToTab("Unity", "platform", Application.platform.ToString());
-        NativeBugsnag.AddToTab("Unity", "productName", Application.productName.ToString());
         NativeBugsnag.AddToTab("Unity", "osLanguage", Application.systemLanguage.ToString());
+#if UNITY_5_OR_NEWER
+		NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.bundleIdentifier.ToString());
+		NativeBugsnag.AddToTab("Unity", "version", Application.version.ToString());
+		NativeBugsnag.AddToTab("Unity", "companyName", Application.companyName.ToString());
+		NativeBugsnag.AddToTab("Unity", "productName", Application.productName.ToString());
+#endif
     }
 
     void OnEnable () {
-#if UNITY_LT_5
-        Application.RegisterLogCallback(HandleLog);
+#if UNITY_5_4_OR_NEWER
+		SceneManager.sceneLoaded += SceneLoaded;
+#endif
+
+#if UNITY_5_OR_NEWER
+		Application.logMessageReceived += HandleLog;
 #else
-        Application.logMessageReceived += HandleLog;
+		Application.RegisterLogCallback(HandleLog);
 #endif
     }
 
     void OnDisable () {
         // Remove callback when object goes out of scope
-#if UNITY_LT_5
-        Application.RegisterLogCallback(null);
+#if UNITY_5_OR_NEWER
+		Application.logMessageReceived -= HandleLog;
 #else
-        Application.logMessageReceived -= HandleLog;
+		Application.RegisterLogCallback(null);
 #endif
     }
 
-    void OnLevelWasLoaded(int level) {
-        Bugsnag.Context = GetLevelName();
-    }
+
+#if UNITY_5_4_OR_NEWER
+	void SceneLoaded(Scene scene, LoadSceneMode mode) {
+		Bugsnag.Context = scene.name;
+	}
+#else
+	void OnLevelWasLoaded(int level) {
+		Bugsnag.Context = GetLevelName();
+	}
+#endif
 
     void HandleLog (string logString, string stackTrace, LogType type) {
+		Debug.Log ("IN HANDLE LOG");
+		Debug.Log ("\n\n" + logString + "\n\n" + stackTrace);
         LogSeverity severity = LogSeverity.Exception;
-        var bugsnagSeverity = "error";
+		Severity bugsnagSeverity = Severity.Error;
 
         switch (type) {
         case LogType.Assert:
@@ -331,12 +358,12 @@ public class Bugsnag : MonoBehaviour {
             break;
         case LogType.Log:
             severity = LogSeverity.Log;
-            bugsnagSeverity = "info";
+			bugsnagSeverity = Severity.Info;
 
             break;
-        case LogType.Warning:
-            severity = LogSeverity.Warning;
-            bugsnagSeverity = "warning";
+		case LogType.Warning:
+			severity = LogSeverity.Warning;
+			bugsnagSeverity = Severity.Warning;
             break;
         default:
             break;
@@ -370,7 +397,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (e.GetType ().ToString (),e.Message, "warning", "", stackTrace);
+			NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, "", stackTrace);
         }
     }
 
@@ -381,7 +408,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (e.GetType ().ToString (),e.Message, "warning", context, stackTrace);
+			NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, context, stackTrace);
         }
     }
 
@@ -438,17 +465,13 @@ public class Bugsnag : MonoBehaviour {
         NativeBugsnag.SetUser(userId, userName, userEmail);
     }
 
-    private static void NotifySafely(string errorClass, string message, string severity, string context, string stackTrace) {
+    private static void NotifySafely(string errorClass, string message, Severity severity, string context, string stackTrace) {
         if (errorClass == null) {
             errorClass = "Error";
         }
 
         if (message == null) {
             message = "";
-        }
-
-        if (severity == null) {
-            severity = "error";
         }
 
         if (context == null) {
@@ -459,6 +482,6 @@ public class Bugsnag : MonoBehaviour {
             return;
         }
 
-        NativeBugsnag.Notify(errorClass, message, severity, context, stackTrace);
+		NativeBugsnag.Notify(errorClass, message, SeverityValues[(int)severity], context, stackTrace);
     }
 }

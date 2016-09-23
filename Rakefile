@@ -58,6 +58,7 @@ task :copy_into_project do
   Rake::Task[:create_ios_plugin].invoke
   Rake::Task[:create_android_plugin].invoke
   Rake::Task[:create_osx_plugin].invoke
+  Rake::Task[:create_tvos_plugin].invoke
 
 end
 
@@ -67,7 +68,7 @@ task :create_ios_plugin do
   end
 
   # Create iOS directory
-  ios_dir = $path + "/Assets/Plugins/iOS"
+  ios_dir = $path + "/Assets/Plugins/iOS/Bugsnag"
   mkdir_p ios_dir
 
   # Copy iOS bugsnag notifier and KSCrash directory files
@@ -107,7 +108,7 @@ task :create_android_plugin do
   end
 
   # Create android directory
-  android_dir = $path + "/Assets/Plugins/Android"
+  android_dir = $path + "/Assets/Plugins/Android/Bugsnag"
   mkdir_p android_dir
 
   # Create clean build of the android notifier
@@ -124,7 +125,7 @@ task :create_osx_plugin do
   end
 
   # Create OSX directory
-  osx_dir = $path + "/Assets/Plugins/OSX"
+  osx_dir = $path + "/Assets/Plugins/OSX/Bugsnag"
   mkdir_p osx_dir
 
   # Create the OSX notifier framework and copy it into the Unity OSX project
@@ -138,6 +139,29 @@ task :create_osx_plugin do
   cd 'bugsnag-osx' do
     sh "xcodebuild -configuration Release build clean build | tee xcodebuild.log | xcpretty"
     cp_r "build/Release/bugsnag-osx.bundle", osx_dir
+  end
+end
+
+task :create_tvos_plugin do
+  unless defined?($path)
+    raise "Use rake build instead."
+  end
+
+  # Create tvOS directory
+  tvos_dir = $path + "/Assets/Plugins/tvOS/Bugsnag"
+  mkdir_p tvos_dir
+
+  # Create the tvOS notifier framework and copy it into the Unity tvOS project
+  rm_rf "bugsnag-tvos/bugsnag-tvos/Bugsnag.framework"
+  cd 'bugsnag-cocoa' do
+    sh "make SDK=appletvsimulator9.2"
+    cp_r "build/Build/Products/Release/Bugsnag.framework", "../bugsnag-tvos/bugsnag-tvos"
+  end
+
+  # Create the Unity tvOS bundle and copy it to the tvOS directory
+  cd 'bugsnag-tvos' do
+    sh "xcodebuild -configuration Release build clean build | tee xcodebuild.log | xcpretty"
+    cp_r "build/Release-appletvos/libbugsnag-tvos.a", tvos_dir
   end
 end
 
