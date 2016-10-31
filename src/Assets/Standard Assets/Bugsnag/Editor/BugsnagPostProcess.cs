@@ -35,7 +35,7 @@ public class BugsnagBuilder : MonoBehaviour {
     public static void OnPostProcessBuild(BuildTarget target, string path)
     {
 #if UNITY_5_OR_NEWER
-        if (target != BuildTarget.iOS && target != BuildTarget.WebGL) {
+        if (target != BuildTarget.iOS && target != BuildTarget.tvOS && target != BuildTarget.WebGL) {
             return;
         }
 

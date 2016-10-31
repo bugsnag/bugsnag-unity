@@ -23,7 +23,7 @@ public class Bugsnag : MonoBehaviour {
 #endif
 
     public class NativeBugsnag {
-        #if (UNITY_IPHONE || UNITY_IOS || UNITY_WEBGL || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+        #if (UNITY_IPHONE || UNITY_IOS || UNITY_TVOS || UNITY_WEBGL || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             [DllImport (dllName)]
             public static extern void Register(string apiKey);
 
