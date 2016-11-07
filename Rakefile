@@ -4,16 +4,22 @@ $UNITY = "/Applications/Unity/Unity.app/Contents/MacOS/Unity"
 
 desc "Build the plugin"
 task :build do
-
   $path = Dir.pwd + "/temp.unityproject"
   sh "rm -r temp.unityproject" if File.exist? "temp.unityproject"
   sh "#$UNITY -batchmode -quit -createproject #{Shellwords.escape($path)}"
 
   Rake::Task[:copy_into_project].invoke
 
+  # Create the package so that the metadata files are created
   sh "#$UNITY -batchmode -quit -projectpath #{Shellwords.escape($path)} -exportpackage Assets Bugsnag.unitypackage"
-  cp $path + "/Bugsnag.unitypackage", "."
 
+  # Add support for tvOS to the iOS files by modifying the metadata
+  Rake::Task[:include_tvos_support].invoke
+
+  # Create the package with the new metadata
+  sh "#$UNITY -batchmode -quit -projectpath #{Shellwords.escape($path)} -exportpackage Assets Bugsnag.unitypackage"
+
+  cp $path + "/Bugsnag.unitypackage", "."
 end
 
 desc "Update the example app's C# scripts"
@@ -68,9 +74,7 @@ task :create_ios_plugin do
 
   # Create iOS directory
   ios_dir = $path + "/Assets/Plugins/iOS/Bugsnag"
-  tvos_dir = $path + "/Assets/Plugins/tvOS"
   mkdir_p ios_dir
-  mkdir_p tvos_dir
 
   # Copy iOS bugsnag notifier and KSCrash directory files
   kscrash_dir = "bugsnag-cocoa/Carthage/Checkouts/KSCrash/Source/KSCrash/"
@@ -101,9 +105,6 @@ task :create_ios_plugin do
   Dir[ios_dir + "/*.*"].each do |file|
     `sed -e 's/^\\(#import \\)<KSCrash\\/\\(.*.h\\)>/\\1\"\\2\"/' -i '' #{file}`
   end
-
-  # Create a copy in the tvOS directory
-  cp_r ios_dir, tvos_dir
 end
 
 task :create_android_plugin do
@@ -112,7 +113,7 @@ task :create_android_plugin do
   end
 
   # Create android directory
-  android_dir = $path + "/Assets/Plugins/Android/Bugsnag"
+  android_dir = $path + "/Assets/Plugins/Android"
   mkdir_p android_dir
 
   # Create clean build of the android notifier
@@ -143,6 +144,21 @@ task :create_osx_plugin do
   cd 'bugsnag-osx' do
     sh "xcodebuild -configuration Release build clean build | tee xcodebuild.log | xcpretty"
     cp_r "build/Release/bugsnag-osx.bundle", osx_dir
+  end
+end
+
+task :include_tvos_support do
+  unless defined?($path)
+    raise "Use rake build instead."
+  end
+
+  tvos_dir = $path + "/Assets/Plugins/iOS/Bugsnag"
+  Dir[tvos_dir + "/*.meta"].each do |file|
+    # Keep the first 11 lines, everything before plaform data
+    `sed -i '' '1,11!d' #{file}`
+
+    # Add on support for iOS and tvOS
+    `echo "    iOS:\n      enabled: 1\n    tvOS:\n      enabled: 1\n" >> #{file}`
   end
 end
 

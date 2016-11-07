@@ -126,10 +126,18 @@ public class Bugsnag : MonoBehaviour {
                         severityInstance = Severity.GetStatic<AndroidJavaObject>("WARNING");
                     }
 
+                    // Add unity exception to meta data
                     var metaData = new AndroidJavaObject("com.bugsnag.android.MetaData");
+                    jvalue[] args = new jvalue[3] {
+                        new jvalue() { l = AndroidJNI.NewStringUTF("unity") },
+                        new jvalue() { l = AndroidJNI.NewStringUTF("unityException") },
+                        new jvalue() { l = AndroidJNI.NewStringUTF("true") },
+                    };
+                    IntPtr addToTabMethodId = AndroidJNI.GetMethodID(metaData.GetRawClass(), "addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V");
+                    AndroidJNI.CallVoidMethod(metaData.GetRawObject(), addToTabMethodId, args);
 
                     // Build the arguments
-                    jvalue[] args =  new jvalue[6] {
+                    args =  new jvalue[6] {
                         new jvalue() { l = AndroidJNI.NewStringUTF(errorClass) },
                         new jvalue() { l = AndroidJNI.NewStringUTF(errorMessage) },
                         new jvalue() { l = AndroidJNI.NewStringUTF(context) },
@@ -341,10 +349,8 @@ public class Bugsnag : MonoBehaviour {
 #endif
 
     void HandleLog (string logString, string stackTrace, LogType type) {
-		Debug.Log ("IN HANDLE LOG");
-		Debug.Log ("\n\n" + logString + "\n\n" + stackTrace);
         LogSeverity severity = LogSeverity.Exception;
-		Severity bugsnagSeverity = Severity.Error;
+        Severity bugsnagSeverity = Severity.Error;
 
         switch (type) {
         case LogType.Assert:
