@@ -1,5 +1,28 @@
 # Changelog
 
+## 3.1.0 (8 Nov 2016)
+
+### Enhancements
+
+* Add support for tvOS
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#32](https://github.com/bugsnag/bugsnag-unity/pull/32)
+
+### Bug fixes
+
+* Fixed syntax errors on macOS sierra/latest ruby on post process
+  [Delisa Mason](https://github.com/kattrali)
+  [#33](https://github.com/bugsnag/bugsnag-unity/pull/33)
+* Improve folder structure for iOS and OSX
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#32](https://github.com/bugsnag/bugsnag-unity/pull/32)
+* Compatibility with Unity 4.7
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#32](https://github.com/bugsnag/bugsnag-unity/pull/32)
+* Severity level uses enumeration rather than string
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#32](https://github.com/bugsnag/bugsnag-unity/pull/32)
+
 ## 3.0.3 (16 Sep 2016)
 
 ### Bug fixes
