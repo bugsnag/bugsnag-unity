@@ -81,7 +81,8 @@ extern "C" {
 
         NSDictionary *metaData = @{@"_bugsnag_unity_exception":@{@"stacktrace": stacktrace,
                                                                  @"notifier": notifier},
-                                    @"context":ns_context};
+                                   @"context":ns_context,
+                                   @"unity":@{@"unityException": @true}};
 
         metaData = [metaData mergedInto: [[Bugsnag configuration].metaData toDictionary]];
 
