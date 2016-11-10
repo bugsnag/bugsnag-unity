@@ -120,7 +120,7 @@ public class BugsnagBuilder : MonoBehaviour {
                     "\t\t\t);\n" +
                     "\t\t\trunOnlyForDeploymentPostprocessing = 0;\n" +
                     "\t\t\tshellPath = \"/usr/bin/env ruby\";\n" +
-                    "\t\t\tshellScript = \"# bugsnag dsym upload script\\nfork do\\n  Process.setsid\\n  STDIN.reopen(\\\"/dev/null\\\")\\n  STDOUT.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n  STDERR.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n\\n  require 'shellwords'\\n\\n  Dir[\\\"\\#{ENV[\\\"DWARF_DSYM_FOLDER_PATH\\\"]}/*/Contents/Resources/DWARF/*\\\"].each do |dsym|\\n    system(\\\"curl -F dsym=@\\#{Shellwords.escape(dsym)} -F projectRoot=\\#{Shellwords.escape(ENV[\\\"PROJECT_DIR\\\"])} https://upload.bugsnag.com/\\\")\\n  end\\nend\";\n" +
+                    "\t\t\tshellScript = \"# bugsnag dsym upload script\\nfork do\\n  Process.setsid\\n  STDIN.reopen(\\\"/dev/null\\\")\\n  STDOUT.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n  STDERR.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n\\n  require 'shellwords'\\n\\n  Dir[\\\"#{ENV[\\\"DWARF_DSYM_FOLDER_PATH\\\"]}/*/Contents/Resources/DWARF/*\\\"].each do |dsym|\\n    system(\\\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\\\"PROJECT_DIR\\\"])} https://upload.bugsnag.com/\\\")\\n  end\\nend\";\n" +
                     "\t\t};\n"
                 );
             } else if (needsBugsnagScript && line.Contains ("buildPhases = (")) {
