@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.1.1 (10 Nov 2016)
+
+### Bug fixes
+
+* Transferred syntax fix on macOS sierra/latest ruby script to package file
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#35](https://github.com/bugsnag/bugsnag-unity/pull/35)
+
 ## 3.1.0 (8 Nov 2016)
 
 ### Enhancements
