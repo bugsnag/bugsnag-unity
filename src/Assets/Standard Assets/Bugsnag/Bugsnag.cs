@@ -308,11 +308,7 @@ public class Bugsnag : MonoBehaviour {
     }
 
     public static void MapUnityLogToSeverity(LogSeverity unitySeverity, Severity bugsnagSeverity) {
-        if (customMapping.ContainsKey(unitySeverity)) {
-            customMapping[unitySeverity] = bugsnagSeverity;
-        } else {
-            customMapping.Add(unitySeverity, bugsnagSeverity);
-        }
+        customMapping[unitySeverity] = bugsnagSeverity;
     }
 
     string GetLevelName() {
