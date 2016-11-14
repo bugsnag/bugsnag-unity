@@ -225,7 +225,6 @@ public class Bugsnag : MonoBehaviour {
         public static void SetUser(string userId, string userName, string userEmail) {}
 #endif
     }
-
     // We dont use the LogType enum in Unity as the numerical order doesnt suit our purposes
     public enum LogSeverity {
         Log = 0,
@@ -241,6 +240,29 @@ public class Bugsnag : MonoBehaviour {
         Error = 1,
         Warning = 2
     }
+
+    // Defines a translation between the Unity log types and Bugsnag log types with appropriate ordering
+    private static Dictionary<LogType, LogSeverity> logTypeMapping = new Dictionary<LogType, LogSeverity>()
+    {
+        { LogType.Assert, LogSeverity.Assert },
+        { LogType.Error, LogSeverity.Error },
+        { LogType.Exception, LogSeverity.Exception },
+        { LogType.Log, LogSeverity.Log },
+        { LogType.Warning, LogSeverity.Warning }
+    };
+
+    // Defines a default mapping between Unity severities and Bugsnag severities
+    private static Dictionary<LogSeverity, Severity> defaultMapping = new Dictionary<LogSeverity, Severity>()
+    {
+        { LogSeverity.Assert, Severity.Error },
+        { LogSeverity.Error, Severity.Error },
+        { LogSeverity.Exception, Severity.Error },
+        { LogSeverity.Log, Severity.Info },
+        { LogSeverity.Warning, Severity.Warning }
+    };
+
+    // Defines a custom mapping between Unity severities and Bugsnag severities
+    private static Dictionary<LogSeverity,Severity> customMapping = new Dictionary<LogSeverity,Severity>();
 
     // Defines the strings used for the severities
     public static string[] SeverityValues = new string[]{"info", "error", "warning"};
@@ -282,6 +304,14 @@ public class Bugsnag : MonoBehaviour {
     public static string[] NotifyReleaseStages {
         set {
             NativeBugsnag.SetNotifyReleaseStages(String.Join (",", value));
+        }
+    }
+
+    public static void MapUnityLogToSeverity(LogSeverity unitySeverity, Severity bugsnagSeverity) {
+        if (customMapping.ContainsKey(unitySeverity)) {
+            customMapping[unitySeverity] = bugsnagSeverity;
+        } else {
+            customMapping.Add(unitySeverity, bugsnagSeverity);
         }
     }
 
@@ -349,32 +379,16 @@ public class Bugsnag : MonoBehaviour {
 #endif
 
     void HandleLog (string logString, string stackTrace, LogType type) {
-        LogSeverity severity = LogSeverity.Exception;
+        // Use any custom log mapping, and if there isn't one, use the default mapping
+        LogSeverity logSeverity = logTypeMapping[type];
         Severity bugsnagSeverity = Severity.Error;
-
-        switch (type) {
-            case LogType.Assert:
-                severity = LogSeverity.Assert;
-                break;
-            case LogType.Error:
-                severity = LogSeverity.Error;
-                break;
-            case LogType.Exception:
-                severity = LogSeverity.Exception;
-                break;
-            case LogType.Log:
-                severity = LogSeverity.Log;
-                bugsnagSeverity = Severity.Info;
-                break;
-            case LogType.Warning:
-                severity = LogSeverity.Warning;
-                bugsnagSeverity = Severity.Warning;
-                break;
-            default:
-                break;
+        if (customMapping.ContainsKey(logSeverity)) {
+			bugsnagSeverity = customMapping[logSeverity];
+        } else if (defaultMapping.ContainsKey(logSeverity)) {
+			bugsnagSeverity = defaultMapping[logSeverity];
         }
 
-        if(severity >= NotifyLevel && AutoNotify) {
+		if(logSeverity >= NotifyLevel) {
             string errorClass, errorMessage = "";
 
             Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)");
