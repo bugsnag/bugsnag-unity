@@ -383,12 +383,12 @@ public class Bugsnag : MonoBehaviour {
         LogSeverity logSeverity = logTypeMapping[type];
         Severity bugsnagSeverity = Severity.Error;
         if (customMapping.ContainsKey(logSeverity)) {
-			bugsnagSeverity = customMapping[logSeverity];
+            bugsnagSeverity = customMapping[logSeverity];
         } else if (defaultMapping.ContainsKey(logSeverity)) {
-			bugsnagSeverity = defaultMapping[logSeverity];
+            bugsnagSeverity = defaultMapping[logSeverity];
         }
 
-		if(logSeverity >= NotifyLevel) {
+        if(logSeverity >= NotifyLevel) {
             string errorClass, errorMessage = "";
 
             Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)");
