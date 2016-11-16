@@ -254,8 +254,8 @@ public class Bugsnag : MonoBehaviour {
     // Defines a default mapping between Unity severities and Bugsnag severities
     private static Dictionary<LogSeverity, Severity> defaultMapping = new Dictionary<LogSeverity, Severity>()
     {
-        { LogSeverity.Assert, Severity.Error },
-        { LogSeverity.Error, Severity.Error },
+        { LogSeverity.Assert, Severity.Warning },
+        { LogSeverity.Error, Severity.Warning },
         { LogSeverity.Exception, Severity.Error },
         { LogSeverity.Log, Severity.Info },
         { LogSeverity.Warning, Severity.Warning }
