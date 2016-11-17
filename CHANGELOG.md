@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.2.0 (17 Nov 2016)
+
+### Enhancements
+
+* Provide Init() to support initializing Bugsnag at runtime
+  [TimothyKLambert](https://github.com/TimothyKLambert)
+  [#34](https://github.com/bugsnag/bugsnag-unity/pull/34)
+* Changed default Unity log levels to Bugsnag severity mapping, and provided ability to custom map
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#36](https://github.com/bugsnag/bugsnag-unity/pull/36)
+* Updated KSCrash with iOS performance improvement
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#37](https://github.com/bugsnag/bugsnag-unity/pull/37)
+
 ## 3.1.1 (10 Nov 2016)
 
 ### Bug fixes
