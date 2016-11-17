@@ -321,32 +321,32 @@ public class Bugsnag : MonoBehaviour {
 
     void Awake() {
         DontDestroyOnLoad(this);
-		Init(BugsnagApiKey);
+        Init(BugsnagApiKey);
     }
 
-	public void Init(string apiKey)
-	{
-		BugsnagApiKey = apiKey;
-		NativeBugsnag.Register(BugsnagApiKey);
+    public void Init(string apiKey)
+    {
+        BugsnagApiKey = apiKey;
+        NativeBugsnag.Register(BugsnagApiKey);
 
-		if(Debug.isDebugBuild) {
-			Bugsnag.ReleaseStage = "development";
-		} else {
-			Bugsnag.ReleaseStage = "production";
-		}
+        if(Debug.isDebugBuild) {
+            Bugsnag.ReleaseStage = "development";
+        } else {
+            Bugsnag.ReleaseStage = "production";
+        }
 
-		Bugsnag.Context = GetLevelName();
-		NativeBugsnag.SetAutoNotify (AutoNotify);
-		NativeBugsnag.AddToTab("Unity", "unityVersion", Application.unityVersion.ToString());
-		NativeBugsnag.AddToTab("Unity", "platform", Application.platform.ToString());
-		NativeBugsnag.AddToTab("Unity", "osLanguage", Application.systemLanguage.ToString());
+        Bugsnag.Context = GetLevelName();
+        NativeBugsnag.SetAutoNotify (AutoNotify);
+        NativeBugsnag.AddToTab("Unity", "unityVersion", Application.unityVersion.ToString());
+        NativeBugsnag.AddToTab("Unity", "platform", Application.platform.ToString());
+        NativeBugsnag.AddToTab("Unity", "osLanguage", Application.systemLanguage.ToString());
 #if UNITY_5_OR_NEWER
-		NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.bundleIdentifier.ToString());
-		NativeBugsnag.AddToTab("Unity", "version", Application.version.ToString());
-		NativeBugsnag.AddToTab("Unity", "companyName", Application.companyName.ToString());
-		NativeBugsnag.AddToTab("Unity", "productName", Application.productName.ToString());
+        NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.bundleIdentifier.ToString());
+        NativeBugsnag.AddToTab("Unity", "version", Application.version.ToString());
+        NativeBugsnag.AddToTab("Unity", "companyName", Application.companyName.ToString());
+        NativeBugsnag.AddToTab("Unity", "productName", Application.productName.ToString());
 #endif
-	}
+    }
 
     void OnEnable () {
 #if UNITY_5_4_OR_NEWER
