@@ -84,7 +84,7 @@ extern "C" {
         if ([ns_logType isEqualToString: @""]) {
             unityData = @{@"unityException": @true};
         } else {
-            unityData = @{@"unityException": @true, @"unityLoglLevel": ns_logType};
+            unityData = @{@"unityException": @true, @"unityLogLevel": ns_logType};
         }
 
         NSDictionary *metaData = @{@"_bugsnag_unity_exception":@{@"stacktrace": stacktrace,
