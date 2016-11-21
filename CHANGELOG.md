@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.2.1 (21 Nov 2016)
+
+### Enhancements
+
+* Add Unity log levels to metadata
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#38](https://github.com/bugsnag/bugsnag-unity/pull/38)
+
 ## 3.2.0 (17 Nov 2016)
 
 ### Enhancements
