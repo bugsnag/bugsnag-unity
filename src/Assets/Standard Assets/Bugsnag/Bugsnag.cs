@@ -28,7 +28,7 @@ public class Bugsnag : MonoBehaviour {
         public static extern void Register(string apiKey);
 
         [DllImport (dllName)]
-        public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace);
+        public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type);
 
         [DllImport (dllName)]
         public static extern void SetNotifyUrl(string notifyUrl);
@@ -73,14 +73,14 @@ public class Bugsnag : MonoBehaviour {
             AndroidJavaObject app = activity.Call<AndroidJavaObject>("getApplicationContext");
 
             Bugsnag.CallStatic<AndroidJavaObject> ("init", app, apiKey);
-            Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), true);
+            Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), null, true);
         }
 
-        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace) {
-            Notify(errorClass, errorMessage, severity, context, stackTrace, false);
+        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type) {
+            Notify(errorClass, errorMessage, severity, context, stackTrace, type, false);
         }
 
-        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, bool warmup) {
+        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, bool warmup) {
             var stackFrames = new ArrayList ();
 
             foreach (Match frameMatch in unityExpression.Matches(stackTrace)) {
@@ -129,12 +129,22 @@ public class Bugsnag : MonoBehaviour {
                 // Add unity exception to meta data
                 var metaData = new AndroidJavaObject("com.bugsnag.android.MetaData");
                 jvalue[] args = new jvalue[3] {
-                    new jvalue() { l = AndroidJNI.NewStringUTF("unity") },
+                    new jvalue() { l = AndroidJNI.NewStringUTF("Unity") },
                     new jvalue() { l = AndroidJNI.NewStringUTF("unityException") },
                     new jvalue() { l = AndroidJNI.NewStringUTF("true") },
                 };
                 IntPtr addToTabMethodId = AndroidJNI.GetMethodID(metaData.GetRawClass(), "addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V");
                 AndroidJNI.CallVoidMethod(metaData.GetRawObject(), addToTabMethodId, args);
+
+                if (type != null) {
+                    // Add unity log level
+                    args = new jvalue[3] {
+                        new jvalue() { l = AndroidJNI.NewStringUTF("Unity") },
+                        new jvalue() { l = AndroidJNI.NewStringUTF("unityLogLevel") },
+                        new jvalue() { l = AndroidJNI.NewStringUTF(type) },
+                    };
+                    AndroidJNI.CallVoidMethod(metaData.GetRawObject(), addToTabMethodId, args);
+                }
 
                 // Build the arguments
                 args =  new jvalue[6] {
@@ -205,7 +215,7 @@ public class Bugsnag : MonoBehaviour {
         public static void SetContext(string context) {}
         public static void SetReleaseStage(string releaseStage) {}
         public static void SetNotifyReleaseStages(string releaseStages) {}
-        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace) {
+        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type) {
             if (apiKey_ == null || apiKey_ == "") {
                 Debug.Log("BUGSNAG: ERROR: would not notify Bugsnag as no API key was set");
             } else {
@@ -337,6 +347,7 @@ public class Bugsnag : MonoBehaviour {
 
         Bugsnag.Context = GetLevelName();
         NativeBugsnag.SetAutoNotify (AutoNotify);
+        NativeBugsnag.AddToTab("Unity", "unityException", "false");
         NativeBugsnag.AddToTab("Unity", "unityVersion", Application.unityVersion.ToString());
         NativeBugsnag.AddToTab("Unity", "platform", Application.platform.ToString());
         NativeBugsnag.AddToTab("Unity", "osLanguage", Application.systemLanguage.ToString());
@@ -407,7 +418,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (errorClass, errorMessage, bugsnagSeverity, "", stackTrace);
+            NotifySafely (errorClass, errorMessage, bugsnagSeverity, "", stackTrace, type);
         }
     }
 
@@ -418,7 +429,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, "", stackTrace);
+            NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, "", stackTrace, null);
         }
     }
 
@@ -429,7 +440,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, context, stackTrace);
+            NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, context, stackTrace, null);
         }
     }
 
@@ -486,7 +497,7 @@ public class Bugsnag : MonoBehaviour {
         NativeBugsnag.SetUser(userId, userName, userEmail);
     }
 
-    private static void NotifySafely(string errorClass, string message, Severity severity, string context, string stackTrace) {
+    private static void NotifySafely(string errorClass, string message, Severity severity, string context, string stackTrace, LogType? type) {
         if (errorClass == null) {
             errorClass = "Error";
         }
@@ -503,6 +514,11 @@ public class Bugsnag : MonoBehaviour {
             return;
         }
 
-        NativeBugsnag.Notify(errorClass, message, SeverityValues[(int)severity], context, stackTrace);
+        string logType = null;
+        if (type != null) {
+            logType = type.ToString();
+        }
+
+        NativeBugsnag.Notify(errorClass, message, SeverityValues[(int)severity], context, stackTrace, logType);
     }
 }

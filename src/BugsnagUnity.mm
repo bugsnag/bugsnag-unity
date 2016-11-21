@@ -5,7 +5,7 @@ extern "C" {
     void SetContext(char *context);
     void SetReleaseStage(char *releaseStage);
     void SetAutoNotify(int autoNotify);
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace);
+    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType);
     void Register(char *apiKey);
     void AddToTab(char *tabName, char *attributeName, char *attributeValue);
     void ClearTab(char *tabName);
@@ -55,13 +55,13 @@ extern "C" {
         [Bugsnag clearTabWithName:ns_tabName];
     }
 
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace) {
+    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType) {
         NSString *ns_errorClass = [NSString stringWithUTF8String:errorClass];
         NSString *ns_errorMessage = [NSString stringWithUTF8String:errorMessage];
         NSString *ns_severity = [NSString stringWithUTF8String:severity];
         NSString *ns_context = [NSString stringWithUTF8String:context];
-
         NSString *ns_stackTrace = [NSString stringWithUTF8String:stackTrace];
+        NSString *ns_logType = [NSString stringWithUTF8String:logType];
 
         NSRegularExpression *unityExpression = [NSRegularExpression regularExpressionWithPattern:@"(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?"
                                                                                          options:NSRegularExpressionCaseInsensitive
@@ -79,10 +79,18 @@ extern "C" {
             ns_context = [Bugsnag configuration].context;
         }
 
+        // Indicate thats its a unity exception (with the received log level)
+        NSDictionary *unityData = nil;
+        if ([ns_logType isEqualToString: @""]) {
+            unityData = @{@"unityException": @true};
+        } else {
+            unityData = @{@"unityException": @true, @"unityLoglLevel": ns_logType};
+        }
+
         NSDictionary *metaData = @{@"_bugsnag_unity_exception":@{@"stacktrace": stacktrace,
                                                                  @"notifier": notifier},
                                    @"context":ns_context,
-                                   @"unity":@{@"unityException": @true}};
+                                   @"Unity":unityData};
 
         metaData = [metaData mergedInto: [[Bugsnag configuration].metaData toDictionary]];
 
