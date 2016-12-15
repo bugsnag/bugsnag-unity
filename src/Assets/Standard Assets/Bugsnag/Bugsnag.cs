@@ -305,7 +305,7 @@ public class Bugsnag : MonoBehaviour {
     public static TimeSpan RateLimitTimePeriod = new TimeSpan (0, 0 , 1);
 
     // Defines the time period in which only unique logs are sent (default 5 seconds)
-	  public static TimeSpan UniqueLogsTimePeriod = new TimeSpan (0, 0, 5);
+    public static TimeSpan UniqueLogsTimePeriod = new TimeSpan (0, 0, 5);
 
     // Defines the maximum number of unique logs we will dedupe, before throwing them away
     private static int maxUniqueLogCount = 500;
