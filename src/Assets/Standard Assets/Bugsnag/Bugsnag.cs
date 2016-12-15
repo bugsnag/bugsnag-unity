@@ -280,8 +280,50 @@ public class Bugsnag : MonoBehaviour {
     public string BugsnagApiKey = "";
     public bool AutoNotify = true;
 
+    // Rate limiting section
+    // Defines the maximum number of logs to send (per type) in the rate limit time frame
+    private static Dictionary<LogType, int> maxCounts = new Dictionary<LogType, int>()
+    {
+      { LogType.Assert, 5 },
+      { LogType.Error, 5 },
+      { LogType.Exception, 20 },
+      { LogType.Log, 5 },
+      { LogType.Warning, 5 }
+    };
+
+    // Defines the current number of logs send (per type) in the current rate limit time frame
+    private static Dictionary<LogType, int> currentCounts = new Dictionary<LogType, int>()
+    {
+      { LogType.Assert, 0 },
+      { LogType.Error, 0 },
+      { LogType.Exception, 0 },
+      { LogType.Log, 0 },
+      { LogType.Warning, 0 }
+    };
+
+    // Defines the time period in which the number of maximum logs are sent (default 1 second)
+    public static TimeSpan RateLimitTimePeriod = new TimeSpan (0, 0 , 1);
+
+    // Defines the time period in which only unique logs are sent (default 5 seconds)
+    public static TimeSpan UniqueLogsTimePeriod = new TimeSpan (0, 0, 5);
+
+    // Defines the maximum number of unique logs we will dedupe, before throwing them away
+    private static int maxUniqueLogCount = 500;
+
+    // Contains the latest unique logs in the over the unique log time span.
+    private static List<string> latestLogs = new List<string>(maxUniqueLogCount);
+
+    // Defines if we are limiting unity logs (rate limiting and deduping multiple)
+    public static bool LimitUnityLogs = true;
+
     // Allow the notify level to be set for all Bugsnag objects
     public static LogSeverity NotifyLevel = LogSeverity.Exception;
+
+    // Time when the counts were reset last
+    private static DateTime timeCountsLastReset = DateTime.UtcNow;
+
+    // Time when the unique logs were reset last
+    private static DateTime timeUniqueLogsLastReset = DateTime.UtcNow;
 
     public static string ReleaseStage {
         set {
@@ -319,6 +361,11 @@ public class Bugsnag : MonoBehaviour {
 
     public static void MapUnityLogToSeverity(LogSeverity unitySeverity, Severity bugsnagSeverity) {
         customMapping[unitySeverity] = bugsnagSeverity;
+    }
+
+    // Ability to set the maximum count for a log type in the rate limit period
+    public static void SetMaximumCount(LogType unityLogType, int maxCount) {
+        maxCounts[unityLogType] = maxCount;
     }
 
     string GetLevelName() {
@@ -391,7 +438,49 @@ public class Bugsnag : MonoBehaviour {
     }
 #endif
 
+    void Update () {
+      // Don't bother if limiting unity logs is turned off
+      if (!LimitUnityLogs) {
+        return;
+      }
+
+      // Check if we need to reset the current counts
+      if (DateTime.UtcNow - timeCountsLastReset > RateLimitTimePeriod) {
+        foreach (LogType key in Enum.GetValues(typeof(LogType))) {
+          currentCounts[key] = 0;
+        }
+        timeCountsLastReset = DateTime.UtcNow;
+      }
+
+      // Check if we need to reset the unique logs list
+      if (DateTime.UtcNow - timeUniqueLogsLastReset > UniqueLogsTimePeriod) {
+          latestLogs = new List<string>();
+          timeUniqueLogsLastReset = DateTime.UtcNow;
+      }
+    }
+
     void HandleLog (string logString, string stackTrace, LogType type) {
+        // Check if we are limiting logs
+        if (LimitUnityLogs) {
+            // Check if we have exceeded the counts for this type
+            if (currentCounts[type] >= maxCounts[type]) {
+              return;
+            }
+
+            // Check if we have have previously sent this log
+            if (latestLogs.Contains(String.Format("{0}|{1}|{2}", logString, stackTrace, type.ToString()))) {
+              return;
+            }
+
+            // Check if we have sent more than the maximum number of unique logs, and if so throw them away
+            if (latestLogs.Count >= maxUniqueLogCount) {
+              return;
+            }
+
+            currentCounts[type] += 1;
+            latestLogs.Add(String.Format("{0}|{1}|{2}", logString, stackTrace, type.ToString()));
+        }
+
         // Use any custom log mapping, and if there isn't one, use the default mapping
         LogSeverity logSeverity = logTypeMapping[type];
         Severity bugsnagSeverity = Severity.Error;
