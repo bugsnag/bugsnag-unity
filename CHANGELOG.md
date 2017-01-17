@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.0 (17 Jan 2017)
+
+### Enhancements
+
+* Adds rate limiting and de-duplication of logs over a set period
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#39](https://github.com/bugsnag/bugsnag-unity/pull/39)
+
 ## 3.2.1 (21 Nov 2016)
 
 ### Enhancements
