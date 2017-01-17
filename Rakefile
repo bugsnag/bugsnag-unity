@@ -74,6 +74,7 @@ task :create_ios_plugin do
 
   # Create iOS directory
   ios_dir = $path + "/Assets/Plugins/iOS/Bugsnag"
+  rm_rf ios_dir
   mkdir_p ios_dir
 
   # Copy iOS bugsnag notifier and KSCrash directory files
@@ -131,6 +132,7 @@ task :create_osx_plugin do
 
   # Create OSX directory
   osx_dir = $path + "/Assets/Plugins/OSX/Bugsnag"
+  rm_rf osx_dir
   mkdir_p osx_dir
 
   # Create the OSX notifier framework and copy it into the Unity OSX project
