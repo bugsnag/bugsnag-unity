@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.1 (1 Feb 2017)
+
+### Bug fixes
+
+* Prevents crash for iOS when manually notifying exceptions
+  [Ben Ibinson](https://github.com/CodeHex)
+  [#40](https://github.com/bugsnag/bugsnag-unity/pull/40)
+
 ## 3.3.0 (17 Jan 2017)
 
 ### Enhancements
