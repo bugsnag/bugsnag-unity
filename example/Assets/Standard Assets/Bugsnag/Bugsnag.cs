@@ -136,7 +136,7 @@ public class Bugsnag : MonoBehaviour {
                 IntPtr addToTabMethodId = AndroidJNI.GetMethodID(metaData.GetRawClass(), "addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V");
                 AndroidJNI.CallVoidMethod(metaData.GetRawObject(), addToTabMethodId, args);
 
-                if (type != null) {
+                if (!String.IsNullOrEmpty(type)) {
                     // Add unity log level
                     args = new jvalue[3] {
                         new jvalue() { l = AndroidJNI.NewStringUTF("Unity") },
@@ -603,7 +603,7 @@ public class Bugsnag : MonoBehaviour {
             return;
         }
 
-        string logType = null;
+        string logType = "";
         if (type != null) {
             logType = type.ToString();
         }
