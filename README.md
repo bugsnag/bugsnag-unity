@@ -89,7 +89,7 @@ Optional Configuration
 Most Bugsnag settings can be configured from the Unity Inspector, but you can
 also change settings inside your scripts:
 
-###AutoNotify
+### AutoNotify
 
 By default, we will automatically notify Bugsnag of any fatal exceptions
 (crashes) in your game. If you want to stop this from happening, you can set
@@ -101,7 +101,7 @@ You can also change this setting in your scripts as follows:
 Bugsnag.AutoNotify = false;
 ```
 
-###NotifyLevel
+### NotifyLevel
 
 By default, Bugsnag will be notified about any Exception logged to 
 `Debug.LogException`. You can send additional log information to Bugsnag 
@@ -114,7 +114,7 @@ You can also change this setting in your scripts as follows:
 Bugsnag.NotifyLevel = LogSeverity.Error;
 ```
 
-###NotifyUrl
+### NotifyUrl
 
 By default Bugsnag sends exceptions to bugsnag.com, if you're running
 [Bugsnag Enterprise](https://bugsnag.com/enterprise), you can change
@@ -124,7 +124,7 @@ this to point to your local Bugsnag server:
 Bugsnag.NotifyUrl = 'http://bugsnag.internal.example.com';
 ```
 
-###Context
+### Context
 
 Bugsnag uses the concept of *contexts* to help display and group your
 errors. Contexts represent what was happening in your game at the
@@ -138,7 +138,7 @@ If you would like to set the Bugsnag context manually, you can set the
 Bugsnag.Context = "Space Port";
 ```
 
-###ReleaseStage
+### ReleaseStage
 
 If you would like to distinguish between errors that happen in different
 stages of your game's release process (development, qa, production, etc)
@@ -151,7 +151,7 @@ Bugsnag.ReleaseStage = "development";
 By default this is set to be *production* if the build is a release build,
 and *development* for a development build.
 
-###NotifyReleaseStages
+### NotifyReleaseStages
 
 By default, we notify Bugsnag of all exceptions that happen in your app. If you would like to change which release stages notify Bugsnag of exceptions you can set the notifyReleaseStages property:
 
@@ -159,7 +159,7 @@ By default, we notify Bugsnag of all exceptions that happen in your app. If you 
 Bugsnag.NotifyReleaseStages = ["staging", "production"];
 ```
 
-###AppVersion
+### AppVersion
 
 If you want to manually track in which versions of your application each exception happens, you can set `AppVersion`.
 
@@ -167,7 +167,7 @@ If you want to manually track in which versions of your application each excepti
 Bugsnag.AppVersion = "1.2.3-alpha";
 ```
 
-###Logging breadcrumbs
+### Logging breadcrumbs
 
 You can add custom log messages called "breadcrumbs" to document what user interactions occurred in your application prior to a crash. Each breadcrumb also records the time at which it was left. To record a breadcrumb:
 
@@ -183,7 +183,7 @@ Bugsnag.BreadcrumbCapacity = 50;
 ```
 Please note that breadcrumbs are not supported for WebGL deployments.
 
-###User
+### User
 
 Bugsnag helps you understand how many of your users are affected by each error. In order to do this, we send along a userId with every exception. By default we will generate a unique ID and send this ID along with every exception from an individual device.
 
