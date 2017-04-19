@@ -391,7 +391,7 @@ public class Bugsnag : MonoBehaviour {
 		Init(null);
     }
 
-	public void Init(string apiKey)	{
+    public void Init(string apiKey) {
 		// Try to work out which API key to use
 		if (!String.IsNullOrEmpty(apiKey)) {
 			InitInternal(apiKey);
@@ -400,13 +400,11 @@ public class Bugsnag : MonoBehaviour {
 		} else if (!String.IsNullOrEmpty(BugsnagApiKeyStatic)) {
 			InitInternal(BugsnagApiKeyStatic);
 		} else {
-			// Will cause the native notifiers to throw an exception on Register
-			InitInternal(null);
+			Debug.LogError("BUGSNAG: ERROR: unable to initialize Bugsnag, API key must be specified");
 		}
 	}
 
-    private void InitInternal(string apiKey)
-    {
+    private void InitInternal(string apiKey) {
         BugsnagApiKey = apiKey;
         NativeBugsnag.Register(BugsnagApiKey);
 
