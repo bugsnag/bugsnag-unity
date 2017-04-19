@@ -388,21 +388,21 @@ public class Bugsnag : MonoBehaviour {
     }
 
     public void Init() {
-		Init(null);
+        Init(null);
     }
 
     public void Init(string apiKey) {
-		// Try to work out which API key to use
-		if (!String.IsNullOrEmpty(apiKey)) {
-			InitInternal(apiKey);
-		} else if (!String.IsNullOrEmpty(BugsnagApiKey)) {
-			InitInternal(BugsnagApiKey);
-		} else if (!String.IsNullOrEmpty(BugsnagApiKeyStatic)) {
-			InitInternal(BugsnagApiKeyStatic);
-		} else {
-			Debug.LogError("BUGSNAG: ERROR: unable to initialize Bugsnag, API key must be specified");
-		}
-	}
+        // Try to work out which API key to use
+        if (!String.IsNullOrEmpty (apiKey)) {
+            InitInternal (apiKey);
+        } else if (!String.IsNullOrEmpty(BugsnagApiKey)) {
+            InitInternal(BugsnagApiKey);
+        } else if (!String.IsNullOrEmpty(BugsnagApiKeyStatic)) {
+            InitInternal(BugsnagApiKeyStatic);
+        } else {
+            Debug.LogError("BUGSNAG: ERROR: unable to initialize Bugsnag, API key must be specified");
+        }
+    }
 
     private void InitInternal(string apiKey) {
         BugsnagApiKey = apiKey;
