@@ -278,6 +278,7 @@ public class Bugsnag : MonoBehaviour {
     public static string[] SeverityValues = new string[]{"info", "error", "warning"};
 
     public string BugsnagApiKey = "";
+    public static string BugsnagApiKeyStatic = "";
     public bool AutoNotify = true;
 
     // Rate limiting section
@@ -368,6 +369,11 @@ public class Bugsnag : MonoBehaviour {
         maxCounts[unityLogType] = maxCount;
     }
 
+    // Used to set the API key when Bugsnag is being initialized
+    public static void SetApiKey(String apiKey) {
+        BugsnagApiKeyStatic = apiKey;
+    }
+
     string GetLevelName() {
 #if UNITY_5_OR_NEWER
       return SceneManager.GetActiveScene().name;
@@ -381,6 +387,13 @@ public class Bugsnag : MonoBehaviour {
         Init(null);
     }
 
+    public static Bugsnag createBugsnagInstance(GameObject gameObject, String ApiKey) {
+        Bugsnag.SetApiKey(ApiKey);
+        Bugsnag bugsnagInstance = gameObject.AddComponent<Bugsnag>();
+        bugsnagInstance.Init(); 
+        return bugsnagInstance;
+    }
+
     public void Init() {
         Init(null);
     }
@@ -391,6 +404,8 @@ public class Bugsnag : MonoBehaviour {
             InitInternal (apiKey);
         } else if (!String.IsNullOrEmpty(BugsnagApiKey)) {
             InitInternal(BugsnagApiKey);
+        } else if (!String.IsNullOrEmpty(BugsnagApiKeyStatic)) {
+            InitInternal(BugsnagApiKeyStatic);
         } else {
             Debug.LogError("BUGSNAG: ERROR: unable to initialize Bugsnag, API key must be specified");
         }
