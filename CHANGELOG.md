@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3.2 (24 Apr 2017)
+
+### Bug fixes
+
+* Fix null pointer exception when manually creating the Bugsnag game object
+  [Dave Perryman](https://github.com/Pezzah)
+  [#41](https://github.com/bugsnag/bugsnag-unity/pull/41)
+
 ## 3.3.1 (1 Feb 2017)
 
 ### Bug fixes
