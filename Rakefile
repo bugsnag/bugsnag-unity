@@ -61,10 +61,18 @@ task :copy_into_project do
   cp_r "src/Assets", $path
 
   # Create the individual platform plugins
+  Rake::Task[:create_webgl_plugin].invoke
   Rake::Task[:create_ios_plugin].invoke
   Rake::Task[:create_android_plugin].invoke
   Rake::Task[:create_osx_plugin].invoke
 
+end
+
+task :create_webgl_plugin do
+  raise "Use rake build instead." unless defined?($path)
+
+  webgl_dir = $path + "/Assets/Plugins/WebGL"
+  cp "bugsnag-js/src/bugsnag.js", File.join(webgl_dir, "bugsnag.jspre")
 end
 
 task :create_ios_plugin do
