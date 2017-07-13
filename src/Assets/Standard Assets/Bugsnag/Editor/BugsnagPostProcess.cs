@@ -47,12 +47,6 @@ public class BugsnagBuilder : MonoBehaviour {
         var sbWeb = new StringBuilder ();
         foreach (var line in indexLines) {
             sbWeb.AppendLine (line);
-
-            // Add an extra line below the first script tag, linking to the js notifier
-            if (line.Contains ("<script src=\"TemplateData/UnityProgress.js\"></script>")) {
-                var extra = line.Replace ("TemplateData/UnityProgress.js", "//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js");
-                sbWeb.AppendLine (extra);
-            }
         }
         File.WriteAllText(indexPath, sbWeb.ToString());
         return;
