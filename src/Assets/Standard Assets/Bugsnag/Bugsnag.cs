@@ -529,7 +529,8 @@ public class Bugsnag : MonoBehaviour {
                 errorClass = match.Groups["errorClass"].Value;
                 errorMessage = match.Groups["message"].Value.Trim();
             } else {
-                errorClass = logString;
+                errorClass = "UnityLog" + type;
+                errorMessage = logString;
             }
 
             if (stackTrace == null || stackTrace == "") {
