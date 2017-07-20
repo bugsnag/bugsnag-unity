@@ -20,6 +20,9 @@
 - Open the example app in Unity
 - You can build the app for iPhone or Android using the custom Build menu.
 
+## Testing Changes
+A simple project can be found at (examples/Assets/Buttons.unity](https://github.com/bugsnag/bugsnag-unity/blob/master/example/Assets/Buttons.unity), which allows various crashes to be triggered by clicking buttons.
+
 ## Upgrading bugsnag-cocoa/bugsnag-android
 
 - Update the submodule
