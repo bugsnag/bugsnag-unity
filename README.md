@@ -1,3 +1,63 @@
+# Bugsnag exception reporter for Unity
+[![Documentation](https://img.shields.io/badge/documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/unity/)
+
+
+Bugsnag's [Unity crash reporting](https://bugsnag.com/platforms/unity)
+library automatically detects crashes in your Unity apps, collecting
+diagnostic information and immediately notifying your development team, helping
+you to understand and resolve issues as fast as possible.
+
+
+## Features
+
+* Automatically report unhandled exceptions and crashes
+* Report [handled exceptions](http://docs.bugsnag.com/platforms/unity/#reporting-handled-errors)
+* [Log breadcrumbs](http://docs.bugsnag.com/platforms/unity/#logging-breadcrumbs) which are attached to crash reports and add insight to users' actions
+* [Attach user information](http://docs.bugsnag.com/platforms/unity/#identifying-users) to determine how many people are affected by a crash
+
+
+## Getting started
+
+1. [Create a Bugsnag account](https://bugsnag.com)
+1. Complete the instructions in the [integration guide](http://docs.bugsnag.com/platforms/unity/) to report unhandled exceptions thrown from your app
+1. Report handled exceptions using [`Bugsnag.Notify`](http://docs.bugsnag.com/platforms/unity/#reporting-handled-errors/)
+1. Customize your integration using the [configuration options](http://docs.bugsnag.com/platforms/unity/configuration-options/)
+
+
+## Support
+
+* [Read the integration guide](http://docs.bugsnag.com/platforms/unity/) or [configuration options documentation](http://docs.bugsnag.com/unity/android/configuration-options/)
+* [Search open and closed issues](https://github.com/bugsnag/bugsnag-unity/issues?utf8=✓&q=is%3Aissue) for similar problems
+* [Report a bug or request a feature](https://github.com/bugsnag/bugsnag-unity/issues/new)
+
+
+## Contributing
+
+All contributors are welcome! For information on how to build, test
+and release `bugsnag-android`, see our
+[contributing guide](https://github.com/bugsnag/bugsnag-android/blob/master/CONTRIBUTING.md).
+
+
+## License
+
+The Bugsnag Android notifier is free software released under the MIT License.
+See [LICENSE.txt](https://github.com/bugsnag/bugsnag-android/blob/master/LICENSE.txt)
+for details.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Bugsnag Notifier for Unity
 ============================
 
@@ -26,20 +86,20 @@ Basic Installation & Setup
 
     Create a new `GameObject` within your first/main scene
     (GameObject Menu -> Create Empty), and rename it to *Bugsnag*.
-    
+
     ![Create GameObject](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/create-gameobject.png)
 
 3.  **Add the Bugsnag Component to Your GameObject**
 
-    With your new GameObject selected, add the Bugsnag component 
-    (Component Menu -> Scripts -> Bugsnag). 
-    
+    With your new GameObject selected, add the Bugsnag component
+    (Component Menu -> Scripts -> Bugsnag).
+
     ![Add Bugsnag Component](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/add-bugsnag-component.png)
 
 4.  **Configure Your API Key**
 
     Finally, configure your Bugsnag API Key in the component inspector.
-    You can find your API key on the *Project Settings* page on your 
+    You can find your API key on the *Project Settings* page on your
     [Bugsnag dashboard](https://bugsnag.com).
 
     ![Set API Key](https://raw.github.com/bugsnag/bugsnag-unity/master/assets/docs/set-api-key.png)
@@ -47,7 +107,7 @@ Basic Installation & Setup
 Additional Setup (Android)
 ------------------------------
 
-When building for Android, you'll need to make sure that Internet Access is 
+When building for Android, you'll need to make sure that Internet Access is
 enabled. On the *Android* tab of the Unity *Player Settings* screen, make sure
 *Internet Acess* is set to *Require*.
 
@@ -71,7 +131,7 @@ How to Add Custom Data to Bugsnag Error Reports
 -----------------------------------------------
 
 If you would like to add custom data to your Bugsnag error reports, you can
-use the `AddToTab` method. Custom data is displayed inside tabs on each 
+use the `AddToTab` method. Custom data is displayed inside tabs on each
 exception on your Bugsnag dashboard.
 
 ```csharp
@@ -96,15 +156,15 @@ By default, we will automatically notify Bugsnag of any fatal exceptions
 the *Auto Notify* property in the Unity Inspector.
 
 You can also change this setting in your scripts as follows:
-    
+
 ```csharp
 Bugsnag.AutoNotify = false;
 ```
 
 ### NotifyLevel
 
-By default, Bugsnag will be notified about any Exception logged to 
-`Debug.LogException`. You can send additional log information to Bugsnag 
+By default, Bugsnag will be notified about any Exception logged to
+`Debug.LogException`. You can send additional log information to Bugsnag
 (eg. all `Debug.LogError` messages) by changing the *Notify Level* property
 in the Unity Inspector.
 
@@ -131,7 +191,7 @@ errors. Contexts represent what was happening in your game at the
 time an error occurs. By default, this will be set to be your currently
 active Unity Scene.
 
-If you would like to set the Bugsnag context manually, you can set the 
+If you would like to set the Bugsnag context manually, you can set the
 `Context` property in your scripts:
 
 ```csharp
@@ -230,5 +290,5 @@ Contributing
 License
 -------
 
-The Bugsnag Unity notifier is free software released under the MIT License. 
+The Bugsnag Unity notifier is free software released under the MIT License.
 See [LICENSE.txt](https://github.com/bugsnag/bugsnag-unity/blob/master/LICENSE.txt) for details.
