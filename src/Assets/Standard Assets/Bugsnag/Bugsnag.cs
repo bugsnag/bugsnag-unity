@@ -428,7 +428,11 @@ public class Bugsnag : MonoBehaviour {
         NativeBugsnag.AddToTab("Unity", "platform", Application.platform.ToString());
         NativeBugsnag.AddToTab("Unity", "osLanguage", Application.systemLanguage.ToString());
 #if UNITY_5_OR_NEWER
+#if UNITY_5_6_OR_NEWER
+        NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.identifier.ToString());
+#else
         NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.bundleIdentifier.ToString());
+#endif
         NativeBugsnag.AddToTab("Unity", "version", Application.version.ToString());
         NativeBugsnag.AddToTab("Unity", "companyName", Application.companyName.ToString());
         NativeBugsnag.AddToTab("Unity", "productName", Application.productName.ToString());
