@@ -65,6 +65,7 @@ A simple project can be found at (examples/Assets/Buttons.unity](https://github.
 ## Releasing a new version
 
 - Update the CHANGELOG
+- Update the version number in `src/BugsnagUnity.mm`
 - Build the package
 
     ```

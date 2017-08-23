@@ -71,8 +71,8 @@ extern "C" {
 
         NSDictionary *notifier = @{
                                    @"name": @"Bugsnag Unity (Cocoa)",
-                                   @"version": @"2.0.0",
-                                   @"url":@"https://bugsnag.com/"
+                                   @"version": @"3.4.0",
+                                   @"url":@"https://github.com/bugsnag/bugsnag-unity"
                                    };
 
         if ([ns_context isEqualToString: @""]) {
