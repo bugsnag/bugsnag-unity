@@ -130,7 +130,12 @@ task :create_android_plugin do
     sh "./gradlew clean build"
   end
 
+  cd 'bugsnag-android-unity' do
+    sh "../bugsnag-android/gradlew clean build"
+  end
+
   cp "bugsnag-android/build/outputs/aar/bugsnag-android-release.aar", android_dir
+  cp "bugsnag-android-unity/build/outputs/aar/bugsnag-android-unity-release.aar", android_dir
 end
 
 task :create_osx_plugin do

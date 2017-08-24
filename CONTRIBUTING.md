@@ -65,7 +65,8 @@ A simple project can be found at (examples/Assets/Buttons.unity](https://github.
 ## Releasing a new version
 
 - Update the CHANGELOG
-- Update the version number in `src/BugsnagUnity.mm`
+- Update the version number in `src/BugsnagUnity.mm` and
+  `android/src/main/java/com/bugsnag/android/unity/UnityClient.java`
 - Build the package
 
     ```
