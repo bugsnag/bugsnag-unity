@@ -910,7 +910,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98841bf1f40bd47728428fb2292cd3a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BugsnagApiKey: your-api-key
+  BugsnagApiKey: f35a2472bd230ac0ab0f52715bbdc65d
   AutoNotify: 1
 --- !u!4 &1015250912
 Transform:
