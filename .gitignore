@@ -1,5 +1,7 @@
 build
 .DS_store
+.gradle
+local.properties
 temp.unityproject
 bugsnag-osx/bugsnag-osx/Bugsnag.framework
 xcuserdata

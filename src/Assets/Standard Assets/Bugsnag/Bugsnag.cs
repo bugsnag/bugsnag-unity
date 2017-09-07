@@ -64,6 +64,7 @@ public class Bugsnag : MonoBehaviour {
         public static extern void SetUser(string userId, string userName, string userEmail);
 #elif UNITY_ANDROID && !UNITY_EDITOR
         public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
+        public static AndroidJavaClass BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.UnityClient");
         public static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
         public static void Register(string apiKey) {
@@ -72,7 +73,12 @@ public class Bugsnag : MonoBehaviour {
             AndroidJavaObject activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
             AndroidJavaObject app = activity.Call<AndroidJavaObject>("getApplicationContext");
 
-            Bugsnag.CallStatic<AndroidJavaObject> ("init", app, apiKey);
+            jvalue[] args =  new jvalue[2] {
+                new jvalue() { l = app.GetRawObject() },
+                new jvalue() { l = AndroidJNI.NewStringUTF(apiKey) },
+            };
+            IntPtr methodId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "init", "(Landroid/content/Context;Ljava/lang/String;)V");
+            AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), methodId, args);
             Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), null, true);
         }
 
@@ -126,39 +132,19 @@ public class Bugsnag : MonoBehaviour {
                     severityInstance = Severity.GetStatic<AndroidJavaObject>("WARNING");
                 }
 
-                // Add unity exception to meta data
-                var metaData = new AndroidJavaObject("com.bugsnag.android.MetaData");
-                jvalue[] args = new jvalue[3] {
-                    new jvalue() { l = AndroidJNI.NewStringUTF("Unity") },
-                    new jvalue() { l = AndroidJNI.NewStringUTF("unityException") },
-                    new jvalue() { l = AndroidJNI.NewStringUTF("true") },
-                };
-                IntPtr addToTabMethodId = AndroidJNI.GetMethodID(metaData.GetRawClass(), "addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V");
-                AndroidJNI.CallVoidMethod(metaData.GetRawObject(), addToTabMethodId, args);
-
-                if (!String.IsNullOrEmpty(type)) {
-                    // Add unity log level
-                    args = new jvalue[3] {
-                        new jvalue() { l = AndroidJNI.NewStringUTF("Unity") },
-                        new jvalue() { l = AndroidJNI.NewStringUTF("unityLogLevel") },
-                        new jvalue() { l = AndroidJNI.NewStringUTF(type) },
-                    };
-                    AndroidJNI.CallVoidMethod(metaData.GetRawObject(), addToTabMethodId, args);
-                }
-
                 // Build the arguments
-                args =  new jvalue[6] {
+                jvalue[] args =  new jvalue[6] {
                     new jvalue() { l = AndroidJNI.NewStringUTF(errorClass) },
                     new jvalue() { l = AndroidJNI.NewStringUTF(errorMessage) },
                     new jvalue() { l = AndroidJNI.NewStringUTF(context) },
                     new jvalue() { l = (IntPtr)stackFrameArrayObject },
                     new jvalue() { l = severityInstance.GetRawObject() },
-                    new jvalue() { l = metaData.GetRawObject() }
+                    new jvalue() { l = String.IsNullOrEmpty(type) ? IntPtr.Zero : AndroidJNI.NewStringUTF(type) }
                 };
 
                 // Call Android's notify method
-                IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(Bugsnag.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Lcom/bugsnag/android/MetaData;)V");
-                if(warmup == false) AndroidJNI.CallStaticVoidMethod(Bugsnag.GetRawClass(), clientConstructorId, args);
+                IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Ljava/lang/String;)V");
+                if(warmup == false) AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), clientConstructorId, args);
             }
         }
 
@@ -428,7 +414,11 @@ public class Bugsnag : MonoBehaviour {
         NativeBugsnag.AddToTab("Unity", "platform", Application.platform.ToString());
         NativeBugsnag.AddToTab("Unity", "osLanguage", Application.systemLanguage.ToString());
 #if UNITY_5_OR_NEWER
+#if UNITY_5_6_OR_NEWER
+        NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.identifier.ToString());
+#else
         NativeBugsnag.AddToTab("Unity", "bundleIdentifier", Application.bundleIdentifier.ToString());
+#endif
         NativeBugsnag.AddToTab("Unity", "version", Application.version.ToString());
         NativeBugsnag.AddToTab("Unity", "companyName", Application.companyName.ToString());
         NativeBugsnag.AddToTab("Unity", "productName", Application.productName.ToString());

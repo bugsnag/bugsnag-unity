@@ -108,7 +108,7 @@ task :create_ios_plugin do
 
   # Replace framework reference <Bugsnag/Bugsnag.h> with direct header file "Bugsnag.h" in the wrapper file
   wrapper_file = ios_dir + "/BugsnagUnity.mm"
-  `sed -e 's/^#import <Bugsnag\\/Bugsnag.h>/#import \"Bugsnag.h\"/' -i '' #{wrapper_file}`
+  `sed -e 's/^\\(#import \\)<Bugsnag\\/\\(.*.h\\)>/\\1\"\\2\"/' -i '' #{wrapper_file}`
 
   # Rename any <KSCrash/*.h> framework references to the specific header files
   Dir[ios_dir + "/*.*"].each do |file|
@@ -130,7 +130,12 @@ task :create_android_plugin do
     sh "./gradlew clean build"
   end
 
+  cd 'bugsnag-android-unity' do
+    sh "../bugsnag-android/gradlew clean build"
+  end
+
   cp "bugsnag-android/build/outputs/aar/bugsnag-android-release.aar", android_dir
+  cp "bugsnag-android-unity/build/outputs/aar/bugsnag-android-unity-release.aar", android_dir
 end
 
 task :create_osx_plugin do

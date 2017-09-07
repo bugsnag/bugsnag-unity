@@ -1,0 +1,2 @@
+include ':bugsnag-android'
+project(':bugsnag-android').projectDir = new File(rootProject.projectDir, '../bugsnag-android')
