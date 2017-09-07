@@ -1,5 +1,10 @@
 #import <Bugsnag/Bugsnag.h>
+#import <Bugsnag/BugsnagCrashReport.h>
 #import "NSDictionary+Merge.h"
+
+@interface Bugsnag ()
++ (id)notifier;
+@end
 
 extern "C" {
     void SetContext(char *context);
@@ -14,6 +19,14 @@ extern "C" {
     void SetAppVersion(char *version);
     void SetUser(char *userId, char *userName, char *userEmail);
     NSMutableArray *parseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex);
+
+    BSGSeverity ParseBugsnagSeverity(NSString *severity) {
+        if ([severity isEqualToString:@"info"])
+            return BSGSeverityInfo;
+        else if ([severity isEqualToString:@"warning"])
+            return BSGSeverityWarning;
+        return BSGSeverityError;
+    }
 
     void SetContext(char *context) {
         NSString *ns_context = [NSString stringWithUTF8String: context];
@@ -68,16 +81,9 @@ extern "C" {
                                                                                            error:nil];
 
         NSMutableArray *stacktrace = parseStackTrace(ns_stackTrace, unityExpression);
-
-        NSDictionary *notifier = @{
-                                   @"name": @"Bugsnag Unity (Cocoa)",
-                                   @"version": @"3.4.0",
-                                   @"url":@"https://github.com/bugsnag/bugsnag-unity"
-                                   };
-
-        if ([ns_context isEqualToString: @""]) {
-            ns_context = [Bugsnag configuration].context;
-        }
+        NSException * exception = [NSException exceptionWithName:ns_errorClass
+                                                          reason:ns_errorMessage
+                                                        userInfo:NULL];
 
         // Indicate thats its a unity exception (with the received log level)
         NSDictionary *unityData = nil;
@@ -87,15 +93,17 @@ extern "C" {
             unityData = @{@"unityException": @true, @"unityLogLevel": ns_logType};
         }
 
-        NSDictionary *metaData = @{@"_bugsnag_unity_exception":@{@"stacktrace": stacktrace,
-                                                                 @"notifier": notifier},
-                                   @"context":ns_context,
-                                   @"Unity":unityData};
-
-        metaData = [metaData mergedInto: [[Bugsnag configuration].metaData toDictionary]];
-
-        dispatch_async(dispatch_get_global_queue(0, 0), ^ {
-            [Bugsnag notify:[NSException exceptionWithName:ns_errorClass reason: ns_errorMessage userInfo: NULL] withData: metaData atSeverity: ns_severity];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [Bugsnag notify:exception block:^(BugsnagCrashReport *report) {
+                if (ns_context.length > 0) {
+                    report.context = ns_context;
+                }
+                [report attachCustomStacktrace:stacktrace withType:@"unity"];
+                report.severity = ParseBugsnagSeverity(ns_severity);
+                NSMutableDictionary *metadata = [report.metaData mutableCopy];
+                metadata[@"Unity"] = unityData;
+                report.metaData = metadata;
+            }];
         });
     }
 
@@ -109,6 +117,13 @@ extern "C" {
         [Bugsnag setReportWhenDebuggerIsAttached:true];
 
         [Bugsnag startBugsnagWithApiKey:ns_apiKey];
+
+        id notifier = [Bugsnag notifier];
+        [notifier setValue:@{
+            @"version": @"3.4.0",
+            @"name": @"Bugsnag Unity (Cocoa)",
+            @"url": @"https://github.com/bugsnag/bugsnag-unity"
+        } forKey:@"details"];
     }
 
     void LeaveBreadcrumb(char *breadcrumb) {

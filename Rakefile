@@ -108,7 +108,7 @@ task :create_ios_plugin do
 
   # Replace framework reference <Bugsnag/Bugsnag.h> with direct header file "Bugsnag.h" in the wrapper file
   wrapper_file = ios_dir + "/BugsnagUnity.mm"
-  `sed -e 's/^#import <Bugsnag\\/Bugsnag.h>/#import \"Bugsnag.h\"/' -i '' #{wrapper_file}`
+  `sed -e 's/^\\(#import \\)<Bugsnag\\/\\(.*.h\\)>/\\1\"\\2\"/' -i '' #{wrapper_file}`
 
   # Rename any <KSCrash/*.h> framework references to the specific header files
   Dir[ios_dir + "/*.*"].each do |file|
