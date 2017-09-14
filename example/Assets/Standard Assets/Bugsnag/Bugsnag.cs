@@ -455,7 +455,7 @@ public class Bugsnag : MonoBehaviour {
 #else
     void OnLevelWasLoaded(int level) {
         Bugsnag.Context = GetLevelName();
-        LeaveBreadcrumb("Scene loaded: " + scene.name);
+        LeaveBreadcrumb("Scene loaded: " + GetLevelName());
     }
 #endif
 
