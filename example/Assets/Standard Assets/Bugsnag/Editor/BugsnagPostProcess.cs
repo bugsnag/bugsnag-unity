@@ -47,12 +47,6 @@ public class BugsnagBuilder : MonoBehaviour {
         var sbWeb = new StringBuilder ();
         foreach (var line in indexLines) {
             sbWeb.AppendLine (line);
-
-            // Add an extra line below the first script tag, linking to the js notifier
-            if (line.Contains ("<script src=\"TemplateData/UnityProgress.js\"></script>")) {
-                var extra = line.Replace ("TemplateData/UnityProgress.js", "//d2wy8f7a9ursnm.cloudfront.net/bugsnag-2.min.js");
-                sbWeb.AppendLine (extra);
-            }
         }
         File.WriteAllText(indexPath, sbWeb.ToString());
         return;
@@ -120,7 +114,7 @@ public class BugsnagBuilder : MonoBehaviour {
                     "\t\t\t);\n" +
                     "\t\t\trunOnlyForDeploymentPostprocessing = 0;\n" +
                     "\t\t\tshellPath = \"/usr/bin/env ruby\";\n" +
-                    "\t\t\tshellScript = \"# bugsnag dsym upload script\\nfork do\\n  Process.setsid\\n  STDIN.reopen(\\\"/dev/null\\\")\\n  STDOUT.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n  STDERR.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n\\n  require 'shellwords'\\n\\n  Dir[\\\"#{ENV[\\\"DWARF_DSYM_FOLDER_PATH\\\"]}/*/Contents/Resources/DWARF/*\\\"].each do |dsym|\\n    system(\\\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\\\"PROJECT_DIR\\\"])} https://upload.bugsnag.com/\\\")\\n  end\\nend\";\n" +
+                    "\t\t\tshellScript = \"# bugsnag dsym upload script\\nfork do\\n  Process.setsid\\n  STDIN.reopen(\\\"/dev/null\\\")\\n  STDOUT.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n  STDERR.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n\\n  require \\\"shellwords\\\"\\n\\n  Dir[\\\"#{ENV[\\\"DWARF_DSYM_FOLDER_PATH\\\"]}/*/Contents/Resources/DWARF/*\\\"].each do |dsym|\\n    system(\\\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\\\"PROJECT_DIR\\\"])} https://upload.bugsnag.com/\\\")\\n  end\\nend\";\n" +
                     "\t\t};\n"
                 );
             } else if (needsBugsnagScript && line.Contains ("buildPhases = (")) {
