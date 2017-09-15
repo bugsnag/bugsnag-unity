@@ -450,10 +450,12 @@ public class Bugsnag : MonoBehaviour {
 #if UNITY_5_4_OR_NEWER
     void SceneLoaded(Scene scene, LoadSceneMode mode) {
         Bugsnag.Context = scene.name;
+        LeaveBreadcrumb("Scene loaded: " + scene.name);
     }
 #else
     void OnLevelWasLoaded(int level) {
         Bugsnag.Context = GetLevelName();
+        LeaveBreadcrumb("Scene loaded: " + GetLevelName());
     }
 #endif
 
