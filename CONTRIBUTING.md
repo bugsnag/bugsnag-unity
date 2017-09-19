@@ -64,16 +64,16 @@ A simple project can be found at (examples/Assets/Buttons.unity](https://github.
 
 ## Releasing a new version
 
-- Update the CHANGELOG
-- Update the version number in `src/BugsnagUnity.mm` and
-  `android/src/main/java/com/bugsnag/android/unity/UnityClient.java`
-- Build the package
+- Build the package, ensuring it can be run correctly:
 
     ```
     rake build
     ```
 
-- Commit the new build and tag in git
+- Update the CHANGELOG
+- Update the version number in `src/BugsnagUnity.mm` and
+  `android/src/main/java/com/bugsnag/android/unity/UnityCallback.java`
+- Commit the changelog and version updates:
 
     ```
     git commit -am "v2.x.x"
@@ -85,7 +85,7 @@ A simple project can be found at (examples/Assets/Buttons.unity](https://github.
     - https://github.com/bugsnag/bugsnag-unity/releases/new?tag=v2.x.x
     - set the title to the tag name
     - copy the CHANGELOG entry to the release notes
-    - upload `Bugsnag.unityframework`
+    - upload `Bugsnag.unitypackage`
 
 ## Update docs.bugsnag.com
 
