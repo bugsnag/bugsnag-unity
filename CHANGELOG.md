@@ -1,5 +1,24 @@
 # Changelog
 
+## 3.4.0 (2017-19-09)
+
+### Enhancements
+
+* Improve error grouping by standardizing log message format
+  [#45](https://github.com/bugsnag/bugsnag-unity/pull/45)
+
+* Add breadcrumbs for scene changes
+  [Jamie Lynch](https://github.com/fractalwrench)
+  [#54](https://github.com/bugsnag/bugsnag-unity/pull/54)
+
+* Load WebGL extension locally, negating the need for a separate request
+  [#46](https://github.com/bugsnag/bugsnag-unity/pull/46)
+
+### Bug fixes
+
+* Fix compile error on Unity 5.5
+  [#50](https://github.com/bugsnag/bugsnag-unity/issues/50)
+
 ## 3.3.2 (24 Apr 2017)
 
 ### Bug fixes
