@@ -21,7 +21,7 @@
 - You can build the app for iPhone or Android using the custom Build menu.
 
 ## Testing Changes
-A simple project can be found at (examples/Assets/Buttons.unity](https://github.com/bugsnag/bugsnag-unity/blob/master/example/Assets/Buttons.unity), which allows various crashes to be triggered by clicking buttons.
+A simple project can be found at [examples/Assets/Buttons.unity](https://github.com/bugsnag/bugsnag-unity/blob/master/example/Assets/Buttons.unity), which allows various crashes to be triggered by clicking buttons.
 
 ## Upgrading bugsnag-cocoa/bugsnag-android
 
@@ -62,7 +62,15 @@ A simple project can be found at (examples/Assets/Buttons.unity](https://github.
     rake build:android
     ```
 
+
 ## Releasing a new version
+
+## Release Checklist
+Please follow the testing instructions in [the platforms release checklist](https://github.com/bugsnag/platforms-release-checklist/blob/master/README.md), and any additional steps directly below.
+
+- Disable development mode in the Unity Build dialog when testing release builds.
+
+### Instructions
 
 - Build the package, ensuring it can be run correctly:
 
