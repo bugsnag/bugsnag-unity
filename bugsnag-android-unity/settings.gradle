@@ -1,2 +1,2 @@
-include ':bugsnag-android'
-project(':bugsnag-android').projectDir = new File(rootProject.projectDir, '../bugsnag-android')
+include ':sdk'
+project(':sdk').projectDir = new File(rootProject.projectDir, '../bugsnag-android/sdk')
