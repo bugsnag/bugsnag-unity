@@ -24,12 +24,12 @@
 // THE SOFTWARE.
 //
 
-#import "KSCrash.h"
 #import "BugsnagSink.h"
 #import "BugsnagNotifier.h"
 #import "Bugsnag.h"
 #import "BugsnagCrashReport.h"
 #import "BugsnagCollections.h"
+#import "BugsnagLogger.h"
 
 // This is private in Bugsnag, but really we want package private so define
 // it here.
@@ -37,20 +37,16 @@
 + (BugsnagNotifier*)notifier;
 @end
 
-@interface BugsnagSink ()
-@property (nonatomic, strong) NSURLSession *session;
-@end
-
 @implementation BugsnagSink
 
-- (instancetype)init {
-    if (self = [super init])
-        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    
+- (instancetype)initWithApiClient:(BugsnagErrorReportApiClient *)apiClient {
+    if (self = [super init]) {
+        self.apiClient = apiClient;
+    }
     return self;
 }
 
-// Entry point called by KSCrash when a report needs to be sent. Handles report filtering based on the configuration
+// Entry point called by BSG_KSCrash when a report needs to be sent. Handles report filtering based on the configuration
 // options for `notifyReleaseStages`.
 // Removes all reports not meeting at least one of the following conditions:
 // - the report-specific config specifies the `notifyReleaseStages` property and it contains the current stage
@@ -58,7 +54,7 @@
 // - the report-specific `notifyReleaseStages` property is unset and the global `notifyReleaseStages` property
 //   and it contains the current stage
 - (void)filterReports:(NSArray*) reports
-         onCompletion:(KSCrashReportFilterCompletion) onCompletion {
+         onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion {
     NSMutableArray *bugsnagReports = [NSMutableArray new];
     BugsnagConfiguration *configuration = [Bugsnag configuration];
     for (NSDictionary* report in reports) {
@@ -75,10 +71,10 @@
             [bugsnagReports addObject:bugsnagReport];
         }
     }
-    
+
     if (bugsnagReports.count == 0) {
         if (onCompletion) {
-            onCompletion(reports, YES, nil);
+            onCompletion(bugsnagReports, YES, nil);
         }
         return;
     }
@@ -103,16 +99,17 @@
         return;
     }
 
-    [self sendReports:bugsnagReports
+    [self.apiClient sendReports:bugsnagReports
               payload:reportData
                 toURL:configuration.notifyURL
          onCompletion:onCompletion];
 }
 
+
 - (void)sendReports:(NSArray <BugsnagCrashReport *>*)reports
             payload:(NSDictionary *)reportData
               toURL:(NSURL *)url
-       onCompletion:(KSCrashReportFilterCompletion) onCompletion {
+       onCompletion:(BSG_KSCrashReportFilterCompletion) onCompletion {
     @try {
         NSError *error = nil;
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:reportData
@@ -129,10 +126,14 @@
                                                                cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
                                                            timeoutInterval: 15];
         request.HTTPMethod = @"POST";
-
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
 
         if ([NSURLSession class]) {
-            NSURLSessionTask *task = [self.session uploadTaskWithRequest:request fromData:jsonData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            NSURLSession *session = [Bugsnag configuration].session;
+            if (!session) {
+                session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+            }
+            NSURLSessionTask *task = [session uploadTaskWithRequest:request fromData:jsonData completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
                 if (onCompletion)
                     onCompletion(reports, error == nil, error);
             }];
@@ -164,15 +165,15 @@
     NSMutableDictionary* data = [[NSMutableDictionary alloc] init];
     BSGDictSetSafeObject(data, [Bugsnag configuration].apiKey, @"apiKey");
     BSGDictSetSafeObject(data, [Bugsnag notifier].details, @"notifier");
-    
+
     NSMutableArray* formatted = [[NSMutableArray alloc] initWithCapacity:[reports count]];
-    
+
     for (BugsnagCrashReport* report in reports) {
         BSGArrayAddSafeObject(formatted, [report serializableValueWithTopLevelData:data]);
     }
 
     BSGDictSetSafeObject(data, formatted, @"events");
-    
+
     return data;
 }
 

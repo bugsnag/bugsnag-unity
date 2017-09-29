@@ -44,7 +44,7 @@ typedef void (^BugsnagNotifyBlock)(BugsnagCrashReport *_Nonnull report);
  *
  *  @param rawEventData The raw event data written at crash time. This
  *                      includes data added in onCrashHandler.
- *  @param report       The report generated from the rawEventData
+ *  @param reports      The report generated from the rawEventData
  *
  *  @return YES if the report should be sent
  */
@@ -92,6 +92,11 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
 @property(nonatomic, readwrite, retain, nullable) NSString *appVersion;
 
 /**
+ *  The URL session used to send requests to Bugsnag.
+ */
+@property(nonatomic, readwrite, strong, nonnull) NSURLSession *session;
+
+/**
  *  Additional information about the state of the app or environment at the 
  *  time the report was generated
  */
@@ -120,7 +125,7 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  *  Optional handler invoked when a crash or fatal signal occurs
  */
 @property(nonatomic) void (*_Nullable onCrashHandler)
-    (const BSGKSCrashReportWriter *_Nonnull writer);
+    (const BSGCrashReportWriter *_Nonnull writer);
 /**
  *  YES if uncaught exceptions should be reported automatically
  */
@@ -144,6 +149,12 @@ typedef NSDictionary *_Nullable (^BugsnagBeforeNotifyHook)(
  *  @param block A block which returns YES if the report should be sent
  */
 - (void)addBeforeSendBlock:(BugsnagBeforeSendBlock _Nonnull)block;
+
+
+/**
+ * Clear all callbacks
+ */
+- (void)clearBeforeSendBlocks;
 
 /**
  *  Whether reports shoould be sent, based on release stage options

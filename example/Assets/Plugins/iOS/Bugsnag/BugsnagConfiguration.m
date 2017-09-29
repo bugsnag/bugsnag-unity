@@ -24,8 +24,6 @@
 // THE SOFTWARE.
 //
 
-#import "KSCrashReportWriter.h"
-
 #import "BugsnagBreadcrumb.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagMetaData.h"
@@ -38,7 +36,7 @@
 
 @interface BugsnagConfiguration ()
 @property(nonatomic, readwrite, strong) NSMutableArray *beforeNotifyHooks;
-@property(nonatomic, readwrite, strong) NSMutableArray *BugsnagBeforeSendBlock;
+@property(nonatomic, readwrite, strong) NSMutableArray *beforeSendBlocks;
 @end
 
 @implementation BugsnagConfiguration
@@ -51,10 +49,13 @@
     _autoNotify = YES;
     _notifyURL = [NSURL URLWithString:@"https://notify.bugsnag.com/"];
     _beforeNotifyHooks = [NSMutableArray new];
-    _BugsnagBeforeSendBlock = [NSMutableArray new];
+    _beforeSendBlocks = [NSMutableArray new];
     _notifyReleaseStages = nil;
     _breadcrumbs = [BugsnagBreadcrumbs new];
     _automaticallyCollectBreadcrumbs = YES;
+    if ([NSURLSession class]) {
+      _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    }
 #if DEBUG
     _releaseStage = @"development";
 #else
@@ -81,6 +82,10 @@
 
 - (void)addBeforeSendBlock:(BugsnagBeforeSendBlock)block {
   [(NSMutableArray *)self.beforeSendBlocks addObject:[block copy]];
+}
+
+- (void)clearBeforeSendBlocks {
+  [(NSMutableArray *)self.beforeSendBlocks removeAllObjects];
 }
 
 - (void)addBeforeNotifyHook:(BugsnagBeforeNotifyHook)hook {

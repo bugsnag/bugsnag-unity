@@ -86,22 +86,19 @@ task :create_ios_plugin do
   mkdir_p ios_dir
 
   # Copy iOS bugsnag notifier and KSCrash directory files
-  kscrash_dir = "bugsnag-cocoa/Carthage/Checkouts/KSCrash/Source/KSCrash/"
-  recording_path = kscrash_dir + "Recording"
-  swift_path = kscrash_dir + "swift"
-  llvm_path = kscrash_dir + "llvm"
   bugsnag_path = "bugsnag-cocoa/Source"
-  `find #{recording_path} #{swift_path} #{llvm_path} #{bugsnag_path} -name '*.m' -or -name '*.c' -or -name '*.mm' -or -name '*.h' -or -name '*.cpp'`.split("\n").each do |x|
-    cp x, ios_dir
-  end
+  kscrash_dir = "bugsnag-cocoa/Source/KSCrash/Source/KSCrash/"
+  recording_path = kscrash_dir + "Recording"
+  reporting_path = kscrash_dir + "Reporting"
 
   # Copy over basic additional KSCrash reporting files
+  recording_sentry_path = kscrash_dir + "Recording/Sentry"
+  recording_tools_path = kscrash_dir + "Recording/Tools"
   kscrash_filter_path = kscrash_dir + "Reporting/Filters/"
-  cp kscrash_filter_path + "Tools/KSVarArgs.h", ios_dir
-  cp kscrash_filter_path + "Tools/Container+DeepSearch.h", ios_dir
-  cp kscrash_filter_path + "Tools/Container+DeepSearch.m", ios_dir
-  cp kscrash_filter_path + "KSCrashReportFilter.h", ios_dir
-  cp kscrash_filter_path + "KSCrashReportFilter.m", ios_dir
+
+  `find #{recording_path} #{reporting_path} #{bugsnag_path} #{recording_sentry_path} #{recording_tools_path} #{kscrash_filter_path} -name '*.m' -or -name '*.c' -or -name '*.mm' -or -name '*.h' -or -name '*.cpp'`.split("\n").each do |x|
+    cp x, ios_dir
+  end
 
   # Copy unity to bugsnag-cocoa wrapper
   cp "src/BugsnagUnity.mm", ios_dir

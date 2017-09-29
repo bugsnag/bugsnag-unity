@@ -36,7 +36,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 /** Get the current Bugsnag configuration.
  *
- * This method returns nil if called before +startBugsnagWIthApiKey: or
+ * This method returns nil if called before +startBugsnagWithApiKey: or
  * +startBugsnagWithConfiguration:, and otherwise returns the current
  * configuration for Bugsnag.
  *
@@ -132,6 +132,14 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
     atSeverity:(NSString *_Nullable)severity
     __deprecated_msg("Use notify:block: instead and add the metadata and severity to the report directly.");
 
+/**
+ * Intended for use by other clients (React Native/Unity). Calling this method directly from
+ * iOS is not supported.
+ */
++ (void)internalClientNotify:(NSException *_Nonnull)exception
+                    withData:(NSDictionary *_Nullable)metaData
+                       block:(BugsnagNotifyBlock _Nullable)block;
+
 /** Add custom data to send to Bugsnag with every exception. If value is nil,
  *  delete the current value for attributeName
  *
@@ -182,7 +190,7 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
  * By default, we'll keep and send the 20 most recent breadcrumb log
  * messages.
  *
- * @param max  number of breadcrumb log messages to send
+ * @param capacity max number of breadcrumb log messages to send
  */
 + (void)setBreadcrumbCapacity:(NSUInteger)capacity;
 
@@ -193,8 +201,8 @@ static NSString *_Nonnull const BugsnagSeverityInfo = @"info";
 
 + (NSDateFormatter *_Nonnull)payloadDateFormatter;
 
-+ (void)setSuspendThreadsForUserReported:(bool)suspendThreadsForUserReported;
-
-+ (void)setReportWhenDebuggerIsAttached:(bool)reportWhenDebuggerIsAttached;
++ (void)setSuspendThreadsForUserReported:(BOOL)suspendThreadsForUserReported;
++ (void)setReportWhenDebuggerIsAttached:(BOOL)reportWhenDebuggerIsAttached;
++ (void)setThreadTracingEnabled:(BOOL)threadTracingEnabled;
 
 @end

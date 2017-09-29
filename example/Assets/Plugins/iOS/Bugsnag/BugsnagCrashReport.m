@@ -1,14 +1,24 @@
 //
-//  KSCrashReport.m
+//  BugsnagCrashReport.m
 //  Bugsnag
 //
 //  Created by Simon Maynard on 11/26/14.
 //
 //
 
+#if TARGET_OS_MAC || TARGET_OS_TV
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#include <sys/utsname.h>
+#endif
+
 #import "Bugsnag.h"
 #import "BugsnagCollections.h"
 #import "BugsnagCrashReport.h"
+#import "BugsnagLogger.h"
+#import "BSGSerialization.h"
+#import "BugsnagSystemInfo.h"
+#import "BugsnagHandledState.h"
 
 NSMutableDictionary *BSGFormatFrame(NSDictionary *frame,
                                     NSArray *binaryImages) {
@@ -76,26 +86,35 @@ NSString *BSGParseErrorMessage(NSDictionary *report, NSDictionary *error, NSStri
             return [[diagnosis componentsSeparatedByString:@"\n"] firstObject];
         }
     }
-    return error[@"reason"];
+    return error[@"reason"] ?: @"";
 }
 
 NSDictionary *BSGParseDevice(NSDictionary *report) {
-    NSDictionary *system = report[@"system"];
-    NSMutableDictionary *device = [NSMutableDictionary dictionary];
+    NSMutableDictionary *data = [NSMutableDictionary dictionary];
 
-    BSGDictSetSafeObject(device, @"Apple", @"manufacturer");
-    BSGDictSetSafeObject(device, [[NSLocale currentLocale] localeIdentifier],
+    BSGDictSetSafeObject(data, @"Apple", @"manufacturer");
+    BSGDictSetSafeObject(data, [[NSLocale currentLocale] localeIdentifier],
                          @"locale");
-    BSGDictSetSafeObject(device, system[@"device_app_hash"], @"id");
-    BSGDictSetSafeObject(device, system[@"time_zone"], @"timezone");
-    BSGDictSetSafeObject(device, system[@"model"], @"modelNumber");
-    BSGDictSetSafeObject(device, system[@"machine"], @"model");
-    BSGDictSetSafeObject(device, system[@"system_name"], @"osName");
-    BSGDictSetSafeObject(device, system[@"system_version"], @"osVersion");
-    BSGDictSetSafeObject(device, system[@"memory"][@"usable"],
-                         @"totalMemory");
-
-    return device;
+    
+    
+#if TARGET_OS_MAC || TARGET_OS_TV
+    NSProcessInfo *processInfo = [NSProcessInfo processInfo];
+    BSGDictSetSafeObject(data, processInfo.operatingSystemName, @"osName");
+    BSGDictSetSafeObject(data, processInfo.operatingSystemVersionString, @"osVersion");
+#elif TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+    UIDevice *device = [UIDevice currentDevice];
+    BSGDictSetSafeObject(data, device.systemName, @"osName");
+    BSGDictSetSafeObject(data, device.systemVersion, @"osVersion");
+#endif
+    
+    
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.deviceAndAppHash, @"id");
+    BSGDictSetSafeObject(data, NSTimeZone.localTimeZone.abbreviation, @"timezone");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.modelNumber, @"modelNumber");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.modelName, @"model");
+    BSGDictSetSafeObject(data, BugsnagSystemInfo.usableMemory, @"totalMemory");
+    
+    return data;
 }
 
 NSDictionary *BSGParseApp(NSDictionary *report, NSString *appVersion) {
@@ -113,7 +132,7 @@ NSDictionary *BSGParseApp(NSDictionary *report, NSString *appVersion) {
         BSGDictSetSafeObject(app, system[@"CFBundleShortVersionString"],
                              @"version");
     }
-
+    
     return app;
 }
 
@@ -133,7 +152,7 @@ NSDictionary *BSGParseAppState(NSDictionary *report) {
     BSGDictSetSafeObject(appState, appStats[@"application_in_foreground"],
                          @"inForeground");
     BSGDictSetSafeObject(appState, appStats, @"stats");
-
+    
     return appState;
 }
 
@@ -146,6 +165,21 @@ NSDictionary *BSGParseDeviceState(NSDictionary *report) {
     BSGDictSetSafeObject(deviceState,
                          [report valueForKeyPath:@"report.timestamp"],
                          @"time");
+    
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true);
+    NSString *path = [searchPaths lastObject];
+    
+    NSError *error;
+    NSDictionary *fileSystemAttrs = [fileManager attributesOfFileSystemForPath:path error:&error];
+    
+    if (error) {
+        bsg_log_warn(@"Failed to read free disk space: %@", error);
+    }
+    
+    NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+    BSGDictSetSafeObject(deviceState, freeBytes, @"freeDisk");
     return deviceState;
 }
 
@@ -207,12 +241,18 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
     if (type && frames) {
         return @{ @"stacktrace": frames,
                   @"type": type,
-                  @"errorClass": errorClass ?: @"",
-                  @"message": message ?: @""};
+                  @"errorClass": errorClass,
+                  @"message": message};
     }
 
     return nil;
 }
+
+static NSString *const DEFAULT_EXCEPTION_TYPE = @"cocoa";
+
+@interface NSDictionary (BSGKSMerge)
+- (NSDictionary*)BSG_mergedInto:(NSDictionary *)dest;
+@end
 
 @interface BugsnagCrashReport ()
 
@@ -220,10 +260,6 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
  *  The type of the error, such as `mach` or `user`
  */
 @property (nonatomic, readwrite, copy, nullable) NSString *errorType;
-/**
- *  Raw error data
- */
-@property (nonatomic, readwrite, copy, nullable) NSDictionary *error;
 /**
  *  The UUID of the dSYM file
  */
@@ -241,25 +277,10 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
  */
 @property (nonatomic, readonly, copy, nullable) NSArray *threads;
 /**
- *  Device information such as OS name and version
- */
-@property (nonatomic, readwrite, copy, nullable) NSDictionary *device;
-/**
- *  Device state such as memory allocation at crash time
- */
-@property (nonatomic, readwrite, copy, nullable) NSDictionary *deviceState;
-/**
- *  App information such as the name, version, and bundle ID
- */
-@property (nonatomic, readwrite, copy, nullable) NSDictionary *app;
-/**
- *  Device state such as oreground status and run duration
- */
-@property (nonatomic, readwrite, copy, nullable) NSDictionary *appState;
-/**
  *  User-provided exception metadata
  */
 @property (nonatomic, readwrite, copy, nullable) NSDictionary *customException;
+
 @end
 
 @implementation BugsnagCrashReport
@@ -268,6 +289,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
   if (self = [super init]) {
       _notifyReleaseStages = [report valueForKeyPath:@"user.config.notifyReleaseStages"];
       _releaseStage = BSGParseReleaseStage(report);
+      
       _error = [report valueForKeyPath:@"crash.error"];
       _errorType = _error[@"type"];
       _errorClass = BSGParseErrorClass(_error, _errorType);
@@ -277,7 +299,7 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
       _breadcrumbs = BSGParseBreadcrumbs(report);
       _severity = BSGParseSeverity([report valueForKeyPath:@"user.state.crash.severity"]);
       _depth = [[report valueForKeyPath:@"user.state.crash.depth"] unsignedIntegerValue];
-      _dsymUUID = [report valueForKeyPath:@"system.app_uuid"];
+      _dsymUUID = BugsnagSystemInfo.appUUID;
       _deviceAppHash = [report valueForKeyPath:@"system.device_app_hash"];
       _metaData = [report valueForKeyPath:@"user.metaData"] ?: [NSDictionary new];
       _context = BSGParseContext(report, _metaData);
@@ -288,27 +310,76 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
       _groupingHash = BSGParseGroupingHash(report, _metaData);
       _overrides = [report valueForKeyPath:@"user.overrides"];
       _customException = BSGParseCustomException(report, [_errorClass copy], [_errorMessage copy]);
+      
+      NSDictionary *recordedState = [report valueForKeyPath:@"user.handledState"];
+      
+      if (recordedState) {
+          _handledState = [[BugsnagHandledState alloc] initWithDictionary:recordedState];
+      } else { // the event was unhandled.
+          BOOL isSignal = [@"signal" isEqualToString:_errorType];
+          SeverityReasonType severityReason = isSignal ? Signal : UnhandledException;
+          _handledState = [BugsnagHandledState handledStateWithSeverityReason:severityReason];
+      }
+      _severity = _handledState.currentSeverity;
   }
   return self;
 }
 
-- (instancetype)initWithErrorName:(NSString *)name
-                     errorMessage:(NSString *)message
-                    configuration:(BugsnagConfiguration *)config
-                         metaData:(NSDictionary *)metaData
-                         severity:(BSGSeverity)severity {
+- (instancetype _Nonnull)initWithErrorName:(NSString *_Nonnull)name
+                              errorMessage:(NSString *_Nonnull)message
+                             configuration:(BugsnagConfiguration *_Nonnull)config
+                                  metaData:(NSDictionary *_Nonnull)metaData
+                              handledState:(BugsnagHandledState *_Nonnull)handledState {
     if (self = [super init]) {
         _errorClass = name;
         _errorMessage = message;
         _metaData = metaData ?: [NSDictionary new];
-        _severity = severity;
         _releaseStage = config.releaseStage;
         _notifyReleaseStages = config.notifyReleaseStages;
         _context = BSGParseContext(nil, metaData);
         _breadcrumbs = [config.breadcrumbs arrayValue];
         _overrides = [NSDictionary new];
+        
+        _handledState = handledState;
+        _severity = handledState.currentSeverity;
     }
     return self;
+}
+
+- (void)setMetaData:(NSDictionary *)metaData {
+    _metaData = BSGSanitizeDict(metaData);
+}
+
+- (void)addMetadata:(NSDictionary*_Nonnull)tabData
+      toTabWithName:(NSString *_Nonnull)tabName {
+    NSDictionary *cleanedData = BSGSanitizeDict(tabData);
+    if ([cleanedData count] == 0) {
+        bsg_log_err(@"Failed to add metadata: Values not convertible to JSON");
+        return;
+    }
+    NSMutableDictionary *allMetadata = [self.metaData mutableCopy];
+    NSMutableDictionary *allTabData = allMetadata[tabName] ?: [NSMutableDictionary new];
+    allMetadata[tabName] = [cleanedData BSG_mergedInto:allTabData];
+    self.metaData = allMetadata;
+}
+
+- (void)addAttribute:(NSString*)attributeName
+           withValue:(id)value
+       toTabWithName:(NSString*)tabName {
+    NSMutableDictionary *allMetadata = [self.metaData mutableCopy];
+    NSMutableDictionary *allTabData = allMetadata[tabName] ?: [NSMutableDictionary new];
+    if (value) {
+        id cleanedValue = BSGSanitizeObject(value);
+        if (!cleanedValue) {
+            bsg_log_err(@"Failed to add metadata: Value of type %@ is not convertible to JSON", [value class]);
+            return;
+        }
+        allTabData[attributeName] = cleanedValue;
+    } else {
+        [allTabData removeObjectForKey:attributeName];
+    }
+    allMetadata[tabName] = allTabData;
+    self.metaData = allMetadata;
 }
 
 - (BOOL)shouldBeSent {
@@ -341,6 +412,11 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
     [self setOverrideProperty:@"customStacktraceType" value:type];
 }
 
+- (void)setSeverity:(BSGSeverity)severity {
+    _severity = severity;
+    _handledState.currentSeverity = severity;
+}
+
 - (void)setOverrideProperty:(NSString *)key value:(id)value {
     NSMutableDictionary *metadata = [self.overrides mutableCopy];
     if (value) {
@@ -365,9 +441,22 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
       NSMutableDictionary *exception = [NSMutableDictionary dictionary];
       BSGDictSetSafeObject(exception, [self errorClass], @"errorClass");
       BSGDictInsertIfNotNil(exception, [self errorMessage], @"message");
-      BSGDictInsertIfNotNil(exception, @"cocoa", @"type");
+      BSGDictInsertIfNotNil(exception, DEFAULT_EXCEPTION_TYPE, @"type");
       BSGDictSetSafeObject(event, @[exception], @"exceptions");
-      BSGDictSetSafeObject(event, [self serializeThreadsWithException:exception],
+
+      // HACK: For the Unity Notifier. We don't include ObjectiveC exceptions or
+      // threads
+      // if this is an exception from Unity-land.
+      NSDictionary *unityReport = metaData[@"_bugsnag_unity_exception"];
+      if (unityReport) {
+          BSGDictSetSafeObject(data, unityReport[@"notifier"], @"notifier");
+          BSGDictSetSafeObject(exception, unityReport[@"stacktrace"], @"stacktrace");
+          [metaData removeObjectForKey:@"_bugsnag_unity_exception"];
+          return event;
+      }
+
+      BSGDictSetSafeObject(event,
+                           [self serializeThreadsWithException:exception],
                            @"threads");
   }
   // Build Event
@@ -382,6 +471,20 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
   BSGDictSetSafeObject(event, [self app], @"app");
   BSGDictSetSafeObject(event, [self context], @"context");
   BSGDictInsertIfNotNil(event, self.groupingHash, @"groupingHash");
+    
+    BSGDictSetSafeObject(event, @(self.handledState.unhandled), @"unhandled");
+    
+    // serialize handled/unhandled into payload
+    NSMutableDictionary *severityReason = [NSMutableDictionary new];
+    NSString *reasonType = [BugsnagHandledState stringFromSeverityReason:self.handledState.calculateSeverityReasonType];
+    severityReason[@"type"] = reasonType;
+    
+    if (self.handledState.attrKey) {
+       severityReason[@"attributes"] = @{self.handledState.attrKey: self.handledState.attrValue};
+    }
+    
+    BSGDictSetSafeObject(event, severityReason, @"severityReason");
+    
 
   //  Inserted into `context` property
   [metaData removeObjectForKey:@"context"];
@@ -441,7 +544,8 @@ NSDictionary *BSGParseCustomException(NSDictionary *report, NSString *errorClass
       NSMutableDictionary *threadDict = [NSMutableDictionary dictionary];
       BSGDictSetSafeObject(threadDict, thread[@"index"], @"id");
       BSGDictSetSafeObject(threadDict, threadStack, @"stacktrace");
-      // only if this is enabled in KSCrash.
+      BSGDictSetSafeObject(threadDict, DEFAULT_EXCEPTION_TYPE, @"type");
+      // only if this is enabled in BSG_KSCrash.
       if (thread[@"name"]) {
         BSGDictSetSafeObject(threadDict, thread[@"name"], @"name");
       }
