@@ -124,14 +124,14 @@ task :create_android_plugin do
 
   # Create clean build of the android notifier
   cd 'bugsnag-android' do
-    sh "./gradlew clean sdk:build"
+    sh "./gradlew clean build"
   end
 
   cd 'bugsnag-android-unity' do
     sh "../bugsnag-android/gradlew clean build"
   end
 
-  cp "bugsnag-android/build/outputs/aar/bugsnag-android-release.aar", android_dir
+  cp "bugsnag-android/sdk/build/outputs/aar/sdk-release.aar", android_dir
   cp "bugsnag-android-unity/build/outputs/aar/bugsnag-android-unity-release.aar", android_dir
 end
 
