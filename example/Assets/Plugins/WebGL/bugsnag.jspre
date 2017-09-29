@@ -116,8 +116,12 @@
       file: exception.fileName || exception.sourceURL,
       lineNumber: exception.lineNumber || exception.line,
       columnNumber: exception.columnNumber ? exception.columnNumber + 1 : undefined,
-      severity: severity || "warning"
-    }, metaData);
+      severity: severity
+    }, metaData, {
+      originalSeverity: "warning",
+      unhandled: false,
+      severityReason: { type: "handledException" }
+    });
   };
 
   // #### Bugsnag.notify
@@ -139,8 +143,12 @@
       // newer browsers get a legit stacktrace from generateStacktrace().
       file: window.location.toString(),
       lineNumber: 1,
-      severity: severity || "warning"
-    }, metaData);
+      severity: severity
+    }, metaData, {
+      originalSeverity: "warning",
+      unhandled: false,
+      severityReason: { type: "handledError" }
+    });
   };
 
   // #### Bugsnag.leaveBreadcrumb(value, [metaData])
@@ -247,7 +255,20 @@
               return _super.apply(this, arguments);
             } catch (e) {
               if (getSetting("autoNotify", true)) {
-                self.notifyException(e, null, null, "error");
+                var metaData = {};
+                addScriptToMetaData(metaData);
+                sendToBugsnag({
+                  name: e.name,
+                  message: e.message,
+                  stacktrace: stacktraceFromException(e) || generateStacktrace(),
+                  file: e.fileName || e.sourceURL,
+                  lineNumber: e.lineNumber || e.line,
+                  columnNumber: e.columnNumber ? e.columnNumber + 1 : undefined
+                }, metaData, {
+                  originalSeverity: "error",
+                  unhandled: true,
+                  severityReason: { type: "unhandledException" }
+                });
                 ignoreNextOnError();
               }
               throw e;
@@ -340,7 +361,9 @@
     // keep track of functions that we will need to hijack
     var nativeLog = console.log,
       nativeWarn = console.warn,
-      nativeError = console.error;
+      nativeError = console.error,
+      nativeGroup = console.group,
+      nativeGroupCollapsed = console.groupCollapsed;
 
     self.enableAutoBreadcrumbsConsole = function() {
       self.autoBreadcrumbsConsole = true;
@@ -356,6 +379,14 @@
       enhance(console, "error", function() {
         trackLog("error", arguments);
       });
+
+      enhance(console, "group", function() {
+        trackLog("log", [ "[group]" ].concat(Array.prototype.slice.call(arguments)));
+      });
+
+      enhance(console, "groupCollapsed", function() {
+        trackLog("log", [ "[group]" ].concat(Array.prototype.slice.call(arguments)));
+      });
     };
 
     self.disableAutoBreadcrumbsConsole = function() {
@@ -364,6 +395,8 @@
       console.log = nativeLog;
       console.warn = nativeWarn;
       console.error = nativeError;
+      console.group = nativeGroup;
+      console.groupCollapsed = nativeGroupCollapsed;
     };
 
     if(getBreadcrumbSetting("autoBreadcrumbsConsole")) {
@@ -608,7 +641,7 @@
   // Set up default notifier settings.
   var DEFAULT_BASE_ENDPOINT = "https://notify.bugsnag.com/";
   var DEFAULT_NOTIFIER_ENDPOINT = DEFAULT_BASE_ENDPOINT + "js";
-  var NOTIFIER_VERSION = "3.2.0";
+  var NOTIFIER_VERSION = "3.2.2";
 
   // Keep a reference to the currently executing script in the DOM.
   // We'll use this later to extract settings from attributes.
@@ -776,7 +809,7 @@
 
       var str = [];
       for (var p in obj) {
-        if (obj.hasOwnProperty(p) && p != null && obj[p] != null) {
+        if ((!obj.hasOwnProperty || obj.hasOwnProperty(p)) && p != null && obj[p] != null) {
           var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
           str.push(typeof v === "object" ? serialize(v, k, depth) : encodeURIComponent(k) + "=" + encodeURIComponent(v));
         }
@@ -786,6 +819,9 @@
       return encodeURIComponent(prefix) + "=" + encodeURIComponent("" + e);
     }
   }
+
+  // export this as a method for use in tests
+  self._serialize = serialize;
 
 
   // Deep-merge the `source` object into the `target` object and return
@@ -872,6 +908,10 @@
     if (setting === "false") {
       setting = false;
     }
+    // some settings may need extracting from comma separated strings -> arrays
+    if (name === "notifyReleaseStages" && typeof setting === "string") {
+      setting = setting.split(/\s*,\s*/);
+    }
     return setting !== undefined ? setting : fallback;
   }
 
@@ -894,7 +934,7 @@
   }
 
   // Send an error to Bugsnag.
-  function sendToBugsnag(details, metaData) {
+  function sendToBugsnag(details, metaData, handledState) {
     // Validate the configured API key.
     var apiKey = getSetting("apiKey");
     if (!validateApiKey(apiKey) || !eventsRemaining) {
@@ -963,6 +1003,17 @@
       payloadVersion: "3"
     };
 
+    // did the user set severity?
+    var userSeverity = details.severity;
+    var userSpecifiedSeverity = userSeverity && userSeverity !== handledState.originalSeverity;
+
+    // annotate this property so that we can check if the "beforeNotify" callbacks changed it
+    // can't annotate a string literal ""/'', so create a String() object, woo!
+    if (userSpecifiedSeverity) {
+      payload.severity = new String(userSpecifiedSeverity);
+      payload.severity.__userSpecifiedSeverity = true;
+    }
+
     // Run any `beforeNotify` function
     var beforeNotify = self.beforeNotify;
     if (typeof(beforeNotify) === "function") {
@@ -971,6 +1022,27 @@
         return;
       }
     }
+
+    // did any of the the callbacks set the severity?
+    var callbackSeverity = payload.severity;
+    var callbackSetSeverity = callbackSeverity && !callbackSeverity.__userSpecifiedSeverity && callbackSeverity !== handledState.originalSeverity;
+
+    if (callbackSetSeverity) {
+      // callbacks set a valid severity value
+      payload.severity = callbackSeverity;
+      payload.severityReason = { type: "userCallbackSetSeverity" };
+    } else if (userSpecifiedSeverity) {
+      // user specified a valid severity value
+      payload.severity = userSeverity;
+      payload.severityReason = { type: "userSpecifiedSeverity" };
+    } else {
+      // user did not specify severity, or specified and invalid value
+      payload.severity = handledState.originalSeverity;
+      payload.severityReason = handledState.severityReason;
+    }
+
+    // finally, add whether the error was unhandled so that callbacks can't fiddle with it
+    payload.unhandled = handledState.unhandled;
 
     if (payload.lineNumber === 0 && (/Script error\.?/).test(payload.message)) {
       return log("Ignoring cross-domain or eval script error. See https://docs.bugsnag.com/platforms/browsers/faq/#3-cross-origin-script-errors");
@@ -1115,16 +1187,29 @@
         lastScript = null;
 
         if (shouldNotify && !ignoreOnError) {
-          var name = exception && exception.name || "window.onerror";
+          var name, msg;
+          if (arguments.length === 1) {
+            // if called with a single argument, "message" is likely an Event object
+            // as documented here: https://developer.mozilla.org/en/docs/Web/API/GlobalEventHandlers/onerror#Syntax
+            name = message && message.type ? ("Event: " + message.type) : "window.onerror";
+            msg = message && message.detail ? message.detail : undefined;
+            metaData.event = message;
+          } else {
+            name = exception && exception.name || "window.onerror";
+            msg = message;
+          }
           sendToBugsnag({
             name: name,
-            message: message,
+            message: msg,
             file: url,
             lineNumber: lineNo,
             columnNumber: charNo,
-            stacktrace: (exception && stacktraceFromException(exception)) || generateStacktrace(),
-            severity: "error"
-          }, metaData);
+            stacktrace: (exception && stacktraceFromException(exception)) || generateStacktrace()
+          }, metaData, {
+            originalSeverity: "error",
+            unhandled: true,
+            severityReason: { type: "unhandledException" }
+          });
 
           // add the error to the breadcrumbs
           if (getBreadcrumbSetting("autoBreadcrumbsErrors")) {
@@ -1134,7 +1219,7 @@
               metaData: {
                 severity: "error",
                 file: url,
-                message: message,
+                message: msg,
                 line: lineNo
               }
             });
@@ -1198,12 +1283,23 @@
       window.addEventListener("unhandledrejection", function (event) {
         if (getSetting("notifyUnhandledRejections", false)) {
           var err = event.reason;
-          if (err && (err instanceof Error || err.message)) {
-            self.notifyException(err);
-          } else {
-            // Hopefully the reason is a serializable value (this may yield less than useful results if reject() is abused)
-            self.notify("UnhandledRejection", err);
+          var metaData = {};
+          addScriptToMetaData(metaData);
+          if (err && !err.message) {
+            metaData.promiseRejectionValue = err;
           }
+          sendToBugsnag({
+            name: (err && err.name) ? err.name : "UnhandledRejection",
+            message: (err && err.message) ? err.message : "",
+            stacktrace: stacktraceFromException(err) || generateStacktrace(),
+            file: err.fileName || err.sourceURL,
+            lineNumber: err.lineNumber || err.line,
+            columnNumber: err.columnNumber ? err.columnNumber + 1 : undefined
+          }, metaData, {
+            originalSeverity: "error",
+            unhandled: true,
+            severityReason: { type: "unhandledPromiseRejection" }
+          });
         }
       });
     }
