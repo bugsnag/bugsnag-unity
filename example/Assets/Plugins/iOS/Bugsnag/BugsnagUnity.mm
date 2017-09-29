@@ -1,6 +1,5 @@
 #import "Bugsnag.h"
 #import "BugsnagCrashReport.h"
-#import "NSDictionary+Merge.h"
 
 @interface Bugsnag ()
 + (id)notifier;

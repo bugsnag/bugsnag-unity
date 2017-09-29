@@ -124,7 +124,7 @@ task :create_android_plugin do
 
   # Create clean build of the android notifier
   cd 'bugsnag-android' do
-    sh "./gradlew clean build"
+    sh "./gradlew clean sdk:build"
   end
 
   cd 'bugsnag-android-unity' do
