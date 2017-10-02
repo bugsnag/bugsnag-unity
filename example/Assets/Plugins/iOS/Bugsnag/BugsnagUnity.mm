@@ -126,6 +126,10 @@ extern "C" {
         // Disable thread tracing on non-fatal exceptions
         [Bugsnag setThreadTracingEnabled:false];
 
+        // Disable writing binary images
+        [Bugsnag setWriteBinaryImagesForUserReported:false];
+
+
         [Bugsnag startBugsnagWithApiKey:ns_apiKey];
 
         id notifier = [Bugsnag notifier];
