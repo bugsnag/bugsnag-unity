@@ -347,11 +347,8 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
     
     NSString *severity = [metaData objectForKey:@"severity"];
     NSString *severityReason = [metaData objectForKey:@"severityReason"];
-    
-    if (!severity || !severityReason) {
-        [NSException raise:@"InvalidNotifyArguments"
-                    format:@"A severity and severityReason must be supplied"];
-    }
+    NSParameterAssert(severity.length > 0);
+    NSParameterAssert(severityReason.length > 0);
     
     SeverityReasonType severityReasonType = [BugsnagHandledState severityReasonFromString:severityReason];
     
@@ -368,15 +365,14 @@ NSString *const kAppWillTerminate = @"App Will Terminate";
 
 - (void)notify:(NSString *)exceptionName
        message:(NSString *)message
-  handledState:(BugsnagHandledState *)handledState
+  handledState:(BugsnagHandledState *_Nonnull)handledState
          block:(void (^)(BugsnagCrashReport *))block {
-    
-    BugsnagHandledState *state = [BugsnagHandledState handledStateWithSeverityReason:HandledException];
+
     BugsnagCrashReport *report = [[BugsnagCrashReport alloc] initWithErrorName:exceptionName
                                                                   errorMessage:message
                                                                  configuration:self.configuration
                                                                       metaData:[self.configuration.metaData toDictionary]
-                                                                      handledState:state];
+                                                                      handledState:handledState];
     if (block) {
         block(report);
     }

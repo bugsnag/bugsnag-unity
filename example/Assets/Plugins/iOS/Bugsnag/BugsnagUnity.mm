@@ -9,7 +9,7 @@ extern "C" {
     void SetContext(char *context);
     void SetReleaseStage(char *releaseStage);
     void SetAutoNotify(int autoNotify);
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType);
+    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason);
     void Register(char *apiKey);
     void AddToTab(char *tabName, char *attributeName, char *attributeValue);
     void ClearTab(char *tabName);
@@ -67,13 +67,14 @@ extern "C" {
         [Bugsnag clearTabWithName:ns_tabName];
     }
 
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType) {
+    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason) {
         NSString *ns_errorClass = [NSString stringWithUTF8String:errorClass];
         NSString *ns_errorMessage = [NSString stringWithUTF8String:errorMessage];
         NSString *ns_severity = [NSString stringWithUTF8String:severity];
         NSString *ns_context = [NSString stringWithUTF8String:context];
         NSString *ns_stackTrace = [NSString stringWithUTF8String:stackTrace];
         NSString *ns_logType = [NSString stringWithUTF8String:logType];
+        NSString *ns_severityReason = [NSString stringWithUTF8String:severityReason];
 
         NSRegularExpression *unityExpression = [NSRegularExpression regularExpressionWithPattern:@"(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?"
                                                                                          options:NSRegularExpressionCaseInsensitive
@@ -93,15 +94,22 @@ extern "C" {
         }
 
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [Bugsnag notify:exception block:^(BugsnagCrashReport *report) {
-                if (ns_context.length > 0) {
-                    report.context = ns_context;
-                }
-                [report attachCustomStacktrace:stacktrace withType:@"unity"];
-                report.severity = ParseBugsnagSeverity(ns_severity);
-                NSMutableDictionary *metadata = [report.metaData mutableCopy];
-                metadata[@"Unity"] = unityData;
-                report.metaData = metadata;
+            id notifier = [Bugsnag notifier];
+
+            NSMutableDictionary *dict = [NSMutableDictionary new];
+            dict[@"severity"] = ns_severity;
+            dict[@"severityReason"] = ns_severityReason;
+
+            [notifier internalClientNotify:exception
+                                  withData:dict
+                                     block:^(BugsnagCrashReport *report) {
+                 if (ns_context.length > 0) {
+                     report.context = ns_context;
+                 }
+                 [report attachCustomStacktrace:stacktrace withType:@"unity"];
+                 NSMutableDictionary *metadata = [report.metaData mutableCopy];
+                 metadata[@"Unity"] = unityData;
+                 report.metaData = metadata;
             }];
         });
     }

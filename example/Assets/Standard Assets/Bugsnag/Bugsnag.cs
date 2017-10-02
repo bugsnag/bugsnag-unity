@@ -144,7 +144,7 @@ public class Bugsnag : MonoBehaviour {
                 };
 
                 // Call Android's notify method
-		IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Ljava/lang/String;Ljava/lang/String;)V");
+                IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Ljava/lang/String;Ljava/lang/String;)V");
                 if(warmup == false) AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), clientConstructorId, args);
             }
         }
