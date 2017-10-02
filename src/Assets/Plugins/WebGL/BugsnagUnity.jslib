@@ -3,7 +3,7 @@ var BugsnagPlugin = {
     {
         Bugsnag.apiKey = Pointer_stringify(apiKey);
     },
-    Notify: function(errorClass, errorMessage, severity, context, stackTrace, logType)
+    Notify: function(errorClass, errorMessage, severity, context, stackTrace, logType, severityReason)
     {
         var strErrorClass = Pointer_stringify(errorClass);
         var strErrorMessage = Pointer_stringify(errorMessage);
@@ -11,6 +11,7 @@ var BugsnagPlugin = {
         var strContext = Pointer_stringify(context);
         var strSeverity = Pointer_stringify(severity);
         var strLogType = Pointer_stringify(logType);
+        var strSeverityReason = Pointer_stringify(severityReason);
 
         // Create a representative error with the provided stack trace
         var exp = new Error();
@@ -39,6 +40,7 @@ var BugsnagPlugin = {
           metaData["Unity"]["unityLogLevel"] = strLogType;
         }
 
+        // TODO pass in severityReason here as well!
         Bugsnag.notifyException(exp, strErrorClass, metaData, strSeverity);
     },
     SetNotifyUrl: function(notifyUrl)
