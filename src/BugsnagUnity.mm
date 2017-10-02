@@ -123,6 +123,9 @@ extern "C" {
         // Set reporting of Bugsnags when debugger is attached
         [Bugsnag setReportWhenDebuggerIsAttached:true];
 
+        // Disable thread tracing on non-fatal exceptions
+        [Bugsnag setThreadTracingEnabled:false];
+
         [Bugsnag startBugsnagWithApiKey:ns_apiKey];
 
         id notifier = [Bugsnag notifier];
