@@ -40,8 +40,15 @@ var BugsnagPlugin = {
           metaData["Unity"]["unityLogLevel"] = strLogType;
         }
 
-        // TODO pass in severityReason here as well!
-        Bugsnag.notifyException(exp, strErrorClass, metaData, strSeverity);
+        var handledState = {
+          originalSeverity: strSeverity,
+          severityReason: {
+            type: strSeverityReason
+          },
+          unhandled: false
+        }
+
+        Bugsnag.notifyException(exp, strErrorClass, metaData, strSeverity, handledState);
     },
     SetNotifyUrl: function(notifyUrl)
     {
