@@ -6,7 +6,7 @@ import com.bugsnag.android.*;
 
 class UnityCallback implements Callback {
     static final String NOTIFIER_NAME = "Bugsnag Unity (Android)";
-    static final String NOTIFIER_VERSION = "3.4.0";
+    static final String NOTIFIER_VERSION = "3.5.0";
     static final String NOTIFIER_URL = "https://github.com/bugsnag/bugsnag-unity";
 
     private final String context;
