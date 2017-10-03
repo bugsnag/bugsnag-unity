@@ -28,7 +28,7 @@ public class Bugsnag : MonoBehaviour {
         public static extern void Register(string apiKey);
 
         [DllImport (dllName)]
-        public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type);
+        public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, string severityReason);
 
         [DllImport (dllName)]
         public static extern void SetNotifyUrl(string notifyUrl);
@@ -80,14 +80,14 @@ public class Bugsnag : MonoBehaviour {
             IntPtr methodId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "init", "(Landroid/content/Context;Ljava/lang/String;)V");
             AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), methodId, args);
             registered_ = true;
-            Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), null, true);
+            Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), null, true, "");
         }
 
-        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type) {
-            Notify(errorClass, errorMessage, severity, context, stackTrace, type, false);
+		public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, string severityReason) {
+            Notify(errorClass, errorMessage, severity, context, stackTrace, type, false, severityReason);
         }
 
-        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, bool warmup) {
+        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, bool warmup, string severityReason) {
             if (!CheckRegistration()) return;
             var stackFrames = new ArrayList ();
 
@@ -135,17 +135,18 @@ public class Bugsnag : MonoBehaviour {
                 }
 
                 // Build the arguments
-                jvalue[] args =  new jvalue[6] {
+                jvalue[] args =  new jvalue[7] {
                     new jvalue() { l = AndroidJNI.NewStringUTF(errorClass) },
                     new jvalue() { l = AndroidJNI.NewStringUTF(errorMessage) },
                     new jvalue() { l = AndroidJNI.NewStringUTF(context) },
                     new jvalue() { l = (IntPtr)stackFrameArrayObject },
                     new jvalue() { l = severityInstance.GetRawObject() },
-                    new jvalue() { l = String.IsNullOrEmpty(type) ? IntPtr.Zero : AndroidJNI.NewStringUTF(type) }
+                    new jvalue() { l = String.IsNullOrEmpty(type) ? IntPtr.Zero : AndroidJNI.NewStringUTF(type) },
+					new jvalue() { l = AndroidJNI.NewStringUTF(String.IsNullOrEmpty(severityReason) ? "handledException" : severityReason) }
                 };
 
                 // Call Android's notify method
-                IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Ljava/lang/String;)V");
+                IntPtr clientConstructorId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "notify", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/StackTraceElement;Lcom/bugsnag/android/Severity;Ljava/lang/String;Ljava/lang/String;)V");
                 if(warmup == false) AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), clientConstructorId, args);
             }
         }
@@ -214,7 +215,7 @@ public class Bugsnag : MonoBehaviour {
         public static void SetContext(string context) {}
         public static void SetReleaseStage(string releaseStage) {}
         public static void SetNotifyReleaseStages(string releaseStages) {}
-        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type) {
+		public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, string severityReason) {
             if (apiKey_ == null || apiKey_ == "") {
                 Debug.Log("BUGSNAG: ERROR: would not notify Bugsnag as no API key was set");
             } else {
@@ -551,7 +552,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (errorClass, errorMessage, bugsnagSeverity, "", stackTrace, type);
+            NotifySafely (errorClass, errorMessage, bugsnagSeverity, "", stackTrace, type, "log");
         }
     }
 
@@ -562,7 +563,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, "", stackTrace, null);
+            NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, "", stackTrace, null, "handledException");
         }
     }
 
@@ -573,7 +574,7 @@ public class Bugsnag : MonoBehaviour {
                 stackTrace = new System.Diagnostics.StackTrace (1, true).ToString ();
             }
 
-            NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, context, stackTrace, null);
+            NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, context, stackTrace, null, "handledException");
         }
     }
 
@@ -630,7 +631,7 @@ public class Bugsnag : MonoBehaviour {
         NativeBugsnag.SetUser(userId, userName, userEmail);
     }
 
-    private static void NotifySafely(string errorClass, string message, Severity severity, string context, string stackTrace, LogType? type) {
+    private static void NotifySafely(string errorClass, string message, Severity severity, string context, string stackTrace, LogType? type, string severityReason) {
         if (errorClass == null) {
             errorClass = "Error";
         }
@@ -652,6 +653,6 @@ public class Bugsnag : MonoBehaviour {
             logType = type.ToString();
         }
 
-        NativeBugsnag.Notify(errorClass, message, SeverityValues[(int)severity], context, stackTrace, logType);
+        NativeBugsnag.Notify(errorClass, message, SeverityValues[(int)severity], context, stackTrace, logType, severityReason);
     }
 }

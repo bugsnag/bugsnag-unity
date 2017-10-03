@@ -9,13 +9,11 @@ class UnityCallback implements Callback {
     static final String NOTIFIER_VERSION = "3.4.0";
     static final String NOTIFIER_URL = "https://github.com/bugsnag/bugsnag-unity";
 
-    private final Severity severity;
     private final String context;
     private final String logLevel;
 
-    UnityCallback(String context, Severity severity, String logLevel) {
+    UnityCallback(String context, String logLevel) {
         this.context = context;
-        this.severity = severity;
         this.logLevel = logLevel;
     }
 
@@ -26,12 +24,14 @@ class UnityCallback implements Callback {
         report.setNotifierVersion(NOTIFIER_VERSION);
 
         com.bugsnag.android.Error error = report.getError();
-        error.setSeverity(severity);
         MetaData metadata = error.getMetaData();
         metadata.addToTab("Unity", "unityException", "true");
-        if (logLevel != null && logLevel.length() > 0)
+
+        if (logLevel != null && logLevel.length() > 0) {
             metadata.addToTab("Unity", "unityLogLevel", logLevel);
-        if (context != null && context.length() > 0)
+        }
+        if (context != null && context.length() > 0) {
             error.setContext(context);
+        }
     }
 }

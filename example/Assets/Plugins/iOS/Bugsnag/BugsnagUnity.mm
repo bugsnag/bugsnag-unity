@@ -1,11 +1,15 @@
 #import "Bugsnag.h"
-#import "NSDictionary+Merge.h"
+#import "BugsnagCrashReport.h"
+
+@interface Bugsnag ()
++ (id)notifier;
+@end
 
 extern "C" {
     void SetContext(char *context);
     void SetReleaseStage(char *releaseStage);
     void SetAutoNotify(int autoNotify);
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType);
+    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason);
     void Register(char *apiKey);
     void AddToTab(char *tabName, char *attributeName, char *attributeValue);
     void ClearTab(char *tabName);
@@ -14,6 +18,14 @@ extern "C" {
     void SetAppVersion(char *version);
     void SetUser(char *userId, char *userName, char *userEmail);
     NSMutableArray *parseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex);
+
+    BSGSeverity ParseBugsnagSeverity(NSString *severity) {
+        if ([severity isEqualToString:@"info"])
+            return BSGSeverityInfo;
+        else if ([severity isEqualToString:@"warning"])
+            return BSGSeverityWarning;
+        return BSGSeverityError;
+    }
 
     void SetContext(char *context) {
         NSString *ns_context = [NSString stringWithUTF8String: context];
@@ -55,29 +67,23 @@ extern "C" {
         [Bugsnag clearTabWithName:ns_tabName];
     }
 
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType) {
+    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason) {
         NSString *ns_errorClass = [NSString stringWithUTF8String:errorClass];
         NSString *ns_errorMessage = [NSString stringWithUTF8String:errorMessage];
         NSString *ns_severity = [NSString stringWithUTF8String:severity];
         NSString *ns_context = [NSString stringWithUTF8String:context];
         NSString *ns_stackTrace = [NSString stringWithUTF8String:stackTrace];
         NSString *ns_logType = [NSString stringWithUTF8String:logType];
+        NSString *ns_severityReason = [NSString stringWithUTF8String:severityReason];
 
         NSRegularExpression *unityExpression = [NSRegularExpression regularExpressionWithPattern:@"(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?"
                                                                                          options:NSRegularExpressionCaseInsensitive
                                                                                            error:nil];
 
         NSMutableArray *stacktrace = parseStackTrace(ns_stackTrace, unityExpression);
-
-        NSDictionary *notifier = @{
-                                   @"name": @"Bugsnag Unity (Cocoa)",
-                                   @"version": @"2.0.0",
-                                   @"url":@"https://bugsnag.com/"
-                                   };
-
-        if ([ns_context isEqualToString: @""]) {
-            ns_context = [Bugsnag configuration].context;
-        }
+        NSException * exception = [NSException exceptionWithName:ns_errorClass
+                                                          reason:ns_errorMessage
+                                                        userInfo:NULL];
 
         // Indicate thats its a unity exception (with the received log level)
         NSDictionary *unityData = nil;
@@ -87,15 +93,27 @@ extern "C" {
             unityData = @{@"unityException": @true, @"unityLogLevel": ns_logType};
         }
 
-        NSDictionary *metaData = @{@"_bugsnag_unity_exception":@{@"stacktrace": stacktrace,
-                                                                 @"notifier": notifier},
-                                   @"context":ns_context,
-                                   @"Unity":unityData};
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            id notifier = [Bugsnag notifier];
 
-        metaData = [metaData mergedInto: [[Bugsnag configuration].metaData toDictionary]];
+            NSMutableDictionary *dict = [NSMutableDictionary new];
+            dict[@"severity"] = ns_severity;
+            dict[@"severityReason"] = ns_severityReason;
+            if (ns_logType) {
+                dict[@"logLevel"] = ns_logType;
+            }
 
-        dispatch_async(dispatch_get_global_queue(0, 0), ^ {
-            [Bugsnag notify:[NSException exceptionWithName:ns_errorClass reason: ns_errorMessage userInfo: NULL] withData: metaData atSeverity: ns_severity];
+            [notifier internalClientNotify:exception
+                                  withData:dict
+                                     block:^(BugsnagCrashReport *report) {
+                 if (ns_context.length > 0) {
+                     report.context = ns_context;
+                 }
+                 [report attachCustomStacktrace:stacktrace withType:@"unity"];
+                 NSMutableDictionary *metadata = [report.metaData mutableCopy];
+                 metadata[@"Unity"] = unityData;
+                 report.metaData = metadata;
+            }];
         });
     }
 
@@ -108,7 +126,21 @@ extern "C" {
         // Set reporting of Bugsnags when debugger is attached
         [Bugsnag setReportWhenDebuggerIsAttached:true];
 
+        // Disable thread tracing on non-fatal exceptions
+        [Bugsnag setThreadTracingEnabled:false];
+
+        // Disable writing binary images
+        [Bugsnag setWriteBinaryImagesForUserReported:false];
+
+
         [Bugsnag startBugsnagWithApiKey:ns_apiKey];
+
+        id notifier = [Bugsnag notifier];
+        [notifier setValue:@{
+            @"version": @"3.5.0",
+            @"name": @"Bugsnag Unity (Cocoa)",
+            @"url": @"https://github.com/bugsnag/bugsnag-unity"
+        } forKey:@"details"];
     }
 
     void LeaveBreadcrumb(char *breadcrumb) {
