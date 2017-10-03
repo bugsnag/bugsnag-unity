@@ -99,6 +99,9 @@ extern "C" {
             NSMutableDictionary *dict = [NSMutableDictionary new];
             dict[@"severity"] = ns_severity;
             dict[@"severityReason"] = ns_severityReason;
+            if (ns_logType) {
+                dict[@"logLevel"] = ns_logType;
+            }
 
             [notifier internalClientNotify:exception
                                   withData:dict

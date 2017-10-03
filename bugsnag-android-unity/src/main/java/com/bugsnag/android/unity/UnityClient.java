@@ -23,6 +23,7 @@ public class UnityClient {
         Map<String, Object> data = new HashMap<>();
         data.put("severity", severity.getName());
         data.put("severityReason", severityReason);
+        data.put("logLevel", logLevel);
 
         Bugsnag.getClient().internalClientNotify(t, data, false, new UnityCallback(context, logLevel));
     }
