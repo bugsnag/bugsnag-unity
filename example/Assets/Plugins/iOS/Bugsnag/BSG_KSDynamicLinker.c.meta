@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: 493803f681e6344aa80c87717c87f493
-timeCreated: 1507018516
-licenseType: Pro
+guid: 1c0b7f7f8a76f47d38ab58a57a56346e
+timeCreated: 1507065302
+licenseType: Free
 PluginImporter:
   serializedVersion: 2
   iconMap: {}
@@ -11,7 +11,7 @@ PluginImporter:
   platformData:
     data:
       first:
-        Any: 
+        '': 
       second:
         enabled: 0
         settings: {}
