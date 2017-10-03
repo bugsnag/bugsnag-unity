@@ -17,16 +17,18 @@ var BugsnagPlugin = {
         exp.name = strErrorClass;
         exp.message = strErrorMessage;
 
-        var newStack = strErrorClass + ":" + strErrorMessage + "\n";
-        strStackTrace.split("\n").forEach(function(element, index, array){
-          if (element != "") {
-            // Convert each stack trace line to a comparable javascript stack trace line
-            var line = "    at " + element.split(" ")[0] + "(0:0)\n";
-            newStack += line;
-          }
-        });
-        newStack = newStack.slice(0,-1);
-        exp.stack =  newStack;
+        if (strStackTrace.length > 0) {
+            var newStack = strErrorClass + ":" + strErrorMessage + "\n";
+            strStackTrace.split("\n").forEach(function(element, index, array){
+              if (element != "") {
+                // Convert each stack trace line to a comparable javascript stack trace line
+                var line = "    at " + element.split(" ")[0] + "(0:0)\n";
+                newStack += line;
+              }
+            });
+            newStack = newStack.slice(0,-1);
+            exp.stack =  newStack;
+        }
 
         // Indicate that its a unity exception, along with the received log level
         metaData = {
