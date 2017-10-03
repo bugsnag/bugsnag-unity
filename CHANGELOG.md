@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.5.0 (2017-02-10)
+
+* Track whether an error is handled or unhandled
+
+* Update native libraries
+
 ## 3.4.0 (2017-19-09)
 
 ### Enhancements
