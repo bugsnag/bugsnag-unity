@@ -79,14 +79,14 @@ public class Bugsnag : MonoBehaviour {
             };
             IntPtr methodId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "init", "(Landroid/content/Context;Ljava/lang/String;)V");
             AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), methodId, args);
-            Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), null, true);
+            Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), null, true, "");
         }
 
 		public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, string severityReason) {
-            Notify(errorClass, errorMessage, severity, context, stackTrace, type, false);
+            Notify(errorClass, errorMessage, severity, context, stackTrace, type, false, severityReason);
         }
 
-        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, bool warmup) {
+        public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, bool warmup, string severityReason) {
             var stackFrames = new ArrayList ();
 
             foreach (Match frameMatch in unityExpression.Matches(stackTrace)) {
@@ -140,7 +140,7 @@ public class Bugsnag : MonoBehaviour {
                     new jvalue() { l = (IntPtr)stackFrameArrayObject },
                     new jvalue() { l = severityInstance.GetRawObject() },
                     new jvalue() { l = String.IsNullOrEmpty(type) ? IntPtr.Zero : AndroidJNI.NewStringUTF(type) },
-					new jvalue() { l = AndroidJNI.NewStringUTF("handledException") }
+					new jvalue() { l = AndroidJNI.NewStringUTF(String.IsNullOrEmpty(severityReason) ? "handledException" : severityReason) }
                 };
 
                 // Call Android's notify method
