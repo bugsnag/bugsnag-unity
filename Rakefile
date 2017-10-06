@@ -149,7 +149,7 @@ task :create_osx_plugin do
   rm_rf "bugsnag-osx/bugsnag-osx/Bugsnag.framework"
   cd 'bugsnag-cocoa' do
     sh "make BUILD_OSX=1 build/Build/Products/Release/Bugsnag.framework"
-    cp_r "build/Build/Products/Release/Bugsnag.framework", "../bugsnag-osx/bugsnag-osx"
+    sh "cp -R build/Build/Products/Release/Bugsnag.framework ../bugsnag-osx/bugsnag-osx"
   end
 
   # Create the Unity OSX bundle and copy it to the OSX directory
