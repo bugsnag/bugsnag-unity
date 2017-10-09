@@ -142,7 +142,7 @@ PlayerSettings:
   resolutionScalingMode: 0
   applicationIdentifier:
     Android: com.bugsnag.unity.example
-    iOS: com.bugsnag.unity.example
+    iOS: com.bugsnag.unity
   buildNumber:
     iOS: 1
   AndroidBundleVersionCode: 1
