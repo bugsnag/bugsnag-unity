@@ -17,6 +17,9 @@ extern "C" {
     void SetBreadcrumbCapacity(int capacity);
     void SetAppVersion(char *version);
     void SetUser(char *userId, char *userName, char *userEmail);
+    void ExampleNativeCrash();
+    void ExampleCrashInBackground();
+
     NSMutableArray *parseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex);
 
     BSGSeverity ParseBugsnagSeverity(NSString *severity) {
@@ -199,5 +202,15 @@ extern "C" {
             [returnArray addObject:lineDetails];
         }];
         return returnArray;
+    }
+
+
+    void ExampleNativeCrash() {
+        id obj = [NSArray new][1];
+        NSLog(@"Should never happen");
+    }
+
+    void ExampleCrashInBackground() {
+      // TODO
     }
 }
