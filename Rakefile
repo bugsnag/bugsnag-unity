@@ -129,6 +129,7 @@ task :create_android_plugin do
 
   cp "bugsnag-android/sdk/build/outputs/aar/sdk-release.aar", android_dir
   cp "bugsnag-android/unity/build/outputs/aar/unity-release.aar", android_dir
+
 end
 
 task :create_osx_plugin do
