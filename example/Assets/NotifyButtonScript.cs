@@ -7,7 +7,7 @@ using UnityEditor;
 #endif
 
 public class NotifyButtonScript : MonoBehaviour {
-		
+
 #if UNITY_IPHONE
 	[DllImport ("__Internal")]
 	private static extern void ExampleNativeCrash();
@@ -22,16 +22,16 @@ public class NotifyButtonScript : MonoBehaviour {
 	[MenuItem ("Build/Build iOS")]
 	public static void BuildIos(){
 		string[] levels = {"Assets/Buttons.unity"};
-		BuildPipeline.BuildPlayer(levels, "bugsnag-unity-ios", 
-		                          BuildTarget.iOS, BuildOptions.AutoRunPlayer); 
+		BuildPipeline.BuildPlayer(levels, "bugsnag-unity-ios",
+		                          BuildTarget.iOS, BuildOptions.AutoRunPlayer);
 	}
 
 	// Build a folder containing unity3d file and html file
 	[MenuItem ("Build/Build Android")]
 	public static void BuildAndroid(){
 		string[] levels = {"Assets/Buttons.unity"};
-		BuildPipeline.BuildPlayer(levels, "bugsnag-unity-android", 
-		                          BuildTarget.Android, BuildOptions.AutoRunPlayer); 
+		BuildPipeline.BuildPlayer(levels, "bugsnag-unity-android",
+		                          BuildTarget.Android, BuildOptions.AutoRunPlayer);
 	}
 #endif
 
@@ -47,7 +47,7 @@ public class NotifyButtonScript : MonoBehaviour {
 		Bugsnag.AppVersion = "1.2.3-alpha";
 		Bugsnag.NotifyLevel = Bugsnag.LogSeverity.Warning;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 
@@ -96,7 +96,7 @@ public class NotifyButtonScript : MonoBehaviour {
 		Debug.Log ("Log.DebugError clicked");
 		Debug.LogError ("Debug Error clicked!");
 	}
-	
+
 	public void OnNativeCrashClick () {
 #if UNITY_IPHONE
 		ExampleNativeCrash();

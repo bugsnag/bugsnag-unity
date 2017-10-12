@@ -907,10 +907,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1015250910}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1995350f19db941e1a7a6f9b771768c4, type: 3}
+  m_Script: {fileID: 11500000, guid: 78577c58710bc4479949fc39baaff83b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BugsnagApiKey: 066f5ad3590596f9aa8d601ea89af845
+  BugsnagApiKey: 0e4a7cccdd94958640657e1ad2d955a4
   AutoNotify: 1
 --- !u!4 &1015250912
 Transform:
