@@ -122,17 +122,13 @@ task :create_android_plugin do
   android_dir = $path + "/Assets/Plugins/Android"
   mkdir_p android_dir
 
-  # Create clean build of the android notifier
+  # Create build of the android notifier
   cd 'bugsnag-android' do
-    sh "./gradlew clean build"
-  end
-
-  cd 'bugsnag-android-unity' do
-    sh "../bugsnag-android/gradlew clean build"
+    sh "./gradlew :sdk:build :unity:build"
   end
 
   cp "bugsnag-android/sdk/build/outputs/aar/sdk-release.aar", android_dir
-  cp "bugsnag-android-unity/build/outputs/aar/bugsnag-android-unity-release.aar", android_dir
+  cp "bugsnag-android/unity/build/outputs/aar/unity-release.aar", android_dir
 end
 
 task :create_osx_plugin do
@@ -154,7 +150,7 @@ task :create_osx_plugin do
 
   # Create the Unity OSX bundle and copy it to the OSX directory
   cd 'bugsnag-osx' do
-    sh "xcodebuild -configuration Release build clean build | tee xcodebuild.log | xcpretty"
+    sh "xcodebuild -configuration Release build clean build | tee xcodebuild.log"
     cp_r "build/Release/bugsnag-osx.bundle", osx_dir
   end
 end
