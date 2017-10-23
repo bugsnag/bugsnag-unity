@@ -79,7 +79,7 @@ Please follow the testing instructions in [the platforms release checklist](http
     ```
 
 - Update the CHANGELOG
-- Update the version number by running make VERSION=[number] bump
+- Update the version number by running `make VERSION=[number] bump`
 - Commit the changelog and version updates:
 
     ```
