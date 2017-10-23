@@ -79,8 +79,7 @@ Please follow the testing instructions in [the platforms release checklist](http
     ```
 
 - Update the CHANGELOG
-- Update the version number in `src/BugsnagUnity.mm` and
-  `android/src/main/java/com/bugsnag/android/unity/UnityCallback.java`
+- Update the version number by running make VERSION=[number] bump
 - Commit the changelog and version updates:
 
     ```
@@ -98,4 +97,3 @@ Please follow the testing instructions in [the platforms release checklist](http
 ## Update docs.bugsnag.com
 
 Update the setup guide for Unity with any new content.
-
