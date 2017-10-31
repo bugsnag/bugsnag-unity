@@ -537,7 +537,7 @@ public class Bugsnag : MonoBehaviour {
         if(logSeverity >= NotifyLevel) {
             string errorClass, errorMessage = "";
 
-            Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)");
+            Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)", RegexOptions.Singleline);
             Match match = exceptionRegEx.Match(logString);
 
             if(match.Success) {
