@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.5.2 (2017-11-02)
+
+* Support multiline error messages
+
 ## 3.5.1 (2017-10-06)
 
 ### Bug fixes
