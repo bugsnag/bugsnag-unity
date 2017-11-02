@@ -79,6 +79,7 @@ public class Bugsnag : MonoBehaviour {
             };
             IntPtr methodId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "init", "(Landroid/content/Context;Ljava/lang/String;)V");
             AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), methodId, args);
+            registered_ = true;
             Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), null, true, "");
         }
 
@@ -87,6 +88,7 @@ public class Bugsnag : MonoBehaviour {
         }
 
         public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, bool warmup, string severityReason) {
+            if (!CheckRegistration()) return;
             var stackFrames = new ArrayList ();
 
             foreach (Match frameMatch in unityExpression.Matches(stackTrace)) {
@@ -150,10 +152,12 @@ public class Bugsnag : MonoBehaviour {
         }
 
         public static void SetNotifyUrl(string notifyUrl) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setEndpoint", notifyUrl);
         }
 
         public static void SetAutoNotify(bool autoNotify) {
+            if (!CheckRegistration()) return;
             if (autoNotify) {
                 Bugsnag.CallStatic ("enableExceptionHandler");
             } else {
@@ -162,38 +166,47 @@ public class Bugsnag : MonoBehaviour {
         }
 
         public static void SetContext(string context) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setContext", context);
         }
 
         public static void SetReleaseStage(string releaseStage) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setReleaseStage", releaseStage);
         }
 
         public static void SetNotifyReleaseStages(string releaseStages) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setNotifyReleaseStages", releaseStages.Split (','));
         }
 
         public static void AddToTab(string tabName, string attributeName, string attributeValue) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("addToTab", tabName, attributeName, attributeValue);
         }
 
         public static void ClearTab(string tabName) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("clearTab", tabName);
         }
 
         public static void LeaveBreadcrumb(string breadcrumb) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("leaveBreadcrumb", breadcrumb);
         }
 
         public static void SetBreadcrumbCapacity(int capacity) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setMaxBreadcrumbs", capacity);
         }
 
         public static void SetAppVersion(string version) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setAppVersion", version);
         }
 
         public static void SetUser(string userId, string userName, string userEmail) {
+            if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setUser", userId, userEmail, userName);
         }
 #else
@@ -236,6 +249,15 @@ public class Bugsnag : MonoBehaviour {
         Info = 0,
         Error = 1,
         Warning = 2
+    }
+
+    private static volatile bool registered_ = false;
+    private static bool CheckRegistration() {
+        if (!registered_) {
+            Debug.LogError("BUGSNAG: ERROR: Bugsnag must be initialized before calling other methods");
+            return false;
+        }
+        return true;
     }
 
     // Defines a translation between the Unity log types and Bugsnag log types with appropriate ordering
@@ -515,7 +537,7 @@ public class Bugsnag : MonoBehaviour {
         if(logSeverity >= NotifyLevel) {
             string errorClass, errorMessage = "";
 
-            Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)");
+            Regex exceptionRegEx = new Regex(@"^(?<errorClass>\S+):\s*(?<message>.*)", RegexOptions.Singleline);
             Match match = exceptionRegEx.Match(logString);
 
             if(match.Success) {
