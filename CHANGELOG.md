@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.5.3 (2017-11-21)
+
+* Updated Native Cocoa + Android libraries
+* Remove misleading Cocoa Error message for non-fatal errors
+* Fix handledState cases in Cocoa/Android
+
 ## 3.5.2 (2017-11-02)
 
 * Support multiline error messages
