@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.5.4 (2017-11-23)
+
+* (iOS) Use `BSG_KSCrashReportWriter` header rather than `KSCrashReportWriter` for custom JSON serialization
+* (Android) Enqueue activity lifecycle events when initialisation not complete to prevent NPE
+
 ## 3.5.3 (2017-11-21)
 
 * Updated Native Cocoa + Android libraries
