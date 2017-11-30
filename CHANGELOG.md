@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.5.5 (2017-11-30)
+* (iOS) Fix encoding of control characters in crash reports. Ensures crash reports are
+written correctly and delivered when containing U+0000 - U+001F
+
 ## 3.5.4 (2017-11-23)
 
 * (iOS) Use `BSG_KSCrashReportWriter` header rather than `KSCrashReportWriter` for custom JSON serialization

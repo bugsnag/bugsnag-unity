@@ -140,7 +140,7 @@ extern "C" {
 
         id notifier = [Bugsnag notifier];
         [notifier setValue:@{
-            @"version": @"3.5.4",
+            @"version": @"3.5.5",
             @"name": @"Bugsnag Unity (Cocoa)",
             @"url": @"https://github.com/bugsnag/bugsnag-unity"
         } forKey:@"details"];
