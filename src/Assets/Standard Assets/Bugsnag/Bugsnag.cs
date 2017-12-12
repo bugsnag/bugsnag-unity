@@ -2,7 +2,9 @@
 #define UNITY_5_OR_NEWER
 #endif
 
+using BugsnagUtil;
 using UnityEngine;
+using UnityEngine.Networking;
 using System.Runtime.InteropServices;
 using System;
 using System.Collections.Generic;
@@ -23,6 +25,42 @@ public class Bugsnag : MonoBehaviour {
 #endif
 
     public class NativeBugsnag {
+        static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+        struct StackElement
+        {
+            public string className;
+            public string method;
+            public string file;
+            public int line;
+        }
+        static void ParseStackTrace(string stackTrace, Action<StackElement> callback)
+        {
+            foreach (Match frameMatch in unityExpression.Matches(stackTrace)) {
+                var method = frameMatch.Groups[1].Value;
+                var className = "";
+                if (method == "") {
+                    method = "Unknown method";
+                } else {
+                    var index = method.LastIndexOf(".");
+                    if (index >= 0) {
+                        className = method.Substring (0, index);
+                        method = method.Substring (index + 1);
+                    }
+                }
+                var file = frameMatch.Groups[2].Value;
+                if (file == "" || file == "<filename unknown>") {
+                    file = "unknown file";
+                }
+                var line = frameMatch.Groups[3].Value;
+                if (line == "") {
+                    line = "0";
+                }
+
+                callback(new StackElement() {className = className, method = method, file = file, line = Convert.ToInt32(line)});
+            }
+        }
+
 #if (UNITY_IPHONE || UNITY_IOS || UNITY_TVOS || UNITY_WEBGL || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
         [DllImport (dllName)]
         public static extern void Register(string apiKey);
@@ -65,7 +103,6 @@ public class Bugsnag : MonoBehaviour {
 #elif UNITY_ANDROID && !UNITY_EDITOR
         public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
         public static AndroidJavaClass BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.UnityClient");
-        public static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
         public static void Register(string apiKey) {
             // Get the current Activity
@@ -91,31 +128,10 @@ public class Bugsnag : MonoBehaviour {
             if (!CheckRegistration()) return;
             var stackFrames = new ArrayList ();
 
-            foreach (Match frameMatch in unityExpression.Matches(stackTrace)) {
-
-                var method = frameMatch.Groups[1].Value;
-                var className = "";
-                if (method == "") {
-                    method = "Unknown method";
-                } else {
-                    var index = method.LastIndexOf(".");
-                    if (index >= 0) {
-                        className = method.Substring (0, index);
-                        method = method.Substring (index + 1);
-                    }
-                }
-                var file = frameMatch.Groups[2].Value;
-                if (file == "" || file == "<filename unknown>") {
-                    file = "unknown file";
-                }
-                var line = frameMatch.Groups[3].Value;
-                if (line == "") {
-                    line = "0";
-                }
-
-                var stackFrame = new AndroidJavaObject("java.lang.StackTraceElement", className, method, file, Convert.ToInt32(line));
-                    stackFrames.Add (stackFrame);
-            }
+            ParseStackTrace(stackTrace, stack => {
+                var stackFrame = new AndroidJavaObject("java.lang.StackTraceElement", stack.className, stack.method, stack.file, stack.line);
+                stackFrames.Add(stackFrame);
+            });
 
             if (stackFrames.Count > 0 && warmup == false) {
 
@@ -211,28 +227,187 @@ public class Bugsnag : MonoBehaviour {
         }
 #else
         private static string apiKey_;
+        private static string releaseStage_ = GetDefaultReleaseStage();
+        private static string notifyReleaseStages_;
+        private static string notifyUrl_ = "https://notify.bugsnag.com";
+        private static Dictionary<string, Dictionary<string, List<string>>> tabs_ = new Dictionary<string, Dictionary<string, List<string>>>();
+        private struct Breadcrumb
+        {
+            public DateTime timestamp;
+            public string name;
+        }
+        private static List<Breadcrumb> breadcrumbs_ = new List<Breadcrumb>();
+        private static int breadcrumbCapacity_ = 5;
+        private static string appVersion_;
+        private static string userId_ = "[unknown]";
+        private static string userName_ = "[unknown]";
+        private static string userEmail_ = "[unknown]";
 
-        public static void SetContext(string context) {}
-        public static void SetReleaseStage(string releaseStage) {}
-        public static void SetNotifyReleaseStages(string releaseStages) {}
+        public static string GetDefaultReleaseStage()
+        {
+            if (Application.isEditor) {
+                return "development";
+            } else if (Debug.isDebugBuild) {
+                return "staging";
+            } else {
+                return "production";
+            }
+        }
+        public static void SetContext(string context) {
+            if (!CheckRegistration()) return;
+            // ignored; through Notify only, since all errors are through Notify
+        }
+        public static void SetReleaseStage(string releaseStage) {
+            if (!CheckRegistration()) return;
+            releaseStage_ = releaseStage;
+        }
+        public static void SetNotifyReleaseStages(string releaseStages) {
+            if (!CheckRegistration()) return;
+            notifyReleaseStages_ = releaseStages;
+        }
 		public static void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, string severityReason) {
             if (apiKey_ == null || apiKey_ == "") {
                 Debug.Log("BUGSNAG: ERROR: would not notify Bugsnag as no API key was set");
-            } else {
-                Debug.Log("BUGSNAG: Would notify Bugsnag about " + errorClass + ": " + errorMessage);
+                return;
             }
+
+            if (notifyReleaseStages_ != null && !notifyReleaseStages_.Contains(releaseStage_)) {
+                return;
+            }
+
+            var root = new JSONObject();
+            root["apiKey"] = apiKey_;
+
+            var notifier = (root["notifier"] = new JSONObject());
+            notifier["name"] = "Bugsnag Unity Native";
+            notifier["version"] = "3.6.0-alpha";
+            notifier["url"] = "https://github.com/zorbathut/bugsnag-unity";
+
+            var eventRoot = (root["events"] = new JSONArray());
+            var events = new JSONObject();
+            eventRoot.Add(events);
+            events["payloadVersion"] = "2";
+
+            var exceptions = (events["exceptions"] = new JSONArray());
+            var exception = (exceptions["0"] = new JSONObject());
+            exception["errorClass"] = errorClass;
+            exception["message"] = errorMessage;
+
+            var stacktrace = (exception["stacktrace"] = new JSONArray());
+
+            ParseStackTrace(stackTrace, stack => {
+                var stackFrame = new JSONObject();
+                stackFrame["file"] = stack.file;
+                stackFrame["lineNumber"] = stack.line;
+                stackFrame["method"] = stack.method;
+                stackFrame["inProject"] = true; // I mean, I guess? Hard to get a real answer for this. TODO some kind of callback to test the namespace?
+                stacktrace.Add(stackFrame);
+            });
+
+            var breadcrumbs = (events["breadcrumbs"] = new JSONArray());
+            for (int i = 0; i < breadcrumbs_.Count; ++i) {
+                var breadcrumbData = breadcrumbs_[i];
+                var breadcrumb = new JSONObject();
+                breadcrumb["timestamp"] = breadcrumbData.timestamp.ToString("s", System.Globalization.CultureInfo.InvariantCulture);
+                breadcrumb["name"] = breadcrumbData.name;
+                breadcrumb["type"] = "manual";
+                breadcrumbs.Add(breadcrumb);
+            }
+
+            events["context"] = context;
+            events["severity"] = severity;
+
+            var user = (events["user"] = new JSONObject());
+            user["id"] = userId_;
+            user["name"] = userName_;
+            user["email"] = userEmail_;
+
+            var app = (events["app"] = new JSONObject());
+            app["version"] = appVersion_;
+            app["releaseStage"] = releaseStage_;
+            app["type"] = "unity";
+            
+            var device = (events["device"] = new JSONObject());
+            device["osVersion"] = SystemInfo.operatingSystem;
+
+            var metaData = (events["metaData"] = new JSONObject());
+            foreach (var tabData in tabs_) {
+                var tab = (metaData[tabData.Key] = new JSONObject());
+
+                foreach (var keyData in tabData.Value) {
+                    if (keyData.Value.Count == 1) {
+                        tab[keyData.Key] = keyData.Value[0];
+                        continue;
+                    }
+
+                    var key = (tab[keyData.Key] = new JSONArray());
+                    for (int i = 0; i < keyData.Value.Count; ++i) {
+                        key.Add(keyData.Value[i]);
+                    }
+                }
+            }
+
+            GameObject.FindObjectOfType<Bugsnag>().StartCoroutine(WaitForResponse(root));
+        }
+        private static IEnumerator WaitForResponse(JSONObject root)
+        {
+            var req = new UnityWebRequest(notifyUrl_);
+            req.uploadHandler = new UploadHandlerRaw(Encoding.ASCII.GetBytes(root.ToString(2)));
+            req.downloadHandler = new DownloadHandlerBuffer();
+            req.method = UnityWebRequest.kHttpVerbPOST;
+            req.SetRequestHeader("Content-Type", "application/json");
+
+            yield return req.Send();
         }
         public static void Register(string apiKey) {
             apiKey_ = apiKey;
+            registered_ = true;
         }
-        public static void SetNotifyUrl(string notifyUrl) {}
-        public static void SetAutoNotify(bool autoNotify) {}
-        public static void AddToTab(string tabName, string attributeName, string attributeValue) {}
-        public static void ClearTab(string tabName) {}
-        public static void LeaveBreadcrumb(string breadcrumb) {}
-        public static void SetBreadcrumbCapacity(int capacity) {}
-        public static void SetAppVersion(string version) {}
-        public static void SetUser(string userId, string userName, string userEmail) {}
+        public static void SetNotifyUrl(string notifyUrl) {
+            notifyUrl_ = notifyUrl;
+        }
+        public static void SetAutoNotify(bool autoNotify) {
+            // we don't really have autonotify support here
+        }
+        public static void AddToTab(string tabName, string attributeName, string attributeValue) {
+            if (!tabs_.ContainsKey(tabName)) {
+                tabs_.Add(tabName, new Dictionary<string, List<string>>());
+            }
+
+            if (!tabs_[tabName].ContainsKey(attributeName)) {
+                tabs_[tabName].Add(attributeName, new List<string>());
+            }
+
+            tabs_[tabName][attributeName].Add(attributeValue);
+        }
+        public static void ClearTab(string tabName) {
+            tabs_.Remove(tabName);
+        }
+        public static void LeaveBreadcrumb(string breadcrumb) {
+            if (breadcrumbCapacity_ == 0) {
+                return;
+            }
+
+            while (breadcrumbs_.Count > breadcrumbCapacity_ - 1) {
+                breadcrumbs_.RemoveAt(breadcrumbs_.Count - 1);
+            }
+
+            breadcrumbs_.Insert(0, new Breadcrumb() { name = breadcrumb, timestamp = DateTime.Now });
+        }
+        public static void SetBreadcrumbCapacity(int capacity) {
+            breadcrumbCapacity_ = capacity;
+            while (breadcrumbs_.Count > capacity) {
+                breadcrumbs_.RemoveAt(breadcrumbs_.Count - 1);
+            }
+        }
+        public static void SetAppVersion(string version) {
+            appVersion_ = version;
+        }
+        public static void SetUser(string userId, string userName, string userEmail) {
+            userId_ = userId;
+            userName_ = userName;
+            userEmail_ = userEmail;
+        }
 #endif
     }
     // We dont use the LogType enum in Unity as the numerical order doesnt suit our purposes
@@ -576,6 +751,10 @@ public class Bugsnag : MonoBehaviour {
 
             NotifySafely (e.GetType ().ToString (),e.Message, Severity.Warning, context, stackTrace, null, "handledException");
         }
+    }
+
+    public static void Notify(string type, string message, string context) {
+        NotifySafely(type, message, Severity.Error, context, new System.Diagnostics.StackTrace(1, true).ToString(), null, "handledException");
     }
 
     public static void AddToTab(string tabName, string attributeName, string attributeValue) {
