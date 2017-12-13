@@ -62,6 +62,10 @@ public class Bugsnag : MonoBehaviour {
 
         [DllImport (dllName)]
         public static extern void SetUser(string userId, string userName, string userEmail);
+
+        [DllImport (dllName)]
+        public static extern void StartSession();
+
 #elif UNITY_ANDROID && !UNITY_EDITOR
         public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
         public static AndroidJavaClass BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.UnityClient");
@@ -209,6 +213,11 @@ public class Bugsnag : MonoBehaviour {
             if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setUser", userId, userEmail, userName);
         }
+
+        public static void StartSession() {
+            if (!CheckRegistration()) return;
+            Bugsnag.CallStatic ("startSession");
+        }
 #else
         private static string apiKey_;
 
@@ -233,6 +242,7 @@ public class Bugsnag : MonoBehaviour {
         public static void SetBreadcrumbCapacity(int capacity) {}
         public static void SetAppVersion(string version) {}
         public static void SetUser(string userId, string userName, string userEmail) {}
+        public static void StartSession() {}
 #endif
     }
     // We dont use the LogType enum in Unity as the numerical order doesnt suit our purposes
@@ -367,6 +377,10 @@ public class Bugsnag : MonoBehaviour {
         set {
             NativeBugsnag.SetNotifyReleaseStages(String.Join (",", value));
         }
+    }
+
+    public static void StartSession() {
+        NativeBugsnag.StartSession();
     }
 
     public static void MapUnityLogToSeverity(LogSeverity unitySeverity, Severity bugsnagSeverity) {

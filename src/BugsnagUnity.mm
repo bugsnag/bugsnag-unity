@@ -146,6 +146,10 @@ extern "C" {
         } forKey:@"details"];
     }
 
+    void StartSession() {
+        [Bugsnag startSession];
+    }
+
     void LeaveBreadcrumb(char *breadcrumb) {
         [Bugsnag leaveBreadcrumbWithMessage: [NSString stringWithUTF8String:breadcrumb]];
     }
