@@ -10,8 +10,10 @@ import com.bugsnag.android.*;
 
 public class UnityClient {
 
-    public static void init(Context androidContext, String apiKey) {
-        Bugsnag.init(androidContext, apiKey);
+    public static void init(Context androidContext, String apiKey, boolean trackSessions) {
+        Configuration config = new Configuration(apiKey);
+        config.setAutoCaptureSessions(trackSessions);
+        Bugsnag.init(androidContext, config);
     }
 
     public static void notify(String name, String message,

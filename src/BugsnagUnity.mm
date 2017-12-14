@@ -10,7 +10,7 @@ extern "C" {
     void SetReleaseStage(char *releaseStage);
     void SetAutoNotify(int autoNotify);
     void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason);
-    void Register(char *apiKey);
+    void Register(char *apiKey, bool trackSessions);
     void AddToTab(char *tabName, char *attributeName, char *attributeValue);
     void ClearTab(char *tabName);
     void LeaveBreadcrumb(char *breadcrumb);
@@ -120,7 +120,7 @@ extern "C" {
         });
     }
 
-    void Register(char *apiKey) {
+    void Register(char *apiKey, bool trackSessions) {
         NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
 
         // Disable thread suspension so there is no noticable lag in sending Bugsnags
@@ -135,8 +135,10 @@ extern "C" {
         // Disable writing binary images
         [Bugsnag setWriteBinaryImagesForUserReported:false];
 
-
-        [Bugsnag startBugsnagWithApiKey:ns_apiKey];
+        BugsnagConfiguration *config = [BugsnagConfiguration new];
+        config.apiKey = ns_apiKey;
+        config.shouldAutoCaptureSessions = trackSessions;
+        [Bugsnag startBugsnagWithConfiguration:config];
 
         id notifier = [Bugsnag notifier];
         [notifier setValue:@{
