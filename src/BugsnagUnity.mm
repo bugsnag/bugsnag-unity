@@ -49,6 +49,11 @@ extern "C" {
         }
     }
 
+    void SetSessionUrl(char *url) {
+        NSString *ns_url = [NSString stringWithUTF8String:url];
+        [Bugsnag configuration].sessionURL = [NSURL URLWithString: ns_url];
+    }
+
     void SetNotifyUrl(char *notifyUrl) {
         NSString *ns_notifyUrl = [NSString stringWithUTF8String:notifyUrl];
         [Bugsnag configuration].notifyURL = [NSURL URLWithString: ns_notifyUrl];

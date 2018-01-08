@@ -30,4 +30,12 @@ public class UnityClient {
         Bugsnag.getClient().internalClientNotify(t, data, false, new UnityCallback(context, logLevel));
     }
 
+    public static void setSessionEndpoint(String endpoint) {
+        try {
+            Configuration config = Bugsnag.getClient().getConfig();
+            config.setSessionEndpoint(endpoint);
+        } catch (IllegalStateException exception) {
+            // Bugsnag has not yet been initialized. Discarding change.
+        }
+    }
 }

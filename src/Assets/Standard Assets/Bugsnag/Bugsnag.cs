@@ -69,6 +69,9 @@ public class Bugsnag : MonoBehaviour {
         [DllImport (dllName)]
         public static extern void StartSession();
 
+        [DllImport (dllName)]
+        public static extern void SetSessionUrl(string sessionUrl);
+
 #elif UNITY_ANDROID && !UNITY_EDITOR
         public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
         public static AndroidJavaClass BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.UnityClient");
@@ -164,6 +167,11 @@ public class Bugsnag : MonoBehaviour {
             Bugsnag.CallStatic ("setEndpoint", notifyUrl);
         }
 
+        public static void SetSessionUrl(string url) {
+            if (!CheckRegistration()) return;
+            BugsnagUnity.CallStatic ("setSessionEndpoint", url);
+        }
+
         public static void SetAutoNotify(bool autoNotify) {
             if (!CheckRegistration()) return;
             if (autoNotify) {
@@ -239,6 +247,7 @@ public class Bugsnag : MonoBehaviour {
             apiKey_ = apiKey;
         }
         public static void SetNotifyUrl(string notifyUrl) {}
+        public static void SetSessionUrl(string sessionUrl) {}
         public static void SetAutoNotify(bool autoNotify) {}
         public static void AddToTab(string tabName, string attributeName, string attributeValue) {}
         public static void ClearTab(string tabName) {}
@@ -376,6 +385,16 @@ public class Bugsnag : MonoBehaviour {
             }
 
             NativeBugsnag.SetNotifyUrl(value);
+        }
+    }
+
+    public static string SessionUrl {
+        set {
+            if (value == null) {
+                value = "https://sessions.bugsnag.com/";
+            }
+
+            NativeBugsnag.SetSessionUrl(value);
         }
     }
 
