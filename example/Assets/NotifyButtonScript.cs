@@ -46,6 +46,9 @@ public class NotifyButtonScript : MonoBehaviour {
 		Bugsnag.ReleaseStage = "staging";
 		Bugsnag.AppVersion = "1.2.3-alpha";
 		Bugsnag.NotifyLevel = Bugsnag.LogSeverity.Warning;
+		Bugsnag.SetAutoCaptureSessions (true);
+		Bugsnag.SessionUrl = "http://127.0.0.1:8092";
+		Bugsnag.StartSession ();
 	}
 
 	// Update is called once per frame

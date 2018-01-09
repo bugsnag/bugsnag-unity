@@ -1,7 +1,8 @@
 var BugsnagPlugin = {
-    Register: function(apiKey)
+    Register: function(apiKey, trackSessions)
     {
         Bugsnag.apiKey = Pointer_stringify(apiKey);
+        // FIXME: not currently tracking sessions
     },
     Notify: function(errorClass, errorMessage, severity, context, stackTrace, logType, severityReason)
     {

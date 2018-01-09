@@ -27,6 +27,19 @@ task :update do
   cp_r "src/Assets", Dir.pwd + "/example"
 end
 
+task :clean do
+  cd 'bugsnag-android' do
+    sh "./gradlew clean"
+  end
+  cd 'bugsnag-android-unity' do
+    sh "../bugsnag-android/gradlew clean"
+  end
+  cd 'bugsnag-cocoa' do
+    sh "make clean"
+    sh "make BUILD_OSX=1 clean"
+  end
+end
+
 namespace :build do
 
   desc "Build and run the iOS app"
@@ -124,7 +137,7 @@ task :create_android_plugin do
 
   # Create clean build of the android notifier
   cd 'bugsnag-android' do
-    sh "./gradlew build"
+    sh "./gradlew sdk:build"
   end
 
   cd 'bugsnag-android-unity' do
