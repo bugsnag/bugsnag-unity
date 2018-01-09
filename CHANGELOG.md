@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.6.0 (2018-01-08)
+
+### Enhancements
+
+* Support tracking app sessions, which enables showing overall crash rate and
+  app health
+
 ## 3.5.5 (2017-11-30)
 * (iOS) Fix encoding of control characters in crash reports. Ensures crash reports are
 written correctly and delivered when containing U+0000 - U+001F
