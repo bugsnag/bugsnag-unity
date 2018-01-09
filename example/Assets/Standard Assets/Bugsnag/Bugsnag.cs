@@ -23,9 +23,12 @@ public class Bugsnag : MonoBehaviour {
 #endif
 
     public class NativeBugsnag {
+        public static void Register(string apiKey) {
+            Register(apiKey, false);
+        }
 #if (UNITY_IPHONE || UNITY_IOS || UNITY_TVOS || UNITY_WEBGL || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
         [DllImport (dllName)]
-        public static extern void Register(string apiKey);
+        public static extern void Register(string apiKey, bool trackSessions);
 
         [DllImport (dllName)]
         public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, string severityReason);
@@ -62,22 +65,30 @@ public class Bugsnag : MonoBehaviour {
 
         [DllImport (dllName)]
         public static extern void SetUser(string userId, string userName, string userEmail);
+
+        [DllImport (dllName)]
+        public static extern void StartSession();
+
+        [DllImport (dllName)]
+        public static extern void SetSessionUrl(string sessionUrl);
+
 #elif UNITY_ANDROID && !UNITY_EDITOR
         public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
         public static AndroidJavaClass BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.UnityClient");
         public static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
-        public static void Register(string apiKey) {
+        public static void Register(string apiKey, bool trackSessions) {
             // Get the current Activity
             AndroidJavaClass unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
             AndroidJavaObject app = activity.Call<AndroidJavaObject>("getApplicationContext");
 
-            jvalue[] args =  new jvalue[2] {
+            jvalue[] args =  new jvalue[3] {
                 new jvalue() { l = app.GetRawObject() },
                 new jvalue() { l = AndroidJNI.NewStringUTF(apiKey) },
+                new jvalue() { l = (IntPtr)(trackSessions ? 1 : 0) },
             };
-            IntPtr methodId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "init", "(Landroid/content/Context;Ljava/lang/String;)V");
+            IntPtr methodId = AndroidJNI.GetStaticMethodID(BugsnagUnity.GetRawClass(), "init", "(Landroid/content/Context;Ljava/lang/String;Z)V");
             AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), methodId, args);
             registered_ = true;
             Notify("errorClass", "error message", "error", "", new System.Diagnostics.StackTrace (1, true).ToString (), null, true, "");
@@ -156,6 +167,11 @@ public class Bugsnag : MonoBehaviour {
             Bugsnag.CallStatic ("setEndpoint", notifyUrl);
         }
 
+        public static void SetSessionUrl(string url) {
+            if (!CheckRegistration()) return;
+            BugsnagUnity.CallStatic ("setSessionEndpoint", url);
+        }
+
         public static void SetAutoNotify(bool autoNotify) {
             if (!CheckRegistration()) return;
             if (autoNotify) {
@@ -209,6 +225,11 @@ public class Bugsnag : MonoBehaviour {
             if (!CheckRegistration()) return;
             Bugsnag.CallStatic ("setUser", userId, userEmail, userName);
         }
+
+        public static void StartSession() {
+            if (!CheckRegistration()) return;
+            Bugsnag.CallStatic ("startSession");
+        }
 #else
         private static string apiKey_;
 
@@ -222,10 +243,11 @@ public class Bugsnag : MonoBehaviour {
                 Debug.Log("BUGSNAG: Would notify Bugsnag about " + errorClass + ": " + errorMessage);
             }
         }
-        public static void Register(string apiKey) {
+        public static void Register(string apiKey, bool trackSession) {
             apiKey_ = apiKey;
         }
         public static void SetNotifyUrl(string notifyUrl) {}
+        public static void SetSessionUrl(string sessionUrl) {}
         public static void SetAutoNotify(bool autoNotify) {}
         public static void AddToTab(string tabName, string attributeName, string attributeValue) {}
         public static void ClearTab(string tabName) {}
@@ -233,6 +255,7 @@ public class Bugsnag : MonoBehaviour {
         public static void SetBreadcrumbCapacity(int capacity) {}
         public static void SetAppVersion(string version) {}
         public static void SetUser(string userId, string userName, string userEmail) {}
+        public static void StartSession() {}
 #endif
     }
     // We dont use the LogType enum in Unity as the numerical order doesnt suit our purposes
@@ -289,6 +312,8 @@ public class Bugsnag : MonoBehaviour {
     public string BugsnagApiKey = "";
     public static string BugsnagApiKeyStatic = "";
     public bool AutoNotify = true;
+    public bool TrackAppSessions = false;
+    public static bool TrackAppSessionsStatic = false;
 
     // Rate limiting section
     // Defines the maximum number of logs to send (per type) in the rate limit time frame
@@ -363,10 +388,24 @@ public class Bugsnag : MonoBehaviour {
         }
     }
 
+    public static string SessionUrl {
+        set {
+            if (value == null) {
+                value = "https://sessions.bugsnag.com/";
+            }
+
+            NativeBugsnag.SetSessionUrl(value);
+        }
+    }
+
     public static string[] NotifyReleaseStages {
         set {
             NativeBugsnag.SetNotifyReleaseStages(String.Join (",", value));
         }
+    }
+
+    public static void StartSession() {
+        NativeBugsnag.StartSession();
     }
 
     public static void MapUnityLogToSeverity(LogSeverity unitySeverity, Severity bugsnagSeverity) {
@@ -383,6 +422,11 @@ public class Bugsnag : MonoBehaviour {
         BugsnagApiKeyStatic = apiKey;
     }
 
+    // Used to set the session defaults when Bugsnag is being initialized
+    public static void SetAutoCaptureSessions(bool enabled) {
+        TrackAppSessionsStatic = enabled;
+    }
+
     string GetLevelName() {
 #if UNITY_5_OR_NEWER
       return SceneManager.GetActiveScene().name;
@@ -397,7 +441,12 @@ public class Bugsnag : MonoBehaviour {
     }
 
     public static Bugsnag createBugsnagInstance(GameObject gameObject, String ApiKey) {
+        return createBugsnagInstance(gameObject, ApiKey, false);
+    }
+
+    public static Bugsnag createBugsnagInstance(GameObject gameObject, String ApiKey, bool autoCaptureSessions) {
         Bugsnag.SetApiKey(ApiKey);
+        Bugsnag.SetAutoCaptureSessions(autoCaptureSessions);
         Bugsnag bugsnagInstance = gameObject.AddComponent<Bugsnag>();
         bugsnagInstance.Init();
         return bugsnagInstance;
@@ -422,7 +471,7 @@ public class Bugsnag : MonoBehaviour {
 
     private void InitInternal(string apiKey) {
         BugsnagApiKey = apiKey;
-        NativeBugsnag.Register(BugsnagApiKey);
+        NativeBugsnag.Register(BugsnagApiKey, TrackAppSessions || TrackAppSessionsStatic);
 
         if(Debug.isDebugBuild) {
             Bugsnag.ReleaseStage = "development";
