@@ -41,7 +41,7 @@
 #import <AppKit/AppKit.h>
 #endif
 
-NSString *const NOTIFIER_VERSION = @"5.15.0";
+NSString *const NOTIFIER_VERSION = @"5.15.1";
 NSString *const NOTIFIER_URL = @"https://github.com/bugsnag/bugsnag-cocoa";
 NSString *const BSTabCrash = @"crash";
 NSString *const BSAttributeDepth = @"depth";
@@ -214,9 +214,8 @@ void BSSerializeJSONDictionary(NSDictionary *dictionary, char **destination) {
                                                                        hasRecordedSessions = true;
                                                                    }];
 
-        if (self.configuration.shouldAutoCaptureSessions) { // create initial session
-            [self.sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:YES];
-        }
+        
+        [self.sessionTracker startNewSession:[NSDate date] withUser:nil autoCaptured:YES];
 
         [self metaDataChanged:self.configuration.metaData];
         [self metaDataChanged:self.configuration.config];
