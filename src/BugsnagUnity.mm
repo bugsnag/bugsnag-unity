@@ -6,23 +6,23 @@
 @end
 
 extern "C" {
-    void SetContext(char *context);
-    void SetReleaseStage(char *releaseStage);
-    void SetAutoNotify(int autoNotify);
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason);
-    void Register(char *apiKey, bool trackSessions);
-    void AddToTab(char *tabName, char *attributeName, char *attributeValue);
-    void ClearTab(char *tabName);
-    void LeaveBreadcrumb(char *breadcrumb);
-    void SetBreadcrumbCapacity(int capacity);
-    void SetAppVersion(char *version);
-    void SetUser(char *userId, char *userName, char *userEmail);
-    void ExampleNativeCrash();
-    void ExampleCrashInBackground();
+    void BSGSetContext(char *context);
+    void BSGSetReleaseStage(char *releaseStage);
+    void BSGSetAutoNotify(int autoNotify);
+    void BSGNotify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason);
+    void BSGRegister(char *apiKey, bool trackSessions);
+    void BSGAddToTab(char *tabName, char *attributeName, char *attributeValue);
+    void BSGClearTab(char *tabName);
+    void BSGLeaveBreadcrumb(char *breadcrumb);
+    void BSGSetBreadcrumbCapacity(int capacity);
+    void BSGSetAppVersion(char *version);
+    void BSGSetUser(char *userId, char *userName, char *userEmail);
+    void BSGExampleNativeCrash();
+    void BSGExampleCrashInBackground();
 
-    NSMutableArray *parseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex);
+    NSMutableArray *BSGparseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex);
 
-    BSGSeverity ParseBugsnagSeverity(NSString *severity) {
+    BSGSeverity BSGParseBugsnagSeverity(NSString *severity) {
         if ([severity isEqualToString:@"info"])
             return BSGSeverityInfo;
         else if ([severity isEqualToString:@"warning"])
@@ -30,17 +30,17 @@ extern "C" {
         return BSGSeverityError;
     }
 
-    void SetContext(char *context) {
+    void BSGSetContext(char *context) {
         NSString *ns_context = [NSString stringWithUTF8String: context];
         [Bugsnag configuration].context = ns_context;
     }
 
-    void SetReleaseStage(char *releaseStage) {
+    void BSGSetReleaseStage(char *releaseStage) {
         NSString *ns_releaseStage = [NSString stringWithUTF8String: releaseStage];
         [Bugsnag configuration].releaseStage = ns_releaseStage;
     }
 
-    void SetNotifyReleaseStages(char *notifyReleaseStages) {
+    void BSGSetNotifyReleaseStages(char *notifyReleaseStages) {
         NSString *ns_notifyReleaseStages = [NSString stringWithUTF8String: notifyReleaseStages];
         if ([ns_notifyReleaseStages isEqualToString: @""]) {
             [Bugsnag configuration].notifyReleaseStages = @[];
@@ -49,33 +49,33 @@ extern "C" {
         }
     }
 
-    void SetSessionUrl(char *url) {
+    void BSGSetSessionUrl(char *url) {
         NSString *ns_url = [NSString stringWithUTF8String:url];
         [Bugsnag configuration].sessionURL = [NSURL URLWithString: ns_url];
     }
 
-    void SetNotifyUrl(char *notifyUrl) {
+    void BSGSetNotifyUrl(char *notifyUrl) {
         NSString *ns_notifyUrl = [NSString stringWithUTF8String:notifyUrl];
         [Bugsnag configuration].notifyURL = [NSURL URLWithString: ns_notifyUrl];
     }
 
-    void SetAutoNotify(int autoNotify) {
+    void BSGSetAutoNotify(int autoNotify) {
         [Bugsnag configuration].autoNotify = autoNotify;
     }
 
-    void AddToTab(char *tabName, char *attributeName, char *attributeValue) {
+    void BSGAddToTab(char *tabName, char *attributeName, char *attributeValue) {
         NSString *ns_tabName = [NSString stringWithUTF8String:tabName];
         NSString *ns_attributeName = [NSString stringWithUTF8String:attributeName];
         NSString *ns_attributeValue = [NSString stringWithUTF8String:attributeValue];
         [Bugsnag addAttribute:ns_attributeName withValue:ns_attributeValue toTabWithName:ns_tabName];
     }
 
-    void ClearTab(char *tabName) {
+    void BSGClearTab(char *tabName) {
         NSString *ns_tabName = [NSString stringWithUTF8String:tabName];
         [Bugsnag clearTabWithName:ns_tabName];
     }
 
-    void Notify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason) {
+    void BSGNotify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason) {
         NSString *ns_errorClass = [NSString stringWithUTF8String:errorClass];
         NSString *ns_errorMessage = [NSString stringWithUTF8String:errorMessage];
         NSString *ns_severity = [NSString stringWithUTF8String:severity];
@@ -88,7 +88,7 @@ extern "C" {
                                                                                          options:NSRegularExpressionCaseInsensitive
                                                                                            error:nil];
 
-        NSMutableArray *stacktrace = parseStackTrace(ns_stackTrace, unityExpression);
+        NSMutableArray *stacktrace = BSGparseStackTrace(ns_stackTrace, unityExpression);
         NSException * exception = [NSException exceptionWithName:ns_errorClass
                                                           reason:ns_errorMessage
                                                         userInfo:NULL];
@@ -125,7 +125,7 @@ extern "C" {
         });
     }
 
-    void Register(char *apiKey, bool trackSessions) {
+    void BSGRegister(char *apiKey, bool trackSessions) {
         NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
 
         // Disable thread suspension so there is no noticable lag in sending Bugsnags
@@ -153,30 +153,30 @@ extern "C" {
         } forKey:@"details"];
     }
 
-    void StartSession() {
+    void BSGStartSession() {
         [Bugsnag startSession];
     }
 
-    void LeaveBreadcrumb(char *breadcrumb) {
+    void BSGLeaveBreadcrumb(char *breadcrumb) {
         [Bugsnag leaveBreadcrumbWithMessage: [NSString stringWithUTF8String:breadcrumb]];
     }
 
-    void SetBreadcrumbCapacity(int capacity) {
+    void BSGSetBreadcrumbCapacity(int capacity) {
         [Bugsnag setBreadcrumbCapacity: (NSUInteger)capacity];
     }
 
-    void SetAppVersion(char *version) {
+    void BSGSetAppVersion(char *version) {
         [Bugsnag configuration].appVersion = [NSString stringWithUTF8String:version];
     }
 
-    void SetUser(char *userId, char *userName, char *userEmail) {
+    void BSGSetUser(char *userId, char *userName, char *userEmail) {
         NSString *ns_userId = [NSString stringWithUTF8String: userId];
         NSString *ns_userName = [NSString stringWithUTF8String: userName];
         NSString *ns_userEmail = [NSString stringWithUTF8String: userEmail];
         [[Bugsnag configuration] setUser:ns_userId withName:ns_userName andEmail:ns_userEmail];
     }
 
-    NSMutableArray *parseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex) {
+    NSMutableArray *BSGparseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex) {
         NSMutableArray *returnArray = [[NSMutableArray alloc] init];
 
         [stacktraceRegex enumerateMatchesInString:stackTrace options:0 range:NSMakeRange(0, [stackTrace length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
