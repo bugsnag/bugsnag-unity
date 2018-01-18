@@ -27,49 +27,49 @@ public class Bugsnag : MonoBehaviour {
             Register(apiKey, false);
         }
 #if (UNITY_IPHONE || UNITY_IOS || UNITY_TVOS || UNITY_WEBGL || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGRegister")]
         public static extern void Register(string apiKey, bool trackSessions);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGNotify")]
         public static extern void Notify(string errorClass, string errorMessage, string severity, string context, string stackTrace, string type, string severityReason);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetNotifyUrl")]
         public static extern void SetNotifyUrl(string notifyUrl);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetAutoNotify")]
         public static extern void SetAutoNotify(bool autoNotify);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetContext")]
         public static extern void SetContext(string context);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetReleaseStage")]
         public static extern void SetReleaseStage(string releaseStage);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetNotifyReleaseStages")]
         public static extern void SetNotifyReleaseStages(string releaseStages);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGAddToTab")]
         public static extern void AddToTab(string tabName, string attributeName, string attributeValue);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGClearTab")]
         public static extern void ClearTab(string tabName);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGLeaveBreadcrumb")]
         public static extern void LeaveBreadcrumb(string breadcrumb);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetBreadcrumbCapacity")]
         public static extern void SetBreadcrumbCapacity(int capacity);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetAppVersion")]
         public static extern void SetAppVersion(string appVersion);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetUser")]
         public static extern void SetUser(string userId, string userName, string userEmail);
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGStartSession")]
         public static extern void StartSession();
 
-        [DllImport (dllName)]
+        [DllImport (dllName, EntryPoint = "BSGSetSessionUrl")]
         public static extern void SetSessionUrl(string sessionUrl);
 
 #elif UNITY_ANDROID && !UNITY_EDITOR
