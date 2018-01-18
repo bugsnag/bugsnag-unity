@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.6.2 (2018-01-18)
+
+* Update dependent libraries:
+  * bugsnag-cocoa v5.15.2
+  * bugsnag-android v4.3.0
+
 ## 3.6.1 (2018-01-09)
 
 * Update dependent libraries:
