@@ -910,7 +910,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f618ff52fca44b4c9586e80cc575f34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BugsnagApiKey: my-api-key
+  BugsnagApiKey: your-api-key
   AutoNotify: 1
   TrackAppSessions: 1
 --- !u!4 &1015250912
