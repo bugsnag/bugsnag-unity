@@ -2,7 +2,7 @@ var BugsnagPlugin = {
     BSGRegister: function(apiKey, trackSessions)
     {
         Bugsnag.apiKey = Pointer_stringify(apiKey);
-        // FIXME: not currently tracking sessions
+        // session tracking not enabled on webgl
     },
     BSGNotify: function(errorClass, errorMessage, severity, context, stackTrace, logType, severityReason)
     {
@@ -118,13 +118,13 @@ var BugsnagPlugin = {
           email: strUserEmail
         };
     },
-    BSGSetSessionUrl: function(notifyUrl)
+    BSGSetSessionUrl: function(sessionUrl)
     {
-        // FIXME session url
+        // session tracking not enabled on webgl
     },
     BSGStartSession: function()
     {
-        // FIXME start session
+        // session tracking not enabled on webgl
     }
 };
 
