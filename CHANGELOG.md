@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.6.3 (2018-01-31)
+
+* Prefix WebGL methods
+
 ## 3.6.2 (2018-01-18)
 
 * Update dependent libraries:
