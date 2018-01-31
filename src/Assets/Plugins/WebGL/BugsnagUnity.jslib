@@ -1,10 +1,10 @@
 var BugsnagPlugin = {
-    Register: function(apiKey, trackSessions)
+    BSGRegister: function(apiKey, trackSessions)
     {
         Bugsnag.apiKey = Pointer_stringify(apiKey);
-        // FIXME: not currently tracking sessions
+        // session tracking not enabled on webgl
     },
-    Notify: function(errorClass, errorMessage, severity, context, stackTrace, logType, severityReason)
+    BSGNotify: function(errorClass, errorMessage, severity, context, stackTrace, logType, severityReason)
     {
         var strErrorClass = Pointer_stringify(errorClass);
         var strErrorMessage = Pointer_stringify(errorMessage);
@@ -53,28 +53,28 @@ var BugsnagPlugin = {
 
         Bugsnag.notifyException(exp, strErrorClass, metaData, strSeverity, handledState);
     },
-    SetNotifyUrl: function(notifyUrl)
+    BSGSetNotifyUrl: function(notifyUrl)
     {
         Bugsnag.endpoint = Pointer_stringify(notifyUrl);
     },
-    SetAutoNotify: function(autoNotify)
+    BSGSetAutoNotify: function(autoNotify)
     {
         Bugsnag.autoNotify = (autoNotify == 1 ? true : false);
     },
-    SetContext: function(context)
+    BSGSetContext: function(context)
     {
         Bugsnag.context = Pointer_stringify(context);
     },
-    SetReleaseStage: function(releaseStage)
+    BSGSetReleaseStage: function(releaseStage)
     {
         Bugsnag.releaseStage = Pointer_stringify(releaseStage);
     },
-    SetNotifyReleaseStages: function(releaseStages)
+    BSGSetNotifyReleaseStages: function(releaseStages)
     {
         var stagesString = Pointer_stringify(releaseStages);
         Bugsnag.notifyReleaseStages = stagesString.split(',');
     },
-    AddToTab: function(tabName, attributeName, attributeValue)
+    BSGAddToTab: function(tabName, attributeName, attributeValue)
     {
         var strTabName = Pointer_stringify(tabName);
         var strAttrName = Pointer_stringify(attributeName);
@@ -90,23 +90,23 @@ var BugsnagPlugin = {
 
         Bugsnag.metaData[strTabName][strAttrName] = strAttrValue;
     },
-    ClearTab: function(tabName)
+    BSGClearTab: function(tabName)
     {
         delete Bugsnag.metaData[Pointer_stringify(tabName)];
     },
-    LeaveBreadcrumb: function(breadcrumb)
+    BSGLeaveBreadcrumb: function(breadcrumb)
     {
         // Do nothing as we don't support breadcrumbs for the js notifier
     },
-    SetBreadcrumbCapacity: function(capacity)
+    BSGSetBreadcrumbCapacity: function(capacity)
     {
         // Do nothing as we don't support breadcrumbs for the js notifier
     },
-    SetAppVersion: function(version)
+    BSGSetAppVersion: function(version)
     {
         Bugsnag.appVersion = Pointer_stringify(version)
     },
-    SetUser: function(userId, userName, userEmail)
+    BSGSetUser: function(userId, userName, userEmail)
     {
         var strUserId = Pointer_stringify(userId);
         var strUserName = Pointer_stringify(userName);
@@ -117,6 +117,14 @@ var BugsnagPlugin = {
           name: strUserName,
           email: strUserEmail
         };
+    },
+    BSGSetSessionUrl: function(sessionUrl)
+    {
+        // session tracking not enabled on webgl
+    },
+    BSGStartSession: function()
+    {
+        // session tracking not enabled on webgl
     }
 };
 
