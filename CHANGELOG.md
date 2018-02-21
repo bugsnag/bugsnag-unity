@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.6.4 (2018-02-21)
+
+* (iOS) Fix error message displayed when thread tracing disabled
+
+* Update dependent libraries:
+  * bugsnag-cocoa v5.15.4
+  * bugsnag-android v4.3.1
+
 ## 3.6.3 (2018-01-31)
 
 * Prefix WebGL methods
