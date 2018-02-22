@@ -65,35 +65,50 @@ A simple project can be found at [examples/Assets/Buttons.unity](https://github.
 
 ## Releasing a new version
 
-## Release Checklist
-Please follow the testing instructions in [the platforms release checklist](https://github.com/bugsnag/platforms-release-checklist/blob/master/README.md), and any additional steps directly below.
+### Release Checklist
 
-- Disable development mode in the Unity Build dialog when testing release builds.
+#### Pre-release
 
-### Instructions
+- [ ] Are all changes committed?
+- [ ] Does the build pass on the CI server?
+- [ ] Has the changelog been updated?
+- [ ] Have all the version numbers been incremented? Update the version number by running `make VERSION=[number] bump`.
+- [ ] Has all new functionality been manually tested on a release build? Use `rake build` to generate an artifact to install in a new app.
+  - [ ] Is development mode disabled? Disable development mode in the Unity Build dialog when testing release builds.
+  - [ ] Test that a log message formatted as `SomeTitle: rest of message` generates an error titled `SomeTitle` with message `rest of message`
+  - [ ] Test that a log message formatted without a colon generates an error titled `LogError<level>` with message `rest of message`
+  - [ ] Ensure the example app sends the correct error for each type on iOS
+  - [ ] Ensure the example app sends the correct error for each type on tvOS
+  - [ ] Ensure the example app sends the correct error for each type on macOS
+  - [ ] Ensure the example app sends the correct error for each type on Android
+  - [ ] Ensure the example app sends the correct error for each type on WebGL
+  - [ ] Archive the iOS app and validate the bundle type
+  - [ ] Generate a signed APK for Android
+- [ ] Do the installation instructions work when creating an example app from scratch?
+- [ ] Are PRs open on the docs site for any new feature changes or version numbers?
+- [ ] Have the installation instructions been updated on the [dashboard](https://github.com/bugsnag/bugsnag-website/tree/master/app/views/dashboard/projects/install)
+- [ ] Have the installation instructions been updated on the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
 
-- Build the package, ensuring it can be run correctly:
+
+#### Making the release
+
+1. Commit the changelog and version updates:
 
     ```
-    rake build
-    ```
-
-- Update the CHANGELOG
-- Update the version number by running `make VERSION=[number] bump`
-- Commit the changelog and version updates:
-
-    ```
-    git commit -am "v2.x.x"
-    git tag "v2.x.x"
+    git add CHANGELOG.md src/BugsnagUnity.mm bugsnag-android-unity/src/main/java/com/bugsnag/android/unity/UnityCallback.java
+    git commit -m "Release v3.x.x"
+    git tag "v3.x.x"
     git push origin master --tags
     ```
-- Add a new release on Github
+2. [Create a new release on GitHub](https://github.com/bugsnag/bugsnag-unity/releases/new), copying the changelog entry.
+    * set the title to the tag name
+    * upload `Bugsnag.unitypackage`
 
-    - https://github.com/bugsnag/bugsnag-unity/releases/new?tag=v2.x.x
-    - set the title to the tag name
-    - copy the CHANGELOG entry to the release notes
-    - upload `Bugsnag.unitypackage`
+#### Post-release
 
-## Update docs.bugsnag.com
-
-Update the setup guide for Unity with any new content.
+- [ ] Have all Docs PRs been merged?
+- [ ] Can the latest release be installed by downloading the artifact from the releases page?
+- [ ] Do the installation instructions on the dashboard work using the released artefact?
+- [ ] Do the installation instructions on the docs site work using the released artefact?
+- [ ] Can a freshly created example app send an error report from a release build, using the released artefact?
+- [ ] Do the existing example apps send an error report using the released artefact?
