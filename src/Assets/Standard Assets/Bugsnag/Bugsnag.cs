@@ -164,7 +164,7 @@ public class Bugsnag : MonoBehaviour {
 
         public static void SetNotifyUrl(string notifyUrl) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setEndpoint", notifyUrl);
+            BugsnagUnity.CallStatic ("setEndpoint", notifyUrl);
         }
 
         public static void SetSessionUrl(string url) {
@@ -174,61 +174,57 @@ public class Bugsnag : MonoBehaviour {
 
         public static void SetAutoNotify(bool autoNotify) {
             if (!CheckRegistration()) return;
-            if (autoNotify) {
-                Bugsnag.CallStatic ("enableExceptionHandler");
-            } else {
-                Bugsnag.CallStatic ("disableExceptionHandler");
-            }
+            BugsnagUnity.CallStatic ("setAutoNotify", autoNotify);
         }
 
         public static void SetContext(string context) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setContext", context);
+            BugsnagUnity.CallStatic ("setContext", context);
         }
 
         public static void SetReleaseStage(string releaseStage) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setReleaseStage", releaseStage);
+            BugsnagUnity.CallStatic ("setReleaseStage", releaseStage);
         }
 
         public static void SetNotifyReleaseStages(string releaseStages) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setNotifyReleaseStages", releaseStages.Split (','));
+            BugsnagUnity.CallStatic ("setNotifyReleaseStages", releaseStages.Split (','));
         }
 
         public static void AddToTab(string tabName, string attributeName, string attributeValue) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("addToTab", tabName, attributeName, attributeValue);
+            BugsnagUnity.CallStatic ("addToTab", tabName, attributeName, attributeValue);
         }
 
         public static void ClearTab(string tabName) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("clearTab", tabName);
+            BugsnagUnity.CallStatic ("clearTab", tabName);
         }
 
         public static void LeaveBreadcrumb(string breadcrumb) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("leaveBreadcrumb", breadcrumb);
+            BugsnagUnity.CallStatic ("leaveBreadcrumb", breadcrumb);
         }
 
         public static void SetBreadcrumbCapacity(int capacity) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setMaxBreadcrumbs", capacity);
+            BugsnagUnity.CallStatic ("setMaxBreadcrumbs", capacity);
         }
 
         public static void SetAppVersion(string version) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setAppVersion", version);
+            BugsnagUnity.CallStatic ("setAppVersion", version);
         }
 
         public static void SetUser(string userId, string userName, string userEmail) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setUser", userId, userEmail, userName);
+            BugsnagUnity.CallStatic ("setUser", userId, userEmail, userName);
         }
 
         public static void StartSession() {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("startSession");
+            BugsnagUnity.CallStatic ("startSession");
         }
 #else
         private static string apiKey_;
