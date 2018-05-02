@@ -10,6 +10,19 @@
   [#248](https://github.com/bugsnag/bugsnag-cocoa/pull/248)
   [Jamie Lynch](https://github.com/fractalwrench)
 
+* Upgrade bugsnag-android to v4.3.4:
+  - *Bug Fixes:*
+    - Avoid adding extra comma separator in JSON if File input is empty or null [#284](https://github.com/bugsnag/bugsnag-android/pull/284)
+    - Thread safety fixes to JSON file serialisation [#295](https://github.com/bugsnag/bugsnag-android/pull/295)
+    - Prevent potential automatic activity lifecycle breadcrumb crash [#300](https://github.com/bugsnag/bugsnag-android/pull/300)
+    - Fix serialisation issue with leading to incorrect dashboard display of breadcrumbs [#306](https://github.com/bugsnag/bugsnag-android/pull/306)
+    - Prevent duplicate reports being delivered in low connectivity situations [#270](https://github.com/bugsnag/bugsnag-android/pull/270)
+    - Fix possible NPE when reading default metadata filters [#263](https://github.com/bugsnag/bugsnag-android/pull/263)
+    - Prevent ConcurrentModificationException in Before notify/breadcrumb callbacks [#266](https://github.com/bugsnag/bugsnag-android/pull/266)
+    - Ensure that exception message is never null [#256](https://github.com/bugsnag/bugsnag-android/pull/256)
+    - Add payload version to JSON body [#244](https://github.com/bugsnag/bugsnag-android/pull/244)
+    - Update context tracking to use lifecycle callbacks rather than ActivityManager [#238](https://github.com/bugsnag/bugsnag-android/pull/238)
+
 ## 3.6.4 (2018-02-21)
 
 * (iOS) Fix error message displayed when thread tracing disabled
