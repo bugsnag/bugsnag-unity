@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.6.5 (2018-05-02)
+
+* Upgrade bugsnag-cocoa to v5.15.5:
+  - *Bug Fixes:*
+    - Changes report generation so that when a minimal or incomplete crash is recorded, essential app/device information is included in the report on the next application launch. [#239](https://github.com/bugsnag/bugsnag-cocoa/pull/239)
+  [#250](https://github.com/bugsnag/bugsnag-cocoa/pull/250)
+    - Ensure timezone is serialised in report payload.
+  [#248](https://github.com/bugsnag/bugsnag-cocoa/pull/248)
+  [Jamie Lynch](https://github.com/fractalwrench)
+
 ## 3.6.4 (2018-02-21)
 
 * (iOS) Fix error message displayed when thread tracing disabled
