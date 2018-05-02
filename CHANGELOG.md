@@ -22,6 +22,9 @@
     - Ensure that exception message is never null [#256](https://github.com/bugsnag/bugsnag-android/pull/256)
     - Add payload version to JSON body [#244](https://github.com/bugsnag/bugsnag-android/pull/244)
     - Update context tracking to use lifecycle callbacks rather than ActivityManager [#238](https://github.com/bugsnag/bugsnag-android/pull/238)
+  - *Enhancements:*
+    - Detect whether running on emulator [#245](https://github.com/bugsnag/bugsnag-android/pull/245)
+    - Add a callback for filtering breadcrumbs [#237](https://github.com/bugsnag/bugsnag-android/pull/237)
 
 ## 3.6.4 (2018-02-21)
 
