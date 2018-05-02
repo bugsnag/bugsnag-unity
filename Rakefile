@@ -144,7 +144,7 @@ task :create_android_plugin do
     sh "../bugsnag-android/gradlew build"
   end
 
-  cp "bugsnag-android/sdk/build/outputs/aar/sdk-release.aar", android_dir
+  cp "bugsnag-android/sdk/build/outputs/aar/bugsnag-android-release.aar", android_dir
   cp "bugsnag-android-unity/build/outputs/aar/bugsnag-android-unity-release.aar", android_dir
 end
 
