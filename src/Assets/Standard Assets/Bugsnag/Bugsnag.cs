@@ -73,7 +73,6 @@ public class Bugsnag : MonoBehaviour {
         public static extern void SetSessionUrl(string sessionUrl);
 
 #elif UNITY_ANDROID && !UNITY_EDITOR
-        public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
         public static AndroidJavaClass BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.UnityClient");
         public static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
