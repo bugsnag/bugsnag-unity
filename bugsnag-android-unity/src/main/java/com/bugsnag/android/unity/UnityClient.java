@@ -19,7 +19,6 @@ public class UnityClient {
         }
         Configuration config = new Configuration(apiKey);
         config.setAutoCaptureSessions(trackSessions);
-        client = new Client(androidContext, config);
         if (configuration != null) {
           // preserve the configuration values that we can that were set on the
           // previous clients configuration. We can't reuse the configuration
@@ -31,6 +30,7 @@ public class UnityClient {
           client.setReleaseStage(configuration.getReleaseStage());
           client.setNotifyReleaseStages(configuration.getNotifyReleaseStages());
         }
+        client = new Client(androidContext, config);
         configuration = config;
     }
 
