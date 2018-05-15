@@ -10,15 +10,19 @@ import com.bugsnag.android.*;
 
 public class UnityClient {
 
-    static Client client;
+    static volatile Client client;
+    private static Object lock = new Object();
 
     public static void init(Context androidContext, String apiKey, boolean trackSessions) {
-        if (client != null) {
-            client.disableExceptionHandler();
+        if (client == null) {
+            synchronized (lock) {
+                if (client == null) {
+                    Configuration config = new Configuration(apiKey);
+                    config.setAutoCaptureSessions(trackSessions);
+                    client = new Client(androidContext, config);
+                }
+            }
         }
-        Configuration config = new Configuration(apiKey);
-        config.setAutoCaptureSessions(trackSessions);
-        client = new Client(androidContext, config);
     }
 
     public static void notify(String name, String message,
