@@ -11,6 +11,7 @@ import com.bugsnag.android.*;
 public class UnityClient {
 
     static Client client;
+    static Configuration configuration;
 
     public static void init(Context androidContext, String apiKey, boolean trackSessions) {
         if (client != null) {
@@ -18,7 +19,19 @@ public class UnityClient {
         }
         Configuration config = new Configuration(apiKey);
         config.setAutoCaptureSessions(trackSessions);
+        if (configuration != null) {
+          // preserve the configuration values that we can that were set on the
+          // previous clients configuration. We can't reuse the configuration
+          // object as the apikey is readonly
+          client.setContext(configuration.getContext());
+          config.setEndpoint(configuration.getEndpoint());
+          config.setSessionEndpoint(configuration.getSessionEndpoint());
+          client.setAppVersion(configuration.getAppVersion());
+          client.setReleaseStage(configuration.getReleaseStage());
+          client.setNotifyReleaseStages(configuration.getNotifyReleaseStages());
+        }
         client = new Client(androidContext, config);
+        configuration = config;
     }
 
     public static void notify(String name, String message,
