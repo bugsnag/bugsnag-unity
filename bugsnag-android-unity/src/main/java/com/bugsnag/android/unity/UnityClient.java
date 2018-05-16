@@ -11,7 +11,7 @@ import com.bugsnag.android.*;
 public class UnityClient {
 
     static volatile Client client;
-    private static Object lock = new Object();
+    private static final Object lock = new Object();
 
     public static void init(Context androidContext, String apiKey, boolean trackSessions) {
         if (client == null) {
