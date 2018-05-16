@@ -1,25 +1,33 @@
-require 'shellwords'
-
-$UNITY = "/Applications/Unity/Unity.app/Contents/MacOS/Unity"
+$UNITY = ['/Applications/Unity/Unity.app/Contents/MacOS/Unity', 'C:\Program Files\Unity\Editor\Unity.exe'].find do |unity|
+  File.exists? unity
+end
 
 desc "Build the plugin"
 task :build do
-  $path = Dir.pwd + "/temp.unityproject"
-  sh "rm -r temp.unityproject" if File.exist? "temp.unityproject"
-  sh "#$UNITY -batchmode -quit -createproject #{Shellwords.escape($path)}"
+  path = File.expand_path "temp.unityproject"
+  # Ruby uses / as the file separator on all platforms, which works fine in Ruby
+  # when we need to pass this to external programs such as Unity though it needs
+  # to have the correct file separator. On windows ALT_SEPARATOR is defined as \
+  # On the Mac it is undefined.
+  if File::ALT_SEPARATOR
+    path = path.tr(File::SEPARATOR, File::ALT_SEPARATOR)
+  end
 
-  Rake::Task[:copy_into_project].invoke
+  rm_rf "temp.unityproject"
+  sh $UNITY, "-batchmode", "-quit", "-createproject", path
+
+  Rake::Task[:copy_into_project].invoke(path)
 
   # Create the package so that the metadata files are created
-  sh "#$UNITY -batchmode -quit -projectpath #{Shellwords.escape($path)} -exportpackage Assets Bugsnag.unitypackage"
+  sh $UNITY, "-batchmode", "-quit", "-projectpath", path, "-exportpackage", "Assets", "Bugsnag.unitypackage"
 
   # Add support for tvOS to the iOS files by modifying the metadata
-  Rake::Task[:include_tvos_support].invoke
+  Rake::Task[:include_tvos_support].invoke.invoke(path)
 
   # Create the package with the new metadata
-  sh "#$UNITY -batchmode -quit -projectpath #{Shellwords.escape($path)} -exportpackage Assets Bugsnag.unitypackage"
+  sh $UNITY, "-batchmode", "-quit", "-projectpath", path, "-exportpackage", "Assets", "Bugsnag.unitypackage"
 
-  cp $path + "/Bugsnag.unitypackage", "."
+  cp "#{path}/Bugsnag.unitypackage", "."
 end
 
 desc "Update the example app's C# scripts"
@@ -29,72 +37,57 @@ end
 
 task :clean do
   cd 'bugsnag-android' do
-    sh "./gradlew clean"
+    sh "./gradlew", "clean"
   end
   cd 'bugsnag-android-unity' do
-    sh "../bugsnag-android/gradlew clean"
+    sh "../bugsnag-android/gradlew", "clean"
   end
   cd 'bugsnag-cocoa' do
-    sh "make clean"
-    sh "make BUILD_OSX=1 clean"
+    sh "make", "clean"
+    sh "make", "BUILD_OSX=1", "clean"
   end
 end
 
 namespace :build do
-
   desc "Build and run the iOS app"
   task :ios do
-    Dir.chdir "example" do
-      sh "#$UNITY -batchmode -quit -logFile build.log -executeMethod NotifyButtonScript.BuildIos"
+    cd "example" do
+      sh $UNITY, "-batchmode", "-quit", "-logFile", "build.log", "-executeMethod", "NotifyButtonScript.BuildIos"
     end
   end
 
   desc "Build and run the Android app"
   task :android do
-    Dir.chdir "example" do
-      sh "#$UNITY -batchmode -quit -logFile build.log -executeMethod NotifyButtonScript.BuildAndroid"
+    cd "example" do
+      sh $UNITY, "-batchmode", "-quit", "-logFile", "build.log", "-executeMethod", "NotifyButtonScript.BuildAndroid"
     end
   end
-
 end
-
 
 desc "Update the example app's dependencies"
-task :update_example_plugins do
-  $path = Dir.pwd + "/example"
-  Rake::Task[:copy_into_project].invoke
+task :update_example_plugins, [:path] do |task, args|
+  Rake::Task[:copy_into_project].invoke(File.expand_path("example"))
 end
 
-task :copy_into_project do
-  unless defined?($path)
-    raise "Use rake build instead."
-  end
-
+task :copy_into_project, [:path] do |task, args|
   # Copy unity-specific files for all plugins
-  cp_r "src/Assets", $path
+  cp_r "src/Assets", args[:path]
 
   # Create the individual platform plugins
-  Rake::Task[:create_webgl_plugin].invoke
-  Rake::Task[:create_ios_plugin].invoke
-  Rake::Task[:create_android_plugin].invoke
-  Rake::Task[:create_osx_plugin].invoke
-
+  Rake::Task[:create_webgl_plugin].invoke(args[:path])
+  Rake::Task[:create_ios_plugin].invoke(args[:path])
+  Rake::Task[:create_android_plugin].invoke(args[:path])
+  Rake::Task[:create_osx_plugin].invoke(args[:path])
 end
 
-task :create_webgl_plugin do
-  raise "Use rake build instead." unless defined?($path)
-
-  webgl_dir = $path + "/Assets/Plugins/WebGL"
+task :create_webgl_plugin, [:path] do |task, args|
+  webgl_dir = "#{args[:path]}/Assets/Plugins/WebGL"
   cp "bugsnag-js/src/bugsnag.js", File.join(webgl_dir, "bugsnag.jspre")
 end
 
-task :create_ios_plugin do
-  unless defined?($path)
-    raise "Use rake build instead."
-  end
-
+task :create_ios_plugin, [:path] do |task, args|
   # Create iOS directory
-  ios_dir = $path + "/Assets/Plugins/iOS/Bugsnag"
+  ios_dir = "#{args[:path]}/Assets/Plugins/iOS/Bugsnag"
   rm_rf ios_dir
   mkdir_p ios_dir
 
@@ -126,13 +119,9 @@ task :create_ios_plugin do
   end
 end
 
-task :create_android_plugin do
-  unless defined?($path)
-    raise "Use rake build instead."
-  end
-
+task :create_android_plugin, [:path] do |task, args|
   # Create android directory
-  android_dir = $path + "/Assets/Plugins/Android"
+  android_dir = "#{args[:path]}/Assets/Plugins/Android"
   mkdir_p android_dir
 
   # Create clean build of the android notifier
@@ -149,13 +138,9 @@ task :create_android_plugin do
   cp "bugsnag-android-unity/build/outputs/aar/bugsnag-android-unity-release.aar", android_dir
 end
 
-task :create_osx_plugin do
-  unless defined?($path)
-    raise "Use rake build instead."
-  end
-
+task :create_osx_plugin, [:path] do |task, args|
   # Create OSX directory
-  osx_dir = $path + "/Assets/Plugins/OSX/Bugsnag"
+  osx_dir = "#{args[:path]}/Assets/Plugins/OSX/Bugsnag"
   rm_rf osx_dir
   mkdir_p osx_dir
 
@@ -173,12 +158,8 @@ task :create_osx_plugin do
   end
 end
 
-task :include_tvos_support do
-  unless defined?($path)
-    raise "Use rake build instead."
-  end
-
-  tvos_dir = $path + "/Assets/Plugins/iOS/Bugsnag"
+task :include_tvos_support, [:path] do |task, args|
+  tvos_dir = "#{args[:path]}/Assets/Plugins/iOS/Bugsnag"
   Dir[tvos_dir + "/*.meta"].each do |file|
     # Keep the first 11 lines, everything before plaform data
     `sed -i '' '1,11!d' #{file}`
