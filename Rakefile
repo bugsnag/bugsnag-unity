@@ -141,6 +141,7 @@ task :create_android_plugin do
   end
 
   cd 'bugsnag-android-unity' do
+    cp "../bugsnag-android/gradle.properties", "gradle.properties"
     sh "../bugsnag-android/gradlew build"
   end
 
