@@ -19,7 +19,7 @@ public class UnityClient {
                 if (client == null) {
                     Configuration config = new Configuration(apiKey);
                     config.setAutoCaptureSessions(trackSessions);
-                    client = new Client(androidContext, config);
+                    client = Bugsnag.init(androidContext, config);
                 }
             }
         }
