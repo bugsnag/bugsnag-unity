@@ -40,6 +40,7 @@ task :clean do
     sh "./gradlew", "clean"
   end
   cd 'bugsnag-android-unity' do
+    cp "../bugsnag-android/gradle.properties", "gradle.properties"
     sh "../bugsnag-android/gradlew", "clean"
   end
   cd 'bugsnag-cocoa' do
