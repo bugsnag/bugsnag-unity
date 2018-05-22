@@ -22,7 +22,7 @@ task :build do
   sh $UNITY, "-batchmode", "-quit", "-projectpath", path, "-exportpackage", "Assets", "Bugsnag.unitypackage"
 
   # Add support for tvOS to the iOS files by modifying the metadata
-  Rake::Task[:include_tvos_support].invoke.invoke(path)
+  Rake::Task[:include_tvos_support].invoke(path)
 
   # Create the package with the new metadata
   sh $UNITY, "-batchmode", "-quit", "-projectpath", path, "-exportpackage", "Assets", "Bugsnag.unitypackage"
