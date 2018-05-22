@@ -182,7 +182,10 @@ public class Bugsnag : MonoBehaviour {
         }
 
         public static void SetReleaseStage(string releaseStage) {
-            if (!CheckRegistration()) return;
+            // bypass calling CheckRegistration method here as we don't
+            // want to log an error as this can now be called prior to
+            // setting up the notifier
+            if (!registered_) return;
             BugsnagUnity.CallStatic ("setReleaseStage", releaseStage);
         }
 
