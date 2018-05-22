@@ -309,6 +309,7 @@ public class Bugsnag : MonoBehaviour {
     public bool AutoNotify = true;
     public bool TrackAppSessions = false;
     public static bool TrackAppSessionsStatic = false;
+    private static string BugsnagReleaseStageStatic = null;
 
     // Rate limiting section
     // Defines the maximum number of logs to send (per type) in the rate limit time frame
@@ -360,6 +361,7 @@ public class Bugsnag : MonoBehaviour {
             if (value == null) {
                 value = "production";
             }
+            BugsnagReleaseStageStatic = value;
             NativeBugsnag.SetReleaseStage(value);
         }
     }
@@ -468,7 +470,9 @@ public class Bugsnag : MonoBehaviour {
         BugsnagApiKey = apiKey;
         NativeBugsnag.Register(BugsnagApiKey, TrackAppSessions || TrackAppSessionsStatic);
 
-        if(Debug.isDebugBuild) {
+        if(BugsnagReleaseStageStatic != null) {
+            Bugsnag.ReleaseStage = BugsnagReleaseStageStatic;
+        } else if(Debug.isDebugBuild) {
             Bugsnag.ReleaseStage = "development";
         } else {
             Bugsnag.ReleaseStage = "production";
