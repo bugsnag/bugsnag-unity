@@ -73,7 +73,6 @@ public class Bugsnag : MonoBehaviour {
         public static extern void SetSessionUrl(string sessionUrl);
 
 #elif UNITY_ANDROID && !UNITY_EDITOR
-        public static AndroidJavaClass Bugsnag = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
         public static AndroidJavaClass BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.UnityClient");
         public static Regex unityExpression = new Regex ("(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
@@ -164,7 +163,7 @@ public class Bugsnag : MonoBehaviour {
 
         public static void SetNotifyUrl(string notifyUrl) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setEndpoint", notifyUrl);
+            BugsnagUnity.CallStatic ("setEndpoint", notifyUrl);
         }
 
         public static void SetSessionUrl(string url) {
@@ -174,61 +173,60 @@ public class Bugsnag : MonoBehaviour {
 
         public static void SetAutoNotify(bool autoNotify) {
             if (!CheckRegistration()) return;
-            if (autoNotify) {
-                Bugsnag.CallStatic ("enableExceptionHandler");
-            } else {
-                Bugsnag.CallStatic ("disableExceptionHandler");
-            }
+            BugsnagUnity.CallStatic ("setAutoNotify", autoNotify);
         }
 
         public static void SetContext(string context) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setContext", context);
+            BugsnagUnity.CallStatic ("setContext", context);
         }
 
         public static void SetReleaseStage(string releaseStage) {
-            if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setReleaseStage", releaseStage);
+            // bypass calling CheckRegistration method here as we don't
+            // want to log an error as this can now be called prior to
+            // setting up the notifier
+            if (!registered_) return;
+            BugsnagUnity.CallStatic ("setReleaseStage", releaseStage);
         }
 
         public static void SetNotifyReleaseStages(string releaseStages) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setNotifyReleaseStages", releaseStages.Split (','));
+            BugsnagUnity.CallStatic ("setNotifyReleaseStages", releaseStages.Split (','));
         }
 
         public static void AddToTab(string tabName, string attributeName, string attributeValue) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("addToTab", tabName, attributeName, attributeValue);
+            BugsnagUnity.CallStatic ("addToTab", tabName, attributeName, attributeValue);
         }
 
         public static void ClearTab(string tabName) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("clearTab", tabName);
+            BugsnagUnity.CallStatic ("clearTab", tabName);
         }
 
         public static void LeaveBreadcrumb(string breadcrumb) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("leaveBreadcrumb", breadcrumb);
+            BugsnagUnity.CallStatic ("leaveBreadcrumb", breadcrumb);
         }
 
         public static void SetBreadcrumbCapacity(int capacity) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setMaxBreadcrumbs", capacity);
+            BugsnagUnity.CallStatic ("setMaxBreadcrumbs", capacity);
         }
 
         public static void SetAppVersion(string version) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setAppVersion", version);
+            BugsnagUnity.CallStatic ("setAppVersion", version);
         }
 
         public static void SetUser(string userId, string userName, string userEmail) {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("setUser", userId, userEmail, userName);
+            BugsnagUnity.CallStatic ("setUser", userId, userEmail, userName);
         }
 
         public static void StartSession() {
             if (!CheckRegistration()) return;
-            Bugsnag.CallStatic ("startSession");
+            BugsnagUnity.CallStatic ("startSession");
         }
 #else
         private static string apiKey_;
@@ -314,6 +312,7 @@ public class Bugsnag : MonoBehaviour {
     public bool AutoNotify = true;
     public bool TrackAppSessions = false;
     public static bool TrackAppSessionsStatic = false;
+    private static string BugsnagReleaseStageStatic = null;
 
     // Rate limiting section
     // Defines the maximum number of logs to send (per type) in the rate limit time frame
@@ -365,6 +364,7 @@ public class Bugsnag : MonoBehaviour {
             if (value == null) {
                 value = "production";
             }
+            BugsnagReleaseStageStatic = value;
             NativeBugsnag.SetReleaseStage(value);
         }
     }
@@ -473,7 +473,9 @@ public class Bugsnag : MonoBehaviour {
         BugsnagApiKey = apiKey;
         NativeBugsnag.Register(BugsnagApiKey, TrackAppSessions || TrackAppSessionsStatic);
 
-        if(Debug.isDebugBuild) {
+        if(BugsnagReleaseStageStatic != null) {
+            Bugsnag.ReleaseStage = BugsnagReleaseStageStatic;
+        } else if(Debug.isDebugBuild) {
             Bugsnag.ReleaseStage = "development";
         } else {
             Bugsnag.ReleaseStage = "production";
