@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.6.6 (2018-05-24)
+
+### Bug fixes
+
+* Support setting the release stage before initialising the client
+  | [#73](https://github.com/bugsnag/bugsnag-unity/pull/73)
+
 ## 3.6.5 (2018-05-02)
 
 * Upgrade bugsnag-cocoa to v5.15.5:
