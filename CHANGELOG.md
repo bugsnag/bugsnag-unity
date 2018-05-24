@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-* Support setting the release stage before initialising the client
+* Support setting the release stage before initializing the client
   | [#73](https://github.com/bugsnag/bugsnag-unity/pull/73)
 
 ## 3.6.5 (2018-05-02)
