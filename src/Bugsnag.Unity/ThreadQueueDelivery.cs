@@ -47,7 +47,7 @@ namespace Bugsnag.Unity
       while (true)
       {
         var payload = _queue.Dequeue();
-        var request = new UnityWebRequest(payload.Endpoint.OriginalString.ToString(), "POST");
+        var request = new UnityWebRequest(payload.Endpoint.ToString(), "POST");
 
         request.SetRequestHeader("Content-Type", "application/json; charset=utf-8");
         request.SetRequestHeader("Bugsnag-Sent-At", DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
