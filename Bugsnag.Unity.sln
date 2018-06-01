@@ -9,6 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.Unity.Tests", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityEngine", "tests\UnityEngine\UnityEngine.csproj", "{7600F127-2CF0-4A1C-A12C-DE5630696DD4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{330E1C29-F8C0-4FFC-9FE9-9FA71DE400FC}"
+	ProjectSection(SolutionItems) = preProject
+		src\Assets\Standard Assets\Bugsnag\Bugsnag.cs = src\Assets\Standard Assets\Bugsnag\Bugsnag.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
