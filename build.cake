@@ -28,7 +28,8 @@ Task("CopyToUnity")
   .WithCriteria(() => outputPath != null)
   .IsDependentOn("Build")
   .Does(() => {
-    CopyFileToDirectory($"./src/Bugsnag.Unity/bin/{configuration}/net35/Bugsnag.Unity.dll", outputPath);
+    CopyFileToDirectory($"./src/Bugsnag.Native.Android/bin/{configuration}/net35/Bugsnag.Native.dll", $"{outputPath}/Assets/Plugins/Android/");
+    CopyFileToDirectory($"./src/Bugsnag.Unity/bin/{configuration}/net35/Bugsnag.Unity.dll", $"{outputPath}/Assets/Standard Assets/Bugsnag");
   });
 
 Task("Default")

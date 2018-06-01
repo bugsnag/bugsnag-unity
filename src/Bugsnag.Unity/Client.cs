@@ -26,6 +26,8 @@ namespace Bugsnag.Unity
       Application.logMessageReceivedThreaded += Notify;
       AppDomain.CurrentDomain.UnhandledException += Notify;
       SceneManager.sceneLoaded += SceneLoaded;
+
+      Native.Client.Register("wow");
     }
 
     private void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
