@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Threading;
 using UnityEngine;
@@ -56,7 +57,14 @@ namespace Bugsnag.Unity
           request.SetRequestHeader(header.Key, header.Value);
         }
 
-        request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(SimpleJson.SimpleJson.SerializeObject(payload)));
+        using (var stream = new MemoryStream())
+        using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+        {
+          SimpleJson.SimpleJson.SerializeObject(payload, writer);
+          writer.Flush();
+          request.uploadHandler = new UploadHandlerRaw(stream.ToArray());
+        }
+
         request.downloadHandler = new DownloadHandlerBuffer();
         var response = request.SendWebRequest();
 
