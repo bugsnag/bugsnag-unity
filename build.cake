@@ -3,6 +3,7 @@
 var target = Argument("target", "Default");
 var solution = File("./Bugsnag.Unity.sln");
 var configuration = Argument("configuration", "Release");
+var outputPath = Argument<string>("output", null);
 
 Task("Build")
   .Does(() => {
@@ -20,9 +21,10 @@ Task("Test")
   });
 
 Task("CopyToUnity")
+  .WithCriteria(() => outputPath != null)
   .IsDependentOn("Build")
   .Does(() => {
-    CopyFileToDirectory(@".\src\Bugsnag.Unity\bin\Release\net35\Bugsnag.Unity.dll", @"C:\Users\marti\Documents\bugsnag-unity\Assets");
+    CopyFileToDirectory($"./src/Bugsnag.Unity/bin/{configuration}/net35/Bugsnag.Unity.dll", outputPath);
   });
 
 Task("Default")

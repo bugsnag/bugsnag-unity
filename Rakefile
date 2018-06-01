@@ -79,6 +79,7 @@ task :copy_into_project, [:path] do |task, args|
   Rake::Task[:create_ios_plugin].invoke(args[:path])
   Rake::Task[:create_android_plugin].invoke(args[:path])
   Rake::Task[:create_osx_plugin].invoke(args[:path])
+  Rake::Task[:create_csharp_plugin].invoke(args[:path])
 end
 
 task :create_webgl_plugin, [:path] do |task, args|
@@ -170,5 +171,8 @@ task :include_tvos_support, [:path] do |task, args|
   end
 end
 
+task :create_csharp_plugin, [:path] do |task, args|
+  sh "./build.sh", "--output=#{args[:path]}/Assets/Standard Assets/Bugsnag/"
+end
 
 task default: [:build]
