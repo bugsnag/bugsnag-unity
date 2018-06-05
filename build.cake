@@ -5,7 +5,11 @@ var solution = File("./Bugsnag.Unity.sln");
 var configuration = Argument("configuration", "Release");
 var outputPath = Argument<string>("output", null);
 
+Task("Restore-NuGet-Packages")
+    .Does(() => NuGetRestore(solution));
+
 Task("Build")
+  .IsDependentOn("Restore-NuGet-Packages")
   .Does(() => {
     MSBuild(solution, settings =>
       settings
