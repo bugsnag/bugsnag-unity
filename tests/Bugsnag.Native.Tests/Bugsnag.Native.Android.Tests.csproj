@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.10.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Bugsnag.Native.Android\Bugsnag.Native.Android.csproj">
+      <!-- we don't want to copy this dll to the output directory as we are only testing that the interface matches across all of the platforms, during testing we will be using the dummy implementation dll -->
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\UnityEngine\UnityEngine.csproj" />
+  </ItemGroup>
+
+</Project>
