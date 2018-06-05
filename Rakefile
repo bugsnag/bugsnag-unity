@@ -172,7 +172,7 @@ task :include_tvos_support, [:path] do |task, args|
 end
 
 task :create_csharp_plugin, [:path] do |task, args|
-  sh "./build.sh", "--output=#{args[:path]}/Assets/Standard Assets/Bugsnag/"
+  sh "./build.sh", "--output=#{args[:path]}"
 end
 
 task default: [:build]
