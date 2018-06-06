@@ -45,5 +45,10 @@ namespace Bugsnag.Native
     {
       BugsnagUnity.CallStatic("setEndpoint", notifyUrl);
     }
+
+    public static void SetSessionUrl(string sessionUrl)
+    {
+      BugsnagUnity.CallStatic("setSessionEndpoint", sessionUrl);
+    }
   }
 }

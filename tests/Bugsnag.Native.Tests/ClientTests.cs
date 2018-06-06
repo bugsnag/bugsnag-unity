@@ -18,5 +18,8 @@ namespace Bugsnag.Native.Tests
 
     [Test]
     public void SetNotifyUrlTest() => Client.SetNotifyUrl("test");
+
+    [Test]
+    public void SetSessionUrlTest() => Client.SetSessionUrl("test");
   }
 }

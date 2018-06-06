@@ -53,7 +53,20 @@ namespace Bugsnag.Unity
 
     public string AppVersion { get; set; }
 
-    public Uri SessionEndpoint { get; set; }
+    private Uri _sessionEndpoint;
+
+    public Uri SessionEndpoint
+    {
+      get
+      {
+        return _sessionEndpoint;
+      }
+      set
+      {
+        Native.Client.SetSessionUrl(value.ToString());
+        _sessionEndpoint = value;
+      }
+    }
 
     public int MaximumBreadcrumbs { get; set; }
 
