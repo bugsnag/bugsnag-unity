@@ -52,19 +52,20 @@ namespace Bugsnag.Unity
     /// Initializes the singleton client with the provided configuration.
     /// Must be called before calling other methods on the client.
     /// </summary>
-    /// <param name="configuration"></param>
-    public void Init(Configuration configuration)
+    /// <param name="apiKey"></param>
+    public void Init(string apiKey)
     {
       lock (Lock)
       {
         if (!Configured)
         {
+          Native.Client.Register(apiKey);
+          var configuration = new Configuration(apiKey);
           SessionTracking = new SessionTracker(this);
           Breadcrumbs = new Breadcrumbs(configuration);
           UniqueCounter = new UniqueLogThrottle(configuration);
           LogTypeCounter = new MaximumLogTypeCounter(configuration);
           User = new User();
-          Native.Client.Register(configuration.ApiKey);
 
           // set the configuration after the other properties so that we can
           // use the Configured check to skip methods until the client is

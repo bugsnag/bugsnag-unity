@@ -28,17 +28,12 @@ namespace Bugsnag.Unity
     /// </summary>
     void Awake()
     {
-      var configuration = new Configuration
-      {
-        ApiKey = BugsnagApiKey,
-        AutoNotify = AutoNotify,
-        UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond),
-        NotifyLevel = NotifyLevel,
-        ReleaseStage = Debug.isDebugBuild ? "debug" : "production",
-        MaximumBreadcrumbs = MaximumBreadcrumbs,
-      };
-
-      Client.Instance.Init(configuration);
+      Client.Instance.Init(BugsnagApiKey);
+      Client.Instance.Configuration.AutoNotify = AutoNotify;
+      Client.Instance.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
+      Client.Instance.Configuration.NotifyLevel = NotifyLevel;
+      Client.Instance.Configuration.ReleaseStage = Debug.isDebugBuild ? "debug" : "production";
+      Client.Instance.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
     }
   }
 

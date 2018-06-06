@@ -10,11 +10,6 @@ namespace Bugsnag.Unity
 
     public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    public Configuration() : this(string.Empty)
-    {
-
-    }
-
     public Configuration(string apiKey)
     {
       ApiKey = apiKey;
@@ -33,7 +28,7 @@ namespace Bugsnag.Unity
 
     public string SessionPayloadVersion { get; } = "1.0";
 
-    public string ApiKey { get; set; }
+    public string ApiKey { get; }
 
     public Uri Endpoint { get; set; }
 
