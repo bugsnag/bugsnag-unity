@@ -30,7 +30,20 @@ namespace Bugsnag.Unity
 
     public string ApiKey { get; }
 
-    public Uri Endpoint { get; set; }
+    private Uri _endpoint;
+
+    public Uri Endpoint
+    {
+      get
+      {
+        return _endpoint;
+      }
+      set
+      {
+        Native.Client.SetNotifyUrl(value.ToString());
+        _endpoint = value;
+      }
+    }
 
     public bool AutoNotify { get; set; }
 

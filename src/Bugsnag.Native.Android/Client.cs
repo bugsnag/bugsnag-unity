@@ -38,6 +38,12 @@ namespace Bugsnag.Native
         "(Landroid/content/Context;Ljava/lang/String;Z)V"
       );
       AndroidJNI.CallStaticVoidMethod(BugsnagUnity.GetRawClass(), methodId, args);
+      // call notify here?
+    }
+
+    public static void SetNotifyUrl(string notifyUrl)
+    {
+      BugsnagUnity.CallStatic("setEndpoint", notifyUrl);
     }
   }
 }

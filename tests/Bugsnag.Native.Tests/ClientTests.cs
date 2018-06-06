@@ -15,5 +15,8 @@ namespace Bugsnag.Native.Tests
 
     [Test]
     public void RegisterWithApiKeyAndAutoTrackSessionsTest() => Client.Register("test", false);
+
+    [Test]
+    public void SetNotifyUrlTest() => Client.SetNotifyUrl("test");
   }
 }

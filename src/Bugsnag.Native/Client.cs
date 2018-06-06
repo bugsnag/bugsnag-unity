@@ -10,5 +10,7 @@ namespace Bugsnag.Native
     public static void Register(string apiKey) { }
 
     public static void Register(string apiKey, bool trackSessions) { }
+
+    public static void SetNotifyUrl(string notifyUrl) { }
   }
 }
