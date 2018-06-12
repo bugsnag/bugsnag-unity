@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Bugsnag.Unity
 {
@@ -16,8 +15,8 @@ namespace Bugsnag.Unity
       { "version", Application.version },
       { "companyName", Application.companyName },
       { "productName", Application.productName },
-      { "threadId", Thread.CurrentThread.ManagedThreadId.ToString() },
-      { "threadName", Thread.CurrentThread.Name },
+      //{ "threadId", Thread.CurrentThread.ManagedThreadId.ToString() },
+      //{ "threadName", Thread.CurrentThread.Name },
     };
   }
 }

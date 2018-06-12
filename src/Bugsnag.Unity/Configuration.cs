@@ -45,32 +45,97 @@ namespace Bugsnag.Unity
       }
     }
 
-    public bool AutoNotify { get; set; }
+    private bool _autoNotify;
 
-    public string ReleaseStage { get; set; }
-
-    public string[] NotifyReleaseStages { get; set; }
-
-    public string AppVersion { get; set; }
-
-    private Uri _sessionEndpoint;
-
-    public Uri SessionEndpoint
+    public bool AutoNotify
     {
       get
       {
-        return _sessionEndpoint;
+        return _autoNotify;
       }
       set
       {
-        Native.Client.SetSessionUrl(value.ToString());
-        _sessionEndpoint = value;
+        Native.Client.SetAutoNotify(value);
+        _autoNotify = value;
       }
     }
 
-    public int MaximumBreadcrumbs { get; set; }
+    private string _releaseStage;
 
-    public string Context { get; set; }
+    public string ReleaseStage
+    {
+      get
+      {
+        return _releaseStage;
+      }
+      set
+      {
+        Native.Client.SetReleaseStage(value);
+        _releaseStage = value;
+      }
+    }
+
+    private string[] _notifyReleaseStages;
+
+    public string[] NotifyReleaseStages
+    {
+      get
+      {
+        return _notifyReleaseStages;
+      }
+      set
+      {
+        Native.Client.SetNotifyReleaseStages(value);
+        _notifyReleaseStages = value;
+      }
+    }
+
+    private string _appVersion;
+
+    public string AppVersion
+    {
+      get
+      {
+        return _appVersion;
+      }
+      set
+      {
+        Native.Client.SetAppVersion(value);
+        _appVersion = value;
+      }
+    }
+
+    public Uri SessionEndpoint { get; set; }
+
+    private int _maximumBreadcrumbs;
+
+    public int MaximumBreadcrumbs
+    {
+      get
+      {
+        return _maximumBreadcrumbs;
+      }
+      set
+      {
+        Native.Client.SetBreadcrumbCapacity(value);
+        _maximumBreadcrumbs = value;
+      }
+    }
+
+    private string _context;
+
+    public string Context
+    {
+      get
+      {
+        return _context;
+      }
+      set
+      {
+        Native.Client.SetContext(value);
+        _context = value;
+      }
+    }
 
     public LogType NotifyLevel { get; set; }
 

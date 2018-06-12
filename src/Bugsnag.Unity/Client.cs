@@ -59,7 +59,7 @@ namespace Bugsnag.Unity
       {
         if (!Configured)
         {
-          Native.Client.Register(apiKey);
+          Native.Client.Register(apiKey, UnityMetadata.Data);
           var configuration = new Configuration(apiKey);
           SessionTracking = new SessionTracker(this);
           Breadcrumbs = new Breadcrumbs(configuration);

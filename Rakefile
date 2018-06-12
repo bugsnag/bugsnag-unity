@@ -39,10 +39,6 @@ task :clean do
   cd 'bugsnag-android' do
     sh "./gradlew", "clean"
   end
-  cd 'bugsnag-android-unity' do
-    cp "../bugsnag-android/gradle.properties", "gradle.properties"
-    sh "../bugsnag-android/gradlew", "clean"
-  end
   cd 'bugsnag-cocoa' do
     sh "make", "clean"
     sh "make", "BUILD_OSX=1", "clean"
@@ -131,13 +127,7 @@ task :create_android_plugin, [:path] do |task, args|
     sh "./gradlew sdk:build"
   end
 
-  cd 'bugsnag-android-unity' do
-    cp "../bugsnag-android/gradle.properties", "gradle.properties"
-    sh "../bugsnag-android/gradlew build"
-  end
-
   cp "bugsnag-android/sdk/build/outputs/aar/bugsnag-android-release.aar", android_dir
-  cp "bugsnag-android-unity/build/outputs/aar/bugsnag-android-unity-release.aar", android_dir
 end
 
 task :create_osx_plugin, [:path] do |task, args|
