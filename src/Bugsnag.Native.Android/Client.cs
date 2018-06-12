@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Bugsnag.Native
@@ -101,5 +102,47 @@ namespace Bugsnag.Native
     {
       Bugsnag.CallStatic("setUser", id, email, name);
     }
+
+    public static Breadcrumb[] GetBreadcrumbs()
+    {
+      var client = Bugsnag.CallStatic<AndroidJavaObject>("getClient");
+      var breadcrumbs = client.Call<AndroidJavaObject[]>("getBreadcrumbs");
+
+      return breadcrumbs.Select(ConvertToBreadcrumb).ToArray();
+    }
+
+    private static Breadcrumb ConvertToBreadcrumb(AndroidJavaObject javaBreadcrumb)
+    {
+      var metadata = new Dictionary<string, string>();
+
+      var javaMetadata = javaBreadcrumb.Call<AndroidJavaObject>("getMetadata");
+      var set = javaMetadata.Call<AndroidJavaObject>("entrySet");
+      var iterator = set.Call<AndroidJavaObject>("iterator");
+
+      while (iterator.Call<bool>("hasNext"))
+      {
+        var next = iterator.Call<AndroidJavaObject>("next");
+        metadata.Add(next.Call<string>("getKey"), next.Call<string>("getValue"));
+      }
+
+      return new Breadcrumb
+      {
+        Name = javaBreadcrumb.Call<string>("getName"),
+        Type = javaBreadcrumb.Call<AndroidJavaObject>("getType").Call<string>("toString"),
+        Metadata = metadata,
+        Timestamp = javaBreadcrumb.Call<string>("getTimestamp"),
+      };
+    }
+  }
+
+  public class Breadcrumb
+  {
+    public string Name { get; set; }
+
+    public string Type { get; set; }
+
+    public Dictionary<string, string> Metadata { get; set; }
+
+    public string Timestamp { get; set; }
   }
 }

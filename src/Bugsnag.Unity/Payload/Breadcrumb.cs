@@ -12,6 +12,14 @@ namespace Bugsnag.Unity.Payload
     private const string UndefinedName = "Breadcrumb";
     private const int MaximumMetadataCharacterCount = 1024;
 
+    public Breadcrumb(Native.Breadcrumb breadcrumb)
+    {
+      this.AddToPayload("name", breadcrumb.Name);
+      this.AddToPayload("timestamp", breadcrumb.Timestamp);
+      this.AddToPayload("metaData", breadcrumb.Metadata);
+      this.AddToPayload("type", breadcrumb.Type);
+    }
+
     public Breadcrumb(string name, BreadcrumbType type) : this(name, type, null)
     {
 

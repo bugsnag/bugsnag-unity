@@ -1,5 +1,6 @@
 ﻿using Bugsnag.Unity.Payload;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bugsnag.Unity
 {
@@ -63,21 +64,23 @@ namespace Bugsnag.Unity
     /// <returns></returns>
     public IEnumerable<Breadcrumb> Retrieve()
     {
-      lock (_lock)
-      {
-        var numberOfBreadcrumbs = System.Array.IndexOf(_breadcrumbs, null);
+      var x = Native.Client.GetBreadcrumbs();
+      return x.Select(b => new Breadcrumb(b));
+      //lock (_lock)
+      //{
+      //  var numberOfBreadcrumbs = System.Array.IndexOf(_breadcrumbs, null);
 
-        if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _maximumBreadcrumbs;
+      //  if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _maximumBreadcrumbs;
 
-        var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
+      //  var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
 
-        for (int i = 0; i < numberOfBreadcrumbs; i++)
-        {
-          breadcrumbs[i] = _breadcrumbs[i];
-        }
+      //  for (int i = 0; i < numberOfBreadcrumbs; i++)
+      //  {
+      //    breadcrumbs[i] = _breadcrumbs[i];
+      //  }
 
-        return breadcrumbs;
-      }
+      //  return breadcrumbs;
+      //}
     }
   }
 }

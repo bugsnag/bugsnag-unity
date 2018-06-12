@@ -105,27 +105,27 @@ namespace Bugsnag.Unity
     /// <param name="logType"></param>
     private void Notify(string condition, string stackTrace, LogType logType)
     {
-      if (logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
-      {
-        var logMessage = new UnityLogMessage(condition, stackTrace, logType);
+      //if (logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
+      //{
+      //  var logMessage = new UnityLogMessage(condition, stackTrace, logType);
 
-        if (UniqueCounter.ShouldSend(logMessage))
-        {
-          if (LogTypeCounter.ShouldSend(logMessage))
-          {
-            var report = new Report(Configuration, logMessage, HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+      //  if (UniqueCounter.ShouldSend(logMessage))
+      //  {
+      //    if (LogTypeCounter.ShouldSend(logMessage))
+      //    {
+      //      var report = new Report(Configuration, logMessage, HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
 
-            Notify(report);
-          }
-        }
-      }
-      else
-      {
-        Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
-          { "condition", condition },
-          { "stackTrace", stackTrace },
-        });
-      }
+      //      Notify(report);
+      //    }
+      //  }
+      //}
+      //else
+      //{
+      //  Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
+      //    { "condition", condition },
+      //    { "stackTrace", stackTrace },
+      //  });
+      //}
     }
 
     /// <summary>

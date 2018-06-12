@@ -32,5 +32,18 @@ namespace Bugsnag.Native
     public static void SetAppVersion(string version) { }
 
     public static void SetUser(string id, string name, string email) { }
+
+    public static Breadcrumb[] GetBreadcrumbs() => new Breadcrumb[0];
+  }
+
+  public class Breadcrumb
+  {
+    public string Name { get; set; }
+
+    public string Type { get; set; }
+
+    public Dictionary<string, string> Metadata { get; set; }
+
+    public string Timestamp { get; set; }
   }
 }
