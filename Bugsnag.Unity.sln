@@ -14,14 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\Assets\Standard Assets\Bugsnag\Bugsnag.cs = src\Assets\Standard Assets\Bugsnag\Bugsnag.cs
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.Native", "src\Bugsnag.Native\Bugsnag.Native.csproj", "{6B1231F5-2295-4662-B8DA-467B690B96E7}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.Native.Android", "src\Bugsnag.Native.Android\Bugsnag.Native.Android.csproj", "{6C2CD5D0-56B2-4488-938F-7D6498C19CB0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.Native.Tests", "tests\Bugsnag.Native.Tests\Bugsnag.Native.Tests.csproj", "{EA289C50-2C4B-4775-B22E-527002BA7068}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugsnag.Native.Android.Tests", "tests\Bugsnag.Native.Tests\Bugsnag.Native.Android.Tests.csproj", "{2B291EB3-9936-4A58-8932-48EDCEC87296}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,22 +32,6 @@ Global
 		{7600F127-2CF0-4A1C-A12C-DE5630696DD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7600F127-2CF0-4A1C-A12C-DE5630696DD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7600F127-2CF0-4A1C-A12C-DE5630696DD4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6B1231F5-2295-4662-B8DA-467B690B96E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B1231F5-2295-4662-B8DA-467B690B96E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6B1231F5-2295-4662-B8DA-467B690B96E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6B1231F5-2295-4662-B8DA-467B690B96E7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C2CD5D0-56B2-4488-938F-7D6498C19CB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C2CD5D0-56B2-4488-938F-7D6498C19CB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C2CD5D0-56B2-4488-938F-7D6498C19CB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C2CD5D0-56B2-4488-938F-7D6498C19CB0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA289C50-2C4B-4775-B22E-527002BA7068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA289C50-2C4B-4775-B22E-527002BA7068}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA289C50-2C4B-4775-B22E-527002BA7068}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA289C50-2C4B-4775-B22E-527002BA7068}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2B291EB3-9936-4A58-8932-48EDCEC87296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B291EB3-9936-4A58-8932-48EDCEC87296}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B291EB3-9936-4A58-8932-48EDCEC87296}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B291EB3-9936-4A58-8932-48EDCEC87296}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

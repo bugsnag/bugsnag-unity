@@ -2,7 +2,7 @@ using System;
 
 namespace Bugsnag.Polyfills
 {
-  public static class String
+  static class String
   {
     public static bool IsNullOrWhiteSpace(string s)
     {

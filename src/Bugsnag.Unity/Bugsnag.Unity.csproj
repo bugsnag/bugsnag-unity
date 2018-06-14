@@ -1,14 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Uncomment below to compile individual versions within VisualStudio -->
+    <!--<UnityNativePlatform>Android</UnityNativePlatform>-->
     <TargetFramework>net35</TargetFramework>
     <LangVersion>7.1</LangVersion>
     <UnityDir Condition="$(UnityDir) == '' and Exists('C:\Program Files\Unity\Editor\Data\Managed\UnityEngine.dll')">C:\Program Files\Unity\Editor\Data\Managed</UnityDir>
     <UnityDir Condition="$(UnityDir) == '' and Exists('\Applications\Unity\Unity.app\Contents\Managed\UnityEngine.dll')">\Applications\Unity\Unity.app\Contents\Managed</UnityDir>
+    <OutputPath Condition="$(UnityNativePlatform) != ''">bin\$(Configuration)\$(UnityNativePlatform)</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bugsnag.Native\Bugsnag.Native.csproj" />
+    <Compile Remove="Native\**\*.cs" />
+    <None Include="Native\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(UnityNativePlatform) != ''">
+    <Compile Include="Native\$(UnityNativePlatform)\**\*.cs" />
+    <None Remove="Native\$(UnityNativePlatform)\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(UnityNativePlatform) == ''">
+    <Compile Include="Native\*.cs" />
+    <None Remove="Native\*.cs" />
   </ItemGroup>
 
   <ItemGroup>

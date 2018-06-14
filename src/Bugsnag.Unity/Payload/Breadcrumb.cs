@@ -12,12 +12,20 @@ namespace Bugsnag.Unity.Payload
     private const string UndefinedName = "Breadcrumb";
     private const int MaximumMetadataCharacterCount = 1024;
 
-    public Breadcrumb(Native.Breadcrumb breadcrumb)
+    /// <summary>
+    /// Used to construct a breadcrumb from the native data obtained from a
+    /// native notifier if present.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="timestamp"></param>
+    /// <param name="type"></param>
+    /// <param name="metadata"></param>
+    internal Breadcrumb(string name, string timestamp, string type, IDictionary<string, string> metadata)
     {
-      this.AddToPayload("name", breadcrumb.Name);
-      this.AddToPayload("timestamp", breadcrumb.Timestamp);
-      this.AddToPayload("metaData", breadcrumb.Metadata);
-      this.AddToPayload("type", breadcrumb.Type);
+      this.AddToPayload("name", name);
+      this.AddToPayload("timestamp", timestamp);
+      this.AddToPayload("metaData", metadata);
+      this.AddToPayload("type", type);
     }
 
     public Breadcrumb(string name, BreadcrumbType type) : this(name, type, null)
@@ -69,6 +77,8 @@ namespace Bugsnag.Unity.Payload
     }
 
     public string Name { get { return this.Get("name") as string; } }
+
+    public string Type { get { return this.Get("type") as string; } }
 
     public IDictionary<string, string> Metadata { get { return this.Get("metaData") as IDictionary<string, string>; } }
   }

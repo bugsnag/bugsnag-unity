@@ -3,7 +3,8 @@
 var target = Argument("target", "Default");
 var solution = File("./Bugsnag.Unity.sln");
 var configuration = Argument("configuration", "Release");
-var outputPath = Argument<string>("output", "C:/Users/marti/Documents/bugsnag-unity-test");
+var outputPath = Argument<string>("output", null);
+var nativePlatforms = new string[] { "Android" };
 
 Task("Restore-NuGet-Packages")
     .Does(() => NuGetRestore(solution));
@@ -15,6 +16,13 @@ Task("Build")
       settings
         .SetVerbosity(Verbosity.Minimal)
         .SetConfiguration(configuration));
+    foreach (var platform in nativePlatforms) {
+      MSBuild(solution, settings =>
+        settings
+          .WithProperty("UnityNativePlatform", platform)
+          .SetVerbosity(Verbosity.Minimal)
+          .SetConfiguration(configuration));
+    }
   });
 
 Task("Test")
@@ -28,10 +36,10 @@ Task("CopyToUnity")
   .WithCriteria(() => outputPath != null)
   .IsDependentOn("Build")
   .Does(() => {
-    CopyFileToDirectory($"./src/Bugsnag.Native/bin/{configuration}/net35/Bugsnag.Native.dll", $"{outputPath}/Assets/Plugins/x86");
-    CopyFileToDirectory($"./src/Bugsnag.Native/bin/{configuration}/net35/Bugsnag.Native.dll", $"{outputPath}/Assets/Plugins/x86_64");
-    CopyFileToDirectory($"./src/Bugsnag.Native.Android/bin/{configuration}/net35/Bugsnag.Native.dll", $"{outputPath}/Assets/Plugins/Android");
-    CopyFileToDirectory($"./src/Bugsnag.Unity/bin/{configuration}/net35/Bugsnag.Unity.dll", $"{outputPath}/Assets/Standard Assets/Bugsnag");
+    CopyFileToDirectory($"./src/Bugsnag.Unity/bin/{configuration}/net35/Bugsnag.Unity.dll", $"{outputPath}/Assets/Plugins");
+    foreach (var platform in nativePlatforms) {
+      CopyFileToDirectory($"./src/Bugsnag.Unity/bin/{configuration}/{platform}/net35/Bugsnag.Unity.dll", $"{outputPath}/Assets/Plugins/{platform}");
+    }
     CopyFileToDirectory($"./src/Assets/Standard Assets/Bugsnag/Bugsnag.cs", $"{outputPath}/Assets/Standard Assets/Bugsnag");
   });
 

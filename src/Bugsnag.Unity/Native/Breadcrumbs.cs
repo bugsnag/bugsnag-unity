@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bugsnag.Unity
+namespace Bugsnag.Unity.Native
 {
   public class Breadcrumbs
   {
@@ -15,7 +15,7 @@ namespace Bugsnag.Unity
     /// Constructs a collection of breadcrumbs
     /// </summary>
     /// <param name="configuration"></param>
-    public Breadcrumbs(Configuration configuration)
+    internal Breadcrumbs(Configuration configuration)
     {
       _maximumBreadcrumbs = configuration.MaximumBreadcrumbs;
       _current = 0;
@@ -64,23 +64,23 @@ namespace Bugsnag.Unity
     /// <returns></returns>
     public IEnumerable<Breadcrumb> Retrieve()
     {
-      var x = Native.Client.GetBreadcrumbs();
-      return x.Select(b => new Breadcrumb(b));
-      //lock (_lock)
-      //{
-      //  var numberOfBreadcrumbs = System.Array.IndexOf(_breadcrumbs, null);
+      //var x = Native.Client.GetBreadcrumbs();
+      //return x.Select(b => new Breadcrumb(b));
+      lock (_lock)
+      {
+        var numberOfBreadcrumbs = System.Array.IndexOf(_breadcrumbs, null);
 
-      //  if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _maximumBreadcrumbs;
+        if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _maximumBreadcrumbs;
 
-      //  var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
+        var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
 
-      //  for (int i = 0; i < numberOfBreadcrumbs; i++)
-      //  {
-      //    breadcrumbs[i] = _breadcrumbs[i];
-      //  }
+        for (int i = 0; i < numberOfBreadcrumbs; i++)
+        {
+          breadcrumbs[i] = _breadcrumbs[i];
+        }
 
-      //  return breadcrumbs;
-      //}
+        return breadcrumbs;
+      }
     }
   }
 }
