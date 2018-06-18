@@ -6,8 +6,6 @@ namespace Bugsnag.Unity.Native
   {
     internal static void Register(string apiKey, Dictionary<string, string> unityMetadata) { }
 
-    internal static void Register(string apiKey, bool trackSessions, Dictionary<string, string> unityMetadata) { }
-
     internal static void SetNotifyUrl(string notifyUrl) { }
 
     internal static void SetAutoNotify(bool autoNotify) { }

@@ -13,17 +13,13 @@ namespace Bugsnag.Unity.Native
 
     internal static void Register(string apiKey, Dictionary<string, string> unityMetadata)
     {
-      Register(apiKey, false, unityMetadata);
-    }
-
-    internal static void Register(string apiKey, bool trackSessions, Dictionary<string, string> unityMetadata)
-    {
       using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
       using (var configuration = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey))
       {
         var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
         var context = activity.Call<AndroidJavaObject>("getApplicationContext");
-        configuration.Call("setAutoCaptureSessions", trackSessions);
+        // the bugsnag-unity notifier will handle session tracking
+        configuration.Call("setAutoCaptureSessions", false);
         Bugsnag.CallStatic<AndroidJavaObject>("init", context, configuration);
       }
 
