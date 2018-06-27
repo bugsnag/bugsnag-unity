@@ -2,13 +2,20 @@
 
 namespace Bugsnag.Unity
 {
-  public class SessionTracker
+  public interface ISessionTracker
   {
-    private Client Client { get; }
+    void StartSession();
+
+    Session CurrentSession { get; }
+  }
+
+  class SessionTracker : ISessionTracker
+  {
+    private IClient Client { get; }
 
     public Session CurrentSession { get; private set; }
 
-    public SessionTracker(Client client)
+    internal SessionTracker(IClient client)
     {
       Client = client;
     }
@@ -21,7 +28,7 @@ namespace Bugsnag.Unity
 
       var payload = new SessionReport(Client.Configuration, Client.User, session);
 
-      ThreadQueueDelivery.Instance.Send(payload);
+      Client.Send(payload);
     }
   }
 }

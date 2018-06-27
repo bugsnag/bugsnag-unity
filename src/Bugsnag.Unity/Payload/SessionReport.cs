@@ -5,13 +5,13 @@ namespace Bugsnag.Unity.Payload
 {
   class SessionReport : Dictionary<string, object>, IPayload
   {
-    Configuration Configuration { get; }
+    IConfiguration Configuration { get; }
 
     public Uri Endpoint => Configuration.SessionEndpoint;
 
     public KeyValuePair<string, string>[] Headers { get; }
 
-    public SessionReport(Configuration configuration, User user, Payload.Session session)
+    public SessionReport(IConfiguration configuration, User user, Payload.Session session)
     {
       Configuration = configuration;
       Headers = new KeyValuePair<string, string>[] {

@@ -23,11 +23,11 @@ namespace Bugsnag.Unity
     /// <summary>
     /// The configuration for unique log counts and times
     /// </summary>
-    private Configuration Configuration { get; }
+    private IConfiguration Configuration { get; }
 
     private TimeSpan UniqueLogsTimePeriod => Configuration.UniqueLogsTimePeriod;
 
-    public UniqueLogThrottle(Configuration configuration)
+    public UniqueLogThrottle(IConfiguration configuration)
     {
       Configuration = configuration;
       Counter = new Dictionary<UnityLogMessage, int>(new UnityLogMessageEqualityComparer());

@@ -4,7 +4,7 @@ namespace Bugsnag.Polyfills
 {
   static class String
   {
-    public static bool IsNullOrWhiteSpace(string s)
+    internal static bool IsNullOrWhiteSpace(string s)
     {
       if (s == null) return true;
 

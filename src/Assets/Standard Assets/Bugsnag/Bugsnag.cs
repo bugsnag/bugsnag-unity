@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Bugsnag.Unity
 {
-  public class Bugsnag : MonoBehaviour
+  public class BugsnagBehaviour : MonoBehaviour
   {
     /// <summary>
     /// Exposed in the Unity Editor to configure this behaviour
@@ -28,12 +28,12 @@ namespace Bugsnag.Unity
     /// </summary>
     void Awake()
     {
-      Client.Instance.Init(BugsnagApiKey);
-      Client.Instance.Configuration.AutoNotify = AutoNotify;
-      Client.Instance.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
-      Client.Instance.Configuration.NotifyLevel = NotifyLevel;
-      Client.Instance.Configuration.ReleaseStage = Debug.isDebugBuild ? "debug" : "production";
-      Client.Instance.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
+      Bugsnag.Init(BugsnagApiKey);
+      Bugsnag.Client.Configuration.AutoNotify = AutoNotify;
+      Bugsnag.Client.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
+      Bugsnag.Client.Configuration.NotifyLevel = NotifyLevel;
+      Bugsnag.Client.Configuration.ReleaseStage = Debug.isDebugBuild ? "debug" : "production";
+      Bugsnag.Client.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ namespace Bugsnag.Unity
     {
       if (hasFocus)
       {
-        Client.Instance.SessionTracking.StartSession();
+        Bugsnag.Client.SessionTracking.StartSession();
       }
     }
   }

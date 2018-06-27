@@ -15,7 +15,7 @@ namespace Bugsnag.Unity
     Error = 2
   }
 
-  public static class LogTypeExtensions
+  static class LogTypeExtensions
   {
     /// <summary>
     /// The LogType enum from Unity doesn't have its enum values in an expected
@@ -31,7 +31,7 @@ namespace Bugsnag.Unity
       { LogType.Exception, 4 },
     };
 
-    public static bool IsGreaterThanOrEqualTo(this LogType logType, LogType log)
+    internal static bool IsGreaterThanOrEqualTo(this LogType logType, LogType log)
     {
       return LogTypeMapping[logType] >= LogTypeMapping[log];
     }

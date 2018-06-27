@@ -9,21 +9,21 @@ namespace Bugsnag.Unity.Payload
 
     public DateTime StartedAt { get; }
 
-    private SessionEvents Events { get; }
+    internal SessionEvents Events { get; }
 
-    public Session() : this(DateTime.UtcNow, 0, 0)
+    internal Session() : this(DateTime.UtcNow, 0, 0)
     {
 
     }
 
-    public Session(DateTime startedAt, int handled, int unhandled)
+    internal Session(DateTime startedAt, int handled, int unhandled)
     {
       this.AddToPayload("id", Id = Guid.NewGuid());
       this.AddToPayload("startedAt", StartedAt = startedAt);
       this.AddToPayload("events", Events = new SessionEvents(handled, unhandled));
     }
 
-    public void AddException(Report report)
+    internal void AddException(Report report)
     {
       if (report.Event.IsHandled)
       {
@@ -36,18 +36,18 @@ namespace Bugsnag.Unity.Payload
     }
   }
 
-  public class SessionEvents : Dictionary<string, int>
+  internal class SessionEvents : Dictionary<string, int>
   {
     private readonly object _handledLock = new object();
     private readonly object _unhandledLock = new object();
 
-    public SessionEvents(int handled, int unhandled)
+    internal SessionEvents(int handled, int unhandled)
     {
       this.AddToPayload("handled", handled);
       this.AddToPayload("unhandled", unhandled);
     }
 
-    public void IncrementHandledCount()
+    internal void IncrementHandledCount()
     {
       lock (_handledLock)
       {
@@ -55,7 +55,7 @@ namespace Bugsnag.Unity.Payload
       }
     }
 
-    public void IncrementUnhandledCount()
+    internal void IncrementUnhandledCount()
     {
       lock (_unhandledLock)
       {

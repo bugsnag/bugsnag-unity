@@ -3,16 +3,16 @@ using System.Text;
 
 namespace Bugsnag.Unity.Payload
 {
-  public class MethodParameter
+  class MethodParameter
   {
     private readonly ParameterInfo _originalParameterInfo;
 
-    public MethodParameter(ParameterInfo parameterInfo)
+    internal MethodParameter(ParameterInfo parameterInfo)
     {
       _originalParameterInfo = parameterInfo;
     }
 
-    public string DisplayName()
+    internal string DisplayName()
     {
       var builder = new StringBuilder();
       var type = _originalParameterInfo.ParameterType;

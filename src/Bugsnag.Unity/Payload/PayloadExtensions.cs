@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Bugsnag.Unity.Payload
 {
-  public static class PayloadExtensions
+  static class PayloadExtensions
   {
     /// <summary>
     /// Adds a key to the Bugsnag payload. If provided a null or empty string
@@ -12,7 +12,7 @@ namespace Bugsnag.Unity.Payload
     /// <param name="dictionary"></param>
     /// <param name="key"></param>
     /// <param name="value"></param>
-    public static void AddToPayload<T>(this Dictionary<string, T> dictionary, string key, T value)
+    internal static void AddToPayload<T>(this Dictionary<string, T> dictionary, string key, T value)
     {
       if (value == null)
       {
@@ -38,7 +38,7 @@ namespace Bugsnag.Unity.Payload
       }
     }
 
-    public static U Get<T, U>(this Dictionary<T, U> dictionary, T key)
+    internal static U Get<T, U>(this Dictionary<T, U> dictionary, T key)
     {
       dictionary.TryGetValue(key, out U value);
       return value;

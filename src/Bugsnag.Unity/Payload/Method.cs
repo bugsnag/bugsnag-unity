@@ -4,16 +4,16 @@ using System.Text;
 
 namespace Bugsnag.Unity.Payload
 {
-  public class Method
+  class Method
   {
     private readonly MethodBase _methodBase;
 
-    public Method(MethodBase methodBase)
+    internal Method(MethodBase methodBase)
     {
       _methodBase = methodBase;
     }
 
-    public string DisplayName()
+    internal string DisplayName()
     {
       if (_methodBase == null)
       {

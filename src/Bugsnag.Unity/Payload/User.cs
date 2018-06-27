@@ -4,6 +4,11 @@ namespace Bugsnag.Unity.Payload
 {
   public class User : Dictionary<string, string>, IFilterable
   {
+    internal User()
+    {
+
+    }
+
     public string Id
     {
       get

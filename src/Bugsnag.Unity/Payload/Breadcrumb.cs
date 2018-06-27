@@ -76,10 +76,10 @@ namespace Bugsnag.Unity.Payload
       this.AddToPayload("type", breadcrumbType);
     }
 
-    public string Name { get { return this.Get("name") as string; } }
+    internal string Name { get { return this.Get("name") as string; } }
 
-    public string Type { get { return this.Get("type") as string; } }
+    internal string Type { get { return this.Get("type") as string; } }
 
-    public IDictionary<string, string> Metadata { get { return this.Get("metaData") as IDictionary<string, string>; } }
+    internal IDictionary<string, string> Metadata { get { return this.Get("metaData") as IDictionary<string, string>; } }
   }
 }

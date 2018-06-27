@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Bugsnag.Unity
 {
-  public class UnityMetadata
+  class UnityMetadata
   {
-    public static Dictionary<string, string> Data => new Dictionary<string, string> {
+    internal static Dictionary<string, string> Data => new Dictionary<string, string> {
       { "unityException", "false" },
       { "unityVersion", Application.unityVersion },
       { "platform", Application.platform.ToString() },

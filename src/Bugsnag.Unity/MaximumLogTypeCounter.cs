@@ -6,7 +6,7 @@ namespace Bugsnag.Unity
 {
   public class MaximumLogTypeCounter
   {
-    private Configuration Configuration { get; }
+    private IConfiguration Configuration { get; }
 
     private Dictionary<LogType, int> CurrentCounts { get; }
 
@@ -18,7 +18,7 @@ namespace Bugsnag.Unity
 
     private readonly object _lock = new object();
 
-    public MaximumLogTypeCounter(Configuration configuration)
+    public MaximumLogTypeCounter(IConfiguration configuration)
     {
       Configuration = configuration;
       CurrentCounts = new Dictionary<LogType, int>();

@@ -8,16 +8,16 @@ namespace Bugsnag.Unity.Payload
   /// Represents a set of Bugsnag payload stacktrace lines that are generated from a single StackTrace provided
   /// by the runtime.
   /// </summary>
-  public class StackTrace : IEnumerable<StackTraceLine>
+  class StackTrace : IEnumerable<StackTraceLine>
   {
     private readonly System.Exception _originalException;
 
-    public StackTrace(string stackTrace)
+    internal StackTrace(string stackTrace)
     {
 
     }
 
-    public StackTrace(System.Exception exception)
+    internal StackTrace(System.Exception exception)
     {
       _originalException = exception;
     }
@@ -77,9 +77,9 @@ namespace Bugsnag.Unity.Payload
   /// <summary>
   /// Represents an individual stack trace line in the Bugsnag payload.
   /// </summary>
-  public class StackTraceLine : Dictionary<string, object>
+  class StackTraceLine : Dictionary<string, object>
   {
-    public static StackTraceLine FromStackFrame(StackFrame stackFrame)
+    internal static StackTraceLine FromStackFrame(StackFrame stackFrame)
     {
       var method = stackFrame.GetMethod();
       var file = stackFrame.GetFileName();
@@ -90,7 +90,7 @@ namespace Bugsnag.Unity.Payload
       return new StackTraceLine(file, lineNumber, methodName, inProject);
     }
 
-    public StackTraceLine(string file, int lineNumber, string methodName, bool inProject)
+    internal StackTraceLine(string file, int lineNumber, string methodName, bool inProject)
     {
       this.AddToPayload("file", file);
       this.AddToPayload("lineNumber", lineNumber);
@@ -98,7 +98,7 @@ namespace Bugsnag.Unity.Payload
       this.AddToPayload("inProject", inProject);
     }
 
-    public string FileName
+    internal string FileName
     {
       get
       {
@@ -110,7 +110,7 @@ namespace Bugsnag.Unity.Payload
       }
     }
 
-    public string MethodName
+    internal string MethodName
     {
       get
       {
@@ -122,7 +122,7 @@ namespace Bugsnag.Unity.Payload
       }
     }
 
-    public bool InProject
+    internal bool InProject
     {
       get
       {

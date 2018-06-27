@@ -2,11 +2,11 @@
 
 namespace Bugsnag.Unity.Payload
 {
-  public class Event : Dictionary<string, object>
+  class Event : Dictionary<string, object>
   {
     private HandledState _handledState;
 
-    public Event(App app, Device device, IEnumerable<Exception> exceptions, HandledState handledState, IEnumerable<Breadcrumb> breadcrumbs, Session session)
+    internal Event(App app, Device device, IEnumerable<Exception> exceptions, HandledState handledState, IEnumerable<Breadcrumb> breadcrumbs, Session session)
     {
       Metadata = new Metadata();
       HandledState = handledState;
@@ -19,9 +19,9 @@ namespace Bugsnag.Unity.Payload
       this.AddToPayload("session", session);
     }
 
-    public Metadata Metadata { get; }
+    internal Metadata Metadata { get; }
 
-    public bool IsHandled
+    internal bool IsHandled
     {
       get
       {
@@ -34,19 +34,19 @@ namespace Bugsnag.Unity.Payload
       }
     }
 
-    public string Context
+    internal string Context
     {
       get { return this.Get("context") as string; }
       set { this.AddToPayload("context", value); }
     }
 
-    public string GroupingHash
+    internal string GroupingHash
     {
       get { return this.Get("groupingHash") as string; }
       set { this.AddToPayload("groupingHash", value); }
     }
 
-    public Severity Severity
+    internal Severity Severity
     {
       set
       {

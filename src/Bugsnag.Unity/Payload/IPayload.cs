@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Bugsnag.Unity.Payload
 {
-  interface IPayload
+  public interface IPayload
   {
     Uri Endpoint { get; }
 

@@ -7,13 +7,13 @@ namespace Bugsnag.Unity.Payload
   /// <summary>
   /// Represents the "device" key in the error report payload.
   /// </summary>
-  public class Device : Dictionary<string, object>, IFilterable
+  class Device : Dictionary<string, object>, IFilterable
   {
-    public Device() : this(Hostname)
+    internal Device() : this(Hostname)
     {
     }
 
-    public Device(string hostname)
+    internal Device(string hostname)
     {
       this.AddToPayload("hostname", hostname);
       this.AddToPayload("locale", CultureInfo.CurrentCulture.ToString());

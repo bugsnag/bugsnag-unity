@@ -6,14 +6,14 @@ namespace Bugsnag.Unity.Payload
   /// Represents the various fields that can be set in the "event" payload for
   /// showing the exceptions handled/unhandled state and severity.
   /// </summary>
-  public class HandledState : Dictionary<string, object>
+  class HandledState : Dictionary<string, object>
   {
     /// <summary>
     /// Creates a HandledState object for an error report payload where the exception was not handled by the application
     /// and caught by a global error handler.
     /// </summary>
     /// <returns></returns>
-    public static HandledState ForUnhandledException()
+    internal static HandledState ForUnhandledException()
     {
       return new HandledState(false, Severity.Error, SeverityReason.ForUnhandledException());
     }
@@ -23,7 +23,7 @@ namespace Bugsnag.Unity.Payload
     /// and notified manually.
     /// </summary>
     /// <returns></returns>
-    public static HandledState ForHandledException()
+    internal static HandledState ForHandledException()
     {
       return new HandledState(true, Severity.Warning, SeverityReason.ForHandledException());
     }
@@ -34,7 +34,7 @@ namespace Bugsnag.Unity.Payload
     /// </summary>
     /// <param name="severity"></param>
     /// <returns></returns>
-    public static HandledState ForUserSpecifiedSeverity(Severity severity)
+    internal static HandledState ForUserSpecifiedSeverity(Severity severity)
     {
       return new HandledState(true, severity, null);
     }
@@ -46,18 +46,16 @@ namespace Bugsnag.Unity.Payload
     /// <param name="severity"></param>
     /// <param name="previousSeverity"></param>
     /// <returns></returns>
-    public static HandledState ForCallbackSpecifiedSeverity(Severity severity, HandledState previousSeverity)
+    internal static HandledState ForCallbackSpecifiedSeverity(Severity severity, HandledState previousSeverity)
     {
       return new HandledState(previousSeverity.Handled, severity, SeverityReason.ForCallbackSpecifiedSeverity());
     }
 
-    private readonly Severity _severity;
-
-    public Severity Severity => _severity;
+    internal Severity Severity { get; }
 
     HandledState(bool handled, Severity severity, SeverityReason reason)
     {
-      _severity = severity;
+      Severity = severity;
       this.AddToPayload("unhandled", !handled);
       this.AddToPayload("severityReason", reason);
 
@@ -79,7 +77,7 @@ namespace Bugsnag.Unity.Payload
       this.AddToPayload("severity", severityValue);
     }
 
-    public bool Handled
+    internal bool Handled
     {
       get
       {
@@ -102,22 +100,22 @@ namespace Bugsnag.Unity.Payload
     /// </summary>
     class SeverityReason : Dictionary<string, object>
     {
-      public static SeverityReason ForUnhandledException()
+      internal static SeverityReason ForUnhandledException()
       {
         return new SeverityReason("unhandledException", null);
       }
 
-      public static SeverityReason ForHandledException()
+      internal static SeverityReason ForHandledException()
       {
         return new SeverityReason("handledException", null);
       }
 
-      public static SeverityReason ForUserSpecifiedSeverity()
+      internal static SeverityReason ForUserSpecifiedSeverity()
       {
         return new SeverityReason("userSpecifiedSeverity", null);
       }
 
-      public static SeverityReason ForCallbackSpecifiedSeverity()
+      internal static SeverityReason ForCallbackSpecifiedSeverity()
       {
         return new SeverityReason("userCallbackSetSeverity", null);
       }

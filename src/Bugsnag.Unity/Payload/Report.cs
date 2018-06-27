@@ -4,26 +4,26 @@ using System.Linq;
 
 namespace Bugsnag.Unity.Payload
 {
-  public class Report : Dictionary<string, object>, IPayload
+  class Report : Dictionary<string, object>, IPayload
   {
-    Configuration Configuration { get; }
+    IConfiguration Configuration { get; }
 
     public Uri Endpoint => Configuration.Endpoint;
 
     public KeyValuePair<string, string>[] Headers { get; }
 
-    public Report(Configuration configuration, System.Exception exception, HandledState handledState, IEnumerable<Breadcrumb> breadcrumbs, Session session)
-      : this(configuration, new Exceptions(exception), handledState, breadcrumbs, session)
+    internal Report(IConfiguration configuration, System.Exception exception, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
+      : this(configuration, new Exceptions(exception).ToArray(), handledState, breadcrumbs, session)
     {
     }
 
-    public Report(Configuration configuration, UnityLogMessage logMessage, HandledState handledState, IEnumerable<Breadcrumb> breadcrumbs, Session session)
-      : this(configuration, new UnityLogExceptions(logMessage), handledState, breadcrumbs, session)
+    internal Report(IConfiguration configuration, UnityLogMessage logMessage, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
+      : this(configuration, new UnityLogExceptions(logMessage).ToArray(), handledState, breadcrumbs, session)
     {
 
     }
 
-    public Report(Configuration configuration, IEnumerable<Exception> exceptions, HandledState handledState, IEnumerable<Breadcrumb> breadcrumbs, Session session)
+    internal Report(IConfiguration configuration, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
     {
       Configuration = configuration;
       Headers = new KeyValuePair<string, string>[] {
@@ -36,6 +36,6 @@ namespace Bugsnag.Unity.Payload
       this.AddToPayload("events", new Event[] { Event });
     }
 
-    public Event Event { get; }
+    internal Event Event { get; }
   }
 }
