@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Bugsnag.Unity.Payload;
 
@@ -151,18 +148,19 @@ namespace Bugsnag.Unity
     /// <returns></returns>
     public Breadcrumb[] Retrieve()
     {
-      var javaBreadcrumbs = Client.Call<AndroidJavaObject>("getBreadcrumbs");
-
       List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
 
-      var iterator = javaBreadcrumbs.Call<AndroidJavaObject>("iterator");
-
-      while (iterator.Call<bool>("hasNext"))
+      using (var javaBreadcrumbs = Client.Call<AndroidJavaObject>("getBreadcrumbs"))
+      using (var iterator = javaBreadcrumbs.Call<AndroidJavaObject>("iterator"))
       {
-        var next = iterator.Call<AndroidJavaObject>("next");
-        breadcrumbs.Add(ConvertToBreadcrumb(next));
+        while (iterator.Call<bool>("hasNext"))
+        {
+          using (var next = iterator.Call<AndroidJavaObject>("next"))
+          {
+            breadcrumbs.Add(ConvertToBreadcrumb(next));
+          }
+        }
       }
-
 
       return breadcrumbs.ToArray();
     }
@@ -171,23 +169,28 @@ namespace Bugsnag.Unity
     {
       var metadata = new Dictionary<string, string>();
 
-      var javaMetadata = javaBreadcrumb.Call<AndroidJavaObject>("getMetadata");
-      var set = javaMetadata.Call<AndroidJavaObject>("entrySet");
-      var iterator = set.Call<AndroidJavaObject>("iterator");
-
-      while (iterator.Call<bool>("hasNext"))
+      using (var javaMetadata = javaBreadcrumb.Call<AndroidJavaObject>("getMetadata"))
+      using (var set = javaMetadata.Call<AndroidJavaObject>("entrySet"))
+      using (var iterator = set.Call<AndroidJavaObject>("iterator"))
       {
-        var next = iterator.Call<AndroidJavaObject>("next");
-        metadata.Add(next.Call<string>("getKey"), next.Call<string>("getValue"));
+        while (iterator.Call<bool>("hasNext"))
+        {
+          using (var next = iterator.Call<AndroidJavaObject>("next"))
+          {
+            metadata.Add(next.Call<string>("getKey"), next.Call<string>("getValue"));
+          }
+        }
       }
 
-      var name = javaBreadcrumb.Call<string>("getName");
-      var type = javaBreadcrumb.Call<AndroidJavaObject>("getType").Call<string>("toString");
-      // accessing the timestamp is not possible right now
-      var timestamp = javaBreadcrumb.Call<string>("getTimestamp");
-      //var timestamp = DateTime.UtcNow.ToUniversalTime().ToString(@"yyyy-MM-dd\THH:mm:ss.FFFFFFF\Z");
+      using (var type = javaBreadcrumb.Call<AndroidJavaObject>("getType"))
+      {
+        var name = javaBreadcrumb.Call<string>("getName");
+        // accessing the timestamp is not possible right now
+        var timestamp = javaBreadcrumb.Call<string>("getTimestamp");
+        //var timestamp = DateTime.UtcNow.ToUniversalTime().ToString(@"yyyy-MM-dd\THH:mm:ss.FFFFFFF\Z");
 
-      return new Breadcrumb(name, timestamp, type, metadata);
+        return new Breadcrumb(name, timestamp, type.Call<string>("toString"), metadata);
+      }
     }
   }
 }

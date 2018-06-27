@@ -139,9 +139,9 @@ namespace Bugsnag.Unity
       LogTypeCounter = new MaximumLogTypeCounter(configuration);
 
       using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+      using (var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity"))
+      using (var context = activity.Call<AndroidJavaObject>("getApplicationContext"))
       {
-        var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity");
-        var context = activity.Call<AndroidJavaObject>("getApplicationContext");
         JavaObject = new AndroidJavaObject("com.bugsnag.android.Client", context, configuration.JavaObject);
       }
 
