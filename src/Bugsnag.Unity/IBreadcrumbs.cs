@@ -132,13 +132,14 @@ namespace Bugsnag.Unity
     {
       using (var metadata = new AndroidJavaObject("java.util.HashMap"))
       using (var type = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType"))
+      using (var breadcrumbType = type.GetStatic<AndroidJavaObject>(breadcrumb.Type.ToUpperInvariant()))
       {
         foreach (var item in breadcrumb.Metadata)
         {
           metadata.Call<string>("put", item.Key, item.Value);
         }
 
-        Client.Call("leaveBreadcrumb", breadcrumb.Name, type.GetStatic<AndroidJavaObject>(breadcrumb.Type.ToUpperInvariant()), metadata);
+        Client.Call("leaveBreadcrumb", breadcrumb.Name, breadcrumbType, metadata);
       }
     }
 
