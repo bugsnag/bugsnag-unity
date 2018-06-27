@@ -57,7 +57,14 @@ namespace Bugsnag.Unity
 
     public TimeSpan MaximumLogsTimePeriod { get; set; }
 
-    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; set; }
+    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; } = new Dictionary<LogType, int>
+    {
+        { LogType.Assert, 5 },
+        { LogType.Error, 5 },
+        { LogType.Exception, 20 },
+        { LogType.Log, 5 },
+        { LogType.Warning, 5 },
+    };
 
     public TimeSpan UniqueLogsTimePeriod { get; set; }
 
@@ -111,7 +118,14 @@ namespace Bugsnag.Unity
 
     public TimeSpan MaximumLogsTimePeriod { get; set; }
 
-    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; set; }
+    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; } = new Dictionary<LogType, int>
+    {
+        { LogType.Assert, 5 },
+        { LogType.Error, 5 },
+        { LogType.Exception, 20 },
+        { LogType.Log, 5 },
+        { LogType.Warning, 5 },
+    };
 
     public TimeSpan UniqueLogsTimePeriod { get; set; }
 

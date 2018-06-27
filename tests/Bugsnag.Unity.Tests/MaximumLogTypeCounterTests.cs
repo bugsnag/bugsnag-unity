@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
@@ -10,7 +11,15 @@ namespace Bugsnag.Unity.Tests
     [Test]
     public void SendsSingleMessage()
     {
-      var counter = new MaximumLogTypeCounter(new TestConfiguration());
+      Dictionary<LogType, int> maximumTypePerTimePeriod =
+        new Dictionary<LogType, int> { { LogType.Error, 5 } };
+
+      var configuration = new TestConfiguration
+      {
+        MaximumTypePerTimePeriod = maximumTypePerTimePeriod
+      };
+
+      var counter = new MaximumLogTypeCounter(configuration);
 
       var message = new UnityLogMessage("", "", LogType.Error);
 
@@ -20,8 +29,14 @@ namespace Bugsnag.Unity.Tests
     [Test]
     public void ShouldNotSendOverLimitMessages()
     {
-      var configuration = new TestConfiguration();
-      configuration.MaximumTypePerTimePeriod[LogType.Error] = 1;
+      Dictionary<LogType, int> maximumTypePerTimePeriod =
+        new Dictionary<LogType, int> { { LogType.Error, 1 } };
+
+      var configuration = new TestConfiguration
+      {
+        MaximumTypePerTimePeriod = maximumTypePerTimePeriod
+      };
+
       var counter = new MaximumLogTypeCounter(configuration);
 
       var message1 = new UnityLogMessage("", "", LogType.Error);
@@ -34,8 +49,14 @@ namespace Bugsnag.Unity.Tests
     [Test]
     public void ShouldSendUnderTheLimit()
     {
-      var configuration = new TestConfiguration();
-      configuration.MaximumTypePerTimePeriod[LogType.Error] = 5;
+      Dictionary<LogType, int> maximumTypePerTimePeriod =
+        new Dictionary<LogType, int> { { LogType.Error, 5 } };
+
+      var configuration = new TestConfiguration
+      {
+        MaximumTypePerTimePeriod = maximumTypePerTimePeriod
+      };
+
       var counter = new MaximumLogTypeCounter(configuration);
 
       var message1 = new UnityLogMessage("", "", LogType.Error);
@@ -54,9 +75,16 @@ namespace Bugsnag.Unity.Tests
     [Test]
     public void DontTrackCertainLogType()
     {
-      var configuration = new TestConfiguration();
-      configuration.MaximumTypePerTimePeriod.Remove(LogType.Error);
+      Dictionary<LogType, int> maximumTypePerTimePeriod =
+        new Dictionary<LogType, int>();
+
+      var configuration = new TestConfiguration
+      {
+        MaximumTypePerTimePeriod = maximumTypePerTimePeriod
+      };
+
       var counter = new MaximumLogTypeCounter(configuration);
+
 
       var message = new UnityLogMessage("", "", LogType.Error);
 
@@ -66,8 +94,14 @@ namespace Bugsnag.Unity.Tests
     [Test]
     public void FlushesCorrectly()
     {
-      var configuration = new TestConfiguration();
-      configuration.MaximumTypePerTimePeriod[LogType.Error] = 1;
+      Dictionary<LogType, int> maximumTypePerTimePeriod =
+        new Dictionary<LogType, int> { { LogType.Error, 1 } };
+
+      var configuration = new TestConfiguration
+      {
+        MaximumTypePerTimePeriod = maximumTypePerTimePeriod
+      };
+
       var counter = new MaximumLogTypeCounter(configuration);
 
       var message = new UnityLogMessage("", "", LogType.Error);
