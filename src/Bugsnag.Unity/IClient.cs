@@ -130,6 +130,13 @@ namespace Bugsnag.Unity
 
     internal AndroidClient(AndroidConfiguration configuration)
     {
+      using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+      using (var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity"))
+      using (var context = activity.Call<AndroidJavaObject>("getApplicationContext"))
+      {
+        JavaObject = new AndroidJavaObject("com.bugsnag.android.Client", context, configuration.JavaObject);
+      }
+
       Configuration = configuration;
       Delivery = new AndroidDelivery();
       User = new User();
@@ -137,13 +144,6 @@ namespace Bugsnag.Unity
       Breadcrumbs = new AndroidBreadcrumbs(this);
       UniqueCounter = new UniqueLogThrottle(configuration);
       LogTypeCounter = new MaximumLogTypeCounter(configuration);
-
-      using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-      using (var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity"))
-      using (var context = activity.Call<AndroidJavaObject>("getApplicationContext"))
-      {
-        JavaObject = new AndroidJavaObject("com.bugsnag.android.Client", context, configuration.JavaObject);
-      }
 
       SceneManager.sceneLoaded += SceneLoaded;
       Application.logMessageReceivedThreaded += Notify;
