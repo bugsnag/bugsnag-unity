@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using UnityEngine;
 
 namespace Bugsnag.Unity.Payload
 {
@@ -38,6 +39,29 @@ namespace Bugsnag.Unity.Payload
       get
       {
         return Environment.OSVersion.VersionString;
+      }
+    }
+  }
+
+  class AndroidDevice : Device
+  {
+    internal AndroidDevice(AndroidJavaObject client)
+    {
+      using (var device = client.Call<AndroidJavaObject>("getDeviceData"))
+      {
+        this.AddToPayload("id", device.Call<string>("getId"));
+        this.AddToPayload("freeMemory", device.Call<long>("getFreeMemory"));
+        this.AddToPayload("totalMemory", device.Call<long>("getTotalMemory"));
+
+        using (var freeDisk = device.Call<AndroidJavaObject>("getFreeDisk"))
+        {
+          if (freeDisk != null)
+          {
+            this.AddToPayload("freeDisk", freeDisk.Call<long>("longValue"));
+          }
+        }
+
+        this.AddToPayload("orientation", device.Call<string>("getOrientation"));
       }
     }
   }

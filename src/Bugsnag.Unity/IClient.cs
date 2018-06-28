@@ -182,7 +182,7 @@ namespace Bugsnag.Unity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var @event = new Payload.Event(new AndroidApp(Configuration, JavaObject), new Device(), new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+            var @event = new Payload.Event(new AndroidApp(Configuration, JavaObject), new AndroidDevice(JavaObject), new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
             var report = new Report(Configuration, @event);
 
             Send(report);
@@ -211,7 +211,7 @@ namespace Bugsnag.Unity
         if (e.ExceptionObject is System.Exception exception)
         {
           // this will always be a handled exception?
-          var @event = new Payload.Event(new AndroidApp(Configuration, JavaObject), new Device(), new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+          var @event = new Payload.Event(new AndroidApp(Configuration, JavaObject), new AndroidDevice(JavaObject), new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
           var report = new Report(Configuration, @event);
 
           Send(report);
