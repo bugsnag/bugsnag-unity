@@ -32,6 +32,19 @@ namespace Bugsnag.Unity.Payload
         this.AddToPayload("duration", app.Call<long>("getDuration"));
         this.AddToPayload("durationInForeground", app.Call<long>("getDurationInForeground"));
         this.AddToPayload("inForeground", app.Call<bool>("isInForeground"));
+        this.AddToPayload("type", app.Call<string>("getNotifierType"));
+        // release stage could probably doesn't need to be sourced from the android notifier?
+        this.AddToPayload("releaseStage", app.Call<string>("getReleaseStage"));
+        this.AddToPayload("version", app.Call<string>("getVersionName"));
+        this.AddToPayload("codeBundleId", app.Call<string>("getCodeBundleId"));
+
+        using (var versionCode = app.Call<AndroidJavaObject>("getVersionCode"))
+        {
+          if (versionCode != null)
+          {
+            this.AddToPayload("versionCode", versionCode.Call<int>("intValue"));
+          }
+        }
       }
     }
   }
