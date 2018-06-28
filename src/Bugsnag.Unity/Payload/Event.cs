@@ -6,7 +6,7 @@ namespace Bugsnag.Unity.Payload
   {
     private HandledState _handledState;
 
-    internal Event(App app, Device device, IEnumerable<Exception> exceptions, HandledState handledState, IEnumerable<Breadcrumb> breadcrumbs, Session session)
+    internal Event(App app, Device device, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
     {
       Metadata = new Metadata();
       HandledState = handledState;
