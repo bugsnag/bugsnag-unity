@@ -6,7 +6,7 @@ namespace Bugsnag.Unity.Payload
   {
     private HandledState _handledState;
 
-    internal Event(App app, Device device, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
+    internal Event(App app, Device device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
     {
       Metadata = new Metadata();
       HandledState = handledState;
@@ -17,6 +17,7 @@ namespace Bugsnag.Unity.Payload
       this.AddToPayload("metaData", Metadata);
       this.AddToPayload("breadcrumbs", breadcrumbs);
       this.AddToPayload("session", session);
+      this.AddToPayload("user", user);
     }
 
     internal Metadata Metadata { get; }
