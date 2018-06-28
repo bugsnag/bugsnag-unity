@@ -29,7 +29,7 @@ Task("CopyToUnity")
   .IsDependentOn("Build")
   .Does(() => {
     CopyFileToDirectory($"./src/Bugsnag.Unity/bin/{configuration}/net35/Bugsnag.Unity.dll", $"{outputPath}/Assets/Plugins");
-    CopyFileToDirectory($"./src/Assets/Standard Assets/Bugsnag/Bugsnag.cs", $"{outputPath}/Assets/Standard Assets/Bugsnag");
+    CopyFileToDirectory($"./src/Assets/Standard Assets/Bugsnag/BugsnagBehaviour.cs", $"{outputPath}/Assets/Standard Assets/Bugsnag");
   });
 
 Task("Default")
