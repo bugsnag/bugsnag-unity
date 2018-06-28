@@ -186,9 +186,7 @@ namespace Bugsnag.Unity
       using (var type = javaBreadcrumb.Call<AndroidJavaObject>("getType"))
       {
         var name = javaBreadcrumb.Call<string>("getName");
-        // accessing the timestamp is not possible right now
         var timestamp = javaBreadcrumb.Call<string>("getTimestamp");
-        //var timestamp = DateTime.UtcNow.ToUniversalTime().ToString(@"yyyy-MM-dd\THH:mm:ss.FFFFFFF\Z");
 
         return new Breadcrumb(name, timestamp, type.Call<string>("toString"), metadata);
       }
