@@ -52,6 +52,12 @@ namespace Bugsnag.Unity.Payload
         this.AddToPayload("id", device.Call<string>("getId"));
         this.AddToPayload("freeMemory", device.Call<long>("getFreeMemory"));
         this.AddToPayload("totalMemory", device.Call<long>("getTotalMemory"));
+        this.AddToPayload("orientation", device.Call<string>("getOrientation"));
+        this.AddToPayload("manufacturer", device.Call<string>("getManufacturer"));
+        this.AddToPayload("model", device.Call<string>("getModel"));
+        this.AddToPayload("jailbroken", device.Call<bool>("isJailbroken"));
+        this.AddToPayload("osName", device.Call<string>("getOsName"));
+        this.AddToPayload("osVersion", device.Call<string>("getOsVersion"));
 
         using (var freeDisk = device.Call<AndroidJavaObject>("getFreeDisk"))
         {
@@ -60,8 +66,6 @@ namespace Bugsnag.Unity.Payload
             this.AddToPayload("freeDisk", freeDisk.Call<long>("longValue"));
           }
         }
-
-        this.AddToPayload("orientation", device.Call<string>("getOrientation"));
       }
     }
   }
