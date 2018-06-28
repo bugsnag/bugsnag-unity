@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -99,7 +100,8 @@ namespace Bugsnag.Unity.Tests
 
       var configuration = new TestConfiguration
       {
-        MaximumTypePerTimePeriod = maximumTypePerTimePeriod
+        MaximumTypePerTimePeriod = maximumTypePerTimePeriod,
+        MaximumLogsTimePeriod = TimeSpan.FromSeconds(2),
       };
 
       var counter = new MaximumLogTypeCounter(configuration);
