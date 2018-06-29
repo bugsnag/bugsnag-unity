@@ -1,6 +1,7 @@
 os: osx
 osx_image: xcode9.3
 env:
+  - TERM=dumb
   - ANDROID_HOME=/usr/local/share/android-sdk
 install:
   - brew tap caskroom/cask
