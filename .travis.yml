@@ -1,0 +1,16 @@
+os: osx
+osx_image: xcode9.3
+env:
+  - ANDROID_HOME=/usr/local/share/android-sdk
+install:
+  - brew tap caskroom/cask
+  - brew cask install android-sdk
+  - yes | sdkmanager "platforms;android-27"
+  - yes | sdkmanager --licenses
+  - curl -o Mono.pkg https://download.mono-project.com/archive/5.12.0/macos-10-universal/MonoFramework-MDK-5.12.0.226.macos10.xamarin.universal.pkg
+  - sudo installer -dumplog -package Mono.pkg -target /
+  - export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
+  - curl -o Unity.pkg https://download.unity3d.com/download_unity/21ae32b5a9cb/MacEditorInstaller/Unity-2017.4.3f1.pkg
+  - sudo installer -dumplog -package Unity.pkg -target /
+  - bundle install
+script: bundle exec rake
