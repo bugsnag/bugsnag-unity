@@ -15,8 +15,6 @@ namespace Bugsnag.Unity
       { "version", Application.version },
       { "companyName", Application.companyName },
       { "productName", Application.productName },
-      //{ "threadId", Thread.CurrentThread.ManagedThreadId.ToString() },
-      //{ "threadName", Thread.CurrentThread.Name },
     };
   }
 }

@@ -18,6 +18,8 @@ namespace Bugsnag.Unity
     User User { get; }
 
     void Send(IPayload payload);
+
+    Metadata Metadata { get; }
   }
 
   class Client : IClient
@@ -27,10 +29,15 @@ namespace Bugsnag.Unity
       Configuration = configuration;
       Delivery = new Delivery();
       User = new User();
+      Metadata = new Metadata();
       SessionTracking = new SessionTracker(this);
       Breadcrumbs = new Breadcrumbs(configuration);
       UniqueCounter = new UniqueLogThrottle(configuration);
       LogTypeCounter = new MaximumLogTypeCounter(configuration);
+
+      var unityMetadata = UnityMetadata.Data;
+
+      Metadata.Add("Unity", unityMetadata);
 
       SceneManager.sceneLoaded += SceneLoaded;
       Application.logMessageReceivedThreaded += Notify;
@@ -68,7 +75,7 @@ namespace Bugsnag.Unity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var @event = new Payload.Event(new App(Configuration), new Device(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+            var @event = new Payload.Event(Metadata, new App(Configuration), new Device(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
             var report = new Report(Configuration, @event);
 
             Send(report);
@@ -97,7 +104,7 @@ namespace Bugsnag.Unity
         if (e.ExceptionObject is System.Exception exception)
         {
           // this will always be a handled exception?
-          var @event = new Payload.Event(new App(Configuration), new Device(), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+          var @event = new Payload.Event(Metadata, new App(Configuration), new Device(), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
           var report = new Report(Configuration, @event);
 
           Send(report);
@@ -123,6 +130,8 @@ namespace Bugsnag.Unity
     IDelivery Delivery { get; }
 
     public User User { get; }
+
+    public Metadata Metadata { get; }
   }
 
   class AndroidClient : IClient
@@ -141,16 +150,29 @@ namespace Bugsnag.Unity
       Configuration = configuration;
       Delivery = new AndroidDelivery();
       User = new User();
+      Metadata = new Metadata();
       SessionTracking = new SessionTracker(this);
       Breadcrumbs = new AndroidBreadcrumbs(this);
       UniqueCounter = new UniqueLogThrottle(configuration);
       LogTypeCounter = new MaximumLogTypeCounter(configuration);
 
-      using (var user = JavaObject.Call<AndroidJavaObject>("getUser"))
+      using (var user = JavaObject.Call<AndroidJavaObject>("getUser")) 
       {
         User.Id = user.Call<string>("getId");
         User.Name = user.Call<string>("getName");
         User.Email = user.Call<string>("getEmail");
+      }
+
+      var unityMetadata = UnityMetadata.Data;
+
+      Metadata.Add("Unity", unityMetadata);
+
+      using (var metadata = JavaObject.Call<AndroidJavaObject>("getMetaData"))
+      {
+        foreach (var item in unityMetadata)
+        {
+          metadata.Call("addToTab", "Unity", item.Key, item.Value);
+        }
       }
 
       SceneManager.sceneLoaded += SceneLoaded;
@@ -188,7 +210,7 @@ namespace Bugsnag.Unity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var @event = new Payload.Event(new AndroidApp(Configuration, JavaObject), new AndroidDevice(JavaObject), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+            var @event = new Payload.Event(Metadata, new AndroidApp(Configuration, JavaObject), new AndroidDevice(JavaObject), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
             var report = new Report(Configuration, @event);
 
             Send(report);
@@ -217,7 +239,7 @@ namespace Bugsnag.Unity
         if (e.ExceptionObject is System.Exception exception)
         {
           // this will always be a handled exception?
-          var @event = new Payload.Event(new AndroidApp(Configuration, JavaObject), new AndroidDevice(JavaObject), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+          var @event = new Payload.Event(Metadata, new AndroidApp(Configuration, JavaObject), new AndroidDevice(JavaObject), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
           var report = new Report(Configuration, @event);
 
           Send(report);
@@ -243,5 +265,7 @@ namespace Bugsnag.Unity
     IDelivery Delivery { get; }
 
     public User User { get; }
+
+    public Metadata Metadata { get; }
   }
 }

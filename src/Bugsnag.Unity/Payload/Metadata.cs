@@ -2,7 +2,7 @@
 
 namespace Bugsnag.Unity.Payload
 {
-  class Metadata : Dictionary<string, object>, IFilterable
+  public class Metadata : Dictionary<string, object>, IFilterable
   {
   }
 }
