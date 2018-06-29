@@ -99,9 +99,9 @@ namespace Bugsnag.Unity
   {
     AndroidJavaObject Client { get; }
 
-    internal AndroidBreadcrumbs(AndroidClient client)
+    internal AndroidBreadcrumbs(AndroidJavaObject client)
     {
-      Client = client.JavaObject;
+      Client = client;
     }
 
     /// <summary>
