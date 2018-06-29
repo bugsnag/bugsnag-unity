@@ -1,5 +1,6 @@
 # Bugsnag exception reporter for Unity
 [![Documentation](https://img.shields.io/badge/documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/unity/)
+[![Build status](https://travis-ci.org/bugsnag/bugsnag-unity.svg?branch=master)](https://travis-ci.org/bugsnag/bugsnag-unity)
 
 The Bugsnag Notifier for Unity gives you instant notification of exceptions
 thrown from your Unity games on iOS and Android devices, as well as standalone
