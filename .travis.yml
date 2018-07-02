@@ -9,6 +9,7 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
+    - $HOME/Library/Caches/Homebrew
 env:
   global:
     - TERM=dumb
