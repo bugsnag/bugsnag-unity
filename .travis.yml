@@ -23,7 +23,7 @@ install:
   - brew cask install android-sdk
   - yes | sdkmanager "platforms;android-27"
   - yes | sdkmanager --licenses
-  - curl -o $DOWNLOADS_DIR/Mono.pkg $MONO_URL & curl -o $DOWNLOADS_DIR/Unity.pkg $UNITY_URL & wait
+  - ([[ ! -e $DOWNLOADS_DIR/Mono.pkg ]] && curl -o $DOWNLOADS_DIR/Mono.pkg $MONO_URL) & ([[ ! -e $DOWNLOADS_DIR/Unity.pkg ]] && curl -o $DOWNLOADS_DIR/Unity.pkg $UNITY_URL) & wait
   - sudo installer -dumplog -package $DOWNLOADS_DIR/Mono.pkg -target /
   - export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
   - sudo installer -dumplog -package $DOWNLOADS_DIR/Unity.pkg -target /
