@@ -22,8 +22,8 @@ install:
   - yes | sdkmanager "platforms;android-27"
   - yes | sdkmanager --licenses
   - curl -o Mono.pkg $MONO_URL & curl -o Unity.pkg $UNITY_URL & wait
-  - sudo installer -dumplog -package $DOWNLOADS_DIR/Mono.pkg -target /
+  - sudo installer -dumplog -package Mono.pkg -target /
   - export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
-  - sudo installer -dumplog -package $DOWNLOADS_DIR/Unity.pkg -target /
+  - sudo installer -dumplog -package Unity.pkg -target /
   - bundle install
 script: bundle exec rake
