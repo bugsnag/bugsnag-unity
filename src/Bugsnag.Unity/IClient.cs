@@ -165,6 +165,14 @@ namespace Bugsnag.Unity
 
     internal AndroidClient(AndroidConfiguration configuration) : base(configuration)
     {
+      using (var notifier = new AndroidJavaClass("com.bugsnag.android.Notifier"))
+      using (var info = notifier.CallStatic<AndroidJavaObject>("getInstance"))
+      {
+        info.Call("setURL", NotifierInfo.NotifierUrl);
+        info.Call("setName", NotifierInfo.NotifierName);
+        info.Call("setVersion", NotifierInfo.NotifierVersion);
+      }
+
       using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
       using (var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity"))
       using (var context = activity.Call<AndroidJavaObject>("getApplicationContext"))
