@@ -115,7 +115,7 @@ task :create_ios_plugin, [:path] do |task, args|
   kscrash_filter_path = kscrash_dir + "Reporting/Filters/"
 
   `find #{recording_path} #{reporting_path} #{bugsnag_path} #{recording_sentry_path} #{recording_tools_path} #{kscrash_filter_path} -name '*.m' -or -name '*.c' -or -name '*.mm' -or -name '*.h' -or -name '*.cpp'`.split("\n").each do |x|
-    cp x, ios_dir
+    cp x, ios_dir, verbose: false
   end
 
   # Copy unity to bugsnag-cocoa wrapper
