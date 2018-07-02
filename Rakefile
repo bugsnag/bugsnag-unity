@@ -48,11 +48,11 @@ end
 
 task :clean do
   cd 'bugsnag-android' do
-    sh "./gradlew", "clean"
+    sh "./gradlew", "clean", "--quiet"
   end
   cd 'bugsnag-android-unity' do
     cp "../bugsnag-android/gradle.properties", "gradle.properties"
-    sh "../bugsnag-android/gradlew", "clean"
+    sh "../bugsnag-android/gradlew", "clean", "--quiet"
   end
   cd 'bugsnag-cocoa' do
     sh "make", "clean"
@@ -138,12 +138,12 @@ task :create_android_plugin, [:path] do |task, args|
 
   # Create clean build of the android notifier
   cd 'bugsnag-android' do
-    sh "./gradlew sdk:build"
+    sh "./gradlew", "sdk:build", "--quiet"
   end
 
   cd 'bugsnag-android-unity' do
     cp "../bugsnag-android/gradle.properties", "gradle.properties"
-    sh "../bugsnag-android/gradlew build"
+    sh "../bugsnag-android/gradlew", "build", "--quiet"
   end
 
   cp "bugsnag-android/sdk/build/outputs/aar/bugsnag-android-release.aar", android_dir
