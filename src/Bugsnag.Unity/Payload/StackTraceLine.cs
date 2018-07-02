@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace Bugsnag.Unity.Payload
 {
@@ -12,9 +14,19 @@ namespace Bugsnag.Unity.Payload
   {
     private readonly System.Exception _originalException;
 
+    private readonly string _originalStackTrace;
+
+    private static string[] StringSplit { get; } = new string[] { Environment.NewLine };
+
+    /// <summary>
+    /// Looks for lines that have matching parentheses. This indicates that
+    /// the line contains a method call.
+    /// </summary>
+    private static Regex StackTraceLineRegex { get; } = new Regex(@"[(].*[)]");
+
     internal StackTrace(string stackTrace)
     {
-
+      _originalStackTrace = stackTrace;
     }
 
     internal StackTrace(System.Exception exception)
@@ -24,6 +36,17 @@ namespace Bugsnag.Unity.Payload
 
     public IEnumerator<StackTraceLine> GetEnumerator()
     {
+      if (_originalStackTrace != null)
+      {
+        foreach (var item in _originalStackTrace.Split(StringSplit, StringSplitOptions.RemoveEmptyEntries))
+        {
+          if (StackTraceLineRegex.IsMatch(item))
+          {
+            yield return new StackTraceLine(null, 0, item, false);
+          }
+        }
+      }
+
       if (_originalException == null)
       {
         yield break;
