@@ -25,24 +25,24 @@ namespace Bugsnag.Unity.Payload
   {
     internal AndroidApp(IConfiguration configuration, AndroidJavaObject client) : base(configuration)
     {
-      using (var app = client.Call<AndroidJavaObject>("getAppData"))
+      using (var appData = client.Call<AndroidJavaObject>("getAppData"))
+      using (var map = appData.Call<AndroidJavaObject>("getAppData"))
+      using (var set = map.Call<AndroidJavaObject>("entrySet"))
+      using (var iterator = set.Call<AndroidJavaObject>("iterator"))
       {
-        this.AddToPayload("id", app.Call<string>("getPackageName"));
-        this.AddToPayload("buildUUID", app.Call<string>("getBuildUuid"));
-        this.AddToPayload("duration", app.Call<long>("getDuration"));
-        this.AddToPayload("durationInForeground", app.Call<long>("getDurationInForeground"));
-        this.AddToPayload("inForeground", app.Call<bool>("isInForeground"));
-        this.AddToPayload("type", app.Call<string>("getNotifierType"));
-        // release stage could probably doesn't need to be sourced from the android notifier?
-        this.AddToPayload("releaseStage", app.Call<string>("getReleaseStage"));
-        this.AddToPayload("version", app.Call<string>("getVersionName"));
-        this.AddToPayload("codeBundleId", app.Call<string>("getCodeBundleId"));
-
-        using (var versionCode = app.Call<AndroidJavaObject>("getVersionCode"))
+        while (iterator.Call<bool>("hasNext"))
         {
-          if (versionCode != null)
+          using (var mapEntry = iterator.Call<AndroidJavaObject>("next"))
           {
-            this.AddToPayload("versionCode", versionCode.Call<int>("intValue"));
+            var key = mapEntry.Call<string>("getKey");
+            var value = mapEntry.Call<AndroidJavaObject>("getValue");
+
+            if (value != null)
+            {
+              // how can we handle classes that don't return useful things
+              // from toString?
+              this.AddToPayload(key, value.Call<string>("toString"));
+            }
           }
         }
       }

@@ -47,23 +47,24 @@ namespace Bugsnag.Unity.Payload
   {
     internal AndroidDevice(AndroidJavaObject client)
     {
-      using (var device = client.Call<AndroidJavaObject>("getDeviceData"))
+      using (var deviceData = client.Call<AndroidJavaObject>("getDeviceData"))
+      using (var map = deviceData.Call<AndroidJavaObject>("getDeviceData"))
+      using (var set = map.Call<AndroidJavaObject>("entrySet"))
+      using (var iterator = set.Call<AndroidJavaObject>("iterator"))
       {
-        this.AddToPayload("id", device.Call<string>("getId"));
-        this.AddToPayload("freeMemory", device.Call<long>("getFreeMemory"));
-        this.AddToPayload("totalMemory", device.Call<long>("getTotalMemory"));
-        this.AddToPayload("orientation", device.Call<string>("getOrientation"));
-        this.AddToPayload("manufacturer", device.Call<string>("getManufacturer"));
-        this.AddToPayload("model", device.Call<string>("getModel"));
-        this.AddToPayload("jailbroken", device.Call<bool>("isJailbroken"));
-        this.AddToPayload("osName", device.Call<string>("getOsName"));
-        this.AddToPayload("osVersion", device.Call<string>("getOsVersion"));
-
-        using (var freeDisk = device.Call<AndroidJavaObject>("getFreeDisk"))
+        while (iterator.Call<bool>("hasNext"))
         {
-          if (freeDisk != null)
+          using (var mapEntry = iterator.Call<AndroidJavaObject>("next"))
           {
-            this.AddToPayload("freeDisk", freeDisk.Call<long>("longValue"));
+            var key = mapEntry.Call<string>("getKey");
+            var value = mapEntry.Call<AndroidJavaObject>("getValue");
+
+            if (value != null)
+            {
+              // how can we handle classes that don't return useful things
+              // from toString?
+              this.AddToPayload(key, value.Call<string>("toString"));
+            }
           }
         }
       }
