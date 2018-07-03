@@ -44,6 +44,8 @@ namespace Bugsnag.Unity
 
     protected abstract Device GenerateDeviceData();
 
+    protected abstract Metadata GenerateMetadata();
+
     protected BaseClient(IConfiguration configuration)
     {
       Configuration = configuration;
@@ -95,7 +97,7 @@ namespace Bugsnag.Unity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var @event = new Payload.Event(Metadata, GenerateAppData(), GenerateDeviceData(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+            var @event = new Payload.Event(GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
             var report = new Report(Configuration, @event);
 
             Send(report);
@@ -124,7 +126,7 @@ namespace Bugsnag.Unity
         if (e.ExceptionObject is System.Exception exception)
         {
           // this will always be a handled exception?
-          var @event = new Payload.Event(Metadata, GenerateAppData(), GenerateDeviceData(), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+          var @event = new Payload.Event(GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
           var report = new Report(Configuration, @event);
 
           Send(report);
@@ -156,6 +158,11 @@ namespace Bugsnag.Unity
     protected override Device GenerateDeviceData()
     {
       return new Device();
+    }
+
+    protected override Metadata GenerateMetadata()
+    {
+      return new Metadata(Metadata);
     }
   }
 
@@ -214,6 +221,11 @@ namespace Bugsnag.Unity
     protected override Device GenerateDeviceData()
     {
       return new AndroidDevice(JavaClient);
+    }
+
+    protected override Metadata GenerateMetadata()
+    {
+      return new AndroidMetadata(JavaClient, Metadata);
     }
   }
 }
