@@ -2,6 +2,16 @@ $UNITY = ['/Applications/Unity/Unity.app/Contents/MacOS/Unity', 'C:\Program File
   File.exists? unity
 end
 
+def unity(*cmd)
+  cmd = cmd.unshift($UNITY, "-batchmode", "-nographics", "-logFile", "unity.log", "-quit")
+  sh *cmd do |ok, res|
+    if !ok
+      sh "cat", "unity.log"
+      raise "unity error"
+    end
+  end
+end
+
 desc "Build the plugin"
 task :build do
   path = File.expand_path "temp.unityproject"
@@ -14,18 +24,19 @@ task :build do
   end
 
   rm_rf "temp.unityproject"
-  sh $UNITY, "-batchmode", "-quit", "-createproject", path
+  rm_rf "Bugsnag.unitypackage"
+  unity "-createproject", path
 
   Rake::Task[:copy_into_project].invoke(path)
 
   # Create the package so that the metadata files are created
-  sh $UNITY, "-batchmode", "-quit", "-projectpath", path, "-exportpackage", "Assets", "Bugsnag.unitypackage"
+  unity "-projectpath", path, "-exportpackage", "Assets", "Bugsnag.unitypackage"
 
   # Add support for tvOS to the iOS files by modifying the metadata
   Rake::Task[:include_tvos_support].invoke(path)
 
   # Create the package with the new metadata
-  sh $UNITY, "-batchmode", "-quit", "-projectpath", path, "-exportpackage", "Assets", "Bugsnag.unitypackage"
+  unity "-projectpath", path, "-exportpackage", "Assets", "Bugsnag.unitypackage"
 
   cp "#{path}/Bugsnag.unitypackage", "."
 end
@@ -37,11 +48,11 @@ end
 
 task :clean do
   cd 'bugsnag-android' do
-    sh "./gradlew", "clean"
+    sh "./gradlew", "clean", "--quiet"
   end
   cd 'bugsnag-android-unity' do
     cp "../bugsnag-android/gradle.properties", "gradle.properties"
-    sh "../bugsnag-android/gradlew", "clean"
+    sh "../bugsnag-android/gradlew", "clean", "--quiet"
   end
   cd 'bugsnag-cocoa' do
     sh "make", "clean"
@@ -104,7 +115,7 @@ task :create_ios_plugin, [:path] do |task, args|
   kscrash_filter_path = kscrash_dir + "Reporting/Filters/"
 
   `find #{recording_path} #{reporting_path} #{bugsnag_path} #{recording_sentry_path} #{recording_tools_path} #{kscrash_filter_path} -name '*.m' -or -name '*.c' -or -name '*.mm' -or -name '*.h' -or -name '*.cpp'`.split("\n").each do |x|
-    cp x, ios_dir
+    cp x, ios_dir, verbose: false
   end
 
   # Copy unity to bugsnag-cocoa wrapper
@@ -127,12 +138,12 @@ task :create_android_plugin, [:path] do |task, args|
 
   # Create clean build of the android notifier
   cd 'bugsnag-android' do
-    sh "./gradlew sdk:build"
+    sh "./gradlew", "sdk:build", "--quiet"
   end
 
   cd 'bugsnag-android-unity' do
     cp "../bugsnag-android/gradle.properties", "gradle.properties"
-    sh "../bugsnag-android/gradlew build"
+    sh "../bugsnag-android/gradlew", "build", "--quiet"
   end
 
   cp "bugsnag-android/sdk/build/outputs/aar/bugsnag-android-release.aar", android_dir
