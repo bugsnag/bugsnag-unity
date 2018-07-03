@@ -6,11 +6,11 @@ namespace Bugsnag.Unity.Tests
 {
   public class TestConfiguration : IConfiguration
   {
-    public TimeSpan MaximumLogsTimePeriod { get; set; }
+    public TimeSpan MaximumLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(1);
 
     public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; set; }
 
-    public TimeSpan UniqueLogsTimePeriod { get; set; }
+    public TimeSpan UniqueLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(5);
 
     public string ApiKey { get; set; }
 
