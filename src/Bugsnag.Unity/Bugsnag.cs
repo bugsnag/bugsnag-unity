@@ -18,6 +18,10 @@ namespace Bugsnag.Unity
         {
           switch (Application.platform)
           {
+            case RuntimePlatform.OSXEditor:
+            case RuntimePlatform.OSXPlayer:
+              Client = new Client(new MacOSConfiguration(apiKey));
+              break;;
             case RuntimePlatform.Android:
               Client = new AndroidClient(new AndroidConfiguration(apiKey));
               break;
