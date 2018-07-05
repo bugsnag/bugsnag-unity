@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -226,6 +227,39 @@ namespace Bugsnag.Unity
     protected override Metadata GenerateMetadata()
     {
       return new AndroidMetadata(JavaClient, Metadata);
+    }
+  }
+
+  class MacOsClient : BaseClient
+  {
+    [DllImport("bugsnag-osx", EntryPoint = "startBugsnagWithConfiguration")]
+    static extern void StartBugsnagWithConfiguration(IntPtr configuration);
+
+    internal MacOsClient(MacOSConfiguration configuration) : base(configuration)
+    {
+      StartBugsnagWithConfiguration(configuration.NativeConfiguration);
+      
+      Delivery = new Delivery();
+      Breadcrumbs = new Breadcrumbs(Configuration);
+    }
+
+    public override IBreadcrumbs Breadcrumbs { get; }
+
+    protected override IDelivery Delivery { get; }
+
+    protected override App GenerateAppData()
+    {
+      return new App(Configuration);
+    }
+
+    protected override Device GenerateDeviceData()
+    {
+      return new Device();
+    }
+
+    protected override Metadata GenerateMetadata()
+    {
+      return new Metadata(Metadata);
     }
   }
 }

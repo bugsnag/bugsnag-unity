@@ -247,7 +247,7 @@ namespace Bugsnag.Unity
     [DllImport("bugsnag-osx", EntryPoint = "getNotifyUrl")]
     static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
     
-    IntPtr NativeConfiguration { get; }
+    internal IntPtr NativeConfiguration { get; }
 
     internal MacOSConfiguration(string apiKey)
     {

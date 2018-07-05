@@ -1,3 +1,4 @@
+#import <Bugsnag/Bugsnag.h>
 #import <Bugsnag/BugsnagConfiguration.h>
 
 extern "C" {
@@ -16,6 +17,8 @@ extern "C" {
 
   void setNotifyUrl(const void *configuration, char *notifyURL);
   const char *getNotifyUrl(const void *configuration);
+
+  void startBugsnagWithConfiguration(const void *configuration);
 }
 
 void *createConfiguration(char *apiKey) {
@@ -64,4 +67,8 @@ void setNotifyUrl(const void *configuration, char *notifyURL) {
 
 const char *getNotifyUrl(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).notifyURL.absoluteString UTF8String];
+}
+
+void startBugsnagWithConfiguration(const void *configuration) {
+  [Bugsnag startBugsnagWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
 }

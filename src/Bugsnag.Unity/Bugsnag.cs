@@ -20,8 +20,8 @@ namespace Bugsnag.Unity
           {
             case RuntimePlatform.OSXEditor:
             case RuntimePlatform.OSXPlayer:
-              Client = new Client(new MacOSConfiguration(apiKey));
-              break;;
+              Client = new MacOsClient(new MacOSConfiguration(apiKey));
+              break;
             case RuntimePlatform.Android:
               Client = new AndroidClient(new AndroidConfiguration(apiKey));
               break;
