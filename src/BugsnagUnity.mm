@@ -1,5 +1,6 @@
 #import <Bugsnag/Bugsnag.h>
 #import <Bugsnag/BugsnagConfiguration.h>
+#import <Bugsnag/BSG_KSSystemInfo.h>
 
 extern "C" {
   void *createConfiguration(char *apiKey);
@@ -23,6 +24,8 @@ extern "C" {
   void *createBreadcrumbs(const void *configuration);
   void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
   void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
+
+  void retrieveAppData(void (*appData)(const char* key, const char* value));
 }
 
 void *createConfiguration(char *apiKey) {
@@ -139,5 +142,12 @@ void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char 
     }
 
     breadcrumb(name, timestamp, type, c_keys, count, c_values, count);
+  }];
+}
+
+void retrieveAppData(void (*appData)(const char* key, const char* value)) {
+  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
+  [sysInfo enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
+    appData([key UTF8String], [value UTF8String]);
   }];
 }

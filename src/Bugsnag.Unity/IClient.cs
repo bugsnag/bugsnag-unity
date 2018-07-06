@@ -249,7 +249,7 @@ namespace Bugsnag.Unity
 
     protected override App GenerateAppData()
     {
-      return new App(Configuration);
+      return new MacOsApp(Configuration);
     }
 
     protected override Device GenerateDeviceData()
