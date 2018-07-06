@@ -206,10 +206,10 @@ namespace Bugsnag.Unity
     [DllImport("bugsnag-osx", EntryPoint = "addBreadcrumb")]
     static extern void AddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
 
-    delegate void Action<T1, T2, T3, T4, T5>(T1 p1, T2 p2, T3 p3, T4 p4, T5 p5);
+    delegate void BreadcrumbInformation(string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]string[] keys, long keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 6)]string[] values, long valuesSize);
     
     [DllImport("bugsnag-osx", EntryPoint = "retrieveBreadcrumbs")]
-    static extern void RetrieveBreadcrumbs(IntPtr breadcrumbs, Action<string, string, string, string, string> visitor);
+    static extern void RetrieveBreadcrumbs(IntPtr breadcrumbs, BreadcrumbInformation visitor);
     
     internal MacOsBreadcrumbs(MacOSConfiguration configuration)
     {
@@ -256,15 +256,15 @@ namespace Bugsnag.Unity
       var breadcrumbs = new List<Breadcrumb>();
       
       RetrieveBreadcrumbs(NativeBreadcrumbs,
-        (name, timestamp, type, key, value) =>
+        (name, timestamp, type, keys, keysSize, values, valuesSize) =>
         {
-          Dictionary<string, string> metadata = null;
+          var metadata = new Dictionary<string, string>();
 
-          if (key != null)
+          for (var i = 0; i < keys.Length; i++)
           {
-            metadata = new Dictionary<string, string> { { key, value } };            
+            metadata.Add(keys[i], values[i]);
           }
-          
+                    
           breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
         }
       );

@@ -22,7 +22,7 @@ extern "C" {
 
   void *createBreadcrumbs(const void *configuration);
   void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
-  void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *key, const char *value));
+  void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
 }
 
 void *createConfiguration(char *apiKey) {
@@ -117,7 +117,7 @@ void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metada
   }];
 }
 
-void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *key, const char *value)) {
+void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size)) {
   NSArray *crumbs = [((__bridge BugsnagBreadcrumbs *) breadcrumbs) arrayValue];
   [crumbs enumerateObjectsUsingBlock:^(id crumb, NSUInteger index, BOOL *stop){
     const char *name = [[crumb valueForKey: @"name"] UTF8String];
@@ -126,9 +126,18 @@ void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char 
 
     NSDictionary *metadata = [crumb valueForKey: @"metaData"];
 
-    id key = [[metadata allKeys] objectAtIndex:0];
-    const char *value = [[metadata objectForKey:key] UTF8String];
+    NSArray *keys = [metadata allKeys];
+    NSArray *values = [metadata allValues];
 
-    breadcrumb(name, timestamp, type, [key UTF8String], value);
+    NSUInteger count = [keys count];
+    const char **c_keys = (const char **) malloc(sizeof(char *) * (count + 1));
+    const char **c_values = (const char **) malloc(sizeof(char *) * (count + 1));
+
+    for (NSUInteger i = 0; i < count; i++) {
+      c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+      c_values[i] = [[values objectAtIndex: i] UTF8String];
+    }
+
+    breadcrumb(name, timestamp, type, c_keys, count, c_values, count);
   }];
 }
