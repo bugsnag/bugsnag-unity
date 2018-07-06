@@ -19,6 +19,10 @@ extern "C" {
   const char *getNotifyUrl(const void *configuration);
 
   void startBugsnagWithConfiguration(const void *configuration);
+
+  void *createBreadcrumbs(const void *configuration);
+  void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
+  void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *key, const char *value));
 }
 
 void *createConfiguration(char *apiKey) {
@@ -71,4 +75,60 @@ const char *getNotifyUrl(const void *configuration) {
 
 void startBugsnagWithConfiguration(const void *configuration) {
   [Bugsnag startBugsnagWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
+}
+
+void *createBreadcrumbs(const void *configuration) {
+  return (__bridge void*)((__bridge BugsnagConfiguration *)configuration).breadcrumbs;
+}
+
+void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount) {
+  BugsnagBreadcrumbs *ns_breadcrumbs = ((__bridge BugsnagBreadcrumbs *) breadcrumbs);
+  NSString *ns_name = [NSString stringWithUTF8String: name];
+  [ns_breadcrumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
+      crumb.name = ns_name;
+
+      if (strcmp(type, "log") == 0) {
+        crumb.type = BSGBreadcrumbTypeLog;
+      } else if (strcmp(type, "user") == 0) {
+        crumb.type = BSGBreadcrumbTypeUser;
+      } else if (strcmp(type, "error") == 0) {
+        crumb.type = BSGBreadcrumbTypeError;
+      } else if (strcmp(type, "state") == 0) {
+        crumb.type = BSGBreadcrumbTypeState;
+      } else if (strcmp(type, "manual") == 0) {
+        crumb.type = BSGBreadcrumbTypeManual;
+      } else if (strcmp(type, "process") == 0) {
+        crumb.type = BSGBreadcrumbTypeProcess;
+      } else if (strcmp(type, "request") == 0) {
+        crumb.type = BSGBreadcrumbTypeRequest;
+      } else if (strcmp(type, "navigation") == 0) {
+        crumb.type = BSGBreadcrumbTypeNavigation;
+      }
+
+      NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
+
+      for (size_t i = 0; i < metadataCount; i += 2) {
+        NSString *key = [NSString stringWithUTF8String: metadata[i]];
+        NSString *value = [NSString stringWithUTF8String: metadata[i+1]];
+        [ns_metadata setValue: value forKey: key];
+      }
+
+      crumb.metadata = ns_metadata;
+  }];
+}
+
+void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *key, const char *value)) {
+  NSArray *crumbs = [((__bridge BugsnagBreadcrumbs *) breadcrumbs) arrayValue];
+  [crumbs enumerateObjectsUsingBlock:^(id crumb, NSUInteger index, BOOL *stop){
+    const char *name = [[crumb valueForKey: @"name"] UTF8String];
+    const char *timestamp = [[crumb valueForKey: @"timestamp"] UTF8String];
+    const char *type = [[crumb valueForKey: @"type"] UTF8String];
+
+    NSDictionary *metadata = [crumb valueForKey: @"metaData"];
+
+    id key = [[metadata allKeys] objectAtIndex:0];
+    const char *value = [[metadata objectForKey:key] UTF8String];
+
+    breadcrumb(name, timestamp, type, [key UTF8String], value);
+  }];
 }

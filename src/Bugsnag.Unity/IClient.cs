@@ -240,7 +240,7 @@ namespace Bugsnag.Unity
       StartBugsnagWithConfiguration(configuration.NativeConfiguration);
       
       Delivery = new Delivery();
-      Breadcrumbs = new Breadcrumbs(Configuration);
+      Breadcrumbs = new MacOsBreadcrumbs(configuration);
     }
 
     public override IBreadcrumbs Breadcrumbs { get; }
