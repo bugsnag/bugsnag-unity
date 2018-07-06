@@ -145,7 +145,7 @@ task :create_osx_plugin, [:path] do |task, args|
 
   # Create the Unity OSX bundle and copy it to the OSX directory
   cd 'bugsnag-osx' do
-    sh "xcodebuild -configuration Release build build | tee xcodebuild.log | xcpretty"
+    sh "set -o pipefail && xcodebuild -configuration Release build build | tee xcodebuild.log | xcpretty"
     cp_r "build/Release/bugsnag-osx.bundle", osx_dir
   end
 end
