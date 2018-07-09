@@ -1,8 +1,19 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    CFPropertyList (3.0.0)
+    atomos (0.1.2)
+    claide (1.0.2)
+    colored2 (3.1.2)
+    nanaimo (0.2.6)
     rake (10.4.2)
     rouge (2.0.7)
+    xcodeproj (1.5.9)
+      CFPropertyList (>= 2.3.3, < 4.0)
+      atomos (~> 0.1.2)
+      claide (>= 1.0.2, < 2.0)
+      colored2 (~> 3.1)
+      nanaimo (~> 0.2.5)
     xcpretty (0.2.8)
       rouge (~> 2.0.7)
 
@@ -11,6 +22,7 @@ PLATFORMS
 
 DEPENDENCIES
   rake
+  xcodeproj
   xcpretty
 
 BUNDLED WITH
