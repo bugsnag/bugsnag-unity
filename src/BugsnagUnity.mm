@@ -1,6 +1,6 @@
-#import <Bugsnag/Bugsnag.h>
-#import <Bugsnag/BugsnagConfiguration.h>
-#import <Bugsnag/BSG_KSSystemInfo.h>
+#import "Bugsnag.h"
+#import "BugsnagConfiguration.h"
+#import "BSG_KSSystemInfo.h"
 
 extern "C" {
   void *createConfiguration(char *apiKey);

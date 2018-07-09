@@ -22,3 +22,4 @@ bld/
 tools/
 TestResult.xml
 .idea/
+bugsnag-cocoa-build/
