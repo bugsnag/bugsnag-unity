@@ -25,7 +25,7 @@ extern "C" {
   void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
   void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
 
-  void retrieveAppData(void (*appData)(const char* key, const char* value));
+  void retrieveAppData(void (*callback)(const char *key, const char *value));
 }
 
 void *createConfiguration(char *apiKey) {
@@ -145,9 +145,17 @@ void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char 
   }];
 }
 
-void retrieveAppData(void (*appData)(const char* key, const char* value)) {
+void retrieveAppData(void (*callback)(const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
-  [sysInfo enumerateKeysAndObjectsUsingBlock:^(id key, id object, BOOL *stop) {
-    appData([key UTF8String], [value UTF8String]);
+  [sysInfo enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+    const char *keyString = [key UTF8String];
+    if ([value isKindOfClass:[NSString class]]) {
+      const char *valueString = [value UTF8String];
+      callback(keyString, valueString);
+    }
+    else if ([value isKindOfClass:[NSNumber class]]) {
+      const char *valueString = [[value stringValue] UTF8String];
+      callback(keyString, valueString);
+    }
   }];
 }

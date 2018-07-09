@@ -58,7 +58,7 @@ namespace Bugsnag.Unity.Payload
     
     internal MacOsApp(IConfiguration configuration) : base(configuration)
     {
-      RetrieveAppData(this.AddToPayload);
+      RetrieveAppData((key, value) => this.AddToPayload(key, value));
     }
   }
 }
