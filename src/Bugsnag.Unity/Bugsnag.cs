@@ -29,7 +29,6 @@ namespace Bugsnag.Unity
               Client = new AndroidClient(new AndroidConfiguration(apiKey));
               break;
             default:
-              // this doesn't work on windows due to tls limitations in mono
               Client = new Client(new Configuration(apiKey));
               break;
           }
