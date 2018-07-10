@@ -254,7 +254,7 @@ namespace Bugsnag.Unity
 
     protected override Device GenerateDeviceData()
     {
-      return new Device();
+      return new MacOsDevice();
     }
 
     protected override Metadata GenerateMetadata()

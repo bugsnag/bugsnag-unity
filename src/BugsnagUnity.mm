@@ -26,6 +26,7 @@ extern "C" {
   void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
 
   void retrieveAppData(void (*callback)(const char *key, const char *value));
+  void retrieveDeviceData(void (*callback)(const char *key, const char *value));
 }
 
 void *createConfiguration(char *apiKey) {
@@ -147,15 +148,22 @@ void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char 
 
 void retrieveAppData(void (*callback)(const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
-  [sysInfo enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-    const char *keyString = [key UTF8String];
-    if ([value isKindOfClass:[NSString class]]) {
-      const char *valueString = [value UTF8String];
-      callback(keyString, valueString);
-    }
-    else if ([value isKindOfClass:[NSNumber class]]) {
-      const char *valueString = [[value stringValue] UTF8String];
-      callback(keyString, valueString);
-    }
-  }];
+
+  callback("bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
+  callback("id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
+  callback("type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
+  callback("version", [sysInfo[@BSG_KSSystemField_BundleShortVersion] UTF8String]);
+}
+
+void retrieveDeviceData(void (*callback)(const char *key, const char *value)) {
+  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
+
+  callback("jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
+  callback("locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
+  // callback("manufacturer", sysInfo[@"Apple"]);//does this exist?
+  callback("manufacturer", "Apple");//does this exist?
+  callback("model", [sysInfo[@BSG_KSSystemField_Machine] UTF8String]);
+  callback("modelNumber", [sysInfo[@BSG_KSSystemField_Model] UTF8String]);
+  callback("osName", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
+  callback("osVersion", [sysInfo[@BSG_KSSystemField_SystemVersion] UTF8String]);
 }
