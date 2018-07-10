@@ -50,10 +50,6 @@ task :clean do
   cd 'bugsnag-android' do
     sh "./gradlew", "clean", "--quiet"
   end
-  cd 'bugsnag-android-unity' do
-    cp "../bugsnag-android/gradle.properties", "gradle.properties"
-    sh "../bugsnag-android/gradlew", "clean", "--quiet"
-  end
   cd 'bugsnag-cocoa' do
     sh "make", "clean"
     sh "make", "BUILD_OSX=1", "clean"
@@ -90,6 +86,7 @@ task :copy_into_project, [:path] do |task, args|
   Rake::Task[:create_ios_plugin].invoke(args[:path])
   Rake::Task[:create_android_plugin].invoke(args[:path])
   Rake::Task[:create_osx_plugin].invoke(args[:path])
+  Rake::Task[:create_csharp_plugin].invoke(args[:path])
 end
 
 task :create_webgl_plugin, [:path] do |task, args|
@@ -141,13 +138,7 @@ task :create_android_plugin, [:path] do |task, args|
     sh "./gradlew", "sdk:build", "--quiet"
   end
 
-  cd 'bugsnag-android-unity' do
-    cp "../bugsnag-android/gradle.properties", "gradle.properties"
-    sh "../bugsnag-android/gradlew", "build", "--quiet"
-  end
-
   cp "bugsnag-android/sdk/build/outputs/aar/bugsnag-android-release.aar", android_dir
-  cp "bugsnag-android-unity/build/outputs/aar/bugsnag-android-unity-release.aar", android_dir
 end
 
 task :create_osx_plugin, [:path] do |task, args|
@@ -181,5 +172,8 @@ task :include_tvos_support, [:path] do |task, args|
   end
 end
 
+task :create_csharp_plugin, [:path] do |task, args|
+  sh "./build.sh", "--output=#{args[:path]}"
+end
 
 task default: [:build]
