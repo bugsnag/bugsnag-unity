@@ -137,6 +137,15 @@ task :create_cocoa_plugins, [:path] do |task, args|
         end
       end
 
+      project.build_configurations.each do |build_configuration|
+        case build_configuration.type
+        when :debug
+          build_configuration.build_settings["OTHER_CFLAGS"] = "-fembed-bitcode-marker"
+        when :release
+          build_configuration.build_settings["OTHER_CFLAGS"] = "-fembed-bitcode"
+        end
+      end
+
       project.save
       sh "xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "build", "build"
     end
