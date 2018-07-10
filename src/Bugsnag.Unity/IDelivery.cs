@@ -47,7 +47,7 @@ namespace Bugsnag.Unity
           stream.Position = 0;
           var reader = new StreamReader(stream);
           var body = Encoding.UTF8.GetBytes(reader.ReadToEnd());
-          MainThreadDispatchBehaviour.Instance().Enqueue(pushToServer(payload, body));
+          MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
         }
       }
     }
@@ -57,7 +57,7 @@ namespace Bugsnag.Unity
       Queue.Enqueue(payload);
     }
 
-    IEnumerator pushToServer(IPayload payload, byte[] body)
+    IEnumerator PushToServer(IPayload payload, byte[] body)
     {
       using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
       {
