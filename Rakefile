@@ -26,8 +26,6 @@ task :build do
   package_output = File.join(current_directory, "Bugsnag.unitypackage")
   rm_f package_output
   sh $UNITY, "-batchmode", "-quit", "-projectpath", project_path, "-exportpackage", "Assets", package_output
-
-  Rake::Task[:update_example_plugins].invoke(package_output)
 end
 
 task :clean do
