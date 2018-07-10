@@ -138,17 +138,6 @@ task :create_cocoa_plugins, [:path] do |task, args|
   end
 end
 
-task :include_tvos_support, [:path] do |task, args|
-  tvos_dir = "#{args[:path]}/Assets/Plugins/iOS/Bugsnag"
-  Dir[tvos_dir + "/*.meta"].each do |file|
-    # Keep the first 11 lines, everything before plaform data
-    `sed -i '' '1,11!d' #{file}`
-
-    # Add on support for iOS and tvOS
-    `echo "    iOS:\n      enabled: 1\n    tvOS:\n      enabled: 1\n" >> #{file}`
-  end
-end
-
 task :create_csharp_plugin, [:path] do |task, args|
   sh "./build.sh"
   dll = File.join("src", "Bugsnag.Unity", "bin", "Release", "net35", "Bugsnag.Unity.dll")
