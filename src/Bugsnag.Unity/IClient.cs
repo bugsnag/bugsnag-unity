@@ -262,4 +262,37 @@ namespace Bugsnag.Unity
       return new Metadata(Metadata);
     }
   }
+
+  class iOSClient : BaseClient
+  {
+    [DllImport("__Internal", EntryPoint = "startBugsnagWithConfiguration")]
+    static extern void StartBugsnagWithConfiguration(IntPtr configuration);
+
+    public iOSClient(iOSConfiguration configuration) : base(configuration)
+    {
+      StartBugsnagWithConfiguration(configuration.NativeConfiguration);
+
+      Delivery = new Delivery();
+      Breadcrumbs = new iOSBreadcrumbs(configuration);
+    }
+
+    public override IBreadcrumbs Breadcrumbs { get; }
+
+    protected override IDelivery Delivery { get; }
+
+    protected override App GenerateAppData()
+    {
+      return new iOSApp(Configuration);
+    }
+
+    protected override Device GenerateDeviceData()
+    {
+      return new iOSDevice();
+    }
+
+    protected override Metadata GenerateMetadata()
+    {
+      return new Metadata(Metadata);
+    }
+  }
 }

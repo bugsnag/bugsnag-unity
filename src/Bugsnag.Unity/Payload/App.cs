@@ -61,4 +61,15 @@ namespace Bugsnag.Unity.Payload
       RetrieveAppData((key, value) => this.AddToPayload(key, value));
     }
   }
+
+  class iOSApp : App
+  {
+    [DllImport("__Internal", EntryPoint = "retrieveAppData")]
+    static extern void RetrieveAppData(Action<string, string> populate);
+
+    internal iOSApp(IConfiguration configuration) : base(configuration)
+    {
+      RetrieveAppData((key, value) => this.AddToPayload(key, value));
+    }
+  }
 }

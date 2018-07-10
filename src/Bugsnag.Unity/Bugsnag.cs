@@ -18,6 +18,9 @@ namespace Bugsnag.Unity
         {
           switch (Application.platform)
           {
+            case RuntimePlatform.IPhonePlayer:
+              Client = new iOSClient(new iOSConfiguration(apiKey));
+              break;
             case RuntimePlatform.OSXEditor:
             case RuntimePlatform.OSXPlayer:
               Client = new MacOsClient(new MacOSConfiguration(apiKey));
