@@ -24,7 +24,7 @@ task :build do
   Rake::Task[:create_csharp_plugin].invoke(assets_path)
 
   package_output = File.join(current_directory, "Bugsnag.unitypackage")
-  rm package_output
+  rm_f package_output
   sh $UNITY, "-batchmode", "-quit", "-projectpath", project_path, "-exportpackage", "Assets", package_output
 
   Rake::Task[:update_example_plugins].invoke(package_output)
