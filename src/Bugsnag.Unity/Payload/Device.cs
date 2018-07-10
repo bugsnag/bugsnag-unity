@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Bugsnag.Unity.Payload
@@ -68,6 +69,28 @@ namespace Bugsnag.Unity.Payload
           }
         }
       }
+    }
+  }
+
+  class MacOsDevice : Device
+  {
+    [DllImport("bugsnag-osx", EntryPoint = "retrieveDeviceData")]
+    static extern void RetrieveAppData(Action<string, string> populate);
+    
+    internal MacOsDevice()
+    {
+      RetrieveAppData((key, value) => this.AddToPayload(key, value));      
+    }
+  }
+
+  class iOSDevice : Device
+  {
+    [DllImport("__Internal", EntryPoint = "retrieveDeviceData")]
+    static extern void RetrieveAppData(Action<string, string> populate);
+
+    internal iOSDevice()
+    {
+      RetrieveAppData((key, value) => this.AddToPayload(key, value));      
     }
   }
 }

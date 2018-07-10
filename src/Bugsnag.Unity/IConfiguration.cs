@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Bugsnag.Unity
@@ -208,5 +209,197 @@ namespace Bugsnag.Unity
     }
 
     public bool AutoNotify { get; set; } // how do we hook this into the android bits, this lives on the client object
+  }
+
+  class MacOSConfiguration : IConfiguration
+  {
+    const string DefaultEndpoint = "https://notify.bugsnag.com";
+
+    const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
+
+    [DllImport("bugsnag-osx", EntryPoint = "createConfiguration")]
+    static extern IntPtr CreateConfiguration(string apiKey);
+
+    [DllImport("bugsnag-osx", EntryPoint = "getApiKey")]
+    static extern IntPtr GetApiKey(IntPtr configuration);
+
+    [DllImport("bugsnag-osx", EntryPoint = "setReleaseStage")]
+    static extern void SetReleaseStage(IntPtr configuration, string releaseStage);
+
+    [DllImport("bugsnag-osx", EntryPoint = "getReleaseStage")]
+    static extern IntPtr GetReleaseStage(IntPtr configuration);
+
+    [DllImport("bugsnag-osx", EntryPoint = "setContext")]
+    static extern void SetContext(IntPtr configuration, string context);
+
+    [DllImport("bugsnag-osx", EntryPoint = "getContext")]
+    static extern IntPtr GetContext(IntPtr configuration);
+    
+    [DllImport("bugsnag-osx", EntryPoint = "setAppVersion")]
+    static extern void SetAppVersion(IntPtr configuration, string appVersion);
+
+    [DllImport("bugsnag-osx", EntryPoint = "getAppVersion")]
+    static extern IntPtr GetAppVersion(IntPtr configuration);
+
+    [DllImport("bugsnag-osx", EntryPoint = "setNotifyUrl")]
+    static extern void SetNotifyEndpoint(IntPtr configuration, string endpoint);
+
+    [DllImport("bugsnag-osx", EntryPoint = "getNotifyUrl")]
+    static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
+    
+    internal IntPtr NativeConfiguration { get; }
+
+    internal MacOSConfiguration(string apiKey)
+    {
+      NativeConfiguration = CreateConfiguration(apiKey);
+      Endpoint = new Uri(DefaultEndpoint);
+      AutoNotify = true;
+      SessionEndpoint = new Uri(DefaultSessionEndpoint);
+      MaximumBreadcrumbs = 25;
+      ReleaseStage = "production";
+      NotifyLevel = LogType.Exception;
+      UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
+      MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
+      AppVersion = Application.version;
+    }
+
+    public string ApiKey => Marshal.PtrToStringAuto(GetApiKey(NativeConfiguration));
+    public TimeSpan MaximumLogsTimePeriod { get; }
+    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; } = new Dictionary<LogType, int>
+    {
+      { LogType.Assert, 5 },
+      { LogType.Error, 5 },
+      { LogType.Exception, 20 },
+      { LogType.Log, 5 },
+      { LogType.Warning, 5 },
+    };
+    public TimeSpan UniqueLogsTimePeriod { get; set; }
+    public int MaximumBreadcrumbs { get; set; }
+
+    public string ReleaseStage
+    {
+      get => Marshal.PtrToStringAuto(GetReleaseStage(NativeConfiguration));
+      set => SetReleaseStage(NativeConfiguration, value);
+    }
+
+    public string AppVersion
+    {
+      get => Marshal.PtrToStringAuto(GetAppVersion(NativeConfiguration));
+      set => SetAppVersion(NativeConfiguration, value);
+    }
+
+    public Uri Endpoint
+    {
+      get => new Uri(Marshal.PtrToStringAuto(GetNotifyEndpoint(NativeConfiguration)));
+      set => SetNotifyEndpoint(NativeConfiguration, value.ToString());
+    }
+    public string PayloadVersion { get; } = "4.0";
+    public string SessionPayloadVersion { get; } = "1";
+    public Uri SessionEndpoint { get; }
+
+    public string Context
+    {
+      get => Marshal.PtrToStringAuto(GetContext(NativeConfiguration));
+      set => SetContext(NativeConfiguration, value);
+    }
+
+    public LogType NotifyLevel { get; set; }
+    public bool AutoNotify { get; set; }
+  }
+
+  class iOSConfiguration : IConfiguration
+  {
+    const string DefaultEndpoint = "https://notify.bugsnag.com";
+
+    const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
+
+    [DllImport("__Internal", EntryPoint = "createConfiguration")]
+    static extern IntPtr CreateConfiguration(string apiKey);
+
+    [DllImport("__Internal", EntryPoint = "getApiKey")]
+    static extern IntPtr GetApiKey(IntPtr configuration);
+
+    [DllImport("__Internal", EntryPoint = "setReleaseStage")]
+    static extern void SetReleaseStage(IntPtr configuration, string releaseStage);
+
+    [DllImport("__Internal", EntryPoint = "getReleaseStage")]
+    static extern IntPtr GetReleaseStage(IntPtr configuration);
+
+    [DllImport("__Internal", EntryPoint = "setContext")]
+    static extern void SetContext(IntPtr configuration, string context);
+
+    [DllImport("__Internal", EntryPoint = "getContext")]
+    static extern IntPtr GetContext(IntPtr configuration);
+
+    [DllImport("__Internal", EntryPoint = "setAppVersion")]
+    static extern void SetAppVersion(IntPtr configuration, string appVersion);
+
+    [DllImport("__Internal", EntryPoint = "getAppVersion")]
+    static extern IntPtr GetAppVersion(IntPtr configuration);
+
+    [DllImport("__Internal", EntryPoint = "setNotifyUrl")]
+    static extern void SetNotifyEndpoint(IntPtr configuration, string endpoint);
+
+    [DllImport("__Internal", EntryPoint = "getNotifyUrl")]
+    static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
+    
+    internal IntPtr NativeConfiguration { get; }
+
+    internal iOSConfiguration(string apiKey)
+    {
+      NativeConfiguration = CreateConfiguration(apiKey);
+      Endpoint = new Uri(DefaultEndpoint);
+      AutoNotify = true;
+      SessionEndpoint = new Uri(DefaultSessionEndpoint);
+      MaximumBreadcrumbs = 25;
+      ReleaseStage = "production";
+      NotifyLevel = LogType.Exception;
+      UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
+      MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
+      AppVersion = Application.version;
+    }
+
+    public string ApiKey => Marshal.PtrToStringAuto(GetApiKey(NativeConfiguration));
+    public TimeSpan MaximumLogsTimePeriod { get; }
+    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; } = new Dictionary<LogType, int>
+    {
+      { LogType.Assert, 5 },
+      { LogType.Error, 5 },
+      { LogType.Exception, 20 },
+      { LogType.Log, 5 },
+      { LogType.Warning, 5 },
+    };
+    public TimeSpan UniqueLogsTimePeriod { get; set; }
+    public int MaximumBreadcrumbs { get; set; }
+
+    public string ReleaseStage
+    {
+      get => Marshal.PtrToStringAuto(GetReleaseStage(NativeConfiguration));
+      set => SetReleaseStage(NativeConfiguration, value);
+    }
+
+    public string AppVersion
+    {
+      get => Marshal.PtrToStringAuto(GetAppVersion(NativeConfiguration));
+      set => SetAppVersion(NativeConfiguration, value);
+    }
+
+    public Uri Endpoint
+    {
+      get => new Uri(Marshal.PtrToStringAuto(GetNotifyEndpoint(NativeConfiguration)));
+      set => SetNotifyEndpoint(NativeConfiguration, value.ToString());
+    }
+    public string PayloadVersion { get; } = "4.0";
+    public string SessionPayloadVersion { get; } = "1";
+    public Uri SessionEndpoint { get; }
+
+    public string Context
+    {
+      get => Marshal.PtrToStringAuto(GetContext(NativeConfiguration));
+      set => SetContext(NativeConfiguration, value);
+    }
+
+    public LogType NotifyLevel { get; set; }
+    public bool AutoNotify { get; set; }
   }
 }

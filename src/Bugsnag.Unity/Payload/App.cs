@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Bugsnag.Unity.Payload
@@ -46,6 +48,28 @@ namespace Bugsnag.Unity.Payload
           }
         }
       }
+    }
+  }
+
+  class MacOsApp : App
+  {
+    [DllImport("bugsnag-osx", EntryPoint = "retrieveAppData")]
+    static extern void RetrieveAppData(Action<string, string> populate);
+    
+    internal MacOsApp(IConfiguration configuration) : base(configuration)
+    {
+      RetrieveAppData((key, value) => this.AddToPayload(key, value));
+    }
+  }
+
+  class iOSApp : App
+  {
+    [DllImport("__Internal", EntryPoint = "retrieveAppData")]
+    static extern void RetrieveAppData(Action<string, string> populate);
+
+    internal iOSApp(IConfiguration configuration) : base(configuration)
+    {
+      RetrieveAppData((key, value) => this.AddToPayload(key, value));
     }
   }
 }

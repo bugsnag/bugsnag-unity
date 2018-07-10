@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using Bugsnag.Unity.Payload;
 
@@ -190,6 +193,160 @@ namespace Bugsnag.Unity
 
         return new Breadcrumb(name, timestamp, type.Call<string>("toString"), metadata);
       }
+    }
+  }
+
+  class MacOsBreadcrumbs : IBreadcrumbs
+  {
+    IntPtr NativeBreadcrumbs { get; }
+
+    [DllImport("bugsnag-osx", EntryPoint = "createBreadcrumbs")]
+    static extern IntPtr CreateBreadcrumbs(IntPtr configuration);
+    
+    [DllImport("bugsnag-osx", EntryPoint = "addBreadcrumb")]
+    static extern void AddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
+
+    delegate void BreadcrumbInformation(string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]string[] keys, long keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 6)]string[] values, long valuesSize);
+    
+    [DllImport("bugsnag-osx", EntryPoint = "retrieveBreadcrumbs")]
+    static extern void RetrieveBreadcrumbs(IntPtr breadcrumbs, BreadcrumbInformation visitor);
+    
+    internal MacOsBreadcrumbs(MacOSConfiguration configuration)
+    {
+      NativeBreadcrumbs = CreateBreadcrumbs(configuration.NativeConfiguration);
+    }
+        
+    /// <summary>
+    /// Add a breadcrumb to the collection using Manual type and no metadata.
+    /// </summary>
+    /// <param name="message"></param>
+    public void Leave(string message)
+    {
+      Leave(message, BreadcrumbType.Manual, null);
+    }
+
+    /// <summary>
+    /// Add a breadcrumb to the collection with the specified type and metadata
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="type"></param>
+    /// <param name="metadata"></param>
+    public void Leave(string message, BreadcrumbType type, IDictionary<string, string> metadata)
+    {
+      Leave(new Breadcrumb(message, type, metadata));
+    }
+
+    public void Leave(Breadcrumb breadcrumb)
+    {
+      var index = 0;
+      var metadata = new string[breadcrumb.Metadata.Count * 2];
+      
+      foreach (var data in breadcrumb.Metadata)
+      {
+        metadata[index] = data.Key;
+        metadata[index + 1] = data.Value;
+        index += 2;
+      }
+      
+      AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+    }
+
+    public Breadcrumb[] Retrieve()
+    {
+      var breadcrumbs = new List<Breadcrumb>();
+      
+      RetrieveBreadcrumbs(NativeBreadcrumbs,
+        (name, timestamp, type, keys, keysSize, values, valuesSize) =>
+        {
+          var metadata = new Dictionary<string, string>();
+
+          for (var i = 0; i < keys.Length; i++)
+          {
+            metadata.Add(keys[i], values[i]);
+          }
+                    
+          breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
+        }
+      );
+
+      return breadcrumbs.ToArray();
+    }
+  }
+
+  class iOSBreadcrumbs : IBreadcrumbs
+  {
+    IntPtr NativeBreadcrumbs { get; }
+
+    [DllImport("__Internal", EntryPoint = "createBreadcrumbs")]
+    static extern IntPtr CreateBreadcrumbs(IntPtr configuration);
+
+    [DllImport("__Internal", EntryPoint = "addBreadcrumb")]
+    static extern void AddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
+
+    delegate void BreadcrumbInformation(string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]string[] keys, long keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 6)]string[] values, long valuesSize);
+
+    [DllImport("__Internal", EntryPoint = "retrieveBreadcrumbs")]
+    static extern void RetrieveBreadcrumbs(IntPtr breadcrumbs, BreadcrumbInformation visitor);
+    
+    internal iOSBreadcrumbs(iOSConfiguration configuration)
+    {
+      NativeBreadcrumbs = CreateBreadcrumbs(configuration.NativeConfiguration);
+    }
+
+    /// <summary>
+    /// Add a breadcrumb to the collection using Manual type and no metadata.
+    /// </summary>
+    /// <param name="message"></param>
+    public void Leave(string message)
+    {
+      Leave(message, BreadcrumbType.Manual, null);
+    }
+
+    /// <summary>
+    /// Add a breadcrumb to the collection with the specified type and metadata
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="type"></param>
+    /// <param name="metadata"></param>
+    public void Leave(string message, BreadcrumbType type, IDictionary<string, string> metadata)
+    {
+      Leave(new Breadcrumb(message, type, metadata));
+    }
+
+    public void Leave(Breadcrumb breadcrumb)
+    {
+      var index = 0;
+      var metadata = new string[breadcrumb.Metadata.Count * 2];
+
+      foreach (var data in breadcrumb.Metadata)
+      {
+        metadata[index] = data.Key;
+        metadata[index + 1] = data.Value;
+        index += 2;
+      }
+
+      AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+    }
+
+    public Breadcrumb[] Retrieve()
+    {
+      var breadcrumbs = new List<Breadcrumb>();
+
+      RetrieveBreadcrumbs(NativeBreadcrumbs,
+        (name, timestamp, type, keys, keysSize, values, valuesSize) =>
+        {
+          var metadata = new Dictionary<string, string>();
+
+          for (var i = 0; i < keys.Length; i++)
+          {
+            metadata.Add(keys[i], values[i]);
+          }
+
+          breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
+        }
+      );
+
+      return breadcrumbs.ToArray();
     }
   }
 }
