@@ -6,6 +6,8 @@ end
 
 desc "Build the plugin"
 task :build do
+  # remove any leftover artifacts from the package generation directory
+  sh "git", "clean", "-dfx", "unity"
   current_directory = File.dirname(__FILE__)
   project_path = File.join(current_directory, "unity", "PackageProject")
   assets_path = File.join(current_directory, "src", "Assets")
