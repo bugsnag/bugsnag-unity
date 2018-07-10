@@ -148,6 +148,9 @@ task :create_cocoa_plugins, [:path] do |task, args|
 
       project.save
       sh "xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "build", "build"
+      if project_name == "bugsnag-ios"
+        sh "xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "-sdk", "iphonesimulator", "build", "build"
+      end
     end
   end
 
@@ -161,7 +164,11 @@ task :create_cocoa_plugins, [:path] do |task, args|
   cd build_dir do
     cd "build" do
       cp_r File.join("Release", "bugsnag-osx.bundle"), osx_dir
-      cp File.join("Release-iphoneos", "libbugsnag-ios.a"), ios_dir
+
+      device_library = File.join("Release-iphoneos", "libbugsnag-ios.a")
+      simulator_library = File.join("Release-iphonesimulator", "libbugsnag-ios.a")
+      output_library = File.join(ios_dir, "libbugsnag-ios.a")
+      sh "lipo", "-create", device_library, simulator_library, "-output", output_library
     end
   end
 end
