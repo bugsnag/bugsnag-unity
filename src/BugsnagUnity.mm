@@ -23,10 +23,10 @@ extern "C" {
 
   void *createBreadcrumbs(const void *configuration);
   void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
-  void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
+  void retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
 
-  void retrieveAppData(void (*callback)(const char *key, const char *value));
-  void retrieveDeviceData(void (*callback)(const char *key, const char *value));
+  void retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
+  void retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
 }
 
 void *createConfiguration(char *apiKey) {
@@ -121,7 +121,7 @@ void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metada
   }];
 }
 
-void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size)) {
+void retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size)) {
   NSArray *crumbs = [((__bridge BugsnagBreadcrumbs *) breadcrumbs) arrayValue];
   [crumbs enumerateObjectsUsingBlock:^(id crumb, NSUInteger index, BOOL *stop){
     const char *name = [[crumb valueForKey: @"name"] UTF8String];
@@ -142,28 +142,28 @@ void retrieveBreadcrumbs(const void *breadcrumbs, void (*breadcrumb)(const char 
       c_values[i] = [[values objectAtIndex: i] UTF8String];
     }
 
-    breadcrumb(name, timestamp, type, c_keys, count, c_values, count);
+    breadcrumb(managedBreadcrumbs, name, timestamp, type, c_keys, count, c_values, count);
   }];
 }
 
-void retrieveAppData(void (*callback)(const char *key, const char *value)) {
+void retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
-  callback("bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
-  callback("id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
-  callback("type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
-  callback("version", [sysInfo[@BSG_KSSystemField_BundleShortVersion] UTF8String]);
+  callback(appData, "bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
+  callback(appData, "id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
+  callback(appData, "type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
+  callback(appData, "version", [sysInfo[@BSG_KSSystemField_BundleShortVersion] UTF8String]);
 }
 
-void retrieveDeviceData(void (*callback)(const char *key, const char *value)) {
+void retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
-  callback("jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
-  callback("locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
+  callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
+  callback(deviceData, "locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
   // callback("manufacturer", sysInfo[@"Apple"]);//does this exist?
-  callback("manufacturer", "Apple");//does this exist?
-  callback("model", [sysInfo[@BSG_KSSystemField_Machine] UTF8String]);
-  callback("modelNumber", [sysInfo[@BSG_KSSystemField_Model] UTF8String]);
-  callback("osName", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
-  callback("osVersion", [sysInfo[@BSG_KSSystemField_SystemVersion] UTF8String]);
+  callback(deviceData, "manufacturer", "Apple");//does this exist?
+  callback(deviceData, "model", [sysInfo[@BSG_KSSystemField_Machine] UTF8String]);
+  callback(deviceData, "modelNumber", [sysInfo[@BSG_KSSystemField_Model] UTF8String]);
+  callback(deviceData, "osName", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
+  callback(deviceData, "osVersion", [sysInfo[@BSG_KSSystemField_SystemVersion] UTF8String]);
 }

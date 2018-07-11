@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using AOT;
 using UnityEngine;
 
 namespace Bugsnag.Unity.Payload
@@ -75,22 +76,50 @@ namespace Bugsnag.Unity.Payload
   class MacOsDevice : Device
   {
     [DllImport("bugsnag-osx", EntryPoint = "retrieveDeviceData")]
-    static extern void RetrieveAppData(Action<string, string> populate);
+    static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
     
     internal MacOsDevice()
     {
-      RetrieveAppData((key, value) => this.AddToPayload(key, value));      
+      var handle = GCHandle.Alloc(this);
+
+      RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
+
+      handle.Free();
+    }
+
+    [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
+    static void PopulateDeviceData(IntPtr instance, string key, string value)
+    {
+      var handle = GCHandle.FromIntPtr(instance);
+      if (handle.Target is MacOsDevice app)
+      {
+        app.AddToPayload(key, value);
+      }
     }
   }
 
   class iOSDevice : Device
   {
     [DllImport("__Internal", EntryPoint = "retrieveDeviceData")]
-    static extern void RetrieveAppData(Action<string, string> populate);
+    static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
     internal iOSDevice()
     {
-      RetrieveAppData((key, value) => this.AddToPayload(key, value));      
+      var handle = GCHandle.Alloc(this);
+
+      RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
+
+      handle.Free();
+    }
+
+    [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
+    static void PopulateDeviceData(IntPtr instance, string key, string value)
+    {
+      var handle = GCHandle.FromIntPtr(instance);
+      if (handle.Target is iOSDevice app)
+      {
+        app.AddToPayload(key, value);
+      }
     }
   }
 }

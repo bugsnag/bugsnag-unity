@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using AOT;
 using UnityEngine;
 
 namespace Bugsnag.Unity.Payload
@@ -54,22 +55,50 @@ namespace Bugsnag.Unity.Payload
   class MacOsApp : App
   {
     [DllImport("bugsnag-osx", EntryPoint = "retrieveAppData")]
-    static extern void RetrieveAppData(Action<string, string> populate);
-    
+    static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
+
     internal MacOsApp(IConfiguration configuration) : base(configuration)
     {
-      RetrieveAppData((key, value) => this.AddToPayload(key, value));
+      var handle = GCHandle.Alloc(this);
+
+      RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
+
+      handle.Free();
+    }
+
+    [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
+    static void PopulateAppData(IntPtr instance, string key, string value)
+    {
+      var handle = GCHandle.FromIntPtr(instance);
+      if (handle.Target is MacOsApp app)
+      {
+        app.AddToPayload(key, value);
+      }
     }
   }
 
   class iOSApp : App
   {
     [DllImport("__Internal", EntryPoint = "retrieveAppData")]
-    static extern void RetrieveAppData(Action<string, string> populate);
+    static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
     internal iOSApp(IConfiguration configuration) : base(configuration)
     {
-      RetrieveAppData((key, value) => this.AddToPayload(key, value));
+      var handle = GCHandle.Alloc(this);
+
+      RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
+
+      handle.Free();
+    }
+
+    [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
+    static void PopulateAppData(IntPtr instance, string key, string value)
+    {
+      var handle = GCHandle.FromIntPtr(instance);
+      if (handle.Target is iOSApp app)
+      {
+        app.AddToPayload(key, value);
+      }
     }
   }
 }
