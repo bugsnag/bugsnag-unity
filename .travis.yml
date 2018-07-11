@@ -27,3 +27,12 @@ install:
   - sudo installer -dumplog -package Unity.pkg -target /
   - bundle install
 script: bundle exec rake
+deploy:
+  provider: releases
+  file: Bugsnag.unitypackage
+  skip_cleanup: true
+  on:
+    tags: true
+  draft: true
+  api_key:
+    secure: "Hnp4rVSaw4oagcNY0YLkU020VsKyrHlRul5NzLpg42xQhTqqscpRkufw4S3c9wYOA+LIHG4x2SR+Ibgw7/W7+Oftqqz6Ag/ePSYcjO3jcBVabur1lgoyFV+YoLXf4ODJ5yY7oefRiHNG0k5MD9ZWulXIA855+/v/jcgwG9onNJ0="
