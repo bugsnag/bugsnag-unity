@@ -1,3 +1,4 @@
+require "open3"
 require "xcodeproj"
 
 $UNITY = ['/Applications/Unity/Unity.app/Contents/MacOS/Unity', 'C:\Program Files\Unity\Editor\Unity.exe'].find do |unity|
@@ -140,9 +141,9 @@ task :create_cocoa_plugins, [:path] do |task, args|
       end
 
       project.save
-      sh "xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "build", "build"
+      Open3.pipeline(["xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "build", "build"], ["xcpretty"])
       if project_name == "bugsnag-ios"
-        sh "xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "-sdk", "iphonesimulator", "build", "build"
+        Open3.pipeline(["xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "-sdk", "iphonesimulator", "build", "build"], ["xcpretty"])
       end
     end
   end
