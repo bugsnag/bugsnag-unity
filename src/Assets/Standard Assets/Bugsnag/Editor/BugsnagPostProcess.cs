@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEditor.iOS.Xcode;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -60,6 +61,14 @@ public class BugsnagBuilder : MonoBehaviour {
         Regex fileMatcher = getFileMatcher ();
 
         var scriptUUID = getUUIDForPbxproj ();
+
+        var projectPath = PBXProject.GetPBXProjectPath(path);
+        var project = new PBXProject();
+        project.ReadFromFile(projectPath);
+        var targetName = PBXProject.GetUnityTargetName();
+
+        project.AddBuildProperty(project.TargetGuidByName(targetName), "OTHER_LDFLAGS", "-ObjC");
+        project.WriteToFile(projectPath);
 
         var xcodeProjectPath = Path.Combine (path, "Unity-iPhone.xcodeproj");
         var pbxPath = Path.Combine (xcodeProjectPath, "project.pbxproj");
