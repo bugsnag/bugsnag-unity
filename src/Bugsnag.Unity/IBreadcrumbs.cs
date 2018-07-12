@@ -134,16 +134,19 @@ namespace Bugsnag.Unity
     /// <param name="breadcrumb"></param>
     public void Leave(Breadcrumb breadcrumb)
     {
-      using (var metadata = new AndroidJavaObject("java.util.HashMap"))
-      using (var type = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType"))
-      using (var breadcrumbType = type.GetStatic<AndroidJavaObject>(breadcrumb.Type.ToUpperInvariant()))
+      if (breadcrumb != null)
       {
-        foreach (var item in breadcrumb.Metadata)
+        using (var metadata = new AndroidJavaObject("java.util.HashMap"))
+        using (var type = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType"))
+        using (var breadcrumbType = type.GetStatic<AndroidJavaObject>(breadcrumb.Type.ToUpperInvariant()))
         {
-          metadata.Call<string>("put", item.Key, item.Value);
-        }
+          foreach (var item in breadcrumb.Metadata)
+          {
+            metadata.Call<string>("put", item.Key, item.Value);
+          }
 
-        Client.Call("leaveBreadcrumb", breadcrumb.Name, breadcrumbType, metadata);
+          Client.Call("leaveBreadcrumb", breadcrumb.Name, breadcrumbType, metadata);
+        }
       }
     }
 
@@ -239,17 +242,20 @@ namespace Bugsnag.Unity
 
     public void Leave(Breadcrumb breadcrumb)
     {
-      var index = 0;
-      var metadata = new string[breadcrumb.Metadata.Count * 2];
-      
-      foreach (var data in breadcrumb.Metadata)
+      if (breadcrumb != null)
       {
-        metadata[index] = data.Key;
-        metadata[index + 1] = data.Value;
-        index += 2;
+        var index = 0;
+        var metadata = new string[breadcrumb.Metadata.Count * 2];
+
+        foreach (var data in breadcrumb.Metadata)
+        {
+          metadata[index] = data.Key;
+          metadata[index + 1] = data.Value;
+          index += 2;
+        }
+
+        AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
       }
-      
-      AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
     }
 
     public Breadcrumb[] Retrieve()
@@ -316,17 +322,20 @@ namespace Bugsnag.Unity
 
     public void Leave(Breadcrumb breadcrumb)
     {
-      var index = 0;
-      var metadata = new string[breadcrumb.Metadata.Count * 2];
-
-      foreach (var data in breadcrumb.Metadata)
+      if (breadcrumb != null)
       {
-        metadata[index] = data.Key;
-        metadata[index + 1] = data.Value;
-        index += 2;
-      }
+        var index = 0;
+        var metadata = new string[breadcrumb.Metadata.Count * 2];
 
-      AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+        foreach (var data in breadcrumb.Metadata)
+        {
+          metadata[index] = data.Key;
+          metadata[index + 1] = data.Value;
+          index += 2;
+        }
+
+        AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+      }
     }
 
     public Breadcrumb[] Retrieve()
