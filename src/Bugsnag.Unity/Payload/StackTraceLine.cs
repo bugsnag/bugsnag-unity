@@ -16,13 +16,15 @@ namespace Bugsnag.Unity.Payload
 
     private readonly string _originalStackTrace;
 
-    private static string[] StringSplit { get; } = new string[] { Environment.NewLine };
+    private static string[] StringSplit { get; } = { Environment.NewLine };
 
     /// <summary>
     /// Looks for lines that have matching parentheses. This indicates that
     /// the line contains a method call.
     /// </summary>
-    private static Regex StackTraceLineRegex { get; } = new Regex(@"[(].*[)]");
+    private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[\S]* \([.]*\))");
+
+    private static Regex StackTraceFileAndLineNumberRegex { get; } = new Regex(@"\(at (?<file>.*):(?<linenumber>\d*)\)?");
 
     internal StackTrace(string stackTrace)
     {
@@ -40,9 +42,27 @@ namespace Bugsnag.Unity.Payload
       {
         foreach (var item in _originalStackTrace.Split(StringSplit, StringSplitOptions.RemoveEmptyEntries))
         {
-          if (StackTraceLineRegex.IsMatch(item))
+          var match = StackTraceLineRegex.Match(item);
+
+          if (match.Success)
           {
-            yield return new StackTraceLine(null, 0, item, false);
+            var method = match.Groups["method"].Value;
+            string file = null;
+            int? lineNumber = null;
+
+            match = StackTraceFileAndLineNumberRegex.Match(item);
+
+            if (match.Success)
+            {
+              file = match.Groups["file"].Value;
+
+              if (int.TryParse(match.Groups["linenumber"].Value, out var line))
+              {
+                lineNumber = line;
+              }
+            }
+
+            yield return new StackTraceLine(file, lineNumber, method, false);
           }
         }
       }
@@ -113,10 +133,13 @@ namespace Bugsnag.Unity.Payload
       return new StackTraceLine(file, lineNumber, methodName, inProject);
     }
 
-    internal StackTraceLine(string file, int lineNumber, string methodName, bool inProject)
+    internal StackTraceLine(string file, int? lineNumber, string methodName, bool inProject)
     {
       this.AddToPayload("file", file);
-      this.AddToPayload("lineNumber", lineNumber);
+      if (lineNumber.HasValue)
+      {
+        this.AddToPayload("lineNumber", lineNumber.Value);
+      }
       this.AddToPayload("method", methodName);
       this.AddToPayload("inProject", inProject);
     }
