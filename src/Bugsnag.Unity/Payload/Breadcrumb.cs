@@ -23,7 +23,7 @@ namespace Bugsnag.Unity.Payload
 
       if (report.Event.OriginalSeverity != null)
       {
-        metadata["severity"] = report.Event.OriginalSeverity.ToString();
+        metadata["severity"] = report.Event.OriginalSeverity.Severity.ToString();
       }
 
       return new Breadcrumb(name, type, metadata);
