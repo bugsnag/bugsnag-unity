@@ -1,5 +1,10 @@
 require "open3"
 require "xcodeproj"
+require "rbconfig"
+
+HOST_OS = RbConfig::CONFIG['host_os']
+def is_mac?; HOST_OS =~ /darwin/i; end
+def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
 
 $UNITY = ['/Applications/Unity/Unity.app/Contents/MacOS/Unity', 'C:\Program Files\Unity\Editor\Unity.exe'].find do |unity|
   File.exists? unity
@@ -30,7 +35,9 @@ task :build do
 
   # Create the individual platform plugins
   Rake::Task[:create_webgl_plugin].invoke(assets_path)
-  Rake::Task[:create_cocoa_plugins].invoke(assets_path)
+  if is_mac?
+    Rake::Task[:create_cocoa_plugins].invoke(assets_path)
+  end
   Rake::Task[:create_android_plugin].invoke(assets_path)
   Rake::Task[:create_csharp_plugin].invoke(assets_path)
 
@@ -164,7 +171,11 @@ task :create_cocoa_plugins, [:path] do |task, args|
 end
 
 task :create_csharp_plugin, [:path] do |task, args|
-  sh "./build.sh"
+  if is_windows?
+    sh "powershell", "-File", "build.ps1"
+  else
+    sh "./build.sh"
+  end
   dll = File.join("src", "Bugsnag.Unity", "bin", "Release", "net35", "Bugsnag.Unity.dll")
   cp File.realpath(dll), args[:path]
 end
