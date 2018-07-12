@@ -172,7 +172,7 @@ end
 
 task :create_csharp_plugin, [:path] do |task, args|
   if is_windows?
-    sh "powershell", "-File", "build.ps1", "-ScriptArgs", "--output=\"#{args[:path]}\""
+    sh "powershell", "-File", "build.ps1"
   else
     sh "./build.sh"
   end
