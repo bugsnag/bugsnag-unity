@@ -8,11 +8,12 @@ namespace Bugsnag.Unity.Payload
 
     internal HandledState OriginalSeverity { get; }
 
-    internal Event(Metadata metadata, App app, Device device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
+    internal Event(string context, Metadata metadata, App app, Device device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
     {
       OriginalSeverity = handledState;
       Metadata = metadata;
       HandledState = handledState;
+      this.AddToPayload("context", context);
       this.AddToPayload("payloadVersion", 4);
       this.AddToPayload("exceptions", exceptions);
       this.AddToPayload("app", app);

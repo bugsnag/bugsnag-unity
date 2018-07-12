@@ -12,6 +12,23 @@ namespace Bugsnag.Unity.Payload
     private const string UndefinedName = "Breadcrumb";
     private const int MaximumMetadataCharacterCount = 1024;
 
+    internal static Breadcrumb FromReport(Report report)
+    {
+      var name = "error";
+      var type = BreadcrumbType.Error;
+      var metadata = new Dictionary<string, string>
+      {
+        { "context", report.Event.Context },
+      };
+
+      if (report.Event.OriginalSeverity != null)
+      {
+        metadata["severity"] = report.Event.OriginalSeverity.ToString();
+      }
+
+      return new Breadcrumb(name, type, metadata);
+    }
+
     /// <summary>
     /// Used to construct a breadcrumb from the native data obtained from a
     /// native notifier if present.

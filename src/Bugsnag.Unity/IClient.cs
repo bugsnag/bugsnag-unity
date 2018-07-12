@@ -8,6 +8,8 @@ using UnityEngine.SceneManagement;
 
 namespace Bugsnag.Unity
 {
+  public delegate void Middleware(Report report);
+
   public interface IClient
   {
     IConfiguration Configuration { get; }
@@ -47,10 +49,15 @@ namespace Bugsnag.Unity
 
     protected abstract Metadata GenerateMetadata();
 
+    List<Middleware> Middleware { get; }
+
+    object MiddlewareLock { get; } = new object();
+
     protected BaseClient(IConfiguration configuration)
     {
       Configuration = configuration;
       User = new User();
+      Middleware = new List<Middleware>();
       Metadata = new Metadata();
       UniqueCounter = new UniqueLogThrottle(configuration);
       LogTypeCounter = new MaximumLogTypeCounter(configuration);
@@ -97,10 +104,10 @@ namespace Bugsnag.Unity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var @event = new Payload.Event(GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+            var @event = new Payload.Event(Configuration.Context, GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
             var report = new Report(Configuration, @event);
 
-            Send(report);
+            Notify(report, null);
           }
         }
       }
@@ -126,11 +133,80 @@ namespace Bugsnag.Unity
         if (e.ExceptionObject is System.Exception exception)
         {
           // this will always be a handled exception?
-          var @event = new Payload.Event(GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+          var @event = new Payload.Event(Configuration.Context, GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
           var report = new Report(Configuration, @event);
 
-          Send(report);
+          Notify(report, null);
         }
+      }
+    }
+
+    public void BeforeNotify(Middleware middleware)
+    {
+      lock (MiddlewareLock)
+      {
+        Middleware.Add(middleware);
+      }
+    }
+
+    public void Notify(System.Exception exception)
+    {
+      Notify(exception, null);
+    }
+
+    public void Notify(System.Exception exception, Middleware callback)
+    {
+      Notify(exception, HandledState.ForHandledException(), callback);
+    }
+
+    public void Notify(System.Exception exception, Severity severity)
+    {
+      Notify(exception, severity, null);
+    }
+
+    public void Notify(System.Exception exception, Severity severity, Middleware callback)
+    {
+      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback);
+    }
+
+    void Notify(System.Exception exception, HandledState handledState, Middleware callback)
+    {
+      var @event = new Payload.Event(Configuration.Context, GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new Exceptions(exception).ToArray(), handledState, Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+      var report = new Report(Configuration, @event);
+      Notify(report, callback);
+    }
+
+    void Notify(Report report, Middleware callback)
+    {
+      lock (MiddlewareLock)
+      {
+        foreach (var middleware in Middleware)
+        {
+          try
+          {
+            middleware(report);
+          }
+          catch (System.Exception)
+          {
+          }
+        }
+      }
+
+      try
+      {
+        callback?.Invoke(report);
+      }
+      catch (System.Exception)
+      {
+      }
+
+      if (!report.Ignored)
+      {
+        Send(report);
+
+        Breadcrumbs.Leave(Breadcrumb.FromReport(report));
+
+        SessionTracking.CurrentSession?.AddException(report);
       }
     }
   }
