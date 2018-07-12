@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Bugsnag.Unity.Payload
 {
-  class Report : Dictionary<string, object>, IPayload
+  public class Report : Dictionary<string, object>, IPayload
   {
     IConfiguration Configuration { get; }
 
@@ -11,19 +11,27 @@ namespace Bugsnag.Unity.Payload
 
     public KeyValuePair<string, string>[] Headers { get; }
 
+    public bool Ignored { get; private set; }
+
     internal Report(IConfiguration configuration, Event @event)
     {
+      Ignored = false;
       Configuration = configuration;
-      Headers = new KeyValuePair<string, string>[] {
+      Headers = new[] {
         new KeyValuePair<string, string>("Bugsnag-Api-Key", Configuration.ApiKey),
         new KeyValuePair<string, string>("Bugsnag-Payload-Version", Configuration.PayloadVersion),
       };
       Event = @event;
       this.AddToPayload("apiKey", configuration.ApiKey);
       this.AddToPayload("notifier", NotifierInfo.Instance);
-      this.AddToPayload("events", new Event[] { Event });
+      this.AddToPayload("events", new[] { Event });
     }
 
-    internal Event Event { get; }
+    public Event Event { get; }
+
+    public void Ignore()
+    {
+      Ignored = true;
+    }
   }
 }

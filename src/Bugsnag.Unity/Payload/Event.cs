@@ -2,12 +2,15 @@
 
 namespace Bugsnag.Unity.Payload
 {
-  class Event : Dictionary<string, object>
+  public class Event : Dictionary<string, object>
   {
     private HandledState _handledState;
 
+    internal HandledState OriginalSeverity { get; }
+
     internal Event(Metadata metadata, App app, Device device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
     {
+      OriginalSeverity = handledState;
       Metadata = metadata;
       HandledState = handledState;
       this.AddToPayload("payloadVersion", 4);
@@ -20,9 +23,9 @@ namespace Bugsnag.Unity.Payload
       this.AddToPayload("user", user);
     }
 
-    internal Metadata Metadata { get; }
+    public Metadata Metadata { get; }
 
-    internal bool IsHandled
+    public bool IsHandled
     {
       get
       {
@@ -35,28 +38,22 @@ namespace Bugsnag.Unity.Payload
       }
     }
 
-    internal string Context
+    public string Context
     {
-      get { return this.Get("context") as string; }
-      set { this.AddToPayload("context", value); }
+      get => this.Get("context") as string;
+      set => this.AddToPayload("context", value);
     }
 
-    internal string GroupingHash
+    public string GroupingHash
     {
-      get { return this.Get("groupingHash") as string; }
-      set { this.AddToPayload("groupingHash", value); }
+      get => this.Get("groupingHash") as string;
+      set => this.AddToPayload("groupingHash", value);
     }
 
-    internal Severity Severity
+    public Severity Severity
     {
-      set
-      {
-        HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
-      }
-      get
-      {
-        return _handledState.Severity;
-      }
+      set => HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
+      get => _handledState.Severity;
     }
 
     private HandledState HandledState
