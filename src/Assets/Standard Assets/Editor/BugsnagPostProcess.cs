@@ -11,26 +11,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 public class BugsnagBuilder : MonoBehaviour {
-
-    // We need to enable ARC on all of the Bugsnag files, this is a fairly simple find and replace:
-    //
-    // D8A1C700dE80637F000160D4 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C700dE80637F100160D4 /* Bugsnag.m */; };
-    // D8A1C700dE80637F000160D4 /* Bugsnag.m in Sources */ = {isa = PBXBuildFile; fileRef = D8A1C700dE80637F100160D4 /* Bugsnag.m */; settings = {COMPILER_FLAGS = "-fobjc-arc"; }; };
-    //
-    // We also need to disable ARC on KSZombie.m using -fno-objc-arc
-    static string[] BUGSNAG_FILES = {
-        "Bugsnag.m",
-        "BugsnagConfiguration.m",
-        "BugsnagCrashReport.m",
-        "BugsnagIosNotifier.m",
-        "BugsnagUnity.mm",
-        "BugsnagMetaData.m",
-        "BugsnagNotifier.m",
-        "BugsnagSink.m",
-        "KSZombie.m"
-    };
-    static Regex _matcher = null;
-
     // Thanks to https://gist.github.com/tenpn/f8da1b7df7352a1d50ff for inspiration for this code.
     [PostProcessBuild(1400)]
     public static void OnPostProcessBuild(BuildTarget target, string path)
@@ -57,9 +37,6 @@ public class BugsnagBuilder : MonoBehaviour {
         return;
     }
 #endif
-
-        Regex fileMatcher = getFileMatcher ();
-
         var scriptUUID = getUUIDForPbxproj ();
 
         var projectPath = PBXProject.GetPBXProjectPath(path);
@@ -87,22 +64,8 @@ public class BugsnagBuilder : MonoBehaviour {
 
 
         foreach (var line in xcodeProjectLines) {
-            // Enable / Disable ARC where required
-            if (fileMatcher.IsMatch (line)) {
-                var index = line.LastIndexOf("}");
-                var newLine = "";
-                // Disable ARC for KSZombie.m only
-                if (line.Contains("KSZombie.m")) {
-                    newLine = line.Substring (0, index) + "settings = {COMPILER_FLAGS = \"-fno-objc-arc\"; }; " + line.Substring(index);
-                } else {
-                    newLine = line.Substring (0, index) + "settings = {COMPILER_FLAGS = \"-fobjc-arc\"; }; " + line.Substring(index);
-                }
-
-
-                sb.AppendLine(newLine);
-
             // Enable objective C exceptions
-            } else if (line.Contains("GCC_ENABLE_OBJC_EXCEPTIONS") ||
+            if (line.Contains("GCC_ENABLE_OBJC_EXCEPTIONS") ||
                        line.Contains ("GCC_ENABLE_CPP_EXCEPTIONS")) {
                 var newLine = line.Replace("NO", "YES");
                 Debug.Log(line);
@@ -145,26 +108,5 @@ public class BugsnagBuilder : MonoBehaviour {
 
     private static string getUUIDForPbxproj() {
         return System.Guid.NewGuid ().ToString ("N").Substring (0, 24).ToUpper ();
-    }
-
-    // Regex to try and find lines identifying the bugsnag source files in the Xcode project.
-    private static Regex getFileMatcher() {
-
-        if (_matcher == null) {
-            var sb = new StringBuilder();
-            sb.Append ("( ");
-
-            for (int i = 0; i < BUGSNAG_FILES.Length; i++) {
-                if (i > 0) {
-                    sb.Append (" | ");
-                }
-                sb.Append(Regex.Escape(BUGSNAG_FILES[i]));
-            }
-
-            sb.Append (" )");
-
-            _matcher = new Regex("isa = PBXBuildFile.*" + sb.ToString() + "");
-        }
-        return _matcher;
     }
 }
