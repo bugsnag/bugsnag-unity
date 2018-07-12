@@ -132,6 +132,11 @@ task :create_cocoa_plugins, [:path] do |task, args|
       end
 
       project.build_configurations.each do |build_configuration|
+        if project_name == "bugsnag-ios"
+          build_configuration.build_settings["ONLY_ACTIVE_ARCH"] = "NO"
+          build_configuration.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = "9.0"
+          build_configuration.build_settings["VALID_ARCHS"] = ["x86_64", "i386", "armv7", "arm64"]
+        end
         case build_configuration.type
         when :debug
           build_configuration.build_settings["OTHER_CFLAGS"] = "-fembed-bitcode-marker"
