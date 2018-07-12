@@ -77,7 +77,6 @@ namespace Bugsnag.Unity
     {
       Configuration.Context = scene.name;
       Breadcrumbs.Leave("Scene Loaded", BreadcrumbType.State, new Dictionary<string, string> { { "sceneName", scene.name } });
-      Application.logMessageReceivedThreaded += Notify;
     }
 
     /// <summary>
