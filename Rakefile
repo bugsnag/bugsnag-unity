@@ -120,7 +120,7 @@ task :create_cocoa_plugins, [:path] do |task, args|
 
       case project_name
       when "bugsnag-ios"
-        target = project.new_target(:static_library, "bugsnag-ios", :ios)
+        target = project.new_target(:static_library, "bugsnag-ios", :ios, "9.0")
       when "bugsnag-osx"
         target = project.new_target(:bundle, "bugsnag-osx", :osx, "10.11")
       end
@@ -139,6 +139,10 @@ task :create_cocoa_plugins, [:path] do |task, args|
       end
 
       project.build_configurations.each do |build_configuration|
+        if project_name == "bugsnag-ios"
+          build_configuration.build_settings["ONLY_ACTIVE_ARCH"] = "NO"
+          build_configuration.build_settings["VALID_ARCHS"] = ["x86_64", "i386", "armv7", "arm64"]
+        end
         case build_configuration.type
         when :debug
           build_configuration.build_settings["OTHER_CFLAGS"] = "-fembed-bitcode-marker"
