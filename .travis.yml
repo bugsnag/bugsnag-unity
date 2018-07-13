@@ -33,6 +33,7 @@ deploy:
     secure: gSy4ckptDBnexHVmlSiSukVMu3VmaTAwGwuR6HzMgw2qSPuZ76A9g1ta+gc6bpaSyodwtl4BRwDB9QQtj5qmGdWxWK6xHQ9FQXfksU8p8fuhactkv78igFHmdXg1Hih+0Qep2Kl5vOZ4rBvPMT8VjidYu3VYqBgEL87atTBCTG4=
   file: Bugsnag.unitypackage
   draft: true
+  skip_cleanup: true
   on:
     tags: true
     repo: bugsnag/bugsnag-unity
