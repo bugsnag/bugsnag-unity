@@ -18,6 +18,7 @@ namespace Bugsnag.Unity
         {
           switch (Application.platform)
           {
+            case RuntimePlatform.tvOS:
             case RuntimePlatform.IPhonePlayer:
               Client = new iOSClient(new iOSConfiguration(apiKey));
               break;
