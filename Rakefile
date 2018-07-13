@@ -11,7 +11,7 @@ $UNITY = ['/Applications/Unity/Unity.app/Contents/MacOS/Unity', 'C:\Program File
 end
 
 def unity(*cmd)
-  cmd = cmd.unshift($UNITY, "-batchmode", "-nographics", "-logFile", "unity.log", "-quit")
+  cmd = cmd.unshift($UNITY, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit")
   sh *cmd do |ok, res|
     if !ok
       sh "cat", "unity.log"
