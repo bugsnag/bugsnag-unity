@@ -210,10 +210,10 @@ namespace Bugsnag.Unity
     [DllImport("bugsnag-osx", EntryPoint = "addBreadcrumb")]
     static extern void AddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
 
-    delegate void BreadcrumbInformation(string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)]string[] keys, long keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 6)]string[] values, long valuesSize);
+    delegate void BreadcrumbInformation(IntPtr instance, string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)]string[] keys, long keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 7)]string[] values, long valuesSize);
     
     [DllImport("bugsnag-osx", EntryPoint = "retrieveBreadcrumbs")]
-    static extern void RetrieveBreadcrumbs(IntPtr breadcrumbs, BreadcrumbInformation visitor);
+    static extern void RetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
     
     internal MacOsBreadcrumbs(MacOSConfiguration configuration)
     {
@@ -261,22 +261,32 @@ namespace Bugsnag.Unity
     public Breadcrumb[] Retrieve()
     {
       var breadcrumbs = new List<Breadcrumb>();
-      
-      RetrieveBreadcrumbs(NativeBreadcrumbs,
-        (name, timestamp, type, keys, keysSize, values, valuesSize) =>
-        {
-          var metadata = new Dictionary<string, string>();
 
-          for (var i = 0; i < keys.Length; i++)
-          {
-            metadata.Add(keys[i], values[i]);
-          }
-                    
-          breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
-        }
-      );
+      var handle = GCHandle.Alloc(breadcrumbs);
+
+      RetrieveBreadcrumbs(NativeBreadcrumbs, GCHandle.ToIntPtr(handle), PopulateBreadcrumb);
+
+      handle.Free();
 
       return breadcrumbs.ToArray();
+    }
+
+    [MonoPInvokeCallback(typeof(BreadcrumbInformation))]
+    static void PopulateBreadcrumb(IntPtr instance, string name, string timestamp, string type, string[] keys, long keysSize, string[] values, long valuesSize)
+      //static void PopulateBreadcrumb(IntPtr instance, string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)]string[] keys, long keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 7)]string[] values, long valuesSize)
+    {
+      var handle = GCHandle.FromIntPtr(instance);
+      if (handle.Target is List<Breadcrumb> breadcrumbs)
+      {
+        var metadata = new Dictionary<string, string>();
+
+        for (var i = 0; i < keys.Length; i++)
+        {
+          metadata.Add(keys[i], values[i]);
+        }
+
+        breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
+      }
     }
   }
 
