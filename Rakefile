@@ -13,8 +13,8 @@ end
 def unity(*cmd)
   cmd = cmd.unshift($UNITY, "-batchmode", "-nographics", "-logFile", "unity.log", "-quit")
   sh *cmd do |ok, res|
+    sh "cat", "unity.log"
     if !ok
-      sh "cat", "unity.log"
       raise "unity error"
     end
   end
