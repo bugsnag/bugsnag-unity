@@ -13,8 +13,8 @@ end
 def unity(*cmd)
   cmd = cmd.unshift($UNITY, "-batchmode", "-nographics", "-logFile", "unity.log", "-quit")
   sh *cmd do |ok, res|
-    sh "cat", "unity.log"
     if !ok
+      sh "cat", "unity.log"
       raise "unity error"
     end
   end
@@ -43,7 +43,6 @@ task :build do
 
   package_output = File.join(current_directory, "Bugsnag.unitypackage")
   rm_f package_output
-  sh "git", "clean", "-dxn", "unity" # see what files exist in the package prior to generation
   unity "-projectpath", project_path, "-exportpackage", "Assets", package_output
 end
 
