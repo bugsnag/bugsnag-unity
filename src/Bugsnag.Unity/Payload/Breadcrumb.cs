@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Bugsnag.Unity.Payload
 {
@@ -14,19 +15,27 @@ namespace Bugsnag.Unity.Payload
 
     internal static Breadcrumb FromReport(Report report)
     {
-      var name = "error";
-      var type = BreadcrumbType.Error;
+      var name = "Error";
+
+      if (report.Event.OriginalSeverity != null)
+      {
+        name = report.Event.OriginalSeverity.Severity.ToString();
+      }
+
       var metadata = new Dictionary<string, string>
       {
         { "context", report.Event.Context },
       };
 
-      if (report.Event.OriginalSeverity != null)
+      if (report.Event.Exceptions != null && report.Event.Exceptions.Any())
       {
-        metadata["severity"] = report.Event.OriginalSeverity.Severity.ToString();
+        var exception = report.Event.Exceptions.First();
+
+        metadata.Add("class", exception.ErrorClass);
+        metadata.Add("message", exception.ErrorMessage);
       }
 
-      return new Breadcrumb(name, type, metadata);
+      return new Breadcrumb(name, BreadcrumbType.Error, metadata);
     }
 
     /// <summary>

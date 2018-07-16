@@ -80,7 +80,7 @@ namespace Bugsnag.Unity.Payload
   /// <summary>
   /// Represents an individual exception in the Bugsnag payload.
   /// </summary>
-  class Exception : Dictionary<string, object>
+  public class Exception : Dictionary<string, object>
   {
     internal Exception(string errorClass, string message, StackTraceLine[] stackTrace)
     {
@@ -91,9 +91,9 @@ namespace Bugsnag.Unity.Payload
 
     internal IEnumerable<StackTraceLine> StackTrace { get { return this.Get("stacktrace") as IEnumerable<StackTraceLine>; } }
 
-    internal string ErrorClass { get { return this.Get("errorClass") as string; } }
+    public string ErrorClass => this.Get("errorClass") as string;
 
-    internal string ErrorMessage { get { return this.Get("message") as string; } }
+    public string ErrorMessage => this.Get("message") as string;
 
     internal static Exception FromSystemException(System.Exception exception)
     {

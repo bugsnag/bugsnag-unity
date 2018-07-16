@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Bugsnag.Unity.Payload
 {
@@ -56,6 +57,8 @@ namespace Bugsnag.Unity.Payload
       set => HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
       get => _handledState.Severity;
     }
+
+    public Exception[] Exceptions => this.Get("exceptions") as Exception[];
 
     private HandledState HandledState
     {
