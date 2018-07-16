@@ -59,11 +59,18 @@ namespace Bugsnag.Unity.Payload
 
     internal MacOsApp(IConfiguration configuration) : base(configuration)
     {
-      var handle = GCHandle.Alloc(this);
+      GCHandle handle;
 
-      RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
+      try
+      {
+        handle = GCHandle.Alloc(this);
 
-      handle.Free();
+        RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
+      }
+      finally
+      {
+        handle.Free();
+      }
     }
 
     [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
@@ -84,11 +91,18 @@ namespace Bugsnag.Unity.Payload
 
     internal iOSApp(IConfiguration configuration) : base(configuration)
     {
-      var handle = GCHandle.Alloc(this);
+      GCHandle handle;
 
-      RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
+      try
+      {
+        handle = GCHandle.Alloc(this);
 
-      handle.Free();
+        RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
+      }
+      finally
+      {
+        handle.Free();
+      }
     }
 
     [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
