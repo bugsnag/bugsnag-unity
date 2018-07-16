@@ -19,6 +19,8 @@ extern "C" {
   void setNotifyUrl(const void *configuration, char *notifyURL);
   const char *getNotifyUrl(const void *configuration);
 
+  void setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
+
   void startBugsnagWithConfiguration(const void *configuration);
 
   void *createBreadcrumbs(const void *configuration);
@@ -75,6 +77,17 @@ void setNotifyUrl(const void *configuration, char *notifyURL) {
 
 const char *getNotifyUrl(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).notifyURL.absoluteString UTF8String];
+}
+
+void setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
+  BugsnagConfiguration *ns_configuration = (__bridge BugsnagConfiguration *)configuration;
+  NSString *tabName = [NSString stringWithUTF8String: tab];
+
+  for (size_t i = 0; i < metadataCount; i += 2) {
+    [ns_configuration.metaData addAttribute: [NSString stringWithUTF8String: metadata[i]]
+                                  withValue: [NSString stringWithUTF8String: metadata[i+1]]
+                              toTabWithName: tabName];
+  }
 }
 
 void startBugsnagWithConfiguration(const void *configuration) {

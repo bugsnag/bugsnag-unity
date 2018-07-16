@@ -266,7 +266,7 @@ namespace Bugsnag.Unity
       Delivery = new AndroidDelivery();
       Breadcrumbs = new AndroidBreadcrumbs(JavaClient);
 
-      using (var user = JavaClient.Call<AndroidJavaObject>("getUser")) 
+      using (var user = JavaClient.Call<AndroidJavaObject>("getUser"))
       {
         User.Id = user.Call<string>("getId");
         User.Name = user.Call<string>("getName");
@@ -310,10 +310,28 @@ namespace Bugsnag.Unity
     [DllImport("bugsnag-osx", EntryPoint = "startBugsnagWithConfiguration")]
     static extern void StartBugsnagWithConfiguration(IntPtr configuration);
 
+    [DllImport("bugsnag-osx", EntryPoint = "setMetadata")]
+    static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
+
     internal MacOsClient(MacOSConfiguration configuration) : base(configuration)
     {
+      var unityMetadata = UnityMetadata.Data;
+      Metadata.Add("Unity", unityMetadata);
+
+      var index = 0;
+      var metadata = new string[unityMetadata.Count * 2];
+
+      foreach (var data in unityMetadata)
+      {
+        metadata[index] = data.Key;
+        metadata[index + 1] = data.Value;
+        index += 2;
+      }
+
+      AddMetadata(configuration.NativeConfiguration, "Unity", metadata, metadata.Length);
+
       StartBugsnagWithConfiguration(configuration.NativeConfiguration);
-      
+
       Delivery = new Delivery();
       Breadcrumbs = new MacOsBreadcrumbs(configuration);
     }
@@ -343,8 +361,26 @@ namespace Bugsnag.Unity
     [DllImport("__Internal", EntryPoint = "startBugsnagWithConfiguration")]
     static extern void StartBugsnagWithConfiguration(IntPtr configuration);
 
+    [DllImport("__Internal", EntryPoint = "setMetadata")]
+    static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
+
     public iOSClient(iOSConfiguration configuration) : base(configuration)
     {
+      var unityMetadata = UnityMetadata.Data;
+      Metadata.Add("Unity", unityMetadata);
+
+      var index = 0;
+      var metadata = new string[unityMetadata.Count * 2];
+
+      foreach (var data in unityMetadata)
+      {
+        metadata[index] = data.Key;
+        metadata[index + 1] = data.Value;
+        index += 2;
+      }
+
+      AddMetadata(configuration.NativeConfiguration, "Unity", metadata, metadata.Length);
+
       StartBugsnagWithConfiguration(configuration.NativeConfiguration);
 
       Delivery = new Delivery();
