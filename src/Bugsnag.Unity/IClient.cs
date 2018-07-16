@@ -66,7 +66,6 @@ namespace Bugsnag.Unity
       // might need to do this later?
       SceneManager.sceneLoaded += SceneLoaded;
       Application.logMessageReceivedThreaded += Notify;
-      AppDomain.CurrentDomain.UnhandledException += Notify;
     }
 
     public void Send(IPayload payload)
@@ -117,27 +116,6 @@ namespace Bugsnag.Unity
           { "condition", condition },
           { "stackTrace", stackTrace },
         });
-      }
-    }
-
-    /// <summary>
-    /// Notify an unhandled exception.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void Notify(object sender, UnhandledExceptionEventArgs e)
-    {
-      // this will always be an unhandled exception
-      if (Configuration.AutoNotify)
-      {
-        if (e.ExceptionObject is System.Exception exception)
-        {
-          // this will always be a handled exception?
-          var @event = new Payload.Event(Configuration.Context, GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new Exceptions(exception).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
-          var report = new Report(Configuration, @event);
-
-          Notify(report, null);
-        }
       }
     }
 
