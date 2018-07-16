@@ -6,7 +6,6 @@ namespace Bugsnag.Unity
   class UnityMetadata
   {
     internal static Dictionary<string, string> Data => new Dictionary<string, string> {
-      { "unityException", "false" },
       { "unityVersion", Application.unityVersion },
       { "platform", Application.platform.ToString() },
       { "osLanguage", Application.systemLanguage.ToString() },
