@@ -23,6 +23,16 @@ namespace Bugsnag.Unity
     void Send(IPayload payload);
 
     Metadata Metadata { get; }
+
+    void BeforeNotify(Middleware middleware);
+
+    void Notify(System.Exception exception);
+
+    void Notify(System.Exception exception, Middleware callback);
+
+    void Notify(System.Exception exception, Severity severity);
+
+    void Notify(System.Exception exception, Severity severity, Middleware callback);
   }
 
   abstract class BaseClient : IClient
