@@ -18,48 +18,21 @@ namespace Bugsnag.Unity.Payload
   {
     internal AndroidMetadata(AndroidJavaObject client, Metadata metadata) : base(metadata)
     {
-      var appMetadata = new Dictionary<string, string>();
-
       using (var appData = client.Call<AndroidJavaObject>("getAppData"))
       using (var map = appData.Call<AndroidJavaObject>("getAppDataMetaData"))
       {
-        this.AddToPayload("app", CreateDictionaryFromJavaMap(map));
+        var app = new Dictionary<string, object>();
+        app.PopulateDictionaryFromAndroidData(map);
+        this.AddToPayload("app", app);
       }
-
-      this.AddToPayload("app", appMetadata);
 
       using (var deviceData = client.Call<AndroidJavaObject>("getDeviceData"))
       using (var map = deviceData.Call<AndroidJavaObject>("getDeviceMetaData"))
       {
-        this.AddToPayload("device", CreateDictionaryFromJavaMap(map));
+        var device = new Dictionary<string, object>();
+        device.PopulateDictionaryFromAndroidData(map);
+        this.AddToPayload("device", device);
       }
-    }
-
-    private Dictionary<string, string> CreateDictionaryFromJavaMap(AndroidJavaObject map)
-    {
-      var dictionary = new Dictionary<string, string>();
-
-      using (var set = map.Call<AndroidJavaObject>("entrySet"))
-      using (var iterator = set.Call<AndroidJavaObject>("iterator"))
-      {
-        while (iterator.Call<bool>("hasNext"))
-        {
-          using (var mapEntry = iterator.Call<AndroidJavaObject>("next"))
-          {
-            var key = mapEntry.Call<string>("getKey");
-            var value = mapEntry.Call<AndroidJavaObject>("getValue");
-
-            if (value != null)
-            {
-              // how can we handle classes that don't return useful things
-              // from toString?
-              dictionary.Add(key, value.Call<string>("toString"));
-            }
-          }
-        }
-      }
-
-      return dictionary;
     }
   }
 }

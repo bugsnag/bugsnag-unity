@@ -30,24 +30,8 @@ namespace Bugsnag.Unity.Payload
     {
       using (var appData = client.Call<AndroidJavaObject>("getAppData"))
       using (var map = appData.Call<AndroidJavaObject>("getAppData"))
-      using (var set = map.Call<AndroidJavaObject>("entrySet"))
-      using (var iterator = set.Call<AndroidJavaObject>("iterator"))
       {
-        while (iterator.Call<bool>("hasNext"))
-        {
-          using (var mapEntry = iterator.Call<AndroidJavaObject>("next"))
-          {
-            var key = mapEntry.Call<string>("getKey");
-            var value = mapEntry.Call<AndroidJavaObject>("getValue");
-
-            if (value != null)
-            {
-              // how can we handle classes that don't return useful things
-              // from toString?
-              this.AddToPayload(key, value.Call<string>("toString"));
-            }
-          }
-        }
+        this.PopulateDictionaryFromAndroidData(map);
       }
     }
   }

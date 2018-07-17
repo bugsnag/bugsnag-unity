@@ -12,7 +12,7 @@ namespace Bugsnag.Unity.Payload
     /// <param name="dictionary"></param>
     /// <param name="key"></param>
     /// <param name="value"></param>
-    internal static void AddToPayload<T>(this Dictionary<string, T> dictionary, string key, T value)
+    internal static void AddToPayload<T>(this IDictionary<string, T> dictionary, string key, T value)
     {
       if (value == null)
       {
