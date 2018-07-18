@@ -33,12 +33,12 @@ def assets_path
 end
 
 namespace :plugin do
-  namespace :clean do
-    # remove any leftover artifacts from the package generation directory
-    sh "git", "clean", "-dfx", "unity"
-  end
   namespace :build do
     task all: [:assets, :cocoa, :csharp, :android, :webgl]
+    task :clean do
+      # remove any leftover artifacts from the package generation directory
+      sh "git", "clean", "-dfx", "unity"
+    end
     task assets: [:clean] do
       cp_r File.join(current_directory, "src", "Assets"), project_path
     end
