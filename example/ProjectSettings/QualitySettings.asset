@@ -181,10 +181,8 @@ QualitySettings:
     PS4: 5
     PSM: 5
     PSP2: 2
-    Samsung TV: 2
     Standalone: 5
     Tizen: 2
-    Web: 5
     WebGL: 3
     WiiU: 5
     Windows Store Apps: 5

@@ -56,26 +56,21 @@ task :clean do
   end
 end
 
-namespace :build do
-  desc "Build and run the iOS app"
-  task :ios do
-    cd "example" do
-      sh $UNITY, "-batchmode", "-quit", "-logFile", "build.log", "-executeMethod", "NotifyButtonScript.BuildIos"
-    end
-  end
+task :build_examples do
+  # import the built bugsnag package into the sample application
+  example = File.absolute_path "example"
+  package = File.absolute_path "Bugsnag.unitypackage"
+  unity "-projectpath", example, "-importPackage", package
 
-  desc "Build and run the Android app"
-  task :android do
-    cd "example" do
-      sh $UNITY, "-batchmode", "-quit", "-logFile", "build.log", "-executeMethod", "NotifyButtonScript.BuildAndroid"
-    end
-  end
-end
+  # here we have to uncomment the lines that reference bugsnag. These are
+  # commented out so that we can import the package above and have it compile
+  # before the bugsnag references have been added.
+  bugsnag_file = File.join(example, "Assets", "Main.cs")
+  c = File.read(bugsnag_file).gsub("//", "")
+  File.write(bugsnag_file, c)
 
-task :update_example_plugins, [:package_path] do |task, args|
-  sh $UNITY, "-batchmode", "-quit", "-projectpath", "example", "-logFile", "build.log", "-importPackage", args[:package_path]
-  cd "example" do
-  end
+  unity "-projectpath", example, "-executeMethod", "Main.iOSBuild"
+  unity "-projectpath", example, "-executeMethod", "Main.AndroidBuild"
 end
 
 task :create_webgl_plugin, [:path] do |task, args|

@@ -1,7 +1,0 @@
-
-desc 'build the jar'
-task :build do
-  sh 'javac -source 1.6 -target 1.6 ExampleCrash.java'
-  sh 'jar -cvf crashy.jar *.class'
-  sh 'cp crashy.jar ../Assets/Plugins/Android'
-end
