@@ -21,47 +21,24 @@
 - You can build the app for iPhone or Android using the custom Build menu.
 
 ## Testing Changes
-A simple project can be found at [examples/Assets/Buttons.unity](https://github.com/bugsnag/bugsnag-unity/blob/master/example/Assets/Buttons.unity), which allows various crashes to be triggered by clicking buttons.
 
-## Upgrading bugsnag-cocoa/bugsnag-android
+A simple project can be found at [example](https://github.com/bugsnag/bugsnag-unity/blob/master/example), which allows various crashes to be triggered by clicking buttons.
 
-- Update the submodule
+## Building Plugin
 
-    ```
-    cd bugsnag-cocoa; git pull origin unity; cd ..
-    cd bugsnag-android; git pull origin master; cd ..
-    cd ..; git commit -am "updating notifiers"
-    ```
+The plugin can be built by running
 
-- Update the plugins in the example app
+```
+bundle install
+bundle exec rake
+```
 
-    ```
-    rake update_example_plugins
-    ```
+## Building Example
 
-- Build and test the example app
-
-    ```
-    rake build:ios
-    rake build:android
-    ```
-
-## Modifying the C# code
-
-- Make changes to src/Assets
-- Copy changes into the example app
-
-    ```
-    rake update
-    ```
-
-- Build and test the example app
-
-    ```
-    rake build:ios
-    rake build:android
-    ```
-
+```
+bundle install
+bundle exec rake example:build:all
+```
 
 ## Releasing a new version
 
