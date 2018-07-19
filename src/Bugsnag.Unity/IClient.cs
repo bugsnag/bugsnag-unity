@@ -166,6 +166,13 @@ namespace Bugsnag.Unity
 
     void Notify(Report report, Middleware callback)
     {
+      if (report.Configuration.ReleaseStage != null
+          && report.Configuration.NotifyReleaseStages != null
+          && !report.Configuration.NotifyReleaseStages.Contains(report.Configuration.ReleaseStage))
+      {
+        report.Ignore();
+      }
+
       lock (MiddlewareLock)
       {
         foreach (var middleware in Middleware)

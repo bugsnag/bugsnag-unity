@@ -5,7 +5,7 @@ namespace Bugsnag.Unity.Payload
 {
   public class Report : Dictionary<string, object>, IPayload
   {
-    IConfiguration Configuration { get; }
+    public IConfiguration Configuration { get; }
 
     public Uri Endpoint => Configuration.Endpoint;
 
