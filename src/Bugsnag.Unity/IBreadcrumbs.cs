@@ -140,9 +140,12 @@ namespace Bugsnag.Unity
         using (var type = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType"))
         using (var breadcrumbType = type.GetStatic<AndroidJavaObject>(breadcrumb.Type.ToUpperInvariant()))
         {
-          foreach (var item in breadcrumb.Metadata)
+          if (breadcrumb.Metadata != null)
           {
-            metadata.Call<string>("put", item.Key, item.Value);
+            foreach (var item in breadcrumb.Metadata)
+            {
+              metadata.Call<string>("put", item.Key, item.Value);
+            }
           }
 
           Client.Call("leaveBreadcrumb", breadcrumb.Name, breadcrumbType, metadata);
