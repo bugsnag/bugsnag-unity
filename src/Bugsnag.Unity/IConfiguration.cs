@@ -19,7 +19,7 @@ namespace Bugsnag.Unity
 
     string ReleaseStage { get; set; }
 
-    string AppVersion { get; }
+    string AppVersion { get; set; }
 
     Uri Endpoint { get; }
 
