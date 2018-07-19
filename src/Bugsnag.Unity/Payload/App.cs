@@ -43,17 +43,18 @@ namespace Bugsnag.Unity.Payload
 
     internal MacOsApp(IConfiguration configuration) : base(configuration)
     {
-      GCHandle handle;
+      GCHandle handle = GCHandle.Alloc(this);
 
       try
       {
-        handle = GCHandle.Alloc(this);
-
         RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
       }
       finally
       {
-        handle.Free();
+        if (handle != null)
+        {
+          handle.Free();
+        }
       }
     }
 
@@ -75,17 +76,18 @@ namespace Bugsnag.Unity.Payload
 
     internal iOSApp(IConfiguration configuration) : base(configuration)
     {
-      GCHandle handle;
+      GCHandle handle = GCHandle.Alloc(this);
 
       try
       {
-        handle = GCHandle.Alloc(this);
-
         RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
       }
       finally
       {
-        handle.Free();
+        if (handle != null)
+        {
+          handle.Free();
+        }
       }
     }
 
