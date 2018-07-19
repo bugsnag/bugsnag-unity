@@ -22,8 +22,8 @@ namespace Bugsnag.Unity
   class Breadcrumbs : IBreadcrumbs
   {
     private readonly object _lock = new object();
-    private readonly int _maximumBreadcrumbs;
-    private readonly Breadcrumb[] _breadcrumbs;
+    private IConfiguration Configuration { get; }
+    private Breadcrumb[] _breadcrumbs;
     private int _current;
 
     /// <summary>
@@ -32,9 +32,9 @@ namespace Bugsnag.Unity
     /// <param name="configuration"></param>
     internal Breadcrumbs(IConfiguration configuration)
     {
-      _maximumBreadcrumbs = configuration.MaximumBreadcrumbs;
+      Configuration = configuration;
       _current = 0;
-      _breadcrumbs = new Breadcrumb[_maximumBreadcrumbs];
+      _breadcrumbs = new Breadcrumb[Configuration.MaximumBreadcrumbs];
     }
 
     /// <summary>
@@ -67,8 +67,17 @@ namespace Bugsnag.Unity
       {
         lock (_lock)
         {
+          var maximumBreadcrumbs = Configuration.MaximumBreadcrumbs;
+          if (_breadcrumbs.Length != maximumBreadcrumbs)
+          {
+            Array.Resize(ref _breadcrumbs, maximumBreadcrumbs);
+            if (_current >= maximumBreadcrumbs)
+            {
+              _current = 0;
+            }
+          }
           _breadcrumbs[_current] = breadcrumb;
-          _current = (_current + 1) % _maximumBreadcrumbs;
+          _current = (_current + 1) % maximumBreadcrumbs;
         }
       }
     }
@@ -81,13 +90,13 @@ namespace Bugsnag.Unity
     {
       lock (_lock)
       {
-        var numberOfBreadcrumbs = System.Array.IndexOf(_breadcrumbs, null);
+        var numberOfBreadcrumbs = Array.IndexOf(_breadcrumbs, null);
 
-        if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _maximumBreadcrumbs;
+        if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _breadcrumbs.Length;
 
         var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
 
-        for (int i = 0; i < numberOfBreadcrumbs; i++)
+        for (var i = 0; i < numberOfBreadcrumbs; i++)
         {
           breadcrumbs[i] = _breadcrumbs[i];
         }
