@@ -66,9 +66,14 @@ namespace Bugsnag.Unity.Payload
     {
       var handle = GCHandle.Alloc(this);
 
-      RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
-
-      handle.Free();
+      try
+      {
+        RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
+      }
+      finally
+      {
+        handle.Free();
+      }
     }
 
     [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
@@ -91,9 +96,14 @@ namespace Bugsnag.Unity.Payload
     {
       var handle = GCHandle.Alloc(this);
 
-      RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
-
-      handle.Free();
+      try
+      {
+        RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
+      }
+      finally
+      {
+        handle.Free();
+      }
     }
 
     [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]

@@ -267,9 +267,14 @@ namespace Bugsnag.Unity
 
       var handle = GCHandle.Alloc(breadcrumbs);
 
-      RetrieveBreadcrumbs(NativeBreadcrumbs, GCHandle.ToIntPtr(handle), PopulateBreadcrumb);
-
-      handle.Free();
+      try
+      {
+        RetrieveBreadcrumbs(NativeBreadcrumbs, GCHandle.ToIntPtr(handle), PopulateBreadcrumb);
+      }
+      finally
+      {
+        handle.Free();
+      }
 
       return breadcrumbs.ToArray();
     }
@@ -357,9 +362,14 @@ namespace Bugsnag.Unity
 
       var handle = GCHandle.Alloc(breadcrumbs);
 
-      RetrieveBreadcrumbs(NativeBreadcrumbs, GCHandle.ToIntPtr(handle), PopulateBreadcrumb);
-
-      handle.Free();
+      try
+      {
+        RetrieveBreadcrumbs(NativeBreadcrumbs, GCHandle.ToIntPtr(handle), PopulateBreadcrumb);
+      }
+      finally
+      {
+        handle.Free();
+      }
 
       return breadcrumbs.ToArray();
     }
