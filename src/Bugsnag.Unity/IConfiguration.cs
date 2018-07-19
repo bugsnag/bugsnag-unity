@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using AOT;
 using UnityEngine;
 
 namespace Bugsnag.Unity
@@ -18,6 +19,8 @@ namespace Bugsnag.Unity
     int MaximumBreadcrumbs { get; set; }
 
     string ReleaseStage { get; set; }
+
+    string[] NotifyReleaseStages { get; set; }
 
     string AppVersion { get; set; }
 
@@ -74,6 +77,8 @@ namespace Bugsnag.Unity
     public int MaximumBreadcrumbs { get; set; }
 
     public string ReleaseStage { get; set; }
+
+    public string[] NotifyReleaseStages { get; set; }
 
     public string AppVersion { get; set; }
 
@@ -155,6 +160,18 @@ namespace Bugsnag.Unity
       get
       {
         return JavaObject.Call<string>("getReleaseStage");
+      }
+    }
+
+    public string[] NotifyReleaseStages
+    {
+      set
+      {
+        JavaObject.Call("setNotifyReleaseStages", new object[] { value });
+      }
+      get
+      {
+        return JavaObject.Call<string[]>("getNotifyReleaseStages");
       }
     }
 
@@ -246,7 +263,15 @@ namespace Bugsnag.Unity
 
     [DllImport("bugsnag-osx", EntryPoint = "getNotifyUrl")]
     static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
-    
+
+    delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)]string[] releaseStages, long count);
+
+    [DllImport("bugsnag-osx", EntryPoint = "getNotifyReleaseStages")]
+    static extern void GetNotifyReleaseStages(IntPtr configuration, IntPtr instance, NotifyReleaseStageCallback callback);
+
+    [DllImport("bugsnag-osx", EntryPoint = "setNotifyReleaseStages")]
+    static extern void SetNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int count);
+
     internal IntPtr NativeConfiguration { get; }
 
     internal MacOSConfiguration(string apiKey)
@@ -280,6 +305,38 @@ namespace Bugsnag.Unity
     {
       get => Marshal.PtrToStringAuto(GetReleaseStage(NativeConfiguration));
       set => SetReleaseStage(NativeConfiguration, value);
+    }
+
+    public string[] NotifyReleaseStages
+    {
+      get
+      {
+        var releaseStages = new List<string>();
+
+        var handle = GCHandle.Alloc(releaseStages);
+
+        try
+        {
+          GetNotifyReleaseStages(NativeConfiguration, GCHandle.ToIntPtr(handle), PopulateReleaseStages);
+        }
+        finally
+        {
+          handle.Free();
+        }
+
+        return releaseStages.ToArray();
+      }
+      set => SetNotifyReleaseStages(NativeConfiguration, value, value.Length);
+    }
+
+    [MonoPInvokeCallback(typeof(NotifyReleaseStageCallback))]
+    static void PopulateReleaseStages(IntPtr instance, string[] releaseStages, long count)
+    {
+      var handle = GCHandle.FromIntPtr(instance);
+      if (handle.Target is List<string> releaseStage)
+      {
+        releaseStage.AddRange(releaseStages);
+      }
     }
 
     public string AppVersion
@@ -342,7 +399,15 @@ namespace Bugsnag.Unity
 
     [DllImport("__Internal", EntryPoint = "getNotifyUrl")]
     static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
-    
+
+    delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)]string[] releaseStages, long count);
+
+    [DllImport("__Internal", EntryPoint = "getNotifyReleaseStages")]
+    static extern void GetNotifyReleaseStages(IntPtr configuration, IntPtr instance, NotifyReleaseStageCallback callback);
+
+    [DllImport("__Internal", EntryPoint = "setNotifyReleaseStages")]
+    static extern void SetNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int count);
+
     internal IntPtr NativeConfiguration { get; }
 
     internal iOSConfiguration(string apiKey)
@@ -376,6 +441,38 @@ namespace Bugsnag.Unity
     {
       get => Marshal.PtrToStringAuto(GetReleaseStage(NativeConfiguration));
       set => SetReleaseStage(NativeConfiguration, value);
+    }
+
+    public string[] NotifyReleaseStages
+    {
+      get
+      {
+        var releaseStages = new List<string>();
+
+        var handle = GCHandle.Alloc(releaseStages);
+
+        try
+        {
+          GetNotifyReleaseStages(NativeConfiguration, GCHandle.ToIntPtr(handle), PopulateReleaseStages);
+        }
+        finally
+        {
+          handle.Free();
+        }
+
+        return releaseStages.ToArray();
+      }
+      set => SetNotifyReleaseStages(NativeConfiguration, value, value.Length);
+    }
+
+    [MonoPInvokeCallback(typeof(NotifyReleaseStageCallback))]
+    static void PopulateReleaseStages(IntPtr instance, string[] releaseStages, long count)
+    {
+      var handle = GCHandle.FromIntPtr(instance);
+      if (handle.Target is List<string> releaseStage)
+      {
+        releaseStage.AddRange(releaseStages);
+      }
     }
 
     public string AppVersion

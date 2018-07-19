@@ -10,6 +10,9 @@ extern "C" {
   void setReleaseStage(const void *configuration, char *releaseStage);
   const char *getReleaseStage(const void *configuration);
 
+  void setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount);
+  void getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], NSUInteger size));
+
   void setAppVersion(const void *configuration, char *appVersion);
   const char *getAppVersion(const void *configuration);
 
@@ -49,6 +52,26 @@ void setReleaseStage(const void *configuration, char *releaseStage) {
 
 const char *getReleaseStage(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).releaseStage UTF8String];
+}
+
+void setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount){
+  NSMutableArray *ns_releaseStages = [NSMutableArray new];
+  for (size_t i = 0; i < releaseStagesCount; i++) {
+    [ns_releaseStages addObject: [NSString stringWithUTF8String: releaseStages[i]]];
+  }
+  ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages = ns_releaseStages;
+}
+
+void getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], NSUInteger size)) {
+  NSArray *releaseStages = ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages;
+  NSUInteger count = [releaseStages count];
+  const char **c_releaseStages = (const char **) malloc(sizeof(char *) * (count + 1));
+
+  for (NSUInteger i = 0; i < count; i++) {
+    c_releaseStages[i] = [[releaseStages objectAtIndex: i] UTF8String];
+  }
+
+  callback(managedConfiguration, c_releaseStages, count);
 }
 
 void setAppVersion(const void *configuration, char *appVersion) {

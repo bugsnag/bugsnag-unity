@@ -18,6 +18,8 @@ namespace Bugsnag.Unity.Tests
 
     public string ReleaseStage { get; set; }
 
+    public string[] NotifyReleaseStages { get; set; }
+
     public string AppVersion { get; set; }
 
     public Uri Endpoint { get; set; }
