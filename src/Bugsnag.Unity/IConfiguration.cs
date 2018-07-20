@@ -24,11 +24,11 @@ namespace Bugsnag.Unity
 
     string AppVersion { get; set; }
 
-    Uri Endpoint { get; }
+    Uri Endpoint { get; set; }
 
     string PayloadVersion { get; }
 
-    Uri SessionEndpoint { get; }
+    Uri SessionEndpoint { get; set; }
 
     string SessionPayloadVersion { get; }
 
@@ -251,7 +251,7 @@ namespace Bugsnag.Unity
 
     [DllImport("bugsnag-osx", EntryPoint = "getContext")]
     static extern IntPtr GetContext(IntPtr configuration);
-    
+
     [DllImport("bugsnag-osx", EntryPoint = "setAppVersion")]
     static extern void SetAppVersion(IntPtr configuration, string appVersion);
 
@@ -352,7 +352,7 @@ namespace Bugsnag.Unity
     }
     public string PayloadVersion { get; } = "4.0";
     public string SessionPayloadVersion { get; } = "1";
-    public Uri SessionEndpoint { get; }
+    public Uri SessionEndpoint { get; set; }
 
     public string Context
     {
@@ -488,7 +488,7 @@ namespace Bugsnag.Unity
     }
     public string PayloadVersion { get; } = "4.0";
     public string SessionPayloadVersion { get; } = "1";
-    public Uri SessionEndpoint { get; }
+    public Uri SessionEndpoint { get; set; }
 
     public string Context
     {
