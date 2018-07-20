@@ -145,15 +145,17 @@ void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metada
         crumb.type = BSGBreadcrumbTypeNavigation;
       }
 
-      NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
+      if (metadataCount > 0) {
+        NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
 
-      for (size_t i = 0; i < metadataCount; i += 2) {
-        NSString *key = [NSString stringWithUTF8String: metadata[i]];
-        NSString *value = [NSString stringWithUTF8String: metadata[i+1]];
-        [ns_metadata setValue: value forKey: key];
+        for (size_t i = 0; i < metadataCount; i += 2) {
+          NSString *key = [NSString stringWithUTF8String: metadata[i]];
+          NSString *value = [NSString stringWithUTF8String: metadata[i+1]];
+          [ns_metadata setValue: value forKey: key];
+        }
+
+        crumb.metadata = ns_metadata;
       }
-
-      crumb.metadata = ns_metadata;
   }];
 }
 

@@ -254,17 +254,24 @@ namespace Bugsnag.Unity
     {
       if (breadcrumb != null)
       {
-        var index = 0;
-        var metadata = new string[breadcrumb.Metadata.Count * 2];
-
-        foreach (var data in breadcrumb.Metadata)
+        if (breadcrumb.Metadata != null)
         {
-          metadata[index] = data.Key;
-          metadata[index + 1] = data.Value;
-          index += 2;
-        }
+          var index = 0;
+          var metadata = new string[breadcrumb.Metadata.Count * 2];
 
-        AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+          foreach (var data in breadcrumb.Metadata)
+          {
+            metadata[index] = data.Key;
+            metadata[index + 1] = data.Value;
+            index += 2;
+          }
+
+          AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+        }
+        else
+        {
+          AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, null, 0);
+        }
       }
     }
 
@@ -349,17 +356,24 @@ namespace Bugsnag.Unity
     {
       if (breadcrumb != null)
       {
-        var index = 0;
-        var metadata = new string[breadcrumb.Metadata.Count * 2];
-
-        foreach (var data in breadcrumb.Metadata)
+        if (breadcrumb.Metadata != null)
         {
-          metadata[index] = data.Key;
-          metadata[index + 1] = data.Value;
-          index += 2;
-        }
+          var index = 0;
+          var metadata = new string[breadcrumb.Metadata.Count * 2];
 
-        AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+          foreach (var data in breadcrumb.Metadata)
+          {
+            metadata[index] = data.Key;
+            metadata[index + 1] = data.Value;
+            index += 2;
+          }
+
+          AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+        }
+        else
+        {
+          AddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, null, 0);
+        }
       }
     }
 
