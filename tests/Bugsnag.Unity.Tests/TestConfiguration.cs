@@ -35,5 +35,7 @@ namespace Bugsnag.Unity.Tests
     public LogType NotifyLevel { get; set; }
 
     public bool AutoNotify { get; set; }
+
+    public bool AutoCaptureSessions { get; set; }
   }
 }

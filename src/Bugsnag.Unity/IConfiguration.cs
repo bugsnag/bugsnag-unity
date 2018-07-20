@@ -37,6 +37,8 @@ namespace Bugsnag.Unity
     LogType NotifyLevel { get; set; }
 
     bool AutoNotify { get; set; }
+
+    bool AutoCaptureSessions { get; set; }
   }
 
   class Configuration : IConfiguration
@@ -95,6 +97,8 @@ namespace Bugsnag.Unity
     public LogType NotifyLevel { get; set; }
 
     public bool AutoNotify { get; set; }
+
+    public bool AutoCaptureSessions { get; set; }
   }
 
   class AndroidConfiguration : IConfiguration
@@ -226,6 +230,8 @@ namespace Bugsnag.Unity
     }
 
     public bool AutoNotify { get; set; } // how do we hook this into the android bits, this lives on the client object
+
+    public bool AutoCaptureSessions { get; set; }
   }
 
   class MacOSConfiguration : IConfiguration
@@ -362,6 +368,8 @@ namespace Bugsnag.Unity
 
     public LogType NotifyLevel { get; set; }
     public bool AutoNotify { get; set; }
+
+    public bool AutoCaptureSessions { get; set; }
   }
 
   class iOSConfiguration : IConfiguration
@@ -498,5 +506,7 @@ namespace Bugsnag.Unity
 
     public LogType NotifyLevel { get; set; }
     public bool AutoNotify { get; set; }
+
+    public bool AutoCaptureSessions { get; set; }
   }
 }
