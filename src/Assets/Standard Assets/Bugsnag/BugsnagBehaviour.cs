@@ -56,10 +56,11 @@ namespace Bugsnag.Unity
 
 
 #if UNITY_EDITOR
-  [UnityEditor.CustomEditor(typeof(Bugsnag))]
+  [UnityEditor.CustomEditor(typeof(BugsnagBehaviour))]
   [UnityEditor.CanEditMultipleObjects]
   public class BugsnagEditor : UnityEditor.Editor
   {
+    bool showAdvanced;
     UnityEditor.SerializedProperty apiKey;
     UnityEditor.SerializedProperty autoNotify;
     UnityEditor.SerializedProperty notifyLevel;
@@ -68,6 +69,7 @@ namespace Bugsnag.Unity
 
     void OnEnable()
     {
+      showAdvanced = false;
       apiKey = serializedObject.FindProperty("BugsnagApiKey");
       autoNotify = serializedObject.FindProperty("AutoNotify");
       notifyLevel = serializedObject.FindProperty("NotifyLevel");
@@ -82,8 +84,15 @@ namespace Bugsnag.Unity
       UnityEditor.EditorGUILayout.PropertyField(apiKey, new GUIContent("API Key"));
       UnityEditor.EditorGUILayout.PropertyField(autoNotify, new GUIContent("Auto Notify"));
       UnityEditor.EditorGUILayout.PropertyField(notifyLevel, new GUIContent("Notify Level"));
-      UnityEditor.EditorGUILayout.PropertyField(maximumBreadcrumbs, new GUIContent("Maximum Breadcrumbs"));
-      UnityEditor.EditorGUILayout.PropertyField(uniqueLogsPerSecond, new GUIContent("uniqueLogsPerSecond"));
+
+      showAdvanced = UnityEditor.EditorGUILayout.ToggleLeft("Advanced Configuration", showAdvanced);
+      if (showAdvanced)
+      {
+        UnityEditor.EditorGUI.indentLevel++;
+        UnityEditor.EditorGUILayout.PropertyField(maximumBreadcrumbs, new GUIContent("Maximum Breadcrumbs"));
+        UnityEditor.EditorGUILayout.PropertyField(uniqueLogsPerSecond, new GUIContent("Unique Logs"));
+        UnityEditor.EditorGUI.indentLevel--;
+      }
 
       serializedObject.ApplyModifiedProperties();
     }
