@@ -302,10 +302,10 @@ namespace Bugsnag.Unity
 
   class MacOsClient : BaseClient
   {
-    [DllImport("bugsnag-osx", EntryPoint = "startBugsnagWithConfiguration")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
     static extern void StartBugsnagWithConfiguration(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "setMetadata")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setMetadata")]
     static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
 
     internal MacOsClient(MacOSConfiguration configuration) : base(configuration)
@@ -353,10 +353,10 @@ namespace Bugsnag.Unity
 
   class iOSClient : BaseClient
   {
-    [DllImport("__Internal", EntryPoint = "startBugsnagWithConfiguration")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
     static extern void StartBugsnagWithConfiguration(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "setMetadata")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_setMetadata")]
     static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
 
     public iOSClient(iOSConfiguration configuration) : base(configuration)

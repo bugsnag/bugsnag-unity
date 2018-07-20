@@ -59,7 +59,7 @@ namespace Bugsnag.Unity.Payload
 
   class MacOsDevice : Device
   {
-    [DllImport("bugsnag-osx", EntryPoint = "retrieveDeviceData")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveDeviceData")]
     static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
     
     internal MacOsDevice()
@@ -89,7 +89,7 @@ namespace Bugsnag.Unity.Payload
 
   class iOSDevice : Device
   {
-    [DllImport("__Internal", EntryPoint = "retrieveDeviceData")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_retrieveDeviceData")]
     static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
     internal iOSDevice()

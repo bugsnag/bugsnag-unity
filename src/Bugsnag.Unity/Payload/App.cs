@@ -38,7 +38,7 @@ namespace Bugsnag.Unity.Payload
 
   class MacOsApp : App
   {
-    [DllImport("bugsnag-osx", EntryPoint = "retrieveAppData")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveAppData")]
     static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
     internal MacOsApp(IConfiguration configuration) : base(configuration)
@@ -71,7 +71,7 @@ namespace Bugsnag.Unity.Payload
 
   class iOSApp : App
   {
-    [DllImport("__Internal", EntryPoint = "retrieveAppData")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_retrieveAppData")]
     static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
     internal iOSApp(IConfiguration configuration) : base(configuration)

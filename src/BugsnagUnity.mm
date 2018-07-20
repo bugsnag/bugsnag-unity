@@ -3,58 +3,58 @@
 #import "BSG_KSSystemInfo.h"
 
 extern "C" {
-  void *createConfiguration(char *apiKey);
+  void *bugsnag_createConfiguration(char *apiKey);
 
-  const char *getApiKey(const void *configuration);
+  const char *bugsnag_getApiKey(const void *configuration);
 
-  void setReleaseStage(const void *configuration, char *releaseStage);
-  const char *getReleaseStage(const void *configuration);
+  void bugsnag_setReleaseStage(const void *configuration, char *releaseStage);
+  const char *bugsnag_getReleaseStage(const void *configuration);
 
-  void setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount);
-  void getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], NSUInteger size));
+  void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount);
+  void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], NSUInteger size));
 
-  void setAppVersion(const void *configuration, char *appVersion);
-  const char *getAppVersion(const void *configuration);
+  void bugsnag_setAppVersion(const void *configuration, char *appVersion);
+  const char *bugsnag_getAppVersion(const void *configuration);
 
-  void setContext(const void *configuration, char *context);
-  const char *getContext(const void *configuration);
+  void bugsnag_setContext(const void *configuration, char *context);
+  const char *bugsnag_getContext(const void *configuration);
 
-  void setNotifyUrl(const void *configuration, char *notifyURL);
-  const char *getNotifyUrl(const void *configuration);
+  void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
+  const char *bugsnag_getNotifyUrl(const void *configuration);
 
-  void setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
+  void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
 
-  void startBugsnagWithConfiguration(const void *configuration);
+  void bugsnag_startBugsnagWithConfiguration(const void *configuration);
 
-  void *createBreadcrumbs(const void *configuration);
-  void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
-  void retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
+  void *bugsnag_createBreadcrumbs(const void *configuration);
+  void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
+  void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
 
-  void retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
-  void retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
+  void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
+  void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
 }
 
-void *createConfiguration(char *apiKey) {
+void *bugsnag_createConfiguration(char *apiKey) {
   NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
   BugsnagConfiguration *config = [BugsnagConfiguration new];
   config.apiKey = ns_apiKey;
   return (void*)CFBridgingRetain(config);
 }
 
-const char *getApiKey(const void *configuration) {
+const char *bugsnag_getApiKey(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).apiKey UTF8String];
 }
 
-void setReleaseStage(const void *configuration, char *releaseStage) {
+void bugsnag_setReleaseStage(const void *configuration, char *releaseStage) {
   NSString *ns_releaseStage = [NSString stringWithUTF8String: releaseStage];
   ((__bridge BugsnagConfiguration *)configuration).releaseStage = ns_releaseStage;
 }
 
-const char *getReleaseStage(const void *configuration) {
+const char *bugsnag_getReleaseStage(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).releaseStage UTF8String];
 }
 
-void setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount){
+void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount){
   NSMutableArray *ns_releaseStages = [NSMutableArray new];
   for (size_t i = 0; i < releaseStagesCount; i++) {
     [ns_releaseStages addObject: [NSString stringWithUTF8String: releaseStages[i]]];
@@ -62,7 +62,7 @@ void setNotifyReleaseStages(const void *configuration, const char *releaseStages
   ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages = ns_releaseStages;
 }
 
-void getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], NSUInteger size)) {
+void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], NSUInteger size)) {
   NSArray *releaseStages = ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages;
   NSUInteger count = [releaseStages count];
   const char **c_releaseStages = (const char **) malloc(sizeof(char *) * (count + 1));
@@ -74,35 +74,35 @@ void getNotifyReleaseStages(const void *configuration, const void *managedConfig
   callback(managedConfiguration, c_releaseStages, count);
 }
 
-void setAppVersion(const void *configuration, char *appVersion) {
+void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
   NSString *ns_appVersion = [NSString stringWithUTF8String: appVersion];
   ((__bridge BugsnagConfiguration *)configuration).appVersion = ns_appVersion;
 }
 
-const char *getAppVersion(const void *configuration) {
+const char *bugsnag_getAppVersion(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).appVersion UTF8String];
 }
 
-void setContext(const void *configuration, char *context) {
+void bugsnag_setContext(const void *configuration, char *context) {
   NSString *ns_Context = [NSString stringWithUTF8String: context];
   ((__bridge BugsnagConfiguration *)configuration).context = ns_Context;
 }
 
-const char *getContext(const void *configuration) {
+const char *bugsnag_getContext(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).context UTF8String];
 }
 
-void setNotifyUrl(const void *configuration, char *notifyURL) {
+void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
   NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
   NSURL *endpoint = [NSURL URLWithString: ns_notifyURL];
   ((__bridge BugsnagConfiguration *)configuration).notifyURL = endpoint;
 }
 
-const char *getNotifyUrl(const void *configuration) {
+const char *bugsnag_getNotifyUrl(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).notifyURL.absoluteString UTF8String];
 }
 
-void setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
+void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
   BugsnagConfiguration *ns_configuration = (__bridge BugsnagConfiguration *)configuration;
   NSString *tabName = [NSString stringWithUTF8String: tab];
 
@@ -113,15 +113,15 @@ void setMetadata(const void *configuration, const char *tab, const char *metadat
   }
 }
 
-void startBugsnagWithConfiguration(const void *configuration) {
+void bugsnag_startBugsnagWithConfiguration(const void *configuration) {
   [Bugsnag startBugsnagWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
 }
 
-void *createBreadcrumbs(const void *configuration) {
+void *bugsnag_createBreadcrumbs(const void *configuration) {
   return (__bridge void*)((__bridge BugsnagConfiguration *)configuration).breadcrumbs;
 }
 
-void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount) {
+void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount) {
   BugsnagBreadcrumbs *ns_breadcrumbs = ((__bridge BugsnagBreadcrumbs *) breadcrumbs);
   NSString *ns_name = [NSString stringWithUTF8String: name];
   [ns_breadcrumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
@@ -159,7 +159,7 @@ void addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metada
   }];
 }
 
-void retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size)) {
+void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size)) {
   NSArray *crumbs = [((__bridge BugsnagBreadcrumbs *) breadcrumbs) arrayValue];
   [crumbs enumerateObjectsUsingBlock:^(id crumb, NSUInteger index, BOOL *stop){
     const char *name = [[crumb valueForKey: @"name"] UTF8String];
@@ -184,7 +184,7 @@ void retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs
   }];
 }
 
-void retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
+void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
   callback(appData, "bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
@@ -193,7 +193,7 @@ void retrieveAppData(const void *appData, void (*callback)(const void *instance,
   callback(appData, "version", [sysInfo[@BSG_KSSystemField_BundleShortVersion] UTF8String]);
 }
 
-void retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
+void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
   callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);

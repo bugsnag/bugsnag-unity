@@ -240,42 +240,42 @@ namespace Bugsnag.Unity
 
     const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    [DllImport("bugsnag-osx", EntryPoint = "createConfiguration")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_createConfiguration")]
     static extern IntPtr CreateConfiguration(string apiKey);
 
-    [DllImport("bugsnag-osx", EntryPoint = "getApiKey")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getApiKey")]
     static extern IntPtr GetApiKey(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "setReleaseStage")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setReleaseStage")]
     static extern void SetReleaseStage(IntPtr configuration, string releaseStage);
 
-    [DllImport("bugsnag-osx", EntryPoint = "getReleaseStage")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getReleaseStage")]
     static extern IntPtr GetReleaseStage(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "setContext")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setContext")]
     static extern void SetContext(IntPtr configuration, string context);
 
-    [DllImport("bugsnag-osx", EntryPoint = "getContext")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getContext")]
     static extern IntPtr GetContext(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "setAppVersion")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setAppVersion")]
     static extern void SetAppVersion(IntPtr configuration, string appVersion);
 
-    [DllImport("bugsnag-osx", EntryPoint = "getAppVersion")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getAppVersion")]
     static extern IntPtr GetAppVersion(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "setNotifyUrl")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setNotifyUrl")]
     static extern void SetNotifyEndpoint(IntPtr configuration, string endpoint);
 
-    [DllImport("bugsnag-osx", EntryPoint = "getNotifyUrl")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getNotifyUrl")]
     static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
 
     delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)]string[] releaseStages, long count);
 
-    [DllImport("bugsnag-osx", EntryPoint = "getNotifyReleaseStages")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getNotifyReleaseStages")]
     static extern void GetNotifyReleaseStages(IntPtr configuration, IntPtr instance, NotifyReleaseStageCallback callback);
 
-    [DllImport("bugsnag-osx", EntryPoint = "setNotifyReleaseStages")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setNotifyReleaseStages")]
     static extern void SetNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int count);
 
     internal IntPtr NativeConfiguration { get; }
@@ -378,42 +378,42 @@ namespace Bugsnag.Unity
 
     const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    [DllImport("__Internal", EntryPoint = "createConfiguration")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_createConfiguration")]
     static extern IntPtr CreateConfiguration(string apiKey);
 
-    [DllImport("__Internal", EntryPoint = "getApiKey")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_getApiKey")]
     static extern IntPtr GetApiKey(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "setReleaseStage")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_setReleaseStage")]
     static extern void SetReleaseStage(IntPtr configuration, string releaseStage);
 
-    [DllImport("__Internal", EntryPoint = "getReleaseStage")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_getReleaseStage")]
     static extern IntPtr GetReleaseStage(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "setContext")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_setContext")]
     static extern void SetContext(IntPtr configuration, string context);
 
-    [DllImport("__Internal", EntryPoint = "getContext")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_getContext")]
     static extern IntPtr GetContext(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "setAppVersion")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_setAppVersion")]
     static extern void SetAppVersion(IntPtr configuration, string appVersion);
 
-    [DllImport("__Internal", EntryPoint = "getAppVersion")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_getAppVersion")]
     static extern IntPtr GetAppVersion(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "setNotifyUrl")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_setNotifyUrl")]
     static extern void SetNotifyEndpoint(IntPtr configuration, string endpoint);
 
-    [DllImport("__Internal", EntryPoint = "getNotifyUrl")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_getNotifyUrl")]
     static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
 
     delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)]string[] releaseStages, long count);
 
-    [DllImport("__Internal", EntryPoint = "getNotifyReleaseStages")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_getNotifyReleaseStages")]
     static extern void GetNotifyReleaseStages(IntPtr configuration, IntPtr instance, NotifyReleaseStageCallback callback);
 
-    [DllImport("__Internal", EntryPoint = "setNotifyReleaseStages")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_setNotifyReleaseStages")]
     static extern void SetNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int count);
 
     internal IntPtr NativeConfiguration { get; }

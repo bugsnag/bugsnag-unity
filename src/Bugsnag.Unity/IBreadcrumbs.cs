@@ -309,13 +309,13 @@ namespace Bugsnag.Unity
 
   class MacOsBreadcrumbs : CocoaBreadcrumbs
   {
-    [DllImport("bugsnag-osx", EntryPoint = "createBreadcrumbs")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_createBreadcrumbs")]
     static extern IntPtr CreateBreadcrumbs(IntPtr configuration);
     
-    [DllImport("bugsnag-osx", EntryPoint = "addBreadcrumb")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_addBreadcrumb")]
     static extern void NativeAddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
     
-    [DllImport("bugsnag-osx", EntryPoint = "retrieveBreadcrumbs")]
+    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveBreadcrumbs")]
     static extern void NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
     
     internal MacOsBreadcrumbs(MacOSConfiguration configuration) : base(CreateBreadcrumbs(configuration.NativeConfiguration))
@@ -335,13 +335,13 @@ namespace Bugsnag.Unity
 
   class iOSBreadcrumbs : CocoaBreadcrumbs
   {
-    [DllImport("__Internal", EntryPoint = "createBreadcrumbs")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_createBreadcrumbs")]
     static extern IntPtr CreateBreadcrumbs(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "addBreadcrumb")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_addBreadcrumb")]
     static extern void NativeAddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
 
-    [DllImport("__Internal", EntryPoint = "retrieveBreadcrumbs")]
+    [DllImport("__Internal", EntryPoint = "bugsnag_retrieveBreadcrumbs")]
     static extern void NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
     
     internal iOSBreadcrumbs(iOSConfiguration configuration) : base(CreateBreadcrumbs(configuration.NativeConfiguration))
