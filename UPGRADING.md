@@ -1,7 +1,7 @@
 Upgrading
 =========
 
-## 1.x to 2.x
+## 3.x to 4.x
 
 *Our Unity notifier has gone through some major improvements, and there are some changes you'll need to make to get onto the new version.*
 
