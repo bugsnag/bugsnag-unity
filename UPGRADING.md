@@ -18,7 +18,10 @@ Upgrading
 
 ### Import the new package
 
-### Relink the `MonoBehaviour`
+- Download version 4.x.x `Bugsnag.unitypackage` from the [Releases pages](https://github.com/bugsnag/bugsnag-unity/releases)
+- Import into your Unity project
+
+### Relink the MonoBehaviour
 
 If you used the basic configuration to configure Bugsnag using the Unity UI then perform the following:
 
