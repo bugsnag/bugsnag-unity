@@ -7,14 +7,14 @@ Upgrading
 
 ### Remove old Bugsnag files from your Unity project
 
-Remove the `Assets/Plugins/iOS/Bugsnag` directory
-Remove the `Assets/Plugins/OSX/Bugsnag` directory
-Remove `Assets/Plugins/Android/bugsnag-android-release.aar`
-Remove `Assets/Plugins/Android/bugsnag-android-unity-release.aar`
-Remove `Assets/Plugins/WebGL/bugsnag.jspre`
-Remove `Assets/Plugins/WebGL/BugsnagUnity.jslib`
-Remove `Assets/Standard Assets/Bugsnag/Bugsnag.cs`
-Remove `Assets/Standard Assets/Bugsnag/Editor/BugsnagPostProcess.cs`
+- Remove the `Assets/Plugins/iOS/Bugsnag` directory
+- Remove the `Assets/Plugins/OSX/Bugsnag` directory
+- Remove `Assets/Plugins/Android/bugsnag-android-release.aar`
+- Remove `Assets/Plugins/Android/bugsnag-android-unity-release.aar`
+- Remove `Assets/Plugins/WebGL/bugsnag.jspre`
+- Remove `Assets/Plugins/WebGL/BugsnagUnity.jslib`
+- Remove `Assets/Standard Assets/Bugsnag/Bugsnag.cs`
+- Remove `Assets/Standard Assets/Bugsnag/Editor/BugsnagPostProcess.cs`
 
 ### Import the new package
 
