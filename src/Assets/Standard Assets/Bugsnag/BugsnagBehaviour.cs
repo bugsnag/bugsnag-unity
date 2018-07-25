@@ -35,7 +35,7 @@ namespace BugsnagUnity
       Bugsnag.Client.Configuration.AutoCaptureSessions = AutoCaptureSessions;
       Bugsnag.Client.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
       Bugsnag.Client.Configuration.NotifyLevel = NotifyLevel;
-      Bugsnag.Client.Configuration.ReleaseStage = Debug.isDebugBuild ? "debug" : "production";
+      Bugsnag.Client.Configuration.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
       Bugsnag.Client.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
     }
 
