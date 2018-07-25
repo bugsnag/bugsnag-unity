@@ -113,7 +113,7 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var @event = new Payload.Event(Configuration.Context, GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnhandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+            var @event = new Payload.Event(Configuration.Context, GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
             var report = new Report(Configuration, @event);
 
             Notify(report, null);
