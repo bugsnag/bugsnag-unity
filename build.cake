@@ -1,7 +1,7 @@
 #tool "nuget:?package=NUnit.ConsoleRunner"
 
 var target = Argument("target", "Default");
-var solution = File("./Bugsnag.Unity.sln");
+var solution = File("./BugsnagUnity.sln");
 var configuration = Argument("configuration", "Release");
 
 Task("Restore-NuGet-Packages")

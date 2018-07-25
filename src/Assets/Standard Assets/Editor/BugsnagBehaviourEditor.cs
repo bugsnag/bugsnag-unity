@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Bugsnag.Unity
+namespace BugsnagUnity
 {
   [CustomEditor(typeof(BugsnagBehaviour))]
   [CanEditMultipleObjects]

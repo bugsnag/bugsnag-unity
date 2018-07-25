@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Bugsnag.Unity
+namespace BugsnagUnity
 {
   public class BugsnagBehaviour : MonoBehaviour
   {

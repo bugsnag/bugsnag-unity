@@ -137,7 +137,7 @@ namespace :plugin do
       else
         sh "./build.sh"
       end
-      dll = File.join("src", "Bugsnag.Unity", "bin", "Release", "net35", "Bugsnag.Unity.dll")
+      dll = File.join("src", "BugsnagUnity", "bin", "Release", "net35", "BugsnagUnity.dll")
       cp File.realpath(dll), assets_path
     end
     task android: [:clean] do

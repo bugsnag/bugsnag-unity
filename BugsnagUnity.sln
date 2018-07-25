@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityEngine", "tests\UnityEngine\UnityEngine.csproj", "{7600F127-2CF0-4A1C-A12C-DE5630696DD4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{330E1C29-F8C0-4FFC-9FE9-9FA71DE400FC}"
+	ProjectSection(SolutionItems) = preProject
+		src\Assets\Standard Assets\Bugsnag\BugsnagBehaviour.cs = src\Assets\Standard Assets\Bugsnag\BugsnagBehaviour.cs
+		src\BugsnagUnity.mm = src\BugsnagUnity.mm
+		src\Assets\Standard Assets\Editor\BugsnagPostProcess.cs = src\Assets\Standard Assets\Editor\BugsnagPostProcess.cs
+		src\Assets\Standard Assets\Editor\BugsnagBehaviourEditor.cs = src\Assets\Standard Assets\Editor\BugsnagBehaviourEditor.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugsnagUnity", "src\BugsnagUnity\BugsnagUnity.csproj", "{EF862675-0071-4BA7-B76A-A32E9A2BE362}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BugsnagUnity.Tests", "tests\BugsnagUnity.Tests\BugsnagUnity.Tests.csproj", "{72E9EC19-9A2F-4F39-82DC-2303E1461D05}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7600F127-2CF0-4A1C-A12C-DE5630696DD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7600F127-2CF0-4A1C-A12C-DE5630696DD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7600F127-2CF0-4A1C-A12C-DE5630696DD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7600F127-2CF0-4A1C-A12C-DE5630696DD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF862675-0071-4BA7-B76A-A32E9A2BE362}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF862675-0071-4BA7-B76A-A32E9A2BE362}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF862675-0071-4BA7-B76A-A32E9A2BE362}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF862675-0071-4BA7-B76A-A32E9A2BE362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72E9EC19-9A2F-4F39-82DC-2303E1461D05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E9EC19-9A2F-4F39-82DC-2303E1461D05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E9EC19-9A2F-4F39-82DC-2303E1461D05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E9EC19-9A2F-4F39-82DC-2303E1461D05}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1CE8CC5B-0DF2-4EB7-B9DA-0DBC2E0389DA}
+	EndGlobalSection
+EndGlobal
