@@ -39,5 +39,5 @@ If you used the code-only configuration then perform the following:
 - GameObject bugsnagObject = new GameObject("Bugsnag");
 - GameObject.DontDestroyOnLoad(bugsnagObject);
 - Bugsnag.createBugsnagInstance(bugsnagObject, "your-api-key-here");
-+ Bugsnag.Unity.Bugsnag.Init("your-api-key-here");
++ BugsnagUnity.Bugsnag.Init("your-api-key-here");
 ```
