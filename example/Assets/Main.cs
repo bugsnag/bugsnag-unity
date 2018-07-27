@@ -112,14 +112,14 @@ public class Main : MonoBehaviour
 			int b = 1;
 			int c = b / a;
 		} catch (Exception e) {
-			//Bugsnag.Unity.Bugsnag.Client.Notify(e);
+			//BugsnagUnity.Bugsnag.Client.Notify(e);
 		}
 	}
 
 	private void OnNotifyClick()
 	{
 		Debug.Log ("Notify clicked");
-		// Bugsnag.Unity.Bugsnag.Client.Notify(new Exception ("Notify clicked!"), report =>
+		// BugsnagUnity.Bugsnag.Client.Notify(new Exception ("Notify clicked!"), report =>
 		// 	{
 		// 		report.Event.Context = "NotifyClicked";
 		// 	});
