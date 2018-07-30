@@ -256,6 +256,17 @@ namespace BugsnagUnity
       using (var context = activity.Call<AndroidJavaObject>("getApplicationContext"))
       {
         JavaClient = new AndroidJavaObject("com.bugsnag.android.Client", context, configuration.JavaObject);
+
+        // the bugsnag-android notifier uses Activity lifecycle tracking to
+        // determine if the application is in the foreground. As the unity
+        // activity has already started at this point we need to tell the
+        // notifier about the activity and the fact that it has started.
+        using (var sessionTracker = JavaClient.Get<AndroidJavaObject>("sessionTracker"))
+        using (var activityClass = activity.Call<AndroidJavaObject>("getClass"))
+        {
+          var activityName = activityClass.Call<string>("getSimpleName");
+          sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
+        }
       }
 
       Delivery = new AndroidDelivery();
