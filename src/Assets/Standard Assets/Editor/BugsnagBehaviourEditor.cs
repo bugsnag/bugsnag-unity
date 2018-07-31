@@ -40,7 +40,7 @@ namespace BugsnagUnity
       {
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(maximumBreadcrumbs, new GUIContent("Maximum Breadcrumbs"));
-        EditorGUILayout.PropertyField(uniqueLogsPerSecond, new GUIContent("Unique Logs"));
+        EditorGUILayout.PropertyField(uniqueLogsPerSecond, new GUIContent("Unique Logs per second", "The number of unique Unity logs per second that Bugsnag will convert to breadcrumbs or report as errors (if configured). Lower the value to address performance problems."));
         EditorGUI.indentLevel--;
       }
 
