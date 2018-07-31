@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
@@ -9,11 +9,12 @@ namespace BugsnagUnity.Payload
 
     internal HandledState OriginalSeverity { get; }
 
-    internal Event(string context, Metadata metadata, App app, Device device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session)
+    internal Event(string context, Metadata metadata, App app, Device device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session, LogType? logType = null)
     {
       OriginalSeverity = handledState;
       Metadata = metadata;
       HandledState = handledState;
+      LogType = logType;
       this.AddToPayload("context", context);
       this.AddToPayload("payloadVersion", 4);
       this.AddToPayload("exceptions", exceptions);
@@ -26,6 +27,8 @@ namespace BugsnagUnity.Payload
     }
 
     public Metadata Metadata { get; }
+
+    public LogType? LogType { get; }
 
     public bool IsHandled
     {
