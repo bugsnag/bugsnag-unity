@@ -10,7 +10,7 @@ namespace BugsnagUnity.Payload
   /// <summary>
   /// Represents the "device" key in the error report payload.
   /// </summary>
-  class Device : Dictionary<string, object>, IFilterable
+  public class Device : Dictionary<string, object>, IFilterable
   {
     internal Device() : this(Hostname)
     {

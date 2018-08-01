@@ -43,11 +43,25 @@ namespace BugsnagUnity.Payload
       }
     }
 
+    public App App
+    {
+      get { return this.Get("app") as App; }
+    }
+
+    public IEnumerable<Breadcrumb> Breadcrumbs
+    {
+      get { return this.Get("breadcrumbs") as IEnumerable<Breadcrumb>; }
+    }
+
     public string Context
     {
       get => this.Get("context") as string;
       set => this.AddToPayload("context", value);
     }
+
+    public Device Device => this.Get("device") as Device;
+
+    public Exception[] Exceptions => this.Get("exceptions") as Exception[];
 
     public string GroupingHash
     {
@@ -61,7 +75,11 @@ namespace BugsnagUnity.Payload
       get => _handledState.Severity;
     }
 
-    public Exception[] Exceptions => this.Get("exceptions") as Exception[];
+    public User User
+    {
+      get { return this.Get("user") as User; }
+      set { this.AddToPayload("user", value); }
+    }
 
     private HandledState HandledState
     {

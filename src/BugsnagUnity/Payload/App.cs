@@ -9,7 +9,7 @@ namespace BugsnagUnity.Payload
   /// <summary>
   /// Represents the "app" key in the error report payload.
   /// </summary>
-  class App : Dictionary<string, object>, IFilterable
+  public class App : Dictionary<string, object>, IFilterable
   {
     internal App(IConfiguration configuration) : this(configuration.AppVersion, configuration.ReleaseStage, null)
     {
