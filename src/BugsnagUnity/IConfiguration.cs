@@ -330,6 +330,10 @@ namespace BugsnagUnity
           handle.Free();
         }
 
+        if (releaseStages.Count == 0)
+        {
+            return null;
+        }
         return releaseStages.ToArray();
       }
       set => SetNotifyReleaseStages(NativeConfiguration, value, value.Length);
@@ -468,6 +472,10 @@ namespace BugsnagUnity
           handle.Free();
         }
 
+        if (releaseStages.Count == 0)
+        {
+            return null;
+        }
         return releaseStages.ToArray();
       }
       set => SetNotifyReleaseStages(NativeConfiguration, value, value.Length);
