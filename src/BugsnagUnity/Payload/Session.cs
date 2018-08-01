@@ -34,6 +34,15 @@ namespace BugsnagUnity.Payload
         Events.IncrementUnhandledCount();
       }
     }
+
+    internal Session Copy()
+    {
+      var copy = new Session(StartedAt, Events.Handled, Events.Unhandled)
+      {
+        ["id"] = Id
+      };
+      return copy;
+    }
   }
 
   internal class SessionEvents : Dictionary<string, int>
@@ -46,6 +55,9 @@ namespace BugsnagUnity.Payload
       this.AddToPayload("handled", handled);
       this.AddToPayload("unhandled", unhandled);
     }
+
+    internal int Handled => this["handled"];
+    internal int Unhandled => this["unhandled"];
 
     internal void IncrementHandledCount()
     {

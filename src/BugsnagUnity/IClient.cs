@@ -113,11 +113,12 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
+            var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
             var @event = new Payload.Event(Configuration.Context,
               GenerateMetadata(),
               GenerateAppData(),
               GenerateDeviceData(),
-              User,
+              user,
               new UnityLogExceptions(logMessage).ToArray(),
               HandledState.ForHandledException(),
               Breadcrumbs.Retrieve(), SessionTracking.CurrentSession,
@@ -167,11 +168,12 @@ namespace BugsnagUnity
 
     void Notify(System.Exception exception, HandledState handledState, Middleware callback)
     {
+      var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
       var @event = new Payload.Event(Configuration.Context,
         GenerateMetadata(),
         GenerateAppData(),
         GenerateDeviceData(),
-        User,
+        user,
         new Exceptions(exception).ToArray(),
         handledState,
         Breadcrumbs.Retrieve(),

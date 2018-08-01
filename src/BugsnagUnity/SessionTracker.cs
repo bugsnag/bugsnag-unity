@@ -13,7 +13,13 @@ namespace BugsnagUnity
   {
     private IClient Client { get; }
 
-    public Session CurrentSession { get; private set; }
+    private Session _currentSession;
+
+    public Session CurrentSession
+    {
+      get => _currentSession.Copy();
+      private set => _currentSession = value;
+    }
 
     internal SessionTracker(IClient client)
     {
