@@ -113,7 +113,15 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var @event = new Payload.Event(Configuration.Context, GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), Breadcrumbs.Retrieve(), SessionTracking.CurrentSession, logMessage.Type);
+            var @event = new Payload.Event(Configuration.Context,
+              GenerateMetadata(),
+              GenerateAppData(),
+              GenerateDeviceData(),
+              User,
+              new UnityLogExceptions(logMessage).ToArray(),
+              HandledState.ForHandledException(),
+              Breadcrumbs.Retrieve(), SessionTracking.CurrentSession,
+              logMessage.Type);
             var report = new Report(Configuration, @event);
 
             Notify(report, null);
@@ -159,7 +167,15 @@ namespace BugsnagUnity
 
     void Notify(System.Exception exception, HandledState handledState, Middleware callback)
     {
-      var @event = new Payload.Event(Configuration.Context, GenerateMetadata(), GenerateAppData(), GenerateDeviceData(), User, new Exceptions(exception).ToArray(), handledState, Breadcrumbs.Retrieve(), SessionTracking.CurrentSession);
+      var @event = new Payload.Event(Configuration.Context,
+        GenerateMetadata(),
+        GenerateAppData(),
+        GenerateDeviceData(),
+        User,
+        new Exceptions(exception).ToArray(),
+        handledState,
+        Breadcrumbs.Retrieve(),
+        SessionTracking.CurrentSession);
       var report = new Report(Configuration, @event);
       Notify(report, callback);
     }
