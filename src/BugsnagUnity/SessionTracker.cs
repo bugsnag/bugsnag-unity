@@ -17,7 +17,7 @@ namespace BugsnagUnity
 
     public Session CurrentSession
     {
-      get => _currentSession.Copy();
+      get => _currentSession?.Copy();
       private set => _currentSession = value;
     }
 
