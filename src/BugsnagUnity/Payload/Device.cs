@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using AOT;
 using UnityEngine;
 
@@ -23,6 +24,13 @@ namespace BugsnagUnity.Payload
       this.AddToPayload("timezone", TimeZone.CurrentTimeZone.StandardName);
       this.AddToPayload("osName", OsName);
       this.AddToPayload("time", DateTime.UtcNow);
+
+      var matches = Regex.Match(Environment.OSVersion.VersionString, "\\A(?<osName>[a-zA-Z ]*) (?<osVersion>[\\d\\.]*)\\z");
+      if (matches.Success)
+      {
+        this.AddToPayload("osName", matches.Groups["osName"].Value);
+        this.AddToPayload("osVersion", matches.Groups["osVersion"].Value);
+      }
     }
 
     /// <summary>
