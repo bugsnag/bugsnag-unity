@@ -1,8 +1,6 @@
 ﻿using BugsnagUnity.Payload;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -35,11 +33,95 @@ namespace BugsnagUnity
     void Notify(System.Exception exception, Severity severity, Middleware callback);
   }
 
-  abstract class BaseClient : IClient
+  interface INativeClient
+  {
+    /// <summary>
+    /// The native configuration
+    /// </summary>
+    IConfiguration Configuration { get; }
+
+    /// <summary>
+    /// The native breadcrumbs
+    /// </summary>
+    IBreadcrumbs Breadcrumbs { get; }
+
+    /// <summary>
+    /// The native delivery method
+    /// </summary>
+    IDelivery Delivery { get; }
+
+    /// <summary>
+    /// Populates the native app information
+    /// </summary>
+    /// <returns></returns>
+    void PopulateApp(App app);
+
+    /// <summary>
+    /// Populates the native device information
+    /// </summary>
+    /// <returns></returns>
+    void PopulateDevice(Device device);
+
+    /// <summary>
+    /// Adds the metadata to the native clients metadata
+    /// </summary>
+    /// <param name="metadata"></param>
+    void SetMetadata(string tab, Dictionary<string, string> metadata);
+
+    /// <summary>
+    /// Populates the native user information.
+    /// </summary>
+    /// <returns></returns>
+    void PopulateUser(User user);
+
+    /// <summary>
+    /// Populates any native metadata.
+    /// </summary>
+    /// <param name="metadata"></param>
+    void PopulateMetadata(Metadata metadata);
+  }
+
+  class NativeClient : INativeClient
   {
     public IConfiguration Configuration { get; }
 
-    public abstract IBreadcrumbs Breadcrumbs { get; }
+    public IBreadcrumbs Breadcrumbs { get; }
+
+    public IDelivery Delivery { get; }
+
+    public NativeClient(Configuration configuration)
+    {
+      Configuration = configuration;
+      Breadcrumbs = new Breadcrumbs(configuration);
+      Delivery = new Delivery();
+    }
+
+    public void PopulateApp(App app)
+    {
+    }
+
+    public void PopulateDevice(Device device)
+    {
+    }
+
+    public void PopulateMetadata(Metadata metadata)
+    {
+    }
+
+    public void PopulateUser(User user)
+    {
+    }
+
+    public void SetMetadata(string tab, Dictionary<string, string> metadata)
+    {
+    }
+  }
+
+  class Client : IClient
+  {
+    public IConfiguration Configuration => NativeClient.Configuration;
+
+    public IBreadcrumbs Breadcrumbs => NativeClient.Breadcrumbs;
 
     public ISessionTracker SessionTracking { get; }
 
@@ -51,29 +133,26 @@ namespace BugsnagUnity
 
     MaximumLogTypeCounter LogTypeCounter { get; }
 
-    protected abstract IDelivery Delivery { get; }
-
-    protected abstract App GenerateAppData();
-
-    protected abstract Device GenerateDeviceData();
-
-    protected abstract Metadata GenerateMetadata();
+    protected IDelivery Delivery => NativeClient.Delivery;
 
     List<Middleware> Middleware { get; }
 
     object MiddlewareLock { get; } = new object();
 
-    protected BaseClient(IConfiguration configuration)
+    INativeClient NativeClient { get; }
+
+    public Client(INativeClient nativeClient)
     {
-      Configuration = configuration;
+      NativeClient = nativeClient;
       User = new User();
       Middleware = new List<Middleware>();
       Metadata = new Metadata();
-      UniqueCounter = new UniqueLogThrottle(configuration);
-      LogTypeCounter = new MaximumLogTypeCounter(configuration);
+      UniqueCounter = new UniqueLogThrottle(Configuration);
+      LogTypeCounter = new MaximumLogTypeCounter(Configuration);
       SessionTracking = new SessionTracker(this);
-
-      // might need to do this later?
+      var unityMetadata = UnityMetadata.Data;
+      Metadata.Add("Unity", unityMetadata);
+      NativeClient.SetMetadata("Unity", unityMetadata);
       SceneManager.sceneLoaded += SceneLoaded;
       Application.logMessageReceivedThreaded += Notify;
     }
@@ -113,19 +192,7 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
-            var @event = new Payload.Event(Configuration.Context,
-              GenerateMetadata(),
-              GenerateAppData(),
-              GenerateDeviceData(),
-              user,
-              new UnityLogExceptions(logMessage).ToArray(),
-              HandledState.ForHandledException(),
-              Breadcrumbs.Retrieve(), SessionTracking.CurrentSession,
-              logMessage.Type);
-            var report = new Report(Configuration, @event);
-
-            Notify(report, null);
+            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), null, logMessage.Type);
           }
         }
       }
@@ -168,22 +235,36 @@ namespace BugsnagUnity
 
     void Notify(System.Exception exception, HandledState handledState, Middleware callback)
     {
+      Notify(new Exceptions(exception).ToArray(), handledState, callback);
+    }
+
+    void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType = null)
+    {
       var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
-      var @event = new Payload.Event(Configuration.Context,
-        GenerateMetadata(),
-        GenerateAppData(),
-        GenerateDeviceData(),
+      var app = new App(Configuration);
+      NativeClient.PopulateApp(app);
+      var device = new Device();
+      NativeClient.PopulateDevice(device);
+      var metadata = new Metadata();
+      NativeClient.PopulateMetadata(metadata);
+
+      foreach (var item in Metadata)
+      {
+        metadata.Add(item.Key, item.Value);
+      }
+
+      var @event = new Payload.Event(
+        Configuration.Context,
+        metadata,
+        app,
+        device,
         user,
-        new Exceptions(exception).ToArray(),
+        exceptions,
         handledState,
         Breadcrumbs.Retrieve(),
         SessionTracking.CurrentSession);
       var report = new Report(Configuration, @event);
-      Notify(report, callback);
-    }
 
-    void Notify(Report report, Middleware callback)
-    {
       if (report.Configuration.ReleaseStage != null
           && report.Configuration.NotifyReleaseStages != null
           && !report.Configuration.NotifyReleaseStages.Contains(report.Configuration.ReleaseStage))
@@ -221,213 +302,6 @@ namespace BugsnagUnity
 
         SessionTracking.CurrentSession?.AddException(report);
       }
-    }
-  }
-
-  class Client : BaseClient
-  {
-    internal Client(IConfiguration configuration) : base(configuration)
-    {
-      Delivery = new Delivery();
-      Breadcrumbs = new Breadcrumbs(configuration);
-
-      var unityMetadata = UnityMetadata.Data;
-      Metadata.Add("Unity", unityMetadata);
-    }
-
-    public override IBreadcrumbs Breadcrumbs { get; }
-
-    protected override IDelivery Delivery { get; }
-
-    protected override App GenerateAppData()
-    {
-      return new App(Configuration);
-    }
-
-    protected override Device GenerateDeviceData()
-    {
-      return new Device();
-    }
-
-    protected override Metadata GenerateMetadata()
-    {
-      return new Metadata(Metadata);
-    }
-  }
-
-  class AndroidClient : BaseClient
-  {
-    internal AndroidJavaObject JavaClient { get; }
-
-    internal AndroidClient(AndroidConfiguration configuration) : base(configuration)
-    {
-      using (var notifier = new AndroidJavaClass("com.bugsnag.android.Notifier"))
-      using (var info = notifier.CallStatic<AndroidJavaObject>("getInstance"))
-      {
-        info.Call("setURL", NotifierInfo.NotifierUrl);
-        info.Call("setName", NotifierInfo.NotifierName);
-        info.Call("setVersion", NotifierInfo.NotifierVersion);
-      }
-
-      using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-      using (var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity"))
-      using (var context = activity.Call<AndroidJavaObject>("getApplicationContext"))
-      {
-        JavaClient = new AndroidJavaObject("com.bugsnag.android.Client", context, configuration.JavaObject);
-
-        // the bugsnag-android notifier uses Activity lifecycle tracking to
-        // determine if the application is in the foreground. As the unity
-        // activity has already started at this point we need to tell the
-        // notifier about the activity and the fact that it has started.
-        using (var sessionTracker = JavaClient.Get<AndroidJavaObject>("sessionTracker"))
-        using (var activityClass = activity.Call<AndroidJavaObject>("getClass"))
-        {
-          var activityName = activityClass.Call<string>("getSimpleName");
-          sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
-        }
-      }
-
-      Delivery = new AndroidDelivery();
-      Breadcrumbs = new AndroidBreadcrumbs(JavaClient);
-
-      using (var user = JavaClient.Call<AndroidJavaObject>("getUser"))
-      {
-        User.Id = user.Call<string>("getId");
-        User.Name = user.Call<string>("getName");
-        User.Email = user.Call<string>("getEmail");
-      }
-
-      var unityMetadata = UnityMetadata.Data;
-      Metadata.Add("Unity", unityMetadata);
-
-      using (var metadata = JavaClient.Call<AndroidJavaObject>("getMetaData"))
-      {
-        foreach (var item in unityMetadata)
-        {
-          metadata.Call("addToTab", "Unity", item.Key, item.Value);
-        }
-      }
-    }
-
-    public override IBreadcrumbs Breadcrumbs { get; }
-
-    protected override IDelivery Delivery { get; }
-
-    protected override App GenerateAppData()
-    {
-      return new AndroidApp(Configuration, JavaClient);
-    }
-
-    protected override Device GenerateDeviceData()
-    {
-      return new AndroidDevice(JavaClient);
-    }
-
-    protected override Metadata GenerateMetadata()
-    {
-      return new AndroidMetadata(JavaClient, Metadata);
-    }
-  }
-
-  class MacOsClient : BaseClient
-  {
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
-    static extern void StartBugsnagWithConfiguration(IntPtr configuration);
-
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setMetadata")]
-    static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
-
-    internal MacOsClient(MacOSConfiguration configuration) : base(configuration)
-    {
-      var unityMetadata = UnityMetadata.Data;
-      Metadata.Add("Unity", unityMetadata);
-
-      var index = 0;
-      var metadata = new string[unityMetadata.Count * 2];
-
-      foreach (var data in unityMetadata)
-      {
-        metadata[index] = data.Key;
-        metadata[index + 1] = data.Value;
-        index += 2;
-      }
-
-      AddMetadata(configuration.NativeConfiguration, "Unity", metadata, metadata.Length);
-
-      StartBugsnagWithConfiguration(configuration.NativeConfiguration);
-
-      Delivery = new Delivery();
-      Breadcrumbs = new MacOsBreadcrumbs(configuration);
-    }
-
-    public override IBreadcrumbs Breadcrumbs { get; }
-
-    protected override IDelivery Delivery { get; }
-
-    protected override App GenerateAppData()
-    {
-      return new MacOsApp(Configuration);
-    }
-
-    protected override Device GenerateDeviceData()
-    {
-      return new MacOsDevice();
-    }
-
-    protected override Metadata GenerateMetadata()
-    {
-      return new Metadata(Metadata);
-    }
-  }
-
-  class iOSClient : BaseClient
-  {
-    [DllImport("__Internal", EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
-    static extern void StartBugsnagWithConfiguration(IntPtr configuration);
-
-    [DllImport("__Internal", EntryPoint = "bugsnag_setMetadata")]
-    static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
-
-    public iOSClient(iOSConfiguration configuration) : base(configuration)
-    {
-      var unityMetadata = UnityMetadata.Data;
-      Metadata.Add("Unity", unityMetadata);
-
-      var index = 0;
-      var metadata = new string[unityMetadata.Count * 2];
-
-      foreach (var data in unityMetadata)
-      {
-        metadata[index] = data.Key;
-        metadata[index + 1] = data.Value;
-        index += 2;
-      }
-
-      AddMetadata(configuration.NativeConfiguration, "Unity", metadata, metadata.Length);
-
-      StartBugsnagWithConfiguration(configuration.NativeConfiguration);
-
-      Delivery = new Delivery();
-      Breadcrumbs = new iOSBreadcrumbs(configuration);
-    }
-
-    public override IBreadcrumbs Breadcrumbs { get; }
-
-    protected override IDelivery Delivery { get; }
-
-    protected override App GenerateAppData()
-    {
-      return new iOSApp(Configuration);
-    }
-
-    protected override Device GenerateDeviceData()
-    {
-      return new iOSDevice();
-    }
-
-    protected override Metadata GenerateMetadata()
-    {
-      return new Metadata(Metadata);
     }
   }
 }

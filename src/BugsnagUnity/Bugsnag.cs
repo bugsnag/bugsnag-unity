@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BugsnagUnity
 {
@@ -20,17 +16,17 @@ namespace BugsnagUnity
           {
             case RuntimePlatform.tvOS:
             case RuntimePlatform.IPhonePlayer:
-              Client = new iOSClient(new iOSConfiguration(apiKey));
+              Client = new Client(new iOSClient(new iOSConfiguration(apiKey)));
               break;
             case RuntimePlatform.OSXEditor:
             case RuntimePlatform.OSXPlayer:
-              Client = new MacOsClient(new MacOSConfiguration(apiKey));
+              Client = new Client(new MacOsClient(new MacOSConfiguration(apiKey)));
               break;
             case RuntimePlatform.Android:
-              Client = new AndroidClient(new AndroidConfiguration(apiKey));
+              Client = new Client(new AndroidClient(new AndroidConfiguration(apiKey)));
               break;
             default:
-              Client = new Client(new Configuration(apiKey));
+              Client = new Client(new NativeClient(new Configuration(apiKey)));
               break;
           }
         }
