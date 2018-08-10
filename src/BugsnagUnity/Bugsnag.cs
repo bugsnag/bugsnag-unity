@@ -25,6 +25,10 @@ namespace BugsnagUnity
             case RuntimePlatform.Android:
               Client = new Client(new AndroidClient(new AndroidConfiguration(apiKey)));
               break;
+            case RuntimePlatform.WindowsEditor:
+            case RuntimePlatform.WindowsPlayer:
+              Client = new Client(new WindowsClient(new Configuration(apiKey)));
+              break;
             default:
               Client = new Client(new NativeClient(new Configuration(apiKey)));
               break;
