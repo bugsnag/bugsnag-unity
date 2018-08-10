@@ -1,5 +1,6 @@
 ﻿using BugsnagUnity.Payload;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,8 +31,13 @@ namespace BugsnagUnity
 
     INativeClient NativeClient { get; }
 
+    Stopwatch Stopwatch { get; }
+
+    bool InForeground => Stopwatch.IsRunning;
+
     public Client(INativeClient nativeClient)
     {
+      Stopwatch = new Stopwatch();
       NativeClient = nativeClient;
       User = new User();
       Middleware = new List<Middleware>();
@@ -130,7 +136,11 @@ namespace BugsnagUnity
     void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType = null)
     {
       var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
-      var app = new App(Configuration);
+      var app = new App(Configuration)
+      {
+        InForeground = InForeground,
+        DurationInForeground = Stopwatch.Elapsed,
+      };
       NativeClient.PopulateApp(app);
       var device = new Device();
       NativeClient.PopulateDevice(device);
@@ -190,6 +200,23 @@ namespace BugsnagUnity
         Breadcrumbs.Leave(Breadcrumb.FromReport(report));
 
         SessionTracking.CurrentSession?.AddException(report);
+      }
+    }
+
+    public void SetApplicationState(bool inFocus)
+    {
+      if (inFocus)
+      {
+        Stopwatch.Start();
+
+        if (Configuration.AutoCaptureSessions)
+        {
+          SessionTracking.StartSession();
+        }
+      }
+      else
+      {
+        Stopwatch.Stop();
       }
     }
   }

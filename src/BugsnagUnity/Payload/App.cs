@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BugsnagUnity.Payload
 {
@@ -8,17 +8,34 @@ namespace BugsnagUnity.Payload
   /// </summary>
   public class App : Dictionary<string, object>, IFilterable
   {
-    internal App(IConfiguration configuration) : this(configuration.AppVersion, configuration.ReleaseStage, null)
+    internal App(IConfiguration configuration)
     {
-
+      Version = configuration.AppVersion;
+      ReleaseStage = configuration.ReleaseStage;
     }
 
-    internal App(string version, string releaseStage, string type)
+    public string Version
     {
-      this.AddToPayload("version", version);
-      this.AddToPayload("releaseStage", releaseStage);
-      this.AddToPayload("type", type);
-      this.AddToPayload("durationInForeground", Time.time);
+      get => this.Get("version") as string;
+      set => this.AddToPayload("version", value);
+    }
+
+    public string ReleaseStage
+    {
+      get => this.Get("releaseStage") as string;
+      set => this.AddToPayload("releaseStage", value);
+    }
+
+    public bool InForeground
+    {
+      get => (bool)this.Get("inForeground");
+      set => this.AddToPayload("inForeground", value);
+    }
+
+    public TimeSpan DurationInForeground
+    {
+      get => TimeSpan.FromSeconds((int)this.Get("durationInForeground"));
+      set => this.AddToPayload("durationInForeground", value.Seconds);
     }
   }
 }

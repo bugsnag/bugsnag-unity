@@ -27,5 +27,13 @@ namespace BugsnagUnity
     void Notify(System.Exception exception, Severity severity);
 
     void Notify(System.Exception exception, Severity severity, Middleware callback);
+
+    /// <summary>
+    /// Used to signal to the Bugsnag client that the focused state of the
+    /// application has changed. This is used for session tracking and also
+    /// the tracking of in foreground time for the application.
+    /// </summary>
+    /// <param name="inFocus"></param>
+    void SetApplicationState(bool inFocus);
   }
 }
