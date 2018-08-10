@@ -30,6 +30,14 @@ namespace BugsnagUnity
       {
         device.AddToPayload("freeMemory", memStatus.ullAvailPhys);
       }
+
+      if (GetDiskFreeSpaceEx(@"C:\",
+                                        out ulong freeBytesAvailable,
+                                        out ulong totalNumberOfBytes,
+                                        out ulong totalNumberOfFreeBytes))
+      {
+        device.AddToPayload("freeDisk", freeBytesAvailable);
+      }
     }
 
     public void PopulateMetadata(Metadata metadata)
@@ -43,6 +51,13 @@ namespace BugsnagUnity
     public void SetMetadata(string tab, Dictionary<string, string> metadata)
     {
     }
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
+      out ulong lpFreeBytesAvailable,
+      out ulong lpTotalNumberOfBytes,
+      out ulong lpTotalNumberOfFreeBytes);
 
     [return: MarshalAs(UnmanagedType.Bool)]
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
