@@ -25,6 +25,8 @@ namespace BugsnagUnity
 
     public void PopulateDevice(Device device)
     {
+      device.AddToPayload("jailbroken", false);
+
       MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
       if (GlobalMemoryStatusEx(memStatus))
       {
