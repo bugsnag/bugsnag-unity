@@ -34,8 +34,8 @@ namespace BugsnagUnity.Payload
 
     public TimeSpan DurationInForeground
     {
-      get => TimeSpan.FromSeconds((int)this.Get("durationInForeground"));
-      set => this.AddToPayload("durationInForeground", value.Seconds);
+      get => TimeSpan.FromMilliseconds((double)this.Get("durationInForeground"));
+      set => this.AddToPayload("durationInForeground", value.TotalMilliseconds);
     }
   }
 }
