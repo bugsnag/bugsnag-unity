@@ -27,11 +27,7 @@ namespace BugsnagUnity
     {
       device.AddToPayload("jailbroken", false);
 
-      // this has no set format but can have both the model and the manufacturer
-      // in the string, we could put this into either model or manufacturer
-      // or we could try to parse any known formats into model and manufacturer
-      // also need to check if this is able to be called from threads that are not
-      // the main thread
+      device.AddToPayload("manufacturer", "PC");
       device.AddToPayload("model", UnityEngine.SystemInfo.deviceModel);
 
       MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
