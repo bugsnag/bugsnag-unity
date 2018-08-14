@@ -22,6 +22,9 @@ namespace BugsnagUnity.Payload
       this.AddToPayload("osName", OsName);
       this.AddToPayload("time", DateTime.UtcNow);
 
+      // we expect that windows version strings look like:
+      // "Microsoft Windows NT 10.0.17134.0"
+      // if it does then we can parse out the version number into a separate field
       var matches = Regex.Match(Environment.OSVersion.VersionString, "\\A(?<osName>[a-zA-Z ]*) (?<osVersion>[\\d\\.]*)\\z");
       if (matches.Success)
       {
