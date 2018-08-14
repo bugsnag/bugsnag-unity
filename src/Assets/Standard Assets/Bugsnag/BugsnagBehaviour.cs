@@ -55,7 +55,8 @@ namespace BugsnagUnity
 
     void OnApplicationPause(bool paused)
     {
-      Bugsnag.Client.SetApplicationState(!paused);
+      var hasFocus = !paused;
+      Bugsnag.Client.SetApplicationState(hasFocus);
     }
   }
 }
