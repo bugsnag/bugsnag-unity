@@ -20,7 +20,7 @@ namespace BugsnagUnity
     [DllImport("__Internal", EntryPoint = "bugsnag_retrieveDeviceData")]
     static extern void RetrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
-    public iOSConfiguration Configuration { get; }
+    iOSConfiguration Configuration { get; }
 
     IConfiguration INativeClient.Configuration => Configuration;
 
