@@ -201,4 +201,4 @@ namespace :example do
   end
 end
 
-task default: %w[plugin:export]
+task default: %w[plugin:maze_runner]
