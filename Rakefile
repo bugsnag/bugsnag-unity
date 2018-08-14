@@ -165,6 +165,10 @@ namespace :plugin do
     rm_f package_output
     unity "-projectpath", project_path, "-exportpackage", "Assets", package_output
   end
+
+  task maze_runner: %w[plugin:export] do
+    sh "bundle", "exec", "bugsnag-maze-runner"
+  end
 end
 
 namespace :example do
