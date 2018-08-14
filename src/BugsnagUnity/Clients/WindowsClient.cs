@@ -36,6 +36,9 @@ namespace BugsnagUnity
         device.AddToPayload("freeMemory", memStatus.ullAvailPhys);
       }
 
+      // This is generally the main drive on a Windows machine
+      // A future enhancement would be to determine which drive the application
+      // is running on and use that drive letter instead of defaulting to C
       if (GetDiskFreeSpaceEx(@"C:\",
                                         out ulong freeBytesAvailable,
                                         out ulong totalNumberOfBytes,
