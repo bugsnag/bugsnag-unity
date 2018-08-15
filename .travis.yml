@@ -21,6 +21,9 @@ env:
   - TERM=dumb
   - ANDROID_HOME=/usr/local/share/android-sdk
   - MONO_URL="https://download.mono-project.com/archive/5.12.0/macos-10-universal/MonoFramework-MDK-5.12.0.226.macos10.xamarin.universal.pkg"
+  - secure: gvj3mPdnIF1TzN2hNo9xv8/40IUNLE7/g9vFof7EamJrFBpEkGSU9pxTt5QVhSI4GKlZD+epDXPzGNryJ9nyc9eF11AdgX7g/4+GBAk80R0JJPaEfrVv/1RMDeeEmUduWdV3G68yyUEEEshD2jYdYRetsHSdGHcT6WfdQcQe9eM=
+  - secure: afR91RoHdgB4pXSdLwnMQNVgkrsA81T59XHrXrb8iahD8lE4ouoxF92ZWeHzRGDmeLIL1RlySyOId0J7MV695DbUIPHNFTUQvZcE/IlwhxXuP2NrO2AtXVDlpECNbGKOSFEbXWkBThoSqSsPx+i6WngeHjfTWb1d0mSKQV2GZp4=
+  - secure: WLBjta+fSkeyeWKq2pNkGRzxY8q/KtL3oFhCt2zxh7hLf4mYt8Ge5BC3llk7N+BZOQTlbZkXJhsgwyDU821HrqijIGvYWzF5jiLn2L9DOkm8SgHCStvs8vQQeHnf0gzS98JGaXDEZPnOl2OGo5kiuW9fv2afydRSI1ILozre5jc=
 install:
 - brew tap caskroom/cask
 - brew cask install android-sdk
@@ -31,7 +34,13 @@ install:
 - export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
 - sudo installer -dumplog -package Unity.pkg -target /
 - bundle install
+before_script:
+- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -serial $UNITY_SERIAL -username '$UNITY_USERNAME' -password '$UNITY_PASSWORD'"
+- sleep 10
 script: bundle exec rake
+after_script:
+- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense"
+- sleep 10
 after_failure: cat unity.log
 deploy:
   provider: releases
