@@ -5,7 +5,9 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using UnityEditor.Callbacks;
+#if UNITY_IOS
 using UnityEditor.iOS.Xcode;
+#endif
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -37,6 +39,8 @@ public class BugsnagBuilder : MonoBehaviour {
         return;
     }
 #endif
+
+#if UNITY_IOS
         var scriptUUID = getUUIDForPbxproj ();
 
         var projectPath = PBXProject.GetPBXProjectPath(path);
@@ -104,6 +108,7 @@ public class BugsnagBuilder : MonoBehaviour {
         }
 
         File.WriteAllText(pbxPath, sb.ToString());
+#endif
     }
 
     private static string getUUIDForPbxproj() {
