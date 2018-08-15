@@ -15,17 +15,17 @@ pushd "${0%/*}"
       -createProject $project_path
 
     Unity -nographics -quit -batchmode -logFile $log_file \
-      -projectpath $project_path \
+      -projectPath $project_path \
       -importPackage "$package_path/Bugsnag.unitypackage"
 
     cp Main.cs unity_project/Assets/Main.cs
 
     Unity -nographics -quit -batchmode -logFile $log_file \
-      -projectpath $project_path \
+      -projectPath $project_path \
       -executeMethod "Main.CreateScene"
 
     Unity -nographics -quit -batchmode -logFile $log_file \
-      -projectpath $project_path \
+      -projectPath $project_path \
       -buildOSXUniversalPlayer "$(pwd)/Mazerunner.app"
   popd
 popd

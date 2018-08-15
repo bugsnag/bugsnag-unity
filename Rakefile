@@ -163,7 +163,7 @@ namespace :plugin do
   task export: %w[plugin:build:all] do
     package_output = File.join(current_directory, "Bugsnag.unitypackage")
     rm_f package_output
-    unity "-projectpath", project_path, "-exportpackage", "Assets", package_output
+    unity "-projectPath", project_path, "-exportPackage", "Assets", package_output
   end
 
   task maze_runner: %w[plugin:export] do
@@ -177,7 +177,7 @@ namespace :example do
       # import the built bugsnag package into the sample application
       example = File.absolute_path "example"
       package = File.absolute_path "Bugsnag.unitypackage"
-      unity "-projectpath", example, "-importPackage", package
+      unity "-projectPath", example, "-importPackage", package
 
       # here we have to uncomment the lines that reference bugsnag. These are
       # commented out so that we can import the package above and have it compile
@@ -189,12 +189,12 @@ namespace :example do
 
     task ios: %w[example:build:prepare] do
       example = File.absolute_path "example"
-      unity "-projectpath", example, "-executeMethod", "Main.iOSBuild"
+      unity "-projectPath", example, "-executeMethod", "Main.iOSBuild"
     end
 
     task android: %w[example:build:prepare] do
       example = File.absolute_path "example"
-      unity "-projectpath", example, "-executeMethod", "Main.AndroidBuild"
+      unity "-projectPath", example, "-executeMethod", "Main.AndroidBuild"
     end
 
     task all: %w[example:build:ios example:build:android]
