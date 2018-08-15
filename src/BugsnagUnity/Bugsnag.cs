@@ -16,11 +16,11 @@ namespace BugsnagUnity
           {
             case RuntimePlatform.tvOS:
             case RuntimePlatform.IPhonePlayer:
-              Client = new Client(new iOSClient(new iOSConfiguration(apiKey)));
+              Client = new Client(new CocoaClient(new iOSConfiguration(apiKey)));
               break;
             case RuntimePlatform.OSXEditor:
             case RuntimePlatform.OSXPlayer:
-              Client = new Client(new MacOsClient(new MacOSConfiguration(apiKey)));
+              Client = new Client(new CocoaClient(new MacOSConfiguration(apiKey)));
               break;
             case RuntimePlatform.Android:
               Client = new Client(new AndroidClient(new AndroidConfiguration(apiKey)));
