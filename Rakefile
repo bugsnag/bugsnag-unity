@@ -167,7 +167,7 @@ namespace :plugin do
   end
 
   task maze_runner: %w[plugin:export] do
-    sh "bundle", "exec", "bugsnag-maze-runner"
+    sh "bundle", "exec", "bugsnag-maze-runner", "--verbose"
   end
 end
 
