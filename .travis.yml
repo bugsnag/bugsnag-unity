@@ -10,11 +10,11 @@ cache:
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
   - "$HOME/Library/Caches/Homebrew"
-matrix:
+jobs:
   include:
-  - name: "Unity 2017.4.3"
+  - stage: Unity 2017.4.3
     env: UNITY_URL="https://download.unity3d.com/download_unity/21ae32b5a9cb/MacEditorInstaller/Unity-2017.4.3f1.pkg"
-  - name: "Unity 2018.2.3"
+  - stage: Unity 2018.2.3
     env: UNITY_URL="https://netstorage.unity3d.com/unity/1431a7d2ced7/MacEditorInstaller/Unity-2018.2.3f1.pkg"
 env:
   global:
