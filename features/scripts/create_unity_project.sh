@@ -8,11 +8,24 @@ pushd "${0%/*}"
   popd
   pushd ../fixtures
     git clean -xdf .
+    log_file="$package_path/unity.log"
     project_path="$(pwd)/unity_project"
-    Unity -nographics -quit -batchmode -logFile unity.log -createProject $project_path
-    Unity -nographics -quit -batchmode -logFile unity.log -projectpath $project_path -importPackage "$package_path/Bugsnag.unitypackage"
+
+    Unity -nographics -quit -batchmode -logFile $log_file \
+      -createProject $project_path
+
+    Unity -nographics -quit -batchmode -logFile $log_file \
+      -projectpath $project_path \
+      -importPackage "$package_path/Bugsnag.unitypackage"
+
     cp Main.cs unity_project/Assets/Main.cs
-    Unity -nographics -quit -batchmode -logFile unity.log -projectpath $project_path -executeMethod "Main.CreateScene"
-    Unity -nographics -quit -batchmode -logFile unity.log -projectpath $project_path -buildOSXUniversalPlayer "$package_path/features/fixtures/Mazerunner.app"
+
+    Unity -nographics -quit -batchmode -logFile $log_file \
+      -projectpath $project_path \
+      -executeMethod "Main.CreateScene"
+
+    Unity -nographics -quit -batchmode -logFile $log_file \
+      -projectpath $project_path \
+      -buildOSXUniversalPlayer "$(pwd)/Mazerunner.app"
   popd
 popd
