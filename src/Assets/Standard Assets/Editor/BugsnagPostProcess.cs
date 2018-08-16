@@ -5,9 +5,6 @@ using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using UnityEditor.Callbacks;
-#if UNITY_IOS
-using UnityEditor.iOS.Xcode;
-#endif
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -40,75 +37,152 @@ public class BugsnagBuilder : MonoBehaviour {
     }
 #endif
 
-#if UNITY_IOS
         var scriptUUID = getUUIDForPbxproj ();
-
-        var projectPath = PBXProject.GetPBXProjectPath(path);
-        var project = new PBXProject();
-        project.ReadFromFile(projectPath);
-        var targetName = PBXProject.GetUnityTargetName();
-
-        project.AddBuildProperty(project.TargetGuidByName(targetName), "OTHER_LDFLAGS", "-ObjC");
-        project.WriteToFile(projectPath);
 
         var xcodeProjectPath = Path.Combine (path, "Unity-iPhone.xcodeproj");
         var pbxPath = Path.Combine (xcodeProjectPath, "project.pbxproj");
 
-        var sb = new StringBuilder ();
+        var output = new StringBuilder();
+        var xcodeProjectLines = File.ReadAllLines(pbxPath).GetEnumerator();
 
-        var xcodeProjectLines = File.ReadAllLines (pbxPath);
-        var inBuildPhases = false;
+        while (xcodeProjectLines.MoveNext())
+        {
+            var currentLine = (string)xcodeProjectLines.Current;
 
-        var needsBugsnagScript = true;
-        foreach (var line in xcodeProjectLines) {
-            if (line.Contains ("bugsnag dsym upload script")) {
-                needsBugsnagScript = false;
+            if (currentLine.Contains("GCC_ENABLE_OBJC_EXCEPTIONS"))
+            {
+                output.AppendLine(currentLine.Replace("NO", "YES"));
+            }
+            else if (currentLine.Contains("GCC_ENABLE_CPP_EXCEPTIONS"))
+            {
+                output.AppendLine(currentLine.Replace("NO", "YES"));
+            }
+            else if (currentLine.Contains("/* Begin PBXResourcesBuildPhase section */"))
+            {
+                output.AppendLine(currentLine);
+                ProcessResourcesBuildPhaseSection(xcodeProjectLines, scriptUUID, output);
+            }
+            else if (currentLine.Contains("buildPhases = ("))
+            {
+                output.AppendLine(currentLine);
+                ProcessBuildPhase(xcodeProjectLines, scriptUUID, output);
+            }
+            else if (currentLine.Contains("OTHER_LDFLAGS = ("))
+            {
+                output.AppendLine(currentLine);
+                ProcessLinkerFlags(xcodeProjectLines, output);
+            }
+            else
+            {
+                output.AppendLine(currentLine);
             }
         }
 
+        File.WriteAllText(pbxPath, output.ToString());
+    }
 
-        foreach (var line in xcodeProjectLines) {
-            // Enable objective C exceptions
-            if (line.Contains("GCC_ENABLE_OBJC_EXCEPTIONS") ||
-                       line.Contains ("GCC_ENABLE_CPP_EXCEPTIONS")) {
-                var newLine = line.Replace("NO", "YES");
-                Debug.Log(line);
-                sb.AppendLine(newLine);
+    private static void ProcessBuildPhase(IEnumerator lines, string uuid, StringBuilder output)
+    {
+        var needsBuildPhase = true;
 
-            } else if (needsBugsnagScript && line.Contains ("/* Begin PBXResourcesBuildPhase section */")) {
-                sb.AppendLine (line);
+        while (lines.MoveNext())
+        {
+            var currentLine = (string)lines.Current;
 
-                sb.Append (
-                    "\t\t" + scriptUUID + " /* ShellScript */ = {\n" +
-                    "\t\t\tisa = PBXShellScriptBuildPhase;\n" +
-                    "\t\t\tbuildActionMask = 2147483647;\n" +
-                    "\t\t\tfiles = (\n" +
-                    "\t\t\t);\n" +
-                    "\t\t\tinputPaths = (\n" +
-                    "\t\t\t);\n" +
-                    "\t\t\toutputPaths = (\n" +
-                    "\t\t\t);\n" +
-                    "\t\t\trunOnlyForDeploymentPostprocessing = 0;\n" +
-                    "\t\t\tshellPath = \"/usr/bin/env ruby\";\n" +
-                    "\t\t\tshellScript = \"# bugsnag dsym upload script\\nfork do\\n  Process.setsid\\n  STDIN.reopen(\\\"/dev/null\\\")\\n  STDOUT.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n  STDERR.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n\\n  require \\\"shellwords\\\"\\n\\n  Dir[\\\"#{ENV[\\\"DWARF_DSYM_FOLDER_PATH\\\"]}/*/Contents/Resources/DWARF/*\\\"].each do |dsym|\\n    system(\\\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\\\"PROJECT_DIR\\\"])} https://upload.bugsnag.com/\\\")\\n  end\\nend\";\n" +
-                    "\t\t};\n"
-                );
-            } else if (needsBugsnagScript && line.Contains ("buildPhases = (")) {
-                inBuildPhases = true;
-                sb.AppendLine(line);
-            } else if (needsBugsnagScript && inBuildPhases && line.Contains(");")) {
-                inBuildPhases = false;
-                sb.AppendLine ("\t\t\t\t" + scriptUUID + " /* ShellScript */,");
-                sb.AppendLine (line);
-
-            } else {
-                sb.AppendLine(line);
+            if (currentLine.Contains(uuid))
+            {
+                needsBuildPhase = false;
+                output.AppendLine(currentLine);
             }
+            else if (currentLine.Contains(");"))
+            {
+                if (needsBuildPhase)
+                {
+                    output.AppendFormat("\t\t\t\t{0} /* ShellScript */,", uuid);
+                    output.AppendLine();
+                }
 
+                output.AppendLine(currentLine);
+                break;
+            }
+            else
+            {
+                output.AppendLine(currentLine);
+            }
         }
+    }
 
-        File.WriteAllText(pbxPath, sb.ToString());
-#endif
+    private static void ProcessResourcesBuildPhaseSection(IEnumerator lines, string uuid, StringBuilder output)
+    {
+        var needsBuildPhaseScript = true;
+
+        while (lines.MoveNext())
+        {
+            var currentLine = (string)lines.Current;
+
+            if (currentLine.Contains("bugsnag dsym upload script"))
+            {
+                needsBuildPhaseScript = false;
+                output.AppendLine(currentLine);
+            }
+            else if (currentLine.Contains("/* End PBXResourcesBuildPhase section */"))
+            {
+                if (needsBuildPhaseScript)
+                {
+                    output.AppendFormat("\t\t{0} /* ShellScript */ = {{", uuid);
+                    output.AppendLine();
+                    output.AppendLine("\t\t\tisa = PBXShellScriptBuildPhase;");
+                    output.AppendLine("\t\t\tbuildActionMask = 2147483647;");
+                    output.AppendLine("\t\t\tfiles = (");
+                    output.AppendLine("\t\t\t);");
+                    output.AppendLine("\t\t\tinputPaths = (");
+                    output.AppendLine("\t\t\t);");
+                    output.AppendLine("\t\t\toutputPaths = (");
+                    output.AppendLine("\t\t\t);");
+                    output.AppendLine("\t\t\trunOnlyForDeploymentPostprocessing = 0;");
+                    output.AppendLine("\t\t\tshellPath = \"/usr/bin/env ruby\";");
+                    output.AppendLine("\t\t\tshellScript = \"# bugsnag dsym upload script\\nfork do\\n  Process.setsid\\n  STDIN.reopen(\\\"/dev/null\\\")\\n  STDOUT.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n  STDERR.reopen(\\\"/dev/null\\\", \\\"a\\\")\\n\\n  require \\\"shellwords\\\"\\n\\n  Dir[\\\"#{ENV[\\\"DWARF_DSYM_FOLDER_PATH\\\"]}/*/Contents/Resources/DWARF/*\\\"].each do |dsym|\\n    system(\\\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\\\"PROJECT_DIR\\\"])} https://upload.bugsnag.com/\\\")\\n  end\\nend\";");
+                    output.AppendLine("\t\t};");
+                }
+
+                output.AppendLine(currentLine);
+                break;
+            }
+            else
+            {
+                output.AppendLine(currentLine);
+            }
+        }
+    }
+
+    private static void ProcessLinkerFlags(IEnumerator lines, StringBuilder output)
+    {
+        bool needsLinkerFlag = true;
+
+        while (lines.MoveNext())
+        {
+            var currentLine = (string)lines.Current;
+
+            if (currentLine.Contains("-ObjC"))
+            {
+                needsLinkerFlag = false;
+                output.AppendLine(currentLine);
+            }
+            else if (currentLine.Contains(");"))
+            {
+                if (needsLinkerFlag)
+                {
+                    output.AppendLine("\t\t\t\t\t\"-ObjC\"");
+                }
+
+                output.AppendLine(currentLine);
+                break;
+            }
+            else
+            {
+                output.AppendLine(currentLine);
+            }
+        }
     }
 
     private static string getUUIDForPbxproj() {
