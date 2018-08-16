@@ -218,8 +218,7 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
 
   callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
   callback(deviceData, "locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
-  // callback("manufacturer", sysInfo[@"Apple"]);//does this exist?
-  callback(deviceData, "manufacturer", "Apple");//does this exist?
+  callback(deviceData, "manufacturer", "Apple");
   callback(deviceData, "model", [sysInfo[@BSG_KSSystemField_Machine] UTF8String]);
   callback(deviceData, "modelNumber", [sysInfo[@BSG_KSSystemField_Model] UTF8String]);
   callback(deviceData, "osName", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
