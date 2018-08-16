@@ -1,6 +1,7 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
 #import "BSG_KSSystemInfo.h"
+#import "BSG_KSMach.h"
 
 extern "C" {
   void *bugsnag_createConfiguration(char *apiKey);
@@ -209,6 +210,11 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
       NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
       callback(deviceData, "freeDisk", [[freeBytes stringValue] UTF8String]);
   }
+
+  uint64_t freeMemory = bsg_ksmachfreeMemory();
+  char buff[30];
+  sprintf(buff, "%lld", freeMemory);
+  callback(deviceData, "freeMemory", buff);
 
   callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
   callback(deviceData, "locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
