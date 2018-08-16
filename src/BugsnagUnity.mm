@@ -196,6 +196,20 @@ void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *i
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(
+                                                             NSDocumentDirectory, NSUserDomainMask, true);
+  NSString *path = [searchPaths lastObject];
+
+  NSError *error;
+  NSDictionary *fileSystemAttrs =
+  [fileManager attributesOfFileSystemForPath:path error:&error];
+
+  if (!error) {
+      NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+      callback(deviceData, "freeDisk", [[freeBytes stringValue] UTF8String]);
+  }
+
   callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
   callback(deviceData, "locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
   // callback("manufacturer", sysInfo[@"Apple"]);//does this exist?
