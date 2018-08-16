@@ -35,11 +35,11 @@ install:
 - sudo installer -dumplog -package Unity.pkg -target /
 - bundle install
 before_script:
-- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -serial $UNITY_SERIAL -username $UNITY_USERNAME -password $UNITY_PASSWORD"
+- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -serial $UNITY_SERIAL -username $UNITY_USERNAME -password $UNITY_PASSWORD -logFile unity.log"
 - sleep 10
 script: bundle exec rake
 after_script:
-- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense"
+- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense -logFile unity.log"
 - sleep 10
 after_failure: cat unity.log
 deploy:
