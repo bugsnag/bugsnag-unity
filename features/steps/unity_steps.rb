@@ -10,7 +10,7 @@ When("run the application") do
   ])
 end
 
-Given("I configure the bugsnag endpoint") do
+Given("I configure the bugsnag notify endpoint") do
   steps %Q{
     When I set environment variable "MAZE_ENDPOINT" to "http://localhost:#{MOCK_API_PORT}"
   }

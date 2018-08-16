@@ -1,7 +1,7 @@
 Feature: Handled Errors and Exceptions
 
 Scenario: Reporting a handled exception
-  Given I configure the bugsnag endpoint
+  Given I configure the bugsnag notify endpoint
   And I set environment variable "BUGSNAG_APIKEY" to "a35a2a72bd230ac0aa0f52715bbdc6aa"
   When I build a Unity application
   And run the application
