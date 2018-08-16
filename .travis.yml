@@ -41,7 +41,10 @@ script: bundle exec rake
 after_script:
 - "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense -logFile unity.log"
 - sleep 10
-after_failure: cat unity.log
+after_failure:
+- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense -logFile unity.log"
+- sleep 10
+- cat unity.log
 deploy:
   provider: releases
   api_key:
