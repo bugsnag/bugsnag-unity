@@ -149,9 +149,18 @@ namespace BugsnagUnity
         {
           if (breadcrumb.Metadata != null)
           {
+            var putMethod = AndroidJNIHelper.GetMethodID(metadata.GetRawClass(), "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+            var args = new object[2];
+
             foreach (var item in breadcrumb.Metadata)
             {
-              metadata.Call<string>("put", item.Key, item.Value);
+              using (var key = new AndroidJavaObject("java.lang.String", item.Key))
+              using (var value = new AndroidJavaObject("java.lang.String", item.Value))
+              {
+                args[0] = key;
+                args[1] = value;
+                AndroidJNI.CallObjectMethod(metadata.GetRawObject(), putMethod, AndroidJNIHelper.CreateJNIArgArray(args));
+              }
             }
           }
 

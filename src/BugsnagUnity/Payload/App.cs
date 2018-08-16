@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using AOT;
-using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
@@ -11,94 +8,34 @@ namespace BugsnagUnity.Payload
   /// </summary>
   public class App : Dictionary<string, object>, IFilterable
   {
-    internal App(IConfiguration configuration) : this(configuration.AppVersion, configuration.ReleaseStage, null)
+    internal App(IConfiguration configuration)
     {
-
+      Version = configuration.AppVersion;
+      ReleaseStage = configuration.ReleaseStage;
     }
 
-    internal App(string version, string releaseStage, string type)
+    public string Version
     {
-      this.AddToPayload("version", version);
-      this.AddToPayload("releaseStage", releaseStage);
-      this.AddToPayload("type", type);
-    }
-  }
-
-  class AndroidApp : App
-  {
-    internal AndroidApp(IConfiguration configuration, AndroidJavaObject client) : base(configuration)
-    {
-      using (var appData = client.Call<AndroidJavaObject>("getAppData"))
-      using (var map = appData.Call<AndroidJavaObject>("getAppData"))
-      {
-        this.PopulateDictionaryFromAndroidData(map);
-      }
-    }
-  }
-
-  class MacOsApp : App
-  {
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveAppData")]
-    static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
-
-    internal MacOsApp(IConfiguration configuration) : base(configuration)
-    {
-      GCHandle handle = GCHandle.Alloc(this);
-
-      try
-      {
-        RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
-      }
-      finally
-      {
-        if (handle != null)
-        {
-          handle.Free();
-        }
-      }
+      get => this.Get("version") as string;
+      set => this.AddToPayload("version", value);
     }
 
-    [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
-    static void PopulateAppData(IntPtr instance, string key, string value)
+    public string ReleaseStage
     {
-      var handle = GCHandle.FromIntPtr(instance);
-      if (handle.Target is MacOsApp app)
-      {
-        app.AddToPayload(key, value);
-      }
-    }
-  }
-
-  class iOSApp : App
-  {
-    [DllImport("__Internal", EntryPoint = "bugsnag_retrieveAppData")]
-    static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
-
-    internal iOSApp(IConfiguration configuration) : base(configuration)
-    {
-      GCHandle handle = GCHandle.Alloc(this);
-
-      try
-      {
-        RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
-      }
-      finally
-      {
-        if (handle != null)
-        {
-          handle.Free();
-        }
-      }
+      get => this.Get("releaseStage") as string;
+      set => this.AddToPayload("releaseStage", value);
     }
 
-    [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
-    static void PopulateAppData(IntPtr instance, string key, string value)
+    public bool InForeground
     {
-      var handle = GCHandle.FromIntPtr(instance);
-      if (handle.Target is iOSApp app)
-      {
-        app.AddToPayload(key, value);
-      }
+      get => (bool)this.Get("inForeground");
+      set => this.AddToPayload("inForeground", value);
+    }
+
+    public TimeSpan DurationInForeground
+    {
+      get => TimeSpan.FromMilliseconds((double)this.Get("durationInForeground"));
+      set => this.AddToPayload("durationInForeground", value.TotalMilliseconds);
     }
   }
 }

@@ -50,10 +50,13 @@ namespace BugsnagUnity
     /// <param name="hasFocus"></param>
     void OnApplicationFocus(bool hasFocus)
     {
-      if (hasFocus && Bugsnag.Client.Configuration.AutoCaptureSessions)
-      {
-        Bugsnag.Client.SessionTracking.StartSession();
-      }
+      Bugsnag.Client.SetApplicationState(hasFocus);
+    }
+
+    void OnApplicationPause(bool paused)
+    {
+      var hasFocus = !paused;
+      Bugsnag.Client.SetApplicationState(hasFocus);
     }
   }
 }
