@@ -48,7 +48,7 @@ The plugin can be built by running
 
 ```
 bundle install
-bundle exec rake
+bundle exec rake plugin:export
 ```
 
 ## Building Example
@@ -56,6 +56,17 @@ bundle exec rake
 ```
 bundle install
 bundle exec rake example:build:all
+```
+
+## Running maze-runner
+
+We have a very simple maze-runner setup, which builds a MacOS X Unity game that sends a simple notification.
+
+NOTE: This does not currently run on Windows
+
+```
+bundle install
+bundle exec rake plugin:maze_runner
 ```
 
 ## Releasing a new version
