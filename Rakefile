@@ -170,7 +170,7 @@ namespace :plugin do
     end
     task csharp: [:clean] do
       if is_windows?
-        env = { "UnityDir" => unity_dll_location.gsub(File::SEPARATOR, File::ALT_SEPARATOR || File::SEPARATOR) }
+        env = { "UnityDir" => unity_dll_location }
         system env, "powershell", "-File", "build.ps1"
       else
         env = { "UnityDir" => unity_dll_location }
