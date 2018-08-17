@@ -89,7 +89,24 @@ namespace BugsnagUnity
       var handle = GCHandle.FromIntPtr(instance);
       if (handle.Target is Device device)
       {
-        device.AddToPayload(key, value);
+        switch (key) {
+          case "jailbroken":
+            switch (value) {
+              case "0":
+                device.AddToPayload(key, false);
+                break;
+              case "1":
+                device.AddToPayload(key, true);
+                break;
+              default:
+                device.AddToPayload(key, value);
+                break;
+            }
+            break;
+          default:
+            device.AddToPayload(key, value);
+            break;
+        }
       }
     }
 
