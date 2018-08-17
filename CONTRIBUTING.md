@@ -27,8 +27,15 @@ You can install as many versions of Unity as you like on the same computer. On a
 
 The build script will by default locate Unity in it's default location on both Mac and Windows machines. If you want to use an alternative location for Unity (to test against multiple versions for instance) then you can specify the location in an ENV variable when running the build script.
 
+MacOS
 ```
 UNITY_DIR=/Applications/Unity.2018.2.3 bundle exec rake
+```
+
+Windows
+```
+$env:UNITY_DIR="C:\Program Files\Unity.2018.2.3\"
+bundle exec rake
 ```
 
 ## Testing Changes
