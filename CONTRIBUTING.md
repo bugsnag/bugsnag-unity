@@ -15,10 +15,21 @@
     git clone --recursive git@github.com:bugsnag/bugsnag-unity
     ```
 
+- Install Unity
 - Set up your Xcode (requires being a member of the Apple Developer Program)
 - Set up the Android SDK (using [instructions](https://github.com/bugsnag/bugsnag-android/blob/master/CONTRIBUTING.md) from bugsnag-android)
 - Open the example app in Unity
 - You can build the app for iPhone or Android using the custom Build menu.
+
+## Installing and using multiple versions of Unity
+
+You can install as many versions of Unity as you like on the same computer. On a Mac the installer creates a folder called Unity, and overwrites any existing folder with this name. If you want more than one version of Unity on your Mac, rename the existing Unity folder before installing another version. On a PC, the install folder defaults to C:\Program Files\Unity, this can be changed to another path so that you can install more than one version.
+
+The build script will by default locate Unity in it's default location on both Mac and Windows machines. If you want to use an alternative location for Unity (to test against multiple versions for instance) then you can specify the location in an ENV variable when running the build script.
+
+```
+UNITY_DIR=/Applications/Unity.2018.2.3 bundle exec rake
+```
 
 ## Testing Changes
 

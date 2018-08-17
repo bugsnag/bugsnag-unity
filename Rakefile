@@ -6,12 +6,49 @@ HOST_OS = RbConfig::CONFIG['host_os']
 def is_mac?; HOST_OS =~ /darwin/i; end
 def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
 
-$UNITY = ['/Applications/Unity/Unity.app/Contents/MacOS/Unity', 'C:\Program Files\Unity\Editor\Unity.exe'].find do |unity|
-  File.exists? unity
+##
+#
+# Find the directory that Unity has been installed in. This can be set via
+# an ENV variable, if this has not been set then it will look in the default
+# install location for both windows and mac.
+#
+def unity_directory
+  if ENV.has_key? "UNITY_DIR"
+    ENV["UNITY_DIR"]
+  else
+    ['/Applications/Unity', 'C:\Program Files\Unity'].find do |dir|
+      File.exists? dir
+    end
+  end
 end
 
+##
+#
+# Find the Unity executable based on the unity directory.
+#
+def unity_executable
+  [File.join(unity_directory, "Unity.app", "Contents", "MacOS", "Unity"), File.join(unity_directory, "Editor", "Unity.exe")].find do |unity|
+    File.exists? unity
+  end
+end
+
+unless unity_executable
+  raise "Unable to locate Unity executable in #{unity_directory}"
+end
+
+def unity_dll_location
+  [File.join(unity_directory, "Unity.app", "Contents", "Managed"), File.join(unity_directory, "Editor", "Data", "Managed")].find do |unity|
+    File.exists? unity
+  end
+end
+
+##
+#
+# Run a command with the unity executable and the default command line parameters
+# that we apply
+#
 def unity(*cmd)
-  cmd = cmd.unshift($UNITY, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit")
+  cmd = cmd.unshift(unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit")
   sh *cmd do |ok, res|
     if !ok
       sh "cat", "unity.log"
@@ -133,9 +170,11 @@ namespace :plugin do
     end
     task csharp: [:clean] do
       if is_windows?
-        sh "powershell", "-File", "build.ps1"
+        env = { "UnityDir" => unity_dll_location.gsub(File::SEPARATOR, File::ALT_SEPARATOR || File::SEPARATOR) }
+        system env, "powershell", "-File", "build.ps1"
       else
-        sh "./build.sh"
+        env = { "UnityDir" => unity_dll_location }
+        system env, "./build.sh"
       end
       dll = File.join("src", "BugsnagUnity", "bin", "Release", "net35", "BugsnagUnity.dll")
       cp File.realpath(dll), assets_path
