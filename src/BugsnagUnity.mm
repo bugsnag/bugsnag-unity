@@ -198,13 +198,9 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
   NSFileManager *fileManager = [NSFileManager defaultManager];
-  NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(
-                                                             NSDocumentDirectory, NSUserDomainMask, true);
-  NSString *path = [searchPaths lastObject];
 
   NSError *error;
-  NSDictionary *fileSystemAttrs =
-  [fileManager attributesOfFileSystemForPath:path error:&error];
+  NSDictionary *fileSystemAttrs = [fileManager attributesOfFileSystemForPath:NSHomeDirectory() error:&error];
 
   if (!error) {
       NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
