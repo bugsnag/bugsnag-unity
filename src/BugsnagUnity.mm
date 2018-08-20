@@ -1,5 +1,6 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
+#import "BugsnagLogger.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
 
@@ -202,10 +203,12 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
   NSError *error;
   NSDictionary *fileSystemAttrs = [fileManager attributesOfFileSystemForPath:NSHomeDirectory() error:&error];
 
-  if (!error) {
-      NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
-      callback(deviceData, "freeDisk", [[freeBytes stringValue] UTF8String]);
+  if (error) {
+      bsg_log_warn(@"Failed to read free disk space: %@", error);
   }
+
+  NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+  callback(deviceData, "freeDisk", [[freeBytes stringValue] UTF8String]);
 
   uint64_t freeMemory = bsg_ksmachfreeMemory();
   char buff[30];
