@@ -110,31 +110,43 @@ namespace BugsnagUnity
 
     public void Notify(System.Exception exception)
     {
-      Notify(exception, null);
+      // we need to generate a substitute stacktrace here as if we are not able
+      // to generate one from the exception that we are given then we are not able
+      // to do this inside of the IEnumerator generator code
+      var substituteStackTrace = new System.Diagnostics.StackTrace(1, true).GetFrames();
+      Notify(exception, HandledState.ForHandledException(), null, substituteStackTrace);
     }
 
     public void Notify(System.Exception exception, Middleware callback)
     {
-      Notify(exception, HandledState.ForHandledException(), callback);
+      // we need to generate a substitute stacktrace here as if we are not able
+      // to generate one from the exception that we are given then we are not able
+      // to do this inside of the IEnumerator generator code
+      var substituteStackTrace = new System.Diagnostics.StackTrace(1, true).GetFrames();
+      Notify(exception, HandledState.ForHandledException(), callback, substituteStackTrace);
     }
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      Notify(exception, severity, null);
+      // we need to generate a substitute stacktrace here as if we are not able
+      // to generate one from the exception that we are given then we are not able
+      // to do this inside of the IEnumerator generator code
+      var substituteStackTrace = new System.Diagnostics.StackTrace(1, true).GetFrames();
+      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, substituteStackTrace);
     }
 
     public void Notify(System.Exception exception, Severity severity, Middleware callback)
     {
-      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback);
-    }
-
-    void Notify(System.Exception exception, HandledState handledState, Middleware callback)
-    {
       // we need to generate a substitute stacktrace here as if we are not able
       // to generate one from the exception that we are given then we are not able
       // to do this inside of the IEnumerator generator code
-      var substituteStackTrace = new System.Diagnostics.StackTrace(true).GetFrames();
-      Notify(new Exceptions(exception, substituteStackTrace, "BugsnagUnity.Client.Notify").ToArray(), handledState, callback);
+      var substituteStackTrace = new System.Diagnostics.StackTrace(1, true).GetFrames();
+      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, substituteStackTrace);
+    }
+
+    void Notify(System.Exception exception, HandledState handledState, Middleware callback, StackFrame[] substitute)
+    {
+      Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback);
     }
 
     void Notify(Exception[] exceptions, HandledState handledState, Middleware callback)

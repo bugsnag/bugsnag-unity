@@ -18,8 +18,6 @@ namespace BugsnagUnity.Payload
 
     StackFrame[] AlternativeStackTrace { get; }
 
-    string BoundaryMethod { get; }
-
     private static string[] StringSplit { get; } = { Environment.NewLine };
 
     /// <summary>
@@ -33,9 +31,8 @@ namespace BugsnagUnity.Payload
       OriginalStackTrace = stackTrace;
     }
 
-    internal StackTrace(System.Exception exception, StackFrame[] alternativeStackTrace, string boundaryMethod)
+    internal StackTrace(System.Exception exception, StackFrame[] alternativeStackTrace)
     {
-      BoundaryMethod = boundaryMethod;
       OriginalException = exception;
       AlternativeStackTrace = alternativeStackTrace;
     }
@@ -71,12 +68,10 @@ namespace BugsnagUnity.Payload
         yield break;
       }
 
-      var exceptionStackTrace = true;
       var stackFrames = new System.Diagnostics.StackTrace(OriginalException, true).GetFrames();
 
       if (stackFrames == null || stackFrames.Length == 0)
       {
-        exceptionStackTrace = false;
         stackFrames = AlternativeStackTrace;
       }
 
@@ -85,25 +80,9 @@ namespace BugsnagUnity.Payload
         yield break;
       }
 
-      var seenBugsnagFrames = false;
-
       foreach (var frame in stackFrames)
       {
-        var stackFrame = StackTraceLine.FromStackFrame(frame);
-
-        if (!exceptionStackTrace)
-        {
-          // if the exception has not come from a stack trace then we need to
-          // skip the frames that originate from inside the notifier code base
-          var currentStackFrameIsNotify = stackFrame.MethodName.StartsWith(BoundaryMethod, StringComparison.InvariantCulture);
-          seenBugsnagFrames = seenBugsnagFrames || currentStackFrameIsNotify;
-          if (!seenBugsnagFrames || currentStackFrameIsNotify)
-          {
-            continue;
-          }
-        }
-
-        yield return stackFrame;
+        yield return StackTraceLine.FromStackFrame(frame);
       }
     }
 
