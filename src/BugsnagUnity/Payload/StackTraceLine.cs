@@ -76,18 +76,18 @@ namespace BugsnagUnity.Payload
         exceptionStackTrace = false;
         stackFrames = AlternativeStackTrace;
       }
-      
+
       if (stackFrames == null)
       {
         yield break;
       }
-      
+
       var seenBugsnagFrames = false;
 
       foreach (var frame in stackFrames)
       {
         var stackFrame = StackTraceLine.FromStackFrame(frame);
-        
+
         if (!exceptionStackTrace)
         {
           // if the exception has not come from a stack trace then we need to
