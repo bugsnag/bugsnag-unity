@@ -35,9 +35,9 @@ namespace BugsnagUnity.Payload
   {
     private IEnumerable<Exception> UnwoundExceptions { get; }
 
-    internal Exceptions(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
+    internal Exceptions(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace, string boundaryMethod)
     {
-      UnwoundExceptions = FlattenAndReverseExceptionTree(exception).Select(e => Exception.FromSystemException(e, alternativeStackTrace));
+      UnwoundExceptions = FlattenAndReverseExceptionTree(exception).Select(e => Exception.FromSystemException(e, alternativeStackTrace, boundaryMethod));
     }
 
     public IEnumerator<Exception> GetEnumerator()
@@ -95,10 +95,10 @@ namespace BugsnagUnity.Payload
 
     public string ErrorMessage => this.Get("message") as string;
 
-    internal static Exception FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
+    internal static Exception FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace, string boundaryMethod)
     {
       var errorClass = TypeNameHelper.GetTypeDisplayName(exception.GetType());
-      var stackTrace = new StackTrace(exception, alternativeStackTrace).ToArray();
+      var stackTrace = new StackTrace(exception, alternativeStackTrace, boundaryMethod).ToArray();
       return new Exception(errorClass, exception.Message, stackTrace);
     }
 

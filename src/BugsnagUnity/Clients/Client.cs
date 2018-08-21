@@ -134,7 +134,7 @@ namespace BugsnagUnity
       // to generate one from the exception that we are given then we are not able
       // to do this inside of the IEnumerator generator code
       var substituteStackTrace = new System.Diagnostics.StackTrace(true).GetFrames();
-      Notify(new Exceptions(exception, substituteStackTrace).ToArray(), handledState, callback);
+      Notify(new Exceptions(exception, substituteStackTrace, "BugsnagUnity.Client.Notify").ToArray(), handledState, callback);
     }
 
     void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType = null)
