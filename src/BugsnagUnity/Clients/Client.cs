@@ -87,7 +87,7 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), null, logMessage.Type);
+            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), null);
           }
         }
       }
@@ -137,7 +137,7 @@ namespace BugsnagUnity
       Notify(new Exceptions(exception, substituteStackTrace, "BugsnagUnity.Client.Notify").ToArray(), handledState, callback);
     }
 
-    void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType = null)
+    void Notify(Exception[] exceptions, HandledState handledState, Middleware callback)
     {
       var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
       var app = new App(Configuration)
