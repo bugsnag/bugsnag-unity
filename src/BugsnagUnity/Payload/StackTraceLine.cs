@@ -12,9 +12,11 @@ namespace BugsnagUnity.Payload
   /// </summary>
   class StackTrace : IEnumerable<StackTraceLine>
   {
-    private readonly System.Exception _originalException;
+    System.Exception OriginalException { get; }
 
-    private readonly string _originalStackTrace;
+    string OriginalStackTrace { get; }
+
+    StackFrame[] AlternativeStackTrace { get; }
 
     private static string[] StringSplit { get; } = { Environment.NewLine };
 
@@ -26,19 +28,20 @@ namespace BugsnagUnity.Payload
 
     internal StackTrace(string stackTrace)
     {
-      _originalStackTrace = stackTrace;
+      OriginalStackTrace = stackTrace;
     }
 
-    internal StackTrace(System.Exception exception)
+    internal StackTrace(System.Exception exception, StackFrame[] alternativeStackTrace)
     {
-      _originalException = exception;
+      OriginalException = exception;
+      AlternativeStackTrace = alternativeStackTrace;
     }
 
     public IEnumerator<StackTraceLine> GetEnumerator()
     {
-      if (_originalStackTrace != null)
+      if (OriginalStackTrace != null)
       {
-        foreach (var item in _originalStackTrace.Split(StringSplit, StringSplitOptions.RemoveEmptyEntries))
+        foreach (var item in OriginalStackTrace.Split(StringSplit, StringSplitOptions.RemoveEmptyEntries))
         {
           var match = StackTraceLineRegex.Match(item);
 
@@ -60,39 +63,36 @@ namespace BugsnagUnity.Payload
         }
       }
 
-      if (_originalException == null)
+      if (OriginalException == null)
       {
         yield break;
       }
 
       var exceptionStackTrace = true;
-      var stackFrames = new System.Diagnostics.StackTrace(_originalException, true).GetFrames();
+      var stackFrames = new System.Diagnostics.StackTrace(OriginalException, true).GetFrames();
 
-      if (stackFrames == null)
+      if (stackFrames == null || stackFrames.Length == 0)
       {
-        // this usually means that the exception has not been thrown so we need
-        // to try and create a stack trace at the point that the notify call
-        // was made.
         exceptionStackTrace = false;
-        stackFrames = new System.Diagnostics.StackTrace(true).GetFrames();
+        stackFrames = AlternativeStackTrace;
       }
-
+      
       if (stackFrames == null)
       {
         yield break;
       }
-
-      bool seenBugsnagFrames = false;
+      
+      var seenBugsnagFrames = false;
 
       foreach (var frame in stackFrames)
       {
         var stackFrame = StackTraceLine.FromStackFrame(frame);
-
+        
         if (!exceptionStackTrace)
         {
           // if the exception has not come from a stack trace then we need to
           // skip the frames that originate from inside the notifier code base
-          var currentStackFrameIsNotify = stackFrame.MethodName.StartsWith("Bugsnag.Client.Notify");
+          var currentStackFrameIsNotify = stackFrame.MethodName.StartsWith("BugsnagUnity.Client.Notify", StringComparison.InvariantCulture);
           seenBugsnagFrames = seenBugsnagFrames || currentStackFrameIsNotify;
           if (!seenBugsnagFrames || currentStackFrameIsNotify)
           {

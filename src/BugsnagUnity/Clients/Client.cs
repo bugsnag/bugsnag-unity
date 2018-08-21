@@ -130,7 +130,11 @@ namespace BugsnagUnity
 
     void Notify(System.Exception exception, HandledState handledState, Middleware callback)
     {
-      Notify(new Exceptions(exception).ToArray(), handledState, callback);
+      // we need to generate a substitute stacktrace here as if we are not able
+      // to generate one from the exception that we are given then we are not able
+      // to do this inside of the IEnumerator generator code
+      var substituteStackTrace = new System.Diagnostics.StackTrace(true).GetFrames();
+      Notify(new Exceptions(exception, substituteStackTrace).ToArray(), handledState, callback);
     }
 
     void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType = null)
