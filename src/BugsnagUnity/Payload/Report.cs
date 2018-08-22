@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
@@ -27,11 +28,51 @@ namespace BugsnagUnity.Payload
       this.AddToPayload("events", new[] { Event });
     }
 
-    public Event Event { get; }
+    Event Event { get; }
+
+    internal HandledState OriginalSeverity => Event.OriginalSeverity;
 
     public void Ignore()
     {
       Ignored = true;
+    }
+
+    public Metadata Metadata => Event.Metadata;
+
+    public LogType? LogType => Event.LogType;
+
+    public bool IsHandled => Event.IsHandled;
+
+    public App App => Event.App;
+
+    public IEnumerable<Breadcrumb> Breadcrumbs => Event.Breadcrumbs;
+
+    public string Context
+    {
+      get => Event.Context;
+      set => Event.Context = value;
+    }
+
+    public Device Device => Event.Device;
+
+    public Exception[] Exceptions => Event.Exceptions;
+    
+    public string GroupingHash
+    {
+      get => Event.GroupingHash;
+      set => Event.GroupingHash = value;
+    }
+    
+    public Severity Severity
+    {
+      get => Event.Severity;
+      set => Event.Severity = value;
+    }
+    
+    public User User
+    {
+      get => Event.User;
+      set => Event.User = value;
     }
   }
 }
