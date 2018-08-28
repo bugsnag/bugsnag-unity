@@ -31,12 +31,12 @@ namespace BugsnagUnity
     void Awake()
     {
       Bugsnag.Init(BugsnagApiKey);
-      Bugsnag.Client.Configuration.AutoNotify = AutoNotify;
-      Bugsnag.Client.Configuration.AutoCaptureSessions = AutoCaptureSessions;
-      Bugsnag.Client.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
-      Bugsnag.Client.Configuration.NotifyLevel = NotifyLevel;
-      Bugsnag.Client.Configuration.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
-      Bugsnag.Client.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
+      Bugsnag.Configuration.AutoNotify = AutoNotify;
+      Bugsnag.Configuration.AutoCaptureSessions = AutoCaptureSessions;
+      Bugsnag.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
+      Bugsnag.Configuration.NotifyLevel = NotifyLevel;
+      Bugsnag.Configuration.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
+      Bugsnag.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
     }
 
     /// <summary>
@@ -50,13 +50,13 @@ namespace BugsnagUnity
     /// <param name="hasFocus"></param>
     void OnApplicationFocus(bool hasFocus)
     {
-      Bugsnag.Client.SetApplicationState(hasFocus);
+      Bugsnag.SetApplicationState(hasFocus);
     }
 
     void OnApplicationPause(bool paused)
     {
       var hasFocus = !paused;
-      Bugsnag.Client.SetApplicationState(hasFocus);
+      Bugsnag.SetApplicationState(hasFocus);
     }
   }
 }
