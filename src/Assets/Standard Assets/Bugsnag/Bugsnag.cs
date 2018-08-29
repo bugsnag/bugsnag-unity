@@ -325,8 +325,18 @@ public class Bugsnag : MonoBehaviour {
       { LogType.Warning, 5 }
     };
 
+    private static IEqualityComparer<LogType> LogTypeComparer = new LogTypeComparer();
+    private static List<LogType> LogTypes = new List<LogType>()
+    {
+      LogType.Assert,
+      LogType.Error,
+      LogType.Exception,
+      LogType.Log,
+      LogType.Warning
+    };
+
     // Defines the current number of logs send (per type) in the current rate limit time frame
-    private static Dictionary<LogType, int> currentCounts = new Dictionary<LogType, int>()
+    private static Dictionary<LogType, int> currentCounts = new Dictionary<LogType, int>(LogTypeComparer)
     {
       { LogType.Assert, 0 },
       { LogType.Error, 0 },
@@ -541,15 +551,15 @@ public class Bugsnag : MonoBehaviour {
 
       // Check if we need to reset the current counts
       if (DateTime.UtcNow - timeCountsLastReset > RateLimitTimePeriod) {
-        foreach (LogType key in Enum.GetValues(typeof(LogType))) {
-          currentCounts[key] = 0;
+        foreach (var type in LogTypes) {
+          currentCounts[type] = 0;
         }
         timeCountsLastReset = DateTime.UtcNow;
       }
 
       // Check if we need to reset the unique logs list
       if (DateTime.UtcNow - timeUniqueLogsLastReset > UniqueLogsTimePeriod) {
-          latestLogs = new List<string>();
+          latestLogs.Clear();
           timeUniqueLogsLastReset = DateTime.UtcNow;
       }
     }
@@ -705,5 +715,17 @@ public class Bugsnag : MonoBehaviour {
         }
 
         NativeBugsnag.Notify(errorClass, message, SeverityValues[(int)severity], context, stackTrace, logType, severityReason);
+    }
+}
+
+public class LogTypeComparer : IEqualityComparer<LogType>
+{
+    public bool Equals(LogType x, LogType y)
+    {
+        return x == y;
+    }
+     public int GetHashCode(LogType obj)
+    {
+        return (int)obj;
     }
 }
