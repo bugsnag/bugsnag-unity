@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -6,6 +7,10 @@ namespace BugsnagUnity
 {
   static class DictionaryExtensions
   {
+    private static IntPtr Arrays { get; } = AndroidJNI.FindClass("java/util/Arrays");
+
+    private static IntPtr ToStringMethod { get; } = AndroidJNIHelper.GetMethodID(Arrays, "toString", "([Ljava/lang/Object;)Ljava/lang/String;", true);
+
     internal static void PopulateDictionaryFromAndroidData(this IDictionary<string, object> dictionary, AndroidJavaObject source)
     {
       using (var set = source.Call<AndroidJavaObject>("entrySet"))
@@ -24,10 +29,9 @@ namespace BugsnagUnity
                 {
                   if (@class.Call<bool>("isArray"))
                   {
-                    using (var arrays = new AndroidJavaClass("java.util.Arrays"))
-                    {
-                      dictionary.AddToPayload(key, arrays.CallStatic<string>("toString", value));
-                    }
+                    var args = AndroidJNIHelper.CreateJNIArgArray(new[] {value});
+                    var formattedValue = AndroidJNI.CallStaticStringMethod(Arrays, ToStringMethod, args);
+                    dictionary.AddToPayload(key, formattedValue);
                   }
                   else
                   {

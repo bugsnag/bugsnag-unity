@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using BugsnagUnity;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -12,7 +13,7 @@ public class Main : MonoBehaviour {
     var scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.DefaultGameObjects, UnityEditor.SceneManagement.NewSceneMode.Single);
     UnityEngine.SceneManagement.SceneManager.SetActiveScene(scene);
     var obj = new GameObject("Bugsnag");
-    var bugsnag = obj.AddComponent<BugsnagUnity.BugsnagBehaviour>();
+    var bugsnag = obj.AddComponent<BugsnagBehaviour>();
     bugsnag.BugsnagApiKey = System.Environment.GetEnvironmentVariable("BUGSNAG_APIKEY");
     obj.AddComponent<Main>();
     UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, "Assets/MainScene.unity");
@@ -28,10 +29,10 @@ public class Main : MonoBehaviour {
     // only send one crash
     if (!sent) {
       sent = true;
-      BugsnagUnity.Bugsnag.Client.Configuration.Endpoint =
+      Bugsnag.Configuration.Endpoint =
         new System.Uri(System.Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
-      BugsnagUnity.Bugsnag.Client.Breadcrumbs.Leave("bleeb");
-      BugsnagUnity.Bugsnag.Client.Notify(new System.Exception("blorb"), report => {
+      Bugsnag.Breadcrumbs.Leave("bleeb");
+      Bugsnag.Notify(new System.Exception("blorb"), report => {
         report.User.Name = "blarb";
       });
       // wait for 5 seconds before exiting the application
