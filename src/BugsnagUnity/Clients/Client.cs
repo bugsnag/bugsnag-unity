@@ -87,7 +87,7 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), null, logMessage.Type);
+            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), null);
           }
         }
       }
@@ -110,7 +110,7 @@ namespace BugsnagUnity
 
     public void Notify(System.Exception exception)
     {
-      Notify(exception, null);
+      Notify(exception, HandledState.ForHandledException(), null);
     }
 
     public void Notify(System.Exception exception, Middleware callback)
@@ -120,7 +120,7 @@ namespace BugsnagUnity
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      Notify(exception, severity, null);
+      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null);
     }
 
     public void Notify(System.Exception exception, Severity severity, Middleware callback)
@@ -130,10 +130,14 @@ namespace BugsnagUnity
 
     void Notify(System.Exception exception, HandledState handledState, Middleware callback)
     {
-      Notify(new Exceptions(exception).ToArray(), handledState, callback);
+      // we need to generate a substitute stacktrace here as if we are not able
+      // to generate one from the exception that we are given then we are not able
+      // to do this inside of the IEnumerator generator code
+      var substitute = new System.Diagnostics.StackTrace(2, true).GetFrames();
+      Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback);
     }
 
-    void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType = null)
+    void Notify(Exception[] exceptions, HandledState handledState, Middleware callback)
     {
       var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
       var app = new App(Configuration)
