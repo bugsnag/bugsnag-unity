@@ -17,19 +17,19 @@ namespace BugsnagUnity.Payload
     {
       var name = "Error";
 
-      if (report.Event.OriginalSeverity != null)
+      if (report.OriginalSeverity != null)
       {
-        name = report.Event.OriginalSeverity.Severity.ToString();
+        name = report.OriginalSeverity.Severity.ToString();
       }
 
       var metadata = new Dictionary<string, string>
       {
-        { "context", report.Event.Context },
+        { "context", report.Context },
       };
 
-      if (report.Event.Exceptions != null && report.Event.Exceptions.Any())
+      if (report.Exceptions != null && report.Exceptions.Any())
       {
-        var exception = report.Event.Exceptions.First();
+        var exception = report.Exceptions.First();
 
         metadata.Add("class", exception.ErrorClass);
         metadata.Add("message", exception.ErrorMessage);

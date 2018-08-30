@@ -33,7 +33,7 @@ public class Main : MonoBehaviour {
         new System.Uri(System.Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
       Bugsnag.Breadcrumbs.Leave("bleeb");
       Bugsnag.Notify(new System.Exception("blorb"), report => {
-        report.Event.User.Name = "blarb";
+        report.User.Name = "blarb";
       });
       // wait for 5 seconds before exiting the application
       StartCoroutine(WaitForBugsnag());

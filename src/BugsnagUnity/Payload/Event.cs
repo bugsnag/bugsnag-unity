@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-  public class Event : Dictionary<string, object>
+  class Event : Dictionary<string, object>
   {
-    private HandledState _handledState;
+    HandledState _handledState;
 
     internal HandledState OriginalSeverity { get; }
 
@@ -26,11 +26,11 @@ namespace BugsnagUnity.Payload
       this.AddToPayload("user", user);
     }
 
-    public Metadata Metadata { get; }
+    internal Metadata Metadata { get; }
 
-    public LogType? LogType { get; }
+    internal LogType? LogType { get; }
 
-    public bool IsHandled
+    internal bool IsHandled
     {
       get
       {
@@ -43,45 +43,45 @@ namespace BugsnagUnity.Payload
       }
     }
 
-    public App App
+    internal App App
     {
       get { return this.Get("app") as App; }
     }
 
-    public IEnumerable<Breadcrumb> Breadcrumbs
+    internal IEnumerable<Breadcrumb> Breadcrumbs
     {
       get { return this.Get("breadcrumbs") as IEnumerable<Breadcrumb>; }
     }
 
-    public string Context
+    internal string Context
     {
       get => this.Get("context") as string;
       set => this.AddToPayload("context", value);
     }
 
-    public Device Device => this.Get("device") as Device;
+    internal Device Device => this.Get("device") as Device;
 
-    public Exception[] Exceptions => this.Get("exceptions") as Exception[];
+    internal Exception[] Exceptions => this.Get("exceptions") as Exception[];
 
-    public string GroupingHash
+    internal string GroupingHash
     {
       get => this.Get("groupingHash") as string;
       set => this.AddToPayload("groupingHash", value);
     }
 
-    public Severity Severity
+    internal Severity Severity
     {
       set => HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
       get => _handledState.Severity;
     }
 
-    public User User
+    internal User User
     {
       get { return this.Get("user") as User; }
       set { this.AddToPayload("user", value); }
     }
 
-    private HandledState HandledState
+    HandledState HandledState
     {
       set
       {

@@ -25,7 +25,7 @@ namespace BugsnagUnity.Payload
 
     internal void AddException(Report report)
     {
-      if (report.Event.IsHandled)
+      if (report.IsHandled)
       {
         Events.IncrementHandledCount();
       }
