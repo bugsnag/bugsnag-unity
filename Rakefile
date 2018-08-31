@@ -171,10 +171,14 @@ namespace :plugin do
     task csharp: [:clean] do
       if is_windows?
         env = { "UnityDir" => unity_dll_location }
-        system env, "powershell", "-File", "build.ps1"
+        unless system env, "powershell", "-File", "build.ps1"
+          raise "Failed to build csharp plugin"
+        end
       else
         env = { "UnityDir" => unity_dll_location }
-        system env, "./build.sh"
+        unless system env, "./build.sh"
+          raise "Failed to build csharp plugin"
+        end
       end
       dll = File.join("src", "BugsnagUnity", "bin", "Release", "net35", "BugsnagUnity.dll")
       cp File.realpath(dll), assets_path
