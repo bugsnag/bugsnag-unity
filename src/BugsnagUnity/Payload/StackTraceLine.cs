@@ -53,11 +53,11 @@ namespace BugsnagUnity.Payload
 
             if (int.TryParse(line, out var lineNumber))
             {
-              yield return new StackTraceLine(file, lineNumber, method, false);
+              yield return new StackTraceLine(file, lineNumber, method);
             }
             else
             {
-              yield return new StackTraceLine(file, null, method, false);
+              yield return new StackTraceLine(file, null, method);
             }
           }
         }
@@ -103,12 +103,11 @@ namespace BugsnagUnity.Payload
       var file = stackFrame.GetFileName();
       var lineNumber = stackFrame.GetFileLineNumber();
       var methodName = new Method(method).DisplayName();
-      var inProject = false;
 
-      return new StackTraceLine(file, lineNumber, methodName, inProject);
+      return new StackTraceLine(file, lineNumber, methodName);
     }
 
-    internal StackTraceLine(string file, int? lineNumber, string methodName, bool inProject)
+    internal StackTraceLine(string file, int? lineNumber, string methodName)
     {
       this.AddToPayload("file", file);
       if (lineNumber.HasValue)
@@ -116,7 +115,6 @@ namespace BugsnagUnity.Payload
         this.AddToPayload("lineNumber", lineNumber.Value);
       }
       this.AddToPayload("method", methodName);
-      this.AddToPayload("inProject", inProject);
     }
 
     internal string FileName
@@ -140,18 +138,6 @@ namespace BugsnagUnity.Payload
       set
       {
         this.AddToPayload("method", value);
-      }
-    }
-
-    internal bool InProject
-    {
-      get
-      {
-        return (bool)this.Get("inProject");
-      }
-      set
-      {
-        this.AddToPayload("inProject", value);
       }
     }
   }
