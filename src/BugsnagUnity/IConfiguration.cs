@@ -39,6 +39,8 @@ namespace BugsnagUnity
     bool AutoNotify { get; set; }
 
     bool AutoCaptureSessions { get; set; }
+    
+    LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 
   class Configuration : IConfiguration
@@ -59,6 +61,7 @@ namespace BugsnagUnity
       UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
       MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
       AppVersion = Application.version;
+      LogTypeSeverityMapping = new LogTypeSeverityMapping();
     }
 
     public TimeSpan MaximumLogsTimePeriod { get; set; }
@@ -99,6 +102,8 @@ namespace BugsnagUnity
     public bool AutoNotify { get; set; }
 
     public bool AutoCaptureSessions { get; set; }
+    
+    public LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 
   class AndroidConfiguration : IConfiguration
@@ -124,6 +129,7 @@ namespace BugsnagUnity
       UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
       MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
       AppVersion = Application.version;
+      LogTypeSeverityMapping = new LogTypeSeverityMapping();
     }
 
     public TimeSpan MaximumLogsTimePeriod { get; set; }
@@ -232,6 +238,8 @@ namespace BugsnagUnity
     public bool AutoNotify { get; set; } // how do we hook this into the android bits, this lives on the client object
 
     public bool AutoCaptureSessions { get; set; }
+
+    public LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 
   class MacOSConfiguration : IConfiguration
@@ -292,6 +300,7 @@ namespace BugsnagUnity
       UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
       MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
       AppVersion = Application.version;
+      LogTypeSeverityMapping = new LogTypeSeverityMapping();
     }
 
     public string ApiKey => Marshal.PtrToStringAuto(GetApiKey(NativeConfiguration));
@@ -374,6 +383,8 @@ namespace BugsnagUnity
     public bool AutoNotify { get; set; }
 
     public bool AutoCaptureSessions { get; set; }
+
+    public LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 
   class iOSConfiguration : IConfiguration
@@ -434,6 +445,7 @@ namespace BugsnagUnity
       UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
       MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
       AppVersion = Application.version;
+      LogTypeSeverityMapping = new LogTypeSeverityMapping();
     }
 
     public string ApiKey => Marshal.PtrToStringAuto(GetApiKey(NativeConfiguration));
@@ -516,5 +528,7 @@ namespace BugsnagUnity
     public bool AutoNotify { get; set; }
 
     public bool AutoCaptureSessions { get; set; }
+
+    public LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 }

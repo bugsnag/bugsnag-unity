@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
@@ -49,6 +50,17 @@ namespace BugsnagUnity.Payload
     internal static HandledState ForCallbackSpecifiedSeverity(Severity severity, HandledState previousSeverity)
     {
       return new HandledState(previousSeverity.Handled, severity, SeverityReason.ForCallbackSpecifiedSeverity());
+    }
+    
+    /// <summary>
+    /// Creates a HandledState object for an error report payload that is being generated from a Unity log message.
+    /// These are always attributed as a handled exception due to the fact that they do not crash the application.
+    /// </summary>
+    /// <returns>The unity log message.</returns>
+    /// <param name="severity">Severity.</param>
+    internal static HandledState ForUnityLogMessage(Severity severity)
+    {
+      return new HandledState(true, severity, SeverityReason.ForHandledException());
     }
 
     internal Severity Severity { get; }

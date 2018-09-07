@@ -89,7 +89,7 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), null, logType);
+            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForUnityLogMessage(Configuration.LogTypeSeverityMapping.Map(logType)), null, logType);
           }
         }
       }

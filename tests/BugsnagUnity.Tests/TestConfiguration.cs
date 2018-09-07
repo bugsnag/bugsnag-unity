@@ -37,5 +37,7 @@ namespace BugsnagUnity.Tests
     public bool AutoNotify { get; set; }
 
     public bool AutoCaptureSessions { get; set; }
+
+    public LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 }
