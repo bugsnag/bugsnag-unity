@@ -35,6 +35,8 @@ namespace BugsnagUnity
 
     bool InForeground => Stopwatch.IsRunning;
 
+    const string UnityMetadataKey = "Unity";
+
     public Client(INativeClient nativeClient)
     {
       Stopwatch = new Stopwatch();
@@ -46,8 +48,8 @@ namespace BugsnagUnity
       LogTypeCounter = new MaximumLogTypeCounter(Configuration);
       SessionTracking = new SessionTracker(this);
       var unityMetadata = UnityMetadata.Data;
-      Metadata.Add("Unity", unityMetadata);
-      NativeClient.SetMetadata("Unity", unityMetadata);
+      Metadata.Add(UnityMetadataKey, unityMetadata);
+      NativeClient.SetMetadata(UnityMetadataKey, unityMetadata);
       SceneManager.sceneLoaded += SceneLoaded;
       Application.logMessageReceivedThreaded += Notify;
     }
@@ -87,7 +89,7 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), null);
+            Notify(new UnityLogExceptions(logMessage).ToArray(), HandledState.ForHandledException(), null, logType);
           }
         }
       }
@@ -134,10 +136,10 @@ namespace BugsnagUnity
       // to generate one from the exception that we are given then we are not able
       // to do this inside of the IEnumerator generator code
       var substitute = new System.Diagnostics.StackTrace(2, true).GetFrames();
-      Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback);
+      Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback, null);
     }
 
-    void Notify(Exception[] exceptions, HandledState handledState, Middleware callback)
+    void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
     {
       var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
       var app = new App(Configuration)
@@ -154,6 +156,16 @@ namespace BugsnagUnity
       foreach (var item in Metadata)
       {
         metadata.Add(item.Key, item.Value);
+      }
+
+      if (metadata.ContainsKey(UnityMetadataKey) && metadata[UnityMetadataKey] is Dictionary<string, string> unityMetadata)
+      {
+        unityMetadata["unityException"] = "true";
+
+        if (logType.HasValue)
+        {
+          unityMetadata["unityLogType"] = logType.Value.ToString("G");
+        }
       }
 
       var @event = new Payload.Event(
