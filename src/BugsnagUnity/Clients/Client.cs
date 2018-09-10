@@ -50,6 +50,9 @@ namespace BugsnagUnity
       var unityMetadata = UnityMetadata.Data;
       Metadata.Add(UnityMetadataKey, unityMetadata);
       NativeClient.SetMetadata(UnityMetadataKey, unityMetadata);
+
+      NativeClient.PopulateUser(User);
+
       SceneManager.sceneLoaded += SceneLoaded;
       Application.logMessageReceivedThreaded += Notify;
     }
