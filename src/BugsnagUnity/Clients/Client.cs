@@ -84,7 +84,7 @@ namespace BugsnagUnity
     /// <param name="logType"></param>
     void Notify(string condition, string stackTrace, LogType logType)
     {
-      if (logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
+      if (Configuration.AutoNotify && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
       {
         var logMessage = new UnityLogMessage(condition, stackTrace, logType);
 
