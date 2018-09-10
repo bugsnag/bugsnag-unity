@@ -110,8 +110,19 @@ namespace BugsnagUnity
       }
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    struct NativeUser
+    {
+      public IntPtr Id;
+    }
+
     public void PopulateUser(User user)
     {
+      var nativeUser = new NativeUser();
+
+      Wrapper.PopulateUser(ref nativeUser);
+
+      user.Id = Marshal.PtrToStringAuto(nativeUser.Id);
     }
 
     public void SetMetadata(string tab, Dictionary<string, string> unityMetadata)
@@ -142,6 +153,8 @@ namespace BugsnagUnity
       void RetrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
       void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
+
+      void PopulateUser(ref NativeUser user);
     }
 
     class MacOsWrapper : ICocoaWrapper
@@ -150,6 +163,7 @@ namespace BugsnagUnity
       void ICocoaWrapper.AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount) => AddMetadata(configuration, tab, metadata, metadataCount);
       void ICocoaWrapper.RetrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate) => RetrieveDeviceData(instance, populate);
       void ICocoaWrapper.RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate) => RetrieveAppData(instance, populate);
+      void ICocoaWrapper.PopulateUser(ref NativeUser user) => PopulateUser(ref user);
 
       [DllImport("bugsnag-osx", EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
       static extern void StartBugsnagWithConfiguration(IntPtr configuration);
@@ -162,6 +176,9 @@ namespace BugsnagUnity
 
       [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveAppData")]
       static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
+
+      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_populateUser")]
+      static extern void PopulateUser(ref NativeUser user);
     }
 
     class iOSWrapper : ICocoaWrapper
@@ -170,6 +187,7 @@ namespace BugsnagUnity
       void ICocoaWrapper.AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount) => AddMetadata(configuration, tab, metadata, metadataCount);
       void ICocoaWrapper.RetrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate) => RetrieveDeviceData(instance, populate);
       void ICocoaWrapper.RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate) => RetrieveAppData(instance, populate);
+      void ICocoaWrapper.PopulateUser(ref NativeUser user) => PopulateUser(ref user);
 
       [DllImport("__Internal", EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
       static extern void StartBugsnagWithConfiguration(IntPtr configuration);
@@ -182,6 +200,9 @@ namespace BugsnagUnity
 
       [DllImport("__Internal", EntryPoint = "bugsnag_retrieveDeviceData")]
       static extern void RetrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
+
+      [DllImport("__Internal", EntryPoint = "bugsnag_populateUser")]
+      static extern void PopulateUser(ref NativeUser user);
     }
   }
 }

@@ -1,10 +1,15 @@
 #import "Bugsnag.h"
 #import "BugsnagConfiguration.h"
 #import "BugsnagLogger.h"
+#import "BugsnagUser.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
 
 extern "C" {
+  struct bugsnag_user {
+    const char *user_id;
+  };
+
   void *bugsnag_createConfiguration(char *apiKey);
 
   const char *bugsnag_getApiKey(const void *configuration);
@@ -34,6 +39,8 @@ extern "C" {
 
   void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
   void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
+
+  void bugsnag_populateUser(bugsnag_user *user);
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
@@ -222,4 +229,9 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
   callback(deviceData, "modelNumber", [sysInfo[@BSG_KSSystemField_Model] UTF8String]);
   callback(deviceData, "osName", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
   callback(deviceData, "osVersion", [sysInfo[@BSG_KSSystemField_SystemVersion] UTF8String]);
+}
+
+void bugsnag_populateUser(bugsnag_user *user) {
+  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
+  user->user_id = [sysInfo[@BSG_KSSystemField_DeviceAppHash] UTF8String];
 }
