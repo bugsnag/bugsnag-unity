@@ -41,7 +41,7 @@ namespace BugsnagUnity
     {
       Stopwatch = new Stopwatch();
       NativeClient = nativeClient;
-      User = new User();
+      User = new User { Id = SystemInfo.deviceUniqueIdentifier };
       Middleware = new List<Middleware>();
       Metadata = new Metadata();
       UniqueCounter = new UniqueLogThrottle(Configuration);
