@@ -30,11 +30,11 @@ namespace BugsnagUnity
       Breadcrumbs = breadcrumbs;
     }
 
-    public CocoaClient(MacOSConfiguration configuration) : this(configuration, configuration.NativeConfiguration, new MacOsWrapper(), new MacOsBreadcrumbs(configuration))
+    public CocoaClient(MacOSConfiguration configuration) : this(configuration, configuration.NativeConfiguration, new MacOsWrapper(), new CocoaBreadcrumbs(configuration))
     {
     }
 
-    public CocoaClient(iOSConfiguration configuration) : this(configuration, configuration.NativeConfiguration, new iOSWrapper(), new iOSBreadcrumbs(configuration))
+    public CocoaClient(iOSConfiguration configuration) : this(configuration, configuration.NativeConfiguration, new iOSWrapper(), new CocoaBreadcrumbs(configuration))
     {
     }
 
