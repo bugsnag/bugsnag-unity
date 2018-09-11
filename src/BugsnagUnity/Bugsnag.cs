@@ -11,27 +11,27 @@ namespace BugsnagUnity
     {
       lock (_clientLock)
       {
-        if (Client == null)
+        if (InternalClient == null)
         {
           switch (Application.platform)
           {
             case RuntimePlatform.tvOS:
             case RuntimePlatform.IPhonePlayer:
-              Client = new Client(new CocoaClient(new iOSConfiguration(apiKey)));
+              InternalClient = new Client(new CocoaClient(new iOSConfiguration(apiKey)));
               break;
             case RuntimePlatform.OSXEditor:
             case RuntimePlatform.OSXPlayer:
-              Client = new Client(new CocoaClient(new MacOSConfiguration(apiKey)));
+              InternalClient = new Client(new CocoaClient(new MacOSConfiguration(apiKey)));
               break;
             case RuntimePlatform.Android:
-              Client = new Client(new AndroidClient(new AndroidConfiguration(apiKey)));
+              InternalClient = new Client(new AndroidClient(new AndroidConfiguration(apiKey)));
               break;
             case RuntimePlatform.WindowsEditor:
             case RuntimePlatform.WindowsPlayer:
-              Client = new Client(new WindowsClient(new Configuration(apiKey)));
+              InternalClient = new Client(new WindowsClient(new Configuration(apiKey)));
               break;
             default:
-              Client = new Client(new NativeClient(new Configuration(apiKey)));
+              InternalClient = new Client(new NativeClient(new Configuration(apiKey)));
               break;
           }
         }
@@ -39,8 +39,10 @@ namespace BugsnagUnity
 
       return Client;
     }
+    
+    static Client InternalClient { get; set; }
 
-    public static IClient Client { get; private set; }
+    public static IClient Client => InternalClient;
 
     public static IConfiguration Configuration => Client.Configuration;
 
@@ -56,13 +58,13 @@ namespace BugsnagUnity
 
     public static void BeforeNotify(Middleware middleware) => Client.BeforeNotify(middleware);
 
-    public static void Notify(System.Exception exception) => Client.Notify(exception);
+    public static void Notify(System.Exception exception) => InternalClient.Notify(exception, 3);
 
-    public static void Notify(System.Exception exception, Middleware callback) => Client.Notify(exception, callback);
+    public static void Notify(System.Exception exception, Middleware callback) => InternalClient.Notify(exception, callback, 3);
 
-    public static void Notify(System.Exception exception, Severity severity) => Client.Notify(exception, severity);
+    public static void Notify(System.Exception exception, Severity severity) => InternalClient.Notify(exception, severity, 3);
 
-    public static void Notify(System.Exception exception, Severity severity, Middleware callback) => Client.Notify(exception, severity, callback);
+    public static void Notify(System.Exception exception, Severity severity, Middleware callback) => InternalClient.Notify(exception, severity, callback, 3);
 
     /// <summary>
     /// Used to signal to the Bugsnag client that the focused state of the

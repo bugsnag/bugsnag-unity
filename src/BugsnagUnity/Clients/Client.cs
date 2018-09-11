@@ -126,30 +126,50 @@ namespace BugsnagUnity
 
     public void Notify(System.Exception exception)
     {
-      Notify(exception, HandledState.ForHandledException(), null);
+      Notify(exception, 3);
+    }
+    
+    internal void Notify(System.Exception exception, int level)
+    {
+      Notify(exception, HandledState.ForHandledException(), null, level);
     }
 
     public void Notify(System.Exception exception, Middleware callback)
     {
-      Notify(exception, HandledState.ForHandledException(), callback);
+      Notify(exception, callback, 3);
+    }
+    
+    internal void Notify(System.Exception exception, Middleware callback, int level)
+    {
+      Notify(exception, HandledState.ForHandledException(), callback, level);
     }
 
     public void Notify(System.Exception exception, Severity severity)
     {
-      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null);
+      Notify(exception, severity, 3);
+    }
+    
+    internal void Notify(System.Exception exception, Severity severity, int level)
+    {
+      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, level);
     }
 
     public void Notify(System.Exception exception, Severity severity, Middleware callback)
     {
-      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback);
+      Notify(exception, severity, callback, 3);
+    }
+    
+    internal void Notify(System.Exception exception, Severity severity, Middleware callback, int level)
+    {
+      Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, level);
     }
 
-    void Notify(System.Exception exception, HandledState handledState, Middleware callback)
+    void Notify(System.Exception exception, HandledState handledState, Middleware callback, int level)
     {
       // we need to generate a substitute stacktrace here as if we are not able
       // to generate one from the exception that we are given then we are not able
       // to do this inside of the IEnumerator generator code
-      var substitute = new System.Diagnostics.StackTrace(2, true).GetFrames();
+      var substitute = new System.Diagnostics.StackTrace(level, true).GetFrames();
       Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback, null);
     }
 
