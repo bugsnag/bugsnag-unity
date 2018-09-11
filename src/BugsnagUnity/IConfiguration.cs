@@ -157,7 +157,7 @@ namespace BugsnagUnity
     {
       get
       {
-        return JavaObject.Call<string>("getApiKey");
+        return JavaObject.CallStringMethod("getApiKey");
       }
     }
 
@@ -169,7 +169,7 @@ namespace BugsnagUnity
       }
       get
       {
-        return JavaObject.Call<string>("getReleaseStage");
+        return JavaObject.CallStringMethod("getReleaseStage");
       }
     }
 
@@ -193,7 +193,7 @@ namespace BugsnagUnity
       }
       get
       {
-        return JavaObject.Call<string>("getAppVersion");
+        return JavaObject.CallStringMethod("getAppVersion");
       }
     }
 
@@ -205,7 +205,7 @@ namespace BugsnagUnity
       }
       get
       {
-        var endpoint = JavaObject.Call<string>("getEndpoint");
+        var endpoint = JavaObject.CallStringMethod("getEndpoint");
         return new Uri(endpoint);
       }
     }
@@ -218,7 +218,7 @@ namespace BugsnagUnity
       }
       get
       {
-        var endpoint = JavaObject.Call<string>("getSessionEndpoint");
+        var endpoint = JavaObject.CallStringMethod("getSessionEndpoint");
         return new Uri(endpoint);
       }
     }
@@ -231,7 +231,7 @@ namespace BugsnagUnity
       }
       get
       {
-        return JavaObject.Call<string>("getContext");
+        return JavaObject.CallStringMethod("getContext");
       }
     }
 

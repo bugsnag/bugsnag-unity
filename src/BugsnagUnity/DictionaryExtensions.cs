@@ -16,7 +16,7 @@ namespace BugsnagUnity
         {
           using (var mapEntry = iterator.Call<AndroidJavaObject>("next"))
           {
-            var key = mapEntry.Call<string>("getKey");
+            var key = mapEntry.CallStringMethod("getKey");
             using (var value = mapEntry.Call<AndroidJavaObject>("getValue"))
             {
               if (value != null)
@@ -30,7 +30,7 @@ namespace BugsnagUnity
                   }
                   else
                   {
-                    dictionary.AddToPayload(key, value.Call<string>("toString"));
+                    dictionary.AddToPayload(key, value.CallStringMethod("toString"));
                   }
                 }
               }

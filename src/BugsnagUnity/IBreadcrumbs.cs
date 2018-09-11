@@ -204,17 +204,17 @@ namespace BugsnagUnity
         {
           using (var next = iterator.Call<AndroidJavaObject>("next"))
           {
-            metadata.Add(next.Call<string>("getKey"), next.Call<string>("getValue"));
+            metadata.Add(next.CallStringMethod("getKey"), next.CallStringMethod("getValue"));
           }
         }
       }
 
       using (var type = javaBreadcrumb.Call<AndroidJavaObject>("getType"))
       {
-        var name = javaBreadcrumb.Call<string>("getName");
-        var timestamp = javaBreadcrumb.Call<string>("getTimestamp");
+        var name = javaBreadcrumb.CallStringMethod("getName");
+        var timestamp = javaBreadcrumb.CallStringMethod("getTimestamp");
 
-        return new Breadcrumb(name, timestamp, type.Call<string>("toString"), metadata);
+        return new Breadcrumb(name, timestamp, type.CallStringMethod("toString"), metadata);
       }
     }
   }
@@ -319,13 +319,13 @@ namespace BugsnagUnity
   {
     [DllImport("bugsnag-osx", EntryPoint = "bugsnag_createBreadcrumbs")]
     static extern IntPtr CreateBreadcrumbs(IntPtr configuration);
-    
+
     [DllImport("bugsnag-osx", EntryPoint = "bugsnag_addBreadcrumb")]
     static extern void NativeAddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
-    
+
     [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveBreadcrumbs")]
     static extern void NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
-    
+
     internal MacOsBreadcrumbs(MacOSConfiguration configuration) : base(CreateBreadcrumbs(configuration.NativeConfiguration))
     {
     }
@@ -351,7 +351,7 @@ namespace BugsnagUnity
 
     [DllImport("__Internal", EntryPoint = "bugsnag_retrieveBreadcrumbs")]
     static extern void NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
-    
+
     internal iOSBreadcrumbs(iOSConfiguration configuration) : base(CreateBreadcrumbs(configuration.NativeConfiguration))
     {
     }

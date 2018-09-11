@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using BugsnagUnity.Payload;
 using UnityEngine;
 
@@ -39,7 +39,7 @@ namespace BugsnagUnity
         using (var sessionTracker = JavaClient.Get<AndroidJavaObject>("sessionTracker"))
         using (var activityClass = activity.Call<AndroidJavaObject>("getClass"))
         {
-          var activityName = activityClass.Call<string>("getSimpleName");
+          var activityName = activityClass.CallStringMethod("getSimpleName");
           sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
         }
       }
@@ -70,9 +70,9 @@ namespace BugsnagUnity
     {
       using (var nativeUser = JavaClient.Call<AndroidJavaObject>("getUser"))
       {
-        user.Id = nativeUser.Call<string>("getId");
-        user.Name = nativeUser.Call<string>("getName");
-        user.Email = nativeUser.Call<string>("getEmail");
+        user.Id = nativeUser.CallStringMethod("getId");
+        user.Email = nativeUser.CallStringMethod("getEmail");
+        user.Name = nativeUser.CallStringMethod("getName");
       }
     }
 
