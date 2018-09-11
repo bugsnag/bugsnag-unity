@@ -117,6 +117,10 @@ namespace BugsnagUnity
       void NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
     }
 
+    const string CreateBreadcrumbsMethod = "bugsnag_createBreadcrumbs";
+    const string AddBreadcrumbMethod = "bugsnag_addBreadcrumb";
+    const string RetrieveBreadcrumbsMethod = "bugsnag_retrieveBreadcrumbs";
+
     class MacOSWrapper : ICocoaWrapper
     {
       IntPtr ICocoaWrapper.CreateBreadcrumbs(IntPtr configuration) => CreateBreadcrumbs(configuration);
@@ -125,13 +129,13 @@ namespace BugsnagUnity
 
       void ICocoaWrapper.NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor) => NativeRetrieveBreadcrumbs(breadcrumbs, instance, visitor);
 
-      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_createBreadcrumbs")]
+      [DllImport(CocoaClient.MacOsImport, EntryPoint = CreateBreadcrumbsMethod)]
       static extern IntPtr CreateBreadcrumbs(IntPtr configuration);
 
-      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_addBreadcrumb")]
+      [DllImport(CocoaClient.MacOsImport, EntryPoint = AddBreadcrumbMethod)]
       static extern void NativeAddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
 
-      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveBreadcrumbs")]
+      [DllImport(CocoaClient.MacOsImport, EntryPoint = RetrieveBreadcrumbsMethod)]
       static extern void NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
     }
 
@@ -143,13 +147,13 @@ namespace BugsnagUnity
 
       void ICocoaWrapper.NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor) => NativeRetrieveBreadcrumbs(breadcrumbs, instance, visitor);
 
-      [DllImport("__Internal", EntryPoint = "bugsnag_createBreadcrumbs")]
+      [DllImport(CocoaClient.iOSImport, EntryPoint = CreateBreadcrumbsMethod)]
       static extern IntPtr CreateBreadcrumbs(IntPtr configuration);
 
-      [DllImport("__Internal", EntryPoint = "bugsnag_addBreadcrumb")]
+      [DllImport(CocoaClient.iOSImport, EntryPoint = AddBreadcrumbMethod)]
       static extern void NativeAddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
 
-      [DllImport("__Internal", EntryPoint = "bugsnag_retrieveBreadcrumbs")]
+      [DllImport(CocoaClient.iOSImport, EntryPoint = RetrieveBreadcrumbsMethod)]
       static extern void NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
     }
   }

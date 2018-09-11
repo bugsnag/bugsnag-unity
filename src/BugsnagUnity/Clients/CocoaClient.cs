@@ -8,6 +8,9 @@ namespace BugsnagUnity
 {
   class CocoaClient : INativeClient
   {
+    internal const string MacOsImport = "bugsnag-osx";
+    internal const string iOSImport = "__Internal";
+  
     public IConfiguration Configuration { get; }
 
     public IBreadcrumbs Breadcrumbs { get; }
@@ -153,6 +156,12 @@ namespace BugsnagUnity
       void PopulateUser(ref NativeUser user);
     }
 
+    const string StartBugsnagWithConfigurationMethod = "bugsnag_startBugsnagWithConfiguration";
+    const string SetMetadataMethod = "bugsnag_setMetadata";
+    const string RetrieveDeviceDataMethod = "bugsnag_retrieveDeviceData";
+    const string RetrieveAppDataMethod = "bugsnag_retrieveAppData";
+    const string PopulateUserMethod = "bugsnag_populateUser";
+
     class MacOsWrapper : ICocoaWrapper
     {
       void ICocoaWrapper.StartBugsnagWithConfiguration(IntPtr configuration) => StartBugsnagWithConfiguration(configuration);
@@ -161,19 +170,19 @@ namespace BugsnagUnity
       void ICocoaWrapper.RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate) => RetrieveAppData(instance, populate);
       void ICocoaWrapper.PopulateUser(ref NativeUser user) => PopulateUser(ref user);
 
-      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
+      [DllImport(MacOsImport, EntryPoint = StartBugsnagWithConfigurationMethod)]
       static extern void StartBugsnagWithConfiguration(IntPtr configuration);
 
-      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setMetadata")]
+      [DllImport(MacOsImport, EntryPoint = SetMetadataMethod)]
       static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
 
-      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveDeviceData")]
+      [DllImport(MacOsImport, EntryPoint = RetrieveDeviceDataMethod)]
       static extern void RetrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
-      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_retrieveAppData")]
+      [DllImport(MacOsImport, EntryPoint = RetrieveAppDataMethod)]
       static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
-      [DllImport("bugsnag-osx", EntryPoint = "bugsnag_populateUser")]
+      [DllImport(MacOsImport, EntryPoint = PopulateUserMethod)]
       static extern void PopulateUser(ref NativeUser user);
     }
 
@@ -185,19 +194,19 @@ namespace BugsnagUnity
       void ICocoaWrapper.RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate) => RetrieveAppData(instance, populate);
       void ICocoaWrapper.PopulateUser(ref NativeUser user) => PopulateUser(ref user);
 
-      [DllImport("__Internal", EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
+      [DllImport(iOSImport, EntryPoint = StartBugsnagWithConfigurationMethod)]
       static extern void StartBugsnagWithConfiguration(IntPtr configuration);
 
-      [DllImport("__Internal", EntryPoint = "bugsnag_setMetadata")]
+      [DllImport(iOSImport, EntryPoint = StartBugsnagWithConfigurationMethod)]
       static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
 
-      [DllImport("__Internal", EntryPoint = "bugsnag_retrieveAppData")]
+      [DllImport(iOSImport, EntryPoint = RetrieveAppDataMethod)]
       static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
-      [DllImport("__Internal", EntryPoint = "bugsnag_retrieveDeviceData")]
+      [DllImport(iOSImport, EntryPoint = RetrieveDeviceDataMethod)]
       static extern void RetrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
-      [DllImport("__Internal", EntryPoint = "bugsnag_populateUser")]
+      [DllImport(iOSImport, EntryPoint = PopulateUserMethod)]
       static extern void PopulateUser(ref NativeUser user);
     }
   }

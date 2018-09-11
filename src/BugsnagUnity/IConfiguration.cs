@@ -248,42 +248,42 @@ namespace BugsnagUnity
 
     const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_createConfiguration")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_createConfiguration")]
     static extern IntPtr CreateConfiguration(string apiKey);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getApiKey")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_getApiKey")]
     static extern IntPtr GetApiKey(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setReleaseStage")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_setReleaseStage")]
     static extern void SetReleaseStage(IntPtr configuration, string releaseStage);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getReleaseStage")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_getReleaseStage")]
     static extern IntPtr GetReleaseStage(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setContext")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_setContext")]
     static extern void SetContext(IntPtr configuration, string context);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getContext")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_getContext")]
     static extern IntPtr GetContext(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setAppVersion")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_setAppVersion")]
     static extern void SetAppVersion(IntPtr configuration, string appVersion);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getAppVersion")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_getAppVersion")]
     static extern IntPtr GetAppVersion(IntPtr configuration);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setNotifyUrl")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_setNotifyUrl")]
     static extern void SetNotifyEndpoint(IntPtr configuration, string endpoint);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getNotifyUrl")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_getNotifyUrl")]
     static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
 
     delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)]string[] releaseStages, long count);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_getNotifyReleaseStages")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_getNotifyReleaseStages")]
     static extern void GetNotifyReleaseStages(IntPtr configuration, IntPtr instance, NotifyReleaseStageCallback callback);
 
-    [DllImport("bugsnag-osx", EntryPoint = "bugsnag_setNotifyReleaseStages")]
+    [DllImport(CocoaClient.MacOsImport, EntryPoint = "bugsnag_setNotifyReleaseStages")]
     static extern void SetNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int count);
 
     internal IntPtr NativeConfiguration { get; }
@@ -393,42 +393,42 @@ namespace BugsnagUnity
 
     const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_createConfiguration")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_createConfiguration")]
     static extern IntPtr CreateConfiguration(string apiKey);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_getApiKey")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_getApiKey")]
     static extern IntPtr GetApiKey(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_setReleaseStage")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_setReleaseStage")]
     static extern void SetReleaseStage(IntPtr configuration, string releaseStage);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_getReleaseStage")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_getReleaseStage")]
     static extern IntPtr GetReleaseStage(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_setContext")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_setContext")]
     static extern void SetContext(IntPtr configuration, string context);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_getContext")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_getContext")]
     static extern IntPtr GetContext(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_setAppVersion")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_setAppVersion")]
     static extern void SetAppVersion(IntPtr configuration, string appVersion);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_getAppVersion")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_getAppVersion")]
     static extern IntPtr GetAppVersion(IntPtr configuration);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_setNotifyUrl")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_setNotifyUrl")]
     static extern void SetNotifyEndpoint(IntPtr configuration, string endpoint);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_getNotifyUrl")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_getNotifyUrl")]
     static extern IntPtr GetNotifyEndpoint(IntPtr configuration);
 
     delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)]string[] releaseStages, long count);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_getNotifyReleaseStages")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_getNotifyReleaseStages")]
     static extern void GetNotifyReleaseStages(IntPtr configuration, IntPtr instance, NotifyReleaseStageCallback callback);
 
-    [DllImport("__Internal", EntryPoint = "bugsnag_setNotifyReleaseStages")]
+    [DllImport(CocoaClient.iOSImport, EntryPoint = "bugsnag_setNotifyReleaseStages")]
     static extern void SetNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int count);
 
     internal IntPtr NativeConfiguration { get; }
