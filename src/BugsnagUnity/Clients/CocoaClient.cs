@@ -17,29 +17,25 @@ namespace BugsnagUnity
     IntPtr NativeConfiguration { get; }
 
     ICocoaWrapper Wrapper { get; }
-
-    public CocoaClient(MacOSConfiguration configuration)
+    
+    CocoaClient(IConfiguration configuration, IntPtr nativeConfiguration, ICocoaWrapper wrapper, IBreadcrumbs breadcrumbs)
     {
       Configuration = configuration;
-      NativeConfiguration = configuration.NativeConfiguration;
-      Wrapper = new MacOsWrapper();
+      NativeConfiguration = nativeConfiguration;
+      Wrapper = wrapper;
 
-      Wrapper.StartBugsnagWithConfiguration(configuration.NativeConfiguration);
+      Wrapper.StartBugsnagWithConfiguration(NativeConfiguration);
 
       Delivery = new Delivery();
-      Breadcrumbs = new MacOsBreadcrumbs(configuration);
+      Breadcrumbs = breadcrumbs;
     }
 
-    public CocoaClient(iOSConfiguration configuration)
+    public CocoaClient(MacOSConfiguration configuration) : this(configuration, configuration.NativeConfiguration, new MacOsWrapper(), new MacOsBreadcrumbs(configuration))
     {
-      Configuration = configuration;
-      NativeConfiguration = configuration.NativeConfiguration;
-      Wrapper = new iOSWrapper();
+    }
 
-      Wrapper.StartBugsnagWithConfiguration(configuration.NativeConfiguration);
-
-      Delivery = new Delivery();
-      Breadcrumbs = new iOSBreadcrumbs(configuration);
+    public CocoaClient(iOSConfiguration configuration) : this(configuration, configuration.NativeConfiguration, new iOSWrapper(), new iOSBreadcrumbs(configuration))
+    {
     }
 
     public void PopulateApp(App app)
