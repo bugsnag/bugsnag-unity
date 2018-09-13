@@ -18,7 +18,7 @@ namespace BugsnagUnity.Payload
 
     StackFrame[] AlternativeStackTrace { get; }
 
-    private static string[] StringSplit { get; } = { Environment.NewLine };
+    private static string[] StringSplit { get; } = { "\n", "\r\n" };
 
     /// <summary>
     /// Looks for lines that have matching parentheses. This indicates that
