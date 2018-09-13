@@ -24,7 +24,7 @@ namespace BugsnagUnity.Payload
     /// Looks for lines that have matching parentheses. This indicates that
     /// the line contains a method call.
     /// </summary>
-    private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>\S+\s*\(.*?\))\s*(?:(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
+    private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>\S+\s*\(.*?\))\s(?:(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
 
     internal StackTrace(string stackTrace)
     {
@@ -59,6 +59,10 @@ namespace BugsnagUnity.Payload
             {
               yield return new StackTraceLine(file, null, method);
             }
+          }
+          else
+          {
+            yield return new StackTraceLine(null, null, item);
           }
         }
       }
