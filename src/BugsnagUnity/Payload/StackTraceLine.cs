@@ -12,11 +12,9 @@ namespace BugsnagUnity.Payload
   /// </summary>
   class StackTrace : IEnumerable<StackTraceLine>
   {
-    System.Exception OriginalException { get; }
-
     string OriginalStackTrace { get; }
 
-    StackFrame[] AlternativeStackTrace { get; }
+    StackFrame[] StackFrames { get; }
 
     private static string[] StringSplit { get; } = { "\n", "\r\n" };
 
@@ -31,10 +29,9 @@ namespace BugsnagUnity.Payload
       OriginalStackTrace = stackTrace;
     }
 
-    internal StackTrace(System.Exception exception, StackFrame[] alternativeStackTrace)
+    internal StackTrace(StackFrame[] stackFrames)
     {
-      OriginalException = exception;
-      AlternativeStackTrace = alternativeStackTrace;
+      StackFrames = stackFrames;
     }
 
     public IEnumerator<StackTraceLine> GetEnumerator()
@@ -67,24 +64,12 @@ namespace BugsnagUnity.Payload
         }
       }
 
-      if (OriginalException == null)
+      if (StackFrames == null)
       {
         yield break;
       }
 
-      var stackFrames = new System.Diagnostics.StackTrace(OriginalException, true).GetFrames();
-
-      if (stackFrames == null || stackFrames.Length == 0)
-      {
-        stackFrames = AlternativeStackTrace;
-      }
-
-      if (stackFrames == null)
-      {
-        yield break;
-      }
-
-      foreach (var frame in stackFrames)
+      foreach (var frame in StackFrames)
       {
         yield return StackTraceLine.FromStackFrame(frame);
       }

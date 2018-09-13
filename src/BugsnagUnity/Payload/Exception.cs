@@ -9,16 +9,19 @@ namespace BugsnagUnity.Payload
 {
   class UnityLogExceptions : IEnumerable<Exception>
   {
-    private UnityLogMessage UnityLogMessage { get; }
+    UnityLogMessage UnityLogMessage { get; }
 
-    internal UnityLogExceptions(UnityLogMessage logMessage)
+    System.Diagnostics.StackFrame[] AlternativeStackTrace { get; }
+
+    internal UnityLogExceptions(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] alternativeStackTrace)
     {
       UnityLogMessage = logMessage;
+      AlternativeStackTrace = alternativeStackTrace;
     }
 
     public IEnumerator<Exception> GetEnumerator()
     {
-      yield return Exception.FromUnityLogMessage(UnityLogMessage);
+      yield return Exception.FromUnityLogMessage(UnityLogMessage, AlternativeStackTrace);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -98,22 +101,45 @@ namespace BugsnagUnity.Payload
     internal static Exception FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
     {
       var errorClass = TypeNameHelper.GetTypeDisplayName(exception.GetType());
-      var stackTrace = new StackTrace(exception, alternativeStackTrace).ToArray();
-      return new Exception(errorClass, exception.Message, stackTrace);
+      var stackFrames = new System.Diagnostics.StackTrace(exception, true).GetFrames();
+
+      StackTraceLine[] lines = null;
+
+      if (stackFrames != null && stackFrames.Length > 0)
+      {
+        lines = new StackTrace(stackFrames).ToArray();
+      }
+      else
+      {
+        lines = new StackTrace(alternativeStackTrace).ToArray();
+      }
+
+      return new Exception(errorClass, exception.Message, lines);
     }
 
-    internal static Exception FromUnityLogMessage(UnityLogMessage logMessage)
+    internal static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] alternativeStackTrace)
     {
       var match = Regex.Match(logMessage.Condition, @"^(?<errorClass>\S+):\s*(?<message>.*)", RegexOptions.Singleline);
 
+      StackTraceLine[] lines = null;
+
+      if (alternativeStackTrace != null)
+      {
+        lines = new StackTrace(alternativeStackTrace).ToArray();
+      }
+      else
+      {
+        lines = new StackTrace(logMessage.StackTrace).ToArray();
+      }
+
       if (match.Success)
       {
-        return new Exception(match.Groups["errorClass"].Value, match.Groups["message"].Value.Trim(), new StackTrace(logMessage.StackTrace).ToArray());
+        return new Exception(match.Groups["errorClass"].Value, match.Groups["message"].Value.Trim(), lines);
       }
       else
       {
         // include the type somehow in there
-        return new Exception($"UnityLog{logMessage.Type}", logMessage.Condition, new StackTrace(logMessage.StackTrace).ToArray());
+        return new Exception($"UnityLog{logMessage.Type}", logMessage.Condition, lines);
       }
     }
   }
