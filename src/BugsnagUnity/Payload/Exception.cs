@@ -117,20 +117,11 @@ namespace BugsnagUnity.Payload
       return new Exception(errorClass, exception.Message, lines);
     }
 
-    internal static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] alternativeStackTrace)
+    internal static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] stackFrames)
     {
       var match = Regex.Match(logMessage.Condition, @"^(?<errorClass>\S+):\s*(?<message>.*)", RegexOptions.Singleline);
 
-      StackTraceLine[] lines = null;
-
-      if (alternativeStackTrace != null)
-      {
-        lines = new StackTrace(alternativeStackTrace).ToArray();
-      }
-      else
-      {
-        lines = new StackTrace(logMessage.StackTrace).ToArray();
-      }
+      var lines = new StackTrace(stackFrames).ToArray();
 
       if (match.Success)
       {

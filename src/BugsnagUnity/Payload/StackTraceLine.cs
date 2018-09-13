@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text.RegularExpressions;
 
 namespace BugsnagUnity.Payload
 {
@@ -12,22 +10,7 @@ namespace BugsnagUnity.Payload
   /// </summary>
   class StackTrace : IEnumerable<StackTraceLine>
   {
-    string OriginalStackTrace { get; }
-
     StackFrame[] StackFrames { get; }
-
-    private static string[] StringSplit { get; } = { "\n", "\r\n" };
-
-    /// <summary>
-    /// Looks for lines that have matching parentheses. This indicates that
-    /// the line contains a method call.
-    /// </summary>
-    private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>\S+\s*\(.*?\))\s(?:(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
-
-    internal StackTrace(string stackTrace)
-    {
-      OriginalStackTrace = stackTrace;
-    }
 
     internal StackTrace(StackFrame[] stackFrames)
     {
@@ -36,34 +19,6 @@ namespace BugsnagUnity.Payload
 
     public IEnumerator<StackTraceLine> GetEnumerator()
     {
-      if (OriginalStackTrace != null)
-      {
-        foreach (var item in OriginalStackTrace.Split(StringSplit, StringSplitOptions.RemoveEmptyEntries))
-        {
-          var match = StackTraceLineRegex.Match(item);
-
-          if (match.Success)
-          {
-            var method = match.Groups["method"].Success ? match.Groups["method"].Value : null;
-            var file = match.Groups["file"].Success ? match.Groups["file"].Value : null;
-            var line = match.Groups["linenumber"].Success ? match.Groups["linenumber"].Value : null;
-
-            if (int.TryParse(line, out var lineNumber))
-            {
-              yield return new StackTraceLine(file, lineNumber, method);
-            }
-            else
-            {
-              yield return new StackTraceLine(file, null, method);
-            }
-          }
-          else
-          {
-            yield return new StackTraceLine(null, null, item);
-          }
-        }
-      }
-
       if (StackFrames == null)
       {
         yield break;
