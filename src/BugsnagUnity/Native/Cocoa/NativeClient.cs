@@ -6,7 +6,7 @@ using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-  class CocoaClient : INativeClient
+  class NativeClient : INativeClient
   {
     public IConfiguration Configuration { get; }
 
@@ -16,7 +16,7 @@ namespace BugsnagUnity
 
     IntPtr NativeConfiguration { get; }
     
-    CocoaClient(IConfiguration configuration, IntPtr nativeConfiguration, IBreadcrumbs breadcrumbs)
+    NativeClient(IConfiguration configuration, IntPtr nativeConfiguration, IBreadcrumbs breadcrumbs)
     {
       Configuration = configuration;
       NativeConfiguration = nativeConfiguration;
@@ -27,7 +27,7 @@ namespace BugsnagUnity
       Breadcrumbs = breadcrumbs;
     }
 
-    public CocoaClient(Configuration configuration) : this(configuration, configuration.NativeConfiguration, new Breadcrumbs(configuration))
+    public NativeClient(Configuration configuration) : this(configuration, configuration.NativeConfiguration, new Breadcrumbs(configuration))
     {
     }
 

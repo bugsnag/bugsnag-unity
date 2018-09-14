@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  class AndroidConfiguration : IConfiguration
+  class Configuration : IConfiguration
   {
     const string DefaultEndpoint = "https://notify.bugsnag.com";
 
@@ -12,7 +12,7 @@ namespace BugsnagUnity
 
     internal AndroidJavaObject JavaObject { get; }
 
-    internal AndroidConfiguration(string apiKey)
+    internal Configuration(string apiKey)
     {
       JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
         // the bugsnag-unity notifier will handle session tracking

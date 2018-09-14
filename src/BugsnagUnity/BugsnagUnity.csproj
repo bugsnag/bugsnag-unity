@@ -7,7 +7,8 @@
     <Version></Version>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Native/**/*.cs"/>
+    <Compile Remove="Native/**/*.cs" />
+    <Compile Include="Native/Fallback/**/*.cs"/>
     <Reference Include="UnityEngine">
       <HintPath>$(UnityDir)\UnityEngine.dll</HintPath>
       <Private>false</Private>
