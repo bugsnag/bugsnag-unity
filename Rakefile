@@ -180,8 +180,15 @@ namespace :plugin do
           raise "Failed to build csharp plugin"
         end
       end
-      dll = File.join("src", "BugsnagUnity", "bin", "Release", "net35", "BugsnagUnity.dll")
-      cp File.realpath(dll), assets_path
+
+      cd File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
+        cp File.realpath("BugsnagUnity.dll"), assets_path
+        cp File.realpath("BugsnagUnity.Windows.dll"), File.join(assets_path, "Windows")
+        cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
+        cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
+        cp File.realpath("BugsnagUnity.MacOS.dll"), File.join(assets_path, "OSX")
+        cp File.realpath("BugsnagUnity.Android.dll"), File.join(assets_path, "Android")
+      end
     end
     task android: [:clean] do
       android_dir = File.join(assets_path, "Android")

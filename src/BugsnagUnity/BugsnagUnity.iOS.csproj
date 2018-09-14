@@ -7,6 +7,9 @@
     <Version></Version>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Native/**/*.cs" />
+    <Compile Include="Native/Cocoa/**/*.cs" />
+    <Compile Include="Native/iOS/**/*.cs" />
     <Reference Include="UnityEngine">
       <HintPath>$(UnityDir)\UnityEngine.dll</HintPath>
       <Private>false</Private>

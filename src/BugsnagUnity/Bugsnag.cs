@@ -17,21 +17,21 @@ namespace BugsnagUnity
           {
             case RuntimePlatform.tvOS:
             case RuntimePlatform.IPhonePlayer:
-              InternalClient = new Client(new CocoaClient(new iOSConfiguration(apiKey)));
+              //InternalClient = new Client(new CocoaClient(new iOSConfiguration(apiKey)));
               break;
             case RuntimePlatform.OSXEditor:
             case RuntimePlatform.OSXPlayer:
-              InternalClient = new Client(new CocoaClient(new MacOSConfiguration(apiKey)));
+              //InternalClient = new Client(new CocoaClient(new MacOSConfiguration(apiKey)));
               break;
             case RuntimePlatform.Android:
-              InternalClient = new Client(new AndroidClient(new AndroidConfiguration(apiKey)));
+              //InternalClient = new Client(new AndroidClient(new AndroidConfiguration(apiKey)));
               break;
             case RuntimePlatform.WindowsEditor:
             case RuntimePlatform.WindowsPlayer:
-              InternalClient = new Client(new WindowsClient(new Configuration(apiKey)));
+              //InternalClient = new Client(new WindowsClient(new Configuration(apiKey)));
               break;
             default:
-              InternalClient = new Client(new NativeClient(new Configuration(apiKey)));
+              //InternalClient = new Client(new NativeClient(new Configuration(apiKey)));
               break;
           }
         }
