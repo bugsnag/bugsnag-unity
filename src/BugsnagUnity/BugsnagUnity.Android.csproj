@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Native/**/*.cs" />
-    <Compile Include="Native/Fallback/**/*.cs"/>
+    <Compile Include="Native/Android/**/*.cs" />
     <Reference Include="UnityEngine">
       <HintPath>$(UnityDir)\UnityEngine.dll</HintPath>
       <Private>false</Private>

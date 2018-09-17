@@ -4,7 +4,7 @@ using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-  class WindowsClient : INativeClient
+  class NativeClient : INativeClient
   {
     public IConfiguration Configuration { get; }
 
@@ -12,7 +12,7 @@ namespace BugsnagUnity
 
     public IDelivery Delivery { get; }
 
-    public WindowsClient(Configuration configuration)
+    public NativeClient(Configuration configuration)
     {
       Configuration = configuration;
       Breadcrumbs = new Breadcrumbs(configuration);

@@ -4,11 +4,11 @@ using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-  class AndroidBreadcrumbs : IBreadcrumbs
+  class Breadcrumbs : IBreadcrumbs
   {
     AndroidJavaObject Client { get; }
 
-    internal AndroidBreadcrumbs(AndroidJavaObject client)
+    internal Breadcrumbs(AndroidJavaObject client)
     {
       Client = client;
     }

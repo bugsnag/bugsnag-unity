@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  class AndroidClient : INativeClient
+  class NativeClient : INativeClient
   {
     public IConfiguration Configuration { get; }
 
@@ -14,7 +14,7 @@ namespace BugsnagUnity
 
     internal AndroidJavaObject JavaClient { get; }
 
-    public AndroidClient(AndroidConfiguration configuration)
+    public NativeClient(Configuration configuration)
     {
       Configuration = configuration;
 
@@ -45,7 +45,7 @@ namespace BugsnagUnity
       }
 
       Delivery = new AndroidDelivery();
-      Breadcrumbs = new AndroidBreadcrumbs(JavaClient);
+      Breadcrumbs = new Breadcrumbs(JavaClient);
     }
 
     public void PopulateApp(App app)
