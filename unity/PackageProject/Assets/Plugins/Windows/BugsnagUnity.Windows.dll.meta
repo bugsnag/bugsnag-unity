@@ -10,10 +10,17 @@ PluginImporter:
   isOverridable: 0
   platformData:
   - first:
-      Windows: Windows
+      '': Any
     second:
-      enabled: 1
-      settings: {}
+      enabled: 0
+      settings:
+        Exclude Editor: 1
+        Exclude Linux: 1
+        Exclude Linux64: 1
+        Exclude LinuxUniversal: 1
+        Exclude OSXUniversal: 1
+        Exclude Win: 0
+        Exclude Win64: 0
   - first:
       Any:
     second:
@@ -24,7 +31,78 @@ PluginImporter:
     second:
       enabled: 0
       settings:
+        CPU: AnyCPU
         DefaultValueInitialized: true
+        OS: AnyOS
+  - first:
+      Facebook: Win
+    second:
+      enabled: 0
+      settings:
+        CPU: None
+  - first:
+      Facebook: Win64
+    second:
+      enabled: 0
+      settings:
+        CPU: None
+  - first:
+      Standalone: Linux
+    second:
+      enabled: 0
+      settings:
+        CPU: x86
+  - first:
+      Standalone: Linux64
+    second:
+      enabled: 0
+      settings:
+        CPU: x86_64
+  - first:
+      Standalone: LinuxUniversal
+    second:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+  - first:
+      Standalone: OSXUniversal
+    second:
+      enabled: 0
+      settings:
+        CPU: None
+  - first:
+      Standalone: Win
+    second:
+      enabled: 1
+      settings:
+        CPU: None
+  - first:
+      Standalone: Win64
+    second:
+      enabled: 1
+      settings:
+        CPU: None
+  - first:
+      Windows: Windows
+    second:
+      enabled: 1
+      settings: {}
+  - first:
+      Windows Store Apps: WindowsStoreApps
+    second:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+  - first:
+      iPhone: iOS
+    second:
+      enabled: 0
+      settings: {}
+  - first:
+      tvOS: tvOS
+    second:
+      enabled: 0
+      settings: {}
   userData:
   assetBundleName:
   assetBundleVariant:
