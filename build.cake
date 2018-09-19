@@ -11,14 +11,16 @@ Task("Restore-NuGet-Packages")
 
 Task("Build")
   .IsDependentOn("Restore-NuGet-Packages")
+  .IsDependentOn("PopulateVersion")
   .Does(() => {
     MSBuild(solution, settings =>
       settings
         .SetVerbosity(Verbosity.Minimal)
+        .WithProperty("Version", version)
         .SetConfiguration(configuration));
   });
 
-Task("SetVersion")
+Task("PopulateVersion")
   .WithCriteria(!BuildSystem.IsLocalBuild)
   .Does(() => {
     if (string.IsNullOrEmpty(TravisCI.Environment.Build.Tag))
@@ -29,8 +31,6 @@ Task("SetVersion")
     {
       version = TravisCI.Environment.Build.Tag.TrimStart('v');
     }
-    var path = "/Project/PropertyGroup/Version";
-    XmlPoke(project, path, version);
   });
 
 Task("Test")
@@ -41,7 +41,6 @@ Task("Test")
   });
 
 Task("Default")
-  .IsDependentOn("SetVersion")
   .IsDependentOn("Test");
 
 RunTarget(target);
