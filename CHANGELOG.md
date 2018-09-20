@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.6.7 (2018-09-21)
+
+### Improvements
+
+* Automatically detect app version from Unity environment for WebGL
+  | [#94](https://github.com/bugsnag/bugsnag-unity/pull/94)
+* Report app information in WebGL: `duration`, `inForeground` and `durationInForeground`
+  | [#94](https://github.com/bugsnag/bugsnag-unity/pull/94)
+
 ## 3.6.6 (2018-05-24)
 
 ### Bug fixes
