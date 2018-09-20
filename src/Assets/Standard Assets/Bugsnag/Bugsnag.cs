@@ -481,6 +481,12 @@ public class Bugsnag : MonoBehaviour {
             Bugsnag.ReleaseStage = "production";
         }
 
+#if (UNITY_WEBGL) && !UNITY_EDITOR
+            // Android/Cocoa platforms are able to get the app version automatically
+            // but WebGL needs to have it explicitly passed through to the JS layer
+            NativeBugsnag.SetAppVersion(Application.version);
+#endif
+
         Bugsnag.Context = GetLevelName();
         NativeBugsnag.SetAutoNotify (AutoNotify);
         NativeBugsnag.AddToTab("Unity", "unityException", "false");
