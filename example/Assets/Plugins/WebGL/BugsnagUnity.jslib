@@ -32,13 +32,16 @@ var BugsnagPlugin = {
             exp.stack =  newStack;
         }
 
-        // Indicate that its a unity exception, along with the received log level
         metaData = {
+          // Indicate that it's a unity exception
           "Unity" : {
             "unityException" : true
-          }
+          },
+          // Grab the app timing/inForeground data provided by BugsnagAppTimings.jspre
+          "app": typeof __bugsnag__app_timings__ !== 'undefined' ? __bugsnag__app_timings__.summary() : {}
         };
 
+        // Add the unity log level (if it came from a log)
         if (strLogType != null && strLogType != "") {
           metaData["Unity"]["unityLogLevel"] = strLogType;
         }
