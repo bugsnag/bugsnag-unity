@@ -47,9 +47,7 @@ namespace BugsnagUnity
       UniqueCounter = new UniqueLogThrottle(Configuration);
       LogTypeCounter = new MaximumLogTypeCounter(Configuration);
       SessionTracking = new SessionTracker(this);
-      var unityMetadata = UnityMetadata.Data;
-      Metadata.Add(UnityMetadataKey, unityMetadata);
-      NativeClient.SetMetadata(UnityMetadataKey, unityMetadata);
+      NativeClient.SetMetadata(UnityMetadataKey, UnityMetadata.ForNativeClient());
 
       NativeClient.PopulateUser(User);
 
@@ -183,15 +181,7 @@ namespace BugsnagUnity
         metadata.Add(item.Key, item.Value);
       }
 
-      if (metadata.ContainsKey(UnityMetadataKey) && metadata[UnityMetadataKey] is Dictionary<string, string> unityMetadata)
-      {
-        unityMetadata["unityException"] = "true";
-
-        if (logType.HasValue)
-        {
-          unityMetadata["unityLogType"] = logType.Value.ToString("G");
-        }
-      }
+      metadata.Add(UnityMetadataKey, UnityMetadata.WithLogType(logType));
 
       var @event = new Payload.Event(
         Configuration.Context,

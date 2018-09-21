@@ -5,9 +5,22 @@ namespace BugsnagUnity
 {
   class UnityMetadata
   {
-    internal static Dictionary<string, string> Data => new Dictionary<string, string> {
+    internal static Dictionary<string, string> ForNativeClient() => ForUnityException(false);
+
+    internal static Dictionary<string, string> WithLogType(LogType? logType) {
+      var data = ForUnityException(true);
+
+      if (logType.HasValue)
+      {
+        data["unityLogType"] = logType.Value.ToString("G");
+      }
+
+      return data;
+    }
+
+    private static Dictionary<string, string> ForUnityException(bool unityException) => new Dictionary<string, string> {
       { "unityVersion", Application.unityVersion },
-      { "unityException", "false" }, // this is overridden when we make a notify call from the c# layer
+      { "unityException", unityException.ToString().ToLowerInvariant() },
       { "platform", Application.platform.ToString() },
       { "osLanguage", Application.systemLanguage.ToString() },
       { "version", Application.version },
