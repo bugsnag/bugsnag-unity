@@ -9,6 +9,16 @@
 * Report app information in WebGL: `duration`, `inForeground` and `durationInForeground`
   | [#94](https://github.com/bugsnag/bugsnag-unity/pull/94)
 
+**Note:**
+During the preparation for this release we noticed a workflow issue when targeting tvOS. In order to successfully build for tvOS, after importing the Bugsnag plugin there is a manual step required:
+
+- In the Unity editor, go to Project > Assets > iOS > Bugsnag
+- Select all source files in this directory
+- In the inspector pane check `tvOS` in the "Include platforms" list
+- Click the "Apply" button at the bottom of the inspector pane
+
+We'll work on making this install process smoother in the future.
+
 ## 3.6.6 (2018-05-24)
 
 ### Bug fixes
