@@ -70,7 +70,10 @@ namespace BugsnagUnity
         req.downloadHandler = new DownloadHandlerBuffer();
         req.method = UnityWebRequest.kHttpVerbPOST;
 
-        yield return req.SendWebRequest();
+        // we are using the deprecated Send method here so that we can continue
+        // to support unity 5.6, once this support is dropped we can use the
+        // newer SendWebRequest method
+        yield return req.Send();
         while (!req.isDone)
           yield return new WaitForEndOfFrame();
 
@@ -78,7 +81,10 @@ namespace BugsnagUnity
         {
           // success!
         }
-        else if (req.responseCode >= 500 || req.isNetworkError)
+        // once we can drop support for unity 5.6 we can use req.isNetworkError
+        // instead of req.error != null. According to the unity docs though this
+        // should have the same effect
+        else if (req.responseCode >= 500 || req.error != null)
         {
           // something is wrong with the server/connection, should retry
           Send(payload);
