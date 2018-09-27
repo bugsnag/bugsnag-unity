@@ -42,7 +42,7 @@ namespace BugsnagUnity
           {
             connection.Call("setDoOutput", true);
             connection.Call("setChunkedStreamingMode", 0);
-            connection.Call("addRequestProperty", "Content-Type", "application/json; charset=utf-8");
+            connection.Call("addRequestProperty", "Content-Type", "application/json");
             connection.Call("addRequestProperty", "Bugsnag-Sent-At", DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
 
             foreach (var header in payload.Headers)
