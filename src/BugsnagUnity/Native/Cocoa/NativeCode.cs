@@ -11,28 +11,19 @@ namespace BugsnagUnity
 
   partial class NativeCode
   {
-    const string StartBugsnagWithConfigurationMethod = "bugsnag_startBugsnagWithConfiguration";
-    const string SetMetadataMethod = "bugsnag_setMetadata";
-    const string RetrieveDeviceDataMethod = "bugsnag_retrieveDeviceData";
-    const string RetrieveAppDataMethod = "bugsnag_retrieveAppData";
-    const string PopulateUserMethod = "bugsnag_populateUser";
-    const string CreateBreadcrumbsMethod = "bugsnag_createBreadcrumbs";
-    const string AddBreadcrumbMethod = "bugsnag_addBreadcrumb";
-    const string RetrieveBreadcrumbsMethod = "bugsnag_retrieveBreadcrumbs";
-
-    [DllImport(Import, EntryPoint = StartBugsnagWithConfigurationMethod)]
+    [DllImport(Import, EntryPoint = "bugsnag_startBugsnagWithConfiguration")]
     internal static extern void StartBugsnagWithConfiguration(IntPtr configuration);
 
-    [DllImport(Import, EntryPoint = StartBugsnagWithConfigurationMethod)]
+    [DllImport(Import, EntryPoint = "bugsnag_setMetadata")]
     internal static extern void AddMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
 
-    [DllImport(Import, EntryPoint = RetrieveAppDataMethod)]
+    [DllImport(Import, EntryPoint = "bugsnag_retrieveAppData")]
     internal static extern void RetrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
-    [DllImport(Import, EntryPoint = RetrieveDeviceDataMethod)]
+    [DllImport(Import, EntryPoint = "bugsnag_retrieveDeviceData")]
     internal static extern void RetrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
-    [DllImport(Import, EntryPoint = PopulateUserMethod)]
+    [DllImport(Import, EntryPoint = "bugsnag_populateUser")]
     internal static extern void PopulateUser(ref NativeUser user);
 
     [DllImport(Import, EntryPoint = "bugsnag_createConfiguration")]
@@ -73,15 +64,15 @@ namespace BugsnagUnity
     [DllImport(Import, EntryPoint = "bugsnag_setNotifyReleaseStages")]
     internal static extern void SetNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int count);
 
-    [DllImport(Import, EntryPoint = CreateBreadcrumbsMethod)]
+    [DllImport(Import, EntryPoint = "bugsnag_createBreadcrumbs")]
     internal static extern IntPtr CreateBreadcrumbs(IntPtr configuration);
 
-    [DllImport(Import, EntryPoint = AddBreadcrumbMethod)]
+    [DllImport(Import, EntryPoint = "bugsnag_addBreadcrumb")]
     internal static extern void NativeAddBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
 
     internal delegate void BreadcrumbInformation(IntPtr instance, string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)]string[] keys, long keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 7)]string[] values, long valuesSize);
 
-    [DllImport(Import, EntryPoint = RetrieveBreadcrumbsMethod)]
+    [DllImport(Import, EntryPoint = "bugsnag_retrieveBreadcrumbs")]
     internal static extern void NativeRetrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
   }
 }
