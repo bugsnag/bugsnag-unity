@@ -103,8 +103,7 @@ const char *bugsnag_getContext(const void *configuration) {
 
 void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
   NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
-  NSURL *endpoint = [NSURL URLWithString: ns_notifyURL];
-  ((__bridge BugsnagConfiguration *)configuration).notifyURL = endpoint;
+  [((__bridge BugsnagConfiguration *)configuration) setEndpointsForNotify: ns_notifyURL sessions: nil];
 }
 
 const char *bugsnag_getNotifyUrl(const void *configuration) {
