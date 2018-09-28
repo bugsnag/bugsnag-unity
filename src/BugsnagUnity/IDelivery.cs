@@ -37,16 +37,23 @@ namespace BugsnagUnity
     {
       while (true)
       {
-        var payload = Queue.Dequeue();
-        using (var stream = new MemoryStream())
-        using (var reader = new StreamReader(stream))
-        using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+        try
         {
-          SimpleJson.SimpleJson.SerializeObject(payload, writer);
-          writer.Flush();
-          stream.Position = 0;
-          var body = Encoding.UTF8.GetBytes(reader.ReadToEnd());
-          MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
+          var payload = Queue.Dequeue();
+          using (var stream = new MemoryStream())
+          using (var reader = new StreamReader(stream))
+          using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+          {
+            SimpleJson.SimpleJson.SerializeObject(payload, writer);
+            writer.Flush();
+            stream.Position = 0;
+            var body = Encoding.UTF8.GetBytes(reader.ReadToEnd());
+            MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
+          }
+        }
+        catch (System.Exception)
+        {
+          // ensure that the thread carries on processing error reports
         }
       }
     }

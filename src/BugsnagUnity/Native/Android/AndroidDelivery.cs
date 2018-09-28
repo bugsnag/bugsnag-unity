@@ -33,37 +33,44 @@ namespace BugsnagUnity
 
       while (true)
       {
-        var payload = Queue.Dequeue();
-
-        using (var url = new AndroidJavaObject("java.net.URL", payload.Endpoint.ToString()))
-        using (var connection = url.Call<AndroidJavaObject>("openConnection"))
+        try
         {
-          try
+          var payload = Queue.Dequeue();
+
+          using (var url = new AndroidJavaObject("java.net.URL", payload.Endpoint.ToString()))
+          using (var connection = url.Call<AndroidJavaObject>("openConnection"))
           {
-            connection.Call("setDoOutput", true);
-            connection.Call("setChunkedStreamingMode", 0);
-            connection.Call("addRequestProperty", "Content-Type", "application/json");
-            connection.Call("addRequestProperty", "Bugsnag-Sent-At", DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
-
-            foreach (var header in payload.Headers)
+            try
             {
-              connection.Call("addRequestProperty", header.Key, header.Value);
-            }
+              connection.Call("setDoOutput", true);
+              connection.Call("setChunkedStreamingMode", 0);
+              connection.Call("addRequestProperty", "Content-Type", "application/json");
+              connection.Call("addRequestProperty", "Bugsnag-Sent-At", DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
 
-            using (var outputStream = connection.Call<AndroidJavaObject>("getOutputStream"))
-            using (var streamMapper = new JavaStreamWrapper(outputStream))
-            using (var writer = new StreamWriter(streamMapper, new UTF8Encoding(false)) { AutoFlush = false })
+              foreach (var header in payload.Headers)
+              {
+                connection.Call("addRequestProperty", header.Key, header.Value);
+              }
+
+              using (var outputStream = connection.Call<AndroidJavaObject>("getOutputStream"))
+              using (var streamMapper = new JavaStreamWrapper(outputStream))
+              using (var writer = new StreamWriter(streamMapper, new UTF8Encoding(false)) { AutoFlush = false })
+              {
+                SimpleJson.SimpleJson.SerializeObject(payload, writer);
+                writer.Flush();
+              }
+
+              var code = connection.Call<int>("getResponseCode");
+            }
+            finally
             {
-              SimpleJson.SimpleJson.SerializeObject(payload, writer);
-              writer.Flush();
+              connection.Call("disconnect");
             }
-
-            var code = connection.Call<int>("getResponseCode");
           }
-          finally
-          {
-            connection.Call("disconnect");
-          }
+        }
+        catch (System.Exception)
+        {
+          // ensure that the thread carries on processing error reports
         }
       }
     }
