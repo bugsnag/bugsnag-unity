@@ -25,6 +25,13 @@
 
 You can install as many versions of Unity as you like on the same computer. On a Mac the installer creates a folder called Unity, and overwrites any existing folder with this name. If you want more than one version of Unity on your Mac, rename the existing Unity folder before installing another version. On a PC, the install folder defaults to C:\Program Files\Unity, this can be changed to another path so that you can install more than one version.
 
+There is a helper script that will use homebrew cask to install a version of 5.6, 2017 and 2018 which are the three major versions of Unity that we support. Along with the support packages for iOS, tvOS and Android. This script only works on MacOS.
+
+MacOS
+```
+scripts/bootstap-unity.sh
+```
+
 The build script will by default locate Unity in it's default location on both Mac and Windows machines. If you want to use an alternative location for Unity (to test against multiple versions for instance) then you can specify the location in an ENV variable when running the build script.
 
 MacOS
