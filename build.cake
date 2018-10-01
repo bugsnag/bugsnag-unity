@@ -1,3 +1,4 @@
+#addin nuget:?package=Cake.Git
 #tool "nuget:?package=NUnit.ConsoleRunner"
 
 var target = Argument("target", "Default");
@@ -20,7 +21,21 @@ Task("Build")
         .SetConfiguration(configuration));
   });
 
-Task("PopulateVersion")
+Task("LocalVersion")
+  .WithCriteria(BuildSystem.IsLocalBuild)
+  .Does(() => {
+    var tag = GitDescribe(".", GitDescribeStrategy.Tags).TrimStart('v');
+    if (tag.StartsWith("v"))
+    {
+      version = tag.TrimStart('v');
+    }
+    else
+    {
+      version = tag;
+    }
+  });
+
+Task("TravisVersion")
   .WithCriteria(!BuildSystem.IsLocalBuild)
   .Does(() => {
     if (string.IsNullOrEmpty(TravisCI.Environment.Build.Tag))
@@ -32,6 +47,11 @@ Task("PopulateVersion")
       version = TravisCI.Environment.Build.Tag.TrimStart('v');
     }
   });
+
+
+Task("PopulateVersion")
+  .IsDependentOn("LocalVersion")
+  .IsDependentOn("TravisVersion");
 
 Task("Test")
   .IsDependentOn("Build")
