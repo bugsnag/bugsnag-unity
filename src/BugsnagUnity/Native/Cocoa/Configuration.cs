@@ -16,7 +16,7 @@ namespace BugsnagUnity
 
     internal Configuration(string apiKey)
     {
-      NativeConfiguration = NativeCode.CreateConfiguration(apiKey);
+      NativeConfiguration = NativeCode.bugsnag_createConfiguration(apiKey);
       Endpoint = new Uri(DefaultEndpoint);
       AutoNotify = true;
       SessionEndpoint = new Uri(DefaultSessionEndpoint);
@@ -29,7 +29,7 @@ namespace BugsnagUnity
       LogTypeSeverityMapping = new LogTypeSeverityMapping();
     }
 
-    public string ApiKey => Marshal.PtrToStringAuto(NativeCode.GetApiKey(NativeConfiguration));
+    public string ApiKey => Marshal.PtrToStringAuto(NativeCode.bugsnag_getApiKey(NativeConfiguration));
     public TimeSpan MaximumLogsTimePeriod { get; }
     public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; } = new Dictionary<LogType, int>
     {
@@ -44,8 +44,8 @@ namespace BugsnagUnity
 
     public string ReleaseStage
     {
-      get => Marshal.PtrToStringAuto(NativeCode.GetReleaseStage(NativeConfiguration));
-      set => NativeCode.SetReleaseStage(NativeConfiguration, value);
+      get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getReleaseStage(NativeConfiguration));
+      set => NativeCode.bugsnag_setReleaseStage(NativeConfiguration, value);
     }
 
     public string[] NotifyReleaseStages
@@ -58,7 +58,7 @@ namespace BugsnagUnity
 
         try
         {
-          NativeCode.GetNotifyReleaseStages(NativeConfiguration, GCHandle.ToIntPtr(handle), PopulateReleaseStages);
+          NativeCode.bugsnag_getNotifyReleaseStages(NativeConfiguration, GCHandle.ToIntPtr(handle), PopulateReleaseStages);
         }
         finally
         {
@@ -71,7 +71,7 @@ namespace BugsnagUnity
         }
         return releaseStages.ToArray();
       }
-      set => NativeCode.SetNotifyReleaseStages(NativeConfiguration, value, value.Length);
+      set => NativeCode.bugsnag_setNotifyReleaseStages(NativeConfiguration, value, value.Length);
     }
 
     [MonoPInvokeCallback(typeof(NativeCode.NotifyReleaseStageCallback))]
@@ -86,14 +86,14 @@ namespace BugsnagUnity
 
     public string AppVersion
     {
-      get => Marshal.PtrToStringAuto(NativeCode.GetAppVersion(NativeConfiguration));
-      set => NativeCode.SetAppVersion(NativeConfiguration, value);
+      get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getAppVersion(NativeConfiguration));
+      set => NativeCode.bugsnag_setAppVersion(NativeConfiguration, value);
     }
 
     public Uri Endpoint
     {
-      get => new Uri(Marshal.PtrToStringAuto(NativeCode.GetNotifyEndpoint(NativeConfiguration)));
-      set => NativeCode.SetNotifyEndpoint(NativeConfiguration, value.ToString());
+      get => new Uri(Marshal.PtrToStringAuto(NativeCode.bugsnag_getNotifyUrl(NativeConfiguration)));
+      set => NativeCode.bugsnag_setNotifyUrl(NativeConfiguration, value.ToString());
     }
     public string PayloadVersion { get; } = "4.0";
     public string SessionPayloadVersion { get; } = "1";
@@ -101,8 +101,8 @@ namespace BugsnagUnity
 
     public string Context
     {
-      get => Marshal.PtrToStringAuto(NativeCode.GetContext(NativeConfiguration));
-      set => NativeCode.SetContext(NativeConfiguration, value);
+      get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getContext(NativeConfiguration));
+      set => NativeCode.bugsnag_setContext(NativeConfiguration, value);
     }
 
     public LogType NotifyLevel { get; set; }

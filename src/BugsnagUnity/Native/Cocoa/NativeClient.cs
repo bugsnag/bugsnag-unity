@@ -21,7 +21,7 @@ namespace BugsnagUnity
       Configuration = configuration;
       NativeConfiguration = nativeConfiguration;
 
-      NativeCode.StartBugsnagWithConfiguration(NativeConfiguration);
+      NativeCode.bugsnag_startBugsnagWithConfiguration(NativeConfiguration);
 
       Delivery = new Delivery();
       Breadcrumbs = breadcrumbs;
@@ -37,7 +37,7 @@ namespace BugsnagUnity
 
       try
       {
-        NativeCode.RetrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
+        NativeCode.bugsnag_retrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
       }
       finally
       {
@@ -64,7 +64,7 @@ namespace BugsnagUnity
 
       try
       {
-        NativeCode.RetrieveDeviceData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
+        NativeCode.bugsnag_retrieveDeviceData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
       }
       finally
       {
@@ -103,7 +103,7 @@ namespace BugsnagUnity
     {
       var nativeUser = new NativeUser();
 
-      NativeCode.PopulateUser(ref nativeUser);
+      NativeCode.bugsnag_populateUser(ref nativeUser);
 
       user.Id = Marshal.PtrToStringAuto(nativeUser.Id);
     }
@@ -120,7 +120,7 @@ namespace BugsnagUnity
         index += 2;
       }
 
-      NativeCode.AddMetadata(NativeConfiguration, tab, metadata, metadata.Length);
+      NativeCode.bugsnag_setMetadata(NativeConfiguration, tab, metadata, metadata.Length);
     }
 
     public void PopulateMetadata(Metadata metadata)

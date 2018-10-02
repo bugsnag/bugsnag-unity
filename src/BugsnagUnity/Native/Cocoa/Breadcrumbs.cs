@@ -12,7 +12,7 @@ namespace BugsnagUnity
 
     Breadcrumbs(IntPtr nativeConfiguration)
     {
-      NativeBreadcrumbs = NativeCode.CreateBreadcrumbs(nativeConfiguration);
+      NativeBreadcrumbs = NativeCode.bugsnag_createBreadcrumbs(nativeConfiguration);
     }
 
     internal Breadcrumbs(Configuration configuration) : this(configuration.NativeConfiguration)
@@ -55,11 +55,11 @@ namespace BugsnagUnity
             index += 2;
           }
 
-          NativeCode.NativeAddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+          NativeCode.bugsnag_addBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
         }
         else
         {
-          NativeCode.NativeAddBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, null, 0);
+          NativeCode.bugsnag_addBreadcrumb(NativeBreadcrumbs, breadcrumb.Name, breadcrumb.Type, null, 0);
         }
       }
     }
@@ -72,7 +72,7 @@ namespace BugsnagUnity
 
       try
       {
-        NativeCode.NativeRetrieveBreadcrumbs(NativeBreadcrumbs, GCHandle.ToIntPtr(handle), PopulateBreadcrumb);
+        NativeCode.bugsnag_retrieveBreadcrumbs(NativeBreadcrumbs, GCHandle.ToIntPtr(handle), PopulateBreadcrumb);
       }
       finally
       {
