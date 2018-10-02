@@ -230,7 +230,7 @@ namespace BugsnagUnity
 
         Breadcrumbs.Leave(Breadcrumb.FromReport(report));
 
-        SessionTracking.CurrentSession?.AddException(report);
+        SessionTracking.AddException(report);
       }
     }
 

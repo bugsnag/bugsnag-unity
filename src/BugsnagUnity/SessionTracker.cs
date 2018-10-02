@@ -7,6 +7,8 @@ namespace BugsnagUnity
     void StartSession();
 
     Session CurrentSession { get; }
+
+    void AddException(Report report);
   }
 
   class SessionTracker : ISessionTracker
@@ -35,6 +37,11 @@ namespace BugsnagUnity
       var payload = new SessionReport(Client.Configuration, Client.User, session);
 
       Client.Send(payload);
+    }
+    
+    public void AddException(Report report)
+    {
+      _currentSession?.AddException(report);
     }
   }
 }
