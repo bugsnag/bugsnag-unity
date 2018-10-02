@@ -9,49 +9,34 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
-  - "$HOME/Library/Caches/Homebrew"
-matrix:
-  include:
-  - name: "Unity 2018.2.3"
-    env: UNITY_URL="https://netstorage.unity3d.com/unity/1431a7d2ced7/MacEditorInstaller/Unity-2018.2.3f1.pkg"
-  - name: "Unity 2017.4.3"
-    env: UNITY_URL="https://download.unity3d.com/download_unity/21ae32b5a9cb/MacEditorInstaller/Unity-2017.4.3f1.pkg"
 env:
   global:
-  - TERM=dumb
   - ANDROID_HOME=/usr/local/share/android-sdk
-  - MONO_URL="https://download.mono-project.com/archive/5.12.0/macos-10-universal/MonoFramework-MDK-5.12.0.226.macos10.xamarin.universal.pkg"
-  - secure: gvj3mPdnIF1TzN2hNo9xv8/40IUNLE7/g9vFof7EamJrFBpEkGSU9pxTt5QVhSI4GKlZD+epDXPzGNryJ9nyc9eF11AdgX7g/4+GBAk80R0JJPaEfrVv/1RMDeeEmUduWdV3G68yyUEEEshD2jYdYRetsHSdGHcT6WfdQcQe9eM=
-  - secure: afR91RoHdgB4pXSdLwnMQNVgkrsA81T59XHrXrb8iahD8lE4ouoxF92ZWeHzRGDmeLIL1RlySyOId0J7MV695DbUIPHNFTUQvZcE/IlwhxXuP2NrO2AtXVDlpECNbGKOSFEbXWkBThoSqSsPx+i6WngeHjfTWb1d0mSKQV2GZp4=
-  - secure: WLBjta+fSkeyeWKq2pNkGRzxY8q/KtL3oFhCt2zxh7hLf4mYt8Ge5BC3llk7N+BZOQTlbZkXJhsgwyDU821HrqijIGvYWzF5jiLn2L9DOkm8SgHCStvs8vQQeHnf0gzS98JGaXDEZPnOl2OGo5kiuW9fv2afydRSI1ILozre5jc=
-install:
-- brew tap caskroom/cask
-- brew cask install android-sdk
-- yes | sdkmanager "platforms;android-27"
-- yes | sdkmanager --licenses
-- curl -o Mono.pkg $MONO_URL & curl -o Unity.pkg $UNITY_URL & wait
-- sudo installer -dumplog -package Mono.pkg -target /
-- export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
-- sudo installer -dumplog -package Unity.pkg -target /
+  - TERM=dumb
+  - PATH=$HOME/Library/Python/2.7/bin:$PATH
+stages:
+- build
+- deploy
+before_install:
 - bundle install
-before_script:
-- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -serial $UNITY_SERIAL -username $UNITY_USERNAME -password $UNITY_PASSWORD -logFile unity.log || :"
-- sleep 10
-script: bundle exec rake
-after_script:
-- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense -logFile unity.log"
-- sleep 10
-after_failure:
-- "/Applications/Unity/Unity.app/Contents/MacOS/Unity -quit -batchmode -returnlicense -logFile unity.log"
-- sleep 10
-- cat unity.log
+- brew tap caskroom/cask
+- pip install --user awscli
+- mkdir -p ~/$TRAVIS_BUILD_NUMBER
+- aws s3 sync s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+after_success:
+- aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER
+jobs:
+  include:
+  - stage: build
+    env:
+    - UNITY_VERSION=unity-2017-4-1f1
+    script: scripts/travis_build_package.sh
 deploy:
   provider: releases
   api_key:
-    secure: gSy4ckptDBnexHVmlSiSukVMu3VmaTAwGwuR6HzMgw2qSPuZ76A9g1ta+gc6bpaSyodwtl4BRwDB9QQtj5qmGdWxWK6xHQ9FQXfksU8p8fuhactkv78igFHmdXg1Hih+0Qep2Kl5vOZ4rBvPMT8VjidYu3VYqBgEL87atTBCTG4=
-  file: Bugsnag.unitypackage
+    secure: Xq3/kuru6e1hrslzvrOR8daDhJ+24I3vB3+4TBknEnX8GLitNAoR3N+qYXIFH7bwtVZP54yVut9MYrtq6LkEELfU6b7m0v/WV+O5LwrL9vFUwGVVoBAlLE/Yhr6GZ1Lxsz4+Km/lrFO74qc3X0MqJ6XpQt3puy3pOYzo2l+mOzU=
+  file: "~/$TRAVIS_BUILD_NUMBER/Bugsnag.unitypackage"
   draft: true
-  skip_cleanup: true
   on:
     tags: true
     repo: bugsnag/bugsnag-unity

@@ -47,8 +47,15 @@ end
 # Run a command with the unity executable and the default command line parameters
 # that we apply
 #
-def unity(*cmd)
-  cmd = cmd.unshift(unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit")
+def unity(*cmd, force_free: true, no_graphics: true)
+  cmd_prepend = [unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit"]
+  unless force_free
+    cmd_prepend = cmd_prepend - ["-force-free"]
+  end
+  unless no_graphics
+    cmd_prepend = cmd_prepend - ["-nographics"]
+  end
+  cmd = cmd.unshift(*cmd_prepend)
   sh *cmd do |ok, res|
     if !ok
       sh "cat", "unity.log"
@@ -67,6 +74,12 @@ end
 
 def assets_path
   File.join(project_path, "Assets", "Plugins")
+end
+
+def export_package
+  package_output = File.join(current_directory, "Bugsnag.unitypackage")
+  rm_f package_output
+  unity "-projectPath", project_path, "-exportPackage", "Assets", package_output, force_free: false
 end
 
 namespace :plugin do
@@ -211,12 +224,28 @@ namespace :plugin do
   end
 
   task export: %w[plugin:build:all] do
-    package_output = File.join(current_directory, "Bugsnag.unitypackage")
-    rm_f package_output
-    unity "-projectPath", project_path, "-exportPackage", "Assets", package_output
+    export_package
   end
 
   task maze_runner: %w[plugin:export] do
+    sh "bundle", "exec", "bugsnag-maze-runner"
+  end
+end
+
+namespace :travis do
+  task export_plugin: %w[plugin:build:all] do
+    # activate the unity license
+    unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
+    sleep 10
+    begin
+      export_package
+    ensure
+      unity "-returnlicense", force_free: false, no_graphics: false
+      sleep 10
+    end
+  end
+
+  task :maze_runner do
     sh "bundle", "exec", "bugsnag-maze-runner"
   end
 end
