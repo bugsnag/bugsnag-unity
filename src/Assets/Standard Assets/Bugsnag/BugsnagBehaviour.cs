@@ -1,6 +1,3 @@
-#if UNITY_5_3_OR_NEWER || UNITY_5
-#define UNITY_5_OR_NEWER
-#endif
 using System;
 using System.IO;
 using System.Text;
@@ -114,34 +111,13 @@ namespace BugsnagUnity
 
       serializedObject.ApplyModifiedProperties();
     }
+#endif
 
+#if UNITY_EDITOR && (UNITY_IOS || UNITY_TVOS)
     // Thanks to https://gist.github.com/tenpn/f8da1b7df7352a1d50ff for inspiration for this code.
     [PostProcessBuild(1400)]
     public static void OnPostProcessBuild(BuildTarget target, string path)
     {
-#if UNITY_5_OR_NEWER
-        if (target != BuildTarget.iOS && target != BuildTarget.tvOS && target != BuildTarget.WebGL) {
-            return;
-        }
-
-        if (target == BuildTarget.WebGL) {
-
-        // Read the index.html file and replace it line by line
-        var indexPath = Path.Combine (path, "index.html");
-        var indexLines = File.ReadAllLines  (indexPath);
-        var sbWeb = new StringBuilder ();
-        foreach (var line in indexLines) {
-            sbWeb.AppendLine (line);
-        }
-        File.WriteAllText(indexPath, sbWeb.ToString());
-        return;
-    }
-#else
-    if (target != BuildTarget.iPhone) {
-        return;
-    }
-#endif
-
         var scriptUUID = getUUIDForPbxproj ();
 
         var xcodeProjectPath = Path.Combine (path, "Unity-iPhone.xcodeproj");
