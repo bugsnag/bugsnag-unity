@@ -18,7 +18,7 @@ extern "C" {
   const char *bugsnag_getReleaseStage(const void *configuration);
 
   void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount);
-  void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], NSUInteger size));
+  void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], int size));
 
   void bugsnag_setAppVersion(const void *configuration, char *appVersion);
   const char *bugsnag_getAppVersion(const void *configuration);
@@ -35,7 +35,7 @@ extern "C" {
 
   void *bugsnag_createBreadcrumbs(const void *configuration);
   void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
-  void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size));
+  void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size));
 
   void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
   void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
@@ -71,9 +71,9 @@ void bugsnag_setNotifyReleaseStages(const void *configuration, const char *relea
   ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages = ns_releaseStages;
 }
 
-void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], NSUInteger size)) {
+void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], int size)) {
   NSArray *releaseStages = ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages;
-  NSUInteger count = [releaseStages count];
+  int count = [NSNumber numberWithUnsignedInteger: [releaseStages count]].intValue;
   const char **c_releaseStages = (const char **) malloc(sizeof(char *) * (count + 1));
 
   for (NSUInteger i = 0; i < count; i++) {
@@ -167,7 +167,7 @@ void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char
   }];
 }
 
-void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], NSUInteger keys_size, const char *values[], NSUInteger values_size)) {
+void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size)) {
   NSArray *crumbs = [((__bridge BugsnagBreadcrumbs *) breadcrumbs) arrayValue];
   [crumbs enumerateObjectsUsingBlock:^(id crumb, NSUInteger index, BOOL *stop){
     const char *name = [[crumb valueForKey: @"name"] UTF8String];
@@ -179,7 +179,7 @@ void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBre
     NSArray *keys = [metadata allKeys];
     NSArray *values = [metadata allValues];
 
-    NSUInteger count = [keys count];
+    int count = [NSNumber numberWithUnsignedInteger: [keys count]].intValue;
     const char **c_keys = (const char **) malloc(sizeof(char *) * (count + 1));
     const char **c_values = (const char **) malloc(sizeof(char *) * (count + 1));
 

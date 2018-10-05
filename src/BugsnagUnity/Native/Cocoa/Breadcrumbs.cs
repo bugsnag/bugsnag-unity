@@ -83,7 +83,7 @@ namespace BugsnagUnity
     }
 
     [MonoPInvokeCallback(typeof(NativeCode.BreadcrumbInformation))]
-    static void PopulateBreadcrumb(IntPtr instance, string name, string timestamp, string type, string[] keys, long keysSize, string[] values, long valuesSize)
+    static void PopulateBreadcrumb(IntPtr instance, string name, string timestamp, string type, string[] keys, int keysSize, string[] values, int valuesSize)
     {
       var handle = GCHandle.FromIntPtr(instance);
       if (handle.Target is List<Breadcrumb> breadcrumbs)
