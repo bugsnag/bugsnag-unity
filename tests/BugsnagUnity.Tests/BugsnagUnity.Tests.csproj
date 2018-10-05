@@ -11,4 +11,9 @@
     <ProjectReference Include="..\..\src\BugsnagUnity\BugsnagUnity.csproj" />
     <ProjectReference Include="..\UnityEngine\UnityEngine.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="ProjectFixtures\*.pbxproj">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
