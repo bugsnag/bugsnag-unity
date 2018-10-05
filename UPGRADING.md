@@ -11,6 +11,7 @@ Upgrading
 - Remove the `Assets/Plugins/OSX/Bugsnag` directory
 - Remove `Assets/Plugins/Android/bugsnag-android-release.aar`
 - Remove `Assets/Plugins/Android/bugsnag-android-unity-release.aar`
+- Remove `Assets/Plugins/Android/sdk-release.aar`
 - Remove `Assets/Plugins/WebGL/bugsnag.jspre`
 - Remove `Assets/Plugins/WebGL/BugsnagUnity.jslib`
 - Remove `Assets/Standard Assets/Bugsnag/Bugsnag.cs`
