@@ -95,6 +95,7 @@ namespace :plugin do
     task cocoa: [:clean] do
       next unless is_mac?
       build_dir = "bugsnag-cocoa-build"
+      build_type = "Release" # "Debug" or "Release"
       FileUtils.rm_rf build_dir
       FileUtils.mkdir_p build_dir
       FileUtils.cp_r "bugsnag-cocoa/Source", build_dir
@@ -149,12 +150,12 @@ namespace :plugin do
           end
 
           project.save
-          Open3.pipeline(["xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "build", "build"], ["xcpretty"])
+          Open3.pipeline(["xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", build_type, "build", "build"], ["xcpretty"])
           if project_name == "bugsnag-ios"
-            Open3.pipeline(["xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "-sdk", "iphonesimulator", "build", "build"], ["xcpretty"])
+            Open3.pipeline(["xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", build_type, "-sdk", "iphonesimulator", "build", "build"], ["xcpretty"])
           end
           if project_name == "bugsnag-tvos"
-            Open3.pipeline(["xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", "Release", "-sdk", "appletvsimulator", "build", "build"], ["xcpretty"])
+            Open3.pipeline(["xcodebuild", "-project", "#{project_name}.xcodeproj", "-configuration", build_type, "-sdk", "appletvsimulator", "build", "build"], ["xcpretty"])
           end
         end
       end
@@ -166,14 +167,14 @@ namespace :plugin do
       cd build_dir do
         cd "build" do
           # we just need to copy the os x bundle into the correct directory
-          cp_r File.join("Release", "bugsnag-osx.bundle"), osx_dir
+          cp_r File.join(build_type, "bugsnag-osx.bundle"), osx_dir
 
           # for ios and tvos we need to build a fat binary that includes architecture
           # slices for both the device and the simulator
           [["iphone", "ios", ios_dir], ["appletv", "tvos", tvos_dir]].each do |long_name, short_name, directory|
             library = "libbugsnag-#{short_name}.a"
-            device_library = File.join("Release-#{long_name}os", library)
-            simulator_library = File.join("Release-#{long_name}simulator", library)
+            device_library = File.join("#{build_type}-#{long_name}os", library)
+            simulator_library = File.join("#{build_type}-#{long_name}simulator", library)
 
             output_library = File.join(directory, library)
             sh "lipo", "-create", device_library, simulator_library, "-output", output_library
