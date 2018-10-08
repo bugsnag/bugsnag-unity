@@ -70,7 +70,7 @@ namespace BugsnagUnity
     [DllImport(Import)]
     internal static extern void bugsnag_addBreadcrumb(IntPtr breadcrumbs, string name, string type, string[] metadata, int metadataCount);
 
-    internal delegate void BreadcrumbInformation(IntPtr instance, string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)]string[] keys, long keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 7)]string[] values, long valuesSize);
+    internal delegate void BreadcrumbInformation(IntPtr instance, string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)]string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 7)]string[] values, int valuesSize);
 
     [DllImport(Import)]
     internal static extern void bugsnag_retrieveBreadcrumbs(IntPtr breadcrumbs, IntPtr instance, BreadcrumbInformation visitor);
