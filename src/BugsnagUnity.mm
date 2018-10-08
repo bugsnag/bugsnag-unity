@@ -73,10 +73,15 @@ void bugsnag_setNotifyReleaseStages(const void *configuration, const char *relea
 
 void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], int size)) {
   NSArray *releaseStages = ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages;
-  int count = [NSNumber numberWithUnsignedInteger: [releaseStages count]].intValue;
+  int count = 0;
+
+  if ([releaseStages count] <= INT_MAX) {
+    count = (int)[releaseStages count];
+  }
+
   const char **c_releaseStages = (const char **) malloc(sizeof(char *) * (count + 1));
 
-  for (NSUInteger i = 0; i < count; i++) {
+  for (int i = 0; i < count; i++) {
     c_releaseStages[i] = [[releaseStages objectAtIndex: i] UTF8String];
   }
 
@@ -179,11 +184,16 @@ void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBre
     NSArray *keys = [metadata allKeys];
     NSArray *values = [metadata allValues];
 
-    int count = [NSNumber numberWithUnsignedInteger: [keys count]].intValue;
+    int count = 0;
+
+    if ([keys count] <= INT_MAX) {
+      count = (int)[keys count];
+    }
+
     const char **c_keys = (const char **) malloc(sizeof(char *) * (count + 1));
     const char **c_values = (const char **) malloc(sizeof(char *) * (count + 1));
 
-    for (NSUInteger i = 0; i < count; i++) {
+    for (int i = 0; i < count; i++) {
       c_keys[i] = [[keys objectAtIndex: i] UTF8String];
       c_values[i] = [[values objectAtIndex: i] UTF8String];
     }
