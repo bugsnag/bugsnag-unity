@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		src\Assets\Standard Assets\Bugsnag\BugsnagBehaviour.cs = src\Assets\Standard Assets\Bugsnag\BugsnagBehaviour.cs
 		src\BugsnagUnity.mm = src\BugsnagUnity.mm
-		src\Assets\Standard Assets\Editor\BugsnagPostProcess.cs = src\Assets\Standard Assets\Editor\BugsnagPostProcess.cs
-		src\Assets\Standard Assets\Editor\BugsnagBehaviourEditor.cs = src\Assets\Standard Assets\Editor\BugsnagBehaviourEditor.cs
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BugsnagUnity", "src\BugsnagUnity\BugsnagUnity.csproj", "{EF862675-0071-4BA7-B76A-A32E9A2BE362}"
