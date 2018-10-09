@@ -3,6 +3,11 @@
 # Any helper functions added here will be available in step
 # definitions
 
+ENV['BUGSNAG_APIKEY'] = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
+run_required_commands([
+  ["features/scripts/create_unity_project.sh"]
+])
+
 # Scenario hooks
 Before do
 # Runs before every Scenario

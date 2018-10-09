@@ -47,8 +47,20 @@ public class Main : MonoBehaviour {
     var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
     switch (scenario) {
       case "Notify":
-        Bugsnag.Notify(new System.Exception("blorb"));
+        DoNotify();
+        break;
+      case "LogUnthrown":
+        DoLogUnthrown();
         break;
     }
   }
+
+  void DoNotify() {
+    Bugsnag.Notify(new System.Exception("blorb"));
+  }
+
+  void DoLogUnthrown() {
+    Debug.LogException(new System.Exception("auth failed!"));
+  }
 }
+

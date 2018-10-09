@@ -121,7 +121,7 @@ namespace BugsnagUnity.Payload
     {
       var match = Regex.Match(logMessage.Condition, @"^(?<errorClass>\S+):\s*(?<message>.*)", RegexOptions.Singleline);
 
-      var lines = new StackTrace(stackFrames).ToArray();
+      var lines = new StackTrace(logMessage.StackTrace).ToArray();
 
       if (match.Success)
       {

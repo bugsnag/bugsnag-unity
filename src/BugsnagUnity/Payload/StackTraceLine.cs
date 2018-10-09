@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace BugsnagUnity.Payload
 {
@@ -10,23 +11,33 @@ namespace BugsnagUnity.Payload
   /// </summary>
   class StackTrace : IEnumerable<StackTraceLine>
   {
-    StackFrame[] StackFrames { get; }
+    private StackTraceLine[] StackTraceLines { get; }
 
     internal StackTrace(StackFrame[] stackFrames)
     {
-      StackFrames = stackFrames;
+      StackTraceLines = new StackTraceLine[stackFrames.Length];
+      for (int i = 0; i < stackFrames.Length; i++)
+      {
+        StackTraceLines[i] = StackTraceLine.FromStackFrame(stackFrames[i]);
+      }
+    }
+
+    internal StackTrace(string stackTrace)
+    {
+      string[] lines = stackTrace.Split(new[] { System.Environment.NewLine },
+                                        System.StringSplitOptions.RemoveEmptyEntries);
+      StackTraceLines = new StackTraceLine[lines.Length];
+      for (int i = 0; i < lines.Length; i++)
+      {
+        StackTraceLines[i] = StackTraceLine.FromLogMessage(lines[i]);
+      }
     }
 
     public IEnumerator<StackTraceLine> GetEnumerator()
     {
-      if (StackFrames == null)
+      foreach (var frame in StackTraceLines)
       {
-        yield break;
-      }
-
-      foreach (var frame in StackFrames)
-      {
-        yield return StackTraceLine.FromStackFrame(frame);
+        yield return frame;
       }
     }
 
@@ -39,8 +50,27 @@ namespace BugsnagUnity.Payload
   /// <summary>
   /// Represents an individual stack trace line in the Bugsnag payload.
   /// </summary>
-  class StackTraceLine : Dictionary<string, object>
+  public class StackTraceLine : Dictionary<string, object>
   {
+    private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+\(.*?\))\s(?:(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
+
+    public static StackTraceLine FromLogMessage(string message) {
+      Match match = StackTraceLineRegex.Match(message);
+      if (match.Success)
+      {
+        int? lineNumber = null;
+        int parsedValue;
+        if (System.Int32.TryParse(match.Groups["linenumber"].Value, out parsedValue))
+        {
+          lineNumber = parsedValue;
+        }
+        return new StackTraceLine(match.Groups["file"].Value,
+                                  lineNumber,
+                                  match.Groups["method"].Value);
+      }
+      return new StackTraceLine("", null, message);
+    }
+
     internal static StackTraceLine FromStackFrame(StackFrame stackFrame)
     {
       var method = stackFrame.GetMethod();
@@ -61,7 +91,7 @@ namespace BugsnagUnity.Payload
       this.AddToPayload("method", methodName);
     }
 
-    internal string FileName
+    public string File
     {
       get
       {
@@ -73,7 +103,19 @@ namespace BugsnagUnity.Payload
       }
     }
 
-    internal string MethodName
+    public int? LineNumber
+    {
+      get
+      {
+        return this.Get("lineNumber") as int?;
+      }
+      set
+      {
+        this.AddToPayload("lineNumber", value);
+      }
+    }
+
+    public string Method
     {
       get
       {
