@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using BugsnagUnity.Payload;
 
@@ -52,8 +53,8 @@ namespace BugsnagUnity
 
             foreach (var item in breadcrumb.Metadata)
             {
-              using (var key = new AndroidJavaObject("java.lang.String", item.Key))
-              using (var value = new AndroidJavaObject("java.lang.String", item.Value))
+              using (var key = new AndroidJavaObject("java.lang.String", item.Key ?? String.Empty))
+              using (var value = new AndroidJavaObject("java.lang.String", item.Value ?? String.Empty))
               {
                 args[0] = key;
                 args[1] = value;
