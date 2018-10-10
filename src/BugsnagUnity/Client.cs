@@ -119,7 +119,7 @@ namespace BugsnagUnity
     {
       Notify(exception, 3);
     }
-    
+
     internal void Notify(System.Exception exception, int level)
     {
       Notify(exception, HandledState.ForHandledException(), null, level);
@@ -129,7 +129,7 @@ namespace BugsnagUnity
     {
       Notify(exception, callback, 3);
     }
-    
+
     internal void Notify(System.Exception exception, Middleware callback, int level)
     {
       Notify(exception, HandledState.ForHandledException(), callback, level);
@@ -139,7 +139,7 @@ namespace BugsnagUnity
     {
       Notify(exception, severity, 3);
     }
-    
+
     internal void Notify(System.Exception exception, Severity severity, int level)
     {
       Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, level);
@@ -149,7 +149,7 @@ namespace BugsnagUnity
     {
       Notify(exception, severity, callback, 3);
     }
-    
+
     internal void Notify(System.Exception exception, Severity severity, Middleware callback, int level)
     {
       Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, level);
