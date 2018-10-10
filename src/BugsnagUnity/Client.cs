@@ -52,7 +52,9 @@ namespace BugsnagUnity
       NativeClient.PopulateUser(User);
 
       SceneManager.sceneLoaded += SceneLoaded;
-      Application.logMessageReceivedThreaded += Notify;
+      // only handle messages from the main thread due to issues with android JNI
+      // eventually it would be good to subscribe to `logMessageReceivedThreaded`
+      Application.logMessageReceived += Notify;
     }
 
     public void Send(IPayload payload)
