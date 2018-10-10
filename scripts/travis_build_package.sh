@@ -18,4 +18,4 @@ rm ndk.zip
 bundle exec rake travis:export_plugin
 
 # copy it to the directory that is being synchronised with S3
-cp Bugsnag.unitypackage ~/build_artifacts
+cp Bugsnag.unitypackage $TRAVIS_BUILD_DIR/build_artifacts
