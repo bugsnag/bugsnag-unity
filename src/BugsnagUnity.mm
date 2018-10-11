@@ -208,7 +208,8 @@ void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *i
   callback(appData, "bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
   callback(appData, "id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
   callback(appData, "type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
-  callback(appData, "version", [sysInfo[@BSG_KSSystemField_BundleShortVersion] UTF8String]);
+  NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
+  callback(appData, "version", [version UTF8String]);
 }
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
