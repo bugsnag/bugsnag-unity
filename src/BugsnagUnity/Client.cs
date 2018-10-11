@@ -29,7 +29,7 @@ namespace BugsnagUnity
 
     object MiddlewareLock { get; } = new object();
 
-    INativeClient NativeClient { get; }
+    internal INativeClient NativeClient { get; }
 
     Stopwatch Stopwatch { get; }
 
