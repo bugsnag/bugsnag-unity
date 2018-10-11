@@ -260,10 +260,6 @@ namespace :plugin do
 
   task export: %w[plugin:build:all export_package check_package]
 
-  task :check do
-    check_package
-  end
-
   task maze_runner: %w[plugin:export] do
     sh "bundle", "exec", "bugsnag-maze-runner"
   end
