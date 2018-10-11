@@ -229,11 +229,13 @@ namespace :plugin do
     package_guids = []
 
     cd current_directory do
-      Dir.glob("unity/**/*.meta").each do |file|
-        File.open(file).each_line do |line|
-          if match = /guid: ([a-z0-9]+)/.match(line)
-            expected_guids << match[1]
-            break
+      Open3.popen2("git", "ls-files", "--", "unity/**/*.meta") do |stdin, stdout, wait_thr|
+        stdout.each_line do |file|
+          File.open(file.gsub("\n", "")).each_line do |line|
+            if match = /guid: ([a-z0-9]+)/.match(line)
+              expected_guids << match[1]
+              break
+            end
           end
         end
       end
