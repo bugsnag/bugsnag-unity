@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using BugsnagUnity;
@@ -30,11 +31,8 @@ public class Main : MonoBehaviour {
     if (!sent) {
       sent = true;
       Bugsnag.Configuration.Endpoint =
-        new System.Uri(System.Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
-      Bugsnag.Breadcrumbs.Leave("bleeb");
-      Bugsnag.Notify(new System.Exception("blorb"), report => {
-        report.User.Name = "blarb";
-      });
+        new System.Uri(Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
+      LoadScenario();
       // wait for 5 seconds before exiting the application
       StartCoroutine(WaitForBugsnag());
     }
@@ -43,5 +41,14 @@ public class Main : MonoBehaviour {
   IEnumerator WaitForBugsnag() {
     yield return new WaitForSeconds(5);
     Application.Quit();
+  }
+
+  void LoadScenario() {
+    var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
+    switch (scenario) {
+      case "Notify":
+        Bugsnag.Notify(new System.Exception("blorb"));
+        break;
+    }
   }
 }

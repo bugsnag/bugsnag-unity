@@ -4,14 +4,18 @@ When("I build a Unity application") do
   ])
 end
 
-When("run the application") do
+When("I run the application") do
+  steps %Q{
+    When I set environment variable "MAZE_ENDPOINT" to "http://localhost:#{MOCK_API_PORT}"
+  }
   run_required_commands([
     ["features/scripts/launch_unity_application.sh"]
   ])
 end
 
-Given("I configure the bugsnag notify endpoint") do
+When("I run the game in the {string} state") do |state|
   steps %Q{
-    When I set environment variable "MAZE_ENDPOINT" to "http://localhost:#{MOCK_API_PORT}"
+    When I set environment variable "BUGSNAG_SCENARIO" to "#{state}"
+    When I run the application
   }
 end

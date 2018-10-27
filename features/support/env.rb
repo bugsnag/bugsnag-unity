@@ -13,5 +13,6 @@ After do
 end
 
 at_exit do
-# Runs when the test run is completed
+  FileUtils.rm_rf('features/fixtures/Mazerunner.app')
+  FileUtils.rm_rf('features/fixtures/unity_project')
 end
