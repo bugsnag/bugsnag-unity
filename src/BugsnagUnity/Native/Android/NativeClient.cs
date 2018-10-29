@@ -44,7 +44,7 @@ namespace BugsnagUnity
         }
       }
 
-      Delivery = new AndroidDelivery();
+      Delivery = new Delivery();
       Breadcrumbs = new Breadcrumbs(JavaClient);
     }
 
