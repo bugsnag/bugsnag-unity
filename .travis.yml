@@ -16,7 +16,7 @@ env:
   - TERM=dumb
   - PATH=$HOME/Library/Python/2.7/bin:$PATH
 stages:
-- build
+- test
 - deploy
 before_install:
 - bundle install
@@ -26,12 +26,17 @@ before_install:
 - aws s3 sync s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_DIR/build_artifacts
 after_success:
 - aws s3 sync $TRAVIS_BUILD_DIR/build_artifacts s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER
+script:
+- scripts/travis_build_package.sh
+- bundle exec bugsnag-maze-runner --color
 jobs:
   include:
-  - stage: build
+  - stage: test
     env:
     - UNITY_VERSION=unity-2017-4-1f1
-    script: scripts/travis_build_package.sh
+  - stage: test
+    env:
+    - UNITY_VERSION=unity-2018-2-5f1
   - stage: deploy
     script: skip
     deploy:

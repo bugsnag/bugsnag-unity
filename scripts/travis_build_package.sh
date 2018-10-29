@@ -7,11 +7,11 @@ brew cask install \
 
 export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
 
-yes | sdkmanager "platforms;android-27"
+yes | sdkmanager "platforms;android-27" > /dev/null
 yes | sdkmanager --licenses
 
-curl -o ndk.zip https://dl.google.com/android/repository/android-ndk-r16b-darwin-x86_64.zip
-unzip -qq ndk.zip
+curl --silent -o ndk.zip https://dl.google.com/android/repository/android-ndk-r16b-darwin-x86_64.zip
+unzip -qq ndk.zip > /dev/null
 mv android-ndk-r16b $ANDROID_NDK_HOME
 rm ndk.zip
 
