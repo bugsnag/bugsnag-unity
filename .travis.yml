@@ -38,6 +38,9 @@ jobs:
   - stage: test
     env:
     - UNITY_VERSION=unity-2018-2-5f1
+  - stage: test
+    env:
+    - UNITY_VERSION=unity-5-6-6f2
   - stage: deploy
     script: skip
     deploy:
