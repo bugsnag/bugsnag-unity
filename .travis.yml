@@ -28,7 +28,7 @@ after_success:
 - aws s3 sync $TRAVIS_BUILD_DIR/build_artifacts s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER
 script:
 - scripts/travis_build_package.sh
-- bundle exec bugsnag-maze-runner --color
+- bundle exec rake travis:maze_runner
 jobs:
   include:
   - stage: test

@@ -234,20 +234,29 @@ namespace :plugin do
 end
 
 namespace :travis do
-  task export_plugin: %w[plugin:build:all] do
+  def with_license &block
     # activate the unity license
     unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
     sleep 10
     begin
-      export_package
+      yield
     ensure
       unity "-returnlicense", force_free: false, no_graphics: false
       sleep 10
     end
+
+  end
+
+  task export_plugin: %w[plugin:build:all] do
+    with_license do
+      export_package
+    end
   end
 
   task :maze_runner do
-    sh "bundle", "exec", "bugsnag-maze-runner"
+    with_license do
+      sh "bundle", "exec", "bugsnag-maze-runner", "--color"
+    end
   end
 end
 
