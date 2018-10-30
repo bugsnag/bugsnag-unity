@@ -100,7 +100,7 @@ namespace BugsnagUnity.Payload
 
     internal static Exception FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
     {
-      var errorClass = TypeNameHelper.GetTypeDisplayName(exception.GetType());
+      var errorClass = exception.GetType().Name;
       var stackFrames = new System.Diagnostics.StackTrace(exception, true).GetFrames();
 
       StackTraceLine[] lines = null;
