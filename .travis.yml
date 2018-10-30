@@ -36,6 +36,7 @@ jobs:
     env:
     - UNITY_VERSION=unity-2017-4-1f1
   - stage: test
+    script: scripts/travis_build_package.sh # maze won't run on 2018 on CI, packagePath is somehow invalid
     env:
     - UNITY_VERSION=unity-2018-2-5f1
   - stage: test
