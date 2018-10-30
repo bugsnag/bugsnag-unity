@@ -17,7 +17,8 @@ env:
   - PATH=$HOME/Library/Python/2.7/bin:$PATH
 stages:
 - test
-- deploy
+- name: deploy
+  if: tag IS present
 before_install:
 - bundle install
 - brew tap caskroom/cask
