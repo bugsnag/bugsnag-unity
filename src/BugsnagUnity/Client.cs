@@ -101,8 +101,7 @@ namespace BugsnagUnity
       else
       {
         Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
-          { "condition", condition },
-          { "stackTrace", stackTrace },
+          { "message", condition },
         });
       }
     }

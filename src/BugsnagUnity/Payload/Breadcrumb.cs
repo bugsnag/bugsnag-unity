@@ -16,12 +16,6 @@ namespace BugsnagUnity.Payload
     internal static Breadcrumb FromReport(Report report)
     {
       var name = "Error";
-
-      if (report.OriginalSeverity != null)
-      {
-        name = report.OriginalSeverity.Severity.ToString();
-      }
-
       var metadata = new Dictionary<string, string>
       {
         { "context", report.Context },
@@ -30,8 +24,7 @@ namespace BugsnagUnity.Payload
       if (report.Exceptions != null && report.Exceptions.Any())
       {
         var exception = report.Exceptions.First();
-
-        metadata.Add("class", exception.ErrorClass);
+        name = exception.ErrorClass;
         metadata.Add("message", exception.ErrorMessage);
       }
 
