@@ -52,7 +52,7 @@ namespace BugsnagUnity.Payload
   /// </summary>
   public class StackTraceLine : Dictionary<string, object>
   {
-    private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+\(.*?\))\s(?:(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
+    private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
 
     public static StackTraceLine FromLogMessage(string message) {
       Match match = StackTraceLineRegex.Match(message);
@@ -64,9 +64,10 @@ namespace BugsnagUnity.Payload
         {
           lineNumber = parsedValue;
         }
+        string method = string.Join("", new string[]{match.Groups["method"].Value.Trim(),
+                                                     match.Groups["methodargs"].Value});
         return new StackTraceLine(match.Groups["file"].Value,
-                                  lineNumber,
-                                  match.Groups["method"].Value);
+                                  lineNumber, method);
       }
       return new StackTraceLine("", null, message);
     }
