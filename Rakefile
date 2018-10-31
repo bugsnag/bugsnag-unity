@@ -224,9 +224,41 @@ namespace :plugin do
     end
   end
 
-  task export: %w[plugin:build:all] do
+  task :check_package do
+    expected_guids = []
+    package_guids = []
+
+    cd current_directory do
+      Open3.popen2("git", "ls-files", "--", "unity/**/*.meta") do |stdin, stdout, wait_thr|
+        stdout.each_line do |file|
+          File.open(file.gsub("\n", "")).each_line do |line|
+            if match = /guid: ([a-z0-9]+)/.match(line)
+              expected_guids << match[1]
+              break
+            end
+          end
+        end
+      end
+
+      Open3.popen2("tar", "-tf", "Bugsnag.unitypackage", "*/asset.meta") do |stdin, stdout, wait_thr|
+        stdout.each_line do |line|
+          if match = /\.\/([a-z0-9]+)\/asset.meta/.match(line)
+            package_guids << match[1]
+          end
+        end
+      end
+    end
+
+    unless expected_guids.sort == package_guids.sort
+      raise "package contains unknown files"
+    end
+  end
+
+  task :export_package do
     export_package
   end
+
+  task export: %w[plugin:build:all export_package check_package]
 
   task maze_runner: %w[plugin:export] do
     sh "bundle", "exec", "bugsnag-maze-runner"
