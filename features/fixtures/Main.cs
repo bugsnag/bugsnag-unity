@@ -52,6 +52,12 @@ public class Main : MonoBehaviour {
       case "LogUnthrown":
         DoLogUnthrown();
         break;
+      case "UncaughtException":
+        DoUnhandledException(0);
+        break;
+      case "AssertionFailure":
+        MakeAssertionFailure(4);
+        break;
     }
   }
 
@@ -61,6 +67,17 @@ public class Main : MonoBehaviour {
 
   void DoLogUnthrown() {
     Debug.LogException(new System.Exception("auth failed!"));
+  }
+
+  void DoUnhandledException(long counter) {
+    var items = new int[]{1, 2, 3};
+    Debug.Log("Item #1 is: " + items[counter]);
+    throw new ExecutionEngineException("Promise Rejection");
+  }
+
+  void MakeAssertionFailure(int counter) {
+    var items = new int[]{1, 2, 3};
+    Debug.Log("Item4 is: " + items[counter]);
   }
 }
 
