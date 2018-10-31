@@ -13,9 +13,9 @@ namespace BugsnagUnity
 
   class SessionTracker : ISessionTracker
   {
-    private IClient Client { get; }
+    Client Client { get; }
 
-    private Session _currentSession;
+    Session _currentSession;
 
     public Session CurrentSession
     {
@@ -23,7 +23,7 @@ namespace BugsnagUnity
       private set => _currentSession = value;
     }
 
-    internal SessionTracker(IClient client)
+    internal SessionTracker(Client client)
     {
       Client = client;
     }
@@ -34,7 +34,12 @@ namespace BugsnagUnity
 
       CurrentSession = session;
 
-      var payload = new SessionReport(Client.Configuration, Client.User, session);
+      var app = new App(Client.Configuration);
+      Client.NativeClient.PopulateApp(app);
+      var device = new Device();
+      Client.NativeClient.PopulateDevice(device);
+
+      var payload = new SessionReport(Client.Configuration, app, device, Client.User, session);
 
       Client.Send(payload);
     }

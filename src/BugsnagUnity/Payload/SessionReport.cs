@@ -11,7 +11,7 @@ namespace BugsnagUnity.Payload
 
     public KeyValuePair<string, string>[] Headers { get; }
 
-    public SessionReport(IConfiguration configuration, User user, Payload.Session session)
+    public SessionReport(IConfiguration configuration, App app, Device device, User user, Payload.Session session)
     {
       Configuration = configuration;
       Headers = new KeyValuePair<string, string>[] {
@@ -19,8 +19,8 @@ namespace BugsnagUnity.Payload
         new KeyValuePair<string, string>("Bugsnag-Payload-Version", Configuration.SessionPayloadVersion),
       };
       this.AddToPayload("notifier", NotifierInfo.Instance);
-      this.AddToPayload("app", new App(configuration));
-      this.AddToPayload("device", new Device());
+      this.AddToPayload("app", app);
+      this.AddToPayload("device", device);
       this.AddToPayload("sessions", new Session[] { new Session(user, session) });
     }
 
