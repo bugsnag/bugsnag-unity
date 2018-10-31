@@ -83,6 +83,7 @@ bundle exec rake plugin:maze_runner
 #### Pre-release
 
 - [ ] Are all changes committed?
+- [ ] Do the tests pass locally on Unity 2018?
 - [ ] Does the build pass on the CI server?
 - [ ] Has the changelog been updated?
 - [ ] Have all the version numbers been incremented? Update the version number by running `make VERSION=[number] bump`.

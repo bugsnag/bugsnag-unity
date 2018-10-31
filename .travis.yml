@@ -16,8 +16,9 @@ env:
   - TERM=dumb
   - PATH=$HOME/Library/Python/2.7/bin:$PATH
 stages:
-- build
-- deploy
+- test
+- name: deploy
+  if: tag IS present
 before_install:
 - bundle install
 - brew tap caskroom/cask
@@ -26,12 +27,17 @@ before_install:
 - aws s3 sync s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_DIR/build_artifacts
 after_success:
 - aws s3 sync $TRAVIS_BUILD_DIR/build_artifacts s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER
+script:
+- scripts/travis_build_package.sh
+- bundle exec rake travis:maze_runner
 jobs:
   include:
-  - stage: build
+  - stage: test
+    env:
+    - UNITY_VERSION=unity-5-6-6f2
+  - stage: test
     env:
     - UNITY_VERSION=unity-2017-4-1f1
-    script: scripts/travis_build_package.sh
   - stage: deploy
     script: skip
     deploy:
