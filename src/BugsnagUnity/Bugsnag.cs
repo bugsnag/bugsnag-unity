@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
@@ -18,7 +19,7 @@ namespace BugsnagUnity
 
       return Client;
     }
-    
+
     static Client InternalClient { get; set; }
 
     public static IClient Client => InternalClient;
@@ -44,6 +45,20 @@ namespace BugsnagUnity
     public static void Notify(System.Exception exception, Severity severity) => InternalClient.Notify(exception, severity, 3);
 
     public static void Notify(System.Exception exception, Severity severity, Middleware callback) => InternalClient.Notify(exception, severity, callback, 3);
+
+    public static void LeaveBreadcrumb(string message) => InternalClient.Breadcrumbs.Leave(message);
+
+    public static void LeaveBreadcrumb(string message, BreadcrumbType type, IDictionary<string, string> metadata) => InternalClient.Breadcrumbs.Leave(message, type, metadata);
+
+    public static void LeaveBreadcrumb(Breadcrumb breadcrumb) => InternalClient.Breadcrumbs.Leave(breadcrumb);
+
+    public static void SetUser(string id, string email, string name) {
+      User.Id = id;
+      User.Email = email;
+      User.Name = name;
+    }
+
+    public static void StartSession() => InternalClient.SessionTracking.StartSession();
 
     /// <summary>
     /// Used to signal to the Bugsnag client that the focused state of the

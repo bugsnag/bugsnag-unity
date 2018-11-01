@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using BugsnagUnity;
+using BugsnagUnity.Payload;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -46,9 +47,43 @@ public class Main : MonoBehaviour {
   void LoadScenario() {
     var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
     switch (scenario) {
+      case "DebugLogBreadcrumbNotify":
+        LogLowLevelMessageAndNotify();
+        break;
+      case "ComplexBreadcrumbNotify":
+        LeaveComplexBreadcrumbAndNotify();
+        break;
+      case "DoubleNotify":
+        NotifyTwice();
+        break;
+      case "MessageBreadcrumbNotify":
+        LeaveMessageBreadcrumbAndNotify();
+        break;
       case "Notify":
         Bugsnag.Notify(new System.Exception("blorb"));
         break;
     }
+  }
+
+  void LeaveComplexBreadcrumbAndNotify() {
+    Bugsnag.LeaveBreadcrumb("Reload", BreadcrumbType.Navigation, new Dictionary<string, string>() {
+      { "preload", "launch" }
+    });
+    Bugsnag.Notify(new System.Exception("Collective failure"));
+  }
+
+  void NotifyTwice() {
+    Bugsnag.Notify(new System.Exception("Rollback failed"));
+    Bugsnag.Notify(new ExecutionEngineException("Invalid runtime"));
+  }
+
+  void LeaveMessageBreadcrumbAndNotify() {
+    Bugsnag.LeaveBreadcrumb("Initialize bumpers");
+    Bugsnag.Notify(new System.Exception("Collective failure"));
+  }
+
+  void LogLowLevelMessageAndNotify() {
+    Debug.LogWarning("Failed to validate credentials");
+    Bugsnag.Notify(new ExecutionEngineException("Invalid runtime"));
   }
 }
