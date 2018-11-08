@@ -7,11 +7,11 @@ namespace BugsnagUnity
 {
   class Breadcrumbs : IBreadcrumbs
   {
-    AndroidJavaObject Client { get; }
+    NativeInterface NativeInterface { get; }
 
-    internal Breadcrumbs(AndroidJavaObject client)
+    internal Breadcrumbs(NativeInterface nativeInterface)
     {
-      Client = client;
+      NativeInterface = nativeInterface;
     }
 
     /// <summary>
@@ -40,32 +40,7 @@ namespace BugsnagUnity
     /// <param name="breadcrumb"></param>
     public void Leave(Breadcrumb breadcrumb)
     {
-      if (breadcrumb != null)
-      {
-        using (var metadata = new AndroidJavaObject("java.util.HashMap"))
-        using (var type = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType"))
-        using (var breadcrumbType = type.GetStatic<AndroidJavaObject>(breadcrumb.Type.ToUpperInvariant()))
-        {
-          if (breadcrumb.Metadata != null)
-          {
-            var putMethod = AndroidJNIHelper.GetMethodID(metadata.GetRawClass(), "put", "(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
-            var args = new object[2];
-
-            foreach (var item in breadcrumb.Metadata)
-            {
-              using (var key = new AndroidJavaObject("java.lang.String", item.Key ?? String.Empty))
-              using (var value = new AndroidJavaObject("java.lang.String", item.Value ?? String.Empty))
-              {
-                args[0] = key;
-                args[1] = value;
-                AndroidJNI.CallObjectMethod(metadata.GetRawObject(), putMethod, AndroidJNIHelper.CreateJNIArgArray(args));
-              }
-            }
-          }
-
-          Client.Call("leaveBreadcrumb", breadcrumb.Name, breadcrumbType, metadata);
-        }
-      }
+      NativeInterface.LeaveBreadcrumb(breadcrumb.Name, breadcrumb.Type, breadcrumb.Metadata);
     }
 
     /// <summary>
@@ -74,47 +49,8 @@ namespace BugsnagUnity
     /// <returns></returns>
     public Breadcrumb[] Retrieve()
     {
-      List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
-
-      using (var javaBreadcrumbs = Client.Call<AndroidJavaObject>("getBreadcrumbs"))
-      using (var iterator = javaBreadcrumbs.Call<AndroidJavaObject>("iterator"))
-      {
-        while (iterator.Call<bool>("hasNext"))
-        {
-          using (var next = iterator.Call<AndroidJavaObject>("next"))
-          {
-            breadcrumbs.Add(ConvertToBreadcrumb(next));
-          }
-        }
-      }
-
-      return breadcrumbs.ToArray();
+      return NativeInterface.GetBreadcrumbs().ToArray();
     }
 
-    static Breadcrumb ConvertToBreadcrumb(AndroidJavaObject javaBreadcrumb)
-    {
-      var metadata = new Dictionary<string, string>();
-
-      using (var javaMetadata = javaBreadcrumb.Call<AndroidJavaObject>("getMetadata"))
-      using (var set = javaMetadata.Call<AndroidJavaObject>("entrySet"))
-      using (var iterator = set.Call<AndroidJavaObject>("iterator"))
-      {
-        while (iterator.Call<bool>("hasNext"))
-        {
-          using (var next = iterator.Call<AndroidJavaObject>("next"))
-          {
-            metadata.Add(next.CallStringMethod("getKey"), next.CallStringMethod("getValue"));
-          }
-        }
-      }
-
-      using (var type = javaBreadcrumb.Call<AndroidJavaObject>("getType"))
-      {
-        var name = javaBreadcrumb.CallStringMethod("getName");
-        var timestamp = javaBreadcrumb.CallStringMethod("getTimestamp");
-
-        return new Breadcrumb(name, timestamp, type.CallStringMethod("toString"), metadata);
-      }
-    }
   }
 }
