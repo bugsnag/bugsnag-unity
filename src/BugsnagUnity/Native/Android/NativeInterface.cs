@@ -32,7 +32,7 @@ namespace BugsnagUnity
     private IntPtr ObjectGetClass;
     private IntPtr ObjectToString;
 
-    public NativeInterface(Configuration configuration)
+    public NativeInterface(AndroidJavaObject config)
     {
       using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
       using (var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity"))
@@ -40,7 +40,7 @@ namespace BugsnagUnity
       {
         // lookup the NativeInterface class and set the client to the local object.
         // all subsequent communication should go through the NativeInterface.
-        var client = new AndroidJavaObject("com.bugsnag.android.Client", context, configuration.JavaObject);
+        var client = new AndroidJavaObject("com.bugsnag.android.Client", context, config);
         var nativeInterfaceRef = AndroidJNI.FindClass("com/bugsnag/android/NativeInterface");
         BugsnagNativeInterface = AndroidJNI.NewGlobalRef(nativeInterfaceRef);
         AndroidJNI.DeleteLocalRef(nativeInterfaceRef);

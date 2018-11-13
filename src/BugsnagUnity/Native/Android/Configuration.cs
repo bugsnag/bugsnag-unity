@@ -10,23 +10,25 @@ namespace BugsnagUnity
 
     const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    internal AndroidJavaObject JavaObject { get; }
+    internal NativeInterface NativeInterface { get; }
 
     internal Configuration(string apiKey)
     {
-      JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
-        // the bugsnag-unity notifier will handle session tracking
+      ApiKey = apiKey;
+      var JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
+      // the bugsnag-unity notifier will handle session tracking
       JavaObject.Call("setAutoCaptureSessions", false);
+      JavaObject.Call("setEndpoint", DefaultEndpoint);
+      JavaObject.Call("setSessionEndpoint", DefaultSessionEndpoint);
+      JavaObject.Call("setReleaseStage", "production");
+      JavaObject.Call("setAppVersion", Application.version);
+      NativeInterface = new NativeInterface(JavaObject);
 
-      Endpoint = new Uri(DefaultEndpoint);
       AutoNotify = true;
-      SessionEndpoint = new Uri(DefaultSessionEndpoint);
       MaximumBreadcrumbs = 25;
-      ReleaseStage = "production";
       NotifyLevel = LogType.Exception;
       UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
       MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
-      AppVersion = Application.version;
       LogTypeSeverityMapping = new LogTypeSeverityMapping();
     }
 
@@ -51,23 +53,17 @@ namespace BugsnagUnity
 
     public string SessionPayloadVersion { get; } = "1";
 
-    public string ApiKey
-    {
-      get
-      {
-        return JavaObject.CallStringMethod("getApiKey");
-      }
-    }
+    public string ApiKey { get; }
 
     public string ReleaseStage
     {
       set
       {
-        JavaObject.Call("setReleaseStage", value);
+        NativeInterface.SetReleaseStage(value);
       }
       get
       {
-        return JavaObject.CallStringMethod("getReleaseStage");
+        return NativeInterface.GetReleaseStage();
       }
     }
 
@@ -75,11 +71,11 @@ namespace BugsnagUnity
     {
       set
       {
-        JavaObject.Call("setNotifyReleaseStages", new object[] { value });
+        NativeInterface.SetNotifyReleaseStages(value);
       }
       get
       {
-        return JavaObject.Call<string[]>("getNotifyReleaseStages");
+        return NativeInterface.GetNotifyReleaseStages();
       }
     }
 
@@ -87,11 +83,11 @@ namespace BugsnagUnity
     {
       set
       {
-        JavaObject.Call("setAppVersion", value);
+        NativeInterface.SetAppVersion(value);
       }
       get
       {
-        return JavaObject.CallStringMethod("getAppVersion");
+        return NativeInterface.GetAppVersion();
       }
     }
 
@@ -99,12 +95,11 @@ namespace BugsnagUnity
     {
       set
       {
-        JavaObject.Call("setEndpoint", value.ToString());
+        NativeInterface.SetEndpoint(value.ToString());
       }
       get
       {
-        var endpoint = JavaObject.CallStringMethod("getEndpoint");
-        return new Uri(endpoint);
+        return new Uri(NativeInterface.GetEndpoint());
       }
     }
 
@@ -112,12 +107,11 @@ namespace BugsnagUnity
     {
       set
       {
-        JavaObject.Call("setSessionEndpoint", value.ToString());
+        NativeInterface.SetSessionEndpoint(value.ToString());
       }
       get
       {
-        var endpoint = JavaObject.CallStringMethod("getSessionEndpoint");
-        return new Uri(endpoint);
+        return new Uri(NativeInterface.GetSessionEndpoint());
       }
     }
 
@@ -125,11 +119,11 @@ namespace BugsnagUnity
     {
       set
       {
-        JavaObject.Call("setContext", value);
+        NativeInterface.SetContext(value);
       }
       get
       {
-        return JavaObject.CallStringMethod("getContext");
+        return NativeInterface.GetContext();
       }
     }
 
