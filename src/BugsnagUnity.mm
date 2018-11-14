@@ -55,7 +55,7 @@ const char *bugsnag_getApiKey(const void *configuration) {
 }
 
 void bugsnag_setReleaseStage(const void *configuration, char *releaseStage) {
-  NSString *ns_releaseStage = [NSString stringWithUTF8String: releaseStage];
+  NSString *ns_releaseStage = releaseStage == NULL ? nil : [NSString stringWithUTF8String: releaseStage];
   ((__bridge BugsnagConfiguration *)configuration).releaseStage = ns_releaseStage;
 }
 
@@ -89,7 +89,7 @@ void bugsnag_getNotifyReleaseStages(const void *configuration, const void *manag
 }
 
 void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
-  NSString *ns_appVersion = [NSString stringWithUTF8String: appVersion];
+  NSString *ns_appVersion = appVersion == NULL ? nil : [NSString stringWithUTF8String: appVersion];
   ((__bridge BugsnagConfiguration *)configuration).appVersion = ns_appVersion;
 }
 
@@ -98,7 +98,7 @@ const char *bugsnag_getAppVersion(const void *configuration) {
 }
 
 void bugsnag_setContext(const void *configuration, char *context) {
-  NSString *ns_Context = [NSString stringWithUTF8String: context];
+  NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
   ((__bridge BugsnagConfiguration *)configuration).context = ns_Context;
 }
 
@@ -107,6 +107,8 @@ const char *bugsnag_getContext(const void *configuration) {
 }
 
 void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
+  if (notifyURL == NULL)
+    return;
   NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
   [((__bridge BugsnagConfiguration *)configuration) setEndpointsForNotify: ns_notifyURL sessions: nil];
 }
@@ -117,6 +119,9 @@ const char *bugsnag_getNotifyUrl(const void *configuration) {
 
 void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
   BugsnagConfiguration *ns_configuration = (__bridge BugsnagConfiguration *)configuration;
+  if (tab == NULL)
+    return;
+
   NSString *tabName = [NSString stringWithUTF8String: tab];
 
   for (size_t i = 0; i < metadataCount; i += 2) {
@@ -136,7 +141,7 @@ void *bugsnag_createBreadcrumbs(const void *configuration) {
 
 void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount) {
   BugsnagBreadcrumbs *ns_breadcrumbs = ((__bridge BugsnagBreadcrumbs *) breadcrumbs);
-  NSString *ns_name = [NSString stringWithUTF8String: name];
+  NSString *ns_name = [NSString stringWithUTF8String: name == NULL ? "<empty>" : name];
   [ns_breadcrumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
       crumb.name = ns_name;
 
@@ -161,10 +166,13 @@ void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char
       if (metadataCount > 0) {
         NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
 
-        for (size_t i = 0; i < metadataCount; i += 2) {
-          NSString *key = [NSString stringWithUTF8String: metadata[i]];
-          NSString *value = [NSString stringWithUTF8String: metadata[i+1]];
-          [ns_metadata setValue: value forKey: key];
+        for (size_t i = 0; i < metadataCount - 1; i += 2) {
+          char *key = metadata[i];
+          char *value = metadata[i+1];
+          if (key == NULL || value == NULL)
+              continue;
+          [ns_metadata setValue:[NSString stringWithUTF8String:value]
+                         forKey:[NSString stringWithUTF8String:key]];
         }
 
         crumb.metadata = ns_metadata;
