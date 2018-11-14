@@ -320,8 +320,14 @@ namespace BugsnagUnity
       while (AndroidJNI.CallBooleanMethod(iterator, IteratorHasNext, new jvalue[]{}))
       {
         var entry = AndroidJNI.CallObjectMethod(iterator, IteratorNext, new jvalue[]{});
-        metadata.Add(AndroidJNI.CallStringMethod(entry, MapEntryGetKey, new jvalue[]{}),
-                     AndroidJNI.CallStringMethod(entry, MapEntryGetValue, new jvalue[]{}));
+        var key = AndroidJNI.CallObjectMethod(entry, MapEntryGetKey, new jvalue[]{});
+        var value = AndroidJNI.CallObjectMethod(entry, MapEntryGetValue, new jvalue[]{});
+        if (key != IntPtr.Zero && value != IntPtr.Zero)
+        {
+          metadata.Add(AndroidJNI.GetStringUTFChars(key), AndroidJNI.GetStringUTFChars(value));
+        }
+        AndroidJNI.DeleteLocalRef(key);
+        AndroidJNI.DeleteLocalRef(value);
         AndroidJNI.DeleteLocalRef(entry);
       }
 
@@ -332,7 +338,12 @@ namespace BugsnagUnity
       var type = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetType, new jvalue[]{});
       var typeName = AndroidJNI.CallStringMethod(type, ObjectToString, new jvalue[]{});
       AndroidJNI.DeleteLocalRef(type);
-      var name = AndroidJNI.CallStringMethod(javaBreadcrumb, BreadcrumbGetName, new jvalue[]{});
+      var name = "<empty>";
+      var nameObj = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetName, new jvalue[]{});
+      if (nameObj != IntPtr.Zero)
+      {
+        name = AndroidJNI.GetStringUTFChars(nameObj);
+      }
       var timestamp = AndroidJNI.CallStringMethod(javaBreadcrumb, BreadcrumbGetTimestamp, new jvalue[]{});
 
       return new Breadcrumb(name, timestamp, typeName, metadata);
