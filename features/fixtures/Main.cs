@@ -83,6 +83,7 @@ public class Main : MonoBehaviour {
 
   void NotifyTwice() {
     Bugsnag.Notify(new System.Exception("Rollback failed"));
+    System.Threading.Thread.Sleep(20);
     Bugsnag.Notify(new ExecutionEngineException("Invalid runtime"));
   }
 

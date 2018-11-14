@@ -208,12 +208,18 @@ namespace :plugin do
       android_dir = File.join(assets_path, "Android")
 
       cd "bugsnag-android" do
-        sh "./gradlew", "sdk:build", "--quiet"
+        sh "./gradlew", "sdk:assembleRelease", "--quiet"
+      end
+
+      cd "bugsnag-android-unity" do
+        sh "./gradlew", "assembleRelease", "--quiet"
       end
 
       android_lib = File.join("bugsnag-android", "sdk", "build", "outputs", "aar", "bugsnag-android-release.aar")
+      unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
 
       cp android_lib, android_dir
+      cp unity_lib, android_dir
     end
     task webgl: [:clean] do
       bugsnag_js = File.realpath(File.join("bugsnag-js", "src", "bugsnag.js"))

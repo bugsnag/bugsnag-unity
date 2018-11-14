@@ -52,9 +52,7 @@ namespace BugsnagUnity
       NativeClient.PopulateUser(User);
 
       SceneManager.sceneLoaded += SceneLoaded;
-      // only handle messages from the main thread due to issues with android JNI
-      // eventually it would be good to subscribe to `logMessageReceivedThreaded`
-      Application.logMessageReceived += Notify;
+      Application.logMessageReceivedThreaded += Notify;
     }
 
     public void Send(IPayload payload)
@@ -179,10 +177,10 @@ namespace BugsnagUnity
 
       foreach (var item in Metadata)
       {
-        metadata.Add(item.Key, item.Value);
+        metadata.AddToPayload(item.Key, item.Value);
       }
 
-      metadata.Add(UnityMetadataKey, UnityMetadata.WithLogType(logType));
+      metadata.AddToPayload(UnityMetadataKey, UnityMetadata.WithLogType(logType));
 
       var @event = new Payload.Event(
         Configuration.Context,
