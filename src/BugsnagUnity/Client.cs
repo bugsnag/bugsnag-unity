@@ -200,7 +200,7 @@ namespace BugsnagUnity
           && report.Configuration.NotifyReleaseStages != null
           && !report.Configuration.NotifyReleaseStages.Contains(report.Configuration.ReleaseStage))
       {
-        report.Ignore();
+        return;
       }
 
       lock (MiddlewareLock)
