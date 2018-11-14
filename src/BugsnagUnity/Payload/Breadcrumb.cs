@@ -16,10 +16,11 @@ namespace BugsnagUnity.Payload
     internal static Breadcrumb FromReport(Report report)
     {
       var name = "Error";
-      var metadata = new Dictionary<string, string>
+      var metadata = new Dictionary<string, string>{};
+      if (report.Context != null)
       {
-        { "context", report.Context },
-      };
+        metadata["context"] = report.Context;
+      }
 
       if (report.Exceptions != null && report.Exceptions.Any())
       {
