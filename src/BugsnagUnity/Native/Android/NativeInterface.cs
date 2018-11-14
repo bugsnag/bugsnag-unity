@@ -106,7 +106,12 @@ namespace BugsnagUnity
         using (var sessionTracker = client.Get<AndroidJavaObject>("sessionTracker"))
         using (var activityClass = activity.Call<AndroidJavaObject>("getClass"))
         {
-          var activityName = activityClass.CallStringMethod("getSimpleName");
+          string activityName = null;
+          var activityNameObject = activityClass.Call<AndroidJavaObject>("getSimpleName");
+          if (activityNameObject != null)
+          {
+            activityName = AndroidJNI.GetStringUTFChars(activityNameObject.GetRawObject());
+          }
           sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
         }
       }
