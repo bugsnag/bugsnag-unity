@@ -1,229 +1,255 @@
-#import <Bugsnag/Bugsnag.h>
-#import <Bugsnag/BugsnagCrashReport.h>
-
-@interface Bugsnag ()
-+ (id)notifier;
-@end
+#import "Bugsnag.h"
+#import "BugsnagConfiguration.h"
+#import "BugsnagLogger.h"
+#import "BugsnagUser.h"
+#import "BSG_KSSystemInfo.h"
+#import "BSG_KSMach.h"
 
 extern "C" {
-    void BSGSetContext(char *context);
-    void BSGSetReleaseStage(char *releaseStage);
-    void BSGSetAutoNotify(int autoNotify);
-    void BSGNotify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason);
-    void BSGRegister(char *apiKey, bool trackSessions);
-    void BSGAddToTab(char *tabName, char *attributeName, char *attributeValue);
-    void BSGClearTab(char *tabName);
-    void BSGLeaveBreadcrumb(char *breadcrumb);
-    void BSGSetBreadcrumbCapacity(int capacity);
-    void BSGSetAppVersion(char *version);
-    void BSGSetUser(char *userId, char *userName, char *userEmail);
-    void BSGExampleNativeCrash();
-    void BSGExampleCrashInBackground();
+  struct bugsnag_user {
+    const char *user_id;
+  };
 
-    NSMutableArray *BSGparseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex);
+  void *bugsnag_createConfiguration(char *apiKey);
 
-    BSGSeverity BSGParseBugsnagSeverity(NSString *severity) {
-        if ([severity isEqualToString:@"info"])
-            return BSGSeverityInfo;
-        else if ([severity isEqualToString:@"warning"])
-            return BSGSeverityWarning;
-        return BSGSeverityError;
-    }
+  const char *bugsnag_getApiKey(const void *configuration);
 
-    void BSGSetContext(char *context) {
-        NSString *ns_context = [NSString stringWithUTF8String: context];
-        [Bugsnag configuration].context = ns_context;
-    }
+  void bugsnag_setReleaseStage(const void *configuration, char *releaseStage);
+  const char *bugsnag_getReleaseStage(const void *configuration);
 
-    void BSGSetReleaseStage(char *releaseStage) {
-        NSString *ns_releaseStage = [NSString stringWithUTF8String: releaseStage];
-        [Bugsnag configuration].releaseStage = ns_releaseStage;
-    }
+  void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount);
+  void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], int size));
 
-    void BSGSetNotifyReleaseStages(char *notifyReleaseStages) {
-        NSString *ns_notifyReleaseStages = [NSString stringWithUTF8String: notifyReleaseStages];
-        if ([ns_notifyReleaseStages isEqualToString: @""]) {
-            [Bugsnag configuration].notifyReleaseStages = @[];
-        } else {
-            [Bugsnag configuration].notifyReleaseStages = [ns_notifyReleaseStages componentsSeparatedByString: @","];
+  void bugsnag_setAppVersion(const void *configuration, char *appVersion);
+  const char *bugsnag_getAppVersion(const void *configuration);
+
+  void bugsnag_setContext(const void *configuration, char *context);
+  const char *bugsnag_getContext(const void *configuration);
+
+  void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
+  const char *bugsnag_getNotifyUrl(const void *configuration);
+
+  void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
+
+  void bugsnag_startBugsnagWithConfiguration(const void *configuration);
+
+  void *bugsnag_createBreadcrumbs(const void *configuration);
+  void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
+  void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size));
+
+  void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
+  void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
+
+  void bugsnag_populateUser(bugsnag_user *user);
+}
+
+void *bugsnag_createConfiguration(char *apiKey) {
+  NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
+  BugsnagConfiguration *config = [BugsnagConfiguration new];
+  config.apiKey = ns_apiKey;
+  return (void*)CFBridgingRetain(config);
+}
+
+const char *bugsnag_getApiKey(const void *configuration) {
+  return [((__bridge BugsnagConfiguration *)configuration).apiKey UTF8String];
+}
+
+void bugsnag_setReleaseStage(const void *configuration, char *releaseStage) {
+  NSString *ns_releaseStage = releaseStage == NULL ? nil : [NSString stringWithUTF8String: releaseStage];
+  ((__bridge BugsnagConfiguration *)configuration).releaseStage = ns_releaseStage;
+}
+
+const char *bugsnag_getReleaseStage(const void *configuration) {
+  return [((__bridge BugsnagConfiguration *)configuration).releaseStage UTF8String];
+}
+
+void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount){
+  NSMutableArray *ns_releaseStages = [NSMutableArray new];
+  for (size_t i = 0; i < releaseStagesCount; i++) {
+    [ns_releaseStages addObject: [NSString stringWithUTF8String: releaseStages[i]]];
+  }
+  ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages = ns_releaseStages;
+}
+
+void bugsnag_getNotifyReleaseStages(const void *configuration, const void *managedConfiguration, void (*callback)(const void *instance, const char *releaseStages[], int size)) {
+  NSArray *releaseStages = ((__bridge BugsnagConfiguration *)configuration).notifyReleaseStages;
+  int count = 0;
+
+  if ([releaseStages count] <= INT_MAX) {
+    count = (int)[releaseStages count];
+  }
+
+  const char **c_releaseStages = (const char **) malloc(sizeof(char *) * (count + 1));
+
+  for (int i = 0; i < count; i++) {
+    c_releaseStages[i] = [[releaseStages objectAtIndex: i] UTF8String];
+  }
+
+  callback(managedConfiguration, c_releaseStages, count);
+}
+
+void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
+  NSString *ns_appVersion = appVersion == NULL ? nil : [NSString stringWithUTF8String: appVersion];
+  ((__bridge BugsnagConfiguration *)configuration).appVersion = ns_appVersion;
+}
+
+const char *bugsnag_getAppVersion(const void *configuration) {
+  return [((__bridge BugsnagConfiguration *)configuration).appVersion UTF8String];
+}
+
+void bugsnag_setContext(const void *configuration, char *context) {
+  NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
+  ((__bridge BugsnagConfiguration *)configuration).context = ns_Context;
+}
+
+const char *bugsnag_getContext(const void *configuration) {
+  return [((__bridge BugsnagConfiguration *)configuration).context UTF8String];
+}
+
+void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
+  if (notifyURL == NULL)
+    return;
+  NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
+  [((__bridge BugsnagConfiguration *)configuration) setEndpointsForNotify: ns_notifyURL sessions: nil];
+}
+
+const char *bugsnag_getNotifyUrl(const void *configuration) {
+  return [((__bridge BugsnagConfiguration *)configuration).notifyURL.absoluteString UTF8String];
+}
+
+void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
+  BugsnagConfiguration *ns_configuration = (__bridge BugsnagConfiguration *)configuration;
+  if (tab == NULL)
+    return;
+
+  NSString *tabName = [NSString stringWithUTF8String: tab];
+
+  for (size_t i = 0; i < metadataCount; i += 2) {
+    [ns_configuration.metaData addAttribute: [NSString stringWithUTF8String: metadata[i]]
+                                  withValue: [NSString stringWithUTF8String: metadata[i+1]]
+                              toTabWithName: tabName];
+  }
+}
+
+void bugsnag_startBugsnagWithConfiguration(const void *configuration) {
+  [Bugsnag startBugsnagWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
+}
+
+void *bugsnag_createBreadcrumbs(const void *configuration) {
+  return (__bridge void*)((__bridge BugsnagConfiguration *)configuration).breadcrumbs;
+}
+
+void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount) {
+  BugsnagBreadcrumbs *ns_breadcrumbs = ((__bridge BugsnagBreadcrumbs *) breadcrumbs);
+  NSString *ns_name = [NSString stringWithUTF8String: name == NULL ? "<empty>" : name];
+  [ns_breadcrumbs addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
+      crumb.name = ns_name;
+
+      if (strcmp(type, "log") == 0) {
+        crumb.type = BSGBreadcrumbTypeLog;
+      } else if (strcmp(type, "user") == 0) {
+        crumb.type = BSGBreadcrumbTypeUser;
+      } else if (strcmp(type, "error") == 0) {
+        crumb.type = BSGBreadcrumbTypeError;
+      } else if (strcmp(type, "state") == 0) {
+        crumb.type = BSGBreadcrumbTypeState;
+      } else if (strcmp(type, "manual") == 0) {
+        crumb.type = BSGBreadcrumbTypeManual;
+      } else if (strcmp(type, "process") == 0) {
+        crumb.type = BSGBreadcrumbTypeProcess;
+      } else if (strcmp(type, "request") == 0) {
+        crumb.type = BSGBreadcrumbTypeRequest;
+      } else if (strcmp(type, "navigation") == 0) {
+        crumb.type = BSGBreadcrumbTypeNavigation;
+      }
+
+      if (metadataCount > 0) {
+        NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
+
+        for (size_t i = 0; i < metadataCount - 1; i += 2) {
+          char *key = metadata[i];
+          char *value = metadata[i+1];
+          if (key == NULL || value == NULL)
+              continue;
+          [ns_metadata setValue:[NSString stringWithUTF8String:value]
+                         forKey:[NSString stringWithUTF8String:key]];
         }
+
+        crumb.metadata = ns_metadata;
+      }
+  }];
+}
+
+void bugsnag_retrieveBreadcrumbs(const void *breadcrumbs, const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size)) {
+  NSArray *crumbs = [((__bridge BugsnagBreadcrumbs *) breadcrumbs) arrayValue];
+  [crumbs enumerateObjectsUsingBlock:^(id crumb, NSUInteger index, BOOL *stop){
+    const char *name = [[crumb valueForKey: @"name"] UTF8String];
+    const char *timestamp = [[crumb valueForKey: @"timestamp"] UTF8String];
+    const char *type = [[crumb valueForKey: @"type"] UTF8String];
+
+    NSDictionary *metadata = [crumb valueForKey: @"metaData"];
+
+    NSArray *keys = [metadata allKeys];
+    NSArray *values = [metadata allValues];
+
+    int count = 0;
+
+    if ([keys count] <= INT_MAX) {
+      count = (int)[keys count];
     }
 
-    void BSGSetSessionUrl(char *url) {
-        NSString *ns_url = [NSString stringWithUTF8String:url];
-        [Bugsnag configuration].sessionURL = [NSURL URLWithString: ns_url];
+    const char **c_keys = (const char **) malloc(sizeof(char *) * (count + 1));
+    const char **c_values = (const char **) malloc(sizeof(char *) * (count + 1));
+
+    for (int i = 0; i < count; i++) {
+      c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+      c_values[i] = [[values objectAtIndex: i] UTF8String];
     }
 
-    void BSGSetNotifyUrl(char *notifyUrl) {
-        NSString *ns_notifyUrl = [NSString stringWithUTF8String:notifyUrl];
-        [Bugsnag configuration].notifyURL = [NSURL URLWithString: ns_notifyUrl];
-    }
+    breadcrumb(managedBreadcrumbs, name, timestamp, type, c_keys, count, c_values, count);
+  }];
+}
 
-    void BSGSetAutoNotify(int autoNotify) {
-        [Bugsnag configuration].autoNotify = autoNotify;
-    }
+void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
+  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
-    void BSGAddToTab(char *tabName, char *attributeName, char *attributeValue) {
-        NSString *ns_tabName = [NSString stringWithUTF8String:tabName];
-        NSString *ns_attributeName = [NSString stringWithUTF8String:attributeName];
-        NSString *ns_attributeValue = [NSString stringWithUTF8String:attributeValue];
-        [Bugsnag addAttribute:ns_attributeName withValue:ns_attributeValue toTabWithName:ns_tabName];
-    }
+  callback(appData, "bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
+  callback(appData, "id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
+  callback(appData, "type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
+  NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
+  callback(appData, "version", [version UTF8String]);
+}
 
-    void BSGClearTab(char *tabName) {
-        NSString *ns_tabName = [NSString stringWithUTF8String:tabName];
-        [Bugsnag clearTabWithName:ns_tabName];
-    }
+void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
+  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
-    void BSGNotify(char *errorClass, char *errorMessage, char *severity, char *context, char *stackTrace, char *logType, char *severityReason) {
-        NSString *ns_errorClass = [NSString stringWithUTF8String:errorClass];
-        NSString *ns_errorMessage = [NSString stringWithUTF8String:errorMessage];
-        NSString *ns_severity = [NSString stringWithUTF8String:severity];
-        NSString *ns_context = [NSString stringWithUTF8String:context];
-        NSString *ns_stackTrace = [NSString stringWithUTF8String:stackTrace];
-        NSString *ns_logType = [NSString stringWithUTF8String:logType];
-        NSString *ns_severityReason = [NSString stringWithUTF8String:severityReason];
+  NSFileManager *fileManager = [NSFileManager defaultManager];
 
-        NSRegularExpression *unityExpression = [NSRegularExpression regularExpressionWithPattern:@"(\\S+)\\s*\\(.*?\\)\\s*(?:(?:\\[.*\\]\\s*in\\s|\\(at\\s*\\s*)(.*):(\\d+))?"
-                                                                                         options:NSRegularExpressionCaseInsensitive
-                                                                                           error:nil];
+  NSError *error;
+  NSDictionary *fileSystemAttrs = [fileManager attributesOfFileSystemForPath:NSHomeDirectory() error:&error];
 
-        NSMutableArray *stacktrace = BSGparseStackTrace(ns_stackTrace, unityExpression);
-        NSException * exception = [NSException exceptionWithName:ns_errorClass
-                                                          reason:ns_errorMessage
-                                                        userInfo:NULL];
+  if (error) {
+      bsg_log_warn(@"Failed to read free disk space: %@", error);
+  }
 
-        // Indicate thats its a unity exception (with the received log level)
-        NSDictionary *unityData = nil;
-        if ([ns_logType isEqualToString: @""]) {
-            unityData = @{@"unityException": @true};
-        } else {
-            unityData = @{@"unityException": @true, @"unityLogLevel": ns_logType};
-        }
+  NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
+  callback(deviceData, "freeDisk", [[freeBytes stringValue] UTF8String]);
 
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            id notifier = [Bugsnag notifier];
+  uint64_t freeMemory = bsg_ksmachfreeMemory();
+  char buff[30];
+  sprintf(buff, "%lld", freeMemory);
+  callback(deviceData, "freeMemory", buff);
 
-            NSMutableDictionary *dict = [NSMutableDictionary new];
-            dict[@"severity"] = ns_severity;
-            dict[@"severityReason"] = ns_severityReason;
-            if (ns_logType) {
-                dict[@"logLevel"] = ns_logType;
-            }
+  callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
+  callback(deviceData, "locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
+  callback(deviceData, "manufacturer", "Apple");
+  callback(deviceData, "model", [sysInfo[@BSG_KSSystemField_Machine] UTF8String]);
+  callback(deviceData, "modelNumber", [sysInfo[@BSG_KSSystemField_Model] UTF8String]);
+  callback(deviceData, "osName", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
+  callback(deviceData, "osVersion", [sysInfo[@BSG_KSSystemField_SystemVersion] UTF8String]);
+}
 
-            [notifier internalClientNotify:exception
-                                  withData:dict
-                                     block:^(BugsnagCrashReport *report) {
-                 if (ns_context.length > 0) {
-                     report.context = ns_context;
-                 }
-                 [report attachCustomStacktrace:stacktrace withType:@"unity"];
-                 NSMutableDictionary *metadata = [report.metaData mutableCopy];
-                 metadata[@"Unity"] = unityData;
-                 report.metaData = metadata;
-            }];
-        });
-    }
-
-    void BSGRegister(char *apiKey, bool trackSessions) {
-        NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
-
-        // Disable thread suspension so there is no noticable lag in sending Bugsnags
-        [Bugsnag setSuspendThreadsForUserReported:false];
-
-        // Set reporting of Bugsnags when debugger is attached
-        [Bugsnag setReportWhenDebuggerIsAttached:true];
-
-        // Disable thread tracing on non-fatal exceptions
-        [Bugsnag setThreadTracingEnabled:false];
-
-        // Disable writing binary images
-        [Bugsnag setWriteBinaryImagesForUserReported:false];
-
-        BugsnagConfiguration *config = [BugsnagConfiguration new];
-        config.apiKey = ns_apiKey;
-        config.shouldAutoCaptureSessions = trackSessions;
-        [Bugsnag startBugsnagWithConfiguration:config];
-
-        id notifier = [Bugsnag notifier];
-        [notifier setValue:@{
-            @"version": @"3.6.7",
-            @"name": @"Bugsnag Unity (Cocoa)",
-            @"url": @"https://github.com/bugsnag/bugsnag-unity"
-        } forKey:@"details"];
-    }
-
-    void BSGStartSession() {
-        [Bugsnag startSession];
-    }
-
-    void BSGLeaveBreadcrumb(char *breadcrumb) {
-        [Bugsnag leaveBreadcrumbWithMessage: [NSString stringWithUTF8String:breadcrumb]];
-    }
-
-    void BSGSetBreadcrumbCapacity(int capacity) {
-        [Bugsnag setBreadcrumbCapacity: (NSUInteger)capacity];
-    }
-
-    void BSGSetAppVersion(char *version) {
-        [Bugsnag configuration].appVersion = [NSString stringWithUTF8String:version];
-    }
-
-    void BSGSetUser(char *userId, char *userName, char *userEmail) {
-        NSString *ns_userId = [NSString stringWithUTF8String: userId];
-        NSString *ns_userName = [NSString stringWithUTF8String: userName];
-        NSString *ns_userEmail = [NSString stringWithUTF8String: userEmail];
-        [[Bugsnag configuration] setUser:ns_userId withName:ns_userName andEmail:ns_userEmail];
-    }
-
-    NSMutableArray *BSGparseStackTrace(NSString *stackTrace, NSRegularExpression *stacktraceRegex) {
-        NSMutableArray *returnArray = [[NSMutableArray alloc] init];
-
-        [stacktraceRegex enumerateMatchesInString:stackTrace options:0 range:NSMakeRange(0, [stackTrace length]) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-            NSMutableDictionary *lineDetails = [[NSMutableDictionary alloc] initWithCapacity:3];
-            if(result) {
-                if(result.numberOfRanges >= 1 && [result rangeAtIndex:1].location != NSNotFound) {
-                    [lineDetails setObject:[stackTrace substringWithRange:[result rangeAtIndex:1]] forKey:@"method"];
-                } else {
-                    [lineDetails setObject:@"unknown method" forKey:@"method"];
-                }
-
-                if(result.numberOfRanges >= 2 && [result rangeAtIndex:2].location != NSNotFound) {
-                    NSString *fileName = [stackTrace substringWithRange:[result rangeAtIndex:2]];
-                    if(![fileName isEqualToString:@"<filename unknown>"]) {
-                        [lineDetails setObject:fileName forKey:@"file"];
-                    } else {
-                        [lineDetails setObject:@"unknown file" forKey:@"file"];
-                    }
-                } else {
-                    [lineDetails setObject:@"unknown file" forKey:@"file"];
-                }
-
-                if(result.numberOfRanges >= 3 && [result rangeAtIndex:3].location != NSNotFound) {
-                    int lineNumber = (int)[[stackTrace substringWithRange:[result rangeAtIndex:3]] integerValue];
-                    [lineDetails setObject:[NSNumber numberWithInt:lineNumber] forKey:@"lineNumber"];
-                } else {
-                    [lineDetails setObject:[NSNumber numberWithInt:0] forKey:@"lineNumber"];
-                }
-            } else {
-                [lineDetails setObject:@"unknown method" forKey:@"method"];
-                [lineDetails setObject:[NSNumber numberWithInt:0] forKey:@"lineNumber"];
-                [lineDetails setObject:@"unknown file" forKey:@"file"];
-            }
-            [returnArray addObject:lineDetails];
-        }];
-        return returnArray;
-    }
-
-
-    void ExampleNativeCrash() {
-        id obj = [NSArray new][1];
-        NSLog(@"Should never happen");
-    }
-
-    void ExampleCrashInBackground() {
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            ExampleNativeCrash();
-        });
-    }
+void bugsnag_populateUser(bugsnag_user *user) {
+  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
+  user->user_id = [sysInfo[@BSG_KSSystemField_DeviceAppHash] UTF8String];
 }

@@ -1,0 +1,11 @@
+*.aar
+*.a
+CodeResources
+*.h
+bugsnag-osx
+*.jspre
+*.jslib
+*.dll
+*.cs
+Library/
+UnityPackageManager/

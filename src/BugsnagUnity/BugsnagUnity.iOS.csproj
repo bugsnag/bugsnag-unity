@@ -1,0 +1,7 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Compile Remove="Native/**/*.cs" />
+    <Compile Include="Native/Cocoa/**/*.cs" />
+    <Compile Include="Native/iOS/**/*.cs" />
+  </ItemGroup>
+</Project>

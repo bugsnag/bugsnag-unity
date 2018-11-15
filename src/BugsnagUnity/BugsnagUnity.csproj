@@ -1,0 +1,6 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Compile Remove="Native/**/*.cs" />
+    <Compile Include="Native/Fallback/**/*.cs"/>
+  </ItemGroup>
+</Project>

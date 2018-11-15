@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.0 (TBD)
+
+This is a new major release with many features and fixes. See the [upgrade
+guide](https://github.com/bugsnag/bugsnag-unity/blob/master/UPGRADING.md) for
+more information on how to update your integration, or the [integration
+guide](https://docs.bugsnag.com/platforms/unity/) to get started.
+
+### Enhancements
+
+* Unity/C# errors are now automatically detected and reported on Windows and any
+  other Unity platform (not including native crashes)
+* Exceptions logged on background threads via the [Unity `Debug.Log` API]() are
+  now automatically detected and reported in additional to exceptions detected
+  on the main thread.
+* Support for [session and stability tracking](https://docs.bugsnag.com/product/releases/releases-dashboard/#stability-score)
+* Support for [logging detailed breadcrumbs](https://docs.bugsnag.com/platforms/unity/#logging-breadcrumbs)
+
 ## 3.6.7 (2018-09-21)
 
 ### Improvements

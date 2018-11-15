@@ -15,53 +15,66 @@
     git clone --recursive git@github.com:bugsnag/bugsnag-unity
     ```
 
+- Install Unity
 - Set up your Xcode (requires being a member of the Apple Developer Program)
 - Set up the Android SDK (using [instructions](https://github.com/bugsnag/bugsnag-android/blob/master/CONTRIBUTING.md) from bugsnag-android)
 - Open the example app in Unity
 - You can build the app for iPhone or Android using the custom Build menu.
 
+## Installing and using multiple versions of Unity
+
+You can install as many versions of Unity as you like on the same computer. On a Mac the installer creates a folder called Unity, and overwrites any existing folder with this name. If you want more than one version of Unity on your Mac, rename the existing Unity folder before installing another version. On a PC, the install folder defaults to C:\Program Files\Unity, this can be changed to another path so that you can install more than one version.
+
+There is a helper script that will use homebrew cask to install a version of 5.6, 2017 and 2018 which are the three major versions of Unity that we support. Along with the support packages for iOS, tvOS and Android. This script only works on MacOS.
+
+MacOS
+```
+scripts/bootstap-unity.sh
+```
+
+The build script will by default locate Unity in it's default location on both Mac and Windows machines. If you want to use an alternative location for Unity (to test against multiple versions for instance) then you can specify the location in an ENV variable when running the build script.
+
+MacOS
+```
+UNITY_DIR=/Applications/Unity.2018.2.3 bundle exec rake
+```
+
+Windows
+```
+$env:UNITY_DIR="C:\Program Files\Unity.2018.2.3\"
+bundle exec rake
+```
+
 ## Testing Changes
-A simple project can be found at [examples/Assets/Buttons.unity](https://github.com/bugsnag/bugsnag-unity/blob/master/example/Assets/Buttons.unity), which allows various crashes to be triggered by clicking buttons.
 
-## Upgrading bugsnag-cocoa/bugsnag-android
+A simple project can be found at [example](https://github.com/bugsnag/bugsnag-unity/blob/master/example), which allows various crashes to be triggered by clicking buttons.
 
-- Update the submodule
+## Building Plugin
 
-    ```
-    cd bugsnag-cocoa; git pull origin unity; cd ..
-    cd bugsnag-android; git pull origin master; cd ..
-    cd ..; git commit -am "updating notifiers"
-    ```
+The plugin can be built by running
 
-- Update the plugins in the example app
+```
+bundle install
+bundle exec rake plugin:export
+```
 
-    ```
-    rake update_example_plugins
-    ```
+## Building Example
 
-- Build and test the example app
+```
+bundle install
+bundle exec rake example:build:all
+```
 
-    ```
-    rake build:ios
-    rake build:android
-    ```
+## Running maze-runner
 
-## Modifying the C# code
+We have a very simple maze-runner setup, which builds a MacOS X Unity game that sends a simple notification.
 
-- Make changes to src/Assets
-- Copy changes into the example app
+NOTE: This does not currently run on Windows
 
-    ```
-    rake update
-    ```
-
-- Build and test the example app
-
-    ```
-    rake build:ios
-    rake build:android
-    ```
-
+```
+bundle install
+bundle exec rake plugin:maze_runner
+```
 
 ## Releasing a new version
 
@@ -70,6 +83,7 @@ A simple project can be found at [examples/Assets/Buttons.unity](https://github.
 #### Pre-release
 
 - [ ] Are all changes committed?
+- [ ] Do the tests pass locally on Unity 2018?
 - [ ] Does the build pass on the CI server?
 - [ ] Has the changelog been updated?
 - [ ] Have all the version numbers been incremented? Update the version number by running `make VERSION=[number] bump`.
