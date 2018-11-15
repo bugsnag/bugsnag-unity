@@ -84,7 +84,7 @@ end
 
 namespace :plugin do
   namespace :build do
-    task all: [:assets, :cocoa, :csharp, :android, :webgl]
+    task all: [:assets, :cocoa, :csharp, :android]
     task :clean do
       # remove any leftover artifacts from the package generation directory
       sh "git", "clean", "-dfx", "unity"
@@ -220,13 +220,6 @@ namespace :plugin do
 
       cp android_lib, android_dir
       cp unity_lib, android_dir
-    end
-    task webgl: [:clean] do
-      bugsnag_js = File.realpath(File.join("bugsnag-js", "src", "bugsnag.js"))
-      cd assets_path do
-        webgl_file = File.join("WebGL", "bugsnag.jspre")
-        cp bugsnag_js, webgl_file
-      end
     end
   end
 

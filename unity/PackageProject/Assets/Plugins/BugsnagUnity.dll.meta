@@ -104,6 +104,16 @@ PluginImporter:
     second:
       enabled: 0
       settings: {}
+  - first:
+      Facebook: WebGL
+    second:
+      enabled: 1
+      settings: {}
+  - first:
+      WebGL: WebGL
+    second:
+      enabled: 1
+      settings: {}
   userData:
   assetBundleName:
   assetBundleVariant:

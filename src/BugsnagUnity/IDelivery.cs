@@ -29,8 +29,11 @@ namespace BugsnagUnity
       DispatcherObject.AddComponent<MainThreadDispatchBehaviour>();
 
       Queue = new BlockingQueue<IPayload>();
-      Worker = new Thread(ProcessQueue) { IsBackground = true };
-      Worker.Start();
+      if (CanUseThreading())
+      {
+        Worker = new Thread(ProcessQueue) { IsBackground = true };
+        Worker.Start();
+      }
     }
 
     void ProcessQueue()
@@ -39,17 +42,7 @@ namespace BugsnagUnity
       {
         try
         {
-          var payload = Queue.Dequeue();
-          using (var stream = new MemoryStream())
-          using (var reader = new StreamReader(stream))
-          using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
-          {
-            SimpleJson.SimpleJson.SerializeObject(payload, writer);
-            writer.Flush();
-            stream.Position = 0;
-            var body = Encoding.UTF8.GetBytes(reader.ReadToEnd());
-            MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
-          }
+          SerializeAndDeliverPayload(Queue.Dequeue());
         }
         catch (System.Exception)
         {
@@ -58,9 +51,30 @@ namespace BugsnagUnity
       }
     }
 
+    void SerializeAndDeliverPayload(IPayload payload)
+    {
+      using (var stream = new MemoryStream())
+      using (var reader = new StreamReader(stream))
+      using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+      {
+        SimpleJson.SimpleJson.SerializeObject(payload, writer);
+        writer.Flush();
+        stream.Position = 0;
+        var body = Encoding.UTF8.GetBytes(reader.ReadToEnd());
+        MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
+      }
+    }
+
     public void Send(IPayload payload)
     {
-      Queue.Enqueue(payload);
+      if (CanUseThreading())
+      {
+        Queue.Enqueue(payload);
+      }
+      else
+      {
+        SerializeAndDeliverPayload(payload);
+      }
     }
 
     IEnumerator PushToServer(IPayload payload, byte[] body)
@@ -101,6 +115,11 @@ namespace BugsnagUnity
           Debug.LogWarning("Bugsnag: " + req.error);
         }
       }
+    }
+
+    private bool CanUseThreading()
+    {
+      return Application.platform != RuntimePlatform.WebGLPlayer;
     }
   }
 }
