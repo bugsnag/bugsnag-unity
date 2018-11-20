@@ -110,9 +110,9 @@ bundle exec rake plugin:maze_runner
 1. Commit the changelog and version updates:
 
     ```
-    git add CHANGELOG.md src/BugsnagUnity.mm bugsnag-android-unity/src/main/java/com/bugsnag/android/unity/UnityCallback.java
-    git commit -m "Release v3.x.x"
-    git tag "v3.x.x"
+    git add CHANGELOG.md
+    git commit -m "Release v4.x.x"
+    git tag "v4.x.x"
     git push origin master --tags
     ```
 2. [Create a new release on GitHub](https://github.com/bugsnag/bugsnag-unity/releases/new), copying the changelog entry.
