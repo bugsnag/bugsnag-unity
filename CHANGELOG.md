@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.0.0 (TBD)
+## 4.0.0 (2018-11-19)
 
 This is a new major release with many features and fixes. See the [upgrade
 guide](https://github.com/bugsnag/bugsnag-unity/blob/master/UPGRADING.md) for
