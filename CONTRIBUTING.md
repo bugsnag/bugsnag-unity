@@ -83,7 +83,6 @@ bundle exec rake plugin:maze_runner
 #### Pre-release
 
 - [ ] Are all changes committed?
-- [ ] Do the tests pass locally on Unity 2018?
 - [ ] Does the build pass on the CI server?
 - [ ] Has the changelog been updated?
 - [ ] Have all the version numbers been incremented? Update the version number by running `make VERSION=[number] bump`.
@@ -96,7 +95,9 @@ bundle exec rake plugin:maze_runner
   - [ ] Ensure the example app sends the correct error for each type on macOS
   - [ ] Ensure the example app sends the correct error for each type on Android
   - [ ] Ensure the example app sends the correct error for each type on WebGL
+  - [ ] Ensure the example app sends the correct error for each type on Windows
   - [ ] Archive the iOS app and validate the bundle type
+  - [ ] Archive the Mac app and validate the bundle type
   - [ ] Generate a signed APK for Android
 - [ ] Do the installation instructions work when creating an example app from scratch?
 - [ ] Are PRs open on the docs site for any new feature changes or version numbers?
