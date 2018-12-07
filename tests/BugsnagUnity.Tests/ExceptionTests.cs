@@ -1,0 +1,97 @@
+using NUnit.Framework;
+using System.Linq;
+using System.Threading;
+using UnityEngine;
+
+namespace BugsnagUnity.Payload.Tests
+{
+  [TestFixture]
+  class ExceptionTests
+  {
+    [Test]
+    public void ParseExceptionFromLogMessage()
+    {
+      string condition = "IndexOutOfRangeException: Array index is out of range.";
+      string stacktrace = @"ReporterBehavior.AssertionFailure () [0x00000] in <filename unknown>:0
+   UnityEngine.Events.InvokableCall.Invoke () [0x00000] in <filename unknown>:0
+   UnityEngine.Events.UnityEvent.Invoke () [0x00000] in <filename unknown>:0
+   UnityEngine.UI.Button.Press () [0x00000] in <filename unknown>:0
+   UnityEngine.UI.Button.OnPointerClick (UnityEngine.EventSystems.PointerEventData eventData) [0x00000] in <filename unknown>:0
+   UnityEngine.EventSystems.ExecuteEvents.Execute (IPointerClickHandler handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00000] in <filename unknown>:0
+   UnityEngine.EventSystems.ExecuteEvents.Execute[IPointerClickHandler] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor) [0x00000] in <filename unknown>:0";
+      var logType = UnityEngine.LogType.Error;
+      var log = new UnityLogMessage(condition, stacktrace, logType);
+
+      var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {});
+      var stack = exception.StackTrace.ToList();
+      Assert.AreEqual(7, stack.Count);
+      Assert.AreEqual("IndexOutOfRangeException", exception.ErrorClass);
+      Assert.AreEqual("Array index is out of range.", exception.ErrorMessage);
+      Assert.AreEqual("ReporterBehavior.AssertionFailure()", stack[0].Method);
+      Assert.AreEqual("<filename unknown>", stack[0].File);
+      Assert.AreEqual(0, stack[0].LineNumber);
+      Assert.AreEqual("UnityEngine.Events.InvokableCall.Invoke()", stack[1].Method);
+      Assert.AreEqual("<filename unknown>", stack[1].File);
+      Assert.AreEqual(0, stack[1].LineNumber);
+      Assert.AreEqual("UnityEngine.Events.UnityEvent.Invoke()", stack[2].Method);
+      Assert.AreEqual("<filename unknown>", stack[2].File);
+      Assert.AreEqual(0, stack[2].LineNumber);
+      Assert.AreEqual("UnityEngine.UI.Button.Press()", stack[3].Method);
+      Assert.AreEqual("<filename unknown>", stack[3].File);
+      Assert.AreEqual(0, stack[3].LineNumber);
+      Assert.AreEqual("UnityEngine.UI.Button.OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData)", stack[4].Method);
+      Assert.AreEqual("<filename unknown>", stack[4].File);
+      Assert.AreEqual(0, stack[4].LineNumber);
+      Assert.AreEqual("UnityEngine.EventSystems.ExecuteEvents.Execute(IPointerClickHandler handler, UnityEngine.EventSystems.BaseEventData eventData)", stack[5].Method);
+      Assert.AreEqual("<filename unknown>", stack[5].File);
+      Assert.AreEqual(0, stack[5].LineNumber);
+      Assert.AreEqual("UnityEngine.EventSystems.ExecuteEvents.Execute[IPointerClickHandler](UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor)", stack[6].Method);
+      Assert.AreEqual("<filename unknown>", stack[6].File);
+      Assert.AreEqual(0, stack[6].LineNumber);
+    }
+
+    [Test]
+    public void ParseAndroidExceptionFromLogMessage()
+    {
+      string condition = "AndroidJavaException: java.lang.ArrayIndexOutOfBoundsException: length=2; index=2";
+      string stacktrace = @"java.lang.ArrayIndexOutOfBoundsException: length=2; index=2
+com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash(CrashHelper.java:11)
+com.unity3d.player.UnityPlayer.nativeRender(Native Method)
+com.unity3d.player.UnityPlayer.c(Unknown Source:0)
+com.unity3d.player.UnityPlayer$e$2.queueIdle(Unknown Source:72)
+android.os.MessageQueue.next(MessageQueue.java:395)
+android.os.Looper.loop(Looper.java:160)
+com.unity3d.player.UnityPlayer$e.run(Unknown Source:32)";
+      var logType = UnityEngine.LogType.Error;
+      var log = new UnityLogMessage(condition, stacktrace, logType);
+
+      var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {});
+      var stack = exception.StackTrace.ToList();
+      Assert.AreEqual(7, stack.Count);
+      Assert.AreEqual("java.lang.ArrayIndexOutOfBoundsException", exception.ErrorClass);
+      Assert.AreEqual("length=2; index=2", exception.ErrorMessage);
+      Assert.AreEqual("com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash()", stack[0].Method);
+      Assert.AreEqual("CrashHelper.java", stack[0].File);
+      Assert.AreEqual(11, stack[0].LineNumber);
+      Assert.AreEqual("com.unity3d.player.UnityPlayer.nativeRender()", stack[1].Method);
+      Assert.AreEqual("Native Method", stack[1].File);
+      Assert.AreEqual(null, stack[1].LineNumber);
+      Assert.AreEqual("com.unity3d.player.UnityPlayer.c()", stack[2].Method);
+      Assert.AreEqual("Unknown Source", stack[2].File);
+      Assert.AreEqual(0, stack[2].LineNumber);
+      Assert.AreEqual("com.unity3d.player.UnityPlayer$e$2.queueIdle()", stack[3].Method);
+      Assert.AreEqual("Unknown Source", stack[3].File);
+      Assert.AreEqual(72, stack[3].LineNumber);
+      Assert.AreEqual("android.os.MessageQueue.next()", stack[4].Method);
+      Assert.AreEqual("MessageQueue.java", stack[4].File);
+      Assert.AreEqual(395, stack[4].LineNumber);
+      Assert.AreEqual("android.os.Looper.loop()", stack[5].Method);
+      Assert.AreEqual("Looper.java", stack[5].File);
+      Assert.AreEqual(160, stack[5].LineNumber);
+      Assert.AreEqual("com.unity3d.player.UnityPlayer$e.run()", stack[6].Method);
+      Assert.AreEqual("Unknown Source", stack[6].File);
+      Assert.AreEqual(32, stack[6].LineNumber);
+    }
+  }
+}
+

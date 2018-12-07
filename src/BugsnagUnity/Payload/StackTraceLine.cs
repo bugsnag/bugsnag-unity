@@ -6,6 +6,11 @@ using System.Text.RegularExpressions;
 namespace BugsnagUnity.Payload
 {
   /// <summary>
+  /// The supported stacktrace parsing formats for Unity log messages
+  /// </summary>
+  internal enum StackTraceFormat {Standard, AndroidJava};
+
+  /// <summary>
   /// Represents a set of Bugsnag payload stacktrace lines that are generated from a single StackTrace provided
   /// by the runtime.
   /// </summary>
@@ -22,15 +27,28 @@ namespace BugsnagUnity.Payload
       }
     }
 
-    internal StackTrace(string stackTrace)
+    internal StackTrace(string stackTrace): this(stackTrace, StackTraceFormat.Standard) {}
+
+    internal StackTrace(string stackTrace, StackTraceFormat format)
     {
       string[] lines = stackTrace.Split(new[] { System.Environment.NewLine },
                                         System.StringSplitOptions.RemoveEmptyEntries);
-      StackTraceLines = new StackTraceLine[lines.Length];
+      var frames = new List<StackTraceLine>();
       for (int i = 0; i < lines.Length; i++)
       {
-        StackTraceLines[i] = StackTraceLine.FromLogMessage(lines[i]);
+        if (format == StackTraceFormat.AndroidJava && i == 0)
+        { // Skip the first line as it isn't a stack frame
+          continue;
+        }
+        var frame = format == StackTraceFormat.AndroidJava
+          ? StackTraceLine.FromAndroidJavaMessage(lines[i])
+          : StackTraceLine.FromLogMessage(lines[i]);
+        if (frame != null)
+        {
+          frames.Add(frame);
+        }
       }
+      StackTraceLines = frames.ToArray();
     }
 
     public IEnumerator<StackTraceLine> GetEnumerator()
@@ -53,6 +71,7 @@ namespace BugsnagUnity.Payload
   public class StackTraceLine : Dictionary<string, object>
   {
     private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
+    private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"(?<method>[^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
 
     public static StackTraceLine FromLogMessage(string message) {
       Match match = StackTraceLineRegex.Match(message);
@@ -66,6 +85,24 @@ namespace BugsnagUnity.Payload
         }
         string method = string.Join("", new string[]{match.Groups["method"].Value.Trim(),
                                                      match.Groups["methodargs"].Value});
+        return new StackTraceLine(match.Groups["file"].Value,
+                                  lineNumber, method);
+      }
+      return new StackTraceLine("", null, message);
+    }
+
+    public static StackTraceLine FromAndroidJavaMessage(string message)
+    {
+      Match match = StackTraceAndroidJavaLineRegex.Match(message);
+      if (match.Success)
+      {
+        int? lineNumber = null;
+        int parsedValue;
+        if (System.Int32.TryParse(match.Groups["linenumber"].Value, out parsedValue))
+        {
+          lineNumber = parsedValue;
+        }
+        string method = string.Join("", new string[]{match.Groups["method"].Value.Trim(), "()"});
         return new StackTraceLine(match.Groups["file"].Value,
                                   lineNumber, method);
       }
