@@ -71,7 +71,7 @@ namespace BugsnagUnity.Payload
   public class StackTraceLine : Dictionary<string, object>
   {
     private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
-    private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"(?<method>[^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
+    private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
 
     public static StackTraceLine FromLogMessage(string message) {
       Match match = StackTraceLineRegex.Match(message);
@@ -106,7 +106,8 @@ namespace BugsnagUnity.Payload
         return new StackTraceLine(match.Groups["file"].Value,
                                   lineNumber, method);
       }
-      return new StackTraceLine("", null, message);
+      // Likely a C# line in the Android stacktrace
+      return FromLogMessage(message);
     }
 
     internal static StackTraceLine FromStackFrame(StackFrame stackFrame)
