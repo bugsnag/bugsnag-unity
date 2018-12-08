@@ -22,7 +22,7 @@ namespace BugsnagUnity.Payload.Tests
       var logType = UnityEngine.LogType.Error;
       var log = new UnityLogMessage(condition, stacktrace, logType);
 
-      var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {});
+      var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {}, Severity.Info);
       var stack = exception.StackTrace.ToList();
       Assert.AreEqual(7, stack.Count);
       Assert.AreEqual("IndexOutOfRangeException", exception.ErrorClass);
@@ -71,7 +71,7 @@ UnityEngine.EventSystems.EventSystem:Update()";
       var logType = UnityEngine.LogType.Error;
       var log = new UnityLogMessage(condition, stacktrace, logType);
 
-      var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {});
+      var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {}, Severity.Warning);
       var stack = exception.StackTrace.ToList();
       Assert.AreEqual(13, stack.Count);
       Assert.AreEqual("java.lang.ArrayIndexOutOfBoundsException", exception.ErrorClass);
