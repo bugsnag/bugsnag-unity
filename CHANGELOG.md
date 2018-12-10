@@ -1,5 +1,13 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Fix exception parsing for Android Java exceptions to ensure correct grouping,
+  "handled"-ness, and remove extraneous stack frame from the top of the
+  backtrace.
+
 ## 4.0.0 (2018-11-19)
 
 This is a new major release with many features and fixes. See the [upgrade
