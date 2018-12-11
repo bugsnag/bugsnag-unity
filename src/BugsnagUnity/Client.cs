@@ -90,9 +90,10 @@ namespace BugsnagUnity
         {
           if (LogTypeCounter.ShouldSend(logMessage))
           {
-            var handledState = HandledState.ForUnityLogMessage(Configuration.LogTypeSeverityMapping.Map(logType));
-            var stackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
-            Notify(new UnityLogExceptions(logMessage, stackFrames).ToArray(), handledState, null, logType);
+            var severity = Configuration.LogTypeSeverityMapping.Map(logType);
+            var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
+            var exception = Exception.FromUnityLogMessage(logMessage, backupStackFrames, severity);
+            Notify(new Exception[]{exception}, exception.HandledState, null, logType);
           }
         }
       }
