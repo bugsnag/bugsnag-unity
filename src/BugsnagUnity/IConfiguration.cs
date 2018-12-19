@@ -8,6 +8,8 @@ namespace BugsnagUnity
   {
     string ApiKey { get; }
 
+    bool ReportUncaughtExceptionsAsHandled { get; set; }
+
     TimeSpan MaximumLogsTimePeriod { get; }
 
     Dictionary<LogType, int> MaximumTypePerTimePeriod { get; }
@@ -37,7 +39,7 @@ namespace BugsnagUnity
     bool AutoNotify { get; set; }
 
     bool AutoCaptureSessions { get; set; }
-    
+
     LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 }

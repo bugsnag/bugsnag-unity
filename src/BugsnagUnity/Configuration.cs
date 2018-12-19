@@ -16,6 +16,8 @@ namespace BugsnagUnity
       AppVersion = Application.version;
     }
 
+    public bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
+
     public TimeSpan MaximumLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(1);
 
     public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; set; } = new Dictionary<LogType, int>
