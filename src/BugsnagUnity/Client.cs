@@ -92,7 +92,8 @@ namespace BugsnagUnity
           {
             var severity = Configuration.LogTypeSeverityMapping.Map(logType);
             var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
-            var exception = Exception.FromUnityLogMessage(logMessage, backupStackFrames, severity);
+            var forceUnhandled = logType == LogType.Exception && !Configuration.ReportUncaughtExceptionsAsHandled;
+            var exception = Exception.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
             Notify(new Exception[]{exception}, exception.HandledState, null, logType);
           }
         }
