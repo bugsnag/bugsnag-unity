@@ -2,6 +2,12 @@
 
 ## TBD
 
+### Enhancements
+
+* Add a configuration option for allowing Unity exceptions to reduce a project's
+  stability score. [See the documentation for
+  `ReportUncaughtExceptionsAsHandled`](https://docs.bugsnag.com/platforms/unity/configuration-options/#ReportUncaughtExceptionsAsHandled)
+
 ### Bug fixes
 
 * Fix exception parsing for Android Java exceptions to ensure correct grouping,
