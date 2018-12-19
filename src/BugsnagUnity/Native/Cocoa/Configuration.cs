@@ -6,49 +6,24 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  class Configuration : IConfiguration
+  class Configuration : AbstractConfiguration
   {
-    const string DefaultEndpoint = "https://notify.bugsnag.com";
-
-    const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
-
     internal IntPtr NativeConfiguration { get; }
 
-    internal Configuration(string apiKey)
+    internal Configuration(string apiKey) : base(apiKey)
     {
       NativeConfiguration = NativeCode.bugsnag_createConfiguration(apiKey);
-      Endpoint = new Uri(DefaultEndpoint);
-      AutoNotify = true;
-      SessionEndpoint = new Uri(DefaultSessionEndpoint);
-      MaximumBreadcrumbs = 25;
-      ReleaseStage = "production";
-      NotifyLevel = LogType.Exception;
-      UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
-      MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
-      AppVersion = Application.version;
-      LogTypeSeverityMapping = new LogTypeSeverityMapping();
     }
 
-    public string ApiKey => Marshal.PtrToStringAuto(NativeCode.bugsnag_getApiKey(NativeConfiguration));
-    public TimeSpan MaximumLogsTimePeriod { get; }
-    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; } = new Dictionary<LogType, int>
-    {
-      { LogType.Assert, 5 },
-      { LogType.Error, 5 },
-      { LogType.Exception, 20 },
-      { LogType.Log, 5 },
-      { LogType.Warning, 5 },
-    };
-    public TimeSpan UniqueLogsTimePeriod { get; set; }
-    public int MaximumBreadcrumbs { get; set; }
+    public new string ApiKey => Marshal.PtrToStringAuto(NativeCode.bugsnag_getApiKey(NativeConfiguration));
 
-    public string ReleaseStage
+    public new string ReleaseStage
     {
       get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getReleaseStage(NativeConfiguration));
       set => NativeCode.bugsnag_setReleaseStage(NativeConfiguration, value);
     }
 
-    public string[] NotifyReleaseStages
+    public new string[] NotifyReleaseStages
     {
       get
       {
@@ -84,32 +59,22 @@ namespace BugsnagUnity
       }
     }
 
-    public string AppVersion
+    public new string AppVersion
     {
       get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getAppVersion(NativeConfiguration));
       set => NativeCode.bugsnag_setAppVersion(NativeConfiguration, value);
     }
 
-    public Uri Endpoint
+    public new Uri Endpoint
     {
       get => new Uri(Marshal.PtrToStringAuto(NativeCode.bugsnag_getNotifyUrl(NativeConfiguration)));
       set => NativeCode.bugsnag_setNotifyUrl(NativeConfiguration, value.ToString());
     }
-    public string PayloadVersion { get; } = "4.0";
-    public string SessionPayloadVersion { get; } = "1";
-    public Uri SessionEndpoint { get; set; }
 
-    public string Context
+    public new string Context
     {
       get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getContext(NativeConfiguration));
       set => NativeCode.bugsnag_setContext(NativeConfiguration, value);
     }
-
-    public LogType NotifyLevel { get; set; }
-    public bool AutoNotify { get; set; }
-
-    public bool AutoCaptureSessions { get; set; }
-
-    public LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 }

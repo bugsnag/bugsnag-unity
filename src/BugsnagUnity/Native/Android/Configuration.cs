@@ -4,17 +4,12 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  class Configuration : IConfiguration
+  class Configuration : AbstractConfiguration
   {
-    const string DefaultEndpoint = "https://notify.bugsnag.com";
-
-    const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
-
     internal NativeInterface NativeInterface { get; }
 
-    internal Configuration(string apiKey)
+    internal Configuration(string apiKey) : base(apiKey)
     {
-      ApiKey = apiKey;
       var JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
       // the bugsnag-unity notifier will handle session tracking
       JavaObject.Call("setAutoCaptureSessions", false);
@@ -23,39 +18,9 @@ namespace BugsnagUnity
       JavaObject.Call("setReleaseStage", "production");
       JavaObject.Call("setAppVersion", Application.version);
       NativeInterface = new NativeInterface(JavaObject);
-
-      AutoNotify = true;
-      MaximumBreadcrumbs = 25;
-      NotifyLevel = LogType.Exception;
-      UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
-      MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
-      LogTypeSeverityMapping = new LogTypeSeverityMapping();
     }
 
-    public TimeSpan MaximumLogsTimePeriod { get; set; }
-
-    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; } = new Dictionary<LogType, int>
-    {
-        { LogType.Assert, 5 },
-        { LogType.Error, 5 },
-        { LogType.Exception, 20 },
-        { LogType.Log, 5 },
-        { LogType.Warning, 5 },
-    };
-
-    public TimeSpan UniqueLogsTimePeriod { get; set; }
-
-    public int MaximumBreadcrumbs { get; set; } // this is stored on the client object in java so we need to figure out how this will work
-
-    public LogType NotifyLevel { get; set; }
-
-    public string PayloadVersion { get; } = "4.0";
-
-    public string SessionPayloadVersion { get; } = "1";
-
-    public string ApiKey { get; }
-
-    public string ReleaseStage
+    public new string ReleaseStage
     {
       set
       {
@@ -67,7 +32,7 @@ namespace BugsnagUnity
       }
     }
 
-    public string[] NotifyReleaseStages
+    public new string[] NotifyReleaseStages
     {
       set
       {
@@ -79,7 +44,7 @@ namespace BugsnagUnity
       }
     }
 
-    public string AppVersion
+    public new string AppVersion
     {
       set
       {
@@ -91,7 +56,7 @@ namespace BugsnagUnity
       }
     }
 
-    public Uri Endpoint
+    public new Uri Endpoint
     {
       set
       {
@@ -103,7 +68,7 @@ namespace BugsnagUnity
       }
     }
 
-    public Uri SessionEndpoint
+    public new Uri SessionEndpoint
     {
       set
       {
@@ -115,7 +80,7 @@ namespace BugsnagUnity
       }
     }
 
-    public string Context
+    public new string Context
     {
       set
       {
@@ -126,11 +91,5 @@ namespace BugsnagUnity
         return NativeInterface.GetContext();
       }
     }
-
-    public bool AutoNotify { get; set; } // how do we hook this into the android bits, this lives on the client object
-
-    public bool AutoCaptureSessions { get; set; }
-
-    public LogTypeSeverityMapping LogTypeSeverityMapping { get; }
   }
 }
