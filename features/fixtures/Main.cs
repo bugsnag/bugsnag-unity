@@ -71,7 +71,35 @@ public class Main : MonoBehaviour {
       case "AssertionFailure":
         MakeAssertionFailure(4);
         break;
+      case "UncaughtExceptionAsUnhandled":
+        UncaughtExceptionAsUnhandled();
+        break;
+      case "LogUnthrownAsUnhandled":
+        DoLogUnthrownAsUnhandled();
+        break;
+      case "ReportLoggedWarning":
+        DoLogWarning();
+        break;
+      case "ReportLoggedWarningWithHandledConfig":
+        DoLogWarningWithHandledConfig();
+        break;
     }
+  }
+
+  void UncaughtExceptionAsUnhandled() {
+    Bugsnag.Configuration.ReportUncaughtExceptionsAsHandled = false;
+    throw new ExecutionEngineException("Invariant state failure");
+  }
+
+  void DoLogWarning() {
+    Bugsnag.Configuration.NotifyLevel = LogType.Warning;
+    Debug.LogWarning("Something went terribly awry");
+  }
+
+  void DoLogWarningWithHandledConfig() {
+    Bugsnag.Configuration.ReportUncaughtExceptionsAsHandled = false;
+    Bugsnag.Configuration.NotifyLevel = LogType.Warning;
+    Debug.LogWarning("Something went terribly awry");
   }
 
   void LeaveComplexBreadcrumbAndNotify() {
@@ -99,6 +127,11 @@ public class Main : MonoBehaviour {
 
   void DoNotify() {
     Bugsnag.Notify(new System.Exception("blorb"));
+  }
+
+  void DoLogUnthrownAsUnhandled() {
+    Bugsnag.Configuration.ReportUncaughtExceptionsAsHandled = false;
+    Debug.LogException(new System.Exception("WAT"));
   }
 
   void DoLogUnthrown() {
