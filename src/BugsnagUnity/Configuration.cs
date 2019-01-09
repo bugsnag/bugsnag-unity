@@ -47,7 +47,7 @@ namespace BugsnagUnity
 
     public Uri SessionEndpoint { get; set; } = new Uri(DefaultSessionEndpoint);
 
-    public string SessionPayloadVersion { get; } = "1";
+    public string SessionPayloadVersion { get; } = "1.0";
 
     public string Context { get; set; }
 

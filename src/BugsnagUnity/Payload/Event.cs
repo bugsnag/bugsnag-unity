@@ -23,6 +23,17 @@ namespace BugsnagUnity.Payload
       this.AddToPayload("metaData", Metadata);
       this.AddToPayload("breadcrumbs", breadcrumbs);
       this.AddToPayload("session", session);
+      if (session != null)
+      {
+        if (handledState.Handled)
+        {
+          session.Events.IncrementHandledCount();
+        }
+        else
+        {
+          session.Events.IncrementUnhandledCount();
+        }
+      }
       this.AddToPayload("user", user);
     }
 
