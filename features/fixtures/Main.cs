@@ -17,6 +17,7 @@ public class Main : MonoBehaviour {
     var obj = new GameObject("Bugsnag");
     var bugsnag = obj.AddComponent<BugsnagBehaviour>();
     bugsnag.BugsnagApiKey = System.Environment.GetEnvironmentVariable("BUGSNAG_APIKEY");
+    bugsnag.AutoCaptureSessions = false;
     obj.AddComponent<Main>();
     UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, "Assets/MainScene.unity");
     var scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
@@ -31,8 +32,10 @@ public class Main : MonoBehaviour {
     // only send one crash
     if (!sent) {
       sent = true;
-      Bugsnag.Configuration.Endpoint =
+      var endpoint =
         new System.Uri(Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
+      Bugsnag.Configuration.Endpoint = endpoint;
+      Bugsnag.Configuration.SessionEndpoint = endpoint;
       LoadScenario();
       // wait for 5 seconds before exiting the application
       StartCoroutine(WaitForBugsnag());
@@ -82,6 +85,23 @@ public class Main : MonoBehaviour {
         break;
       case "ReportLoggedWarningWithHandledConfig":
         DoLogWarningWithHandledConfig();
+        break;
+      case "ManualSession":
+        Bugsnag.StartSession();
+        break;
+      case "ManualSessionCrash":
+        Bugsnag.StartSession();
+        UncaughtExceptionAsUnhandled();
+        break;
+      case "ManualSessionNotify":
+        Bugsnag.StartSession();
+        DoNotify();
+        break;
+      case "ManualSessionMixedEvents":
+        Bugsnag.StartSession();
+        DoNotify();
+        DoLogWarning();
+        UncaughtExceptionAsUnhandled();
         break;
     }
   }

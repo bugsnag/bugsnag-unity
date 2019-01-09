@@ -13,6 +13,7 @@
 * Fix exception parsing for Android Java exceptions to ensure correct grouping,
   "handled"-ness, and remove extraneous stack frame from the top of the
   backtrace.
+* Fix off-by-one error in event counts in the session tracking implementation
 
 ## 4.0.0 (2018-11-19)
 
