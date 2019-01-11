@@ -1,5 +1,6 @@
 #!/bin/sh -ue
 
+brew install ninja
 brew cask install \
   mono-mdk \
   android-sdk \
