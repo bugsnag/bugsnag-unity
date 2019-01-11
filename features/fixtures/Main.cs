@@ -82,8 +82,12 @@ public class Main : MonoBehaviour {
   }
 
   void NotifyTwice() {
+    StartCoroutine(NotifyTwiceCoroutine());
+  }
+
+  IEnumerator NotifyTwiceCoroutine() {
     Bugsnag.Notify(new System.Exception("Rollback failed"));
-    System.Threading.Thread.Sleep(20);
+    yield return new WaitForSeconds(2);
     Bugsnag.Notify(new ExecutionEngineException("Invalid runtime"));
   }
 
