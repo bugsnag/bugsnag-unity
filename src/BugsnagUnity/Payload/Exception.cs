@@ -105,11 +105,18 @@ namespace BugsnagUnity.Payload
 
     public static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] stackFrames, Severity severity)
     {
+      return FromUnityLogMessage(logMessage, stackFrames, severity, false);
+    }
+
+    public static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] stackFrames, Severity severity, bool forceUnhandled)
+    {
       var match = Regex.Match(logMessage.Condition, ErrorClassMessagePattern, RegexOptions.Singleline);
 
       var lines = new StackTrace(logMessage.StackTrace).ToArray();
 
-      var handledState = HandledState.ForUnityLogMessage(severity);
+      var handledState = forceUnhandled
+        ? HandledState.ForUnhandledException()
+        : HandledState.ForUnityLogMessage(severity);
 
       if (match.Success)
       {
@@ -132,7 +139,7 @@ namespace BugsnagUnity.Payload
       else
       {
         // include the type somehow in there
-        return new Exception($"UnityLog{logMessage.Type}", logMessage.Condition, lines);
+        return new Exception($"UnityLog{logMessage.Type}", logMessage.Condition, lines, handledState);
       }
     }
   }

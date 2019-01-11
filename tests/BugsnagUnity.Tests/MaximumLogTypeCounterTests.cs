@@ -15,7 +15,7 @@ namespace BugsnagUnity.Tests
       Dictionary<LogType, int> maximumTypePerTimePeriod =
         new Dictionary<LogType, int> { { LogType.Error, 5 } };
 
-      var configuration = new TestConfiguration
+      var configuration = new TestConfiguration("foo")
       {
         MaximumTypePerTimePeriod = maximumTypePerTimePeriod
       };
@@ -33,7 +33,7 @@ namespace BugsnagUnity.Tests
       Dictionary<LogType, int> maximumTypePerTimePeriod =
         new Dictionary<LogType, int> { { LogType.Error, 1 } };
 
-      var configuration = new TestConfiguration
+      var configuration = new TestConfiguration("foo")
       {
         MaximumTypePerTimePeriod = maximumTypePerTimePeriod
       };
@@ -53,7 +53,7 @@ namespace BugsnagUnity.Tests
       Dictionary<LogType, int> maximumTypePerTimePeriod =
         new Dictionary<LogType, int> { { LogType.Error, 5 } };
 
-      var configuration = new TestConfiguration
+      var configuration = new TestConfiguration("foo")
       {
         MaximumTypePerTimePeriod = maximumTypePerTimePeriod
       };
@@ -79,7 +79,7 @@ namespace BugsnagUnity.Tests
       Dictionary<LogType, int> maximumTypePerTimePeriod =
         new Dictionary<LogType, int>();
 
-      var configuration = new TestConfiguration
+      var configuration = new TestConfiguration("foo")
       {
         MaximumTypePerTimePeriod = maximumTypePerTimePeriod
       };
@@ -98,7 +98,7 @@ namespace BugsnagUnity.Tests
       Dictionary<LogType, int> maximumTypePerTimePeriod =
         new Dictionary<LogType, int> { { LogType.Error, 1 } };
 
-      var configuration = new TestConfiguration
+      var configuration = new TestConfiguration("foo")
       {
         MaximumTypePerTimePeriod = maximumTypePerTimePeriod,
         MaximumLogsTimePeriod = TimeSpan.FromSeconds(2),

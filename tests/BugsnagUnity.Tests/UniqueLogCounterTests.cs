@@ -10,7 +10,7 @@ namespace BugsnagUnity.Tests
     [Test]
     public void ShouldNotSendDuplicateMessages()
     {
-      var counter = new UniqueLogThrottle(new TestConfiguration());
+      var counter = new UniqueLogThrottle(new TestConfiguration("foo"));
 
       var message1 = new UnityLogMessage("", "", LogType.Error);
       var message2 = new UnityLogMessage("", "", LogType.Error);
@@ -22,7 +22,7 @@ namespace BugsnagUnity.Tests
     [Test]
     public void SendsSingleMessage()
     {
-      var counter = new UniqueLogThrottle(new TestConfiguration());
+      var counter = new UniqueLogThrottle(new TestConfiguration("foo"));
 
       var message = new UnityLogMessage("", "", LogType.Error);
 
@@ -32,7 +32,7 @@ namespace BugsnagUnity.Tests
     [Test]
     public void FlushesCorrectly()
     {
-      var configuration = new TestConfiguration();
+      var configuration = new TestConfiguration("foo");
       var counter = new UniqueLogThrottle(configuration);
 
       var message = new UnityLogMessage("", "", LogType.Error);
