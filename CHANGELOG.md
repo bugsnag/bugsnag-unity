@@ -1,6 +1,10 @@
 # Changelog
 
-## TBD
+## 4.1.0 (2019-01-11)
+
+* Update dependent libraries:
+  * bugsnag-cocoa v5.17.3
+  * bugsnag-android v4.10.0
 
 ### Enhancements
 
