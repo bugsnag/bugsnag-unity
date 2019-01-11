@@ -19,3 +19,18 @@ Then("the first significant stack frame methods and files should match:") do |ex
     expected_index += 1
   end
 end
+Then("the events in requests {string} match one of:") do |request_indices, table|
+  events = request_indices.split(',').map do |index|
+    read_key_path(find_request(index.to_i)[:body], "events")
+  end.flatten
+  table.hashes.each do |values|
+    assert_not_nil(events.detect do |event|
+      handled_count = read_key_path(event, "session.events.handled")
+      unhandled_count = read_key_path(event, "session.events.unhandled")
+      message = read_key_path(event, "exceptions.0.message")
+      handled_count == values["handled"].to_i &&
+        unhandled_count == values["unhandled"].to_i &&
+        message == values["message"]
+    end, "No event matches the following values: #{values}")
+  end
+end
