@@ -2,6 +2,10 @@
 
 ## 4.1.0 (2019-01-11)
 
+* Update dependent libraries:
+  * bugsnag-cocoa v5.17.3
+  * bugsnag-android v4.10.0
+
 ### Enhancements
 
 * Add a configuration option for allowing Unity exceptions to reduce a project's
