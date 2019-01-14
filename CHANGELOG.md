@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Lower minimum supported iOS version to 8.0 from 9.0
+* Lower minimum supported macOS version to 10.8 from 10.11
+
 ## 4.1.0 (2019-01-11)
 
 * Update dependent libraries:
