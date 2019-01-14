@@ -118,9 +118,9 @@ namespace :plugin do
           when "bugsnag-tvos"
             target = project.new_target(:static_library, "bugsnag-tvos", :tvos, "9.0")
           when "bugsnag-ios"
-            target = project.new_target(:static_library, "bugsnag-ios", :ios, "9.0")
+            target = project.new_target(:static_library, "bugsnag-ios", :ios, "8.0")
           when "bugsnag-osx"
-            target = project.new_target(:bundle, "bugsnag-osx", :osx, "10.11")
+            target = project.new_target(:bundle, "bugsnag-osx", :osx, "10.8")
           end
 
           group = project.new_group("Bugsnag")
