@@ -1,5 +1,21 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+Update bugsnag-android dependency to v4.11.0:
+* Fix cached error deserialisation where the Throwable has a cause
+  [#418](https://github.com/bugsnag/bugsnag-android/pull/418)
+* Refactor error report deserialisation
+  [#419](https://github.com/bugsnag/bugsnag-android/pull/419)
+* Fix unlikely initialization failure if a device orientation event listener
+  cannot be enabled
+* Cache result of device root check
+  [#411](https://github.com/bugsnag/bugsnag-android/pull/411)
+* Prevent unnecessary free disk calculations on initialisation
+ [#409](https://github.com/bugsnag/bugsnag-android/pull/409)
+
 ## 4.1.1 (2019-01-21)
 
 ### Bug fixes
