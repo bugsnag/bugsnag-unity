@@ -1,6 +1,32 @@
 Upgrading
 =========
 
+## 4.1 to 4.2
+
+4.2.0 adds support for reporting C/C++ crashes in Android code. If you are using
+the Gradle build system to export your app, you will need to add the following
+line to your exported project's build.gradle to enable this functionality:
+
+### Gradle 4.2+
+
+```groovy
+dependencies {
+  // ...
+  // add this line:
+	implementation(name: 'bugsnag-android-ndk-release', ext:'aar')
+}
+```
+
+### Gradle 2.10
+
+```groovy
+dependencies {
+  // ...
+  // add this line:
+	compile(name: 'bugsnag-android-ndk-release', ext:'aar')
+}
+```
+
 ## 3.x to 4.x
 
 *Our Unity notifier has gone through some major improvements, and there are some changes you'll need to make to get onto the new version.*
