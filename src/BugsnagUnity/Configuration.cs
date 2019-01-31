@@ -10,17 +10,19 @@ namespace BugsnagUnity
 
     public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    public AbstractConfiguration(string apiKey)
+    public AbstractConfiguration() {}
+
+    protected void SetupDefaults(string apiKey)
     {
       ApiKey = apiKey;
       AppVersion = Application.version;
     }
 
-    public bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
+    public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
 
-    public TimeSpan MaximumLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(1);
+    public virtual TimeSpan MaximumLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(1);
 
-    public Dictionary<LogType, int> MaximumTypePerTimePeriod { get; set; } = new Dictionary<LogType, int>
+    public virtual Dictionary<LogType, int> MaximumTypePerTimePeriod { get; set; } = new Dictionary<LogType, int>
     {
         { LogType.Assert, 5 },
         { LogType.Error, 5 },
@@ -29,35 +31,37 @@ namespace BugsnagUnity
         { LogType.Warning, 5 },
     };
 
-    public TimeSpan UniqueLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(5);
+    public virtual TimeSpan UniqueLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(5);
 
-    public string ApiKey { get; }
+    public virtual string ApiKey { get; protected set; }
 
-    public int MaximumBreadcrumbs { get; set; } = 25;
+    public virtual int MaximumBreadcrumbs { get; set; } = 25;
 
-    public string ReleaseStage { get; set; } = "production";
+    public virtual string ReleaseStage { get; set; } = "production";
 
-    public string[] NotifyReleaseStages { get; set; }
+    public virtual string[] NotifyReleaseStages { get; set; }
 
-    public string AppVersion { get; set; }
+    public virtual string AppVersion { get; set; }
 
-    public Uri Endpoint { get; set; } = new Uri(DefaultEndpoint);
+    private string RealAppVersion { get; set; }
 
-    public string PayloadVersion { get; } = "4.0";
+    public virtual Uri Endpoint { get; set; } = new Uri(DefaultEndpoint);
 
-    public Uri SessionEndpoint { get; set; } = new Uri(DefaultSessionEndpoint);
+    public virtual string PayloadVersion { get; } = "4.0";
 
-    public string SessionPayloadVersion { get; } = "1.0";
+    public virtual Uri SessionEndpoint { get; set; } = new Uri(DefaultSessionEndpoint);
 
-    public string Context { get; set; }
+    public virtual string SessionPayloadVersion { get; } = "1.0";
 
-    public LogType NotifyLevel { get; set; } = LogType.Exception;
+    public virtual string Context { get; set; }
 
-    public bool AutoNotify { get; set; } = true;
+    public virtual LogType NotifyLevel { get; set; } = LogType.Exception;
 
-    public bool AutoCaptureSessions { get; set; }
+    public virtual bool AutoNotify { get; set; } = true;
 
-    public LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
+    public virtual bool AutoCaptureSessions { get; set; }
+
+    public virtual LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
   }
 }
 

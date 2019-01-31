@@ -6,6 +6,8 @@ namespace BugsnagUnity.Tests
 {
   public class TestConfiguration : AbstractConfiguration
   {
-    internal TestConfiguration(string apiKey) : base(apiKey) {}
+    internal TestConfiguration(string apiKey) : base() {
+      SetupDefaults(apiKey);
+    }
   }
 }
