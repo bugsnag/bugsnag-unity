@@ -16,7 +16,18 @@ namespace BugsnagUnity
       SetupDefaults(apiKey);
     }
 
-    public override string ApiKey => Marshal.PtrToStringAuto(NativeCode.bugsnag_getApiKey(NativeConfiguration));
+    protected override void SetupDefaults(string apiKey)
+    {
+      base.SetupDefaults(apiKey);
+      ReleaseStage = "production";
+      Endpoint = new Uri(DefaultEndpoint);
+    }
+
+    public override string ApiKey
+    {
+      get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getApiKey(NativeConfiguration));
+      protected set {}
+    }
 
     public override string ReleaseStage
     {

@@ -12,7 +12,7 @@ namespace BugsnagUnity
 
     public AbstractConfiguration() {}
 
-    protected void SetupDefaults(string apiKey)
+    protected virtual void SetupDefaults(string apiKey)
     {
       ApiKey = apiKey;
       AppVersion = Application.version;

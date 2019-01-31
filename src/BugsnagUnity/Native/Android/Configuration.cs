@@ -21,6 +21,14 @@ namespace BugsnagUnity
       SetupDefaults(apiKey);
     }
 
+    protected override void SetupDefaults(string apiKey)
+    {
+      base.SetupDefaults(apiKey);
+      ReleaseStage = "production";
+      Endpoint = new Uri(DefaultEndpoint);
+      SessionEndpoint = new Uri(DefaultSessionEndpoint);
+    }
+
     public override string ReleaseStage
     {
       set
