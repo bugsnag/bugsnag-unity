@@ -8,7 +8,7 @@ namespace BugsnagUnity
   {
     internal NativeInterface NativeInterface { get; }
 
-    internal Configuration(string apiKey) : base(apiKey)
+    internal Configuration(string apiKey) : base()
     {
       var JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
       // the bugsnag-unity notifier will handle session tracking
@@ -18,9 +18,18 @@ namespace BugsnagUnity
       JavaObject.Call("setReleaseStage", "production");
       JavaObject.Call("setAppVersion", Application.version);
       NativeInterface = new NativeInterface(JavaObject);
+      SetupDefaults(apiKey);
     }
 
-    public new string ReleaseStage
+    protected override void SetupDefaults(string apiKey)
+    {
+      base.SetupDefaults(apiKey);
+      ReleaseStage = "production";
+      Endpoint = new Uri(DefaultEndpoint);
+      SessionEndpoint = new Uri(DefaultSessionEndpoint);
+    }
+
+    public override string ReleaseStage
     {
       set
       {
@@ -32,7 +41,7 @@ namespace BugsnagUnity
       }
     }
 
-    public new string[] NotifyReleaseStages
+    public override string[] NotifyReleaseStages
     {
       set
       {
@@ -44,7 +53,7 @@ namespace BugsnagUnity
       }
     }
 
-    public new string AppVersion
+    public override string AppVersion
     {
       set
       {
@@ -56,7 +65,7 @@ namespace BugsnagUnity
       }
     }
 
-    public new Uri Endpoint
+    public override Uri Endpoint
     {
       set
       {
@@ -68,7 +77,7 @@ namespace BugsnagUnity
       }
     }
 
-    public new Uri SessionEndpoint
+    public override Uri SessionEndpoint
     {
       set
       {
@@ -80,7 +89,7 @@ namespace BugsnagUnity
       }
     }
 
-    public new string Context
+    public override string Context
     {
       set
       {

@@ -10,20 +10,32 @@ namespace BugsnagUnity
   {
     internal IntPtr NativeConfiguration { get; }
 
-    internal Configuration(string apiKey) : base(apiKey)
+    internal Configuration(string apiKey) : base()
     {
       NativeConfiguration = NativeCode.bugsnag_createConfiguration(apiKey);
+      SetupDefaults(apiKey);
     }
 
-    public new string ApiKey => Marshal.PtrToStringAuto(NativeCode.bugsnag_getApiKey(NativeConfiguration));
+    protected override void SetupDefaults(string apiKey)
+    {
+      base.SetupDefaults(apiKey);
+      ReleaseStage = "production";
+      Endpoint = new Uri(DefaultEndpoint);
+    }
 
-    public new string ReleaseStage
+    public override string ApiKey
+    {
+      get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getApiKey(NativeConfiguration));
+      protected set {}
+    }
+
+    public override string ReleaseStage
     {
       get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getReleaseStage(NativeConfiguration));
       set => NativeCode.bugsnag_setReleaseStage(NativeConfiguration, value);
     }
 
-    public new string[] NotifyReleaseStages
+    public override string[] NotifyReleaseStages
     {
       get
       {
@@ -59,19 +71,19 @@ namespace BugsnagUnity
       }
     }
 
-    public new string AppVersion
+    public override string AppVersion
     {
       get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getAppVersion(NativeConfiguration));
       set => NativeCode.bugsnag_setAppVersion(NativeConfiguration, value);
     }
 
-    public new Uri Endpoint
+    public override Uri Endpoint
     {
       get => new Uri(Marshal.PtrToStringAuto(NativeCode.bugsnag_getNotifyUrl(NativeConfiguration)));
       set => NativeCode.bugsnag_setNotifyUrl(NativeConfiguration, value.ToString());
     }
 
-    public new string Context
+    public override string Context
     {
       get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getContext(NativeConfiguration));
       set => NativeCode.bugsnag_setContext(NativeConfiguration, value);
