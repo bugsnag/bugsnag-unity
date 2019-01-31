@@ -43,8 +43,6 @@ namespace BugsnagUnity
 
     public virtual string AppVersion { get; set; }
 
-    private string RealAppVersion { get; set; }
-
     public virtual Uri Endpoint { get; set; } = new Uri(DefaultEndpoint);
 
     public virtual string PayloadVersion { get; } = "4.0";
