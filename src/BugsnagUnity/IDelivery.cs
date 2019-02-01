@@ -17,6 +17,9 @@ namespace BugsnagUnity
 
   class Delivery : IDelivery
   {
+
+    const int DeliveryFailureDelay = 10000;
+    Boolean DelayBeforeDelivery { get; set; } = false;
     Thread Worker { get; }
 
     BlockingQueue<IPayload> Queue { get; }
@@ -42,7 +45,12 @@ namespace BugsnagUnity
       {
         try
         {
-          SerializeAndDeliverPayload(Queue.Dequeue());
+          if (DelayBeforeDelivery) {
+            DelayBeforeDelivery = false;
+            System.Threading.Thread.Sleep(DeliveryFailureDelay);
+          } else {
+            SerializeAndDeliverPayload(Queue.Dequeue());
+          }
         }
         catch (System.Exception)
         {
@@ -107,12 +115,9 @@ namespace BugsnagUnity
         // should have the same effect
         else if (req.responseCode >= 500 || req.error != null)
         {
-          // something is wrong with the server/connection, should retry
+          // Something is wrong with the server/connection, retry after a delay
+          DelayBeforeDelivery = true;
           Send(payload);
-        }
-        else if (req.error != null)
-        {
-          Debug.LogWarning("Bugsnag: " + req.error);
         }
       }
     }
