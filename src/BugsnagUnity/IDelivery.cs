@@ -17,6 +17,8 @@ namespace BugsnagUnity
 
   class Delivery : IDelivery
   {
+
+    Boolean DelayBeforeDelivery { get; set; } = false;
     Thread Worker { get; }
 
     BlockingQueue<IPayload> Queue { get; }
@@ -42,7 +44,15 @@ namespace BugsnagUnity
       {
         try
         {
-          SerializeAndDeliverPayload(Queue.Dequeue());
+          if (Application.internetReachability == NetworkReachability.NotReachable) {
+            Debug.LogWarning("Bugsnag: Network not available, temporarily suspending delivery");
+            System.Threading.Thread.Sleep(10000);
+          } else if (DelayBeforeDelivery) {
+            DelayBeforeDelivery = false;
+            System.Threading.Thread.Sleep(10000);
+          } else {
+            SerializeAndDeliverPayload(Queue.Dequeue());
+          }
         }
         catch (System.Exception)
         {
@@ -105,14 +115,16 @@ namespace BugsnagUnity
         // once we can drop support for unity 5.6 we can use req.isNetworkError
         // instead of req.error != null. According to the unity docs though this
         // should have the same effect
-        else if (req.responseCode >= 500 || req.error != null)
+        else if (req.responseCode >= 500)
         {
           // something is wrong with the server/connection, should retry
+          DelayBeforeDelivery = true;
           Send(payload);
         }
         else if (req.error != null)
         {
-          Debug.LogWarning("Bugsnag: " + req.error);
+          // Something has gone wrong with the delivery
+          Debug.LogWarning("Bugsnag delivery error: " + req.error);
         }
       }
     }
