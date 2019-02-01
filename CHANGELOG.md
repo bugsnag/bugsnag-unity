@@ -7,6 +7,9 @@
 * Ensure configuration options are synced with native layer
   [#124](https://github.com/bugsnag/bugsnag-unity/pull/124)
 
+* Add retry delays after delivery failure to stop excess logging
+  [#126](https://github.com/bugsnag/bugsnag-unity/pull/126)
+
 ## 4.1.2 (2019-01-22)
 
 ### Bug fixes
