@@ -18,6 +18,7 @@ namespace BugsnagUnity
   class Delivery : IDelivery
   {
 
+    const int DeliveryFailureDelay = 10000;
     Boolean DelayBeforeDelivery { get; set; } = false;
     Thread Worker { get; }
 
@@ -45,11 +46,10 @@ namespace BugsnagUnity
         try
         {
           if (Application.internetReachability == NetworkReachability.NotReachable) {
-            Debug.LogWarning("Bugsnag: Network not available, temporarily suspending delivery");
-            System.Threading.Thread.Sleep(10000);
+            System.Threading.Thread.Sleep(DeliveryFailureDelay);
           } else if (DelayBeforeDelivery) {
             DelayBeforeDelivery = false;
-            System.Threading.Thread.Sleep(10000);
+            System.Threading.Thread.Sleep(DeliveryFailureDelay);
           } else {
             SerializeAndDeliverPayload(Queue.Dequeue());
           }
