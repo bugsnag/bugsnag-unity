@@ -110,15 +110,20 @@ namespace BugsnagUnity
         {
           // success!
         }
-        // once we can drop support for unity 5.6 we can use req.isNetworkError
-        // instead of req.error != null. According to the unity docs though this
-        // should have the same effect
+        else if (req.responseCode == 404)
+        {
+          DelayBeforeDelivery = true;
+          Send(payload);
+        }
         else if (req.responseCode >= 500)
         {
           // something is wrong with the server/connection, should retry
           DelayBeforeDelivery = true;
           Send(payload);
         }
+        // once we can drop support for unity 5.6 we can use req.isNetworkError
+        // instead of req.error != null. According to the unity docs though this
+        // should have the same effect
         else if (req.error != null)
         {
           // Something has gone wrong with the delivery
