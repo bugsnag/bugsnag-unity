@@ -110,24 +110,14 @@ namespace BugsnagUnity
         {
           // success!
         }
-        else if (req.responseCode == 404 || req.responseCode >= 500)
-        {
-          DelayBeforeDelivery = true;
-          Send(payload);
-        }
         // once we can drop support for unity 5.6 we can use req.isNetworkError
         // instead of req.error != null. According to the unity docs though this
         // should have the same effect
-        else if (req.error != null)
+        else if (req.responseCode >= 500 || req.error != null)
         {
-          // Something has gone wrong with the delivery
-          if (Application.internetReachability == NetworkReachability.NotReachable) {
-            // Retry after a delay if it's a connectivity issue
-            DelayBeforeDelivery = true;
-            Send(payload);
-          } else {
-            Debug.LogWarning("Bugsnag delivery error: " + req.error);
-          }
+          // Something is wrong with the server/connection, retry after a delay
+          DelayBeforeDelivery = true;
+          Send(payload);
         }
       }
     }
