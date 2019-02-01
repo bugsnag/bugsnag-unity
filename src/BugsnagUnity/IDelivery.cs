@@ -45,9 +45,7 @@ namespace BugsnagUnity
       {
         try
         {
-          if (Application.internetReachability == NetworkReachability.NotReachable) {
-            System.Threading.Thread.Sleep(DeliveryFailureDelay);
-          } else if (DelayBeforeDelivery) {
+          if (DelayBeforeDelivery) {
             DelayBeforeDelivery = false;
             System.Threading.Thread.Sleep(DeliveryFailureDelay);
           } else {
@@ -124,7 +122,13 @@ namespace BugsnagUnity
         else if (req.error != null)
         {
           // Something has gone wrong with the delivery
-          Debug.LogWarning("Bugsnag delivery error: " + req.error);
+          if (Application.internetReachability == NetworkReachability.NotReachable) {
+            // Retry after a delay if it's a connectivity issue
+            DelayBeforeDelivery = true;
+            Send(payload);
+          } else {
+            Debug.LogWarning("Bugsnag delivery error: " + req.error);
+          }
         }
       }
     }
