@@ -110,14 +110,8 @@ namespace BugsnagUnity
         {
           // success!
         }
-        else if (req.responseCode == 404)
+        else if (req.responseCode == 404 || req.responseCode >= 500)
         {
-          DelayBeforeDelivery = true;
-          Send(payload);
-        }
-        else if (req.responseCode >= 500)
-        {
-          // something is wrong with the server/connection, should retry
           DelayBeforeDelivery = true;
           Send(payload);
         }
