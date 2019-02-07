@@ -208,7 +208,7 @@ namespace :plugin do
       android_dir = File.join(assets_path, "Android")
 
       cd "bugsnag-android" do
-        sh "./gradlew", "sdk:assembleRelease", "--quiet"
+        sh "./gradlew", "ndk:assembleRelease", "sdk:assembleRelease", "--quiet", "-PABI_FILTERS=armeabi-v7a,x86"
       end
 
       cd "bugsnag-android-unity" do
@@ -216,9 +216,11 @@ namespace :plugin do
       end
 
       android_lib = File.join("bugsnag-android", "sdk", "build", "outputs", "aar", "bugsnag-android-release.aar")
+      ndk_lib = File.join("bugsnag-android", "ndk", "build", "outputs", "aar", "bugsnag-android-ndk-release.aar")
       unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
 
       cp android_lib, android_dir
+      cp ndk_lib, android_dir
       cp unity_lib, android_dir
     end
   end
