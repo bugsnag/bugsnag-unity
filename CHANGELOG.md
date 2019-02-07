@@ -1,10 +1,11 @@
 # Changelog
 
-## TBD
+## 4.2.0 (2019-02-07)
 
 ### Enhancements
 
 * Add support for detecting and reporting Android NDK C/C++ crashes
+  [#127](https://github.com/bugsnag/bugsnag-unity/pull/127)
 
 ## 4.1.3 (2019-02-01)
 
