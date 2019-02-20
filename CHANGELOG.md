@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Ensure a stacktrace is attached to reports without underlying exceptions, such
+  as log messages using an 'error' or 'warning' level
+
 ## 4.2.0 (2019-02-07)
 
 ### Enhancements

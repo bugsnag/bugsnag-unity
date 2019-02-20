@@ -108,11 +108,14 @@ namespace BugsnagUnity.Payload
       return FromUnityLogMessage(logMessage, stackFrames, severity, false);
     }
 
-    public static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] stackFrames, Severity severity, bool forceUnhandled)
+    public static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] fallbackStackFrames, Severity severity, bool forceUnhandled)
     {
       var match = Regex.Match(logMessage.Condition, ErrorClassMessagePattern, RegexOptions.Singleline);
 
       var lines = new StackTrace(logMessage.StackTrace).ToArray();
+      if (lines.Length == 0) {
+        lines = new StackTrace(fallbackStackFrames).ToArray();
+      }
 
       var handledState = forceUnhandled
         ? HandledState.ForUnhandledException()

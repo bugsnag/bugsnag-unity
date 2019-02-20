@@ -83,6 +83,9 @@ public class Main : MonoBehaviour {
       case "ReportLoggedWarning":
         DoLogWarning();
         break;
+      case "ReportLoggedError":
+        DoLogError();
+        break;
       case "ReportLoggedWarningWithHandledConfig":
         DoLogWarningWithHandledConfig();
         break;
@@ -114,6 +117,11 @@ public class Main : MonoBehaviour {
   void DoLogWarning() {
     Bugsnag.Configuration.NotifyLevel = LogType.Warning;
     Debug.LogWarning("Something went terribly awry");
+  }
+
+  void DoLogError() {
+    Bugsnag.Configuration.NotifyLevel = LogType.Warning;
+    Debug.LogError("Bad bad things");
   }
 
   void DoLogWarningWithHandledConfig() {
