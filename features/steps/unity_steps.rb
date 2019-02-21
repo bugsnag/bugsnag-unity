@@ -10,6 +10,7 @@ Then("the first significant stack frame methods and files should match:") do |ex
   stacktrace = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace")
   expected_frame_values = expected_values.raw
   expected_index = 0
+  flunk("The stacktrace is empty") if stacktrace.length == 0
   stacktrace.each_with_index do |item, index|
     next if expected_index >= expected_frame_values.length
     expected_frame = expected_frame_values[expected_index]
