@@ -1,11 +1,12 @@
 # Changelog
 
-## TBD
+## 4.2.1 (2019-02-21)
 
 ### Bug fixes
 
 * Ensure a stacktrace is attached to reports without underlying exceptions, such
   as log messages using an 'error' or 'warning' level
+  [#131](https://github.com/bugsnag/bugsnag-unity/pull/131)
 
 ## 4.2.0 (2019-02-07)
 
