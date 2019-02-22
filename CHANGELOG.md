@@ -1,5 +1,14 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (Android) Fix a crash which could occur if large amounts of metadata or
+  breadcrumbs (>500 key/value pairs) are attached at once, or if `Notify()` is
+  called concurrently several times.
+  [#132](https://github.com/bugsnag/bugsnag-unity/pull/132)
+
 ## 4.2.1 (2019-02-21)
 
 ### Bug fixes
