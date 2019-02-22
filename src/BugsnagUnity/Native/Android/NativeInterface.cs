@@ -390,9 +390,13 @@ namespace BugsnagUnity
             dict.AddToPayload(key, AndroidJNI.CallStringMethod(value, ObjectToString, new jvalue[]{}));
           }
           AndroidJNI.DeleteLocalRef(value);
+          AndroidJNI.DeleteLocalRef(valueClass);
         }
         AndroidJNI.DeleteLocalRef(entry);
       }
+      AndroidJNI.DeleteLocalRef(entries);
+      AndroidJNI.DeleteLocalRef(iterator);
+
       return dict;
     }
   }
