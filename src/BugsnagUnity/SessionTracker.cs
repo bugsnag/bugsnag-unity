@@ -48,10 +48,6 @@ namespace BugsnagUnity
 
       CurrentSession = session;
 
-      if (Client == null) {
-        return;
-      }
-
       var app = new App(Client.Configuration);
       Client.NativeClient.PopulateApp(app);
       var device = new Device();

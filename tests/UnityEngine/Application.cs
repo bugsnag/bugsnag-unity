@@ -42,5 +42,11 @@ namespace UnityEngine
     // Summary:
     //     Returns application product name (Read Only).
     public static string productName { get; }
+
+    public static void logMessageReceivedThreaded() {}
+
+    public static void add_logMessageReceivedThreaded(LogCallback cb) {}
+    
+    public delegate void LogCallback(string condition, string stackTrace, LogType type);
   }
 }
