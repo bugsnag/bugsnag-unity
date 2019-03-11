@@ -84,11 +84,7 @@ namespace BugsnagUnity
     
     public void AddException(Report report)
     {
-      var session = _currentSession;
-
-      if (session != null) {
-        _currentSession?.AddException(report);
-      }
+      _currentSession?.AddException(report);
     }
   }
 }
