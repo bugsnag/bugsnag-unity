@@ -37,5 +37,13 @@ namespace BugsnagUnity
     public void SetMetadata(string tab, Dictionary<string, string> metadata)
     {
     }
+
+    public void SetSession(Session session)
+    {
+    }
+
+    public void SetUser(User user)
+    {
+    }
   }
 }

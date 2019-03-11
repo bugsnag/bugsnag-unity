@@ -33,6 +33,7 @@ namespace BugsnagUnity
       var session = new Session();
 
       CurrentSession = session;
+      Client.NativeClient.SetSession(session);
 
       var app = new App(Client.Configuration);
       Client.NativeClient.PopulateApp(app);

@@ -169,6 +169,25 @@ namespace BugsnagUnity
       }
     }
 
+    public void SetUser(User user) {
+      var method = "setUser";
+      var description = "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V";
+      if (user == null) {
+        CallNativeVoidMethod(method, description, new object[]{null, null, null});
+      } else {
+        CallNativeVoidMethod(method, description, new object[]{user.Id, user.Email, user.Name});
+      }
+    }
+
+    public void SetSession(Session session) {
+      // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
+      var startedAt = (session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).Milliseconds;
+      CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
+        startedAt, session.Id.ToString(), session.UnhandledCount(),
+        session.HandledCount()
+      });
+    }
+
     public Dictionary<string, object> GetAppData() {
       return GetJavaMapData("getAppData");
     }
