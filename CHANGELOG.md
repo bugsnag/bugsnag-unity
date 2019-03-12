@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* [Android] Remove references to 64-bit ABIs included in the package
+
 ## 4.2.2 (2019-02-26)
 
 ### Bug fixes

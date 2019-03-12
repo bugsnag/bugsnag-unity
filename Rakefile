@@ -206,13 +206,14 @@ namespace :plugin do
     end
     task android: [:clean] do
       android_dir = File.join(assets_path, "Android")
+      abi_filters = "-PABI_FILTERS=armeabi-v7a,x86"
 
       cd "bugsnag-android" do
-        sh "./gradlew", "ndk:assembleRelease", "sdk:assembleRelease", "--quiet", "-PABI_FILTERS=armeabi-v7a,x86"
+        sh "./gradlew", "ndk:assembleRelease", "sdk:assembleRelease", "--quiet", abi_filters
       end
 
       cd "bugsnag-android-unity" do
-        sh "./gradlew", "assembleRelease", "--quiet"
+        sh "./gradlew", "assembleRelease", "--quiet", abi_filters
       end
 
       android_lib = File.join("bugsnag-android", "sdk", "build", "outputs", "aar", "bugsnag-android-release.aar")
