@@ -14,6 +14,10 @@
   });
   ```
 
+* Set severity reason when manually specifying severity as a parameter to
+  `Notify()`. This sets the correct reason for the severity selection on the
+  dashboard.
+
 ## 4.2.2 (2019-02-26)
 
 ### Bug fixes

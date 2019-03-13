@@ -68,6 +68,9 @@ public class Main : MonoBehaviour {
       case "NotifyCallback":
         DoNotifyWithCallback();
         break;
+      case "NotifySeverity":
+        DoNotifyWithSeverity();
+        break;
       case "LogUnthrown":
         DoLogUnthrown();
         break;
@@ -165,6 +168,10 @@ public class Main : MonoBehaviour {
       report.Exceptions[0].ErrorClass = "FunnyBusiness";
       report.Exceptions[0].ErrorMessage = "cake";
     });
+  }
+
+  void DoNotifyWithSeverity() {
+    Bugsnag.Notify(new System.Exception("blorb"), Severity.Info);
   }
 
   void DoNotify() {
