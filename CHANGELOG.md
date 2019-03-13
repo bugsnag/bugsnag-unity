@@ -1,5 +1,19 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Make `ErrorClass` and `ErrorMessage` mutable on `Exception`. This allows for
+  modifying both properties from callbacks:
+
+  ```cs
+  Bugsnag.Notify(exception, report => {
+    report.Exceptions[0].ErrorClass = "CustomException";
+    report.Exceptions[0].ErrorMessage = "something notable";
+  });
+  ```
+
 ## 4.2.2 (2019-02-26)
 
 ### Bug fixes
