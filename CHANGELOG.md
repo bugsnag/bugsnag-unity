@@ -1,5 +1,28 @@
 # Changelog
 
+## 4.X.X (TBD)
+
+Add StopSession() and ResumeSession() to public API [#136](https://github.com/bugsnag/bugsnag-unity/pull/136)
+
+Update bugsnag-android dependency to v4.11.0:
+  * Add stopSession() and resumeSession() to Client
+  [#429](https://github.com/bugsnag/bugsnag-android/pull/429)
+
+  * Prevent overwriting config.projectPackages if already set
+    [#428](https://github.com/bugsnag/bugsnag-android/pull/428)
+
+  * Fix incorrect session handledCount when notifying in quick succession
+    [#434](https://github.com/bugsnag/bugsnag-android/pull/434)
+
+Update bugsnag-cocoa dependency to v5.19.0:
+  * Update workspace to recommended settings suggested by XCode 10
+    [#324](https://github.com/bugsnag/bugsnag-cocoa/pull/324)
+  * Add stopSession() and resumeSession() to Bugsnag
+    [#325](https://github.com/bugsnag/bugsnag-cocoa/pull/325)
+  * Capture basic report diagnostics in the file path in case of crash report
+    content corruption
+    [#327](https://github.com/bugsnag/bugsnag-cocoa/pull/327)
+
 ## 4.2.2 (2019-02-26)
 
 ### Bug fixes

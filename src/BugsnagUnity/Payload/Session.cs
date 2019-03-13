@@ -11,6 +11,8 @@ namespace BugsnagUnity.Payload
 
     internal SessionEvents Events { get; }
 
+    internal bool Stopped { get; set; }
+
     internal Session() : this(DateTime.UtcNow, 0, 0)
     {
 

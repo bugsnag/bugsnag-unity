@@ -63,7 +63,7 @@ public class Main : MonoBehaviour
 	private static extern void Crash();
 
 	[DllImport("__Internal")]
-	private static extern void CrashCrashInBackground();
+	private static extern void CrashInBackground();
 #endif
 
 	private void OnNativeCrashClick()
@@ -82,7 +82,7 @@ public class Main : MonoBehaviour
 	private void OnNativeBackgroundCrashClick()
 	{
 #if UNITY_IOS
-		CrashCrashInBackground();
+		CrashInBackground();
 #elif UNITY_ANDROID
 		using (var java = new AndroidJavaObject("BugsnagCrash"))
 		{
@@ -112,17 +112,17 @@ public class Main : MonoBehaviour
 			int b = 1;
 			int c = b / a;
 		} catch (Exception e) {
-			//BugsnagUnity.Bugsnag.Client.Notify(e);
+			BugsnagUnity.Bugsnag.Client.Notify(e);
 		}
 	}
 
 	private void OnNotifyClick()
 	{
 		Debug.Log ("Notify clicked");
-		// BugsnagUnity.Bugsnag.Client.Notify(new Exception ("Notify clicked!"), report =>
-		// 	{
-		// 		report.Event.Context = "NotifyClicked";
-		// 	});
+		 BugsnagUnity.Bugsnag.Client.Notify(new Exception ("Notify clicked!"), report =>
+		 	{
+		 		report.Context = "NotifyClicked";
+		 	});
 	}
 
 	private void OnManagedCrashClick()

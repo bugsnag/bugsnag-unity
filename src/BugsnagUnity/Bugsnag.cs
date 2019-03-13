@@ -60,6 +60,10 @@ namespace BugsnagUnity
 
     public static void StartSession() => InternalClient.SessionTracking.StartSession();
 
+    public static void StopSession() => InternalClient.SessionTracking.StopSession();
+
+    public static bool ResumeSession() => InternalClient.SessionTracking.ResumeSession();
+
     /// <summary>
     /// Used to signal to the Bugsnag client that the focused state of the
     /// application has changed. This is used for session tracking and also

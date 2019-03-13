@@ -1,10 +1,17 @@
 ﻿using BugsnagUnity.Payload;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("BugsnagUnity.Tests")]
 
 namespace BugsnagUnity
 {
   public interface ISessionTracker
   {
     void StartSession();
+
+    void StopSession();
+
+    bool ResumeSession();
 
     Session CurrentSession { get; }
 
@@ -19,7 +26,14 @@ namespace BugsnagUnity
 
     public Session CurrentSession
     {
-      get => _currentSession?.Copy();
+      get {
+        var session = _currentSession;
+
+        if (session != null && !session.Stopped) {
+          return session?.Copy();
+        }
+        return null;
+      }
       private set => _currentSession = value;
     }
 
@@ -42,6 +56,30 @@ namespace BugsnagUnity
       var payload = new SessionReport(Client.Configuration, app, device, Client.User, session);
 
       Client.Send(payload);
+    }
+
+    public void StopSession()
+    {
+      var session = _currentSession;
+
+      if (session != null) {
+        session.Stopped = true;
+      }
+    }
+
+    public bool ResumeSession()
+    {
+      var session = _currentSession;
+      var resumed = false;
+
+      if (session == null) {
+        StartSession();
+        resumed = false;
+      } else {
+        resumed = session.Stopped;
+        session.Stopped = false;
+      }
+      return resumed;
     }
     
     public void AddException(Report report)
