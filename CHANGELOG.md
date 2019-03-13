@@ -2,6 +2,11 @@
 
 ## TBD
 
+This release is the first to distribute Unity packages with and without 64-bit
+ABI libraries for Android. In most cases, `Bugsnag.unitypackage` is the correct
+package to use, as by default most Unity Android apps only can use 32-bit
+binaries.
+
 ### Bug fixes
 
 * [Android] Remove references to 64-bit ABIs included in the package

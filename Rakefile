@@ -76,15 +76,37 @@ def assets_path
   File.join(project_path, "Assets", "Plugins")
 end
 
-def export_package
-  package_output = File.join(current_directory, "Bugsnag.unitypackage")
+def export_package name="Bugsnag.unitypackage"
+  package_output = File.join(current_directory, name)
   rm_f package_output
   unity "-projectPath", project_path, "-exportPackage", "Assets", package_output, force_free: false
+end
+
+def assemble_android filter_abis=true
+  abi_filters = filter_abis ? "-PABI_FILTERS=armeabi-v7a,x86" : "-Pnoop_filters=true"
+  android_dir = File.join(assets_path, "Android")
+
+  cd "bugsnag-android" do
+    sh "./gradlew", "clean", "ndk:assembleRelease", "sdk:assembleRelease", "--quiet", abi_filters
+  end
+
+  cd "bugsnag-android-unity" do
+    sh "./gradlew", "clean", "assembleRelease", "--quiet", abi_filters
+  end
+
+  android_lib = File.join("bugsnag-android", "sdk", "build", "outputs", "aar", "bugsnag-android-release.aar")
+  ndk_lib = File.join("bugsnag-android", "ndk", "build", "outputs", "aar", "bugsnag-android-ndk-release.aar")
+  unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
+
+  cp android_lib, android_dir
+  cp ndk_lib, android_dir
+  cp unity_lib, android_dir
 end
 
 namespace :plugin do
   namespace :build do
     task all: [:assets, :cocoa, :csharp, :android]
+    task all_android64: [:assets, :cocoa, :csharp, :android_64bit]
     task :clean do
       # remove any leftover artifacts from the package generation directory
       sh "git", "clean", "-dfx", "unity"
@@ -204,25 +226,13 @@ namespace :plugin do
         cp File.realpath("BugsnagUnity.Android.dll"), File.join(assets_path, "Android")
       end
     end
+
     task android: [:clean] do
-      android_dir = File.join(assets_path, "Android")
-      abi_filters = "-PABI_FILTERS=armeabi-v7a,x86"
+      assemble_android(true)
+    end
 
-      cd "bugsnag-android" do
-        sh "./gradlew", "ndk:assembleRelease", "sdk:assembleRelease", "--quiet", abi_filters
-      end
-
-      cd "bugsnag-android-unity" do
-        sh "./gradlew", "assembleRelease", "--quiet", abi_filters
-      end
-
-      android_lib = File.join("bugsnag-android", "sdk", "build", "outputs", "aar", "bugsnag-android-release.aar")
-      ndk_lib = File.join("bugsnag-android", "ndk", "build", "outputs", "aar", "bugsnag-android-ndk-release.aar")
-      unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
-
-      cp android_lib, android_dir
-      cp ndk_lib, android_dir
-      cp unity_lib, android_dir
+    task android_64bit: [:clean] do
+      assemble_android(false)
     end
   end
 
@@ -260,7 +270,12 @@ namespace :plugin do
     export_package
   end
 
-  task export: %w[plugin:build:all export_package check_package]
+  task :export do
+    Rake::Task["plugin:build:all"].invoke
+    export_package("Bugsnag.unitypackage")
+    Rake::Task["plugin:build:all_android64"].invoke
+    export_package("Bugsnag-with-android-64bit.unitypackage")
+  end
 
   task maze_runner: %w[plugin:export] do
     sh "bundle", "exec", "bugsnag-maze-runner"
@@ -281,9 +296,9 @@ namespace :travis do
 
   end
 
-  task export_plugin: %w[plugin:build:all] do
+  task :export_plugin do
     with_license do
-      export_package
+      Rake::Task["plugin:export"].invoke
     end
   end
 

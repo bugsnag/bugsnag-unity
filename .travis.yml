@@ -45,7 +45,9 @@ jobs:
       provider: releases
       api_key:
         secure: 1TJ75ixrnryedpCBA/a3mnaHoVO6zK/vMEzjJ2mkLa/EIRVnH3MEeifetXqIf05vANF7TnqcUF4/gAt/NLNZc2Sa3NktPsXQ4lyWI4BhJuCR+BGGbbB+tlU6VAXunCljIcu3WC5OqojtYVfNqwgCfnwqg8HRlfM8XSIH0qFaYH6UG4S6iD7gkgolAouJTpZsYs0sRmxAyjLq5f6o1ZQtwjTDC6Lm3SmAVPJ0oGDFFFqVwMfTVagq1hAkja1S5YoxNrO8XU9iKW+Rd8JB4CL0CGAQ/qRnyzU/ABQnYhb4lu0eBqMo9Up7ENAarVOwkuWlbHtx7TsiOvI1+BQReqfg73D/TSMra4aTPeEaq8DGYoQc7dsRy4hS/XUKfkVrGe6UeIdcgiZvENbTcmfzsOSsbdTqJhB6zVcSLus1C5n8ZRFIZ81JS65P7vQU6VMyQTTG19xUoU3DozRPdOjnCbOeBmMWFa/ffl5N1N/KQq+CEPpHdtopcDv6iSKTShu9tm5uUoM7pj8vqI7FM9Aj3NqBaJtgJqZAtD83LbKCEBfifIAgz1uDLRoNxnbx1ua9n54ifPOiGX1mQ/LWgBhAUsyLUjaor8I1j1pVoYcpf4f9HNu/VJsUrBrK5uDwJNo/J3vDhfniYuBhsyFcsZkOtddwOdUOM6BGAOXWwJM2G3zsmKI=
-      file: build_artifacts/Bugsnag.unitypackage
+      file:
+      - build_artifacts/Bugsnag.unitypackage
+      - build_artifacts/Bugsnag-with-android-64bit.unitypackage
       draft: true
       skip_cleanup: true
       on:
