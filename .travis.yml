@@ -15,6 +15,7 @@ env:
   - ANDROID_NDK_HOME=/usr/local/share/android-ndk
   - TERM=dumb
   - PATH=$HOME/Library/Python/2.7/bin:$PATH
+  - HOMEBREW_NO_INSTALL_CLEANUP=1
 stages:
 - name: test
   if: tag IS blank
