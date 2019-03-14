@@ -60,6 +60,14 @@ namespace BugsnagUnity
     {
     }
 
+    public void SetSession(Session session)
+    {
+    }
+
+    public void SetUser(User user)
+    {
+    }
+
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,

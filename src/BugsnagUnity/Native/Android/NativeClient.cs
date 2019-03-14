@@ -67,6 +67,15 @@ namespace BugsnagUnity
       }
     }
 
+    public void SetSession(Session session)
+    {
+      NativeInterface.SetSession(session);
+    }
+
+    public void SetUser(User user)
+    {
+      NativeInterface.SetUser(user);
+    }
   }
 
 }
