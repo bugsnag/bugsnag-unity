@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -53,6 +54,7 @@ namespace BugsnagUnity
 
       SceneManager.sceneLoaded += SceneLoaded;
       Application.logMessageReceivedThreaded += Notify;
+      User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
     }
 
     public void Send(IPayload payload)

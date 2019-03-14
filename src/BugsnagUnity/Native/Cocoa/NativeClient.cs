@@ -126,5 +126,17 @@ namespace BugsnagUnity
     public void PopulateMetadata(Metadata metadata)
     {
     }
+
+    public void SetSession(Session session)
+    {
+      // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
+      var startedAt = (session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).Milliseconds;
+      NativeCode.bugsnag_registerSession(session.Id.ToString(), startedAt, session.UnhandledCount(), session.HandledCount());
+    }
+
+    public void SetUser(User user)
+    {
+      NativeCode.bugsnag_setUser(user.Id, user.Name, user.Email);
+    }
   }
 }

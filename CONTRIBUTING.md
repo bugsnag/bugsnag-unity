@@ -82,12 +82,7 @@ bundle exec rake plugin:maze_runner
 
 #### Pre-release
 
-- [ ] Are all changes committed?
-- [ ] Does the build pass on the CI server?
-- [ ] Has the changelog been updated?
-- [ ] Have all the version numbers been incremented? Update the version number by running `make VERSION=[number] bump`.
-- [ ] Has all new functionality been manually tested on a release build? Use `rake build` to generate an artifact to install in a new app.
-  - [ ] Is development mode disabled? Disable development mode in the Unity Build dialog when testing release builds.
+- [ ] Has all new functionality been manually tested on a release build? Disable development mode in the Unity Build dialog when testing release builds.
   - [ ] Test that a log message formatted as `SomeTitle: rest of message` generates an error titled `SomeTitle` with message `rest of message`
   - [ ] Test that a log message formatted without a colon generates an error titled `LogError<level>` with message `rest of message`
   - [ ] Ensure the example app sends the correct error for each type on iOS
@@ -107,23 +102,29 @@ bundle exec rake plugin:maze_runner
 
 #### Making the release
 
+0. Set the version number in the change log and `build.cake`
 1. Commit the changelog and version updates:
 
     ```
-    git add CHANGELOG.md
+    git add CHANGELOG.md build.cake
     git commit -m "Release v4.x.x"
-    git tag "v4.x.x"
-    git push origin master --tags
     ```
-2. [Create a new release on GitHub](https://github.com/bugsnag/bugsnag-unity/releases/new), copying the changelog entry.
-    * set the title to the tag name
-    * upload `Bugsnag.unitypackage`
+2. Make a pull request to merge the changes
+3. Once merged, tag the new release version, pushing the tag to GitHub:
+
+   ```
+   git tag v4.x.x
+   git push origin v4.x.x
+   ```
+4. Wait. The CI build will build the new package and create a draft release.
+   Verify that the release looks good, copy in the changelog entry and publish
+   the draft.
 
 #### Post-release
 
 - [ ] Have all Docs PRs been merged?
-- [ ] Can the latest release be installed by downloading the artifact from the releases page?
-- [ ] Do the installation instructions on the dashboard work using the released artefact?
-- [ ] Do the installation instructions on the docs site work using the released artefact?
-- [ ] Can a freshly created example app send an error report from a release build, using the released artefact?
-- [ ] Do the existing example apps send an error report using the released artefact?
+- [ ] Can the latest release be installed by downloading the artifacts from the releases page?
+- [ ] Do the installation instructions on the dashboard work using the released artifact?
+- [ ] Do the installation instructions on the docs site work using the released artifact?
+- [ ] Can a freshly created example app send an error report from a release build, using the released artifact?
+- [ ] Do the existing example apps send an error report using the released artifact?

@@ -9,6 +9,16 @@ namespace BugsnagUnity.Payload
 
     public DateTime StartedAt { get; }
 
+    public int HandledCount()
+    {
+      return this.Events.Handled;
+    }
+
+    public int UnhandledCount()
+    {
+      return this.Events.Unhandled;
+    }
+
     internal SessionEvents Events { get; }
 
     internal bool Stopped { get; set; }

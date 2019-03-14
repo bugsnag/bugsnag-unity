@@ -42,6 +42,16 @@ namespace BugsnagUnity
     void SetMetadata(string tab, Dictionary<string, string> metadata);
 
     /// <summary>
+    /// Adds session data to native client reports
+    /// </summary>
+    void SetSession(Session session);
+
+    /// <summary>
+    /// Adds user data to native client reports
+    /// </summary>
+    void SetUser(User user);
+
+    /// <summary>
     /// Populates the native user information.
     /// </summary>
     /// <returns></returns>

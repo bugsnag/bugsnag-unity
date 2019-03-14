@@ -2,6 +2,8 @@
 #import "BugsnagConfiguration.h"
 #import "BugsnagLogger.h"
 #import "BugsnagUser.h"
+#import "BugsnagNotifier.h"
+#import "BugsnagSessionTracker.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
 
@@ -41,6 +43,8 @@ extern "C" {
   void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
 
   void bugsnag_populateUser(bugsnag_user *user);
+  void bugsnag_setUser(char *userId, char *userName, char *userEmail);
+  void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
@@ -252,4 +256,23 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
 void bugsnag_populateUser(bugsnag_user *user) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
   user->user_id = [sysInfo[@BSG_KSSystemField_DeviceAppHash] UTF8String];
+}
+
+void bugsnag_setUser(char *userId, char *userName, char *userEmail) {
+    [[Bugsnag configuration] setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
+                            withName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]
+                            andEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]];
+}
+
+@interface Bugsnag ()
++ (BugsnagNotifier *)notifier;
+@end
+
+void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
+    BugsnagSessionTracker *tracker = [[Bugsnag notifier] sessionTracker];
+    [tracker registerExistingSession:sessionId == NULL ? nil : [NSString stringWithUTF8String:sessionId]
+                           startedAt:[NSDate dateWithTimeIntervalSince1970:startedAt]
+                                user:[[Bugsnag configuration] currentUser]
+                        handledCount:handledCount
+                      unhandledCount:unhandledCount];
 }

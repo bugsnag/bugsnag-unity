@@ -1,27 +1,41 @@
 # Changelog
 
-## 4.X.X (TBD)
+## TBD
 
-Add StopSession() and ResumeSession() to public API [#136](https://github.com/bugsnag/bugsnag-unity/pull/136)
+This release is the first to distribute Unity packages with and without 64-bit
+ABI libraries for Android. In most cases, `Bugsnag.unitypackage` is the correct
+package to use, as by default most Unity Android apps only can use 32-bit
+binaries.
 
-Update bugsnag-android dependency to v4.11.0:
+### Enhancements
+
+* Add StopSession() and ResumeSession() to public API
+  [#136](https://github.com/bugsnag/bugsnag-unity/pull/136)
+
+* Update bugsnag-android dependency to v4.11.0:
   * Add stopSession() and resumeSession() to Client
-  [#429](https://github.com/bugsnag/bugsnag-android/pull/429)
-
+    [bugsnag-android#429](https://github.com/bugsnag/bugsnag-android/pull/429)
   * Prevent overwriting config.projectPackages if already set
-    [#428](https://github.com/bugsnag/bugsnag-android/pull/428)
-
+    [bugsnag-android#428](https://github.com/bugsnag/bugsnag-android/pull/428)
   * Fix incorrect session handledCount when notifying in quick succession
-    [#434](https://github.com/bugsnag/bugsnag-android/pull/434)
+    [bugsnag-android#434](https://github.com/bugsnag/bugsnag-android/pull/434)
 
-Update bugsnag-cocoa dependency to v5.19.0:
-  * Update workspace to recommended settings suggested by XCode 10
-    [#324](https://github.com/bugsnag/bugsnag-cocoa/pull/324)
+* Update bugsnag-cocoa dependency to v5.19.0:
   * Add stopSession() and resumeSession() to Bugsnag
-    [#325](https://github.com/bugsnag/bugsnag-cocoa/pull/325)
+    [bugsnag-cocoa#325](https://github.com/bugsnag/bugsnag-cocoa/pull/325)
   * Capture basic report diagnostics in the file path in case of crash report
     content corruption
-    [#327](https://github.com/bugsnag/bugsnag-cocoa/pull/327)
+    [bugsnag-cocoa#327](https://github.com/bugsnag/bugsnag-cocoa/pull/327)
+
+### Bug fixes
+
+* Ensure session and user information is included in native crash reports
+  [#138](https://github.com/bugsnag/bugsnag-unity/pull/138)
+  [bugsnag-cocoa#333](https://github.com/bugsnag/bugsnag-cocoa/pull/333)
+  [bugsnag-android#439](https://github.com/bugsnag/bugsnag-android/pull/439)
+
+* [Android] Remove references to 64-bit ABIs included in the package
+  [#139](https://github.com/bugsnag/bugsnag-unity/pull/139)
 
 ## 4.2.2 (2019-02-26)
 
