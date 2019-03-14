@@ -112,7 +112,42 @@ public class Main : MonoBehaviour {
         DoLogWarning();
         UncaughtExceptionAsUnhandled();
         break;
+      case "StoppedSession":
+        Bugsnag.StartSession();
+        Bugsnag.StopSession();
+        DoNotify();
+        break;
+      case "ResumedSession":
+        RunResumedSession();
+        break;
+      case "NewSession":
+        RunNewSession();
+        break;
     }
+  }
+
+  void RunResumedSession() {
+    // send 1st exception which should include session info
+    Bugsnag.StartSession();
+    Bugsnag.Notify(new System.Exception("First Error"));
+
+    // send 2nd exception after resuming a session
+    Bugsnag.StopSession();
+    Bugsnag.ResumeSession();
+    Bugsnag.Notify(new System.Exception("Second Error"));
+  }
+
+  void RunNewSession() {
+    // send 1st exception which should include session info
+    Bugsnag.StartSession();
+    Bugsnag.Notify(new System.Exception("First Error"));
+
+    // stop tracking the existing session
+    Bugsnag.StopSession();
+    Bugsnag.StartSession();
+
+    // send 2nd exception which should contain new session info
+    Bugsnag.Notify(new System.Exception("Second Error"));
   }
 
   void UncaughtExceptionAsUnhandled() {

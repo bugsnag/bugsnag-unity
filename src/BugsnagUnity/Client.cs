@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace BugsnagUnity
 {
-  class Client : IClient
+  internal class Client : IClient
   {
     public IConfiguration Configuration => NativeClient.Configuration;
 

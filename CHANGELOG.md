@@ -7,6 +7,26 @@ ABI libraries for Android. In most cases, `Bugsnag.unitypackage` is the correct
 package to use, as by default most Unity Android apps only can use 32-bit
 binaries.
 
+### Enhancements
+
+* Add StopSession() and ResumeSession() to public API
+  [#136](https://github.com/bugsnag/bugsnag-unity/pull/136)
+
+* Update bugsnag-android dependency to v4.11.0:
+  * Add stopSession() and resumeSession() to Client
+    [bugsnag-android#429](https://github.com/bugsnag/bugsnag-android/pull/429)
+  * Prevent overwriting config.projectPackages if already set
+    [bugsnag-android#428](https://github.com/bugsnag/bugsnag-android/pull/428)
+  * Fix incorrect session handledCount when notifying in quick succession
+    [bugsnag-android#434](https://github.com/bugsnag/bugsnag-android/pull/434)
+
+* Update bugsnag-cocoa dependency to v5.19.0:
+  * Add stopSession() and resumeSession() to Bugsnag
+    [bugsnag-cocoa#325](https://github.com/bugsnag/bugsnag-cocoa/pull/325)
+  * Capture basic report diagnostics in the file path in case of crash report
+    content corruption
+    [bugsnag-cocoa#327](https://github.com/bugsnag/bugsnag-cocoa/pull/327)
+
 ### Bug fixes
 
 * Ensure session and user information is included in native crash reports

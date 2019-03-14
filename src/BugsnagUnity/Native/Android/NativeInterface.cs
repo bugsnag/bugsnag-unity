@@ -180,12 +180,19 @@ namespace BugsnagUnity
     }
 
     public void SetSession(Session session) {
-      // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
-      var startedAt = (session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).Milliseconds;
-      CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
-        startedAt, session.Id.ToString(), session.UnhandledCount(),
-        session.HandledCount()
-      });
+      if (session == null) {
+        // Clear session
+        CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
+          IntPtr.Zero, session.Id.ToString(), 0, 0
+        });
+      } else {
+        // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
+        var startedAt = (session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).Milliseconds;
+        CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
+          startedAt, session.Id.ToString(), session.UnhandledCount(),
+          session.HandledCount()
+        });
+      }
     }
 
     public Dictionary<string, object> GetAppData() {
