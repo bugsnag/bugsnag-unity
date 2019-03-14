@@ -9,6 +9,11 @@ binaries.
 
 ### Bug fixes
 
+* Ensure session and user information is included in native crash reports
+  [#138](https://github.com/bugsnag/bugsnag-unity/pull/138)
+  [bugsnag-cocoa#333](https://github.com/bugsnag/bugsnag-cocoa/pull/333)
+  [bugsnag-android#439](https://github.com/bugsnag/bugsnag-android/pull/439)
+
 * [Android] Remove references to 64-bit ABIs included in the package
 
 ## 4.2.2 (2019-02-26)

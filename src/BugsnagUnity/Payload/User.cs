@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BugsnagUnity.Payload
 {
-  public class User : Dictionary<string, string>, IFilterable
+  public class User : Dictionary<string, string>, IFilterable, INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     internal User()
     {
 
@@ -18,6 +21,7 @@ namespace BugsnagUnity.Payload
       set
       {
         this.AddToPayload("id", value);
+        OnPropertyChanged("Id");
       }
     }
 
@@ -30,6 +34,7 @@ namespace BugsnagUnity.Payload
       set
       {
         this.AddToPayload("name", value);
+        OnPropertyChanged("Name");
       }
     }
 
@@ -42,7 +47,15 @@ namespace BugsnagUnity.Payload
       set
       {
         this.AddToPayload("email", value);
+        OnPropertyChanged("Email");
       }
+    }
+
+    public void OnPropertyChanged(string propertyName)
+    {
+      // Inform the Client when its user changes a property as it will need to be
+      // synchronized with the native layer
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
   }
 }
