@@ -37,7 +37,7 @@ namespace BugsnagUnity.Payload
     /// <returns></returns>
     internal static HandledState ForUserSpecifiedSeverity(Severity severity)
     {
-      return new HandledState(true, severity, null);
+      return new HandledState(true, severity, SeverityReason.ForUserSpecifiedSeverity());
     }
 
     /// <summary>

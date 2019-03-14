@@ -65,6 +65,12 @@ public class Main : MonoBehaviour {
       case "Notify":
         DoNotify();
         break;
+      case "NotifyCallback":
+        DoNotifyWithCallback();
+        break;
+      case "NotifySeverity":
+        DoNotifyWithSeverity();
+        break;
       case "LogUnthrown":
         DoLogUnthrown();
         break;
@@ -155,6 +161,17 @@ public class Main : MonoBehaviour {
   void LogLowLevelMessageAndNotify() {
     Debug.LogWarning("Failed to validate credentials");
     Bugsnag.Notify(new ExecutionEngineException("Invalid runtime"));
+  }
+
+  void DoNotifyWithCallback() {
+    Bugsnag.Notify(new System.Exception("blorb"), report => {
+      report.Exceptions[0].ErrorClass = "FunnyBusiness";
+      report.Exceptions[0].ErrorMessage = "cake";
+    });
+  }
+
+  void DoNotifyWithSeverity() {
+    Bugsnag.Notify(new System.Exception("blorb"), Severity.Info);
   }
 
   void DoNotify() {

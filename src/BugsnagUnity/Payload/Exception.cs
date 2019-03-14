@@ -80,9 +80,17 @@ namespace BugsnagUnity.Payload
 
     public IEnumerable<StackTraceLine> StackTrace { get { return this.Get("stacktrace") as IEnumerable<StackTraceLine>; } }
 
-    public string ErrorClass => this.Get("errorClass") as string;
+    public string ErrorClass
+    {
+      get => this.Get("errorClass") as string;
+      set => this.AddToPayload("errorClass", value);
+    }
 
-    public string ErrorMessage => this.Get("message") as string;
+    public string ErrorMessage
+    {
+      get => this.Get("message") as string;
+      set => this.AddToPayload("message", value);
+    }
 
     internal static Exception FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
     {

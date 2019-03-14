@@ -15,6 +15,23 @@ binaries.
   [bugsnag-android#439](https://github.com/bugsnag/bugsnag-android/pull/439)
 
 * [Android] Remove references to 64-bit ABIs included in the package
+  [#139](https://github.com/bugsnag/bugsnag-unity/pull/139)
+
+* Make `ErrorClass` and `ErrorMessage` mutable on `Exception`. This allows for
+  modifying both properties from callbacks:
+
+  ```cs
+  Bugsnag.Notify(exception, report => {
+    report.Exceptions[0].ErrorClass = "CustomException";
+    report.Exceptions[0].ErrorMessage = "something notable";
+  });
+  ```
+  [#140](https://github.com/bugsnag/bugsnag-unity/pull/140)
+
+* Set severity reason when manually specifying severity as a parameter to
+  `Notify()`. This sets the correct reason for the severity selection on the
+  dashboard.
+  [#140](https://github.com/bugsnag/bugsnag-unity/pull/140)
 
 ## 4.2.2 (2019-02-26)
 
