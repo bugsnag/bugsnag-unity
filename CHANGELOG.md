@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.3.0 (2019-03-14)
 
 This release is the first to distribute Unity packages with and without 64-bit
 ABI libraries for Android. In most cases, `Bugsnag.unitypackage` is the correct
