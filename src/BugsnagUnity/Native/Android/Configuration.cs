@@ -10,6 +10,11 @@ namespace BugsnagUnity
 
     internal Configuration(string apiKey) : base()
     {
+      // the native client disables ANR detection if a debugger is attached
+      using (var debugClz = new AndroidJavaClass("android.os.Debug")) {
+        DetectAnrs = debugClz.CallStatic<bool>("isDebuggerConnected");
+      }
+
       var JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
       // the bugsnag-unity notifier will handle session tracking
       JavaObject.Call("setAutoCaptureSessions", false);
@@ -17,6 +22,8 @@ namespace BugsnagUnity
       JavaObject.Call("setSessionEndpoint", DefaultSessionEndpoint);
       JavaObject.Call("setReleaseStage", "production");
       JavaObject.Call("setAppVersion", Application.version);
+      JavaObject.Call("setDetectAnrs", DetectAnrs);
+      JavaObject.Call("setAnrThresholdMs", AnrThresholdMs);
       NativeInterface = new NativeInterface(JavaObject);
       SetupDefaults(apiKey);
     }

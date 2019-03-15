@@ -41,5 +41,9 @@ namespace BugsnagUnity
     bool AutoCaptureSessions { get; set; }
 
     LogTypeSeverityMapping LogTypeSeverityMapping { get; }
+
+    bool DetectAnrs { get; set; }
+
+    long AnrThresholdMs { get; set; }
   }
 }

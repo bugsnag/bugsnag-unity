@@ -10,7 +10,11 @@ namespace BugsnagUnity
 
     public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    public AbstractConfiguration() {}
+    private long _anrThresholdMs = 5000;
+
+    public AbstractConfiguration() {
+      DetectAnrs = true;
+    }
 
     protected virtual void SetupDefaults(string apiKey)
     {
@@ -60,6 +64,13 @@ namespace BugsnagUnity
     public virtual bool AutoCaptureSessions { get; set; }
 
     public virtual LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
+
+    public virtual bool DetectAnrs { get; set; }
+
+    public virtual long AnrThresholdMs {
+      get => _anrThresholdMs;
+      set => _anrThresholdMs = value < 100 ? 100 : value;
+    }
   }
 }
 

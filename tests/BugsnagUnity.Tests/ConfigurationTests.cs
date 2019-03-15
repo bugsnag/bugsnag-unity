@@ -21,5 +21,23 @@ namespace BugsnagUnity.Payload.Tests
       var config = new TestConfig("foo");
       Assert.IsTrue(config.ReportUncaughtExceptionsAsHandled);
     }
+
+    [Test]
+    public void AnrEnabledByDefault()
+    {
+      var config = new TestConfig("foo");
+      Assert.IsTrue(config.DetectAnrs);
+    }
+
+
+    [Test]
+    public void AlteringAnrThresholdMs()
+    {
+      var config = new TestConfig("foo");
+      Assert.AreEqual(5000, config.AnrThresholdMs);
+
+      config.AnrThresholdMs = 99;
+      Assert.AreEqual(100, config.AnrThresholdMs);
+    }
   }
 }
