@@ -22,12 +22,12 @@ namespace BugsnagUnity.Payload.Tests
       Assert.IsTrue(config.ReportUncaughtExceptionsAsHandled);
     }
 
-    [Test]
-    public void AnrEnabledByDefault()
-    {
-      var config = new TestConfig("foo");
-      Assert.IsTrue(config.DetectAnrs);
-    }
+    // [Test]
+    // public void AnrEnabledByDefault()
+    // {
+    //   var config = new TestConfig("foo");
+    //   Assert.IsTrue(config.DetectAnrs);
+    // }
 
 
     [Test]
@@ -37,7 +37,7 @@ namespace BugsnagUnity.Payload.Tests
       Assert.AreEqual(5000, config.AnrThresholdMs);
 
       config.AnrThresholdMs = 99;
-      Assert.AreEqual(100, config.AnrThresholdMs);
+      Assert.AreEqual(1000, config.AnrThresholdMs);
     }
   }
 }

@@ -9,11 +9,15 @@ namespace BugsnagUnity
 
     public static IClient Init(string apiKey)
     {
+      return Init(new Configuration(apiKey));
+    }
+
+    public static IClient Init(Configuration configuration) {
       lock (_clientLock)
       {
         if (InternalClient == null)
         {
-          InternalClient = new Client(new NativeClient(new Configuration(apiKey)));
+          InternalClient = new Client(new NativeClient(configuration));
         }
       }
 

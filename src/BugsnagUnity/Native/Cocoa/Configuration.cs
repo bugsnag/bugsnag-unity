@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  class Configuration : AbstractConfiguration
+  public class Configuration : AbstractConfiguration
   {
     internal IntPtr NativeConfiguration { get; }
 
-    internal Configuration(string apiKey) : base()
+    public Configuration(string apiKey) : base()
     {
       NativeConfiguration = NativeCode.bugsnag_createConfiguration(apiKey);
       SetupDefaults(apiKey);

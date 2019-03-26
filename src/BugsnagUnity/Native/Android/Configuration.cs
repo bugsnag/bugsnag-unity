@@ -4,17 +4,12 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  class Configuration : AbstractConfiguration
+  public class Configuration : AbstractConfiguration
   {
     internal NativeInterface NativeInterface { get; }
 
-    internal Configuration(string apiKey) : base()
+    public Configuration(string apiKey) : base()
     {
-      // the native client disables ANR detection if a debugger is attached
-      using (var debugClz = new AndroidJavaClass("android.os.Debug")) {
-        DetectAnrs = debugClz.CallStatic<bool>("isDebuggerConnected");
-      }
-
       var JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
       // the bugsnag-unity notifier will handle session tracking
       JavaObject.Call("setAutoCaptureSessions", false);
@@ -22,8 +17,6 @@ namespace BugsnagUnity
       JavaObject.Call("setSessionEndpoint", DefaultSessionEndpoint);
       JavaObject.Call("setReleaseStage", "production");
       JavaObject.Call("setAppVersion", Application.version);
-      JavaObject.Call("setDetectAnrs", DetectAnrs);
-      JavaObject.Call("setAnrThresholdMs", AnrThresholdMs);
       NativeInterface = new NativeInterface(JavaObject);
       SetupDefaults(apiKey);
     }
@@ -69,6 +62,28 @@ namespace BugsnagUnity
       get
       {
         return NativeInterface.GetAppVersion();
+      }
+    }
+
+    public override bool DetectAnrs {
+      set
+      {
+        NativeInterface.SetDetectAnrs(value);
+      }
+      get
+      {
+        return NativeInterface.GetDetectAnrs();
+      }
+    }
+
+    public override long AnrThresholdMs {
+      set
+      {
+        NativeInterface.SetAnrThresholdMs(value);
+      }
+      get
+      {
+        return NativeInterface.GetAnrThresholdMs();
       }
     }
 

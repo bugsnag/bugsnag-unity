@@ -13,7 +13,6 @@ namespace BugsnagUnity
     private long _anrThresholdMs = 5000;
 
     public AbstractConfiguration() {
-      DetectAnrs = true;
     }
 
     protected virtual void SetupDefaults(string apiKey)
@@ -69,7 +68,7 @@ namespace BugsnagUnity
 
     public virtual long AnrThresholdMs {
       get => _anrThresholdMs;
-      set => _anrThresholdMs = value < 100 ? 100 : value;
+      set => _anrThresholdMs = value < 1000 ? 1000 : value;
     }
   }
 }

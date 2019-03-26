@@ -121,6 +121,14 @@ namespace BugsnagUnity
       return CallNativeStringMethod("getAppVersion", "()Ljava/lang/String;", new object[]{});
     }
 
+    public bool GetDetectAnrs() {
+      return true;// (bool) ((Boolean) CallNativeObjectMethod("getDetectAnrs", "()Ljava/lang/Boolean;", new object[]{}));
+    }
+
+    public long GetAnrThresholdMs() {
+      return 1000; //(long) CallNativeObjectMethod("getAnrThresholdMs", "()J;", new object[]{});
+    }
+
     public string GetEndpoint() {
       return CallNativeStringMethod("getEndpoint", "()Ljava/lang/String;", new object[]{});
     }
@@ -155,6 +163,14 @@ namespace BugsnagUnity
 
     public void SetAppVersion(string newValue) {
       CallNativeVoidMethod("setAppVersion", "(Ljava/lang/String;)V", new object[]{newValue});
+    }
+
+    public void SetDetectAnrs(bool newValue) {
+      CallNativeVoidMethod("setDetectAnrs", "(Z)V", new object[]{newValue});
+    }
+
+    public void SetAnrThresholdMs(long newValue) {
+      CallNativeVoidMethod("setAnrThresholdMs", "(J)V", new object[]{newValue});
     }
 
     public void SetNotifyReleaseStages(string[] stages) {
