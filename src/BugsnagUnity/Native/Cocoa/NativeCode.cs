@@ -12,7 +12,7 @@ namespace BugsnagUnity
   partial class NativeCode
   {
     [DllImport(Import)]
-    internal static extern void bugsnag_startBugsnagWithConfiguration(IntPtr configuration);
+    internal static extern void bugsnag_startBugsnagWithConfiguration(IntPtr configuration, string notifierVersion);
 
     [DllImport(Import)]
     internal static extern void bugsnag_setMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
