@@ -65,8 +65,8 @@ namespace BugsnagUnity
 
       if (session != null) {
         session.Stopped = true;
+        Client.NativeClient.SetSession(null);
       }
-      Client.NativeClient.SetSession(null);
     }
 
     public bool ResumeSession()
