@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (iOS) Fix session start date formatting
+
 ## 4.4.0 (2019-04-05)
 
 * Disable ANR detection in Unity notifier
