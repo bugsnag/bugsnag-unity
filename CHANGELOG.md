@@ -4,6 +4,8 @@
 
 ### Bug fixes
 
+* Fix failure to include session info in native reports after stopping/resuming
+  a session
 * (iOS) Fix session start date formatting
 
 ## 4.4.0 (2019-04-05)

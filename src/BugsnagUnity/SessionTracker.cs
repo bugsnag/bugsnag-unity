@@ -80,6 +80,7 @@ namespace BugsnagUnity
       } else {
         resumed = session.Stopped;
         session.Stopped = false;
+        Client.NativeClient.SetSession(session);
       }
       return resumed;
     }
