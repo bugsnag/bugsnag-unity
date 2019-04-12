@@ -71,7 +71,7 @@ public class Main : MonoBehaviour
 #if UNITY_IOS
 		Crash();
 #elif UNITY_ANDROID
-		using (var java = new AndroidJavaObject("BugsnagCrash"))
+		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
 		{
 			java.Call("Crash");
 		}
@@ -84,7 +84,7 @@ public class Main : MonoBehaviour
 #if UNITY_IOS
 		CrashInBackground();
 #elif UNITY_ANDROID
-		using (var java = new AndroidJavaObject("BugsnagCrash"))
+		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
 		{
 			java.Call("BackgroundCrash");
 		}
