@@ -21,7 +21,7 @@ namespace BugsnagUnity
       Configuration = configuration;
       NativeConfiguration = nativeConfiguration;
 
-      NativeCode.bugsnag_startBugsnagWithConfiguration(NativeConfiguration);
+      NativeCode.bugsnag_startBugsnagWithConfiguration(NativeConfiguration, NotifierInfo.NotifierVersion);
 
       Delivery = new Delivery();
       Breadcrumbs = breadcrumbs;

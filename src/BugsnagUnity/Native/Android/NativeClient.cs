@@ -23,7 +23,7 @@ namespace BugsnagUnity
       using (var info = notifier.CallStatic<AndroidJavaObject>("getInstance"))
       {
         info.Call("setURL", NotifierInfo.NotifierUrl);
-        info.Call("setName", NotifierInfo.NotifierName);
+        info.Call("setName", "Bugsnag Unity (Android)");
         info.Call("setVersion", NotifierInfo.NotifierVersion);
       }
 
