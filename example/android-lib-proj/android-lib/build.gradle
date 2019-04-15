@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 14
+    }
+}
+
+task copyAarToUnityDir(type: Copy) {
+    from "build/outputs/aar/android-lib-release.aar"
+    into "../../Assets/Plugins/Android"
+}
+
+assemble.dependsOn copyAarToUnityDir
