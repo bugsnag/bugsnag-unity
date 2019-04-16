@@ -7,6 +7,10 @@
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
 
+@interface Bugsnag ()
++ (id)notifier;
+@end
+
 extern "C" {
   struct bugsnag_user {
     const char *user_id;
@@ -33,7 +37,7 @@ extern "C" {
 
   void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
 
-  void bugsnag_startBugsnagWithConfiguration(const void *configuration);
+  void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
   void *bugsnag_createBreadcrumbs(const void *configuration);
   void bugsnag_addBreadcrumb(const void *breadcrumbs, char *name, char *type, char *metadata[], int metadataCount);
@@ -135,8 +139,17 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
   }
 }
 
-void bugsnag_startBugsnagWithConfiguration(const void *configuration) {
+void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
   [Bugsnag startBugsnagWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
+  if (notifierVersion != NULL) {
+    NSString *ns_version = [NSString stringWithUTF8String:notifierVersion];
+    id notifier = [Bugsnag notifier];
+    [notifier setValue:@{
+        @"version": ns_version,
+        @"name": @"Bugsnag Unity (Cocoa)",
+        @"url": @"https://github.com/bugsnag/bugsnag-unity"
+    } forKey:@"details"];
+  }
 }
 
 void *bugsnag_createBreadcrumbs(const void *configuration) {
