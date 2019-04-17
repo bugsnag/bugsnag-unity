@@ -65,6 +65,9 @@ public class Main : MonoBehaviour {
       case "Notify":
         DoNotify();
         break;
+      case "NotifyBackground":
+        new System.Threading.Thread(() => DoNotify()).Start();
+        break;
       case "NotifyCallback":
         DoNotifyWithCallback();
         break;
