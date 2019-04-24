@@ -45,8 +45,12 @@ namespace UnityEngine
 
     public static void logMessageReceivedThreaded() {}
 
+    public static void logMessageReceived() {}
+
     public static void add_logMessageReceivedThreaded(LogCallback cb) {}
-    
+
+    public static void add_logMessageReceived(LogCallback cb) {}
+
     public delegate void LogCallback(string condition, string stackTrace, LogType type);
   }
 }

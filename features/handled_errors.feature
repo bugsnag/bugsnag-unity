@@ -93,6 +93,19 @@ Feature: Handled Errors and Exceptions
             | Main:LoadScenario()  |
             | Main:Update()        |
 
+    Scenario: Logging a warning from a background thread to Bugsnag
+        When I run the game in the "ReportLoggedWarningThreaded" state
+        Then I should receive a request
+        And the request is a valid for the error reporting API
+        And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+        And the payload field "notifier.name" equals "Unity Bugsnag Notifier"
+        And the payload field "events" is an array with 1 element
+        And the exception "errorClass" equals "UnityLogWarning"
+        And the exception "message" equals "Something went terribly awry"
+        And the event "unhandled" is false
+        And the first significant stack frame methods and files should match:
+            | Main.DoLogWarning()       |
+
     Scenario: Logging a warning to Bugsnag
         When I run the game in the "ReportLoggedWarning" state
         Then I should receive a request

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.ComponentModel;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -38,8 +39,11 @@ namespace BugsnagUnity
 
     const string UnityMetadataKey = "Unity";
 
+    private Thread MainThread;
+
     public Client(INativeClient nativeClient)
     {
+      MainThread = Thread.CurrentThread;
       Stopwatch = new Stopwatch();
       NativeClient = nativeClient;
       User = new User { Id = SystemInfo.deviceUniqueIdentifier };
@@ -54,7 +58,8 @@ namespace BugsnagUnity
       NativeClient.PopulateUser(User);
 
       SceneManager.sceneLoaded += SceneLoaded;
-      Application.logMessageReceivedThreaded += Notify;
+      Application.logMessageReceivedThreaded += MultiThreadedNotify;
+      Application.logMessageReceived += Notify;
       User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
     }
 
@@ -73,6 +78,15 @@ namespace BugsnagUnity
     {
       Configuration.Context = scene.name;
       Breadcrumbs.Leave("Scene Loaded", BreadcrumbType.State, new Dictionary<string, string> { { "sceneName", scene.name } });
+    }
+
+    void MultiThreadedNotify(string condition, string stackTrace, LogType logType)
+    {
+      // Discard messages from the main thread as they will be reported separately
+      if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
+      {
+        Notify(condition, stackTrace, logType);
+      }
     }
 
     /// <summary>
