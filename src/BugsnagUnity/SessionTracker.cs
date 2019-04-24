@@ -65,8 +65,8 @@ namespace BugsnagUnity
 
       if (session != null) {
         session.Stopped = true;
+        Client.NativeClient.SetSession(null);
       }
-      Client.NativeClient.SetSession(null);
     }
 
     public bool ResumeSession()
@@ -80,6 +80,7 @@ namespace BugsnagUnity
       } else {
         resumed = session.Stopped;
         session.Stopped = false;
+        Client.NativeClient.SetSession(session);
       }
       return resumed;
     }

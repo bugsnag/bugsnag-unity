@@ -137,7 +137,7 @@ namespace BugsnagUnity
       else
       {
         // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
-        var startedAt = (session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).Milliseconds;
+        var startedAt = Convert.ToInt64((session.StartedAt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
         NativeCode.bugsnag_registerSession(session.Id.ToString(), startedAt, session.UnhandledCount(), session.HandledCount());
       }
     }
