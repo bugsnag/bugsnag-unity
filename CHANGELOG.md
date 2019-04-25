@@ -7,6 +7,10 @@
 * Fix failure to include session info in native reports after stopping/resuming
   a session
 * (iOS) Fix session start date formatting
+* Support `Notify()` on background threads by caching values from
+  `UnityEngine.Application` required for reports during Client initialization
+  [#147](https://github.com/bugsnag/bugsnag-unity/pull/147)
+
 
 ## 4.4.0 (2019-04-05)
 
