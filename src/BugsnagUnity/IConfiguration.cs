@@ -41,5 +41,10 @@ namespace BugsnagUnity
     bool AutoCaptureSessions { get; set; }
 
     LogTypeSeverityMapping LogTypeSeverityMapping { get; }
+    string ScriptingBackend { get; set; }
+
+    string DotnetScriptingRuntime { get; set; }
+
+    string DotnetApiCompatibility { get; set; }
   }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using UnityEngine;
+using BugsnagUnity;
 
 namespace BugsnagUnity.Payload
 {
@@ -31,6 +33,18 @@ namespace BugsnagUnity.Payload
         this.AddToPayload("osName", matches.Groups["osName"].Value);
         this.AddToPayload("osVersion", matches.Groups["osVersion"].Value);
       }
+
+      var versions = new Dictionary<string, object>() {
+        {"unity", Application.unityVersion}
+      };
+      this.AddToPayload("runtimeVersions", versions);
+    }
+
+    internal void AddRuntimeVersions(IConfiguration config) {
+      var versions = (Dictionary<string, object>) this.Get("runtimeVersions");
+      versions.AddToPayload("unityScriptingBackend", config.ScriptingBackend);
+      versions.AddToPayload("dotnetScriptingRuntime", config.DotnetScriptingRuntime);
+      versions.AddToPayload("dotnetApiCompatibility", config.DotnetApiCompatibility);
     }
 
     /// <summary>

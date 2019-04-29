@@ -177,6 +177,8 @@ namespace BugsnagUnity
       NativeClient.PopulateApp(app);
       var device = new Device();
       NativeClient.PopulateDevice(device);
+      device.AddRuntimeVersions(Configuration);
+
       var metadata = new Metadata();
       NativeClient.PopulateMetadata(metadata);
 
