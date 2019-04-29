@@ -2,6 +2,9 @@
 
 ## TBD
 
+* Migrate version information to device.runtimeVersions
+    [#149](https://github.com/bugsnag/bugsnag-unity/pull/149)
+
 ### Bug fixes
 
 * Fix failure to include session info in native reports after stopping/resuming
