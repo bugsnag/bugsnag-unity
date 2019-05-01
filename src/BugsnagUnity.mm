@@ -263,7 +263,8 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
   callback(deviceData, "model", [sysInfo[@BSG_KSSystemField_Machine] UTF8String]);
   callback(deviceData, "modelNumber", [sysInfo[@BSG_KSSystemField_Model] UTF8String]);
   callback(deviceData, "osName", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
-  callback(deviceData, "osBuild", [sysInfo[@BSG_KSSystemField_SystemVersion] UTF8String]);
+  callback(deviceData, "osVersion", [sysInfo[@BSG_KSSystemField_SystemVersion] UTF8String]);
+  callback(deviceData, "osBuild", [sysInfo[@BSG_KSSystemField_OSVersion] UTF8String]);
 }
 
 void bugsnag_populateUser(bugsnag_user *user) {
