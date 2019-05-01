@@ -12,6 +12,12 @@ namespace BugsnagUnity.Payload
   /// </summary>
   public class Device : Dictionary<string, object>, IFilterable
   {
+    private static string UnityVersion;
+     internal static void InitUnityVersion() {
+       if (UnityVersion == null) {
+         UnityVersion = Application.unityVersion;
+       }
+    }
     internal Device() : this(Hostname)
     {
     }
@@ -35,7 +41,7 @@ namespace BugsnagUnity.Payload
       }
 
       var versions = new Dictionary<string, object>() {
-        {"unity", Application.unityVersion}
+        {"unity", UnityVersion}
       };
       this.AddToPayload("runtimeVersions", versions);
     }
