@@ -25,7 +25,10 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
-        And the event "metaData.Unity.unityVersion" is not null
+        And the event "device.runtimeVersions.unity" is not null
+        And the event "device.runtimeVersions.unityScriptingBackend" is not null
+        And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
+        And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
         And the event "metaData.Unity.platform" equals "OSXPlayer"
         And the first significant stack frame methods and files should match:
             | Main.DoNotify()           |
