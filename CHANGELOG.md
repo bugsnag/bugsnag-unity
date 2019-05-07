@@ -19,32 +19,32 @@
 
 ## 4.4.0 (2019-04-05)
 
-* Disable ANR detection in Unity notifier
-    [#142](https://github.com/bugsnag/bugsnag-unity/pull/142)
+### Enhancements
 
 * Update bugsnag-android dependency to v4.13.0:
-  ### Enhancements
-  * Add ANR detection to bugsnag-android
-[#442](https://github.com/bugsnag/bugsnag-android/pull/442)
+  * Add ANR detection to bugsnag-android (ANR detection is disabled on Unity)
+    [bugsnag-android#442](https://github.com/bugsnag/bugsnag-android/pull/442)
 
   * Add unhandled_events field to native payload
-  [#445](https://github.com/bugsnag/bugsnag-android/pull/445)
+    [bugsnag-android#445](https://github.com/bugsnag/bugsnag-android/pull/445)
 
   * Add stopSession() and resumeSession() to Client
-  [#429](https://github.com/bugsnag/bugsnag-android/pull/429)
+    [bugsnag-android#429](https://github.com/bugsnag/bugsnag-android/pull/429)
 
-  ### Bug fixes
+### Bug fixes
+
+* Update bugsnag-android dependency to v4.13.0:
   * Prevent overwriting config.projectPackages if already set
-    [#428](https://github.com/bugsnag/bugsnag-android/pull/428)
+    [bugsnag-android#428](https://github.com/bugsnag/bugsnag-android/pull/428)
 
   * Fix incorrect session handledCount when notifying in quick succession
-    [#434](https://github.com/bugsnag/bugsnag-android/pull/434)
+    [bugsnag-android#434](https://github.com/bugsnag/bugsnag-android/pull/434)
 
   * Ensure boolean object from map serialised as boolean primitive in JNI
-  [#452](https://github.com/bugsnag/bugsnag-android/pull/452)
+    [bugsnag-android#452](https://github.com/bugsnag/bugsnag-android/pull/452)
 
   * Prevent NPE occurring when calling resumeSession()
-  [#444](https://github.com/bugsnag/bugsnag-android/pull/444)
+    [bugsnag-android#444](https://github.com/bugsnag/bugsnag-android/pull/444)
 
 * Update bugsnag-cocoa dependency to v5.19.1:
   * Fix generating an incorrect stacktrace used when logging an exception to
@@ -55,11 +55,11 @@
     This fixes an issue in macOS exception reporting where `reportException` is
     reporting the handler code stacktrace rather than the reported exception
     stack.
-    [#334](https://github.com/bugsnag/bugsnag-cocoa/pull/334)
+    [bugsnag-cocoa#334](https://github.com/bugsnag/bugsnag-cocoa/pull/334)
 
   * Fix network connectivity monitor by connecting to the correct domain
     [Jacky Wijaya](https://github.com/Jekiwijaya)
-    [#332](https://github.com/bugsnag/bugsnag-cocoa/pull/332)
+    [bugsnag-cocoa#332](https://github.com/bugsnag/bugsnag-cocoa/pull/332)
 
 ## 4.3.0 (2019-03-14)
 
