@@ -89,6 +89,9 @@ public class Main : MonoBehaviour {
       case "LogUnthrownAsUnhandled":
         DoLogUnthrownAsUnhandled();
         break;
+      case "ReportLoggedWarningThreaded":
+        new System.Threading.Thread(() => DoLogWarning()).Start();
+        break;
       case "ReportLoggedWarning":
         DoLogWarning();
         break;

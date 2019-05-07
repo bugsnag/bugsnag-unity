@@ -10,6 +10,11 @@
 * Support `Notify()` on background threads by caching values from
   `UnityEngine.Application` required for reports during Client initialization
   [#147](https://github.com/bugsnag/bugsnag-unity/pull/147)
+* Improve the number of stacktrace frames gathered on Unity 2017.x by
+  subscribing to the `logMessageReceived` callback in addition to
+  `logMessageReceivedThreaded` and filtering by thread to remove duplicates. The
+  main thread-only `logMessageReceived` callback receives more stackframes on
+  some versions of Unity 2017, improving the debugging experience.
 
 
 ## 4.4.0 (2019-04-05)

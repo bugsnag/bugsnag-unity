@@ -15,6 +15,7 @@ Then("the first significant stack frame methods and files should match:") do |ex
     next if expected_index >= expected_frame_values.length
     expected_frame = expected_frame_values[expected_index]
     next if item["method"].start_with? "UnityEngine"
+    next if item["method"].start_with? "BugsnagUnity"
 
     assert_equal(expected_frame[0], item["method"])
     expected_index += 1
