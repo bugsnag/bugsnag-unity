@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.4.1 (2019-05-07)
 
 ### Bug fixes
 
