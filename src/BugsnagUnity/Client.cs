@@ -33,20 +33,27 @@ namespace BugsnagUnity
 
     internal INativeClient NativeClient { get; }
 
-    Stopwatch Stopwatch { get; }
+    Stopwatch ForegroundStopwatch { get; }
 
-    bool InForeground => Stopwatch.IsRunning;
+    Stopwatch BackgroundStopwatch { get; }
+
+    bool InForeground => ForegroundStopwatch.IsRunning;
 
     const string UnityMetadataKey = "Unity";
 
     private Thread MainThread;
 
+    private static double AutoCaptureSessionThresholdSeconds = 30;
+
     private GameObject TimingTrackerObject { get; }
+
+    private static object autoSessionLock = new object();
 
     public Client(INativeClient nativeClient)
     {
       MainThread = Thread.CurrentThread;
-      Stopwatch = new Stopwatch();
+      ForegroundStopwatch = new Stopwatch();
+      BackgroundStopwatch = new Stopwatch();
       NativeClient = nativeClient;
       User = new User { Id = SystemInfo.deviceUniqueIdentifier };
       Middleware = new List<Middleware>();
@@ -191,7 +198,7 @@ namespace BugsnagUnity
       var app = new App(Configuration)
       {
         InForeground = InForeground,
-        DurationInForeground = Stopwatch.Elapsed,
+        DurationInForeground = ForegroundStopwatch.Elapsed,
       };
       NativeClient.PopulateApp(app);
       var device = new Device();
@@ -263,16 +270,21 @@ namespace BugsnagUnity
     {
       if (inFocus)
       {
-        Stopwatch.Start();
-
-        if (Configuration.AutoCaptureSessions)
+        ForegroundStopwatch.Start();
+        lock (autoSessionLock)
         {
-          SessionTracking.StartSession();
+          if (Configuration.AutoCaptureSessions
+           && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
+          {
+            SessionTracking.StartSession();
+          }
+          BackgroundStopwatch.Reset();
         }
       }
       else
       {
-        Stopwatch.Stop();
+        ForegroundStopwatch.Stop();
+        BackgroundStopwatch.Start();
       }
     }
   }

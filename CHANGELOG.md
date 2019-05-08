@@ -6,6 +6,10 @@
 
 * Support automatic session tracking when using code-based initialization flow
   rather than a game object and `BugsnagBehaviour`
+* Correctly set the "new session" threshold when using automatic session
+  tracking to 30 seconds - no more than 1 session should be automatically
+  started every 30 seconds when toggling the app between the foreground and
+  background.
 
 ## 4.5.0 (2019-05-09)
 
