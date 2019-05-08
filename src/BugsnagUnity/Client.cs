@@ -73,6 +73,14 @@ namespace BugsnagUnity
       User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
       TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
       TimingTrackerObject.AddComponent<TimingTrackerBehaviour>();
+      // Run initial session check in next frame to allow potential configuration
+      // changes to be completed first.
+      try {
+        var asyncHandler = MainThreadDispatchBehaviour.Instance();
+        asyncHandler.Enqueue(RunInitialSessionCheck());
+      } catch (System.Exception ex) {
+        // Async behavior is not available in a test environment
+      }
     }
 
     public void Send(IPayload payload)
@@ -285,6 +293,18 @@ namespace BugsnagUnity
       {
         ForegroundStopwatch.Stop();
         BackgroundStopwatch.Start();
+      }
+    }
+
+    /// <summary>
+    /// Check next frame if a new session should be captured
+    /// </summary>
+    private IEnumerator<UnityEngine.AsyncOperation> RunInitialSessionCheck()
+    {
+      yield return null;
+      if (Configuration.AutoCaptureSessions && SessionTracking.CurrentSession == null)
+      {
+        SessionTracking.StartSession();
       }
     }
   }

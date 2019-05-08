@@ -10,6 +10,10 @@
   tracking to 30 seconds - no more than 1 session should be automatically
   started every 30 seconds when toggling the app between the foreground and
   background.
+* Capture initial session on iOS - previously, the `OnApplicationFocus()`
+  callback was relied upon to fire the first session, which does not fire at
+  launch on iOS (unlike Android). This change starts the first session in the
+  frame following BugsnagUnity initialization.
 
 ## 4.5.0 (2019-05-09)
 
