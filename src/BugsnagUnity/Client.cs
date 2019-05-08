@@ -53,6 +53,7 @@ namespace BugsnagUnity
       LogTypeCounter = new MaximumLogTypeCounter(Configuration);
       SessionTracking = new SessionTracker(this);
       UnityMetadata.InitDefaultMetadata();
+      Device.InitUnityVersion();
       NativeClient.SetMetadata(UnityMetadataKey, UnityMetadata.ForNativeClient());
 
       NativeClient.PopulateUser(User);
@@ -191,6 +192,8 @@ namespace BugsnagUnity
       NativeClient.PopulateApp(app);
       var device = new Device();
       NativeClient.PopulateDevice(device);
+      device.AddRuntimeVersions(Configuration);
+
       var metadata = new Metadata();
       NativeClient.PopulateMetadata(metadata);
 

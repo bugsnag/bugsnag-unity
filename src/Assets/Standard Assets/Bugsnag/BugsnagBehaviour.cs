@@ -44,6 +44,10 @@ namespace BugsnagUnity
       Bugsnag.Configuration.NotifyLevel = NotifyLevel;
       Bugsnag.Configuration.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
       Bugsnag.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
+
+      Bugsnag.Configuration.ScriptingBackend = FindScriptingBackend();
+      Bugsnag.Configuration.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
+      Bugsnag.Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
     }
 
     /// <summary>
@@ -64,6 +68,34 @@ namespace BugsnagUnity
     {
       var hasFocus = !paused;
       Bugsnag.SetApplicationState(hasFocus);
+    }
+
+    /*** Determine runtime versions ***/
+
+    private static string FindScriptingBackend() {
+#if ENABLE_MONO
+      return "Mono";
+#elif ENABLE_IL2CPP
+      return "IL2CPP";
+#else
+      return "Unknown";
+#endif
+    }
+
+    private static string FindDotnetScriptingRuntime() {
+#if NET_4_6
+      return ".NET 4.6 equivalent";
+#else
+      return ".NET 3.5 equivalent";
+#endif
+    }
+
+    private static string FindDotnetApiCompatibility() {
+#if NET_2_0_SUBSET
+      return ".NET 2.0 Subset";
+#else
+      return ".NET 2.0";
+#endif
     }
   }
 

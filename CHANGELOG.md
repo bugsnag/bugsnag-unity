@@ -2,6 +2,9 @@
 
 ## 4.4.1 (2019-05-07)
 
+* Migrate version information to device.runtimeVersions
+    [#149](https://github.com/bugsnag/bugsnag-unity/pull/149)
+
 ### Bug fixes
 
 * Fix failure to include session info in native reports after stopping/resuming
