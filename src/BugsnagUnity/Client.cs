@@ -41,6 +41,8 @@ namespace BugsnagUnity
 
     private Thread MainThread;
 
+    private GameObject TimingTrackerObject { get; }
+
     public Client(INativeClient nativeClient)
     {
       MainThread = Thread.CurrentThread;
@@ -62,6 +64,8 @@ namespace BugsnagUnity
       Application.logMessageReceivedThreaded += MultiThreadedNotify;
       Application.logMessageReceived += Notify;
       User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
+      TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
+      TimingTrackerObject.AddComponent<TimingTrackerBehaviour>();
     }
 
     public void Send(IPayload payload)

@@ -1,7 +1,13 @@
 # Changelog
 
-## 4.5.0 (2019-05-09)
+## TBD
 
+### Bug fixes
+
+* Support automatic session tracking when using code-based initialization flow
+  rather than a game object and `BugsnagBehaviour`
+
+## 4.5.0 (2019-05-09)
 
 ### Enhancements
 
