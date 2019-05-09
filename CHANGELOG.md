@@ -16,7 +16,7 @@
   * Migrate version information to device.runtimeVersions
     [#472](https://github.com/bugsnag/bugsnag-android/pull/472)
 
-* Update bugsnag-cocoa dependency to v5.21.0:
+* Update bugsnag-cocoa dependency to v5.22.0:
   * Migrate version information to device.runtimeVersions
     [#340](https://github.com/bugsnag/bugsnag-cocoa/pull/340)
   * Persist breadcrumbs on disk to allow reading upon next boot in the event of an
@@ -25,6 +25,12 @@
     previous launch of the app ended in a crash or otherwise unexpected termination.
   * Report unexpected app terminations on iOS as likely out of memory events where
     the operating system killed the app
+  * Add configuration option (`reportOOMs`) to disable out-of-memory (OOM) event
+    reporting, defaulting to enabled.
+    [#345](https://github.com/bugsnag/bugsnag-cocoa/pull/345)
+  * Disable background OOM reporting by default. It can be enabled using
+    `reportBackgroundOOMs`.
+    [#345](https://github.com/bugsnag/bugsnag-cocoa/pull/345)
 
 ### Bug fixes
 
