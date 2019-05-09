@@ -60,6 +60,12 @@ namespace BugsnagUnity
     public virtual bool AutoCaptureSessions { get; set; }
 
     public virtual LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
+
+    public virtual string ScriptingBackend { get; set; }
+
+    public virtual string DotnetScriptingRuntime { get; set; }
+
+    public virtual string DotnetApiCompatibility { get; set; }
   }
 }
 

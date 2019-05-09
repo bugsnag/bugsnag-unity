@@ -53,6 +53,7 @@ namespace BugsnagUnity
       Client.NativeClient.PopulateApp(app);
       var device = new Device();
       Client.NativeClient.PopulateDevice(device);
+      device.AddRuntimeVersions(Client.Configuration);
 
       var payload = new SessionReport(Client.Configuration, app, device, Client.User, session);
 

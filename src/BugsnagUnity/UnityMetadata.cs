@@ -11,7 +11,6 @@ namespace BugsnagUnity
       if (DefaultMetadata.Count > 0) {
         return; // Already initialized
       }
-      DefaultMetadata.Add("unityVersion", Application.unityVersion);
       DefaultMetadata.Add("osLanguage", Application.systemLanguage.ToString());
       DefaultMetadata.Add("platform", Application.platform.ToString());
       DefaultMetadata.Add("version", Application.version);

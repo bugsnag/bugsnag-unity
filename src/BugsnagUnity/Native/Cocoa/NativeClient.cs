@@ -92,6 +92,10 @@ namespace BugsnagUnity
                 break;
             }
             break;
+          case "osBuild": // add to nested runtimeVersions dictionary
+            Dictionary<string, object> runtimeVersions = (Dictionary<string, object>) device.Get("runtimeVersions");
+            runtimeVersions.AddToPayload(key, value);
+            break;
           default:
             device.AddToPayload(key, value);
             break;

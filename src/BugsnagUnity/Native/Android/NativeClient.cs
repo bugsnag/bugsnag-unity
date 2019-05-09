@@ -38,7 +38,13 @@ namespace BugsnagUnity
 
     public void PopulateDevice(Device device)
     {
-      MergeDictionaries(device, NativeInterface.GetDeviceData());
+      Dictionary<string, object> runtimeVersions = (Dictionary<string, object>) device.Get("runtimeVersions");
+      Dictionary<string, object> deviceData = NativeInterface.GetDeviceData();
+      Dictionary<string, object> nativeVersions = (Dictionary<string, object>) deviceData.Get("runtimeVersions");
+
+      deviceData.Remove("runtimeVersions"); // don't overwrite the unity version values
+      MergeDictionaries(device, deviceData);
+      MergeDictionaries(runtimeVersions, nativeVersions); // merge the native version values
     }
 
     public void PopulateUser(User user)

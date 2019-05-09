@@ -1,5 +1,46 @@
 # Changelog
 
+## 4.5.0 (2019-05-09)
+
+
+### Enhancements
+
+* Migrate version information in reports to device.runtimeVersions, adding
+  additional info like scripting backend
+  [#149](https://github.com/bugsnag/bugsnag-unity/pull/149)
+
+* Update bugsnag-android dependency to v4.14.0:
+  * Improve In-foreground calculation for report metadata
+    [#466](https://github.com/bugsnag/bugsnag-android/pull/466)
+
+  * Migrate version information to device.runtimeVersions
+    [#472](https://github.com/bugsnag/bugsnag-android/pull/472)
+
+* Update bugsnag-cocoa dependency to v5.22.0:
+  * Migrate version information to device.runtimeVersions
+    [#340](https://github.com/bugsnag/bugsnag-cocoa/pull/340)
+  * Persist breadcrumbs on disk to allow reading upon next boot in the event of an
+    uncatchable app termination.
+  * Add `+[Bugsnag appDidCrashLastLaunch]` as a helper to determine if the
+    previous launch of the app ended in a crash or otherwise unexpected termination.
+  * Report unexpected app terminations on iOS as likely out of memory events where
+    the operating system killed the app
+  * Add configuration option (`reportOOMs`) to disable out-of-memory (OOM) event
+    reporting, defaulting to enabled.
+    [#345](https://github.com/bugsnag/bugsnag-cocoa/pull/345)
+  * Disable background OOM reporting by default. It can be enabled using
+    `reportBackgroundOOMs`.
+    [#345](https://github.com/bugsnag/bugsnag-cocoa/pull/345)
+
+### Bug fixes
+
+* Update bugsnag-android dependency to v4.14.0:
+  * [NDK] Fix possible null pointer dereference
+  * [NDK] Fix possible memory leak if bugsnag-android-ndk fails to successfully
+    parse a cached crash report
+  * [NDK] Fix possible memory leak when using `bugsnag_leave_breadcrumb()` or
+    `bugsnag_notify()`
+
 ## 4.4.1 (2019-05-07)
 
 ### Bug fixes
