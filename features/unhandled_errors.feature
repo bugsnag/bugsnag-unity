@@ -45,3 +45,17 @@ Feature: Reporting unhandled events
             | Main.LoadScenario()                      |
             | Main.Update()                            |
 
+    Scenario: Reporting a native crash
+        When I run the game in the "NativeCrash" state
+        And I run the game in the "(noop)" state
+        Then I should receive a request
+        And the request is a valid for the error reporting API
+        And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+        And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
+        And the payload field "events" is an array with 1 element
+        And the exception "errorClass" equals "SIGABRT"
+        And the event "unhandled" is true
+        And the first significant stack frame methods and files should match:
+            | __pthread_kill       |
+            | abort                |
+            | crashy_signal_runner |

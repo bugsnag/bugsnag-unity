@@ -19,6 +19,7 @@ pushd "${0%/*}"
       -importPackage "$package_path/Bugsnag.unitypackage"
 
     cp Main.cs unity_project/Assets/Main.cs
+    cp -R NativeCrashy.bundle unity_project/Assets/Plugins/OSX/NativeCrashy.bundle
 
     Unity -nographics -quit -batchmode -logFile $log_file \
       -projectPath $project_path \
