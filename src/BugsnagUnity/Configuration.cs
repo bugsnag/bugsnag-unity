@@ -16,6 +16,7 @@ namespace BugsnagUnity
     {
       ApiKey = apiKey;
       AppVersion = Application.version;
+      AutoCaptureSessions = true;
     }
 
     public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;

@@ -55,6 +55,7 @@ void *bugsnag_createConfiguration(char *apiKey) {
   NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
   BugsnagConfiguration *config = [BugsnagConfiguration new];
   config.apiKey = ns_apiKey;
+  config.shouldAutoCaptureSessions = NO;
   return (void*)CFBridgingRetain(config);
 }
 
