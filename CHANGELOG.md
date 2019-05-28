@@ -14,6 +14,13 @@
   callback was relied upon to fire the first session, which does not fire at
   launch on iOS (unlike Android). This change starts the first session in the
   frame following BugsnagUnity initialization.
+* Updated bugsnag-cocoa to v5.22.1:
+  * Report correct app version in out-of-memory reports. Previously the bundle
+    version was reported as the version number rather than the short version
+    string.
+    [bugsnag-cocoa#349](https://github.com/bugsnag/bugsnag-cocoa/pull/349)
+  * Fix missing stacktraces in reports generated from `notify()`
+    [bugsnag-cocoa#348](https://github.com/bugsnag/bugsnag-cocoa/pull/348)
 
 ## 4.5.0 (2019-05-09)
 
