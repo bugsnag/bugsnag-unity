@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Threading;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 
@@ -26,11 +28,16 @@ public class Main : MonoBehaviour {
   }
 #endif
 
+  [DllImport ("NativeCrashy")]
+  private static extern void crashy_signal_runner(float num);
+
   bool sent = false;
 
   void Update() {
     // only send one crash
     if (!sent) {
+      var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
+      Bugsnag.Configuration.AutoCaptureSessions = scenario.Contains("AutoSession");
       sent = true;
       var endpoint =
         new System.Uri(Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
@@ -128,6 +135,15 @@ public class Main : MonoBehaviour {
         break;
       case "NewSession":
         RunNewSession();
+        break;
+      case "NativeCrash":
+        crashy_signal_runner(8);
+        break;
+      case "AutoSessionNativeCrash":
+        new Thread(() => {
+          Thread.Sleep(900);
+          crashy_signal_runner(8);
+        }).Start();
         break;
     }
   }

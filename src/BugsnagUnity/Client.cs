@@ -33,18 +33,27 @@ namespace BugsnagUnity
 
     internal INativeClient NativeClient { get; }
 
-    Stopwatch Stopwatch { get; }
+    Stopwatch ForegroundStopwatch { get; }
 
-    bool InForeground => Stopwatch.IsRunning;
+    Stopwatch BackgroundStopwatch { get; }
+
+    bool InForeground => ForegroundStopwatch.IsRunning;
 
     const string UnityMetadataKey = "Unity";
 
     private Thread MainThread;
 
+    private static double AutoCaptureSessionThresholdSeconds = 30;
+
+    private GameObject TimingTrackerObject { get; }
+
+    private static object autoSessionLock = new object();
+
     public Client(INativeClient nativeClient)
     {
       MainThread = Thread.CurrentThread;
-      Stopwatch = new Stopwatch();
+      ForegroundStopwatch = new Stopwatch();
+      BackgroundStopwatch = new Stopwatch();
       NativeClient = nativeClient;
       User = new User { Id = SystemInfo.deviceUniqueIdentifier };
       Middleware = new List<Middleware>();
@@ -62,6 +71,16 @@ namespace BugsnagUnity
       Application.logMessageReceivedThreaded += MultiThreadedNotify;
       Application.logMessageReceived += Notify;
       User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
+      TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
+      TimingTrackerObject.AddComponent<TimingTrackerBehaviour>();
+      // Run initial session check in next frame to allow potential configuration
+      // changes to be completed first.
+      try {
+        var asyncHandler = MainThreadDispatchBehaviour.Instance();
+        asyncHandler.Enqueue(RunInitialSessionCheck());
+      } catch (System.Exception ex) {
+        // Async behavior is not available in a test environment
+      }
     }
 
     public void Send(IPayload payload)
@@ -187,7 +206,7 @@ namespace BugsnagUnity
       var app = new App(Configuration)
       {
         InForeground = InForeground,
-        DurationInForeground = Stopwatch.Elapsed,
+        DurationInForeground = ForegroundStopwatch.Elapsed,
       };
       NativeClient.PopulateApp(app);
       var device = new Device();
@@ -259,16 +278,33 @@ namespace BugsnagUnity
     {
       if (inFocus)
       {
-        Stopwatch.Start();
-
-        if (Configuration.AutoCaptureSessions)
+        ForegroundStopwatch.Start();
+        lock (autoSessionLock)
         {
-          SessionTracking.StartSession();
+          if (Configuration.AutoCaptureSessions
+           && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
+          {
+            SessionTracking.StartSession();
+          }
+          BackgroundStopwatch.Reset();
         }
       }
       else
       {
-        Stopwatch.Stop();
+        ForegroundStopwatch.Stop();
+        BackgroundStopwatch.Start();
+      }
+    }
+
+    /// <summary>
+    /// Check next frame if a new session should be captured
+    /// </summary>
+    private IEnumerator<UnityEngine.AsyncOperation> RunInitialSessionCheck()
+    {
+      yield return null;
+      if (Configuration.AutoCaptureSessions && SessionTracking.CurrentSession == null)
+      {
+        SessionTracking.StartSession();
       }
     }
   }

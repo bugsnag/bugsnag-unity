@@ -50,26 +50,6 @@ namespace BugsnagUnity
       Bugsnag.Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
     }
 
-    /// <summary>
-    /// OnApplicationFocus is called when the application loses or gains focus.
-    /// Alt-tabbing or Cmd-tabbing can take focus away from the Unity
-    /// application to another desktop application. This causes the GameObjects
-    /// to receive an OnApplicationFocus call with the argument set to false.
-    /// When the user switches back to the Unity application, the GameObjects
-    /// receive an OnApplicationFocus call with the argument set to true.
-    /// </summary>
-    /// <param name="hasFocus"></param>
-    void OnApplicationFocus(bool hasFocus)
-    {
-      Bugsnag.SetApplicationState(hasFocus);
-    }
-
-    void OnApplicationPause(bool paused)
-    {
-      var hasFocus = !paused;
-      Bugsnag.SetApplicationState(hasFocus);
-    }
-
     /*** Determine runtime versions ***/
 
     private static string FindScriptingBackend() {
