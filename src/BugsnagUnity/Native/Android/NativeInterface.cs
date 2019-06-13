@@ -183,7 +183,7 @@ namespace BugsnagUnity
       if (session == null) {
         // Clear session
         CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
-          IntPtr.Zero, session.Id.ToString(), 0, 0
+          IntPtr.Zero, IntPtr.Zero, 0, 0
         });
       } else {
         // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
