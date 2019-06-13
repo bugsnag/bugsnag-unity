@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (Android) Fix null pointer dereference when calling Bugsnag.StopSession()
+
 ## 4.5.1 (2019-05-28)
 
 ### Bug fixes
