@@ -90,11 +90,19 @@ def assemble_android filter_abis=true
     sh "./gradlew", "clean", "sdk:assembleRelease", "--quiet", abi_filters
   end
 
+  # Shim for the old bugsnag-android-ndk library to avoid duplicate
+  # libs/class names in the final bundle when upgrading from older versions of
+  # bugsnag-unity v4.x
+  cd "bugsnag-android-ndk-shim" do
+    sh "../bugsnag-android-unity/gradlew", "assembleRelease", "--quiet"
+  end
+
   cd "bugsnag-android-unity" do
     sh "./gradlew", "clean", "assembleRelease", "--quiet", abi_filters
   end
 
   android_lib = File.join("bugsnag-android", "sdk", "build", "outputs", "aar", "bugsnag-android-release.aar")
+  ndk_lib = File.join("bugsnag-android-ndk-shim", "build", "outputs", "aar", "bugsnag-android-ndk-shim-release.aar")
   unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
 
   # AARs include version name in newer versions of gradle, rename to old filename format
@@ -102,6 +110,7 @@ def assemble_android filter_abis=true
   mv sdk_aar, android_lib
 
   cp android_lib, android_dir
+  cp ndk_lib, File.join(android_dir, "bugsnag-android-ndk-release.aar")
   cp unity_lib, android_dir
 end
 
