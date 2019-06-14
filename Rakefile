@@ -87,7 +87,7 @@ def assemble_android filter_abis=true
   android_dir = File.join(assets_path, "Android")
 
   cd "bugsnag-android" do
-    sh "./gradlew", "clean", "ndk:assembleRelease", "sdk:assembleRelease", "--quiet", abi_filters
+    sh "./gradlew", "clean", "sdk:assembleRelease", "--quiet", abi_filters
   end
 
   cd "bugsnag-android-unity" do
@@ -95,17 +95,13 @@ def assemble_android filter_abis=true
   end
 
   android_lib = File.join("bugsnag-android", "sdk", "build", "outputs", "aar", "bugsnag-android-release.aar")
-  ndk_lib = File.join("bugsnag-android", "ndk", "build", "outputs", "aar", "bugsnag-android-ndk-release.aar")
   unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
 
   # AARs include version name in newer versions of gradle, rename to old filename format
-  sdk_aar = Dir.glob("bugsnag-android/sdk/build/outputs/aar/bugsnag-android-*.aar")[0]
-  ndk_aar = Dir.glob("bugsnag-android/ndk/build/outputs/aar/bugsnag-android-ndk-*.aar")[0]
+  sdk_aar = Dir.glob("bugsnag-android/sdk/build/outputs/aar/bugsnag-android-*.aar").first
   mv sdk_aar, android_lib
-  mv ndk_aar, ndk_lib
 
   cp android_lib, android_dir
-  cp ndk_lib, android_dir
   cp unity_lib, android_dir
 end
 

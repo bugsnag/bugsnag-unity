@@ -5,6 +5,11 @@
 ### Bug fixes
 
 * (Android) Fix null pointer dereference when calling Bugsnag.StopSession()
+* Update bugsnag-android dependency to v4.15.0:
+  * Make handledState.isUnhandled() publicly readable
+    [bugsnag-android#496](https://github.com/bugsnag/bugsnag-android/pull/496)
+  * Reduce library size
+    [bugsnag-android#492](https://github.com/bugsnag/bugsnag-android/pull/492)
 
 ## 4.5.1 (2019-05-28)
 
