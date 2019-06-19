@@ -2,9 +2,26 @@
 
 ## TBD
 
+### Enhancements
+
+* Update bugsnag-android dependency to v4.15.0:
+  * Make handledState.isUnhandled() publicly readable
+    [bugsnag-android#496](https://github.com/bugsnag/bugsnag-android/pull/496)
+  * Reduce library size
+    [bugsnag-android#492](https://github.com/bugsnag/bugsnag-android/pull/492)
+
 ### Bug fixes
 
 * (Android) Fix null pointer dereference when calling Bugsnag.StopSession()
+* Update bugsnag-cocoa dependency to v5.22.2:
+  * Fix trimming the stacktraces of handled error/exceptions using the
+    [`depth`](https://docs.bugsnag.com/platforms/ios/reporting-handled-exceptions/#depth)
+    property.
+    [Paul Zabelin](https://github.com/paulz)
+    [bugsnag-cocoa#363](https://github.com/bugsnag/bugsnag-cocoa/pull/363)
+  * Fix crash report parsing logic around arrays of numbers. Metadata which
+    included arrays of numbers could previously had missing values.
+    [bugsnag-cocoa#365](https://github.com/bugsnag/bugsnag-cocoa/pull/365)
 
 ## 4.5.1 (2019-05-28)
 

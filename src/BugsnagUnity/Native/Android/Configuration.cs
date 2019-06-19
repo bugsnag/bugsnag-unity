@@ -14,6 +14,7 @@ namespace BugsnagUnity
       // the bugsnag-unity notifier will handle session tracking
       JavaObject.Call("setAutoCaptureSessions", false);
       JavaObject.Call("setDetectAnrs", false);
+      JavaObject.Call("setDetectNdkCrashes", true);
       JavaObject.Call("setEndpoint", DefaultEndpoint);
       JavaObject.Call("setSessionEndpoint", DefaultSessionEndpoint);
       JavaObject.Call("setReleaseStage", "production");
