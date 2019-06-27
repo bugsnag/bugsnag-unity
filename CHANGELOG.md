@@ -12,6 +12,9 @@
 
 ### Bug fixes
 
+* Show report metadata added using `Bugsnag.Metadata.Add()` in native crash
+  reports
+  [#157](https://github.com/bugsnag/bugsnag-unity/pull/157)
 * (Android) Fix null pointer dereference when calling Bugsnag.StopSession()
 * Update bugsnag-cocoa dependency to v5.22.2:
   * Fix trimming the stacktraces of handled error/exceptions using the

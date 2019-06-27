@@ -10,6 +10,7 @@ Feature: Reporting unhandled events
         And the exception "errorClass" equals "ExecutionEngineException"
         And the exception "message" equals "Promise Rejection"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoUnhandledException(Int64 counter) |
             | Main.LoadScenario()         |
@@ -25,6 +26,7 @@ Feature: Reporting unhandled events
         And the exception "errorClass" equals "ExecutionEngineException"
         And the exception "message" equals "Invariant state failure"
         And the event "unhandled" is true
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.UncaughtExceptionAsUnhandled() |
             | Main.LoadScenario()         |
@@ -40,6 +42,7 @@ Feature: Reporting unhandled events
         And the exception "errorClass" equals "IndexOutOfRangeException"
         And the exception "message" equals "Array index is out of range."
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.MakeAssertionFailure(Int32 counter) |
             | Main.LoadScenario()                      |
@@ -55,6 +58,7 @@ Feature: Reporting unhandled events
         And the payload field "events" is an array with 1 element
         And the exception "errorClass" equals "SIGABRT"
         And the event "unhandled" is true
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | __pthread_kill       |
             | abort                |

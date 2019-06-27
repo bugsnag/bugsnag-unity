@@ -36,6 +36,7 @@ extern "C" {
   const char *bugsnag_getNotifyUrl(const void *configuration);
 
   void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
+  void bugsnag_removeMetadata(const void *configuration, const char *tab);
 
   void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
@@ -134,10 +135,25 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
   NSString *tabName = [NSString stringWithUTF8String: tab];
 
   for (size_t i = 0; i < metadataCount; i += 2) {
-    [ns_configuration.metaData addAttribute: [NSString stringWithUTF8String: metadata[i]]
-                                  withValue: [NSString stringWithUTF8String: metadata[i+1]]
-                              toTabWithName: tabName];
+    NSString *key = metadata[i] != NULL
+        ? [NSString stringWithUTF8String:metadata[i]]
+        : nil;
+    NSString *value = metadata[i+1] != NULL
+        ? [NSString stringWithUTF8String:metadata[i+1]]
+        : nil;
+    [ns_configuration.metaData addAttribute:key
+                                  withValue:value
+                              toTabWithName:tabName];
   }
+}
+
+void bugsnag_removeMetadata(const void *configuration, const char *tab) {
+  BugsnagConfiguration *ns_configuration = (__bridge BugsnagConfiguration *)configuration;
+  if (tab == NULL)
+    return;
+
+  NSString *tabName = [NSString stringWithUTF8String:tab];
+  [ns_configuration.metaData clearTab:tabName];
 }
 
 void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
