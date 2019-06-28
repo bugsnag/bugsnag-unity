@@ -211,7 +211,17 @@ namespace BugsnagUnity
       return GetJavaMapData("getUserData");
     }
 
+    public void RemoveMetadata(string tab) {
+      if (tab == null) {
+        return;
+      }
+      CallNativeVoidMethod("clearTab", "(Ljava/lang/String;)V", new object[]{tab});
+    }
+
     public void AddToTab(string tab, string key, string value) {
+      if (tab == null || key == null) {
+        return;
+      }
       CallNativeVoidMethod("addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V", new object[]{tab, key, value});
     }
 
