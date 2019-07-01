@@ -5,6 +5,12 @@ android {
     defaultConfig {
         minSdkVersion 14
     }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
 }
 
 task copyAarToUnityDir(type: Copy) {
