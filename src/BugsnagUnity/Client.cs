@@ -57,7 +57,7 @@ namespace BugsnagUnity
       NativeClient = nativeClient;
       User = new User { Id = SystemInfo.deviceUniqueIdentifier };
       Middleware = new List<Middleware>();
-      Metadata = new Metadata();
+      Metadata = new Metadata(nativeClient);
       UniqueCounter = new UniqueLogThrottle(Configuration);
       LogTypeCounter = new MaximumLogTypeCounter(Configuration);
       SessionTracking = new SessionTracker(this);

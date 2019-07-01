@@ -10,6 +10,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoNotify()      |
             | Main.LoadScenario()  |
@@ -25,6 +26,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the event "device.runtimeVersions.unity" is not null
         And the event "device.runtimeVersions.unityScriptingBackend" is not null
         And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
@@ -44,6 +46,8 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "FunnyBusiness"
         And the exception "message" equals "cake"
         And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the event "metaData.shape.arc" equals "yes"
         And the first significant stack frame methods and files should match:
             | Main.DoNotifyWithCallback() |
             | Main.LoadScenario()         |
@@ -61,6 +65,7 @@ Feature: Handled Errors and Exceptions
         And the event "severity" equals "info"
         And the event "severityReason.type" equals "userSpecifiedSeverity"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoNotifyWithSeverity() |
             | Main.LoadScenario()         |
@@ -76,6 +81,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "auth failed!"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main:DoLogUnthrown() |
             | Main:LoadScenario()  |
@@ -91,6 +97,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "WAT"
         And the event "unhandled" is true
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main:DoLogUnthrownAsUnhandled() |
             | Main:LoadScenario()  |
@@ -106,6 +113,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "UnityLogWarning"
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoLogWarning()       |
 
@@ -119,6 +127,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "UnityLogWarning"
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoLogWarning()  |
             | Main.LoadScenario()  |
@@ -134,6 +143,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "UnityLogError"
         And the exception "message" equals "Bad bad things"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoLogError()  |
             | Main.LoadScenario()  |
@@ -149,6 +159,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "UnityLogWarning"
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
+        And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoLogWarningWithHandledConfig()  |
             | Main.LoadScenario()  |

@@ -33,6 +33,24 @@ public class Main : MonoBehaviour {
 
   bool sent = false;
 
+  public void Start() {
+    // Add different varieties of custom metadata
+    Bugsnag.Metadata.Add("init", new Dictionary<string, string>(){
+      {"foo", "bar" },
+    });
+    Bugsnag.Metadata.Add("custom", new Dictionary<string, object>(){
+      {"letter", "QX" },
+      {"better", 400 },
+      {"setter", new OtherMetadata() },
+    });
+    Bugsnag.Metadata.Add("app", new Dictionary<string, string>(){
+      {"buildno", "0.1" },
+      {"cache", null },
+    });
+    // Remove a tab
+    Bugsnag.Metadata.Remove("init");
+  }
+
   void Update() {
     // only send one crash
     if (!sent) {
@@ -224,6 +242,9 @@ public class Main : MonoBehaviour {
     Bugsnag.Notify(new System.Exception("blorb"), report => {
       report.Exceptions[0].ErrorClass = "FunnyBusiness";
       report.Exceptions[0].ErrorMessage = "cake";
+      report.Metadata.Add("shape", new Dictionary<string, string>() {
+        { "arc", "yes" },
+      });
     });
   }
 
@@ -253,6 +274,12 @@ public class Main : MonoBehaviour {
   void MakeAssertionFailure(int counter) {
     var items = new int[]{1, 2, 3};
     Debug.Log("Item4 is: " + items[counter]);
+  }
+}
+
+class OtherMetadata {
+  public override string ToString() {
+    return "more stuff";
   }
 }
 

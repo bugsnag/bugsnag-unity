@@ -36,3 +36,13 @@ Then("the events in requests {string} match one of:") do |request_indices, table
     end, "No event matches the following values: #{values}")
   end
 end
+Then("custom metadata is included in the event") do
+  steps %Q{
+    Then the event "metaData.app.buildno" equals "0.1"
+    And the event "metaData.app.cache" is null
+    And the event "metaData.init" is null
+    And the event "metaData.custom.letter" equals "QX"
+    And the event "metaData.custom.better" equals "400"
+    And the event "metaData.custom.setter" equals "more stuff"
+  }
+end

@@ -15,7 +15,7 @@ namespace BugsnagUnity
     public IDelivery Delivery { get; }
 
     IntPtr NativeConfiguration { get; }
-    
+
     NativeClient(IConfiguration configuration, IntPtr nativeConfiguration, IBreadcrumbs breadcrumbs)
     {
       Configuration = configuration;
@@ -115,16 +115,23 @@ namespace BugsnagUnity
     public void SetMetadata(string tab, Dictionary<string, string> unityMetadata)
     {
       var index = 0;
-      var metadata = new string[unityMetadata.Count * 2];
+      var count = 0;
+      if (unityMetadata != null) {
+        var metadata = new string[unityMetadata.Count * 2];
 
-      foreach (var data in unityMetadata)
-      {
-        metadata[index] = data.Key;
-        metadata[index + 1] = data.Value;
-        index += 2;
+        foreach (var data in unityMetadata)
+        {
+          if (data.Key != null) {
+            metadata[index] = data.Key;
+            metadata[index + 1] = data.Value;
+            count += 2;
+          }
+          index += 2;
+        }
+        NativeCode.bugsnag_setMetadata(NativeConfiguration, tab, metadata, count);
+      } else {
+        NativeCode.bugsnag_removeMetadata(NativeConfiguration, tab);
       }
-
-      NativeCode.bugsnag_setMetadata(NativeConfiguration, tab, metadata, metadata.Length);
     }
 
     public void PopulateMetadata(Metadata metadata)
