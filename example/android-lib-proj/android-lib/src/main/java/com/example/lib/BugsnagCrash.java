@@ -1,6 +1,11 @@
 package com.example.lib;
 
 public class BugsnagCrash {
+
+    static {
+        System.loadLibrary("unity-example-lib");
+    }
+
     public void Crash() {
         throw new RuntimeException("from java");
     }
@@ -12,4 +17,6 @@ public class BugsnagCrash {
             }
         }).start();
     }
+
+    public native void NdkCrash();
 }
