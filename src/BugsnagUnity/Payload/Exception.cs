@@ -133,16 +133,28 @@ namespace BugsnagUnity.Payload
       {
         var errorClass = match.Groups["errorClass"].Value;
         var message = match.Groups["message"].Value.Trim();
+        // Exceptions starting with "AndroidJavaException" are uncaught Java exceptions reported
+        // via the Unity log handler
         if (errorClass == AndroidJavaErrorClass)
         {
           match = Regex.Match(message, ErrorClassMessagePattern, RegexOptions.Singleline);
 
+          // If the message matches the "class: message" pattern, then the Java class is followed
+          // by a description of the Java exception. These two values will be used as the error
+          // class and message.
           if (match.Success)
           {
             errorClass = match.Groups["errorClass"].Value;
             message = match.Groups["message"].Value.Trim();
-            lines = new StackTrace(logMessage.StackTrace, StackTraceFormat.AndroidJava).ToArray();
           }
+          else
+          {
+            // There was no Java exception description, so the Java class is the only content in
+            // the message.
+            errorClass = message;
+            message = "";
+          }
+          lines = new StackTrace(logMessage.StackTrace, StackTraceFormat.AndroidJava).ToArray();
           handledState = HandledState.ForUnhandledException();
         }
         return new Exception(errorClass, message, lines, handledState);

@@ -12,6 +12,9 @@
 
 ### Bug fixes
 
+* (Android) Fix error class and message parsing for uncaught Java exceptions
+  without message contents
+  [#159](https://github.com/bugsnag/bugsnag-unity/pull/159)
 * Show report metadata added using `Bugsnag.Metadata.Add()` in native crash
   reports
   [#157](https://github.com/bugsnag/bugsnag-unity/pull/157)

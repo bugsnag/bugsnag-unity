@@ -53,6 +53,28 @@ namespace BugsnagUnity.Payload.Tests
     [Test]
     public void ParseAndroidExceptionFromLogMessage()
     {
+      string condition = "AndroidJavaException: java.lang.IllegalArgumentException";
+      string stacktrace = @"java.lang.IllegalArgumentException
+com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash(CrashHelper.java:11)
+com.unity3d.player.UnityPlayer.nativeRender(Native Method)";
+      var logType = UnityEngine.LogType.Error;
+      var log = new UnityLogMessage(condition, stacktrace, logType);
+      var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {}, Severity.Warning);
+      var stack = exception.StackTrace.ToList();
+      Assert.AreEqual("java.lang.IllegalArgumentException", exception.ErrorClass);
+      Assert.True(System.String.IsNullOrEmpty(exception.ErrorMessage));
+      Assert.AreEqual(2, stack.Count);
+      Assert.AreEqual("com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash()", stack[0].Method);
+      Assert.AreEqual("CrashHelper.java", stack[0].File);
+      Assert.AreEqual(11, stack[0].LineNumber);
+      Assert.AreEqual("com.unity3d.player.UnityPlayer.nativeRender()", stack[1].Method);
+      Assert.AreEqual("Native Method", stack[1].File);
+      Assert.AreEqual(null, stack[1].LineNumber);
+    }
+
+    [Test]
+    public void ParseAndroidExceptionAndMessageFromLogMessage()
+    {
       string condition = "AndroidJavaException: java.lang.ArrayIndexOutOfBoundsException: length=2; index=2";
       string stacktrace = @"java.lang.ArrayIndexOutOfBoundsException: length=2; index=2
 com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash(CrashHelper.java:11)
