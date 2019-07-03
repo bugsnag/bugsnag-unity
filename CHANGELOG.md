@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.6.0 (2019-07-02)
 
 ### Enhancements
 
@@ -19,6 +19,9 @@
   reports
   [#157](https://github.com/bugsnag/bugsnag-unity/pull/157)
 * (Android) Fix null pointer dereference when calling Bugsnag.StopSession()
+* (Android) Fix abort() in native code when storing breadcrumbs with null values
+  in metadata
+  [bugsnag-android#511](https://github.com/bugsnag/bugsnag-android/pull/511)
 * Update bugsnag-cocoa dependency to v5.22.2:
   * Fix trimming the stacktraces of handled error/exceptions using the
     [`depth`](https://docs.bugsnag.com/platforms/ios/reporting-handled-exceptions/#depth)
