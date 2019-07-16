@@ -6,6 +6,7 @@
 #import "BugsnagSessionTracker.h"
 #import "BSG_KSSystemInfo.h"
 #import "BSG_KSMach.h"
+#import "BSG_KSCrash.h"
 
 @interface Bugsnag ()
 + (id)notifier;
@@ -158,6 +159,8 @@ void bugsnag_removeMetadata(const void *configuration, const char *tab) {
 
 void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
   [Bugsnag startBugsnagWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
+  // Memory introspection is unused in a C/C++ context
+  [BSG_KSCrash sharedInstance].introspectMemory = NO;
   if (notifierVersion != NULL) {
     NSString *ns_version = [NSString stringWithUTF8String:notifierVersion];
     id notifier = [Bugsnag notifier];
