@@ -1,5 +1,17 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Update bugsnag-cocoa dependency to v5.22.3
+  * Fix JSON parsing errors in crash reports for control characters and some
+    other sequences
+    [bugsnag-cocoa#382](https://github.com/bugsnag/bugsnag-cocoa/pull/382)
+  * Disable reporting out-of-memory events in debug mode, removing false
+    positives triggered by killing and relaunching apps using development tools.
+    [bugsnag-cocoa#380](https://github.com/bugsnag/bugsnag-cocoa/pull/380)
+
 ## 4.6.0 (2019-07-02)
 
 ### Enhancements
