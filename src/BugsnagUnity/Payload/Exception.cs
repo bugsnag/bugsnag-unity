@@ -66,6 +66,7 @@ namespace BugsnagUnity.Payload
 
     private static string AndroidJavaErrorClass = "AndroidJavaException";
     private static string ErrorClassMessagePattern = @"^(?<errorClass>\S+):\s*(?<message>.*)";
+    private static string BugsnagStackTraceMarker = "libbugsnag";
 
     internal Exception(string errorClass, string message, StackTraceLine[] stackTrace)
       : this(errorClass, message, stackTrace, HandledState.ForHandledException()) {}
@@ -164,6 +165,24 @@ namespace BugsnagUnity.Payload
         // include the type somehow in there
         return new Exception($"UnityLog{logMessage.Type}", logMessage.Condition, lines, handledState);
       }
+    }
+
+    /// <summary>
+    /// Validates the logMessage excluding previously delivered reports
+    /// </summary>
+    public static bool ShouldSend(UnityLogMessage logMessage)
+    {
+      var match = Regex.Match(logMessage.Condition, ErrorClassMessagePattern, RegexOptions.Singleline);
+      if (match.Success)
+      {
+        var errorClass = match.Groups["errorClass"].Value;
+        if (errorClass == AndroidJavaErrorClass)
+        {
+          return logMessage.StackTrace == null
+            || !logMessage.StackTrace.Contains(BugsnagStackTraceMarker);
+        }
+      }
+      return true;
     }
   }
 }

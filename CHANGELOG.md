@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (Android) Discard duplicate reports for C/C++ exceptions reporting when Unity
+  Cloud Diagnostics is enabled
+
 ## 4.6.1 (2019-07-16)
 
 ### Bug fixes
