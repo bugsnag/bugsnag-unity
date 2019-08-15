@@ -122,17 +122,16 @@ namespace BugsnagUnity
       if (Configuration.AutoNotify && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
       {
         var logMessage = new UnityLogMessage(condition, stackTrace, logType);
-
-        if (UniqueCounter.ShouldSend(logMessage))
+        var shouldSend = Exception.ShouldSend(logMessage)
+          && UniqueCounter.ShouldSend(logMessage) 
+          && LogTypeCounter.ShouldSend(logMessage);
+        if (shouldSend)
         {
-          if (LogTypeCounter.ShouldSend(logMessage))
-          {
-            var severity = Configuration.LogTypeSeverityMapping.Map(logType);
-            var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
-            var forceUnhandled = logType == LogType.Exception && !Configuration.ReportUncaughtExceptionsAsHandled;
-            var exception = Exception.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
-            Notify(new Exception[]{exception}, exception.HandledState, null, logType);
-          }
+          var severity = Configuration.LogTypeSeverityMapping.Map(logType);
+          var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
+          var forceUnhandled = logType == LogType.Exception && !Configuration.ReportUncaughtExceptionsAsHandled;
+          var exception = Exception.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
+          Notify(new Exception[]{exception}, exception.HandledState, null, logType);
         }
       }
       else

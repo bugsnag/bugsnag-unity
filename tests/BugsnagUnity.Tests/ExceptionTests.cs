@@ -21,6 +21,7 @@ namespace BugsnagUnity.Payload.Tests
    UnityEngine.EventSystems.ExecuteEvents.Execute[IPointerClickHandler] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor) [0x00000] in <filename unknown>:0";
       var logType = UnityEngine.LogType.Error;
       var log = new UnityLogMessage(condition, stacktrace, logType);
+      Assert.True(Exception.ShouldSend(log));
 
       var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {}, Severity.Info);
       var stack = exception.StackTrace.ToList();
@@ -51,6 +52,20 @@ namespace BugsnagUnity.Payload.Tests
     }
 
     [Test]
+    public void ParseDuplicateAndroidExceptionFromLogMessage()
+    {
+      string condition = "AndroidJavaException: java.lang.Error";
+      string stacktrace = @"java.lang.Error: signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0102192a9accb1876a
+libunity.0033c25b(Unknown:-2)
+libunity.003606e3(Unknown:-2)
+libbugsnag-ndk.bsg_handle_signal(bsg_handle_signal:472)
+app_process64.000d1b11(Unknown:-2)";
+      var logType = UnityEngine.LogType.Error;
+      var log = new UnityLogMessage(condition, stacktrace, logType);
+      Assert.False(Exception.ShouldSend(log));
+    }
+
+    [Test]
     public void ParseAndroidExceptionFromLogMessage()
     {
       string condition = "AndroidJavaException: java.lang.IllegalArgumentException";
@@ -59,6 +74,7 @@ com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash(CrashHelper.java:11)
 com.unity3d.player.UnityPlayer.nativeRender(Native Method)";
       var logType = UnityEngine.LogType.Error;
       var log = new UnityLogMessage(condition, stacktrace, logType);
+      Assert.True(Exception.ShouldSend(log));
       var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {}, Severity.Warning);
       var stack = exception.StackTrace.ToList();
       Assert.AreEqual("java.lang.IllegalArgumentException", exception.ErrorClass);
@@ -92,6 +108,7 @@ UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData,
 UnityEngine.EventSystems.EventSystem:Update()";
       var logType = UnityEngine.LogType.Error;
       var log = new UnityLogMessage(condition, stacktrace, logType);
+      Assert.True(Exception.ShouldSend(log));
 
       var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] {}, Severity.Warning);
       var stack = exception.StackTrace.ToList();
