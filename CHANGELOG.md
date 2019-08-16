@@ -4,6 +4,8 @@
 
 ### Bug fixes
 
+* (Android) Disable reporting for crashes on background threads on x86 devices
+  [#161](https://github.com/bugsnag/bugsnag-unity/pull/161)
 * (Android) Discard duplicate reports for C/C++ exceptions reporting when Unity
   Cloud Diagnostics is enabled
 
