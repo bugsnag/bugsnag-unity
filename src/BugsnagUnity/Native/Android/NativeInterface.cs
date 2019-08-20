@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
 using UnityEngine;
+using System.Threading;
 
 namespace BugsnagUnity
 {
@@ -34,8 +35,17 @@ namespace BugsnagUnity
     private IntPtr ObjectGetClass;
     private IntPtr ObjectToString;
 
+    private bool CanRunOnBackgroundThread;
+    private Thread MainThread;
+
     public NativeInterface(AndroidJavaObject config)
     {
+      MainThread = Thread.CurrentThread;
+      using (var system = new AndroidJavaClass("java.lang.System"))
+      {
+        var arch = system.CallStatic<string>("getProperty", "os.arch");
+        CanRunOnBackgroundThread = (arch != "x86" && arch != "i686" && arch != "x86_64");
+      }
       using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
       using (var activity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity"))
       using (var context = activity.Call<AndroidJavaObject>("getApplicationContext"))
@@ -158,6 +168,9 @@ namespace BugsnagUnity
     }
 
     public void SetNotifyReleaseStages(string[] stages) {
+      if (!CanRunJNI()) {
+        return;
+      }
       bool isAttached = bsg_unity_isJNIAttached();
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
@@ -226,6 +239,9 @@ namespace BugsnagUnity
     }
 
     public void LeaveBreadcrumb(string name, string type, IDictionary<string, string> metadata) {
+      if (!CanRunJNI()) {
+        return;
+      }
       bool isAttached = bsg_unity_isJNIAttached();
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
@@ -240,6 +256,9 @@ namespace BugsnagUnity
     }
 
     public string[] GetNotifyReleaseStages() {
+      if (!CanRunJNI()) {
+        return new string[]{};
+      }
       bool isAttached = bsg_unity_isJNIAttached();
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
@@ -258,12 +277,15 @@ namespace BugsnagUnity
 
     public List<Breadcrumb> GetBreadcrumbs()
     {
+      List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
+      if (!CanRunJNI()) {
+        return breadcrumbs;
+      }
       bool isAttached = bsg_unity_isJNIAttached();
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
       }
 
-      List<Breadcrumb> breadcrumbs = new List<Breadcrumb>();
 
       var javaBreadcrumbs = CallNativeObjectMethod("getBreadcrumbs", "()Ljava/util/List;", new object[]{});
       var iterator = AndroidJNI.CallObjectMethod(javaBreadcrumbs, CollectionIterator, new jvalue[]{});
@@ -286,6 +308,9 @@ namespace BugsnagUnity
 
     private void CallNativeVoidMethod(string methodName, string methodSig, object[] args)
     {
+      if (!CanRunJNI()) {
+        return;
+      }
       bool isAttached = bsg_unity_isJNIAttached();
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
@@ -302,15 +327,28 @@ namespace BugsnagUnity
 
     private IntPtr CallNativeObjectMethod(string methodName, string methodSig, object[] args)
     {
+      if (!CanRunJNI()) {
+        return IntPtr.Zero;
+      }
+      bool isAttached = bsg_unity_isJNIAttached();
+      if (!isAttached) {
+        AndroidJNI.AttachCurrentThread();
+      }
       var jargs = AndroidJNIHelper.CreateJNIArgArray(args);
       var methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
       var nativeValue = AndroidJNI.CallStaticObjectMethod(BugsnagNativeInterface, methodID, jargs);
       AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+      if (!isAttached) {
+        AndroidJNI.DetachCurrentThread();
+      }
       return nativeValue;
     }
 
     private string CallNativeStringMethod(string methodName, string methodSig, object[] args)
     {
+      if (!CanRunJNI()) {
+        return "";
+      }
       bool isAttached = bsg_unity_isJNIAttached();
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
@@ -330,6 +368,9 @@ namespace BugsnagUnity
     }
 
     private Dictionary<string, object> GetJavaMapData(string methodName) {
+      if (!CanRunJNI()) {
+        return new Dictionary<string, object>();
+      }
       bool isAttached = bsg_unity_isJNIAttached();
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
@@ -395,6 +436,10 @@ namespace BugsnagUnity
         }
       }
       return map;
+    }
+
+    private bool CanRunJNI() {
+      return CanRunOnBackgroundThread || object.ReferenceEquals(Thread.CurrentThread, MainThread);
     }
 
     private Dictionary<string, object> DictionaryFromJavaMap(IntPtr source) {
