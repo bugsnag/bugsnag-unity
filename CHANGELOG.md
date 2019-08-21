@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.6.2 (2019-08-21)
 
 ### Bug fixes
 
