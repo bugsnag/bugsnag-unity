@@ -8,6 +8,16 @@
   [#161](https://github.com/bugsnag/bugsnag-unity/pull/161)
 * (Android) Discard duplicate reports for C/C++ exceptions reporting when Unity
   Cloud Diagnostics is enabled
+* (iOS) Update bugsnag-cocoa dependency to v5.22.5:
+  * Fix erroneously reporting out-of-memory events from iOS app extensions
+    [bugsnag-cocoa#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+  * Fix erroneously reporting out-of-memory events when an iOS app is in the
+    foreground but inactive
+    [bugsnag-cocoa#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
+  * Fix erroneously reporting out-of-memory events when the app terminates
+    normally and is issued a "will terminate" notification, but is terminated
+    prior to the out-of-memory watchdog processing the notification
+    [bugsnag-cocoa#394](https://github.com/bugsnag/bugsnag-cocoa/pull/394)
 
 ## 4.6.1 (2019-07-16)
 
