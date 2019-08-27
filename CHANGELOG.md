@@ -1,5 +1,19 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (Android) Fix crash when adding breadcrumbs with null values in metadata
+  [bugsnag-android#510](https://github.com/bugsnag/bugsnag-android/pull/510)
+* (Android) Fix potential crash when adding a breadcrumb with metadata
+  [bugsnag-android#546](https://github.com/bugsnag/bugsnag-android/pull/546)
+* (Android) Fix potential crash in when calling `Configuration.setMetaData()`
+  [bugsnag-android#513](https://github.com/bugsnag/bugsnag-android/pull/513)
+* (Android) Fix potential crash when initializing with ANR detection in low
+  connectivity situations
+  [bugsnag-android#520](https://github.com/bugsnag/bugsnag-android/pull/520)
+
 ## 4.6.2 (2019-08-21)
 
 ### Bug fixes
