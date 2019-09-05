@@ -13,7 +13,7 @@ namespace BugsnagUnity.Payload.Tests
 
     public SessionTrackerTests()
     {
-      Client client = new Client(new NativeClient(new Configuration("api-key")));
+      Client client = new Client(new NativeClient(new Configuration("api-key", true)));
       Tracker = new SessionTracker(client);
       Assert.IsNotNull(Tracker);
     }

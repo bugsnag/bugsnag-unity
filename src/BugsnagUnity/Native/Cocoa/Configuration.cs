@@ -10,7 +10,7 @@ namespace BugsnagUnity
   {
     internal IntPtr NativeConfiguration { get; }
 
-    internal Configuration(string apiKey) : base()
+    internal Configuration(string apiKey, bool autoNotify) : base()
     {
       NativeConfiguration = NativeCode.bugsnag_createConfiguration(apiKey);
       SetupDefaults(apiKey);
