@@ -12,7 +12,7 @@ namespace BugsnagUnity
     {
       var JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
       // the bugsnag-unity notifier will handle session tracking
-      JavaObject.Call("setAutoCaptureSessions", autoNotify);
+      JavaObject.Call("setAutoCaptureSessions", false);
       JavaObject.Call("setEnableExceptionHandler", autoNotify);
       JavaObject.Call("setDetectAnrs", false);
       JavaObject.Call("setDetectNdkCrashes", autoNotify);

@@ -117,6 +117,10 @@ const char *bugsnag_getContext(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).context UTF8String];
 }
 
+void bugsnag_setAutoNotify(const void *configuration, BOOL autoNotify) {
+  ((__bridge BugsnagConfiguration *)configuration).autoNotify = autoNotify;
+}
+
 void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
   if (notifyURL == NULL)
     return;

@@ -14,6 +14,7 @@ namespace BugsnagUnity
     {
       NativeConfiguration = NativeCode.bugsnag_createConfiguration(apiKey);
       SetupDefaults(apiKey);
+      NativeCode.bugsnag_setAutoNotify(NativeConfiguration, autoNotify);
     }
 
     protected override void SetupDefaults(string apiKey)
