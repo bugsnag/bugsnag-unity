@@ -30,6 +30,8 @@ extern "C" {
   void bugsnag_setAppVersion(const void *configuration, char *appVersion);
   const char *bugsnag_getAppVersion(const void *configuration);
 
+  void bugsnag_setAutoNotify(const void *configuration, bool autoNotify);
+
   void bugsnag_setContext(const void *configuration, char *context);
   const char *bugsnag_getContext(const void *configuration);
 
@@ -117,7 +119,7 @@ const char *bugsnag_getContext(const void *configuration) {
   return [((__bridge BugsnagConfiguration *)configuration).context UTF8String];
 }
 
-void bugsnag_setAutoNotify(const void *configuration, BOOL autoNotify) {
+void bugsnag_setAutoNotify(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoNotify = autoNotify;
 }
 
