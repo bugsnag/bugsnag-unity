@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
 using UnityEngine;
 using System.Threading;
+using System.Text;
 
 namespace BugsnagUnity
 {
@@ -148,23 +149,23 @@ namespace BugsnagUnity
     }
 
     public void SetContext(string newValue) {
-      CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[]{newValue});
+      CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
     }
 
     public void SetReleaseStage(string newValue) {
-      CallNativeVoidMethod("setReleaseStage", "(Ljava/lang/String;)V", new object[]{newValue});
+      CallNativeVoidMethod("setReleaseStage", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
     }
 
     public void SetSessionEndpoint(string newValue) {
-      CallNativeVoidMethod("setSessionEndpoint", "(Ljava/lang/String;)V", new object[]{newValue});
+      CallNativeVoidMethod("setSessionEndpoint", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
     }
 
     public void SetEndpoint(string newValue) {
-      CallNativeVoidMethod("setEndpoint", "(Ljava/lang/String;)V", new object[]{newValue});
+      CallNativeVoidMethod("setEndpoint", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
     }
 
     public void SetAppVersion(string newValue) {
-      CallNativeVoidMethod("setAppVersion", "(Ljava/lang/String;)V", new object[]{newValue});
+      CallNativeVoidMethod("setAppVersion", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
     }
 
     public void SetNotifyReleaseStages(string[] stages) {
@@ -175,7 +176,11 @@ namespace BugsnagUnity
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
       }
-      var newValue = AndroidJNIHelper.ConvertToJNIArray(stages);
+      var nativeStages = new AndroidJavaObject[stages.Length];
+      for (int i = 0; i < stages.Length; i++) {
+        nativeStages[i] = MakeJavaString(stages[i]);
+      }
+      var newValue = AndroidJNIHelper.ConvertToJNIArray(nativeStages);
       CallNativeVoidMethod("setNotifyReleaseStages", "([Ljava/lang/String;)V", new object[]{newValue});
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
@@ -188,7 +193,8 @@ namespace BugsnagUnity
       if (user == null) {
         CallNativeVoidMethod(method, description, new object[]{null, null, null});
       } else {
-        CallNativeVoidMethod(method, description, new object[]{user.Id, user.Email, user.Name});
+        CallNativeVoidMethod(method, description, 
+            new object[]{MakeJavaString(user.Id), MakeJavaString(user.Email), MakeJavaString(user.Name)});
       }
     }
 
@@ -202,7 +208,7 @@ namespace BugsnagUnity
         // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
         var startedAt = (session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).Milliseconds;
         CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
-          startedAt, session.Id.ToString(), session.UnhandledCount(),
+          startedAt, MakeJavaString(session.Id.ToString()), session.UnhandledCount(),
           session.HandledCount()
         });
       }
@@ -228,14 +234,15 @@ namespace BugsnagUnity
       if (tab == null) {
         return;
       }
-      CallNativeVoidMethod("clearTab", "(Ljava/lang/String;)V", new object[]{tab});
+      CallNativeVoidMethod("clearTab", "(Ljava/lang/String;)V", new object[]{MakeJavaString(tab)});
     }
 
     public void AddToTab(string tab, string key, string value) {
       if (tab == null || key == null) {
         return;
       }
-      CallNativeVoidMethod("addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V", new object[]{tab, key, value});
+      CallNativeVoidMethod("addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V", 
+          new object[]{MakeJavaString(tab), MakeJavaString(key), MakeJavaString(value)});
     }
 
     public void LeaveBreadcrumb(string name, string type, IDictionary<string, string> metadata) {
@@ -248,7 +255,8 @@ namespace BugsnagUnity
       }
       using (var map = JavaMapFromDictionary(metadata))
       {
-        CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V", new object[]{name, type, map});
+        CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V", 
+            new object[]{MakeJavaString(name), MakeJavaString(type), map});
       }
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
@@ -428,14 +436,32 @@ namespace BugsnagUnity
 
     private AndroidJavaObject JavaMapFromDictionary(IDictionary<string, string> src) {
       var map = new AndroidJavaObject("java.util.HashMap");
+      var CharsetClass = new AndroidJavaClass("java.nio.charset.Charset");
+      var charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset");
       if (src != null)
       {
         foreach(var entry in src)
         {
-          map.Call<AndroidJavaObject>("put", entry.Key, entry.Value);
+          map.Call<AndroidJavaObject>("put", MakeJavaString(entry.Key), MakeJavaString(entry.Value));
         }
       }
       return map;
+    }
+
+    private AndroidJavaObject MakeJavaString(string input) {
+      if (input == null) {
+        return null;
+      }
+
+      try {
+        var CharsetClass = new AndroidJavaClass("java.nio.charset.Charset");
+        // The default encoding on Android is UTF-8
+        var charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset");
+        return new AndroidJavaObject("java.lang.String", Encoding.UTF8.GetBytes(input), charset);
+      } catch (EncoderFallbackException _) {
+        // The input string could not be encoded as UTF-8
+        return new AndroidJavaObject("java.lang.String");
+      }
     }
 
     private bool CanRunJNI() {
