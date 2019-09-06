@@ -42,6 +42,9 @@ namespace BugsnagUnity
     internal static extern IntPtr bugsnag_getReleaseStage(IntPtr configuration);
 
     [DllImport(Import)]
+    internal static extern void bugsnag_setAutoNotify(IntPtr configuration, bool autoNotify);
+
+    [DllImport(Import)]
     internal static extern void bugsnag_setContext(IntPtr configuration, string context);
 
     [DllImport(Import)]

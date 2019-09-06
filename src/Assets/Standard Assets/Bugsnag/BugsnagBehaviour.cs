@@ -37,7 +37,7 @@ namespace BugsnagUnity
     /// </summary>
     void Awake()
     {
-      Bugsnag.Init(BugsnagApiKey);
+      Bugsnag.Init(BugsnagApiKey, AutoNotify);
       Bugsnag.Configuration.AutoNotify = AutoNotify;
       Bugsnag.Configuration.AutoCaptureSessions = AutoCaptureSessions;
       Bugsnag.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
