@@ -22,6 +22,7 @@ namespace BugsnagUnity
       JavaObject.Call("setAppVersion", Application.version);
       NativeInterface = new NativeInterface(JavaObject);
       SetupDefaults(apiKey);
+      AutoNotify = autoNotify;
     }
 
     protected override void SetupDefaults(string apiKey)
