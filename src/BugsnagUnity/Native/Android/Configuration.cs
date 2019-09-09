@@ -8,19 +8,21 @@ namespace BugsnagUnity
   {
     internal NativeInterface NativeInterface { get; }
 
-    internal Configuration(string apiKey) : base()
+    internal Configuration(string apiKey, bool autoNotify) : base()
     {
       var JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
       // the bugsnag-unity notifier will handle session tracking
       JavaObject.Call("setAutoCaptureSessions", false);
+      JavaObject.Call("setEnableExceptionHandler", autoNotify);
       JavaObject.Call("setDetectAnrs", false);
-      JavaObject.Call("setDetectNdkCrashes", true);
+      JavaObject.Call("setDetectNdkCrashes", autoNotify);
       JavaObject.Call("setEndpoint", DefaultEndpoint);
       JavaObject.Call("setSessionEndpoint", DefaultSessionEndpoint);
       JavaObject.Call("setReleaseStage", "production");
       JavaObject.Call("setAppVersion", Application.version);
       NativeInterface = new NativeInterface(JavaObject);
       SetupDefaults(apiKey);
+      AutoNotify = autoNotify;
     }
 
     protected override void SetupDefaults(string apiKey)

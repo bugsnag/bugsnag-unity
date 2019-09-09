@@ -6,8 +6,9 @@ namespace BugsnagUnity
 {
   class Configuration : AbstractConfiguration
   {
-    internal Configuration(string apiKey) : base() {
+    internal Configuration(string apiKey, bool autoNotify) : base() {
       SetupDefaults(apiKey);
+      AutoNotify = autoNotify;
     }
   }
 }

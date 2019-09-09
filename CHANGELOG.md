@@ -1,5 +1,28 @@
 # Changelog
 
+## 4.6.4 (2019-09-06)
+
+### Enhancements
+
+* Support disabling native reporting during initialization
+  [#164](https://github.com/bugsnag/bugsnag-unity/pull/164)
+
+  The new API can be used as follows:
+
+  ```c#
+  Bugsnag.Init("your-api=key-here", false /* disable crash reporting */);
+  ```
+
+  or by unchecking "Auto Notify" when initializing Bugsnag via a GameObject in
+  the Unity Inspector.
+
+### Bug fixes
+
+* (Android) Fix possible crash when encoding non-unicode text
+  [#165](https://github.com/bugsnag/bugsnag-unity/pull/165)
+* (Android) Fix crash when deleting global metadata
+  [bugsnag-android#582](https://github.com/bugsnag/bugsnag-android/pull/582)
+
 ## 4.6.3 (2019-08-28)
 
 ### Bug fixes
