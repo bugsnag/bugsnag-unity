@@ -12,9 +12,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
-            | Main.DoUnhandledException(Int64 counter) |
-            | Main.LoadScenario()         |
-            | Main.Update()               |
+            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
+            | Main.LoadScenario()         | |
+            | Main.Update()               | |
 
     Scenario: Forcing uncaught exceptions to be unhandled
         When I run the game in the "UncaughtExceptionAsUnhandled" state
@@ -40,13 +40,15 @@ Feature: Reporting unhandled events
         And the payload field "notifier.name" equals "Unity Bugsnag Notifier"
         And the payload field "events" is an array with 1 element
         And the exception "errorClass" equals "IndexOutOfRangeException"
-        And the exception "message" equals "Array index is out of range."
+        And the event "exceptions.0.message" matches one of:
+            | Array index is out of range. |
+            | Index was outside the bounds of the array. |
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
-            | Main.MakeAssertionFailure(Int32 counter) |
-            | Main.LoadScenario()                      |
-            | Main.Update()                            |
+            | Main.MakeAssertionFailure(Int32 counter) | Main.MakeAssertionFailure(System.Int32 counter) |
+            | Main.LoadScenario()                      | |
+            | Main.Update()                            | |
 
     Scenario: Reporting a native crash
         When I run the game in the "NativeCrash" state

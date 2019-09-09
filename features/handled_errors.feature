@@ -33,8 +33,8 @@ Feature: Handled Errors and Exceptions
         And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
         And the event "metaData.Unity.platform" equals "OSXPlayer"
         And the first significant stack frame methods and files should match:
-            | Main.DoNotify()           |
-            | Main.<LoadScenario>m__0() |
+            | Main.DoNotify()           | |
+            | Main.<LoadScenario>m__0() | Main.<LoadScenario>b__5_0() |
 
     Scenario: Reporting a handled exception with a callback
         When I run the game in the "NotifyCallback" state
