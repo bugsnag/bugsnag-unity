@@ -42,7 +42,7 @@ end
 Then("the event {string} matches one of:") do |path, table|
   payload_value = read_key_path(find_request(nil)[:body], "events.0.#{path}")
   valid_values = table.raw.flat_map { |e| e }
-  assert(valid_values.any? { |frame| frame == item["method"] }, "Value #{payload_value} did not match any of the expected values")
+  assert(valid_values.any? { |frame| frame == payload_value }, "Value #{payload_value} did not match any of the expected values")
 end
 
 Then("custom metadata is included in the event") do
