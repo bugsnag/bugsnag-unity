@@ -18,7 +18,7 @@ Then("the first significant stack frame methods and files should match:") do |ex
     next if item["method"].start_with? "UnityEngine"
     next if item["method"].start_with? "BugsnagUnity"
 
-    assert(expected_frames.any?(item["method"]), "None of the given methods match the frame #{item["method"]}")
+    assert(expected_frames.any? { |frame| frame == item["method"] }, "None of the given methods match the frame #{item["method"]}")
     expected_index += 1
   end
 end
@@ -42,7 +42,7 @@ end
 Then("the event {string} matches one of:") do |path, table|
   payload_value = read_key_path(find_request(nil)[:body], "events.0.#{path}")
   valid_values = table.raw.flat_map { |e| e }
-  assert(valid_values.any?(payload_value), "Value #{payload_value} did not match any of the expected values")
+  assert(valid_values.any? { |frame| frame == item["method"] }, "Value #{payload_value} did not match any of the expected values")
 end
 
 Then("custom metadata is included in the event") do
