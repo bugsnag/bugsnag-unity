@@ -48,7 +48,7 @@ end
 # that we apply
 #
 def unity(*cmd, force_free: true, no_graphics: true)
-  cmd_prepend = [unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit"]
+  cmd_prepend = ["EVENT_NOKQUEUE=1", unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit"]
   unless force_free
     cmd_prepend = cmd_prepend - ["-force-free"]
   end
