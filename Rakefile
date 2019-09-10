@@ -58,6 +58,8 @@ def unity(*cmd, force_free: true, no_graphics: true)
   cmd = cmd.unshift(*cmd_prepend)
   sh *cmd do |ok, res|
     if !ok
+      puts ok
+      puts res
       sh "cat", "unity.log"
       raise "unity error"
     end
