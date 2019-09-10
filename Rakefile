@@ -48,7 +48,7 @@ end
 # that we apply
 #
 def unity(*cmd, force_free: true, no_graphics: true)
-  cmd_prepend = ["EVENT_NOKQUEUE=1", unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit"]
+  cmd_prepend = ["EVENT_NOKQUEUE=1", unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "-quit"]
   unless force_free
     cmd_prepend = cmd_prepend - ["-force-free"]
   end
@@ -61,7 +61,6 @@ def unity(*cmd, force_free: true, no_graphics: true)
       puts "here"
       puts ok
       puts res
-      sh "cat", "unity.log"
       raise "unity error"
     end
   end
