@@ -266,6 +266,7 @@ end
 namespace :travis do
   def with_license &block
     # activate the unity license
+    puts "Attempting to active Unity license"
     unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
     sleep 10
     begin
