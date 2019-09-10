@@ -267,6 +267,9 @@ end
 
 namespace :travis do
   def with_license &block
+    # Ensure a Packages/manifest.json exists
+    `mkdir Packages && echo '{}' > Packages/manifest.json`
+
     # activate the unity license
     puts "Attempting to active Unity license"
     unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
