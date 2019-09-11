@@ -6,6 +6,7 @@ When("I run the game in the {string} state") do |state|
     And I wait for 8 seconds
   }
 end
+
 Then("the first significant stack frame methods and files should match:") do |expected_values|
   stacktrace = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace")
   expected_frame_values = expected_values.raw
@@ -13,14 +14,15 @@ Then("the first significant stack frame methods and files should match:") do |ex
   flunk("The stacktrace is empty") if stacktrace.length == 0
   stacktrace.each_with_index do |item, index|
     next if expected_index >= expected_frame_values.length
-    expected_frame = expected_frame_values[expected_index]
+    expected_frames = expected_frame_values[expected_index]
     next if item["method"].start_with? "UnityEngine"
     next if item["method"].start_with? "BugsnagUnity"
 
-    assert_equal(expected_frame[0], item["method"])
+    assert(expected_frames.any? { |frame| frame == item["method"] }, "None of the given methods match the frame #{item["method"]}")
     expected_index += 1
   end
 end
+
 Then("the events in requests {string} match one of:") do |request_indices, table|
   events = request_indices.split(',').map do |index|
     read_key_path(find_request(index.to_i)[:body], "events")
@@ -36,6 +38,13 @@ Then("the events in requests {string} match one of:") do |request_indices, table
     end, "No event matches the following values: #{values}")
   end
 end
+
+Then("the event {string} matches one of:") do |path, table|
+  payload_value = read_key_path(find_request(nil)[:body], "events.0.#{path}")
+  valid_values = table.raw.flat_map { |e| e }
+  assert(valid_values.any? { |frame| frame == payload_value }, "Value #{payload_value} did not match any of the expected values")
+end
+
 Then("custom metadata is included in the event") do
   steps %Q{
     Then the event "metaData.app.buildno" equals "0.1"
