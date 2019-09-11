@@ -58,9 +58,6 @@ def unity(*cmd, force_free: true, no_graphics: true)
   cmd = cmd.unshift(*cmd_prepend)
   sh *cmd do |ok, res|
     if !ok
-      puts "here"
-      puts ok
-      puts res
       raise "unity error"
     end
   end
@@ -267,12 +264,11 @@ end
 
 namespace :travis do
   def with_license &block
-    # Ensure a Packages/manifest.json exists
+    # Ensure a Packages/manifest.json exists in all locations
     `mkdir Packages && echo '{}' > Packages/manifest.json`
     `mkdir #{unity_directory}/Unity.app/Contents/Packages && echo '{}' > #{unity_directory}/Unity.app/Contents/Packages/manifest.json`
 
     # activate the unity license
-    puts "Attempting to active Unity license"
     unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
     sleep 10
     begin
