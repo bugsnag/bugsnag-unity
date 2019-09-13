@@ -8,6 +8,10 @@ namespace BugsnagUnity
 {
   class Configuration : AbstractConfiguration
   {
+    // Cached value of native-layer auto notify configuration setting to reduce the
+    // number of native calls required when reporting a Unity error
+    private bool _autoNotify;
+
     internal IntPtr NativeConfiguration { get; }
 
     internal Configuration(string apiKey, bool autoNotify) : base()
@@ -15,7 +19,7 @@ namespace BugsnagUnity
       NativeConfiguration = NativeCode.bugsnag_createConfiguration(apiKey);
       SetupDefaults(apiKey);
       NativeCode.bugsnag_setAutoNotify(NativeConfiguration, autoNotify);
-      AutoNotify = autoNotify;
+      _autoNotify = autoNotify;
     }
 
     protected override void SetupDefaults(string apiKey)
@@ -29,6 +33,15 @@ namespace BugsnagUnity
     {
       get => Marshal.PtrToStringAuto(NativeCode.bugsnag_getApiKey(NativeConfiguration));
       protected set {}
+    }
+
+    public override bool AutoNotify
+    {
+      get => _autoNotify;
+      set {
+        _autoNotify = value;
+        NativeCode.bugsnag_setAutoNotify(NativeConfiguration, value);
+      }
     }
 
     public override string ReleaseStage

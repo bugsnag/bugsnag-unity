@@ -6,6 +6,8 @@
 
 * (Android) Fix behavior of `Configuration.NotifyReleaseStages` to disable
   native C/C++ crash reporting if the current `ReleaseStage` is not in the array
+* Fix the behavior of `Configuration.AutoNotify` to disable native crash
+  reporting if false
 
 ## 4.6.4 (2019-09-06)
 
