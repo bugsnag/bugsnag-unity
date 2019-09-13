@@ -21,6 +21,7 @@ namespace BugsnagUnity
     private IntPtr MapClass;
     private IntPtr MapEntryClass;
     private IntPtr SetClass;
+    private IntPtr StringClass;
     // Cache of methods used:
     private IntPtr BreadcrumbGetName;
     private IntPtr BreadcrumbGetMetadata;
@@ -91,6 +92,9 @@ namespace BugsnagUnity
         var setRef = AndroidJNI.FindClass("java/util/Set");
         SetClass = AndroidJNI.NewGlobalRef(setRef);
         AndroidJNI.DeleteLocalRef(setRef);
+        var stringRef = AndroidJNI.FindClass("java/lang/String");
+        StringClass = AndroidJNI.NewGlobalRef(stringRef);
+        AndroidJNI.DeleteLocalRef(stringRef);
 
         BreadcrumbGetMetadata = AndroidJNI.GetMethodID(BreadcrumbClass, "getMetadata", "()Ljava/util/Map;");
         BreadcrumbGetType = AndroidJNI.GetMethodID(BreadcrumbClass, "getType", "()Lcom/bugsnag/android/BreadcrumbType;");
@@ -176,12 +180,13 @@ namespace BugsnagUnity
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
       }
-      var nativeStages = new AndroidJavaObject[stages.Length];
-      for (int i = 0; i < stages.Length; i++) {
-        nativeStages[i] = MakeJavaString(stages[i]);
-      }
-      var newValue = AndroidJNIHelper.ConvertToJNIArray(nativeStages);
-      CallNativeVoidMethod("setNotifyReleaseStages", "([Ljava/lang/String;)V", new object[]{newValue});
+      // Manually coercing the string array into a Java String array rather than using
+      // AndroidJNIHelper.ConvertToJNIArray() as it sometimes (without warning?) converts
+      // a valid array to null
+      var jargs = new jvalue[1];
+      jargs[0].l = ConvertToStringJNIArray(stages);
+      var methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, "setNotifyReleaseStages", "([Ljava/lang/String;)V");
+      AndroidJNI.CallStaticVoidMethod(BugsnagNativeInterface, methodID, jargs);
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
       }
@@ -350,6 +355,25 @@ namespace BugsnagUnity
         AndroidJNI.DetachCurrentThread();
       }
       return nativeValue;
+    }
+
+    private IntPtr ConvertToStringJNIArray(string[] items)
+    {
+      if (items == null || items.Length == 0) {
+        return IntPtr.Zero;
+      }
+
+      var itemsAsJavaObjects = new AndroidJavaObject[items.Length];
+      for (int i = 0; i < items.Length; i++) {
+        itemsAsJavaObjects[i] = MakeJavaString(items[i]);
+      }
+      var first = itemsAsJavaObjects[0];
+      IntPtr rawArray = AndroidJNI.NewObjectArray(items.Length, StringClass, first.GetRawObject());
+      for (int i = 1; i < items.Length; i++) {
+        AndroidJNI.SetObjectArrayElement(rawArray, i, itemsAsJavaObjects[i].GetRawObject());
+      }
+
+      return rawArray;
     }
 
     private string CallNativeStringMethod(string methodName, string methodSig, object[] args)
