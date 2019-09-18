@@ -26,7 +26,7 @@ namespace BugsnagUnity
 
     public int MaximumBreadcrumbs = 25;
 
-    public int UniqueLogsPerSecond = 5;
+    public int SecondsPerUniqueLog = 5;
 
     public bool AutoCaptureSessions = true;
 
@@ -40,7 +40,7 @@ namespace BugsnagUnity
       Bugsnag.Init(BugsnagApiKey, AutoNotify);
       Bugsnag.Configuration.AutoNotify = AutoNotify;
       Bugsnag.Configuration.AutoCaptureSessions = AutoCaptureSessions;
-      Bugsnag.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
+      Bugsnag.Configuration.SecondsPerUniqueLog = TimeSpan.FromSeconds(SecondsPerUniqueLog);
       Bugsnag.Configuration.NotifyLevel = NotifyLevel;
       Bugsnag.Configuration.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
       Bugsnag.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
@@ -117,7 +117,7 @@ namespace BugsnagUnity
       {
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(maximumBreadcrumbs, new GUIContent("Maximum Breadcrumbs"));
-        EditorGUILayout.PropertyField(uniqueLogsPerSecond, new GUIContent("Unique Logs per second", "The number of unique Unity logs per second that Bugsnag will convert to breadcrumbs or report as errors (if configured). Lower the value to address performance problems."));
+        EditorGUILayout.PropertyField(uniqueLogsPerSecond, new GUIContent("Seconds per unique log", "The number seconds required between unique Unity logs that Bugsnag will convert to breadcrumbs or report as errors (if configured). Increase the value to reduce the number of logs sent."));
         EditorGUI.indentLevel--;
       }
 

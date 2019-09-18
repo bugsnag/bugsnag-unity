@@ -1,5 +1,16 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Fixed the naming and description of the property
+  `Configuration.UniqueLogsPerSecond` to reflect the actual behavior, which is
+  the number of seconds required between unique Unity log messages which
+  bugsnag-unity will convert into breadcrumbs or reports. Increase the value to
+  reduce the number of logs or reports generated from frequent error messages.
+  The new property is named `Configuration.SecondsPerUniqueLog`.
+
 ## 4.6.4 (2019-09-06)
 
 ### Enhancements
