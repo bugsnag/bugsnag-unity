@@ -8,6 +8,22 @@
   native C/C++ crash reporting if the current `ReleaseStage` is not in the array
 * Fix erroneous automatic session delivery when `NotifyReleaseStages`
   configuration does not include the current `ReleaseStage`
+* Update bugsnag-cocoa to v5.22.6:
+  * Ensure UIKit APIs are not called from background threads if
+    `Bugsnag.start()` is called in the background
+    [bugsnag-cocoa#409](https://github.com/bugsnag/bugsnag-cocoa/issues/409)
+  * Fix bug in `notifyReleaseStages` where if the release stage of a build was
+    changed after `start()`, only the initial value was used to determine whether
+    to send a report
+    [bugsnag-cocoa#405](https://github.com/bugsnag/bugsnag-cocoa/issues/405)
+    [bugsnag-cocoa#412](https://github.com/bugsnag/bugsnag-cocoa/issues/412)
+  * Support disabling crash reporting after initialization by setting
+    `Bugsnag.configuration.autoNotify`. Previously this value was ignored after
+    `Bugsnag.start()` was called, but is now used to update whether crash reports
+    will be detected and sent. This interface can be used for crash reporting
+    opt-out flows.
+    [bugsnag-cocoa#410](https://github.com/bugsnag/bugsnag-cocoa/issues/410)
+  
 
 ## 4.6.4 (2019-09-06)
 
