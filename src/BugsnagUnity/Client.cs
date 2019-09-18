@@ -85,6 +85,10 @@ namespace BugsnagUnity
 
     public void Send(IPayload payload)
     {
+      if (!ShouldSendRequests())
+      {
+        return;
+      }
       Delivery.Send(payload);
     }
 

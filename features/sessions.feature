@@ -1,7 +1,7 @@
 Feature: Session Tracking
 
-    Scenario: Automatically receiving a session
-        When I run the game in the "AutoSession" state
+    Scenario Outline: Automatically receiving a session
+        When I run the game in the "<scenario>" state
         Then I should receive a request
         And the request is a valid for the session tracking API
         And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
@@ -20,6 +20,11 @@ Feature: Session Tracking
         And the session "user.id" is not null
         And the session "user.email" is null
         And the session "user.name" is null
+
+        Examples:
+            | scenario                         |
+            | AutoSession                      |
+            | AutoSessionInNotifyReleaseStages |
 
     Scenario: Automatically receiving a session before a native crash
         When I run the game in the "AutoSessionNativeCrash" state
@@ -32,8 +37,8 @@ Feature: Session Tracking
         And the payload field "events.0.session.events.unhandled" equals 1 for request 1
         And the payload field "events.0.session.id" of request 1 equals the payload field "sessions.0.id" of request 0
 
-    Scenario: Manually logging a session
-        When I run the game in the "ManualSession" state
+    Scenario Outline: Manually logging a session
+        When I run the game in the "<scenario>" state
         Then I should receive a request
         And the request is a valid for the session tracking API
         And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
@@ -52,6 +57,11 @@ Feature: Session Tracking
         And the session "user.id" is not null
         And the session "user.email" is null
         And the session "user.name" is null
+
+        Examples:
+            | scenario                           |
+            | ManualSession                      |
+            | ManualSessionInNotifyReleaseStages |
 
     Scenario: Manually logging a session before unhandled event
         When I run the game in the "ManualSessionCrash" state
@@ -85,3 +95,12 @@ Feature: Session Tracking
             | blorb                        | 1       | 0         |
             | Something went terribly awry | 2       | 0         |
             | Invariant state failure      | 2       | 1         |
+
+    Scenario Outline: Launching the app but the current release stage is not in "notify release stages"
+        When I run the game in the "<scenario>" state
+        Then I should receive no requests
+
+        Examples:
+            | scenario                              |
+            | ManualSessionNotInNotifyReleaseStages |
+            | AutoSessionNotInNotifyReleaseStages   |

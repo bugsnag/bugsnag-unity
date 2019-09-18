@@ -157,6 +157,22 @@ public class Main : MonoBehaviour {
         Bugsnag.StartSession();
         DoNotify();
         break;
+      case "AutoSessionInNotifyReleaseStages":
+        Bugsnag.Configuration.ReleaseStage = "production";
+        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
+        break;
+      case "ManualSessionInNotifyReleaseStages":
+        Bugsnag.Configuration.ReleaseStage = "production";
+        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
+        Bugsnag.StartSession();
+        break;
+      case "AutoSessionNotInNotifyReleaseStages":
+        Bugsnag.Configuration.NotifyReleaseStages = new [] { "no-op" };
+        break;
+      case "ManualSessionNotInNotifyReleaseStages":
+        Bugsnag.Configuration.NotifyReleaseStages = new [] { "no-op" };
+        Bugsnag.StartSession();
+        break;
       case "ManualSessionMixedEvents":
         Bugsnag.StartSession();
         DoNotify();

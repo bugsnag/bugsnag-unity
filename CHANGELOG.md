@@ -6,6 +6,8 @@
 
 * (Android) Fix behavior of `Configuration.NotifyReleaseStages` to disable
   native C/C++ crash reporting if the current `ReleaseStage` is not in the array
+* Fix erroneous automatic session delivery when `NotifyReleaseStages`
+  configuration does not include the current `ReleaseStage`
 
 ## 4.6.4 (2019-09-06)
 
