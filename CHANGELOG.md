@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (Android) Fix behavior of `Configuration.NotifyReleaseStages` to disable
+  native C/C++ crash reporting if the current `ReleaseStage` is not in the array
+
 ## 4.6.4 (2019-09-06)
 
 ### Enhancements
