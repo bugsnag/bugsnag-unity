@@ -26,6 +26,10 @@ namespace BugsnagUnity
 
     public int MaximumBreadcrumbs = 25;
 
+    // FIXME: The name of this property is incorrect, as it is the number of
+    // seconds between unique logs, not the other way around. Its represented
+    // in the UI as "Seconds per unique log" and in the next major, this
+    // property should be renamed accordingly.
     public int UniqueLogsPerSecond = 5;
 
     public bool AutoCaptureSessions = true;
@@ -117,7 +121,7 @@ namespace BugsnagUnity
       {
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(maximumBreadcrumbs, new GUIContent("Maximum Breadcrumbs"));
-        EditorGUILayout.PropertyField(uniqueLogsPerSecond, new GUIContent("Unique Logs per second", "The number of unique Unity logs per second that Bugsnag will convert to breadcrumbs or report as errors (if configured). Lower the value to address performance problems."));
+        EditorGUILayout.PropertyField(uniqueLogsPerSecond, new GUIContent("Seconds per unique log", "The number seconds required between unique Unity logs that Bugsnag will convert to breadcrumbs or report as errors (if configured). Increase the value to reduce the number of logs sent."));
         EditorGUI.indentLevel--;
       }
 

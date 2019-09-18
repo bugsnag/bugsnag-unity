@@ -1,5 +1,15 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Fixed the naming and description of the GUI property "Unique logs per second"
+  to be "Unique seconds per log" to reflect the actual behavior, which is the
+  number of seconds required between unique Unity log messages which
+  bugsnag-unity will convert into breadcrumbs or reports. Increase the value to
+  reduce the number of logs or reports generated from frequent error messages.
+
 ## 4.6.5 (2019-09-18)
 
 ### Bug fixes
