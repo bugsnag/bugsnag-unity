@@ -65,3 +65,12 @@ Feature: Reporting unhandled events
             | __pthread_kill       |
             | abort                |
             | crashy_signal_runner |
+
+    Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
+        When I run the game in the "UncaughtExceptionOutsideNotifyReleaseStages" state
+        Then I should receive no requests
+
+    Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
+        When I run the game in the "NativeCrashOutsideNotifyReleaseStages" state
+        And I run the game in the "(noop)" state
+        Then I should receive no requests

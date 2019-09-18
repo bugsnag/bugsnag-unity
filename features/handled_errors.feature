@@ -164,3 +164,11 @@ Feature: Handled Errors and Exceptions
             | Main.DoLogWarningWithHandledConfig()  |
             | Main.LoadScenario()  |
             | Main.Update()        |
+
+    Scenario: Notifying when the current release stage is not in "notify release stages"
+        When I run the game in the "NotifyOutsideNotifyReleaseStages" state
+        Then I should receive no requests
+
+    Scenario: Logging an exception when the current release stage is not in "notify release stages"
+        When I run the game in the "LogExceptionOutsideNotifyReleaseStages" state
+        Then I should receive no requests

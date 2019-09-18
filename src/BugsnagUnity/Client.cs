@@ -201,6 +201,10 @@ namespace BugsnagUnity
 
     void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
     {
+      if (!ShouldSendRequests())
+      {
+        return; // Skip overhead of computing payload to to ultimately not be sent
+      }
       var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
       var app = new App(Configuration)
       {
@@ -233,13 +237,6 @@ namespace BugsnagUnity
         Breadcrumbs.Retrieve(),
         SessionTracking.CurrentSession);
       var report = new Report(Configuration, @event);
-
-      if (report.Configuration.ReleaseStage != null
-          && report.Configuration.NotifyReleaseStages != null
-          && !report.Configuration.NotifyReleaseStages.Contains(report.Configuration.ReleaseStage))
-      {
-        return;
-      }
 
       lock (MiddlewareLock)
       {
@@ -293,6 +290,16 @@ namespace BugsnagUnity
         ForegroundStopwatch.Stop();
         BackgroundStopwatch.Start();
       }
+    }
+
+    /// <summary>
+    /// True if reports and sessions should be sent based on release stage settings
+    /// </summary>
+    private bool ShouldSendRequests()
+    {
+      return Configuration.ReleaseStage == null
+          || Configuration.NotifyReleaseStages == null
+          || Configuration.NotifyReleaseStages.Contains(Configuration.ReleaseStage);
     }
 
     /// <summary>

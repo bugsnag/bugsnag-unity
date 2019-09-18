@@ -75,6 +75,26 @@ public class Main : MonoBehaviour {
   void LoadScenario() {
     var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
     switch (scenario) {
+      case "LogExceptionOutsideNotifyReleaseStages":
+        Bugsnag.Configuration.ReleaseStage = "dev";
+        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
+        DoLogUnthrown();
+        break;
+      case "NotifyOutsideNotifyReleaseStages":
+        Bugsnag.Configuration.ReleaseStage = "dev";
+        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
+        DoNotify();
+        break;
+      case "NativeCrashOutsideNotifyReleaseStages":
+        Bugsnag.Configuration.ReleaseStage = "dev";
+        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
+        crashy_signal_runner(8);
+        break;
+      case "UncaughtExceptionOutsideNotifyReleaseStages":
+        Bugsnag.Configuration.ReleaseStage = "dev";
+        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
+        DoUnhandledException(0);
+        break;
       case "DebugLogBreadcrumbNotify":
         LogLowLevelMessageAndNotify();
         break;
