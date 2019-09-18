@@ -66,6 +66,7 @@ Feature: Reporting unhandled events
             | abort                |
             | crashy_signal_runner |
 
+
     Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
         When I run the game in the "UncaughtExceptionOutsideNotifyReleaseStages" state
         Then I should receive no requests
@@ -74,3 +75,28 @@ Feature: Reporting unhandled events
         When I run the game in the "NativeCrashOutsideNotifyReleaseStages" state
         And I run the game in the "(noop)" state
         Then I should receive no requests
+
+    Scenario: Reporting an uncaught exception when AutoNotify = false
+        When I run the game in the "UncaughtExceptionWithoutAutoNotify" state
+        Then I should receive no requests
+
+    Scenario: Reporting a native crash when AutoNotify = false
+        When I run the game in the "NativeCrashWithoutAutoNotify" state
+        And I run the game in the "(noop)" state
+        Then I should receive no requests
+
+    Scenario: Reporting a native crash after toggling AutoNotify off then on again
+        When I run the game in the "NativeCrashReEnableAutoNotify" state
+        And I run the game in the "(noop)" state
+        Then I should receive a request
+        And the request is a valid for the error reporting API
+        And the "Bugsnag-API-Key" header equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
+        And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
+        And the payload field "events" is an array with 1 element
+        And the exception "errorClass" equals "SIGABRT"
+        And the event "unhandled" is true
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | __pthread_kill       |
+            | abort                |
+            | crashy_signal_runner |

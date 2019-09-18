@@ -6,6 +6,10 @@ namespace BugsnagUnity
 {
   class Configuration : AbstractConfiguration
   {
+    // Cached value of native-layer auto notify configuration setting to reduce the
+    // number of native calls required when reporting a Unity error
+    private bool _autoNotify;
+
     internal NativeInterface NativeInterface { get; }
 
     internal Configuration(string apiKey, bool autoNotify) : base()
@@ -22,7 +26,7 @@ namespace BugsnagUnity
       JavaObject.Call("setAppVersion", Application.version);
       NativeInterface = new NativeInterface(JavaObject);
       SetupDefaults(apiKey);
-      AutoNotify = autoNotify;
+      _autoNotify = autoNotify;
     }
 
     protected override void SetupDefaults(string apiKey)
@@ -31,6 +35,15 @@ namespace BugsnagUnity
       ReleaseStage = "production";
       Endpoint = new Uri(DefaultEndpoint);
       SessionEndpoint = new Uri(DefaultSessionEndpoint);
+    }
+
+    public override bool AutoNotify
+    {
+      get => _autoNotify;
+      set {
+        _autoNotify = value;
+        NativeInterface.SetAutoNotify(value);
+      }
     }
 
     public override string ReleaseStage

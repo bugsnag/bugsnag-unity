@@ -152,6 +152,16 @@ namespace BugsnagUnity
       return CallNativeStringMethod("getContext", "()Ljava/lang/String;", new object[]{});
     }
 
+    public void SetAutoNotify(bool newValue) {
+      if (newValue) {
+        CallNativeVoidMethod("enableUncaughtJavaExceptionReporting", "()V", new object[]{});
+        CallNativeVoidMethod("enableNdkCrashReporting", "()V", new object[]{});
+      } else {
+        CallNativeVoidMethod("disableUncaughtJavaExceptionReporting", "()V", new object[]{});
+        CallNativeVoidMethod("disableNdkCrashReporting", "()V", new object[]{});
+      }
+    }
+
     public void SetContext(string newValue) {
       CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
     }

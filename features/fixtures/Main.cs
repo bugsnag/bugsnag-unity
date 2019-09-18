@@ -193,6 +193,27 @@ public class Main : MonoBehaviour {
       case "NativeCrash":
         crashy_signal_runner(8);
         break;
+      case "UncaughtExceptionWithoutAutoNotify":
+        Bugsnag.Configuration.AutoNotify = false;
+        DoUnhandledException(0);
+        break;
+      case "NotifyWithoutAutoNotify":
+        Bugsnag.Configuration.AutoNotify = false;
+        DoNotify();
+        break;
+      case "LoggedExceptionWithoutAutoNotify":
+        Bugsnag.Configuration.AutoNotify = false;
+        DoLogUnthrownAsUnhandled();
+        break;
+      case "NativeCrashWithoutAutoNotify":
+        Bugsnag.Configuration.AutoNotify = false;
+        crashy_signal_runner(8);
+        break;
+      case "NativeCrashReEnableAutoNotify":
+        Bugsnag.Configuration.AutoNotify = false;
+        Bugsnag.Configuration.AutoNotify = true;
+        crashy_signal_runner(8);
+        break;
       case "AutoSessionNativeCrash":
         new Thread(() => {
           Thread.Sleep(900);
