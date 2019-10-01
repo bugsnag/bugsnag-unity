@@ -23,10 +23,6 @@ pushd "${0%/*}"
 
     Unity -nographics -quit -batchmode -logFile $log_file \
       -projectPath $project_path \
-      -executeMethod "Main.CreateScene"
-
-    Unity -nographics -quit -batchmode -logFile $log_file \
-      -projectPath $project_path \
-      -buildOSXUniversalPlayer "$(pwd)/Mazerunner.app"
+      -executeMethod "Main.ExportMacApp"
   popd
 popd

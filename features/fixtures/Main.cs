@@ -30,6 +30,29 @@ public class Main : MonoBehaviour {
     scenes.Add(new EditorBuildSettingsScene(MAIN_SCENE_PATH, true));
     EditorBuildSettings.scenes = scenes.ToArray();
   }
+
+  public static void ExportAndroidApp() {
+    PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.example.Main");
+    ExportApp(BuildTarget.Android, "Mazerunner.apk");
+  }
+
+  public static void ExportIOSApp() {
+    ExportApp(BuildTarget.iOS, "iOSBuild");
+  }
+
+  public static void ExportMacApp() {
+    ExportApp(BuildTarget.StandaloneOSX, "Mazerunner.app");
+  }
+
+  private static void ExportApp(BuildTarget target, string locationPathName) {
+    CreateScene();
+    BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
+    buildPlayerOptions.scenes = new [] { MAIN_SCENE_PATH };
+    buildPlayerOptions.locationPathName = locationPathName;
+    buildPlayerOptions.target = target;
+    buildPlayerOptions.options = BuildOptions.None;
+    BuildPipeline.BuildPlayer(buildPlayerOptions);
+  }
 #endif
 
   [DllImport ("NativeCrashy")]

@@ -19,6 +19,5 @@ end
 
 at_exit do
   `pkill Mazerunner`
-  FileUtils.rm_rf('features/fixtures/Mazerunner.app')
   FileUtils.rm_rf('features/fixtures/unity_project')
 end
