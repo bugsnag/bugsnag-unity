@@ -288,7 +288,7 @@ namespace :travis do
 
   task :maze_runner do
     with_license do
-      sh "bundle", "exec", "bugsnag-maze-runner", "--color"
+      sh "bundle", "exec", "bugsnag-maze-runner", "--color", "--verbose"
     end
   end
 end
