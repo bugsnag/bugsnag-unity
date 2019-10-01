@@ -265,8 +265,8 @@ end
 namespace :travis do
   def with_license &block
     # Ensure a Packages/manifest.json exists in all locations
-    `mkdir Packages && echo '{}' > Packages/manifest.json`
-    `mkdir #{unity_directory}/Unity.app/Contents/Packages && echo '{}' > #{unity_directory}/Unity.app/Contents/Packages/manifest.json`
+    `mkdir -p Packages && echo '{}' > Packages/manifest.json`
+    `mkdir -p #{unity_directory}/Unity.app/Contents/Packages && echo '{}' > #{unity_directory}/Unity.app/Contents/Packages/manifest.json`
 
     # activate the unity license
     unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
