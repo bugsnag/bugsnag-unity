@@ -14,7 +14,9 @@ using UnityEditor;
 public class Main : MonoBehaviour {
 #if UNITY_EDITOR
   public static void CreateScene() {
-    var scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.DefaultGameObjects, UnityEditor.SceneManagement.NewSceneMode.Single);
+    var scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(
+        UnityEditor.SceneManagement.NewSceneSetup.DefaultGameObjects, 
+        UnityEditor.SceneManagement.NewSceneMode.Single);
     UnityEngine.SceneManagement.SceneManager.SetActiveScene(scene);
     var obj = new GameObject("Bugsnag");
     var bugsnag = obj.AddComponent<BugsnagBehaviour>();
