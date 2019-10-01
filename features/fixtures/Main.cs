@@ -13,6 +13,8 @@ using UnityEditor;
 
 public class Main : MonoBehaviour {
 #if UNITY_EDITOR
+  private static string MAIN_SCENE_PATH = "Assets/MainScene.unity";
+
   public static void CreateScene() {
     var scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(
         UnityEditor.SceneManagement.NewSceneSetup.DefaultGameObjects, 
@@ -23,9 +25,9 @@ public class Main : MonoBehaviour {
     bugsnag.BugsnagApiKey = System.Environment.GetEnvironmentVariable("BUGSNAG_APIKEY");
     bugsnag.AutoCaptureSessions = false;
     obj.AddComponent<Main>();
-    UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, "Assets/MainScene.unity");
+    UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, MAIN_SCENE_PATH);
     var scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
-    scenes.Add(new EditorBuildSettingsScene("Assets/MainScene.unity", true));
+    scenes.Add(new EditorBuildSettingsScene(MAIN_SCENE_PATH, true));
     EditorBuildSettings.scenes = scenes.ToArray();
   }
 #endif
