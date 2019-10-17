@@ -24,7 +24,7 @@ stages:
 before_install:
 - bundle install
 - brew update
-- brew tap caskroom/cask
+- brew tap caskroom/cask-cask
 - pip install --user awscli
 - mkdir -p $TRAVIS_BUILD_DIR/build_artifacts
 - aws s3 sync s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_DIR/build_artifacts
