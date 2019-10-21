@@ -29,7 +29,7 @@ before_install:
 - mkdir -p $TRAVIS_BUILD_DIR/build_artifacts
 - aws s3 sync s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER $TRAVIS_BUILD_DIR/build_artifacts
 install:
-- scripts/travis_build_package.sh
+- scripts/travis_build_package.sh || (cat unity.log && exit 1)
 after_success:
 - aws s3 sync $TRAVIS_BUILD_DIR/build_artifacts s3://bugsnag-unity-artifacts/$TRAVIS_BUILD_NUMBER
 script:
