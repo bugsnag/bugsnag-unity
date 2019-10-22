@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.6.6 (2019-10-22)
 
 ### Bug fixes
 
@@ -9,6 +9,23 @@
   number of seconds required between unique Unity log messages which
   bugsnag-unity will convert into breadcrumbs or reports. Increase the value to
   reduce the number of logs or reports generated from frequent error messages.
+* Update bugsnag-cocoa to v5.22.9:
+  * Deprecate `config.reportBackgroundOOMs` property - designating any app
+    termination as a possible error condition can cause a lot of false positives,
+    especially since the app can die for many genuine reasons, especially when
+    running only in the background.
+    [bugsnag-cocoa#425](https://github.com/bugsnag/bugsnag-cocoa/pull/425)
+  * Fix use-after-free in `notify()` logic which could lead to a deadlock
+    [bugsnag-cocoa#420](https://github.com/bugsnag/bugsnag-cocoa/pull/420)
+  * Reduce severity of log message about thread status from 'error' to 'debug' as
+    it does not necessarily indicate a problem and is only used for debugging.
+    [bugsnag-cocoa#421](https://github.com/bugsnag/bugsnag-cocoa/pull/421)
+  * Show correct value for `app.inForeground` when an app launches and crashes in
+    the background without ever coming to the foreground.
+    [bugsnag-cocoa#415](https://github.com/bugsnag/bugsnag-cocoa/pull/415)
+  * Fix improperly retained properties which could result in a crash due to
+    premature deallocation
+    [bugsnag-cocoa#416](https://github.com/bugsnag/bugsnag-cocoa/pull/416)
 
 ## 4.6.5 (2019-09-18)
 
