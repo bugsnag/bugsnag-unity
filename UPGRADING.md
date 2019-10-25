@@ -70,4 +70,4 @@ If you used the code-only configuration then perform the following:
 + BugsnagUnity.Bugsnag.Init("your-api-key-here");
 ```
 
-If you used `MapUnityLogToSeverity` in a prior version this has now been replaced with the ability to add callbacks which can be used to modify the severity of an error report. See the [docs](http://localhost:4567/platforms/unity/#sending-diagnostic-data) for more information.
+If you used `MapUnityLogToSeverity` in a prior version this has now been replaced with the ability to add callbacks which can be used to modify the severity of an error report. See the [docs](https://docs.bugsnag.com/platforms/unity/#sending-diagnostic-data) for more information.
