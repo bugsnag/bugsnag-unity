@@ -86,6 +86,7 @@ bundle exec rake plugin:maze_runner
   - [ ] Test that a log message formatted as `SomeTitle: rest of message` generates an error titled `SomeTitle` with message `rest of message`
   - [ ] Test that a log message formatted without a colon generates an error titled `LogError<level>` with message `rest of message`
   - [ ] Ensure the example app sends the correct error for each type on iOS
+  - [ ] Ensure OOM reports are sent on iOS when the app is unexpectedly terminated
   - [ ] Ensure the example app sends the correct error for each type on tvOS
   - [ ] Ensure the example app sends the correct error for each type on macOS
   - [ ] Ensure the example app sends the correct error for each type on Android

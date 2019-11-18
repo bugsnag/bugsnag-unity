@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (iOS) Fix a build setting preventing out-of-memory events from being reported
+  [#178](https://github.com/bugsnag/bugsnag-unity/pull/178)
+
 ## 4.6.6 (2019-10-22)
 
 ### Bug fixes

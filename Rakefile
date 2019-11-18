@@ -146,13 +146,30 @@ namespace :plugin do
           project_file = File.join("#{project_name}.xcodeproj")
           project = Xcodeproj::Project.new(project_file)
 
+          # Create platform-specific build targets, linking deps if needed.
+          # Define TARGET_OS* macros since they aren't added for static targets.
           case project_name
           when "bugsnag-tvos"
             target = project.new_target(:static_library, "bugsnag-tvos", :tvos, "9.0")
+            target_macro = "-DTARGET_OS_TV"
+
+            # Link UIKit during compilation
+            phase = target.build_phases.find { |p| p.is_a?(Xcodeproj::Project::PBXFrameworksBuildPhase) }
+            target.add_system_frameworks("UIKit").each do |file_ref|
+              phase.add_file_reference file_ref
+            end
           when "bugsnag-ios"
             target = project.new_target(:static_library, "bugsnag-ios", :ios, "8.0")
+            target_macro = "-DTARGET_OS_IPHONE"
+
+            # Link UIKit during compilation
+            phase = target.build_phases.find { |p| p.is_a?(Xcodeproj::Project::PBXFrameworksBuildPhase) }
+            target.add_system_frameworks("UIKit").each do |file_ref|
+              phase.add_file_reference file_ref
+            end
           when "bugsnag-osx"
             target = project.new_target(:bundle, "bugsnag-osx", :osx, "10.8")
+            target_macro = "-DTARGET_OS_MAC"
           end
 
           group = project.new_group("Bugsnag")
@@ -175,9 +192,9 @@ namespace :plugin do
             end
             case build_configuration.type
             when :debug
-              build_configuration.build_settings["OTHER_CFLAGS"] = "-fembed-bitcode-marker"
+              build_configuration.build_settings["OTHER_CFLAGS"] = "-fembed-bitcode-marker #{target_macro}"
             when :release
-              build_configuration.build_settings["OTHER_CFLAGS"] = "-fembed-bitcode"
+              build_configuration.build_settings["OTHER_CFLAGS"] = "-fembed-bitcode #{target_macro}"
             end
           end
 
