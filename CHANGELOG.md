@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.6.7 (2019-11-19)
 
 ### Bug fixes
 
