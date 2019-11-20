@@ -73,6 +73,8 @@ namespace BugsnagUnity
       User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
       TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
       TimingTrackerObject.AddComponent<TimingTrackerBehaviour>();
+      UnityEngine.Object.DontDestroyOnLoad(TimingTrackerObject.gameObject);
+
       // Run initial session check in next frame to allow potential configuration
       // changes to be completed first.
       try {
