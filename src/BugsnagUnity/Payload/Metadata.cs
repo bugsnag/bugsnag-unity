@@ -15,20 +15,25 @@ namespace BugsnagUnity.Payload
     }
 
     public void Add(string section, object newValue) {
-      if (NativeClient != null) {
-        if (newValue is Dictionary<string, string> stringValues) {
-          base.Add(section, stringValues);
-          NativeClient.SetMetadata(section, stringValues);
-        } else if (newValue is Dictionary<string, object> objectValues) {
-          var target = new Dictionary<string, string>();
-          foreach(var pair in objectValues) {
-            target.Add(pair.Key, pair.Value.ToString());
+      if (ContainsKey(section)) {
+        var currentValue = this[section];
+        base.Remove(section);
+        if (currentValue is Dictionary<string, string> currentStringValues) {
+          if (newValue is Dictionary<string, string> newStringValues) {
+            base.Add(section, MergeDicts(currentStringValues, newStringValues));
+          } else if (newValue is Dictionary<string, object> newObjectValues) {
+            base.Add(section, MergeDicts(currentStringValues, CoerceDictType(newObjectValues)));
+          } else {
+            AddValueAsDict(section, newValue);
           }
-          base.Add(section, target);
-          NativeClient.SetMetadata(section, target);
+        } else {
+          AddValueAsDict(section, newValue);
         }
       } else {
-        base.Add(section, newValue);
+        AddValueAsDict(section, newValue);
+      }
+      if (NativeClient != null && this[section] is Dictionary<string, string> stringValues) {
+          NativeClient.SetMetadata(section, stringValues);
       }
     }
 
@@ -37,6 +42,38 @@ namespace BugsnagUnity.Payload
       if (NativeClient != null) {
         NativeClient.SetMetadata(section, null);
       }
+    }
+
+    private void AddValueAsDict(string section, object input) {
+      if (input is Dictionary<string, string> newInput) {
+        base.Add(section, newInput);
+      } else if (input is Dictionary<string, object> newObjectValue) {
+        base.Add(section, CoerceDictType(newObjectValue));
+      } else {
+        var target = new Dictionary<string, string>();
+        target.Add(section, input.ToString());
+        Add("custom", target);
+      }
+    }
+
+    private Dictionary<string, string> CoerceDictType(Dictionary<string, object> input) {
+      var target = new Dictionary<string, string>();
+      foreach(var pair in input) {
+        target.Add(pair.Key, pair.Value.ToString());
+      }
+      return target;
+    }
+
+    private Dictionary<string, string> MergeDicts(Dictionary<string, string> input, 
+                                                  Dictionary<string, string> overrides) {
+      var target = new Dictionary<string, string>(input);
+      foreach (var pair in overrides) {
+        if (target.ContainsKey(pair.Key)) {
+          target.Remove(pair.Key);
+        }
+        target.Add(pair.Key, pair.Value);
+      }
+      return target;
     }
   }
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (Windows) Fix inability to add metadata to a section more than once
+  [#170](https://github.com/bugsnag/bugsnag-unity/issues/170)
+
 ## 4.6.7 (2019-11-19)
 
 ### Bug fixes
