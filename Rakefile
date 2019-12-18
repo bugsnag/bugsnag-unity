@@ -86,31 +86,35 @@ def assemble_android filter_abis=true
   android_dir = File.join(assets_path, "Android")
 
   cd "bugsnag-android" do
-    sh "./gradlew", "clean", "sdk:assembleRelease", "--quiet", abi_filters
-  end
-
-  # Shim for the old bugsnag-android-ndk library to avoid duplicate
-  # libs/class names in the final bundle when upgrading from older versions of
-  # bugsnag-unity v4.x
-  cd "bugsnag-android-ndk-shim" do
-    sh "../bugsnag-android-unity/gradlew", "assembleRelease", "--quiet"
+    sh "./gradlew", "assembleRelease", abi_filters
   end
 
   cd "bugsnag-android-unity" do
-    sh "./gradlew", "clean", "assembleRelease", "--quiet", abi_filters
+    sh "./gradlew", "assembleRelease", abi_filters
   end
 
-  android_lib = File.join("bugsnag-android", "sdk", "build", "outputs", "aar", "bugsnag-android-release.aar")
-  ndk_lib = File.join("bugsnag-android-ndk-shim", "build", "outputs", "aar", "bugsnag-android-ndk-shim-release.aar")
+  # copy each modularised bugsnag-android artefact
+  android_core_lib = File.join("bugsnag-android", "bugsnag-android-core", "build", "outputs", "aar", "bugsnag-android-core-release.aar")
+  anr_lib = File.join("bugsnag-android", "bugsnag-plugin-android-anr", "build", "outputs", "aar", "bugsnag-plugin-android-anr-release.aar")
+  ndk_lib = File.join("bugsnag-android", "bugsnag-plugin-android-ndk", "build", "outputs", "aar", "bugsnag-plugin-android-ndk-release.aar")
+  
+  # copy kotlin dependencies required by bugsnag-android. the exact files required for each
+  # version can be found here:
+  # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.61/kotlin-stdlib-1.3.61.pom
+  kotlin_stdlib = File.join("android-libs", "kotlin-stdlib-1.3.61.jar")
+  kotlin_stdlib_common = File.join("android-libs", "kotlin-stdlib-common-1.3.61.jar")
+  kotlin_annotations = File.join("android-libs", "annotations-13.0.jar")
+
+  # copy unity lib
   unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
 
-  # AARs include version name in newer versions of gradle, rename to old filename format
-  sdk_aar = Dir.glob("bugsnag-android/sdk/build/outputs/aar/bugsnag-android-*.aar").first
-  mv sdk_aar, android_lib
-
-  cp android_lib, android_dir
+  cp android_core_lib, android_dir
   cp ndk_lib, File.join(android_dir, "bugsnag-android-ndk-release.aar")
+  cp anr_lib, android_dir
   cp unity_lib, android_dir
+  cp kotlin_stdlib, File.join(android_dir, "kotlin-stdlib.jar")
+  cp kotlin_stdlib_common, File.join(android_dir, "kotlin-stdlib-common.jar")
+  cp kotlin_annotations, File.join(android_dir, "kotlin-annotations.jar")
 end
 
 namespace :plugin do
