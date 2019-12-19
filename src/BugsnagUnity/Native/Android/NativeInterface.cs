@@ -162,6 +162,14 @@ namespace BugsnagUnity
       }
     }
 
+    public void SetAutoDetectAnrs(bool newValue) {
+      if (newValue) {
+        CallNativeVoidMethod("enableAnrReporting", "()V", new object[]{});
+      } else {
+        CallNativeVoidMethod("disableAnrReporting", "()V", new object[]{});
+      }
+    }
+
     public void SetContext(string newValue) {
       CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
     }

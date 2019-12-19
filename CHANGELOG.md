@@ -1,5 +1,10 @@
 # Changelog
 
+## TBD
+
+* Detect ANRs on Android and provide configuration option to enable detection
+  [#184](https://github.com/bugsnag/bugsnag-unity/pull/184)
+
 ## 4.7.0 (TBD)
 
 * Update bugsnag-android to v4.22.2:
