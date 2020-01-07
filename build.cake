@@ -5,7 +5,7 @@ var target = Argument("target", "Default");
 var solution = File("./BugsnagUnity.sln");
 var configuration = Argument("configuration", "Release");
 var project = File("./src/BugsnagUnity/BugsnagUnity.csproj");
-var version = "4.6.7";
+var version = "4.7.0";
 
 Task("Restore-NuGet-Packages")
     .Does(() => NuGetRestore(solution));

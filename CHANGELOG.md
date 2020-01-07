@@ -1,5 +1,75 @@
 # Changelog
 
+## 4.7.0 (TBD)
+
+* Update bugsnag-android to v4.22.2:
+
+  * This release adds a compile-time dependency on the Kotlin standard library. This should not affect
+  the use of any API supplied by bugsnag-unity.
+
+  * Modularise bugsnag-android into Core, NDK, and ANR artifacts
+    [#522](https://github.com/bugsnag/bugsnag-android/pull/522)
+
+  * Migrate dependencies to androidx
+    [#554](https://github.com/bugsnag/bugsnag-android/pull/554)
+
+  * Report internal SDK errors to bugsnag
+    [#570](https://github.com/bugsnag/bugsnag-android/pull/570)
+    [#581](https://github.com/bugsnag/bugsnag-android/pull/581)
+    [#594](https://github.com/bugsnag/bugsnag-android/pull/594)
+    [#605](https://github.com/bugsnag/bugsnag-android/pull/605)
+    [#588](https://github.com/bugsnag/bugsnag-android/pull/588)
+    [#612](https://github.com/bugsnag/bugsnag-android/pull/612)
+
+  * Add `detectNdkCrashes` configuration option to bugsnag-android to toggle whether C/C++ crashes
+    are detected
+    [#491](https://github.com/bugsnag/bugsnag-android/pull/491)
+
+  * Use NetworkCallback to monitor connectivity changes on newer API levels
+  [#501](https://github.com/bugsnag/bugsnag-android/pull/501)
+
+  * Fix deserialization of custom stackframe fields in cached error reports
+    [#576](https://github.com/bugsnag/bugsnag-android/pull/576)
+
+  * Buffer IO when reading from cached error files, improving SDK performance
+    [#573](https://github.com/bugsnag/bugsnag-android/pull/573)
+
+  * flushOnLaunch() does not cancel previous requests if they timeout, leading to potential duplicate reports
+    [#593](https://github.com/bugsnag/bugsnag-android/pull/593)
+
+  * Report correct value for free disk space
+    [#589](https://github.com/bugsnag/bugsnag-android/pull/589)
+
+  * Allow overriding the versionCode via Configuration
+    [#610](https://github.com/bugsnag/bugsnag-android/pull/610)
+
+  * Catch throwables when invoking methods on system services
+    [#623](https://github.com/bugsnag/bugsnag-android/pull/623)
+
+* Update bugsnag-cocoa to v5.22.9:
+  * Fix unrecognized selector crash when adding metadata
+    [#430](https://github.com/bugsnag/bugsnag-cocoa/pull/430)
+
+  * This release removes support for reporting 'partial' or 'minimal' crash reports
+  where the crash report could not be entirely written (due to disk space or other
+  issues like the device battery dying). While sometimes the reports could point
+  in the right direction for debugging, they could also be confusing or not enough
+  information to pursue and close the issue successfully.
+
+    This release  also renames a few configuration properties to align better with the
+  intended use and other Bugsnag libraries, so people who use more than one
+  platform can easily find related functionality in a different library. The old
+  names are deprecated but still supported until the next major release.
+  [#435](https://github.com/bugsnag/bugsnag-cocoa/pull/435)
+
+    * `Bugsnag.setBreadcrumbCapacity()` is now `setMaxBreadcrumbs()` on the
+    `BugsnagConfiguration` class. In addition, the default number of breadcrumbs
+    saved has been raised to 25 and limited to no more than 100.
+    * `BugsnagConfiguration.autoNotify` is now named
+    `BugsnagConfiguration.autoDetectErrors`
+    * `BugsnagConfiguration.autoCaptureSessions` is now named
+    `BugsnagConfiguration.autoDetectSessions`
+
 ## 4.6.7 (2019-11-19)
 
 ### Bug fixes
