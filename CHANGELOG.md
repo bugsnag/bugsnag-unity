@@ -46,7 +46,7 @@
   * Catch throwables when invoking methods on system services
     [#623](https://github.com/bugsnag/bugsnag-android/pull/623)
 
-* Update bugsnag-cocoa to v5.22.9:
+* Update bugsnag-cocoa to v5.23.0:
   * Fix unrecognized selector crash when adding metadata
     [#430](https://github.com/bugsnag/bugsnag-cocoa/pull/430)
 
