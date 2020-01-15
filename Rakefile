@@ -108,10 +108,10 @@ def assemble_android filter_abis=true
   # copy unity lib
   unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
 
-  cp android_core_lib, android_dir
+  cp android_core_lib, File.join(android_dir, "bugsnag-android-release.aar")
   cp ndk_lib, File.join(android_dir, "bugsnag-android-ndk-release.aar")
-  cp anr_lib, android_dir
-  cp unity_lib, android_dir
+  cp anr_lib, File.join(android_dir, "bugsnag-plugin-android-anr-release.aar")
+  cp unity_lib, File.join(android_dir, "bugsnag-android-unity-release.aar")
   cp kotlin_stdlib, File.join(android_dir, "kotlin-stdlib.jar")
   cp kotlin_stdlib_common, File.join(android_dir, "kotlin-stdlib-common.jar")
   cp kotlin_annotations, File.join(android_dir, "kotlin-annotations.jar")
