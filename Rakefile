@@ -32,10 +32,6 @@ def unity_executable
   end
 end
 
-unless unity_executable
-  raise "Unable to locate Unity executable in #{unity_directory}"
-end
-
 def unity_dll_location
   [File.join(unity_directory, "Unity.app", "Contents", "Managed"), File.join(unity_directory, "Editor", "Data", "Managed")].find do |unity|
     File.exists? unity
@@ -48,6 +44,8 @@ end
 # that we apply
 #
 def unity(*cmd, force_free: true, no_graphics: true)
+  raise "Unable to locate Unity executable in #{unity_directory}" unless unity_executable
+
   cmd_prepend = [unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit"]
   unless force_free
     cmd_prepend = cmd_prepend - ["-force-free"]
@@ -119,22 +117,33 @@ end
 
 namespace :plugin do
   namespace :build do
+    cocoa_build_dir = "bugsnag-cocoa-build"
     task all: [:assets, :cocoa, :csharp, :android]
     task all_android64: [:assets, :cocoa, :csharp, :android_64bit]
+
+    desc "Delete all build artifacts"
     task :clean do
       # remove any leftover artifacts from the package generation directory
       sh "git", "clean", "-dfx", "unity"
+      # remove cocoa build area
+      FileUtils.rm_rf cocoa_build_dir 
+      # remove android build area
+      cd "bugsnag-android" do
+        sh "./gradlew", "clean"
+      end
+
+      cd "bugsnag-android-unity" do
+        sh "./gradlew", "clean"
+      end
     end
-    task assets: [:clean] do
-      cp_r File.join(current_directory, "src", "Assets"), project_path
+    task :assets do
+      cp_r File.join(current_directory, "src", "Assets"), project_path, preserve: true
     end
-    task cocoa: [:clean] do
+    task :cocoa do
       next unless is_mac?
-      build_dir = "bugsnag-cocoa-build"
       build_type = "Release" # "Debug" or "Release"
-      FileUtils.rm_rf build_dir
-      FileUtils.mkdir_p build_dir
-      FileUtils.cp_r "bugsnag-cocoa/Source", build_dir
+      FileUtils.mkdir_p cocoa_build_dir
+      FileUtils.cp_r "bugsnag-cocoa/Source", cocoa_build_dir
       bugsnag_unity_file = File.realpath("BugsnagUnity.mm", "src")
       public_headers = [
         "BugsnagMetaData.h",
@@ -145,9 +154,11 @@ namespace :plugin do
         "BugsnagConfiguration.h",
       ]
 
-      cd build_dir do
+      cd cocoa_build_dir do
         ["bugsnag-ios", "bugsnag-osx", "bugsnag-tvos"].each do |project_name|
           project_file = File.join("#{project_name}.xcodeproj")
+          next if File.exist?(project_file)
+
           project = Xcodeproj::Project.new(project_file)
 
           # Create platform-specific build targets, linking deps if needed.
@@ -217,7 +228,7 @@ namespace :plugin do
       ios_dir = File.join(assets_path, "iOS", "Bugsnag")
       tvos_dir = File.join(assets_path, "tvOS", "Bugsnag")
 
-      cd build_dir do
+      cd cocoa_build_dir do
         cd "build" do
           # we just need to copy the os x bundle into the correct directory
           cp_r File.join(build_type, "bugsnag-osx.bundle"), osx_dir
@@ -235,7 +246,7 @@ namespace :plugin do
         end
       end
     end
-    task csharp: [:clean] do
+    task :csharp do
       if is_windows?
         env = { "UnityDir" => unity_dll_location }
         unless system env, "powershell", "-File", "build.ps1"
@@ -258,11 +269,11 @@ namespace :plugin do
       end
     end
 
-    task android: [:clean] do
+    task :android do
       assemble_android(true)
     end
 
-    task android_64bit: [:clean] do
+    task :android_64bit do
       assemble_android(false)
     end
   end
@@ -271,13 +282,21 @@ namespace :plugin do
     export_package
   end
 
-  task :export do
+  desc "Generate release artifacts"
+  task export: ["plugin:build:clean"] do
     Rake::Task["plugin:build:all"].invoke
     export_package("Bugsnag.unitypackage")
     Rake::Task["plugin:build:all_android64"].invoke
     export_package("Bugsnag-with-android-64bit.unitypackage")
   end
 
+  desc "Generate release artifacts from cache (using Android 64-bit)"
+  task :quick_export do
+    Rake::Task["plugin:build:all_android64"].invoke
+    export_package("Bugsnag-with-android-64bit.unitypackage")
+  end
+
+  desc "Run integration tests"
   task maze_runner: %w[plugin:export] do
     sh "bundle", "exec", "bugsnag-maze-runner"
   end
