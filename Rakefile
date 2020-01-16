@@ -84,7 +84,7 @@ def assemble_android filter_abis=true
   android_dir = File.join(assets_path, "Android")
 
   cd "bugsnag-android" do
-    sh "./gradlew", "assembleRelease", abi_filters
+    sh "./gradlew", "bugsnag-android-core:assembleRelease", "bugsnag-plugin-android-ndk:assembleRelease", "bugsnag-plugin-android-anr:assembleRelease", abi_filters
   end
 
   cd "bugsnag-android-unity" do
