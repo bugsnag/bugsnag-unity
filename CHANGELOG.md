@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* (Android) Prevent SIGABRT when altering Configuration on background thread
+  [#187](https://github.com/bugsnag/bugsnag-unity/pull/187)
+
 ## 4.6.7 (2019-11-19)
 
 ### Bug fixes
