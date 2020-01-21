@@ -1,8 +1,9 @@
 #!/bin/sh -ue
 
 brew install ninja
+# Install a pinned version of mono-mdk as 6.8.X fails to build on Travis CI
 brew cask install \
-  mono-mdk \
+  https://raw.githubusercontent.com/caskroom/homebrew-cask/59a4123d2dc252d17db3fc9169889c96b23cda15/Casks/mono-mdk.rb \
   android-sdk \
   bugsnag/unity/$UNITY_VERSION
 
