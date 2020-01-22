@@ -22,6 +22,11 @@ namespace BugsnagUnity
     /// </summary>
     public bool AutoNotify = true;
 
+    /// <summary>
+    /// Exposed in the Unity Editor to configure this behaviour
+    /// </summary>
+    public bool AutoDetectAnrs = false;
+
     public LogType NotifyLevel = LogType.Exception;
 
     public int MaximumBreadcrumbs = 25;
@@ -43,6 +48,7 @@ namespace BugsnagUnity
     {
       Bugsnag.Init(BugsnagApiKey, AutoNotify);
       Bugsnag.Configuration.AutoNotify = AutoNotify;
+      Bugsnag.Configuration.AutoDetectAnrs = AutoNotify && AutoDetectAnrs;
       Bugsnag.Configuration.AutoCaptureSessions = AutoCaptureSessions;
       Bugsnag.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
       Bugsnag.Configuration.NotifyLevel = NotifyLevel;
@@ -93,6 +99,7 @@ namespace BugsnagUnity
     SerializedProperty notifyLevel;
     SerializedProperty maximumBreadcrumbs;
     SerializedProperty autoNotify;
+    SerializedProperty autoDetectAnrs;
     SerializedProperty autoCaptureSessions;
     SerializedProperty uniqueLogsPerSecond;
 
@@ -101,6 +108,7 @@ namespace BugsnagUnity
       showAdvanced = false;
       apiKey = serializedObject.FindProperty("BugsnagApiKey");
       autoNotify = serializedObject.FindProperty("AutoNotify");
+      autoDetectAnrs = serializedObject.FindProperty("AutoDetectAnrs");
       autoCaptureSessions = serializedObject.FindProperty("AutoCaptureSessions");
       notifyLevel = serializedObject.FindProperty("NotifyLevel");
       maximumBreadcrumbs = serializedObject.FindProperty("MaximumBreadcrumbs");
@@ -113,6 +121,7 @@ namespace BugsnagUnity
 
       EditorGUILayout.PropertyField(apiKey, new GUIContent("API Key"));
       EditorGUILayout.PropertyField(autoNotify, new GUIContent("Auto Notify"));
+      EditorGUILayout.PropertyField(autoDetectAnrs, new GUIContent("Auto Detect Android ANRs"));
       EditorGUILayout.PropertyField(autoCaptureSessions, new GUIContent("Auto Capture Sessions"));
       EditorGUILayout.PropertyField(notifyLevel, new GUIContent("Notify Level"));
 

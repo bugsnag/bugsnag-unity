@@ -38,6 +38,8 @@ namespace BugsnagUnity
 
     bool AutoNotify { get; set; }
 
+    bool AutoDetectAnrs { get; set; }
+
     bool AutoCaptureSessions { get; set; }
 
     LogTypeSeverityMapping LogTypeSeverityMapping { get; }
