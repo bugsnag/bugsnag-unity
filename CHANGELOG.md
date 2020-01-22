@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.7.0 (TBD)
+## 4.7.0 (2019-01-22)
 
 * Update bugsnag-android to v4.22.2:
 
