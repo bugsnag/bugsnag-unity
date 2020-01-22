@@ -51,12 +51,21 @@ A simple project can be found at [example](https://github.com/bugsnag/bugsnag-un
 
 ## Building Plugin
 
-The plugin can be built by running
+The plugin can be built for release by running `rake plugin:export`. The
+`export` task does a full clean build.
 
 ```
 bundle install
 bundle exec rake plugin:export
 ```
+
+The plugin can be built with a cache using `rake plugin:quick_export`.
+
+```
+bundle exec rake plugin:rebuild
+```
+
+List available tasks using `rake -T`.
 
 ## Building Example
 
