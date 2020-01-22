@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.8.0 (TBD)
 
 * Detect ANRs on Android and provide configuration option to enable detection
   [#184](https://github.com/bugsnag/bugsnag-unity/pull/184)
