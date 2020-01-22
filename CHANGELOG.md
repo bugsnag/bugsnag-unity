@@ -2,6 +2,9 @@
 
 ## TBD
 
+* Detect ANRs on Android and provide configuration option to enable detection
+  [#184](https://github.com/bugsnag/bugsnag-unity/pull/184)
+
 ### Bug fixes
 
 * (Android) Prevent SIGABRT when altering Configuration on background thread

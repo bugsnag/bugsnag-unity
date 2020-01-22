@@ -17,6 +17,7 @@ namespace BugsnagUnity
       ApiKey = apiKey;
       AppVersion = Application.version;
       AutoCaptureSessions = true;
+      AutoNotify = true;
     }
 
     public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
@@ -57,6 +58,8 @@ namespace BugsnagUnity
     public virtual LogType NotifyLevel { get; set; } = LogType.Exception;
 
     public virtual bool AutoNotify { get; set; } = true;
+
+    public virtual bool AutoDetectAnrs { get; set; } = false;
 
     public virtual bool AutoCaptureSessions { get; set; }
 

@@ -9,6 +9,7 @@ namespace BugsnagUnity
     // Cached value of native-layer auto notify configuration setting to reduce the
     // number of native calls required when reporting a Unity error
     private bool _autoNotify;
+    private bool _autoDetectAnrs = false;
 
     internal NativeInterface NativeInterface { get; }
 
@@ -17,9 +18,10 @@ namespace BugsnagUnity
       var JavaObject = new AndroidJavaObject("com.bugsnag.android.Configuration", apiKey);
       // the bugsnag-unity notifier will handle session tracking
       JavaObject.Call("setAutoCaptureSessions", false);
-      JavaObject.Call("setEnableExceptionHandler", autoNotify);
-      JavaObject.Call("setDetectAnrs", false);
-      JavaObject.Call("setDetectNdkCrashes", autoNotify);
+      JavaObject.Call("setEnableExceptionHandler", _autoNotify);
+      JavaObject.Call("setDetectAnrs", _autoDetectAnrs);
+      JavaObject.Call("setCallPreviousSigquitHandler", false);
+      JavaObject.Call("setDetectNdkCrashes", _autoNotify);
       JavaObject.Call("setEndpoint", DefaultEndpoint);
       JavaObject.Call("setSessionEndpoint", DefaultSessionEndpoint);
       JavaObject.Call("setReleaseStage", "production");
@@ -42,7 +44,17 @@ namespace BugsnagUnity
       get => _autoNotify;
       set {
         _autoNotify = value;
-        NativeInterface.SetAutoNotify(value);
+        NativeInterface.SetAutoNotify(_autoNotify);
+        NativeInterface.SetAutoDetectAnrs(_autoDetectAnrs && _autoNotify);
+      }
+    }
+
+    public override bool AutoDetectAnrs
+    {      
+      get => _autoDetectAnrs;
+      set {
+        _autoDetectAnrs = value;
+        NativeInterface.SetAutoDetectAnrs(_autoDetectAnrs && _autoNotify);
       }
     }
 
