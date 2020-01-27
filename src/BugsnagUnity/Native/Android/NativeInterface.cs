@@ -162,24 +162,32 @@ namespace BugsnagUnity
       }
     }
 
+    public void SetAutoDetectAnrs(bool newValue) {
+      if (newValue) {
+        CallNativeVoidMethod("enableAnrReporting", "()V", new object[]{});
+      } else {
+        CallNativeVoidMethod("disableAnrReporting", "()V", new object[]{});
+      }
+    }
+
     public void SetContext(string newValue) {
-      CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
+      CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[]{newValue});
     }
 
     public void SetReleaseStage(string newValue) {
-      CallNativeVoidMethod("setReleaseStage", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
+      CallNativeVoidMethod("setReleaseStage", "(Ljava/lang/String;)V", new object[]{newValue});
     }
 
     public void SetSessionEndpoint(string newValue) {
-      CallNativeVoidMethod("setSessionEndpoint", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
+      CallNativeVoidMethod("setSessionEndpoint", "(Ljava/lang/String;)V", new object[]{newValue});
     }
 
     public void SetEndpoint(string newValue) {
-      CallNativeVoidMethod("setEndpoint", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
+      CallNativeVoidMethod("setEndpoint", "(Ljava/lang/String;)V", new object[]{newValue});
     }
 
     public void SetAppVersion(string newValue) {
-      CallNativeVoidMethod("setAppVersion", "(Ljava/lang/String;)V", new object[]{MakeJavaString(newValue)});
+      CallNativeVoidMethod("setAppVersion", "(Ljava/lang/String;)V", new object[]{newValue});
     }
 
     public void SetNotifyReleaseStages(string[] stages) {
@@ -209,7 +217,7 @@ namespace BugsnagUnity
         CallNativeVoidMethod(method, description, new object[]{null, null, null});
       } else {
         CallNativeVoidMethod(method, description, 
-            new object[]{MakeJavaString(user.Id), MakeJavaString(user.Email), MakeJavaString(user.Name)});
+            new object[]{user.Id, user.Email, user.Name});
       }
     }
 
@@ -223,7 +231,7 @@ namespace BugsnagUnity
         // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
         var startedAt = (session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).Milliseconds;
         CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
-          startedAt, MakeJavaString(session.Id.ToString()), session.UnhandledCount(),
+          startedAt, session.Id.ToString(), session.UnhandledCount(),
           session.HandledCount()
         });
       }
@@ -249,7 +257,7 @@ namespace BugsnagUnity
       if (tab == null) {
         return;
       }
-      CallNativeVoidMethod("clearTab", "(Ljava/lang/String;)V", new object[]{MakeJavaString(tab)});
+      CallNativeVoidMethod("clearTab", "(Ljava/lang/String;)V", new object[]{tab});
     }
 
     public void AddToTab(string tab, string key, string value) {
@@ -257,7 +265,7 @@ namespace BugsnagUnity
         return;
       }
       CallNativeVoidMethod("addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V", 
-          new object[]{MakeJavaString(tab), MakeJavaString(key), MakeJavaString(value)});
+          new object[]{tab, key, value});
     }
 
     public void LeaveBreadcrumb(string name, string type, IDictionary<string, string> metadata) {
@@ -271,7 +279,7 @@ namespace BugsnagUnity
       using (var map = JavaMapFromDictionary(metadata))
       {
         CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V", 
-            new object[]{MakeJavaString(name), MakeJavaString(type), map});
+            new object[]{name, type, map});
       }
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
@@ -339,10 +347,19 @@ namespace BugsnagUnity
         AndroidJNI.AttachCurrentThread();
       }
 
-      var jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+      var itemsAsJavaObjects = new AndroidJavaObject[args.Length];
+      for (int i = 0; i < args.Length; i++) {
+        var obj = args[i];
+
+        if (obj is string) {
+          itemsAsJavaObjects[i] = MakeJavaString(obj as string);
+        }
+      }
+
+      var jargs = AndroidJNIHelper.CreateJNIArgArray(itemsAsJavaObjects);
       var methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
       AndroidJNI.CallStaticVoidMethod(BugsnagNativeInterface, methodID, jargs);
-      AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+      AndroidJNIHelper.DeleteJNIArgArray(itemsAsJavaObjects, jargs);
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
       }

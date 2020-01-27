@@ -1,6 +1,21 @@
 # Changelog
 
-## 4.7.0 (2019-01-22)
+## 4.8.0 (2020-01-27)
+
+### Enhancements
+
+This release adds ANR detection for Unity apps running in Android. To enable this option you should
+set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag in the normal way.
+
+* Detect ANRs on Android and provide configuration option to enable detection
+  [#184](https://github.com/bugsnag/bugsnag-unity/pull/184)
+
+### Bug fixes
+
+* (Android) Prevent SIGABRT when altering Configuration on background thread
+  [#187](https://github.com/bugsnag/bugsnag-unity/pull/187)
+
+## 4.7.0 (2020-01-22)
 
 * Update bugsnag-android to v4.22.2:
 
