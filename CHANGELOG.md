@@ -1,6 +1,6 @@
 # Changelog
 
-## 4.8.0 (TBD)
+## 4.8.0 (2020-01-27)
 
 ### Enhancements
 
@@ -15,7 +15,7 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
 * (Android) Prevent SIGABRT when altering Configuration on background thread
   [#187](https://github.com/bugsnag/bugsnag-unity/pull/187)
 
-## 4.7.0 (2019-01-22)
+## 4.7.0 (2020-01-22)
 
 * Update bugsnag-android to v4.22.2:
 
