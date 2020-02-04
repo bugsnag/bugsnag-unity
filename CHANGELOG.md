@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.8.1 (2020-02-04)
 
 ### Bug fixes
 
