@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.8.1 (2020-02-04)
+
+### Bug fixes
+
+* (Android) Propagate non-string arguments to native android layer correctly
+  [#191](https://github.com/bugsnag/bugsnag-unity/pull/191)
+
 ## 4.8.0 (2020-01-27)
 
 ### Enhancements

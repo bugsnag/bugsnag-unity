@@ -347,12 +347,14 @@ namespace BugsnagUnity
         AndroidJNI.AttachCurrentThread();
       }
 
-      var itemsAsJavaObjects = new AndroidJavaObject[args.Length];
+      object[] itemsAsJavaObjects = new object[args.Length];
       for (int i = 0; i < args.Length; i++) {
         var obj = args[i];
 
         if (obj is string) {
           itemsAsJavaObjects[i] = MakeJavaString(obj as string);
+        } else {
+          itemsAsJavaObjects[i] = obj;
         }
       }
 
