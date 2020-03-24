@@ -509,11 +509,22 @@ namespace BugsnagUnity
       try {
         var CharsetClass = new AndroidJavaClass("java.nio.charset.Charset");
         // The default encoding on Android is UTF-8
-        var charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset");
-        return new AndroidJavaObject("java.lang.String", Encoding.UTF8.GetBytes(input), charset);
+        var Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset");
+        byte[] Bytes = Encoding.UTF8.GetBytes(input);
+        return ConstructJavaString(Bytes, Charset);
       } catch (EncoderFallbackException _) {
         // The input string could not be encoded as UTF-8
         return new AndroidJavaObject("java.lang.String");
+      }
+    }
+
+    private AndroidJavaObject ConstructJavaString(byte[] Bytes, AndroidJavaObject Charset) {
+      try { // should succeed on Unity 2019.1 and above
+        sbyte[] SBytes = new sbyte[Bytes.Length];
+        Buffer.BlockCopy(Bytes, 0, SBytes, 0, Bytes.Length);
+        return new AndroidJavaObject("java.lang.String", SBytes, Charset);
+      } catch (System.Exception _) { // use legacy API on older versions
+        return new AndroidJavaObject("java.lang.String", Bytes, Charset);
       }
     }
 
