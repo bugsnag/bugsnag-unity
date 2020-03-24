@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Avoid using deprecated AndroidJNI API in Unity 2019
+  [#194](https://github.com/bugsnag/bugsnag-unity/pull/194)
+
 ## 4.8.1 (2020-02-04)
 
 ### Bug fixes
