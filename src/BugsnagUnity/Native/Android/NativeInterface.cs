@@ -38,10 +38,13 @@ namespace BugsnagUnity
     private IntPtr ObjectToString;
 
     private bool CanRunOnBackgroundThread;
+
+    private bool Unity2019OrNewer;
     private Thread MainThread;
 
     public NativeInterface(AndroidJavaObject config)
     {
+      Unity2019OrNewer = IsUnity2019OrNewer();
       MainThread = Thread.CurrentThread;
       using (var system = new AndroidJavaClass("java.lang.System"))
       {
@@ -509,11 +512,34 @@ namespace BugsnagUnity
       try {
         var CharsetClass = new AndroidJavaClass("java.nio.charset.Charset");
         // The default encoding on Android is UTF-8
-        var charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset");
-        return new AndroidJavaObject("java.lang.String", Encoding.UTF8.GetBytes(input), charset);
+        var Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset");
+        byte[] Bytes = Encoding.UTF8.GetBytes(input);
+        return ConstructJavaString(Bytes, Charset);
       } catch (EncoderFallbackException _) {
         // The input string could not be encoded as UTF-8
         return new AndroidJavaObject("java.lang.String");
+      }
+    }
+
+    private AndroidJavaObject ConstructJavaString(byte[] Bytes, AndroidJavaObject Charset) {
+      if (Unity2019OrNewer) { // should succeed on Unity 2019.1 and above
+        sbyte[] SBytes = new sbyte[Bytes.Length];
+        Buffer.BlockCopy(Bytes, 0, SBytes, 0, Bytes.Length);
+        return new AndroidJavaObject("java.lang.String", SBytes, Charset);
+      } else { // use legacy API on older versions
+        return new AndroidJavaObject("java.lang.String", Bytes, Charset);
+      }
+    }
+
+    private bool IsUnity2019OrNewer() {
+      var CharsetClass = new AndroidJavaClass("java.nio.charset.Charset");
+      var Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset");
+
+      try { // should succeed on Unity 2019.1 and above
+        var obj = new AndroidJavaObject("java.lang.String", new sbyte[0], Charset);
+        return true;
+      } catch (System.Exception _) { // use legacy API on older versions
+        return false;
       }
     }
 
