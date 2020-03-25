@@ -38,10 +38,13 @@ namespace BugsnagUnity
     private IntPtr ObjectToString;
 
     private bool CanRunOnBackgroundThread;
+
+    private bool Unity2019OrNewer;
     private Thread MainThread;
 
     public NativeInterface(AndroidJavaObject config)
     {
+      Unity2019OrNewer = IsUnity2019OrNewer();
       MainThread = Thread.CurrentThread;
       using (var system = new AndroidJavaClass("java.lang.System"))
       {
@@ -519,12 +522,24 @@ namespace BugsnagUnity
     }
 
     private AndroidJavaObject ConstructJavaString(byte[] Bytes, AndroidJavaObject Charset) {
-      try { // should succeed on Unity 2019.1 and above
+      if (Unity2019OrNewer) { // should succeed on Unity 2019.1 and above
         sbyte[] SBytes = new sbyte[Bytes.Length];
         Buffer.BlockCopy(Bytes, 0, SBytes, 0, Bytes.Length);
         return new AndroidJavaObject("java.lang.String", SBytes, Charset);
-      } catch (System.Exception _) { // use legacy API on older versions
+      } else { // use legacy API on older versions
         return new AndroidJavaObject("java.lang.String", Bytes, Charset);
+      }
+    }
+
+    private bool IsUnity2019OrNewer() {
+      var CharsetClass = new AndroidJavaClass("java.nio.charset.Charset");
+      var Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset");
+
+      try { // should succeed on Unity 2019.1 and above
+        var obj = new AndroidJavaObject("java.lang.String", new sbyte[0], Charset);
+        return true;
+      } catch (System.Exception _) { // use legacy API on older versions
+        return false;
       }
     }
 
