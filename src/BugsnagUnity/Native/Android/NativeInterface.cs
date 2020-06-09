@@ -287,7 +287,7 @@ namespace BugsnagUnity
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
       }
-      using (AndroidJavaObject map = MakeJavaMapDisposable(metadata))
+      using (AndroidJavaObject map = BuildJavaMapDisposable(metadata))
       {
         CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
             new object[]{name, type, map});
@@ -386,7 +386,7 @@ namespace BugsnagUnity
 
         if (obj is string) {
           //TODO:SM Leaking ref here
-          itemsAsJavaObjects[i] = MakeJavaStringDisposable(obj as string);
+          itemsAsJavaObjects[i] = BuildJavaStringDisposable(obj as string);
         } else {
           itemsAsJavaObjects[i] = obj;
         }
@@ -430,7 +430,7 @@ namespace BugsnagUnity
 
       AndroidJavaObject[] itemsAsJavaObjects = new AndroidJavaObject[items.Length];
       for (int i = 0; i < items.Length; i++) {
-        itemsAsJavaObjects[i] = MakeJavaStringDisposable(items[i]);
+        itemsAsJavaObjects[i] = BuildJavaStringDisposable(items[i]);
       }
 
       AndroidJavaObject first = itemsAsJavaObjects[0];
@@ -519,14 +519,14 @@ namespace BugsnagUnity
       return new Breadcrumb(name, timestamp, typeName, metadata);
     }
 
-    private AndroidJavaObject MakeJavaMapDisposable(IDictionary<string, string> src) {
+    private AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, string> src) {
       AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
       if (src != null)
       {
         foreach(var entry in src)
         {
-          using(AndroidJavaObject key = MakeJavaStringDisposable(entry.Key))
-          using(AndroidJavaObject value = MakeJavaStringDisposable(entry.Value))
+          using(AndroidJavaObject key = BuildJavaStringDisposable(entry.Key))
+          using(AndroidJavaObject value = BuildJavaStringDisposable(entry.Value))
           {
             map.Call<AndroidJavaObject>("put", key, value);
           }
@@ -535,7 +535,7 @@ namespace BugsnagUnity
       return map;
     }
 
-    private AndroidJavaObject MakeJavaStringDisposable(string input) {
+    private AndroidJavaObject BuildJavaStringDisposable(string input) {
       if (input == null) {
         return null;
       }
