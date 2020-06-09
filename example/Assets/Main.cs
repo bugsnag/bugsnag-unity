@@ -49,6 +49,7 @@ public class Main : MonoBehaviour
 
 	void Start ()
 	{
+		InvokeRepeating("LogRepeatedly", 1.0f, 0.1f);
 		Stacktrace.GetComponent<Button>().onClick.AddListener(OnStacktraceClick);
 		Segfault.GetComponent<Button>().onClick.AddListener(OnSegfaultClick);
 		ManagedCrash.GetComponent<Button>().onClick.AddListener(OnManagedCrashClick);
@@ -94,7 +95,7 @@ public class Main : MonoBehaviour
 		}
 #endif
 	}
-	
+
 	private void OnNDKCrashClick()
 	{
 #if UNITY_ANDROID
@@ -104,7 +105,7 @@ public class Main : MonoBehaviour
 		}
 #endif
 	}
-	
+
 	private void OnANRClick()
 	{
 #if UNITY_ANDROID
@@ -119,6 +120,23 @@ public class Main : MonoBehaviour
 	{
 		Debug.Log("LogDebugError clicked");
 		Debug.LogError(new Exception("LogDebugError clicked"));
+	}
+
+	private void LogRepeatedly()
+	{
+		int a = 0;
+		while(a++ < 50) {
+			var dict = new System.Collections.Generic.Dictionary<string, string>();
+			int b = 0;
+			while(b++ < 200) {
+				dict.Add(String.Format("LogRepeatedly {0} {1}", a, b), String.Format("LogRepeatedly {0} {1}", a, b));
+			}
+			BugsnagUnity.Bugsnag.LeaveBreadcrumb(
+				String.Format("LogRepeatedly {0}", a),
+				BugsnagUnity.Payload.BreadcrumbType.Navigation,
+				dict
+			);
+		}
 	}
 
 	private void OnLogDebugExceptionClick()
@@ -167,6 +185,5 @@ public class Main : MonoBehaviour
 	}
 
 	void Update () {
-
 	}
 }
