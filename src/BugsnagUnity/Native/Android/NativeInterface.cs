@@ -360,7 +360,7 @@ namespace BugsnagUnity
       }
 
       IntPtr map = CallNativeObjectMethodRef(methodName, "()Ljava/util/Map;", new object[]{});
-      var value = DictionaryFromJavaMap(map);
+      Dictionary<string, object> value = DictionaryFromJavaMap(map);
       AndroidJNI.DeleteLocalRef(map);
 
       if (!isAttached) {
@@ -433,11 +433,13 @@ namespace BugsnagUnity
         itemsAsJavaObjects[i] = MakeJavaStringDisposable(items[i]);
       }
 
-      var first = itemsAsJavaObjects[0];
+      AndroidJavaObject first = itemsAsJavaObjects[0];
       IntPtr rawArray = AndroidJNI.NewObjectArray(items.Length, StringClass, first.GetRawObject());
+      first.Dispose();
 
       for (int i = 1; i < items.Length; i++) {
         AndroidJNI.SetObjectArrayElement(rawArray, i, itemsAsJavaObjects[i].GetRawObject());
+        itemsAsJavaObjects[i].Dispose();
       }
 
       return rawArray;
