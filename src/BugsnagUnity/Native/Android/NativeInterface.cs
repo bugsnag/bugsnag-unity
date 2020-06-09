@@ -541,7 +541,7 @@ namespace BugsnagUnity
       try {
         // The default encoding on Android is UTF-8
         using(AndroidJavaClass CharsetClass = new AndroidJavaClass("java.nio.charset.Charset"))
-        using(AndroidJavaClass Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset"))
+        using(AndroidJavaObject Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset"))
         {
           byte[] Bytes = Encoding.UTF8.GetBytes(input);
 
