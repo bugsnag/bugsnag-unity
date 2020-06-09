@@ -176,7 +176,6 @@ namespace BugsnagUnity
     }
 
     public void SetNotifyReleaseStages(string[] stages) {
-      //TODO:SM This method leaks some references but is not called often
       if (!CanRunJNI()) {
         return;
       }
