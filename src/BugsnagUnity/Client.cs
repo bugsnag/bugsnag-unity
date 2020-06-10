@@ -127,7 +127,7 @@ namespace BugsnagUnity
       {
         var logMessage = new UnityLogMessage(condition, stackTrace, logType);
         var shouldSend = Exception.ShouldSend(logMessage)
-          && UniqueCounter.ShouldSend(logMessage) 
+          && UniqueCounter.ShouldSend(logMessage)
           && LogTypeCounter.ShouldSend(logMessage);
         if (shouldSend)
         {
@@ -138,7 +138,7 @@ namespace BugsnagUnity
           Notify(new Exception[]{exception}, exception.HandledState, null, logType);
         }
       }
-      else
+      else if (logType.IsGreaterThanOrEqualTo(Configuration.BreadcrumbLogLevel))
       {
         Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
           { "message", condition },
