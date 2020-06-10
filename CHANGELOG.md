@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.8.3 (2020-06-10)
+
+### Bug fixes
+
+* Delete local JNI references to avoid leaks
+  [#198](https://github.com/bugsnag/bugsnag-unity/pull/198)
+
+* Add option to `Configuration` to prevent automatic breadcrumb collection
+  [#199](https://github.com/bugsnag/bugsnag-unity/pull/199)
+
 ## 4.8.2 (2020-03-31)
 
 ### Bug fixes
