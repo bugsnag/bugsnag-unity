@@ -7,9 +7,13 @@ When contacting support, please include as much information as necessary, includ
 
 - example code snippet
 - steps to reproduce
-- notifier version
-- environment / OS 
 - expected/actual behaviour 
+
+* Bugsnag version:
+* Unity version:
+* iOS/Android/macOS/Windows/browser version:
+* simulator/emulator or physical device:
+* Initializing bugsnag via a Unity GameObject or in code?:
 
 ## Bug or Feature Requests
 If you would like to raise a bug or feature request please do so by creating a [New Issue](https://github.com/bugsnag/bugsnag-unity/issues/new/choose) and selecting bug or feature.
