@@ -1,29 +1,51 @@
 ---
 name: Bug report
 about: Create a report to help us improve the library
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
+<!-- Before raising, please check if somebody else has already reported your issue. -->
 
-### Description
-<!-- A quick description of what you're trying to accomplish -->
+### Describe the bug
+A clear and concise description of what the bug is.
 
-### Issue
-<!--
-  What went wrong?
--->
+### Steps to reproduce
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
 ### Environment
-
-* bugsnag-unity version:
+* Bugsnag version:
 * Unity version:
-* Operating system name and version:
-* Target platform names and versions:
-* Initializing bugsnag via the Unity UI or in code?
+* iOS/Android/macOS/Windows/browser version:
+* simulator/emulator or physical device:
+* Initializing bugsnag via a Unity GameObject or in code?:
 
-### Example code snippet
+<!--
+  Below are a few approaches you might take to communicate the issue, in
+  descending order of awesomeness. Please choose one and feel free to delete
+  the others from this template.
+-->
 
-<!-- Code snippet demonstrating your configuration and/or the problem -->
+### Example Repo <!-- Option 1 -->
 
-```cs
+- [ ] Create a minimal repository that can reproduce the issue
+- [ ] Link to it here:
+
+### Example code snippet <!-- Option 2 -->
 
 ```
+# (Insert code sample to reproduce the problem)
+```
+
+<!-- Error messages, if any -->
+<details><summary>Error messages:</summary>
+
+```
+
+```
+</details>
