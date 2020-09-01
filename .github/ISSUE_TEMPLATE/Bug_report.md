@@ -24,6 +24,10 @@ A clear and concise description of what the bug is.
 * iOS/Android/macOS/Windows/browser version:
 * simulator/emulator or physical device:
 * Initializing bugsnag via a Unity GameObject or in code?:
+* Player Settings:
+    * Scripting backend (Mono or IL2CPP):
+    * API compatibility level for .NET:
+    * Stack Trace level for all error types (None/ScriptOnly/Full):
 
 <!--
   Below are a few approaches you might take to communicate the issue, in

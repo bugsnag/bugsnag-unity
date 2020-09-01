@@ -14,6 +14,10 @@ When contacting support, please include as much information as necessary, includ
 * iOS/Android/macOS/Windows/browser version:
 * simulator/emulator or physical device:
 * Initializing bugsnag via a Unity GameObject or in code?:
+* Player Settings:
+    * Scripting backend (Mono or IL2CPP):
+    * API compatibility level for .NET:
+    * Stack Trace level for all error types (None/ScriptOnly/Full):
 
 ## Bug or Feature Requests
 If you would like to raise a bug or feature request please do so by creating a [New Issue](https://github.com/bugsnag/bugsnag-unity/issues/new/choose) and selecting bug or feature.
