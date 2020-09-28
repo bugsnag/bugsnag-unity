@@ -16,6 +16,7 @@ env:
   - TERM=dumb
   - PATH=$HOME/Library/Python/2.7/bin:$PATH
   - HOMEBREW_NO_INSTALL_CLEANUP=1
+  - HOMEBREW_NO_AUTO_UPDATE=1
 stages:
 - name: test
   if: tag IS blank
@@ -28,17 +29,17 @@ before_install:
 - pip install --user awscli
 - mkdir -p $TRAVIS_BUILD_DIR/build_artifacts
 install:
-- scripts/travis_build_package.sh || (cat unity.log && exit 1)
+- scripts/travis_build_package.sh
 script:
 - bundle exec rake travis:maze_runner
 jobs:
   include:
-  - stage: test
-    env:
-    - UNITY_VERSION=unity-5-6-7f1
-  - stage: test
-    env:
-    - UNITY_VERSION=unity-2017-4-32f1
+  # - stage: test
+  #   env:
+  #   - UNITY_VERSION=unity-5-6-7f1
+  # - stage: test
+  #   env:
+  #   - UNITY_VERSION=unity-2017-4-32f1
   - stage: test
     env:
     - UNITY_VERSION=unity-2018-4-8f1
