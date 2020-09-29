@@ -25,7 +25,7 @@ pushd "${0%/*}"
       -projectPath $project_path \
       -executeMethod "Main.CreateScene"
 
-    Unity -nographics -quit -batchmode -logFile $log_file \
+    Unity -nographics -quit -batchmode -logFile - \
       -projectPath $project_path \
       -buildOSXUniversalPlayer "$(pwd)/Mazerunner.app"
   popd

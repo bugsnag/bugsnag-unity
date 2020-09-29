@@ -1,5 +1,5 @@
 os: osx
-osx_image: xcode9.3
+osx_image: xcode11.6
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -16,24 +16,48 @@ env:
   - TERM=dumb
   - PATH=$HOME/Library/Python/2.7/bin:$PATH
   - HOMEBREW_NO_INSTALL_CLEANUP=1
+  - HOMEBREW_NO_AUTO_UPDATE=1
+
 stages:
 - name: test
   if: tag IS blank
 - name: deploy
   if: tag IS present
+
 before_install:
 - bundle install
-- brew update
+- brew update > /dev/null || true
 - brew tap homebrew/cask
+- brew tap AdoptOpenJDK/openjdk
 - pip install --user awscli
 - mkdir -p $TRAVIS_BUILD_DIR/build_artifacts
+
 install:
-- scripts/travis_build_package.sh || (cat unity.log && exit 1)
+- brew cask uninstall java > /dev/null
+- brew cask install adoptopenjdk8 > /dev/null
+- brew install ninja > /dev/null
+- brew cask install https://raw.githubusercontent.com/caskroom/homebrew-cask/59a4123d2dc252d17db3fc9169889c96b23cda15/Casks/mono-mdk.rb > /dev/null
+- brew cask install android-sdk > /dev/null
+- brew cask install bugsnag/unity/$UNITY_VERSION > /dev/null
+- export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
+- sdkmanager --list
+- yes | sdkmanager "platforms;android-27" > /dev/null
+- yes | sdkmanager --licenses > /dev/null
+- curl --silent -o ndk.zip https://dl.google.com/android/repository/android-ndk-r16b-darwin-x86_64.zip
+- unzip -qq ndk.zip > /dev/null
+- mv android-ndk-r16b $ANDROID_NDK_HOME
+- rm ndk.zip
+- bundle exec rake travis:export_plugin
+- cp Bugsnag.unitypackage $TRAVIS_BUILD_DIR/build_artifacts
+- cp Bugsnag-with-android-64bit.unitypackage $TRAVIS_BUILD_DIR/build_artifacts
+
 script:
 - bundle exec rake travis:maze_runner
+
 jobs:
   include:
   - stage: test
+    osx_image: xcode11.3
     env:
     - UNITY_VERSION=unity-5-6-7f1
   - stage: test
