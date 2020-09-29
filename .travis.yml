@@ -25,10 +25,13 @@ before_install:
 - bundle install
 - brew update || true
 - brew tap homebrew/cask
+- brew tap homebrew/cask-versions
 - pip install --user awscli
 - mkdir -p $TRAVIS_BUILD_DIR/build_artifacts
 
 install:
+- brew cask uninstall java
+- brew cask install java8
 - brew install ninja
 - brew cask install https://raw.githubusercontent.com/caskroom/homebrew-cask/59a4123d2dc252d17db3fc9169889c96b23cda15/Casks/mono-mdk.rb
 - brew cask install android-sdk
