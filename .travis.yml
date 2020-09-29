@@ -27,8 +27,24 @@ before_install:
 - brew tap homebrew/cask
 - pip install --user awscli
 - mkdir -p $TRAVIS_BUILD_DIR/build_artifacts
+
 install:
-- scripts/travis_build_package.sh || (cat unity.log && exit 1)
+- brew install ninja
+- brew cask install https://raw.githubusercontent.com/caskroom/homebrew-cask/59a4123d2dc252d17db3fc9169889c96b23cda15/Casks/mono-mdk.rb
+- brew cask install android-sdk
+- brew cask install bugsnag/unity/$UNITY_VERSION
+- export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
+- sdkmanager --list
+- yes | sdkmanager "platforms;android-27"
+- yes | sdkmanager --licenses
+- curl --silent -o ndk.zip https://dl.google.com/android/repository/android-ndk-r16b-darwin-x86_64.zip
+- unzip -qq ndk.zip
+- mv android-ndk-r16b $ANDROID_NDK_HOME
+- rm ndk.zip
+- bundle exec rake travis:export_plugin
+- cp Bugsnag.unitypackage $TRAVIS_BUILD_DIR/build_artifacts
+- cp Bugsnag-with-android-64bit.unitypackage $TRAVIS_BUILD_DIR/build_artifacts
+
 script:
 - bundle exec rake travis:maze_runner
 jobs:
