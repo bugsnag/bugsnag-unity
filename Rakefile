@@ -56,7 +56,7 @@ def unity(*cmd, force_free: true, no_graphics: true)
   cmd = cmd.unshift(*cmd_prepend)
   sh *cmd do |ok, res|
     if !ok
-      if File.exists?("unity.log") puts File.read("unity.log")
+      puts File.read("unity.log") if File.exists?("unity.log")
 
       raise "unity error: #{res}"
     end
