@@ -24,7 +24,7 @@ stages:
   if: tag IS present
 before_install:
 - bundle install
-- brew update || true
+- brew update || true >> /dev/null
 - brew tap homebrew/cask
 - brew tap AdoptOpenJDK/openjdk
 - pip install --user awscli
