@@ -56,7 +56,9 @@ def unity(*cmd, force_free: true, no_graphics: true)
   cmd = cmd.unshift(*cmd_prepend)
   sh *cmd do |ok, res|
     if !ok
-      raise "unity error"
+      if File.exists?("unity.log") puts File.read("unity.log")
+
+      raise "unity error: #{res}"
     end
   end
 end
@@ -95,7 +97,7 @@ def assemble_android filter_abis=true
   android_core_lib = File.join("bugsnag-android", "bugsnag-android-core", "build", "outputs", "aar", "bugsnag-android-core-release.aar")
   anr_lib = File.join("bugsnag-android", "bugsnag-plugin-android-anr", "build", "outputs", "aar", "bugsnag-plugin-android-anr-release.aar")
   ndk_lib = File.join("bugsnag-android", "bugsnag-plugin-android-ndk", "build", "outputs", "aar", "bugsnag-plugin-android-ndk-release.aar")
-  
+
   # copy kotlin dependencies required by bugsnag-android. the exact files required for each
   # version can be found here:
   # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.61/kotlin-stdlib-1.3.61.pom
@@ -126,7 +128,7 @@ namespace :plugin do
       # remove any leftover artifacts from the package generation directory
       sh "git", "clean", "-dfx", "unity"
       # remove cocoa build area
-      FileUtils.rm_rf cocoa_build_dir 
+      FileUtils.rm_rf cocoa_build_dir
       # remove android build area
       cd "bugsnag-android" do
         sh "./gradlew", "clean"
