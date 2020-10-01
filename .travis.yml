@@ -51,9 +51,11 @@ install:
 
 script:
 - bundle exec rake travis:maze_runner
+
 jobs:
   include:
   - stage: test
+    osx_image: xcode9.3
     env:
     - UNITY_VERSION=unity-5-6-7f1
   - stage: test
