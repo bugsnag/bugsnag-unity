@@ -17,12 +17,15 @@ env:
   - PATH=$HOME/Library/Python/2.7/bin:$PATH
   - HOMEBREW_NO_INSTALL_CLEANUP=1
   - HOMEBREW_NO_AUTO_UPDATE=1
+
 stages:
 - name: test
   if: tag IS blank
 - name: deploy
   if: tag IS present
+
 before_install:
+- gem install bundler
 - bundle install
 - brew update > /dev/null || true
 - brew tap homebrew/cask
