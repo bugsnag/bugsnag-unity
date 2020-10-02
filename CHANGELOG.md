@@ -1,5 +1,29 @@
 # Changelog
 
+## 4.8.3 (2020-06-10)
+
+### Bug fixes
+
+* Delete local JNI references to avoid leaks
+  [#198](https://github.com/bugsnag/bugsnag-unity/pull/198)
+
+* Add option to `Configuration` to prevent automatic breadcrumb collection
+  [#199](https://github.com/bugsnag/bugsnag-unity/pull/199)
+
+## 4.8.2 (2020-03-31)
+
+### Bug fixes
+
+* Avoid using deprecated AndroidJNI API in Unity 2019
+  [#194](https://github.com/bugsnag/bugsnag-unity/pull/194)
+
+## 4.8.1 (2020-02-04)
+
+### Bug fixes
+
+* (Android) Propagate non-string arguments to native android layer correctly
+  [#191](https://github.com/bugsnag/bugsnag-unity/pull/191)
+
 ## 4.8.0 (2020-01-27)
 
 ### Enhancements

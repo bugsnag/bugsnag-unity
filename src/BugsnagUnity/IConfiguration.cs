@@ -12,6 +12,8 @@ namespace BugsnagUnity
 
     TimeSpan MaximumLogsTimePeriod { get; }
 
+    LogType BreadcrumbLogLevel { get; set; }
+
     Dictionary<LogType, int> MaximumTypePerTimePeriod { get; }
 
     TimeSpan UniqueLogsTimePeriod { get; set; }

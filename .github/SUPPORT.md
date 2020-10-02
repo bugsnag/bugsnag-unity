@@ -1,9 +1,27 @@
-Are you having trouble getting started?
-Please [contact us directly](mailto:support@bugsnag.com) for assistance with integrating Bugsnag into your application.
+## Are you having trouble getting started?
+If you haven't already, please checkout our [documentation](https://docs.bugsnag.com/platforms/unity/) for guides, references and tutorials.
 
-Include the following information to help us understand your environment:
+Or, if you wish you can [contact us directly](mailto:support@bugsnag.com) for assistance on integrating Bugsnag into your application, troubleshooting an issue or a question about our supported features.
 
-* bugsnag-unity version
-* Unity version
-* Operating system name and version
-* Target platform names and versions
+When contacting support, please include as much information as necessary, including:
+
+- example code snippet
+- steps to reproduce
+- expected/actual behaviour 
+
+* Bugsnag version:
+* Unity version:
+* iOS/Android/macOS/Windows/browser version:
+* simulator/emulator or physical device:
+* Initializing bugsnag via a Unity GameObject or in code?:
+* Player Settings:
+    * Scripting backend (Mono or IL2CPP):
+    * API compatibility level for .NET:
+    * Stack Trace level for all error types (None/ScriptOnly/Full):
+
+## Bug or Feature Requests
+If you would like to raise a bug or feature request please do so by creating a [New Issue](https://github.com/bugsnag/bugsnag-unity/issues/new/choose) and selecting bug or feature.
+Please note: we cannot promise that we will fulfil all requests
+
+## Pull Requests
+If you have made a fix and would like to raise a pull request, please read our [CONTRIBUTING.md](../CONTRIBUTING.md) file before creating the pull request.

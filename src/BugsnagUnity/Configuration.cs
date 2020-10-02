@@ -35,6 +35,8 @@ namespace BugsnagUnity
 
     public virtual TimeSpan UniqueLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(5);
 
+    public virtual LogType BreadcrumbLogLevel { get; set; } = LogType.Log;
+
     public virtual string ApiKey { get; protected set; }
 
     public virtual int MaximumBreadcrumbs { get; set; } = 25;
