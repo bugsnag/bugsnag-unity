@@ -15,22 +15,16 @@
   * Removed non-thread safe date formatter
     [#758](https://github.com/bugsnag/bugsnag-cocoa/pull/758)
 
-  * Fix incorrect string comparison of thread names in Mach exception handling
-    [#721](https://github.com/bugsnag/bugsnag-cocoa/pull/721)
-
-  * Move binary images store declaration from header file
-    [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
-
   * Avoid dereference null pointer in JSON serialisation
     [#637](https://github.com/bugsnag/bugsnag-cocoa/pull/637)
     [Naugladur](https://github.com/Naugladur)
 
-  * Fix DYLD lock mechanism preventing compilation on iOS <10.
-    [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)
-
   * Fixed an issue where an app could deadlock during a crash if unfavourable 
     timing caused DYLD lock contention.
     [#580](https://github.com/bugsnag/bugsnag-cocoa/pull/580)
+    [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)
+    [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
+    [#721](https://github.com/bugsnag/bugsnag-cocoa/pull/721)
 
   * Fix possible report corruption when using `notify()` from multiple threads
     when configured to skip capturing/reporting background thread contents
