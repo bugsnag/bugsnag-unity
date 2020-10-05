@@ -283,6 +283,7 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
   sprintf(buff, "%lld", freeMemory);
   callback(deviceData, "freeMemory", buff);
 
+  callback(deviceData, "id", [sysInfo[@BSG_KSSystemField_DeviceAppHash] UTF8String]);
   callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
   callback(deviceData, "locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
   callback(deviceData, "manufacturer", "Apple");

@@ -1,5 +1,44 @@
 # Changelog
 
+## 4.8.4 (2020-10-05)
+
+### Enhancements
+
+* Add device id to error reports on Cocoa platforms
+  [#203](https://github.com/bugsnag/bugsnag-unity/pull/203)
+
+* Update bugsnag-cocoa to v5.23.5:
+
+  * Fix JSON serialisation of strings with control characters
+    [#739](https://github.com/bugsnag/bugsnag-cocoa/pull/739)
+
+  * Removed non-thread safe date formatter
+    [#758](https://github.com/bugsnag/bugsnag-cocoa/pull/758)
+
+  * Avoid dereference null pointer in JSON serialisation
+    [#637](https://github.com/bugsnag/bugsnag-cocoa/pull/637)
+    [Naugladur](https://github.com/Naugladur)
+
+  * Fixed an issue where an app could deadlock during a crash if unfavourable 
+    timing caused DYLD lock contention.
+    [#580](https://github.com/bugsnag/bugsnag-cocoa/pull/580)
+    [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)
+    [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
+    [#721](https://github.com/bugsnag/bugsnag-cocoa/pull/721)
+
+  * Fix possible report corruption when using `notify()` from multiple threads
+    when configured to skip capturing/reporting background thread contents
+    (generally only Unity games).
+    [#442](https://github.com/bugsnag/bugsnag-cocoa/pull/442)
+
+  * Added several additional event fields (`codeBundleId`, `osName`,
+    `modelNumber`, `locale`) that were missing from the OOM reports.
+    [#444](https://github.com/bugsnag/bugsnag-cocoa/pull/444)
+
+  * Bugsnag now correctly records a new session if it is returning to
+    the foreground after more than 60 seconds in the background.
+    [#529](https://github.com/bugsnag/bugsnag-cocoa/pull/529)
+
 ## 4.8.3 (2020-06-10)
 
 ### Bug fixes
