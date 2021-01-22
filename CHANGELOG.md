@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Respect autoNotify flag on Android
+  [#207](https://github.com/bugsnag/bugsnag-unity/pull/207)
+
 ## 4.8.4 (2020-10-05)
 
 ### Enhancements

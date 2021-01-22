@@ -8,7 +8,7 @@ namespace BugsnagUnity.Payload.Tests
   class TestConfig : AbstractConfiguration
   {
     internal TestConfig(string apiKey) : base() {
-      SetupDefaults(apiKey);
+      SetupDefaults(apiKey, true);
     }
   }
 
