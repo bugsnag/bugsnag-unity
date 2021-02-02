@@ -27,13 +27,13 @@ namespace BugsnagUnity
       JavaObject.Call("setReleaseStage", "production");
       JavaObject.Call("setAppVersion", Application.version);
       NativeInterface = new NativeInterface(JavaObject);
-      SetupDefaults(apiKey);
       _autoNotify = autoNotify;
+      SetupDefaults(apiKey, _autoNotify);
     }
 
-    protected override void SetupDefaults(string apiKey)
+    protected override void SetupDefaults(string apiKey, bool autoNotify)
     {
-      base.SetupDefaults(apiKey);
+      base.SetupDefaults(apiKey, autoNotify);
       ReleaseStage = "production";
       Endpoint = new Uri(DefaultEndpoint);
       SessionEndpoint = new Uri(DefaultSessionEndpoint);

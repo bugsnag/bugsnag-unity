@@ -12,12 +12,12 @@ namespace BugsnagUnity
 
     public AbstractConfiguration() {}
 
-    protected virtual void SetupDefaults(string apiKey)
+    protected virtual void SetupDefaults(string apiKey, bool autoNotify)
     {
       ApiKey = apiKey;
       AppVersion = Application.version;
       AutoCaptureSessions = true;
-      AutoNotify = true;
+      AutoNotify = autoNotify;
     }
 
     public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;

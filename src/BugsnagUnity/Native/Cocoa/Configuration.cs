@@ -17,14 +17,14 @@ namespace BugsnagUnity
     internal Configuration(string apiKey, bool autoNotify) : base()
     {
       NativeConfiguration = NativeCode.bugsnag_createConfiguration(apiKey);
-      SetupDefaults(apiKey);
-      NativeCode.bugsnag_setAutoNotify(NativeConfiguration, autoNotify);
       _autoNotify = autoNotify;
+      SetupDefaults(apiKey, autoNotify);
+      NativeCode.bugsnag_setAutoNotify(NativeConfiguration, autoNotify);
     }
 
-    protected override void SetupDefaults(string apiKey)
+    protected override void SetupDefaults(string apiKey, bool autoNotify)
     {
-      base.SetupDefaults(apiKey);
+      base.SetupDefaults(apiKey, autoNotify);
       ReleaseStage = "production";
       Endpoint = new Uri(DefaultEndpoint);
     }
