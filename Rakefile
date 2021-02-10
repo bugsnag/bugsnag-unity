@@ -82,7 +82,7 @@ def export_package name="Bugsnag.unitypackage"
 end
 
 def assemble_android filter_abis=true
-  abi_filters = filter_abis ? "-PABI_FILTERS=armeabi-v7a,x86" : "-Pnoop_filters=true"
+  abi_filters = filter_abis ? "-PABI_FILTERS=armeabi-v7a,x86" : "-PABI_FILTERS=armeabi-v7a,arm64-v8a,x86,x86_64"
   android_dir = File.join(assets_path, "Android")
 
   cd "bugsnag-android" do
@@ -131,11 +131,11 @@ namespace :plugin do
       FileUtils.rm_rf cocoa_build_dir
       # remove android build area
       cd "bugsnag-android" do
-        sh "./gradlew", "clean"
+        sh "./gradlew", "clean", "-PABI_FILTERS=armeabi-v7a,x86"
       end
 
       cd "bugsnag-android-unity" do
-        sh "./gradlew", "clean"
+        sh "./gradlew", "clean", "-PABI_FILTERS=armeabi-v7a,x86"
       end
     end
     task :assets do
