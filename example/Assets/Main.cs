@@ -44,7 +44,8 @@ public class Main : MonoBehaviour
 		LogDebugError,
 		NativeCrash,
 		NativeBackgroundCrash,
-		NDKCrash,
+		NDKException,
+		NDKSignal,
 		ANR;
 
 	void Start ()
@@ -58,7 +59,8 @@ public class Main : MonoBehaviour
 		LogDebugError.GetComponent<Button>().onClick.AddListener(OnLogDebugErrorClick);
 		NativeCrash.GetComponent<Button>().onClick.AddListener(OnNativeCrashClick);
 		NativeBackgroundCrash.GetComponent<Button>().onClick.AddListener(OnNativeBackgroundCrashClick);
-		NDKCrash.GetComponent<Button>().onClick.AddListener(OnNDKCrashClick);
+		NDKException.GetComponent<Button>().onClick.AddListener(OnNDKExceptionClick);
+		NDKSignal.GetComponent<Button>().onClick.AddListener(OnNDKSignalClick);
 		ANR.GetComponent<Button>().onClick.AddListener(OnANRClick);
 	}
 
@@ -95,12 +97,22 @@ public class Main : MonoBehaviour
 #endif
 	}
 	
-	private void OnNDKCrashClick()
+	private void OnNDKExceptionClick()
 	{
 #if UNITY_ANDROID
 		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
 		{
-			java.Call("NdkCrash");
+			java.Call("NdkException");
+		}
+#endif
+	}
+
+	private void OnNDKSignalClick()
+	{
+#if UNITY_ANDROID
+		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
+		{
+			java.Call("NdkSignal");
 		}
 #endif
 	}

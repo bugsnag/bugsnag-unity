@@ -37,5 +37,6 @@ public class BugsnagCrash {
         });
     }
 
-    public native void NdkCrash();
+    public native void NdkSignal();
+    public native void NdkException();
 }
