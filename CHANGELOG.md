@@ -4,6 +4,9 @@
 
 ### Bug fixes
 
+* Avoid JNI crash in leaveBreadcrumb by pushing local frame
+  [#214](https://github.com/bugsnag/bugsnag-unity/pull/214)
+
 * Respect autoNotify flag on Android
   [#207](https://github.com/bugsnag/bugsnag-unity/pull/207)
 
