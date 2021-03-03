@@ -1,5 +1,5 @@
 os: osx
-osx_image: xcode11.6
+osx_image: xcode11.3
 before_cache:
 - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
 - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -33,12 +33,12 @@ before_install:
 - mkdir -p $TRAVIS_BUILD_DIR/build_artifacts
 
 install:
-- brew cask uninstall java > /dev/null
-- brew cask install adoptopenjdk8 > /dev/null
+- brew uninstall --cask java > /dev/null
+- brew install --cask adoptopenjdk8 > /dev/null
 - brew install ninja > /dev/null
-- brew cask install https://raw.githubusercontent.com/caskroom/homebrew-cask/59a4123d2dc252d17db3fc9169889c96b23cda15/Casks/mono-mdk.rb > /dev/null
-- brew cask install android-sdk > /dev/null
-- brew cask install bugsnag/unity/$UNITY_VERSION > /dev/null
+- brew install --cask mono-mdk > /dev/null
+- brew install --cask android-sdk > /dev/null
+- brew install --cask bugsnag/unity/$UNITY_VERSION > /dev/null
 - export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
 - sdkmanager --list
 - yes | sdkmanager "platforms;android-27" > /dev/null
@@ -57,7 +57,6 @@ script:
 jobs:
   include:
   - stage: test
-    osx_image: xcode11.3
     env:
     - UNITY_VERSION=unity-5-6-7f1
   - stage: test

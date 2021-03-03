@@ -140,6 +140,31 @@ namespace BugsnagUnity
       }
     }
 
+    /**
+     * Pushes a local JNI frame with 128 capacity. This avoids the reference table
+     * being exceeded, which can happen on some lower-end Android devices in extreme conditions
+     * (e.g. Nexus 7 running Android 6). This is likely due to AndroidJavaObject
+     * not deleting local references immediately.
+     *
+     * If this call is unsuccessful it indicates the device is low on memory so the caller should no-op.
+     * https://docs.unity3d.com/ScriptReference/AndroidJNI.PopLocalFrame.html
+     */
+    private bool PushLocalFrame() {
+      if (AndroidJNI.PushLocalFrame(128) != 0) {
+        AndroidJNI.ExceptionClear(); // clear pending OutOfMemoryError.
+        return false;
+      }
+      return true;
+    }
+
+    /**
+     * Pops the local JNI frame, freeing any references in the table.
+     * https://docs.unity3d.com/ScriptReference/AndroidJNI.PopLocalFrame.html
+     */
+    private void PopLocalFrame() {
+      AndroidJNI.PopLocalFrame(System.IntPtr.Zero);
+    }
+
     public string GetAppVersion() {
       return CallNativeStringMethod("getAppVersion", "()Ljava/lang/String;", new object[]{});
     }
@@ -287,10 +312,13 @@ namespace BugsnagUnity
       if (!isAttached) {
         AndroidJNI.AttachCurrentThread();
       }
-      using (AndroidJavaObject map = BuildJavaMapDisposable(metadata))
-      {
-        CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
-            new object[]{name, type, map});
+      if (PushLocalFrame()) {
+        using (AndroidJavaObject map = BuildJavaMapDisposable(metadata))
+        {
+          CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
+              new object[]{name, type, map});
+        }
+        PopLocalFrame();
       }
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
