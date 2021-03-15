@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.8.6 (2021-03-16)
+
+### Bug fixes
+
+* Improve ANR handler compatibility with Google Play reporting mechanism
+  [#1179](https://github.com/bugsnag/bugsnag-android/commit/cf905a572296ab1b63af90b24c5d206b4c38b6b4)
+
 ## 4.8.5 (2021-03-03)
 
 ### Bug fixes
