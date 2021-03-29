@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.8.7 (2021-03-30)
+
+### Bug fixes
+
+* Improve ANR handler compatibility with Google Play reporting mechanism
+  [#222](https://github.com/bugsnag/bugsnag-unity/pull/222)
+
 ## 4.8.6 (2021-03-16)
 
 ### Bug fixes
