@@ -398,6 +398,36 @@ namespace BugsnagUnity
       return value;
     }
 
+    // Manually converts any C# strings in the arguments, replacing invalid chars with the replacement char..
+    // If we don't do this, C# will coerce them using NewStringUTF, which crashes on invalid UTF-8.
+    // Arg lists processed this way must be released using ReleaseConvertedStringArgs.
+    private object[] ConvertStringArgsToNative(object[] args)
+    {
+      object[] itemsAsJavaObjects = new object[args.Length];
+      for (int i = 0; i < args.Length; i++) {
+        var obj = args[i];
+
+        if (obj is string) {
+          itemsAsJavaObjects[i] = BuildJavaStringDisposable(obj as string);
+        } else {
+          itemsAsJavaObjects[i] = obj;
+        }
+      }
+      return itemsAsJavaObjects;
+    }
+
+    // Release any strings in a processed argument list.
+    // @param originalArgs: The original C# args.
+    // @param convertedArgs: The args list returned by ConvertStringArgsToNative.
+    private void ReleaseConvertedStringArgs(object[] originalArgs, object[] convertedArgs)
+    {
+      for (int i = 0; i < originalArgs.Length; i++) {
+        if (originalArgs[i] is string) {
+          (convertedArgs[i] as AndroidJavaObject).Dispose();
+        }
+      }
+    }
+
     private void CallNativeVoidMethod(string methodName, string methodSig, object[] args)
     {
       if (!CanRunJNI()) {
@@ -408,22 +438,13 @@ namespace BugsnagUnity
         AndroidJNI.AttachCurrentThread();
       }
 
-      object[] itemsAsJavaObjects = new object[args.Length];
-      for (int i = 0; i < args.Length; i++) {
-        var obj = args[i];
-
-        if (obj is string) {
-          //TODO:SM Leaking ref here
-          itemsAsJavaObjects[i] = BuildJavaStringDisposable(obj as string);
-        } else {
-          itemsAsJavaObjects[i] = obj;
-        }
-      }
-
-      jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(itemsAsJavaObjects);
+      object[] convertedArgs = ConvertStringArgsToNative(args);
+      jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(convertedArgs);
       IntPtr methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
       AndroidJNI.CallStaticVoidMethod(BugsnagNativeInterface, methodID, jargs);
-      AndroidJNIHelper.DeleteJNIArgArray(itemsAsJavaObjects, jargs);
+      AndroidJNIHelper.DeleteJNIArgArray(convertedArgs, jargs);
+      ReleaseConvertedStringArgs(args, convertedArgs);
+
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
       }
@@ -439,10 +460,12 @@ namespace BugsnagUnity
         AndroidJNI.AttachCurrentThread();
       }
 
-      jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+      object[] convertedArgs = ConvertStringArgsToNative(args);
+      jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(convertedArgs);
       IntPtr methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
       IntPtr nativeValue = AndroidJNI.CallStaticObjectMethod(BugsnagNativeInterface, methodID, jargs);
       AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+      ReleaseConvertedStringArgs(args, convertedArgs);
 
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
@@ -483,10 +506,12 @@ namespace BugsnagUnity
         AndroidJNI.AttachCurrentThread();
       }
 
-      jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+      object[] convertedArgs = ConvertStringArgsToNative(args);
+      jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(convertedArgs);
       IntPtr methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
       IntPtr nativeValue = AndroidJNI.CallStaticObjectMethod(BugsnagNativeInterface, methodID, jargs);
       AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+      ReleaseConvertedStringArgs(args, convertedArgs);
 
       string value = null;
       if (nativeValue != null && nativeValue != IntPtr.Zero) {
