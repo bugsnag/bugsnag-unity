@@ -4,7 +4,7 @@
 
 ### Bug fixes
 
-* Improve ANR handler compatibility with Google Play reporting mechanism
+* Fix leaks from manual JNI string conversions
   [#222](https://github.com/bugsnag/bugsnag-unity/pull/222)
 
 ## 4.8.6 (2021-03-16)
