@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
+using SimpleJson;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -60,6 +61,10 @@ public class Main : MonoBehaviour
 		NativeBackgroundCrash.GetComponent<Button>().onClick.AddListener(OnNativeBackgroundCrashClick);
 		NDKCrash.GetComponent<Button>().onClick.AddListener(OnNDKCrashClick);
 		ANR.GetComponent<Button>().onClick.AddListener(OnANRClick);
+		
+		// deserialize some object
+		var obj = SimpleJson.SimpleJson.DeserializeObject("{}");
+		Debug.LogError("Deserialized simple json " + obj.ToString());
 	}
 
 #if UNITY_IOS
