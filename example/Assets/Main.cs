@@ -3,7 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
-using SimpleJson;
+using Foo;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -63,7 +63,7 @@ public class Main : MonoBehaviour
 		ANR.GetComponent<Button>().onClick.AddListener(OnANRClick);
 		
 		// deserialize some object
-		var obj = SimpleJson.SimpleJson.DeserializeObject("{}");
+		var obj = Foo.SimpleJson.DeserializeObject("{}");
 		Debug.LogError("Deserialized simple json " + obj.ToString());
 	}
 
