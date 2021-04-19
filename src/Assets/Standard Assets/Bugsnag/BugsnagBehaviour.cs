@@ -46,7 +46,7 @@ namespace BugsnagUnity
     /// </summary>
     void Awake()
     {
-      Bugsnag.Init(BugsnagApiKey, AutoNotify);
+      Bugsnag.Start(BugsnagApiKey);
       Bugsnag.Configuration.AutoNotify = AutoNotify;
       Bugsnag.Configuration.AutoDetectAnrs = AutoNotify && AutoDetectAnrs;
       Bugsnag.Configuration.AutoCaptureSessions = AutoCaptureSessions;

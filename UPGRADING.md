@@ -1,6 +1,31 @@
 Upgrading
 =========
 
+## v5.0.0
+
+v5.0.0 contains breaking changes to Bugsnag's API that improve the reliability of the SDK and resolve several painpoints.
+
+### New recommended way for initializing Bugsnag
+
+The API has changed for initializing Bugsnag. It is now recommended that you supply all your configuration options up-front, and then call `Bugsnag.start()`:
+
+```c#
+Configuration config = new Configuration("your-api-key");
+// alter all configuration options here, before Bugsnag.Start()
+config.ReleaseStage = "beta"
+
+// initialize Bugsnag
+Bugsnag.Start(config);
+```
+
+If you initialize Bugsnag using a `GameObject` then no migration is necessary - the `BugsnagBehaviour.cs` script will be copied over when importing the `BugsnagUnity.package`.
+
+### Configuration options must be supplied before Bugsnag.Start()
+
+If you alter Bugsnag's default behaviour via `Configuration`, you must supply all values before calling `Bugsnag.Start()`.
+
+Any change to the value of `Configuration` options after `Bugsnag.Start()` is called will have no effect on Bugsnag's behaviour.
+
 ## 4.1 to 4.2
 
 4.2.0 adds support for reporting C/C++ crashes in Android code. If you are using
