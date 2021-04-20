@@ -67,12 +67,12 @@ using System.Globalization;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
-using SimpleJson.Reflection;
+using BugsnagUnity.Reflection;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 // ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable SuggestUseVarKeywordEvident
-namespace SimpleJson
+namespace BugsnagUnity
 {
     /// <summary>
     /// Represents the json array.
@@ -465,7 +465,7 @@ namespace SimpleJson
     }
 }
 
-namespace SimpleJson
+namespace BugsnagUnity
 {
     /// <summary>
     /// This class encodes and decodes JSON strings.

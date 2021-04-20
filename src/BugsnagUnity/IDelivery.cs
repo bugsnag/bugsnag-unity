@@ -65,7 +65,7 @@ namespace BugsnagUnity
       using (var reader = new StreamReader(stream))
       using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
       {
-        SimpleJson.SimpleJson.SerializeObject(payload, writer);
+        BugsnagUnity.SimpleJson.SerializeObject(payload, writer);
         writer.Flush();
         stream.Position = 0;
         var body = Encoding.UTF8.GetBytes(reader.ReadToEnd());

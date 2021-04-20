@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Add bugsnag prefix to namespace of vendored SimpleJson
+  [#225](https://github.com/bugsnag/bugsnag-unity/pull/225)
+
 ## 4.8.7 (2021-03-30)
 
 ### Bug fixes
