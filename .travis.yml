@@ -26,7 +26,7 @@ stages:
 
 before_install:
 - bundle install
-- brew update > /dev/null || true
+- brew update || true
 - brew tap homebrew/cask
 - brew tap AdoptOpenJDK/openjdk
 - pip install --user awscli
@@ -35,7 +35,7 @@ before_install:
 install:
 - brew uninstall --cask java > /dev/null
 - brew install --cask adoptopenjdk8 > /dev/null
-- brew install ninja > /dev/null
+- brew install ninja
 - brew install --cask mono-mdk > /dev/null
 - brew install --cask android-sdk > /dev/null
 - brew install --cask bugsnag/unity/$UNITY_VERSION > /dev/null
