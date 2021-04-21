@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 4.8.8 (2021-04-21)
 
 ### Bug fixes
 
