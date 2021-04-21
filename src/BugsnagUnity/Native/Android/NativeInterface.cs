@@ -42,8 +42,9 @@ namespace BugsnagUnity
     private bool Unity2019OrNewer;
     private Thread MainThread;
 
-    public NativeInterface(AndroidJavaObject config)
+    public NativeInterface(IConfiguration cfg)
     {
+      AndroidJavaObject config = CreateNativeConfig(cfg);
       Unity2019OrNewer = IsUnity2019OrNewer();
       MainThread = Thread.CurrentThread;
       using (AndroidJavaClass system = new AndroidJavaClass("java.lang.System"))
@@ -141,6 +142,26 @@ namespace BugsnagUnity
     }
 
     /**
+     * Transforms an IConfiguration C# object into a Java Configuration object.
+     */
+    AndroidJavaObject CreateNativeConfig(IConfiguration config) {
+      var obj = new AndroidJavaObject("com.bugsnag.android.Configuration", config.ApiKey);
+      // the bugsnag-unity notifier will handle session tracking
+      obj.Call("setAutoCaptureSessions", false);
+      obj.Call("setEnableExceptionHandler", config.AutoNotify);
+      obj.Call("setDetectAnrs", config.AutoNotify && config.AutoDetectAnrs);
+      obj.Call("setCallPreviousSigquitHandler", false);
+      obj.Call("setDetectNdkCrashes", config.AutoNotify);
+      obj.Call("setEndpoint", config.Endpoint.ToString());
+      obj.Call("setSessionEndpoint", config.SessionEndpoint.ToString());
+      obj.Call("setReleaseStage", config.ReleaseStage);
+      obj.Call("setAppVersion", config.AppVersion);
+      obj.Call("setContext", config.Context);
+      obj.Call("setNotifyReleaseStages", config.NotifyReleaseStages);
+      return obj;
+    }
+
+    /**
      * Pushes a local JNI frame with 128 capacity. This avoids the reference table
      * being exceeded, which can happen on some lower-end Android devices in extreme conditions
      * (e.g. Nexus 7 running Android 6). This is likely due to AndroidJavaObject
@@ -163,87 +184,6 @@ namespace BugsnagUnity
      */
     private void PopLocalFrame() {
       AndroidJNI.PopLocalFrame(System.IntPtr.Zero);
-    }
-
-    public string GetAppVersion() {
-      return CallNativeStringMethod("getAppVersion", "()Ljava/lang/String;", new object[]{});
-    }
-
-    public string GetEndpoint() {
-      return CallNativeStringMethod("getEndpoint", "()Ljava/lang/String;", new object[]{});
-    }
-
-    public string GetSessionEndpoint() {
-      return CallNativeStringMethod("getSessionEndpoint", "()Ljava/lang/String;", new object[]{});
-    }
-
-    public string GetReleaseStage() {
-      return CallNativeStringMethod("getReleaseStage", "()Ljava/lang/String;", new object[]{});
-    }
-
-    public string GetContext() {
-      return CallNativeStringMethod("getContext", "()Ljava/lang/String;", new object[]{});
-    }
-
-    public void SetAutoNotify(bool newValue) {
-      if (newValue) {
-        CallNativeVoidMethod("enableUncaughtJavaExceptionReporting", "()V", new object[]{});
-        CallNativeVoidMethod("enableNdkCrashReporting", "()V", new object[]{});
-      } else {
-        CallNativeVoidMethod("disableUncaughtJavaExceptionReporting", "()V", new object[]{});
-        CallNativeVoidMethod("disableNdkCrashReporting", "()V", new object[]{});
-      }
-    }
-
-    public void SetAutoDetectAnrs(bool newValue) {
-      if (newValue) {
-        CallNativeVoidMethod("enableAnrReporting", "()V", new object[]{});
-      } else {
-        CallNativeVoidMethod("disableAnrReporting", "()V", new object[]{});
-      }
-    }
-
-    public void SetContext(string newValue) {
-      CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[]{newValue});
-    }
-
-    public void SetReleaseStage(string newValue) {
-      CallNativeVoidMethod("setReleaseStage", "(Ljava/lang/String;)V", new object[]{newValue});
-    }
-
-    public void SetSessionEndpoint(string newValue) {
-      CallNativeVoidMethod("setSessionEndpoint", "(Ljava/lang/String;)V", new object[]{newValue});
-    }
-
-    public void SetEndpoint(string newValue) {
-      CallNativeVoidMethod("setEndpoint", "(Ljava/lang/String;)V", new object[]{newValue});
-    }
-
-    public void SetAppVersion(string newValue) {
-      CallNativeVoidMethod("setAppVersion", "(Ljava/lang/String;)V", new object[]{newValue});
-    }
-
-    public void SetNotifyReleaseStages(string[] stages) {
-      if (!CanRunJNI()) {
-        return;
-      }
-      bool isAttached = bsg_unity_isJNIAttached();
-      if (!isAttached) {
-        AndroidJNI.AttachCurrentThread();
-      }
-      // Manually coercing the string array into a Java String array rather than using
-      // AndroidJNIHelper.ConvertToJNIArray() as it sometimes (without warning?) converts
-      // a valid array to null
-      var jargs = new jvalue[1];
-      IntPtr javaStageArray = ConvertToStringJNIArrayRef(stages);
-      jargs[0].l = javaStageArray;
-      IntPtr methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, "setNotifyReleaseStages", "([Ljava/lang/String;)V");
-      AndroidJNI.CallStaticVoidMethod(BugsnagNativeInterface, methodID, jargs);
-      AndroidJNI.DeleteLocalRef(javaStageArray);
-
-      if (!isAttached) {
-        AndroidJNI.DetachCurrentThread();
-      }
     }
 
     public void SetUser(User user) {
@@ -323,29 +263,6 @@ namespace BugsnagUnity
       if (!isAttached) {
         AndroidJNI.DetachCurrentThread();
       }
-    }
-
-    public string[] GetNotifyReleaseStages() {
-      if (!CanRunJNI()) {
-        return new string[]{};
-      }
-      bool isAttached = bsg_unity_isJNIAttached();
-      if (!isAttached) {
-        AndroidJNI.AttachCurrentThread();
-      }
-
-      IntPtr stages = CallNativeObjectMethodRef("getNotifyReleaseStages", "()[Ljava/lang/String;", new object[]{});
-      string[] value = null;
-      if (stages != null && stages != IntPtr.Zero)
-      {
-        value = AndroidJNIHelper.ConvertFromJNIArray<string[]>(stages);
-      }
-      AndroidJNI.DeleteLocalRef(stages);
-
-      if (!isAttached) {
-        AndroidJNI.DetachCurrentThread();
-      }
-      return value;
     }
 
     public List<Breadcrumb> GetBreadcrumbs()

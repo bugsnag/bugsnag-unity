@@ -18,6 +18,9 @@ namespace BugsnagUnity
       AppVersion = Application.version;
       AutoCaptureSessions = true;
       AutoNotify = autoNotify;
+      ReleaseStage = "production";
+      Endpoint = new Uri(DefaultEndpoint);
+      SessionEndpoint = new Uri(DefaultSessionEndpoint);
     }
 
     public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
