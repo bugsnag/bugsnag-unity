@@ -27,7 +27,8 @@ namespace BugsnagUnity
       Breadcrumbs = breadcrumbs;
     }
 
-    public NativeClient(Configuration configuration) : this(configuration, configuration.NativeConfiguration, new Breadcrumbs(configuration))
+    // temporary cast to concrete class, will be removed in later changeset as part of this work
+    public NativeClient(IConfiguration configuration) : this(configuration, ((Configuration) configuration).NativeConfiguration, new Breadcrumbs(((Configuration) configuration)))
     {
     }
 

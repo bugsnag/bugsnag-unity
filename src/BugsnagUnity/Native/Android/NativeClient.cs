@@ -14,9 +14,11 @@ namespace BugsnagUnity
 
     private NativeInterface NativeInterface;
 
-    public NativeClient(Configuration configuration)
+    public NativeClient(IConfiguration configuration)
     {
-      NativeInterface = configuration.NativeInterface;
+      // temporary cast to concrete class, will be removed in later changeset as part of this work
+      Configuration config = (Configuration) configuration;
+      NativeInterface = config.NativeInterface;
       Configuration = configuration;
 
       using (var notifier = new AndroidJavaClass("com.bugsnag.android.Notifier"))

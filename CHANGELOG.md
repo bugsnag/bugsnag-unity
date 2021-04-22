@@ -1,5 +1,10 @@
 # Changelog
 
+## TBD
+
+* Replace Bugsnag.init with Bugsnag.start
+  [#227](https://github.com/bugsnag/bugsnag-unity/pull/227)
+
 ## 4.8.8 (2021-04-21)
 
 ### Bug fixes
