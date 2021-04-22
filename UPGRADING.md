@@ -41,6 +41,11 @@ Configuration config = new Configuration("your-api-key");
 config.AutoNotify = true;
 ```
 
+### Bugsnag.Configuration accessor removed
+
+The `Bugsnag.Configuration` accessor has been removed. You should supply all your configuration options up-front as recommended [here](#new-recommended-way-for-initializing-bugsnag).
+
+
 ## 4.1 to 4.2
 
 4.2.0 adds support for reporting C/C++ crashes in Android code. If you are using

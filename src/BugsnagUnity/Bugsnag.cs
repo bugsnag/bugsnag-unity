@@ -30,8 +30,6 @@ namespace BugsnagUnity
 
     public static IClient Client => InternalClient;
 
-    public static IConfiguration Configuration => Client.Configuration;
-
     public static IBreadcrumbs Breadcrumbs => Client.Breadcrumbs;
 
     public static ISessionTracker SessionTracking => Client.SessionTracking;
