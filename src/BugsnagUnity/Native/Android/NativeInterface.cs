@@ -186,6 +186,28 @@ namespace BugsnagUnity
       AndroidJNI.PopLocalFrame(System.IntPtr.Zero);
     }
 
+    public void SetAutoNotify(bool newValue) {
+      if (newValue) {
+        CallNativeVoidMethod("enableUncaughtJavaExceptionReporting", "()V", new object[]{});
+        CallNativeVoidMethod("enableNdkCrashReporting", "()V", new object[]{});
+      } else {
+        CallNativeVoidMethod("disableUncaughtJavaExceptionReporting", "()V", new object[]{});
+        CallNativeVoidMethod("disableNdkCrashReporting", "()V", new object[]{});
+      }
+    }
+
+    public void SetAutoDetectAnrs(bool newValue) {
+      if (newValue) {
+        CallNativeVoidMethod("enableAnrReporting", "()V", new object[]{});
+      } else {
+        CallNativeVoidMethod("disableAnrReporting", "()V", new object[]{});
+      }
+    }
+
+    public void SetContext(string newValue) {
+      CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[]{newValue});
+    }
+
     public void SetUser(User user) {
       var method = "setUser";
       var description = "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V";

@@ -45,5 +45,11 @@ namespace BugsnagUnity
     public void SetUser(User user)
     {
     }
+    public void SetContext(string context)
+    {
+    }
+    public void SetAutoNotify(bool autoNotify)
+    {
+    }
   }
 }

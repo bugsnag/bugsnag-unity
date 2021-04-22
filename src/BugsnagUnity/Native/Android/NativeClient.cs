@@ -86,6 +86,17 @@ namespace BugsnagUnity
     {
       NativeInterface.SetUser(user);
     }
+
+    public void SetContext(string context)
+    {
+      NativeInterface.SetContext(context);
+    }
+
+    public void SetAutoNotify(bool autoNotify)
+    {
+      NativeInterface.SetAutoNotify(autoNotify);
+      NativeInterface.SetAutoDetectAnrs(autoNotify && Configuration.AutoDetectAnrs);
+    }
   }
 
 }

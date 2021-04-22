@@ -45,6 +45,21 @@ config.AutoNotify = true;
 
 The `Bugsnag.Configuration` accessor has been removed. You should supply all your configuration options up-front as recommended [here](#new-recommended-way-for-initializing-bugsnag).
 
+### AutoNotify and Context replaced
+
+Previously it was possible to set `AutoNotify` and `Context` after Bugsnag has initialized:
+
+```c#
+Bugsnag.Configuration.AutoNotify = false;
+Bugsnag.Configuration.Context = "MyContext";
+```
+
+This has been replaced by the following API:
+
+```c#
+Bugsnag.SetAutoNotify(false);
+Bugsnag.SetContext("MyContext");
+```
 
 ## 4.1 to 4.2
 
