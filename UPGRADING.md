@@ -26,6 +26,21 @@ If you alter Bugsnag's default behaviour via `Configuration`, you must supply al
 
 Any change to the value of `Configuration` options after `Bugsnag.Start()` is called will have no effect on Bugsnag's behaviour.
 
+### Configuration constructor removed
+
+The previous constructor for `Configuration` allowed passing `AutoNotify` as its 2nd parameter:
+
+```c#
+new Configuration("your-api-key", true);
+```
+
+This has been removed - `AutoNotify` should be set using the property instead:
+
+```c#
+Configuration config = new Configuration("your-api-key");
+config.AutoNotify = true;
+```
+
 ## 4.1 to 4.2
 
 4.2.0 adds support for reporting C/C++ crashes in Android code. If you are using

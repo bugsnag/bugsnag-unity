@@ -9,7 +9,7 @@ namespace BugsnagUnity
 
     public static IClient Start(string apiKey)
     {
-      return Start(new Configuration(apiKey, true));
+      return Start(new Configuration(apiKey));
     }
 
     public static IClient Start(IConfiguration configuration)

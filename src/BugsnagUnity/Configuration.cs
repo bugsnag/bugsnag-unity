@@ -4,20 +4,17 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  public abstract class AbstractConfiguration : IConfiguration
+  public class Configuration : IConfiguration
   {
     public const string DefaultEndpoint = "https://notify.bugsnag.com";
 
     public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
-    public AbstractConfiguration() {}
-
-    protected virtual void SetupDefaults(string apiKey, bool autoNotify)
-    {
+    public Configuration(string apiKey) {
       ApiKey = apiKey;
       AppVersion = Application.version;
       AutoCaptureSessions = true;
-      AutoNotify = autoNotify;
+      AutoNotify = true;
       ReleaseStage = "production";
       Endpoint = new Uri(DefaultEndpoint);
       SessionEndpoint = new Uri(DefaultSessionEndpoint);

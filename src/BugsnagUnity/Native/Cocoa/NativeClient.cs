@@ -32,9 +32,14 @@ namespace BugsnagUnity
       NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
       NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
       NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
-      NativeCode.bugsnag_setContext(obj, config.Context);
+
+      if (config.Context != null) {
+        NativeCode.bugsnag_setContext(obj, config.Context);
+      }
       var releaseStages = config.NotifyReleaseStages;
-      NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
+      if (releaseStages != null) {
+        NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
+      }
       return obj;
     }
 
