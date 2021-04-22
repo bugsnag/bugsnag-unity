@@ -9,27 +9,33 @@ namespace BugsnagUnity
   class NativeClient : INativeClient
   {
     public IConfiguration Configuration { get; }
-
     public IBreadcrumbs Breadcrumbs { get; }
-
     public IDelivery Delivery { get; }
 
     IntPtr NativeConfiguration { get; }
 
-    NativeClient(IConfiguration configuration, IntPtr nativeConfiguration, IBreadcrumbs breadcrumbs)
+    public NativeClient(IConfiguration configuration)
     {
       Configuration = configuration;
-      NativeConfiguration = nativeConfiguration;
-
+      NativeConfiguration = CreateNativeConfig(configuration);
       NativeCode.bugsnag_startBugsnagWithConfiguration(NativeConfiguration, NotifierInfo.NotifierVersion);
-
       Delivery = new Delivery();
-      Breadcrumbs = breadcrumbs;
+      Breadcrumbs = new Breadcrumbs(NativeConfiguration);
     }
 
-    // temporary cast to concrete class, will be removed in later changeset as part of this work
-    public NativeClient(IConfiguration configuration) : this(configuration, ((Configuration) configuration).NativeConfiguration, new Breadcrumbs(((Configuration) configuration)))
-    {
+    /**
+     * Transforms an IConfiguration C# object into a Cocoa Configuration object.
+     */
+    IntPtr CreateNativeConfig(IConfiguration config) {
+      IntPtr obj = NativeCode.bugsnag_createConfiguration(config.ApiKey);
+      NativeCode.bugsnag_setAutoNotify(obj, config.AutoNotify);
+      NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
+      NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
+      NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
+      NativeCode.bugsnag_setContext(obj, config.Context);
+      var releaseStages = config.NotifyReleaseStages;
+      NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
+      return obj;
     }
 
     public void PopulateApp(App app)
