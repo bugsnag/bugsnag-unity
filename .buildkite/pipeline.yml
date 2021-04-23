@@ -5,4 +5,4 @@ steps:
     agents:
       queue: opensource-mac-unity
     commands:
-      - ./features/scripts/prototype.sh.sh
+      - ./features/scripts/prototype.sh
