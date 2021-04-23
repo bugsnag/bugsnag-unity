@@ -26,27 +26,10 @@ stages:
 
 before_install:
 - bundle install
-- brew update || true
-- brew tap homebrew/cask
-- brew tap AdoptOpenJDK/openjdk
 - pip install --user awscli
 - mkdir -p $TRAVIS_BUILD_DIR/build_artifacts
 
 install:
-- brew uninstall --cask java > /dev/null
-- brew install --cask adoptopenjdk8 > /dev/null
-- brew install ninja
-- brew install --cask mono-mdk > /dev/null
-- brew install --cask android-sdk > /dev/null
-- brew install --cask bugsnag/unity/$UNITY_VERSION > /dev/null
-- export PATH="$PATH:/Library/Frameworks/Mono.framework/Versions/Current/Commands"
-- sdkmanager --list
-- yes | sdkmanager "platforms;android-27" > /dev/null
-- yes | sdkmanager --licenses > /dev/null
-- curl --silent -o ndk.zip https://dl.google.com/android/repository/android-ndk-r16b-darwin-x86_64.zip
-- unzip -qq ndk.zip > /dev/null
-- mv android-ndk-r16b $ANDROID_NDK_HOME
-- rm ndk.zip
 - bundle exec rake travis:export_plugin
 - cp Bugsnag.unitypackage $TRAVIS_BUILD_DIR/build_artifacts
 - cp Bugsnag-with-android-64bit.unitypackage $TRAVIS_BUILD_DIR/build_artifacts
