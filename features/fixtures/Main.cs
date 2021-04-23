@@ -17,9 +17,6 @@ public class Main : MonoBehaviour {
     var scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.DefaultGameObjects, UnityEditor.SceneManagement.NewSceneMode.Single);
     UnityEngine.SceneManagement.SceneManager.SetActiveScene(scene);
     var obj = new GameObject("Bugsnag");
-    var bugsnag = obj.AddComponent<BugsnagBehaviour>();
-    bugsnag.BugsnagApiKey = System.Environment.GetEnvironmentVariable("BUGSNAG_APIKEY");
-    bugsnag.AutoCaptureSessions = false;
     obj.AddComponent<Main>();
     UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, "Assets/MainScene.unity");
     var scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
@@ -34,6 +31,10 @@ public class Main : MonoBehaviour {
   bool sent = false;
 
   public void Start() {
+    var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
+    var config = PrepareConfig(scenario);
+    Bugsnag.Start(config);
+
     // Add different varieties of custom metadata
     Bugsnag.Metadata.Add("init", new Dictionary<string, string>(){
       {"foo", "bar" },
@@ -49,19 +50,15 @@ public class Main : MonoBehaviour {
     });
     // Remove a tab
     Bugsnag.Metadata.Remove("init");
+
+    // trigger the crash
+    RunScenario(scenario);
   }
 
   void Update() {
     // only send one crash
     if (!sent) {
-      var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
-      Bugsnag.Configuration.AutoCaptureSessions = scenario.Contains("AutoSession");
       sent = true;
-      var endpoint =
-        new System.Uri(Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
-      Bugsnag.Configuration.Endpoint = endpoint;
-      Bugsnag.Configuration.SessionEndpoint = endpoint;
-      LoadScenario();
       // wait for 5 seconds before exiting the application
       StartCoroutine(WaitForBugsnag());
     }
@@ -72,27 +69,127 @@ public class Main : MonoBehaviour {
     Application.Quit();
   }
 
-  void LoadScenario() {
-    var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
+  /**
+   * Creates a configuration object and prepares it for the given scenario
+   */
+  Configuration PrepareConfig(string scenario) {
+    string apiKey = System.Environment.GetEnvironmentVariable("BUGSNAG_APIKEY");
+    var config = new Configuration(apiKey);
+
+    // setup default endpoints etc
+    var endpoint = new System.Uri(Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
+    config.Endpoint = endpoint;
+    config.SessionEndpoint = endpoint;
+    config.AutoCaptureSessions = scenario.Contains("AutoSession");
+
+    // replacement for BugsnagBehaviour as not practical to load script in fixture
+    config.ScriptingBackend = FindScriptingBackend();
+    config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
+    config.DotnetApiCompatibility = FindDotnetApiCompatibility();
+
+    // prepare scenario-specific config
+    PrepareConfigForScenario(config, scenario);
+    return config;
+  }
+
+  /**
+   * Prepares the configuration object for a given scenario
+   */
+  void PrepareConfigForScenario(Configuration config, string scenario) {
     switch (scenario) {
       case "LogExceptionOutsideNotifyReleaseStages":
-        Bugsnag.Configuration.ReleaseStage = "dev";
-        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
+        config.ReleaseStage = "dev";
+        config.NotifyReleaseStages = new [] { "production" };
+        break;
+      case "NotifyOutsideNotifyReleaseStages":
+        config.ReleaseStage = "dev";
+        config.NotifyReleaseStages = new [] { "production" };
+        break;
+      case "NativeCrashOutsideNotifyReleaseStages":
+        config.ReleaseStage = "dev";
+        config.NotifyReleaseStages = new [] { "production" };
+        break;
+      case "UncaughtExceptionOutsideNotifyReleaseStages":
+        config.ReleaseStage = "dev";
+        config.NotifyReleaseStages = new [] { "production" };
+        break;
+      case "UncaughtExceptionAsUnhandled":
+        config.ReportUncaughtExceptionsAsHandled = false;
+        break;
+      case "LogUnthrownAsUnhandled":
+        config.ReportUncaughtExceptionsAsHandled = false;
+        break;
+      case "ReportLoggedWarning":
+        config.NotifyLevel = LogType.Warning;
+        break;
+      case "ReportLoggedError":
+        config.NotifyLevel = LogType.Warning;
+        break;
+      case "ReportLoggedWarningWithHandledConfig":
+        config.ReportUncaughtExceptionsAsHandled = false;
+        config.NotifyLevel = LogType.Warning;
+        break;
+      case "ManualSessionCrash":
+        config.ReportUncaughtExceptionsAsHandled = false;
+        break;
+      case "AutoSessionInNotifyReleaseStages":
+        config.ReleaseStage = "production";
+        config.NotifyReleaseStages = new [] { "production" };
+        break;
+      case "ManualSessionInNotifyReleaseStages":
+        config.ReleaseStage = "production";
+        config.NotifyReleaseStages = new [] { "production" };
+        break;
+      case "AutoSessionNotInNotifyReleaseStages":
+        config.NotifyReleaseStages = new [] { "no-op" };
+        break;
+      case "ManualSessionNotInNotifyReleaseStages":
+        config.NotifyReleaseStages = new [] { "no-op" };
+        break;
+      case "ManualSessionMixedEvents":
+        config.ReportUncaughtExceptionsAsHandled = false;
+        config.NotifyLevel = LogType.Warning;
+        break;
+      case "UncaughtExceptionWithoutAutoNotify":
+        config.AutoNotify = false;
+        break;
+      case "NotifyWithoutAutoNotify":
+        config.AutoNotify = false;
+        break;
+      case "LoggedExceptionWithoutAutoNotify":
+        config.AutoNotify = false;
+        config.ReportUncaughtExceptionsAsHandled = false;
+        break;
+      case "NativeCrashWithoutAutoNotify":
+        config.AutoNotify = false;
+        break;
+      case "NativeCrashReEnableAutoNotify":
+        config.AutoNotify = false;
+        config.AutoNotify = true;
+        break;
+      case "ReportLoggedWarningThreaded":
+        config.NotifyLevel = LogType.Warning;
+        break;
+      default: // no special config required
+        break;
+    }
+  }
+
+  /**
+   * Runs the crashy code for a given scenario.
+   */
+  void RunScenario(string scenario) {
+    switch (scenario) {
+      case "LogExceptionOutsideNotifyReleaseStages":
         DoLogUnthrown();
         break;
       case "NotifyOutsideNotifyReleaseStages":
-        Bugsnag.Configuration.ReleaseStage = "dev";
-        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
         DoNotify();
         break;
       case "NativeCrashOutsideNotifyReleaseStages":
-        Bugsnag.Configuration.ReleaseStage = "dev";
-        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
         crashy_signal_runner(8);
         break;
       case "UncaughtExceptionOutsideNotifyReleaseStages":
-        Bugsnag.Configuration.ReleaseStage = "dev";
-        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
         DoUnhandledException(0);
         break;
       case "DebugLogBreadcrumbNotify":
@@ -158,19 +255,13 @@ public class Main : MonoBehaviour {
         DoNotify();
         break;
       case "AutoSessionInNotifyReleaseStages":
-        Bugsnag.Configuration.ReleaseStage = "production";
-        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
         break;
       case "ManualSessionInNotifyReleaseStages":
-        Bugsnag.Configuration.ReleaseStage = "production";
-        Bugsnag.Configuration.NotifyReleaseStages = new [] { "production" };
         Bugsnag.StartSession();
         break;
       case "AutoSessionNotInNotifyReleaseStages":
-        Bugsnag.Configuration.NotifyReleaseStages = new [] { "no-op" };
         break;
       case "ManualSessionNotInNotifyReleaseStages":
-        Bugsnag.Configuration.NotifyReleaseStages = new [] { "no-op" };
         Bugsnag.StartSession();
         break;
       case "ManualSessionMixedEvents":
@@ -194,24 +285,18 @@ public class Main : MonoBehaviour {
         crashy_signal_runner(8);
         break;
       case "UncaughtExceptionWithoutAutoNotify":
-        Bugsnag.Configuration.AutoNotify = false;
         DoUnhandledException(0);
         break;
       case "NotifyWithoutAutoNotify":
-        Bugsnag.Configuration.AutoNotify = false;
         DoNotify();
         break;
       case "LoggedExceptionWithoutAutoNotify":
-        Bugsnag.Configuration.AutoNotify = false;
         DoLogUnthrownAsUnhandled();
         break;
       case "NativeCrashWithoutAutoNotify":
-        Bugsnag.Configuration.AutoNotify = false;
         crashy_signal_runner(8);
         break;
       case "NativeCrashReEnableAutoNotify":
-        Bugsnag.Configuration.AutoNotify = false;
-        Bugsnag.Configuration.AutoNotify = true;
         crashy_signal_runner(8);
         break;
       case "AutoSessionNativeCrash":
@@ -219,6 +304,13 @@ public class Main : MonoBehaviour {
           Thread.Sleep(900);
           crashy_signal_runner(8);
         }).Start();
+        break;
+      case "AutoSession":
+        break;
+      case "(noop)":
+        break;
+      default:
+        throw new ArgumentException("Unable to run unexpected scenario: " + scenario);
         break;
     }
   }
@@ -248,23 +340,18 @@ public class Main : MonoBehaviour {
   }
 
   void UncaughtExceptionAsUnhandled() {
-    Bugsnag.Configuration.ReportUncaughtExceptionsAsHandled = false;
     throw new ExecutionEngineException("Invariant state failure");
   }
 
   void DoLogWarning() {
-    Bugsnag.Configuration.NotifyLevel = LogType.Warning;
     Debug.LogWarning("Something went terribly awry");
   }
 
   void DoLogError() {
-    Bugsnag.Configuration.NotifyLevel = LogType.Warning;
     Debug.LogError("Bad bad things");
   }
 
   void DoLogWarningWithHandledConfig() {
-    Bugsnag.Configuration.ReportUncaughtExceptionsAsHandled = false;
-    Bugsnag.Configuration.NotifyLevel = LogType.Warning;
     Debug.LogWarning("Something went terribly awry");
   }
 
@@ -314,7 +401,6 @@ public class Main : MonoBehaviour {
   }
 
   void DoLogUnthrownAsUnhandled() {
-    Bugsnag.Configuration.ReportUncaughtExceptionsAsHandled = false;
     Debug.LogException(new System.Exception("WAT"));
   }
 
@@ -332,6 +418,35 @@ public class Main : MonoBehaviour {
     var items = new int[]{1, 2, 3};
     Debug.Log("Item4 is: " + items[counter]);
   }
+
+
+/*** Determine runtime versions ***/
+
+    private static string FindScriptingBackend() {
+#if ENABLE_MONO
+      return "Mono";
+#elif ENABLE_IL2CPP
+      return "IL2CPP";
+#else
+      return "Unknown";
+#endif
+    }
+
+    private static string FindDotnetScriptingRuntime() {
+#if NET_4_6
+      return ".NET 4.6 equivalent";
+#else
+      return ".NET 3.5 equivalent";
+#endif
+    }
+
+    private static string FindDotnetApiCompatibility() {
+#if NET_2_0_SUBSET
+      return ".NET 2.0 Subset";
+#else
+      return ".NET 2.0";
+#endif
+    }
 }
 
 class OtherMetadata {
