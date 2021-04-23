@@ -1,0 +1,8 @@
+steps:
+  - label: Build something
+    key: cocoa_fixture
+    timeout_in_minutes: 20
+    agents:
+      queue: opensource-mac-unity
+    commands:
+      - ./features/scripts/prototype.sh.sh
