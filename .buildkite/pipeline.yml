@@ -1,5 +1,5 @@
 steps:
-  - label: Build something
+  - label: Build and run e2e tests for Unity 2017.4.40f1
     key: cocoa_fixture
     timeout_in_minutes: 20
     agents:
@@ -7,6 +7,7 @@ steps:
     env:
       UNITY_VERSION: "2017.4.40f1"
     commands:
+      - bundle install
       - bundle exec rake plugin:export
       - bundle exec bugsnag-maze-runner
     concurrency: 2
