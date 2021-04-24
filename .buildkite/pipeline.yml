@@ -4,5 +4,10 @@ steps:
     timeout_in_minutes: 20
     agents:
       queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2017.4.40f1"
     commands:
-      - ./features/scripts/prototype.sh
+      - bundle exec rake plugin:export
+      - bundle exec bugsnag-maze-runner
+    concurrency: 2
+    concurrency_group: 'unity-license'

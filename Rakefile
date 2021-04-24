@@ -13,7 +13,9 @@ def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
 # install location for both windows and mac.
 #
 def unity_directory
-  if ENV.has_key? "UNITY_DIR"
+  if ENV.has_key? 'UNITY_VERSION'
+    "/Applications/Unity/Hub/Editor#{ENV['UNITY_VERSION']}"
+  elsif ENV.has_key? "UNITY_DIR"
     ENV["UNITY_DIR"]
   else
     ['/Applications/Unity', 'C:\Program Files\Unity'].find do |dir|
