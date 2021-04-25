@@ -14,7 +14,7 @@ def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
 #
 def unity_directory
   if ENV.has_key? 'UNITY_VERSION'
-    "/Applications/Unity/Hub/Editor#{ENV['UNITY_VERSION']}"
+    "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
   elsif ENV.has_key? "UNITY_DIR"
     ENV["UNITY_DIR"]
   else
