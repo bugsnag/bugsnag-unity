@@ -1,14 +1,70 @@
 steps:
   - label: Build and run e2e tests for Unity 2017.4.40f1
-    key: cocoa_fixture
-    timeout_in_minutes: 20
+    timeout_in_minutes: 30
     agents:
       queue: opensource-mac-unity
     env:
       UNITY_VERSION: "2017.4.40f1"
     commands:
       - bundle install
-      - bundle exec rake plugin:export
-      - bundle exec bugsnag-maze-runner
+      - time bundle exec rake plugin:export
+      - time bundle exec bugsnag-maze-runner
     concurrency: 2
     concurrency_group: 'unity-license'
+
+  - label: Build and run e2e tests for Unity 2018.4.34f1
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2018.4.34f1"
+    commands:
+      - bundle install
+      - time bundle exec rake plugin:export
+      - time bundle exec bugsnag-maze-runner
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: Build and run e2e tests for Unity 2019.4.25f1
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2019.4.25f1"
+    commands:
+      - bundle install
+      - time bundle exec rake plugin:export
+      - time bundle exec bugsnag-maze-runner
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: Build and run e2e tests for Unity 2020.3.5f1
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2020.3.5f1"
+    commands:
+      - bundle install
+      - time bundle exec rake plugin:export
+      - time bundle exec bugsnag-maze-runner
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: Build and run e2e tests for Unity 2021.1.4f1
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2021.1.4f1"
+    commands:
+      - bundle install
+      - time bundle exec rake plugin:export
+      - time bundle exec bugsnag-maze-runner
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+
+
+
+
