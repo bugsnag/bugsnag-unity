@@ -67,6 +67,12 @@ namespace BugsnagUnity
     public void SetUser(User user)
     {
     }
+    public void SetContext(string context)
+    {
+    }
+    public void SetAutoNotify(bool autoNotify)
+    {
+    }
 
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

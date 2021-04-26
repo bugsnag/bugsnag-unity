@@ -169,5 +169,15 @@ namespace BugsnagUnity
     {
       NativeCode.bugsnag_setUser(user.Id, user.Name, user.Email);
     }
+
+    public void SetContext(string context)
+    {
+      NativeCode.bugsnag_setContext(NativeConfiguration, context);
+    }
+
+    public void SetAutoNotify(bool autoNotify)
+    {
+      NativeCode.bugsnag_setAutoNotify(NativeConfiguration, autoNotify);
+    }
   }
 }
