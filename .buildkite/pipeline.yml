@@ -8,7 +8,7 @@ steps:
     commands:
       - bundle install
       - bundle exec rake plugin:export
-      - bundle exec bugsnag-maze-runner
+      - DEBUG=1 bundle exec bugsnag-maze-runner
     artifact_paths:
       - Bugsnag.unitypackage
       - Bugsnag-with-android-64bit.unitypackage
