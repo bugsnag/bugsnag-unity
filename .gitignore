@@ -24,3 +24,4 @@ TestResult.xml
 .idea/
 bugsnag-cocoa-build/
 unity.log
+bugsnag-android-unity/.cxx
