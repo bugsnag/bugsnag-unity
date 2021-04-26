@@ -13,8 +13,8 @@ Feature: Reporting unhandled events
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
-            | Main.LoadScenario()         | |
-            | Main.Update()               | |
+            | Main.RunScenario(System.String scenario)         | |
+            | Main.Start()               | |
 
     Scenario: Forcing uncaught exceptions to be unhandled
         When I run the game in the "UncaughtExceptionAsUnhandled" state
@@ -28,9 +28,8 @@ Feature: Reporting unhandled events
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
-            | Main.UncaughtExceptionAsUnhandled() |
-            | Main.LoadScenario()         |
-            | Main.Update()               |
+            | Main.RunScenario(System.String scenario)         |
+            | Main.Start()               |
 
     Scenario: Reporting an assertion failure
         When I run the game in the "AssertionFailure" state
@@ -47,8 +46,8 @@ Feature: Reporting unhandled events
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.MakeAssertionFailure(Int32 counter) | Main.MakeAssertionFailure(System.Int32 counter) |
-            | Main.LoadScenario()                      | |
-            | Main.Update()                            | |
+            | Main.RunScenario(System.String scenario)                      | |
+            | Main.Start()                            | |
 
     Scenario: Reporting a native crash
         When I run the game in the "NativeCrash" state

@@ -13,8 +13,8 @@ Feature: Handled Errors and Exceptions
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoNotify()      |
-            | Main.LoadScenario()  |
-            | Main.Update()        |
+            | Main.RunScenario(string scenario)  |
+            | Main.Start()        |
 
     Scenario: Reporting a handled exception from a background thread
         When I run the game in the "NotifyBackground" state
@@ -34,7 +34,7 @@ Feature: Handled Errors and Exceptions
         And the event "metaData.Unity.platform" equals "OSXPlayer"
         And the first significant stack frame methods and files should match:
             | Main.DoNotify()           | |
-            | Main.<LoadScenario>m__0() | Main.<LoadScenario>b__5_0() |
+            | Main.<RunScenario>m__0() | Main.<RunScenario>b__7_0() |
 
     Scenario: Reporting a handled exception with a callback
         When I run the game in the "NotifyCallback" state
@@ -50,8 +50,8 @@ Feature: Handled Errors and Exceptions
         And the event "metaData.shape.arc" equals "yes"
         And the first significant stack frame methods and files should match:
             | Main.DoNotifyWithCallback() |
-            | Main.LoadScenario()         |
-            | Main.Update()               |
+            | Main.RunScenario(string scenario)         |
+            | Main.Start()               |
 
     Scenario: Reporting a handled exception with a custom severity
         When I run the game in the "NotifySeverity" state
@@ -68,8 +68,8 @@ Feature: Handled Errors and Exceptions
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoNotifyWithSeverity() |
-            | Main.LoadScenario()         |
-            | Main.Update()               |
+            | Main.RunScenario(string scenario)         |
+            | Main.Start()               |
 
     Scenario: Logging an unthrown exception
         When I run the game in the "LogUnthrown" state
@@ -84,8 +84,8 @@ Feature: Handled Errors and Exceptions
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main:DoLogUnthrown() |
-            | Main:LoadScenario()  |
-            | Main:Update()        |
+            | Main:RunScenario(String) |
+            | Main:Start() |
 
     Scenario: Logging an unthrown exception as unhandled
         When I run the game in the "LogUnthrownAsUnhandled" state
@@ -100,8 +100,8 @@ Feature: Handled Errors and Exceptions
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main:DoLogUnthrownAsUnhandled() |
-            | Main:LoadScenario()  |
-            | Main:Update()        |
+            | Main:RunScenario(String) |
+            | Main:Start() |
 
     Scenario: Logging a warning from a background thread to Bugsnag
         When I run the game in the "ReportLoggedWarningThreaded" state
@@ -130,8 +130,8 @@ Feature: Handled Errors and Exceptions
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoLogWarning()  |
-            | Main.LoadScenario()  |
-            | Main.Update()        |
+            | Main.RunScenario(string scenario)  |
+            | Main.Start()        |
 
     Scenario: Logging an error to Bugsnag
         When I run the game in the "ReportLoggedError" state
@@ -146,8 +146,8 @@ Feature: Handled Errors and Exceptions
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoLogError()  |
-            | Main.LoadScenario()  |
-            | Main.Update()        |
+            | Main.RunScenario(string scenario)  |
+            | Main.Start()        |
 
     Scenario: Logging a warning to Bugsnag with 'ReportAsHandled = false'
         When I run the game in the "ReportLoggedWarningWithHandledConfig" state
@@ -162,8 +162,8 @@ Feature: Handled Errors and Exceptions
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoLogWarningWithHandledConfig()  |
-            | Main.LoadScenario()  |
-            | Main.Update()        |
+            | Main.RunScenario(string scenario)  |
+            | Main.Start()        |
 
     Scenario: Notifying when the current release stage is not in "notify release stages"
         When I run the game in the "NotifyOutsideNotifyReleaseStages" state
@@ -186,8 +186,8 @@ Feature: Handled Errors and Exceptions
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.DoNotify()      |
-            | Main.LoadScenario()  |
-            | Main.Update()        |
+            | Main.RunScenario(string scenario)  |
+            | Main.Start()        |
 
 
     Scenario: Logging an exception when AutoNotify = false

@@ -17,7 +17,7 @@ Feature: Leaving breadcrumbs to attach to reports
         And the exception "errorClass" equals "ExecutionEngineException"
         And the exception "message" equals "Invalid runtime"
         And the event has a "log" breadcrumb named "Warning"
-        And the payload field "events.0.breadcrumbs.1.metaData.message" equals "Failed to validate credentials"
+        And the payload field "events.0.breadcrumbs.0.metaData.message" equals "Failed to validate credentials"
 
     Scenario: Attaching a complex breadcrumb to a report
         When I run the game in the "ComplexBreadcrumbNotify" state
@@ -27,7 +27,7 @@ Feature: Leaving breadcrumbs to attach to reports
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "Collective failure"
         And the event has a "navigation" breadcrumb named "Reload"
-        And the payload field "events.0.breadcrumbs.1.metaData.preload" equals "launch"
+        And the payload field "events.0.breadcrumbs.0.metaData.preload" equals "launch"
 
     Scenario: Attaching an error report breadcrumb
         When I run the game in the "DoubleNotify" state
@@ -38,6 +38,6 @@ Feature: Leaving breadcrumbs to attach to reports
         And the payload field "events.0.exceptions.0.message" equals "Rollback failed" for request 0
         And the payload field "events.0.exceptions.0.errorClass" equals "ExecutionEngineException" for request 1
         And the payload field "events.0.exceptions.0.message" equals "Invalid runtime" for request 1
-        And the payload field "events.0.breadcrumbs.1.type" equals "error" for request 1
-        And the payload field "events.0.breadcrumbs.1.name" equals "Exception" for request 1
-        And the payload field "events.0.breadcrumbs.1.metaData.message" equals "Rollback failed" for request 1
+        And the payload field "events.0.breadcrumbs.0.type" equals "error" for request 1
+        And the payload field "events.0.breadcrumbs.0.name" equals "Exception" for request 1
+        And the payload field "events.0.breadcrumbs.0.metaData.message" equals "Rollback failed" for request 1

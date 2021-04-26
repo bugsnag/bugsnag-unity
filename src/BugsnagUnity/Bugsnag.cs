@@ -9,7 +9,7 @@ namespace BugsnagUnity
 
     public static IClient Start(string apiKey)
     {
-      return Start(new Configuration(apiKey, true));
+      return Start(new Configuration(apiKey));
     }
 
     public static IClient Start(IConfiguration configuration)
@@ -29,8 +29,6 @@ namespace BugsnagUnity
     static Client InternalClient { get; set; }
 
     public static IClient Client => InternalClient;
-
-    public static IConfiguration Configuration => Client.Configuration;
 
     public static IBreadcrumbs Breadcrumbs => Client.Breadcrumbs;
 

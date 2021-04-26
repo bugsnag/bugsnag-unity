@@ -1,6 +1,10 @@
-#!/bin/sh -ex
+#!/usr/bin/env bash
 
+# run on CI using direct download
 export PATH="$PATH:/Applications/Unity/Unity.app/Contents/MacOS"
+
+# run locally using unity hub
+export PATH="$PATH:/Applications/Unity/Hub/Editor/2017.4.40f1/Unity.app/Contents/MacOS"
 
 pushd "${0%/*}"
   pushd ../..
