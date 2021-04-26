@@ -306,37 +306,6 @@ namespace :plugin do
   end
 end
 
-namespace :travis do
-  def with_license &block
-    # Ensure a Packages/manifest.json exists in all locations
-    `mkdir Packages && echo '{}' > Packages/manifest.json`
-    `mkdir #{unity_directory}/Unity.app/Contents/Packages && echo '{}' > #{unity_directory}/Unity.app/Contents/Packages/manifest.json`
-
-    # activate the unity license
-    unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
-    sleep 10
-    begin
-      yield
-    ensure
-      unity "-returnlicense", force_free: false, no_graphics: false
-      sleep 10
-    end
-
-  end
-
-  task :export_plugin do
-    with_license do
-      Rake::Task["plugin:export"].invoke
-    end
-  end
-
-  task :maze_runner do
-    with_license do
-      sh "bundle", "exec", "bugsnag-maze-runner", "--color", "--verbose"
-    end
-  end
-end
-
 namespace :example do
   namespace :build do
     task prepare: %w[plugin:export] do

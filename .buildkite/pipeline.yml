@@ -1,21 +1,6 @@
 steps:
-  - label: Build and run e2e tests for Unity 5.6.7f1
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "5.6.7f1"
-    commands:
-      - bundle install
-      - bundle exec rake plugin:export
-      - DEBUG=1 bundle exec bugsnag-maze-runner
-    artifact_paths:
-      - Bugsnag.unitypackage
-      - Bugsnag-with-android-64bit.unitypackage
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: Build notifier artifacts with Unity 2017.4.40f1
+  # Run tests for all Unity versions with the 2017 artifacts, as that is what we ship
+  - label: Build notifier artifacts
     key: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
