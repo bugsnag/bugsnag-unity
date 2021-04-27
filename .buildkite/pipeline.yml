@@ -29,6 +29,7 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
     commands:
+      - cd test/desktop
       - bundle install
       - bundle exec bugsnag-maze-runner
     concurrency: 2
@@ -47,6 +48,7 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
     commands:
+      - cd test/desktop
       - bundle install
       - bundle exec bugsnag-maze-runner
     concurrency: 2
