@@ -4,8 +4,9 @@ export PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/Ma
 
 # Set project_path to the repo root
 pushd "${0%/*}"
-  pushd ../..
+  pushd ../../../..
     package_path=`pwd`
+    echo "Expecting to find Busnag package in: $package_path"
   popd
   pushd ../fixtures
     git clean -xdf .
