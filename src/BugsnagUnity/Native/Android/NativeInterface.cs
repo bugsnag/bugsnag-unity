@@ -146,18 +146,39 @@ namespace BugsnagUnity
      */
     AndroidJavaObject CreateNativeConfig(IConfiguration config) {
       var obj = new AndroidJavaObject("com.bugsnag.android.Configuration", config.ApiKey);
-      // the bugsnag-unity notifier will handle session tracking
-      obj.Call("setAutoCaptureSessions", false);
-      obj.Call("setEnableExceptionHandler", config.AutoNotify);
-      obj.Call("setDetectAnrs", config.AutoNotify && config.AutoDetectAnrs);
-      obj.Call("setCallPreviousSigquitHandler", false);
-      obj.Call("setDetectNdkCrashes", config.AutoNotify);
-      obj.Call("setEndpoint", config.Endpoint.ToString());
-      obj.Call("setSessionEndpoint", config.SessionEndpoint.ToString());
+      // configure automatic tracking of errors/sessions
+      using (AndroidJavaObject errorTypes = new AndroidJavaObject("com.bugsnag.android.ErrorTypes"))
+      {
+        errorTypes.Call("setAnrs", config.AutoDetectAnrs);
+        obj.Call("setEnabledErrorTypes", errorTypes);
+      }
+      obj.Call("setAutoTrackSessions", false);
+      obj.Call("setAutoDetectErrors", config.AutoNotify);
+
+      // set endpoints
+      var notify = config.Endpoint.ToString();
+      var sessions = config.SessionEndpoint.ToString();
+      using (AndroidJavaObject endpointConfig = new AndroidJavaObject("com.bugsnag.android.EndpointConfiguration", notify, sessions))
+      {
+        obj.Call("setEndpoints", endpointConfig);
+      }
+
+      // set release stages
       obj.Call("setReleaseStage", config.ReleaseStage);
+
+      if (config.NotifyReleaseStages != null) {
+        using (AndroidJavaObject releaseStages = new AndroidJavaObject("java.util.HashSet"))
+        {
+          foreach (var releaseStage in config.NotifyReleaseStages) {
+            releaseStages.Call("add", releaseStage);
+          }
+          obj.Call("setEnabledReleaseStages", releaseStages);
+        }
+      }
+
+      // set version/context
       obj.Call("setAppVersion", config.AppVersion);
       obj.Call("setContext", config.Context);
-      obj.Call("setNotifyReleaseStages", config.NotifyReleaseStages);
       return obj;
     }
 
