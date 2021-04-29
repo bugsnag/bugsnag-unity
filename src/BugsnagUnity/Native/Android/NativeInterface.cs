@@ -151,6 +151,8 @@ namespace BugsnagUnity
           }
           sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
         }
+
+        ConfigureNotifierInfo(client);
       }
     }
 
@@ -193,6 +195,15 @@ namespace BugsnagUnity
       obj.Call("setAppVersion", config.AppVersion);
       obj.Call("setContext", config.Context);
       return obj;
+    }
+
+    private void ConfigureNotifierInfo(AndroidJavaObject client) {
+      using (AndroidJavaObject notifier = client.Get<AndroidJavaObject>("notifier"))
+      {
+        notifier.Call("setUrl", NotifierInfo.NotifierUrl);
+        notifier.Call("setName", "Bugsnag Unity (Android)");
+        notifier.Call("setVersion", NotifierInfo.NotifierVersion);
+      }
     }
 
     /**

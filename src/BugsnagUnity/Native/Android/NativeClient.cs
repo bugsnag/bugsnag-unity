@@ -18,15 +18,6 @@ namespace BugsnagUnity
     {
       NativeInterface = new NativeInterface(configuration);
       Configuration = configuration;
-
-      using (var notifier = new AndroidJavaClass("com.bugsnag.android.Notifier"))
-      using (var info = notifier.CallStatic<AndroidJavaObject>("getInstance"))
-      {
-        info.Call("setURL", NotifierInfo.NotifierUrl);
-        info.Call("setName", "Bugsnag Unity (Android)");
-        info.Call("setVersion", NotifierInfo.NotifierVersion);
-      }
-
       Delivery = new Delivery();
       Breadcrumbs = new Breadcrumbs(NativeInterface);
     }
