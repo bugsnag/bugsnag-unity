@@ -24,13 +24,13 @@ namespace BugsnagUnity
 
     public void PopulateApp(App app)
     {
-      MergeDictionaries(app, NativeInterface.GetAppData());
+      MergeDictionaries(app, NativeInterface.GetApp());
     }
 
     public void PopulateDevice(Device device)
     {
       Dictionary<string, object> runtimeVersions = (Dictionary<string, object>) device.Get("runtimeVersions");
-      Dictionary<string, object> deviceData = NativeInterface.GetDeviceData();
+      Dictionary<string, object> deviceData = NativeInterface.GetDevice();
       Dictionary<string, object> nativeVersions = (Dictionary<string, object>) deviceData.Get("runtimeVersions");
 
       deviceData.Remove("runtimeVersions"); // don't overwrite the unity version values
@@ -59,7 +59,7 @@ namespace BugsnagUnity
 
     public void PopulateMetadata(Metadata metadata)
     {
-      MergeDictionaries(metadata, NativeInterface.GetMetaData());
+      MergeDictionaries(metadata, NativeInterface.GetMetadata());
     }
 
     private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another) {

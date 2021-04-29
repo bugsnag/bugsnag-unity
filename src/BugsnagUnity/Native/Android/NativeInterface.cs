@@ -232,21 +232,11 @@ namespace BugsnagUnity
     }
 
     public void SetAutoNotify(bool newValue) {
-      if (newValue) {
-        CallNativeVoidMethod("enableUncaughtJavaExceptionReporting", "()V", new object[]{});
-        CallNativeVoidMethod("enableNdkCrashReporting", "()V", new object[]{});
-      } else {
-        CallNativeVoidMethod("disableUncaughtJavaExceptionReporting", "()V", new object[]{});
-        CallNativeVoidMethod("disableNdkCrashReporting", "()V", new object[]{});
-      }
+      CallNativeVoidMethod("setAutoNotify", "(Z)V", new object[]{newValue});
     }
 
     public void SetAutoDetectAnrs(bool newValue) {
-      if (newValue) {
-        CallNativeVoidMethod("enableAnrReporting", "()V", new object[]{});
-      } else {
-        CallNativeVoidMethod("disableAnrReporting", "()V", new object[]{});
-      }
+      CallNativeVoidMethod("setAutoDetectAnrs", "(Z)V", new object[]{newValue});
     }
 
     public void SetContext(string newValue) {
@@ -280,34 +270,34 @@ namespace BugsnagUnity
       }
     }
 
-    public Dictionary<string, object> GetAppData() {
-      return GetJavaMapData("getAppData");
+    public Dictionary<string, object> GetApp() {
+      return GetJavaMapData("getApp");
     }
 
-    public Dictionary<string, object> GetDeviceData() {
-      return GetJavaMapData("getDeviceData");
+    public Dictionary<string, object> GetDevice() {
+      return GetJavaMapData("getDevice");
     }
 
-    public Dictionary<string, object> GetMetaData() {
-      return GetJavaMapData("getMetaData");
+    public Dictionary<string, object> GetMetadata() {
+      return GetJavaMapData("getMetadata");
     }
 
     public Dictionary<string, object> GetUser() {
-      return GetJavaMapData("getUserData");
+      return GetJavaMapData("getUser");
     }
 
     public void RemoveMetadata(string tab) {
       if (tab == null) {
         return;
       }
-      CallNativeVoidMethod("clearTab", "(Ljava/lang/String;)V", new object[]{tab});
+      CallNativeVoidMethod("clearMetadata", "(Ljava/lang/String;Ljava/lang/String;)V", new object[]{tab, null});
     }
 
     public void AddToTab(string tab, string key, string value) {
       if (tab == null || key == null) {
         return;
       }
-      CallNativeVoidMethod("addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V",
+      CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V",
           new object[]{tab, key, value});
     }
 
