@@ -36,7 +36,6 @@ namespace BugsnagUnity
     private IntPtr MapEntrySet;
     private IntPtr ObjectGetClass;
     private IntPtr ObjectToString;
-    private IntPtr DateToString;
 
     private bool CanRunOnBackgroundThread;
 
@@ -115,9 +114,8 @@ namespace BugsnagUnity
 
         BreadcrumbGetMetadata = AndroidJNI.GetMethodID(BreadcrumbClass, "getMetadata", "()Ljava/util/Map;");
         BreadcrumbGetType = AndroidJNI.GetMethodID(BreadcrumbClass, "getType", "()Lcom/bugsnag/android/BreadcrumbType;");
-        BreadcrumbGetTimestamp = AndroidJNI.GetMethodID(BreadcrumbClass, "getTimestamp", "()Ljava/util/Date;");
+        BreadcrumbGetTimestamp = AndroidJNI.GetMethodID(BreadcrumbClass, "getStringTimestamp", "()Ljava/lang/String;");
         BreadcrumbGetMessage = AndroidJNI.GetMethodID(BreadcrumbClass, "getMessage", "()Ljava/lang/String;");
-        DateToString = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, "convertDateToString", "(Ljava/util/Date;)Ljava/lang/String;");
         CollectionIterator = AndroidJNI.GetMethodID(CollectionClass, "iterator", "()Ljava/util/Iterator;");
         IteratorHasNext = AndroidJNI.GetMethodID(IteratorClass, "hasNext", "()Z");
         IteratorNext = AndroidJNI.GetMethodID(IteratorClass, "next", "()Ljava/lang/Object;");
@@ -541,13 +539,7 @@ namespace BugsnagUnity
       }
       AndroidJNI.DeleteLocalRef(messageObj);
 
-      IntPtr date = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetTimestamp, new jvalue[]{});
-      object[] args = new object[] {date};
-      jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
-      string timestamp = AndroidJNI.CallStaticStringMethod(BugsnagNativeInterface, DateToString, jargs);
-      AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
-      AndroidJNI.DeleteLocalRef(date);
-
+      string timestamp = AndroidJNI.CallStringMethod(javaBreadcrumb, BreadcrumbGetTimestamp, new jvalue[]{});
       return new Breadcrumb(message, timestamp, typeName, metadata);
     }
 

@@ -8,6 +8,9 @@
 * Add Bugsnag.SetContext and Bugsnag.SetAutoNotify
   [#229](https://github.com/bugsnag/bugsnag-unity/pull/229)
 
+* Update bugsnag-android dependency to v5
+  [#233](https://github.com/bugsnag/bugsnag-unity/pull/233)
+
 ## 4.8.8 (2021-04-21)
 
 ### Bug fixes
