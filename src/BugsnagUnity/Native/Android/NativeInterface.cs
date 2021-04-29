@@ -533,17 +533,22 @@ namespace BugsnagUnity
       string typeName = AndroidJNI.CallStringMethod(type, ObjectToString, new jvalue[]{});
       AndroidJNI.DeleteLocalRef(type);
 
-      string name = "<empty>";
-      IntPtr nameObj = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetMessage, new jvalue[]{});
-      if (nameObj != IntPtr.Zero)
+      string message = "<empty>";
+      IntPtr messageObj = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetMessage, new jvalue[]{});
+      if (messageObj != IntPtr.Zero)
       {
-        name = AndroidJNI.GetStringUTFChars(nameObj);
+        message = AndroidJNI.GetStringUTFChars(messageObj);
       }
-      AndroidJNI.DeleteLocalRef(nameObj);
+      AndroidJNI.DeleteLocalRef(messageObj);
 
-      string timestamp = AndroidJNI.CallStringMethod(javaBreadcrumb, BreadcrumbGetTimestamp, new jvalue[]{});
+      IntPtr date = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetTimestamp, new jvalue[]{});
+      object[] args = new object[] {date};
+      jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+      string timestamp = AndroidJNI.CallStaticStringMethod(BugsnagNativeInterface, DateToString, jargs);
+      AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+      AndroidJNI.DeleteLocalRef(date);
 
-      return new Breadcrumb(name, timestamp, typeName, metadata);
+      return new Breadcrumb(message, timestamp, typeName, metadata);
     }
 
     private AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, string> src) {
