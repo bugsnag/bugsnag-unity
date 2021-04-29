@@ -23,7 +23,7 @@ namespace BugsnagUnity
     private IntPtr SetClass;
     private IntPtr StringClass;
     // Cache of methods used:
-    private IntPtr BreadcrumbGetName;
+    private IntPtr BreadcrumbGetMessage;
     private IntPtr BreadcrumbGetMetadata;
     private IntPtr BreadcrumbGetTimestamp;
     private IntPtr BreadcrumbGetType;
@@ -36,6 +36,7 @@ namespace BugsnagUnity
     private IntPtr MapEntrySet;
     private IntPtr ObjectGetClass;
     private IntPtr ObjectToString;
+    private IntPtr DateToString;
 
     private bool CanRunOnBackgroundThread;
 
@@ -75,48 +76,60 @@ namespace BugsnagUnity
         IntPtr unityRef = AndroidJNI.FindClass("com/bugsnag/android/unity/BugsnagUnity");
         BugsnagUnityClass = AndroidJNI.NewGlobalRef(unityRef);
         AndroidJNI.DeleteLocalRef(unityRef);
+
         IntPtr crumbRef = AndroidJNI.FindClass("com/bugsnag/android/Breadcrumb");
         BreadcrumbClass = AndroidJNI.NewGlobalRef(crumbRef);
         AndroidJNI.DeleteLocalRef(crumbRef);
+
         IntPtr crumbTypeRef = AndroidJNI.FindClass("com/bugsnag/android/BreadcrumbType");
         BreadcrumbTypeClass = AndroidJNI.NewGlobalRef(crumbTypeRef);
         AndroidJNI.DeleteLocalRef(crumbTypeRef);
+
         IntPtr collectionRef = AndroidJNI.FindClass("java/util/Collection");
         CollectionClass = AndroidJNI.NewGlobalRef(collectionRef);
         AndroidJNI.DeleteLocalRef(collectionRef);
+
         IntPtr iterRef = AndroidJNI.FindClass("java/util/Iterator");
         IteratorClass = AndroidJNI.NewGlobalRef(iterRef);
         AndroidJNI.DeleteLocalRef(iterRef);
+
         IntPtr listRef = AndroidJNI.FindClass("java/util/List");
         ListClass = AndroidJNI.NewGlobalRef(listRef);
         AndroidJNI.DeleteLocalRef(listRef);
+
         IntPtr mapRef = AndroidJNI.FindClass("java/util/Map");
         MapClass = AndroidJNI.NewGlobalRef(mapRef);
         AndroidJNI.DeleteLocalRef(mapRef);
+
         IntPtr entryRef = AndroidJNI.FindClass("java/util/Map$Entry");
         MapEntryClass = AndroidJNI.NewGlobalRef(entryRef);
         AndroidJNI.DeleteLocalRef(entryRef);
+
         IntPtr setRef = AndroidJNI.FindClass("java/util/Set");
         SetClass = AndroidJNI.NewGlobalRef(setRef);
         AndroidJNI.DeleteLocalRef(setRef);
+
         IntPtr stringRef = AndroidJNI.FindClass("java/lang/String");
         StringClass = AndroidJNI.NewGlobalRef(stringRef);
         AndroidJNI.DeleteLocalRef(stringRef);
 
         BreadcrumbGetMetadata = AndroidJNI.GetMethodID(BreadcrumbClass, "getMetadata", "()Ljava/util/Map;");
         BreadcrumbGetType = AndroidJNI.GetMethodID(BreadcrumbClass, "getType", "()Lcom/bugsnag/android/BreadcrumbType;");
-        BreadcrumbGetTimestamp = AndroidJNI.GetMethodID(BreadcrumbClass, "getTimestamp", "()Ljava/lang/String;");
-        BreadcrumbGetName = AndroidJNI.GetMethodID(BreadcrumbClass, "getName", "()Ljava/lang/String;");
+        BreadcrumbGetTimestamp = AndroidJNI.GetMethodID(BreadcrumbClass, "getTimestamp", "()Ljava/util/Date;");
+        BreadcrumbGetMessage = AndroidJNI.GetMethodID(BreadcrumbClass, "getMessage", "()Ljava/lang/String;");
+        DateToString = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, "convertDateToString", "(Ljava/util/Date;)Ljava/lang/String;");
         CollectionIterator = AndroidJNI.GetMethodID(CollectionClass, "iterator", "()Ljava/util/Iterator;");
         IteratorHasNext = AndroidJNI.GetMethodID(IteratorClass, "hasNext", "()Z");
         IteratorNext = AndroidJNI.GetMethodID(IteratorClass, "next", "()Ljava/lang/Object;");
         MapEntryGetKey = AndroidJNI.GetMethodID(MapEntryClass, "getKey", "()Ljava/lang/Object;");
         MapEntryGetValue = AndroidJNI.GetMethodID(MapEntryClass, "getValue", "()Ljava/lang/Object;");
         MapEntrySet = AndroidJNI.GetMethodID(MapClass, "entrySet", "()Ljava/util/Set;");
+
         IntPtr objectRef = AndroidJNI.FindClass("java/lang/Object");
         ObjectToString = AndroidJNI.GetMethodID(objectRef, "toString", "()Ljava/lang/String;");
         ObjectGetClass = AndroidJNI.GetMethodID(objectRef, "getClass", "()Ljava/lang/Class;");
         AndroidJNI.DeleteLocalRef(objectRef);
+
         IntPtr classRef = AndroidJNI.FindClass("java/lang/Class");
         ClassIsArray = AndroidJNI.GetMethodID(classRef, "isArray", "()Z");
         AndroidJNI.DeleteLocalRef(classRef);
@@ -520,7 +533,7 @@ namespace BugsnagUnity
       AndroidJNI.DeleteLocalRef(type);
 
       string name = "<empty>";
-      IntPtr nameObj = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetName, new jvalue[]{});
+      IntPtr nameObj = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetMessage, new jvalue[]{});
       if (nameObj != IntPtr.Zero)
       {
         name = AndroidJNI.GetStringUTFChars(nameObj);
