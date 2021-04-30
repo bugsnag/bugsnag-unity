@@ -182,8 +182,12 @@ namespace BugsnagUnity
       if (config.NotifyReleaseStages != null) {
         using (AndroidJavaObject releaseStages = new AndroidJavaObject("java.util.HashSet"))
         {
-          foreach (var releaseStage in config.NotifyReleaseStages) {
-            releaseStages.Call("add", releaseStage);
+          foreach(var element in config.NotifyReleaseStages)
+          {
+            using(AndroidJavaObject stage = BuildJavaStringDisposable(element))
+            {
+              releaseStages.Call<Boolean>("add", stage);
+            }
           }
           obj.Call("setEnabledReleaseStages", releaseStages);
         }
