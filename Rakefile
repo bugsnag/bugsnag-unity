@@ -147,16 +147,9 @@ namespace :plugin do
       next unless is_mac?
       build_type = "Release" # "Debug" or "Release"
       FileUtils.mkdir_p cocoa_build_dir
-      FileUtils.cp_r "bugsnag-cocoa/Source", cocoa_build_dir
+      FileUtils.cp_r "bugsnag-cocoa/Bugsnag", cocoa_build_dir
       bugsnag_unity_file = File.realpath("BugsnagUnity.mm", "src")
-      public_headers = [
-        "BugsnagMetaData.h",
-        "Bugsnag.h",
-        "BugsnagBreadcrumb.h",
-        "BugsnagCrashReport.h",
-        "BSG_KSCrashReportWriter.h",
-        "BugsnagConfiguration.h",
-      ]
+      public_headers = Dir.entries(File.join(cocoa_build_dir, "Bugsnag", "include", "Bugsnag"))
 
       cd cocoa_build_dir do
         ["bugsnag-ios", "bugsnag-osx", "bugsnag-tvos"].each do |project_name|
@@ -193,7 +186,7 @@ namespace :plugin do
 
           group = project.new_group("Bugsnag")
 
-          source_files = Dir.glob(File.join("Source", "**", "*.{c,h,mm,cpp,m}"))
+          source_files = Dir.glob(File.join("Bugsnag", "**", "*.{c,h,mm,cpp,m}"))
             .map(&File.method(:realpath))
             .tap { |files| files << bugsnag_unity_file }
             .map { |f| group.new_file(f) }
@@ -205,6 +198,7 @@ namespace :plugin do
           end
 
           project.build_configurations.each do |build_configuration|
+            build_configuration.build_settings["HEADER_SEARCH_PATHS"] = " $(SRCROOT)/Bugsnag/include/"
             if ["bugsnag-ios", "bugsnag-tvos"].include? project_name
               build_configuration.build_settings["ONLY_ACTIVE_ARCH"] = "NO"
               build_configuration.build_settings["VALID_ARCHS"] = ["x86_64", "i386", "armv7", "arm64"]
@@ -234,6 +228,10 @@ namespace :plugin do
 
       cd cocoa_build_dir do
         cd "build" do
+          def is_fat library_path
+            stdout, stderr, status = Open3.capture3("lipo", "-info", library_path)
+            return !stdout.start_with?('Non-fat')
+          end
           # we just need to copy the os x bundle into the correct directory
           cp_r File.join(build_type, "bugsnag-osx.bundle"), osx_dir
 
@@ -242,10 +240,23 @@ namespace :plugin do
           [["iphone", "ios", ios_dir], ["appletv", "tvos", tvos_dir]].each do |long_name, short_name, directory|
             library = "libbugsnag-#{short_name}.a"
             device_library = File.join("#{build_type}-#{long_name}os", library)
-            simulator_library = File.join("#{build_type}-#{long_name}simulator", library)
-
+            simulator_dir = "#{build_type}-#{long_name}simulator"
+            simulator_library = File.join(simulator_dir, library)
+            simulator_x86 = File.join(simulator_dir, "libBugsnagStatic-x86.a")
+            simulator_x64 = File.join(simulator_dir, "libBugsnagStatic-x64.a")
             output_library = File.join(directory, library)
-            sh "lipo", "-create", device_library, simulator_library, "-output", output_library
+
+            if is_fat simulator_library
+              sh "lipo", "-extract", "x86_64", simulator_library, "-output", simulator_x64
+            else
+              simulator_x64 = simulator_library
+            end
+            if short_name == "ios"
+              sh "lipo", "-extract", "i386", simulator_library, "-output", simulator_x86
+              sh "lipo", "-create", device_library, simulator_x86, simulator_x64, "-output", output_library
+            else
+              sh "lipo", "-create", device_library, simulator_x64, "-output", output_library
+            end
           end
         end
       end
