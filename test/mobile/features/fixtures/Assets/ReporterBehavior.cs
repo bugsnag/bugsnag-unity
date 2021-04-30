@@ -10,7 +10,8 @@ public class ReporterBehavior : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         Configuration config = new Configuration("12312312312312312312312312312312");
-
+        config.Endpoint = new Uri("http://192.168.178.53:9339/notify");
+        config.Endpoint = new Uri("http://192.168.178.53:9339/session");
         config.Context = "My context";
         config.AppVersion = "1.2.3";
         Bugsnag.Start(config);
