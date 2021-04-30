@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.UI;
 using BugsnagUnity;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
@@ -10,7 +9,11 @@ public class ReporterBehavior : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        Configuration config = new Configuration("12312312312312312312312312312312");
+
+        config.Context = "My context";
+        config.AppVersion = "1.2.3";
+        Bugsnag.Start(config);
 	}
     
     public void ThrowException() {
@@ -37,7 +40,8 @@ public class ReporterBehavior : MonoBehaviour {
     
     public void LogWithClasPrefix() {
         throw new ExecutionEngineException("Haven't gotten around to making this work, sorry");
-    }    
+    }
+
     public void NotifyCaughtException() {
         try {
             var items = new int[]{1, 2, 3};
@@ -59,12 +63,6 @@ public class ReporterBehavior : MonoBehaviour {
     public void StartSession() {
         Bugsnag.SessionTracking.StartSession();
     }    
-    public void SetReleaseStage() {
-        Bugsnag.Configuration.ReleaseStage = "CustomStage";
-    }    
-    public void SetContext() {
-        Bugsnag.Configuration.Context = "Configured Context";
-    }    
     public void SetUser() {
         Bugsnag.User.Id = "mcpacman";
         Bugsnag.User.Name = "Geordi McPacman";
@@ -73,16 +71,10 @@ public class ReporterBehavior : MonoBehaviour {
     public void ClearUser() {
         Bugsnag.User.Clear();
     }    
-    public void SetAppVersion() {
-        Bugsnag.Configuration.AppVersion = "2.2.300-config";
-    }    
     public void AddMetadata() {
         Bugsnag.Metadata.Add("ConfigMetadata", new Dictionary<string, string>(){
           { "subsystem", "Player Mechanics" }
         });
-    }    
-    public void ClearMetadata() {
-        Bugsnag.Metadata.Clear();
     }    
     public void AddCallbackMetadata() {
         Bugsnag.BeforeNotify(report =>
