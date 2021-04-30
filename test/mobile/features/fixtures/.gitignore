@@ -35,7 +35,11 @@ ExportedObj/
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
+# Imported assets
+Assets/Plugins
+Assets/Standard\ Assets/Bugsnag/BugsnagBehaviour.cs
+
 # Builds
 *.apk
 *.unitypackage
-Assets/Plugins
+
