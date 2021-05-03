@@ -1,18 +1,26 @@
-When("I say {string}") do |message|
-  # input = STDIN.gets message
-  STDOUT.puts "#{message} and hit enter"
-  STDIN.gets
-  puts 'Thanks'
+When("I wait for the game to start") do
+  # Wait for a fixed time period
+  sleep 10
 end
 
 When("I tap the {string} button") do |button|
-  # Specific to the ANDROID_9_0 Pixel 3
-  STDOUT.puts button
+  # TODO Currently specific to the ANDROID_9_0 device (Google Pixel 3)
   middle = 2160 / 2
   case button
   when "throw Exception"
-    STDOUT.puts "tap it"
     press_at 540, middle - 750
+  when "Assertion failure"
+    press_at 540, middle - 650
+  when "Native exception"
+    press_at 540, middle - 550
+  when "Log caught exception"
+    press_at 540, middle - 450
+  when "Log with class prefix"
+    press_at 540, middle - 350
+  when "Notify caught exception"
+    press_at 540, middle - 250
+  when "Notify with callback"
+    press_at 540, middle - 150
   end
 end
 
