@@ -39,7 +39,7 @@ public class ReporterBehavior : MonoBehaviour {
         }
     }
 
-    public void LogWithClasPrefix() {
+    public void LogWithClassPrefix() {
         throw new ExecutionEngineException("Haven't gotten around to making this work, sorry");
     }
 
