@@ -28,6 +28,8 @@ steps:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/desktop/maze_output/*
     commands:
       - cd test/desktop
       - bundle install
@@ -47,6 +49,8 @@ steps:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/desktop/maze_output/*
     commands:
       - cd test/desktop
       - bundle install
