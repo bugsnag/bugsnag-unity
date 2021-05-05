@@ -35,7 +35,7 @@ pushd "${0%/*}"
 
     Unity -nographics -quit -batchmode -logFile - \
       -projectPath $project_path \
-      -buildOSXUniversalPlayer "$(pwd)/Mazerunner.app"
+      -buildOSXUniversalPlayer "$(pwd)/Mazerunner-${UNITY_VERSION}.app"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
   popd
