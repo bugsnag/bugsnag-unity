@@ -14,9 +14,9 @@ namespace BugsnagUnity
 
     private NativeInterface NativeInterface;
 
-    public NativeClient(Configuration configuration)
+    public NativeClient(IConfiguration configuration)
     {
-      NativeInterface = configuration.NativeInterface;
+      NativeInterface = new NativeInterface(configuration);
       Configuration = configuration;
 
       using (var notifier = new AndroidJavaClass("com.bugsnag.android.Notifier"))
@@ -85,6 +85,17 @@ namespace BugsnagUnity
     public void SetUser(User user)
     {
       NativeInterface.SetUser(user);
+    }
+
+    public void SetContext(string context)
+    {
+      NativeInterface.SetContext(context);
+    }
+
+    public void SetAutoNotify(bool autoNotify)
+    {
+      NativeInterface.SetAutoNotify(autoNotify);
+      NativeInterface.SetAutoDetectAnrs(autoNotify && Configuration.AutoDetectAnrs);
     }
   }
 

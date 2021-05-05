@@ -7,6 +7,11 @@
 * Dont Destroy TimingTrackerObject, so it persists across scenes
   [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
 
+* Replace Bugsnag.init with Bugsnag.start
+  [#227](https://github.com/bugsnag/bugsnag-unity/pull/227)
+
+* Add Bugsnag.SetContext and Bugsnag.SetAutoNotify
+  [#229](https://github.com/bugsnag/bugsnag-unity/pull/229)
 
 ## 4.8.8 (2021-04-21)
 

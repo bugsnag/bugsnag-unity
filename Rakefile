@@ -13,7 +13,9 @@ def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
 # install location for both windows and mac.
 #
 def unity_directory
-  if ENV.has_key? "UNITY_DIR"
+  if ENV.has_key? 'UNITY_VERSION'
+    "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
+  elsif ENV.has_key? "UNITY_DIR"
     ENV["UNITY_DIR"]
   else
     ['/Applications/Unity', 'C:\Program Files\Unity'].find do |dir|
@@ -301,37 +303,6 @@ namespace :plugin do
   desc "Run integration tests"
   task maze_runner: %w[plugin:export] do
     sh "bundle", "exec", "bugsnag-maze-runner"
-  end
-end
-
-namespace :travis do
-  def with_license &block
-    # Ensure a Packages/manifest.json exists in all locations
-    `mkdir Packages && echo '{}' > Packages/manifest.json`
-    `mkdir #{unity_directory}/Unity.app/Contents/Packages && echo '{}' > #{unity_directory}/Unity.app/Contents/Packages/manifest.json`
-
-    # activate the unity license
-    unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
-    sleep 10
-    begin
-      yield
-    ensure
-      unity "-returnlicense", force_free: false, no_graphics: false
-      sleep 10
-    end
-
-  end
-
-  task :export_plugin do
-    with_license do
-      Rake::Task["plugin:export"].invoke
-    end
-  end
-
-  task :maze_runner do
-    with_license do
-      sh "bundle", "exec", "bugsnag-maze-runner", "--color", "--verbose"
-    end
   end
 end
 

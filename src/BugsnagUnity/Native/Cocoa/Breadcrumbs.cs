@@ -10,13 +10,9 @@ namespace BugsnagUnity
   {
     IntPtr NativeBreadcrumbs { get; }
 
-    Breadcrumbs(IntPtr nativeConfiguration)
+    internal Breadcrumbs(IntPtr nativeConfiguration)
     {
       NativeBreadcrumbs = NativeCode.bugsnag_createBreadcrumbs(nativeConfiguration);
-    }
-
-    internal Breadcrumbs(Configuration configuration) : this(configuration.NativeConfiguration)
-    {
     }
 
     /// <summary>

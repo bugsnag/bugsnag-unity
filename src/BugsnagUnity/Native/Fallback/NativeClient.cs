@@ -11,7 +11,7 @@ namespace BugsnagUnity
 
     public IDelivery Delivery { get; }
 
-    public NativeClient(Configuration configuration)
+    public NativeClient(IConfiguration configuration)
     {
       Configuration = configuration;
       Breadcrumbs = new Breadcrumbs(configuration);
@@ -43,6 +43,12 @@ namespace BugsnagUnity
     }
 
     public void SetUser(User user)
+    {
+    }
+    public void SetContext(string context)
+    {
+    }
+    public void SetAutoNotify(bool autoNotify)
     {
     }
   }
