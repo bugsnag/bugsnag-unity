@@ -1,0 +1,14 @@
+*.aar
+*.aar.meta
+*.jar
+*.jar.meta
+*.a
+CodeResources
+*.h
+bugsnag-osx
+*.jspre
+*.jslib
+*.dll
+*.cs
+Library/
+UnityPackageManager/
