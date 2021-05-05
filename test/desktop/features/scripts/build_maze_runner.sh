@@ -24,7 +24,6 @@ pushd "${0%/*}"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-    cp Main.cs maze_runner/Assets/Main.cs
     cp -R NativeCrashy.bundle maze_runner/Assets/Plugins/OSX/NativeCrashy.bundle
 
     Unity -nographics -quit -batchmode -logFile $log_file \
