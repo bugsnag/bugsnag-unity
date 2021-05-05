@@ -25,3 +25,4 @@ TestResult.xml
 bugsnag-cocoa-build/
 unity.log
 bugsnag-android-unity/.cxx
+test/**/*/*.app.zip
