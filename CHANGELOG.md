@@ -1,5 +1,13 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Dont Destroy TimingTrackerObject, so it persists across scenes
+  [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
+
+
 ## 4.8.8 (2021-04-21)
 
 ### Bug fixes
