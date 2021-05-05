@@ -1,4 +1,7 @@
 *.aar
+*.aar.meta
+*.jar
+*.jar.meta
 *.a
 CodeResources
 *.h
