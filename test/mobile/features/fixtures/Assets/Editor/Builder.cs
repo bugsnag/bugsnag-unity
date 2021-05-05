@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-#if UNITY_EDITOR // all of the build tools-related stuff does not exist at runtime in the app
+#if UNITY_EDITOR
 using UnityEditor;
 
 public class Builder : MonoBehaviour
@@ -28,6 +28,7 @@ public class Builder : MonoBehaviour
     public static void AndroidBuild()
     {
         Debug.Log("Building Android app...");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.somthing.somthing");
         Build("AndroidBuild", BuildTarget.Android);
     }
 }
