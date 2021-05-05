@@ -17,6 +17,7 @@ steps:
     concurrency_group: 'unity-license'
 
   - label: Build Unity 2017 desktop test fixture
+    key: 'cocoa-2017-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -37,6 +38,7 @@ steps:
       - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
 
   - label: Build Unity 2018 desktop test fixture
+    key: 'cocoa-2018-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -55,7 +57,7 @@ steps:
       - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
 
   - label: Run e2e tests for Unity 2017.4.40f1
-    depends_on: 'build-artifacts'
+    depends_on: 'cocoa-2017-fixture'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa
@@ -73,7 +75,7 @@ steps:
     concurrency_group: 'unity-license'
 
   - label: Run e2e tests for Unity 2018.4.34f1
-    depends_on: 'build-artifacts'
+    depends_on: 'cocoa-2018-fixture'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa
