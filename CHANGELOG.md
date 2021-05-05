@@ -2,6 +2,11 @@
 
 ## TBD
 
+### Bug fixes
+
+* Dont Destroy TimingTrackerObject, so it persists across scenes
+  [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
+
 * Replace Bugsnag.init with Bugsnag.start
   [#227](https://github.com/bugsnag/bugsnag-unity/pull/227)
 
