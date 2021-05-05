@@ -38,5 +38,7 @@ pushd "${0%/*}"
       -buildOSXUniversalPlayer "$(pwd)/Mazerunner-${UNITY_VERSION}.app"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+
+    tar -czf "$(pwd)/Mazerunner-${UNITY_VERSION}.app.zip" "Mazerunner-${UNITY_VERSION}.app"
   popd
 popd

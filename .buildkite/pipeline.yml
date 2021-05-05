@@ -34,7 +34,7 @@ steps:
       - cd test/desktop
       - ./features/scripts/create_unity_project.sh
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app
+      - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
 
   - label: Build Unity 2018 desktop test fixture
     depends_on: 'build-artifacts'
@@ -52,7 +52,7 @@ steps:
       - cd test/desktop
       - ./features/scripts/create_unity_project.sh
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app
+      - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
 
   - label: Run e2e tests for Unity 2017.4.40f1
     depends_on: 'build-artifacts'
@@ -64,7 +64,7 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app
+          - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
     commands:
       - cd test/desktop
       - bundle install
@@ -82,7 +82,7 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app
+          - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
     commands:
       - cd test/desktop
       - bundle install
