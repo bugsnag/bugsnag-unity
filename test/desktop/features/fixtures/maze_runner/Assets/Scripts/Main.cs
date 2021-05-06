@@ -12,19 +12,6 @@ using UnityEditor;
 #endif
 
 public class Main : MonoBehaviour {
-#if UNITY_EDITOR
-  public static void CreateScene() {
-    var scene = UnityEditor.SceneManagement.EditorSceneManager.NewScene(UnityEditor.SceneManagement.NewSceneSetup.DefaultGameObjects, UnityEditor.SceneManagement.NewSceneMode.Single);
-    UnityEngine.SceneManagement.SceneManager.SetActiveScene(scene);
-    var obj = new GameObject("Bugsnag");
-    obj.AddComponent<Main>();
-    UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, "Assets/MainScene.unity");
-    var scenes = new List<EditorBuildSettingsScene>(EditorBuildSettings.scenes);
-    scenes.Add(new EditorBuildSettingsScene("Assets/MainScene.unity", true));
-    EditorBuildSettings.scenes = scenes.ToArray();
-  }
-#endif
-
   [DllImport ("NativeCrashy")]
   private static extern void crashy_signal_runner(float num);
 
