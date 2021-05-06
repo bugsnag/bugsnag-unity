@@ -299,11 +299,6 @@ namespace :plugin do
     Rake::Task["plugin:build:all_android64"].invoke
     export_package("Bugsnag-with-android-64bit.unitypackage")
   end
-
-  desc "Run integration tests"
-  task maze_runner: %w[plugin:export] do
-    sh "bundle", "exec", "bugsnag-maze-runner"
-  end
 end
 
 namespace :example do
@@ -335,5 +330,3 @@ namespace :example do
     task all: %w[example:build:ios example:build:android]
   end
 end
-
-task default: %w[plugin:maze_runner]
