@@ -323,7 +323,7 @@ namespace :example do
       # here we have to uncomment the lines that reference bugsnag. These are
       # commented out so that we can import the package above and have it compile
       # before the bugsnag references have been added.
-      bugsnag_file = File.join(example, "Assets", "Main.cs")
+      bugsnag_file = File.join(example, "Assets", "Scripts", "Main.cs")
       c = File.read(bugsnag_file).gsub("//", "")
       File.write(bugsnag_file, c)
     end
