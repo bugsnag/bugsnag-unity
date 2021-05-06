@@ -19,14 +19,15 @@ pushd "${0%/*}"
       -importPackage "$package_path/Bugsnag.unitypackage"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-    exit 0
 
     cp -R NativeCrashy.bundle maze_runner/Assets/Plugins/OSX/NativeCrashy.bundle
 
-#    Unity -nographics -quit -batchmode -logFile - \
-#      -projectPath $project_path \
-#      -buildOSXUniversalPlayer "$(pwd)/Mazerunner.app"
-#    RESULT=$?
-#    if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+    app_location="$(pwd)/Mazerunner.app"
+    echo "Building $app_location"
+    Unity -nographics -quit -batchmode -logFile - \
+      -projectPath $project_path \
+      -buildOSXUniversalPlayer "$app_location"
+    RESULT=$?
+    if [ $RESULT -ne 0 ]; then exit $RESULT; fi
   popd
 popd
