@@ -15,18 +15,13 @@ pushd "${0%/*}"
     echo "Importing $package_path/Bugsnag.unitypackage into $project_path"
     Unity -nographics -quit -batchmode -logFile $log_file \
       -projectPath $project_path \
+      -ignoreCompilerErrors \
       -importPackage "$package_path/Bugsnag.unitypackage"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
     exit 0
 
-#    cp -R NativeCrashy.bundle maze_runner/Assets/Plugins/OSX/NativeCrashy.bundle
-
-#    Unity -nographics -quit -batchmode -logFile $log_file \
-#      -projectPath $project_path \
-#      -executeMethod "Main.CreateScene"
-#    RESULT=$?
-#    if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+    cp -R NativeCrashy.bundle maze_runner/Assets/Plugins/OSX/NativeCrashy.bundle
 
 #    Unity -nographics -quit -batchmode -logFile - \
 #      -projectPath $project_path \
@@ -35,6 +30,3 @@ pushd "${0%/*}"
 #    if [ $RESULT -ne 0 ]; then exit $RESULT; fi
   popd
 popd
-
-
-    Unity -nographics -quit -batchmode -projectPath "fixtures/maze_runner" -importPackage "../../../Bugsnag.unitypackage"
