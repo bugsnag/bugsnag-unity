@@ -13,7 +13,8 @@ pushd "${0%/*}"
     project_path="$(pwd)/maze_runner"
 
     echo "Importing $package_path/Bugsnag.unitypackage into $project_path"
-    Unity -nographics -quit -batchmode -logFile $log_file \
+    Unity -nographics -quit -batchmode \
+      -logFile $log_file \
       -projectPath $project_path \
       -ignoreCompilerErrors \
       -importPackage "$package_path/Bugsnag.unitypackage"
@@ -24,9 +25,11 @@ pushd "${0%/*}"
 
     app_location="$(pwd)/Mazerunner.app"
     echo "Building $app_location"
-    Unity -nographics -quit -batchmode -logFile - \
+
+    Unity -nographics -quit -batchmode \
+      -logFile $log_file \
       -projectPath $project_path \
-      -buildOSXUniversalPlayer "$app_location"
+      -executeMethod Builder.MacOSBuild
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
   popd
