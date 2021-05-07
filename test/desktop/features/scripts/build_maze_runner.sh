@@ -21,8 +21,6 @@ pushd "${0%/*}"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-    cp -R NativeCrashy.bundle maze_runner/Assets/Plugins/OSX/NativeCrashy.bundle
-
     app_location="$(pwd)/Mazerunner.app"
     echo "Building $app_location"
 
