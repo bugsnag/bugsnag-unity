@@ -6,7 +6,7 @@ export PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/Ma
 pushd "${0%/*}"
   pushd ../../../..
     package_path=`pwd`
-    echo "Expecting to find Busnag package in: $package_path"
+    echo "Expecting to find Bugsnag package in: $package_path"
   popd
   pushd ../fixtures
     log_file="$package_path/unity.log"
