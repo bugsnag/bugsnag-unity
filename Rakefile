@@ -88,7 +88,7 @@ def assemble_android filter_abis=true
   android_dir = File.join(assets_path, "Android")
 
   cd "bugsnag-android" do
-    sh "./gradlew", "bugsnag-android-core:assembleRelease", "bugsnag-plugin-android-ndk:assembleRelease", "bugsnag-plugin-android-anr:assembleRelease", abi_filters
+    sh "./gradlew", "assembleRelease", abi_filters
   end
 
   cd "bugsnag-android-unity" do
@@ -102,9 +102,9 @@ def assemble_android filter_abis=true
 
   # copy kotlin dependencies required by bugsnag-android. the exact files required for each
   # version can be found here:
-  # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.61/kotlin-stdlib-1.3.61.pom
-  kotlin_stdlib = File.join("android-libs", "kotlin-stdlib-1.3.61.jar")
-  kotlin_stdlib_common = File.join("android-libs", "kotlin-stdlib-common-1.3.61.jar")
+  # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72.pom
+  kotlin_stdlib = File.join("android-libs", "kotlin-stdlib-1.3.72.jar")
+  kotlin_stdlib_common = File.join("android-libs", "kotlin-stdlib-common-1.3.72.jar")
   kotlin_annotations = File.join("android-libs", "annotations-13.0.jar")
 
   # copy unity lib

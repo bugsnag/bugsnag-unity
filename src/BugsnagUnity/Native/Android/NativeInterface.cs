@@ -23,7 +23,7 @@ namespace BugsnagUnity
     private IntPtr SetClass;
     private IntPtr StringClass;
     // Cache of methods used:
-    private IntPtr BreadcrumbGetName;
+    private IntPtr BreadcrumbGetMessage;
     private IntPtr BreadcrumbGetMetadata;
     private IntPtr BreadcrumbGetTimestamp;
     private IntPtr BreadcrumbGetType;
@@ -75,48 +75,59 @@ namespace BugsnagUnity
         IntPtr unityRef = AndroidJNI.FindClass("com/bugsnag/android/unity/BugsnagUnity");
         BugsnagUnityClass = AndroidJNI.NewGlobalRef(unityRef);
         AndroidJNI.DeleteLocalRef(unityRef);
+
         IntPtr crumbRef = AndroidJNI.FindClass("com/bugsnag/android/Breadcrumb");
         BreadcrumbClass = AndroidJNI.NewGlobalRef(crumbRef);
         AndroidJNI.DeleteLocalRef(crumbRef);
+
         IntPtr crumbTypeRef = AndroidJNI.FindClass("com/bugsnag/android/BreadcrumbType");
         BreadcrumbTypeClass = AndroidJNI.NewGlobalRef(crumbTypeRef);
         AndroidJNI.DeleteLocalRef(crumbTypeRef);
+
         IntPtr collectionRef = AndroidJNI.FindClass("java/util/Collection");
         CollectionClass = AndroidJNI.NewGlobalRef(collectionRef);
         AndroidJNI.DeleteLocalRef(collectionRef);
+
         IntPtr iterRef = AndroidJNI.FindClass("java/util/Iterator");
         IteratorClass = AndroidJNI.NewGlobalRef(iterRef);
         AndroidJNI.DeleteLocalRef(iterRef);
+
         IntPtr listRef = AndroidJNI.FindClass("java/util/List");
         ListClass = AndroidJNI.NewGlobalRef(listRef);
         AndroidJNI.DeleteLocalRef(listRef);
+
         IntPtr mapRef = AndroidJNI.FindClass("java/util/Map");
         MapClass = AndroidJNI.NewGlobalRef(mapRef);
         AndroidJNI.DeleteLocalRef(mapRef);
+
         IntPtr entryRef = AndroidJNI.FindClass("java/util/Map$Entry");
         MapEntryClass = AndroidJNI.NewGlobalRef(entryRef);
         AndroidJNI.DeleteLocalRef(entryRef);
+
         IntPtr setRef = AndroidJNI.FindClass("java/util/Set");
         SetClass = AndroidJNI.NewGlobalRef(setRef);
         AndroidJNI.DeleteLocalRef(setRef);
+
         IntPtr stringRef = AndroidJNI.FindClass("java/lang/String");
         StringClass = AndroidJNI.NewGlobalRef(stringRef);
         AndroidJNI.DeleteLocalRef(stringRef);
 
         BreadcrumbGetMetadata = AndroidJNI.GetMethodID(BreadcrumbClass, "getMetadata", "()Ljava/util/Map;");
         BreadcrumbGetType = AndroidJNI.GetMethodID(BreadcrumbClass, "getType", "()Lcom/bugsnag/android/BreadcrumbType;");
-        BreadcrumbGetTimestamp = AndroidJNI.GetMethodID(BreadcrumbClass, "getTimestamp", "()Ljava/lang/String;");
-        BreadcrumbGetName = AndroidJNI.GetMethodID(BreadcrumbClass, "getName", "()Ljava/lang/String;");
+        BreadcrumbGetTimestamp = AndroidJNI.GetMethodID(BreadcrumbClass, "getStringTimestamp", "()Ljava/lang/String;");
+        BreadcrumbGetMessage = AndroidJNI.GetMethodID(BreadcrumbClass, "getMessage", "()Ljava/lang/String;");
         CollectionIterator = AndroidJNI.GetMethodID(CollectionClass, "iterator", "()Ljava/util/Iterator;");
         IteratorHasNext = AndroidJNI.GetMethodID(IteratorClass, "hasNext", "()Z");
         IteratorNext = AndroidJNI.GetMethodID(IteratorClass, "next", "()Ljava/lang/Object;");
         MapEntryGetKey = AndroidJNI.GetMethodID(MapEntryClass, "getKey", "()Ljava/lang/Object;");
         MapEntryGetValue = AndroidJNI.GetMethodID(MapEntryClass, "getValue", "()Ljava/lang/Object;");
         MapEntrySet = AndroidJNI.GetMethodID(MapClass, "entrySet", "()Ljava/util/Set;");
+
         IntPtr objectRef = AndroidJNI.FindClass("java/lang/Object");
         ObjectToString = AndroidJNI.GetMethodID(objectRef, "toString", "()Ljava/lang/String;");
         ObjectGetClass = AndroidJNI.GetMethodID(objectRef, "getClass", "()Ljava/lang/Class;");
         AndroidJNI.DeleteLocalRef(objectRef);
+
         IntPtr classRef = AndroidJNI.FindClass("java/lang/Class");
         ClassIsArray = AndroidJNI.GetMethodID(classRef, "isArray", "()Z");
         AndroidJNI.DeleteLocalRef(classRef);
@@ -138,6 +149,8 @@ namespace BugsnagUnity
           }
           sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
         }
+
+        ConfigureNotifierInfo(client);
       }
     }
 
@@ -146,19 +159,53 @@ namespace BugsnagUnity
      */
     AndroidJavaObject CreateNativeConfig(IConfiguration config) {
       var obj = new AndroidJavaObject("com.bugsnag.android.Configuration", config.ApiKey);
-      // the bugsnag-unity notifier will handle session tracking
-      obj.Call("setAutoCaptureSessions", false);
-      obj.Call("setEnableExceptionHandler", config.AutoNotify);
-      obj.Call("setDetectAnrs", config.AutoNotify && config.AutoDetectAnrs);
-      obj.Call("setCallPreviousSigquitHandler", false);
-      obj.Call("setDetectNdkCrashes", config.AutoNotify);
-      obj.Call("setEndpoint", config.Endpoint.ToString());
-      obj.Call("setSessionEndpoint", config.SessionEndpoint.ToString());
+      // configure automatic tracking of errors/sessions
+      using (AndroidJavaObject errorTypes = new AndroidJavaObject("com.bugsnag.android.ErrorTypes"))
+      {
+        errorTypes.Call("setAnrs", config.AutoDetectAnrs);
+        obj.Call("setEnabledErrorTypes", errorTypes);
+      }
+      obj.Call("setAutoTrackSessions", false);
+      obj.Call("setAutoDetectErrors", config.AutoNotify);
+
+      // set endpoints
+      var notify = config.Endpoint.ToString();
+      var sessions = config.SessionEndpoint.ToString();
+      using (AndroidJavaObject endpointConfig = new AndroidJavaObject("com.bugsnag.android.EndpointConfiguration", notify, sessions))
+      {
+        obj.Call("setEndpoints", endpointConfig);
+      }
+
+      // set release stages
       obj.Call("setReleaseStage", config.ReleaseStage);
+
+      if (config.NotifyReleaseStages != null) {
+        using (AndroidJavaObject releaseStages = new AndroidJavaObject("java.util.HashSet"))
+        {
+          foreach(var element in config.NotifyReleaseStages)
+          {
+            using(AndroidJavaObject stage = BuildJavaStringDisposable(element))
+            {
+              releaseStages.Call<Boolean>("add", stage);
+            }
+          }
+          obj.Call("setEnabledReleaseStages", releaseStages);
+        }
+      }
+
+      // set version/context
       obj.Call("setAppVersion", config.AppVersion);
       obj.Call("setContext", config.Context);
-      obj.Call("setNotifyReleaseStages", config.NotifyReleaseStages);
       return obj;
+    }
+
+    private void ConfigureNotifierInfo(AndroidJavaObject client) {
+      using (AndroidJavaObject notifier = client.Get<AndroidJavaObject>("notifier"))
+      {
+        notifier.Call("setUrl", NotifierInfo.NotifierUrl);
+        notifier.Call("setName", "Bugsnag Unity (Android)");
+        notifier.Call("setVersion", NotifierInfo.NotifierVersion);
+      }
     }
 
     /**
@@ -187,21 +234,11 @@ namespace BugsnagUnity
     }
 
     public void SetAutoNotify(bool newValue) {
-      if (newValue) {
-        CallNativeVoidMethod("enableUncaughtJavaExceptionReporting", "()V", new object[]{});
-        CallNativeVoidMethod("enableNdkCrashReporting", "()V", new object[]{});
-      } else {
-        CallNativeVoidMethod("disableUncaughtJavaExceptionReporting", "()V", new object[]{});
-        CallNativeVoidMethod("disableNdkCrashReporting", "()V", new object[]{});
-      }
+      CallNativeVoidMethod("setAutoNotify", "(Z)V", new object[]{newValue});
     }
 
     public void SetAutoDetectAnrs(bool newValue) {
-      if (newValue) {
-        CallNativeVoidMethod("enableAnrReporting", "()V", new object[]{});
-      } else {
-        CallNativeVoidMethod("disableAnrReporting", "()V", new object[]{});
-      }
+      CallNativeVoidMethod("setAutoDetectAnrs", "(Z)V", new object[]{newValue});
     }
 
     public void SetContext(string newValue) {
@@ -235,34 +272,34 @@ namespace BugsnagUnity
       }
     }
 
-    public Dictionary<string, object> GetAppData() {
-      return GetJavaMapData("getAppData");
+    public Dictionary<string, object> GetApp() {
+      return GetJavaMapData("getApp");
     }
 
-    public Dictionary<string, object> GetDeviceData() {
-      return GetJavaMapData("getDeviceData");
+    public Dictionary<string, object> GetDevice() {
+      return GetJavaMapData("getDevice");
     }
 
-    public Dictionary<string, object> GetMetaData() {
-      return GetJavaMapData("getMetaData");
+    public Dictionary<string, object> GetMetadata() {
+      return GetJavaMapData("getMetadata");
     }
 
     public Dictionary<string, object> GetUser() {
-      return GetJavaMapData("getUserData");
+      return GetJavaMapData("getUser");
     }
 
     public void RemoveMetadata(string tab) {
       if (tab == null) {
         return;
       }
-      CallNativeVoidMethod("clearTab", "(Ljava/lang/String;)V", new object[]{tab});
+      CallNativeVoidMethod("clearMetadata", "(Ljava/lang/String;Ljava/lang/String;)V", new object[]{tab, null});
     }
 
     public void AddToTab(string tab, string key, string value) {
       if (tab == null || key == null) {
         return;
       }
-      CallNativeVoidMethod("addToTab", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V",
+      CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V",
           new object[]{tab, key, value});
     }
 
@@ -498,17 +535,16 @@ namespace BugsnagUnity
       string typeName = AndroidJNI.CallStringMethod(type, ObjectToString, new jvalue[]{});
       AndroidJNI.DeleteLocalRef(type);
 
-      string name = "<empty>";
-      IntPtr nameObj = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetName, new jvalue[]{});
-      if (nameObj != IntPtr.Zero)
+      string message = "<empty>";
+      IntPtr messageObj = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetMessage, new jvalue[]{});
+      if (messageObj != IntPtr.Zero)
       {
-        name = AndroidJNI.GetStringUTFChars(nameObj);
+        message = AndroidJNI.GetStringUTFChars(messageObj);
       }
-      AndroidJNI.DeleteLocalRef(nameObj);
+      AndroidJNI.DeleteLocalRef(messageObj);
 
       string timestamp = AndroidJNI.CallStringMethod(javaBreadcrumb, BreadcrumbGetTimestamp, new jvalue[]{});
-
-      return new Breadcrumb(name, timestamp, typeName, metadata);
+      return new Breadcrumb(message, timestamp, typeName, metadata);
     }
 
     private AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, string> src) {
