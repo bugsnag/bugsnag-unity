@@ -17,8 +17,12 @@ Unity $DEFAULT_CLI_ARGS -createProject `pwd`/maze_runner
 
 # Installing the Bugsnag package
 Unity $DEFAULT_CLI_ARGS -importPackage $script_path/../../../../Bugsnag.unitypackage
+Unity $DEFAULT_CLI_ARGS -importPackage $script_path/../../../../Bugsnag-with-android-64bit.unitypackage
 
-cp Assets/Editor/Builder.cs maze_runner/Assets/Builder.cs
+
+cp -r Assets/Scenes maze_runner/Assets/
+cp -r Assets/Scripts maze_runner/Assets/
+cp Assets/Editor/Builder.cs maze_runner/Assets/Scripts/
 
 # Running a custom script - must reference a static method
 Unity $DEFAULT_CLI_ARGS -executeMethod Builder.AndroidBuild -projectPath `pwd`/maze_runner
