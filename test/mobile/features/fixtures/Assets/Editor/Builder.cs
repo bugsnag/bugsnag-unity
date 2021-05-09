@@ -11,6 +11,7 @@ public class Builder : MonoBehaviour
     {
         Debug.Log("Building Android app...");
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.mazerunner");
+        PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
         var opts = CommonOptions("mazerunner.apk");
         opts.target = BuildTarget.Android;
 
