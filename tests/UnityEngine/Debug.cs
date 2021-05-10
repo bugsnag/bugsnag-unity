@@ -8,5 +8,7 @@ namespace UnityEngine
   public class Debug
   {
     public static bool isDebugBuild { get; }
+
+    public static ILogger unityLogger { get; set; }
   }
 }

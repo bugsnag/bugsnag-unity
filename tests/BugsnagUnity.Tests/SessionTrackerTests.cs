@@ -13,6 +13,7 @@ namespace BugsnagUnity.Payload.Tests
 
     public SessionTrackerTests()
     {
+      Debug.unityLogger = new StubLogger();
       Client client = new Client(new NativeClient(new Configuration("api-key")));
       Tracker = new SessionTracker(client);
       Assert.IsNotNull(Tracker);
