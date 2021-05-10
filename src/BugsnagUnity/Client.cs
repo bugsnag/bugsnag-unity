@@ -49,6 +49,45 @@ namespace BugsnagUnity
 
     private static object autoSessionLock = new object();
 
+    private class BugSnagLogHandler : ILogHandler
+    {
+
+        private ILogHandler _oldLogHandler;
+
+        private Client _client;
+
+        public BugSnagLogHandler(ILogHandler oldLogHandler, Client client)
+        {
+            _oldLogHandler = oldLogHandler;
+            _client = client;
+        }
+
+        public void LogException(System.Exception exception, UnityEngine.Object context)
+        {
+            var unityException = new UnityLogMessage(exception);
+            var shouldSend = Bugsnag.Configuration.AutoNotify
+                && Exception.ShouldSend(unityException)
+                && _client.UniqueCounter.ShouldSend(unityException)
+                && _client.LogTypeCounter.ShouldSend(unityException);
+            if ( shouldSend )
+            {
+                Bugsnag.Notify(exception, Bugsnag.Configuration.ReportUncaughtExceptionsAsHandled);
+            }
+            if (_oldLogHandler != null)
+            {
+                _oldLogHandler.LogException(exception, context);
+            }
+        }
+
+        public void LogFormat(LogType logType, UnityEngine.Object context, string format, params object[] args)
+        {
+            if (_oldLogHandler != null)
+            {
+                _oldLogHandler.LogFormat(logType, context, format, args);
+            }
+        }
+    }
+
     public Client(INativeClient nativeClient)
     {
       MainThread = Thread.CurrentThread;
@@ -68,8 +107,11 @@ namespace BugsnagUnity
       NativeClient.PopulateUser(User);
 
       SceneManager.sceneLoaded += SceneLoaded;
-      Application.logMessageReceivedThreaded += MultiThreadedNotify;
-      Application.logMessageReceived += Notify;
+
+        SetupLogListeners();
+
+        SetupExceptionInterceptor();
+
       User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
       TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
       TimingTrackerObject.AddComponent<TimingTrackerBehaviour>();
@@ -83,7 +125,19 @@ namespace BugsnagUnity
       }
     }
 
-    public void Send(IPayload payload)
+        private void SetupLogListeners()
+        {
+            Application.logMessageReceivedThreaded += MultiThreadedNotify;
+            Application.logMessageReceived += Notify;
+        }
+
+        private void SetupExceptionInterceptor()
+        {
+            var oldHandler = UnityEngine.Debug.unityLogger.logHandler;
+            UnityEngine.Debug.unityLogger.logHandler = new BugSnagLogHandler(oldHandler,this);
+        }
+
+        public void Send(IPayload payload)
     {
       if (!ShouldSendRequests())
       {
@@ -106,6 +160,10 @@ namespace BugsnagUnity
 
     void MultiThreadedNotify(string condition, string stackTrace, LogType logType)
     {
+        if (logType.Equals(LogType.Exception))
+        {
+            return;
+        }
       // Discard messages from the main thread as they will be reported separately
       if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
       {
@@ -123,7 +181,11 @@ namespace BugsnagUnity
     /// <param name="logType"></param>
     void Notify(string condition, string stackTrace, LogType logType)
     {
-      if (Configuration.AutoNotify && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
+        if (logType.Equals(LogType.Exception))
+        {
+            return;
+        }
+        if (Configuration.AutoNotify && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
       {
         var logMessage = new UnityLogMessage(condition, stackTrace, logType);
         var shouldSend = Exception.ShouldSend(logMessage)
@@ -154,14 +216,14 @@ namespace BugsnagUnity
       }
     }
 
-    public void Notify(System.Exception exception)
+    public void Notify(System.Exception exception, bool handled = false)
     {
-      Notify(exception, 3);
+      Notify(exception, 3, handled);
     }
 
-    internal void Notify(System.Exception exception, int level)
+    internal void Notify(System.Exception exception, int level, bool handled)
     {
-      Notify(exception, HandledState.ForHandledException(), null, level);
+      Notify(exception, handled ? HandledState.ForHandledException() : HandledState.ForUnhandledException(), null, level);
     }
 
     public void Notify(System.Exception exception, Middleware callback)
@@ -205,7 +267,7 @@ namespace BugsnagUnity
 
     void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
     {
-      if (!ShouldSendRequests())
+        if (!ShouldSendRequests())
       {
         return; // Skip overhead of computing payload to to ultimately not be sent
       }

@@ -16,6 +16,14 @@ namespace BugsnagUnity
       Type = type;
     }
 
+    public UnityLogMessage(Exception exception)
+    {
+        CreatedAt = DateTime.UtcNow;
+        Condition = exception.Message;
+        StackTrace = exception.StackTrace;
+        Type = LogType.Exception;
+    }
+
     public string Condition { get; }
 
     public string StackTrace { get; }

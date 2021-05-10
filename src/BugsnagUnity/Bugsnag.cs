@@ -43,7 +43,7 @@ namespace BugsnagUnity
 
     public static void BeforeNotify(Middleware middleware) => Client.BeforeNotify(middleware);
 
-    public static void Notify(System.Exception exception) => InternalClient.Notify(exception, 3);
+    public static void Notify(System.Exception exception, bool handled = true) => InternalClient.Notify(exception, 3, handled);
 
     public static void Notify(System.Exception exception, Middleware callback) => InternalClient.Notify(exception, callback, 3);
 

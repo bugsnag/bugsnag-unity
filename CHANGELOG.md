@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Added new log interceptor to gain access to the original System.Exception
+  [#225](https://github.com/bugsnag/bugsnag-unity/pull/244)
+
 ## 4.8.8 (2021-04-21)
 
 ### Bug fixes

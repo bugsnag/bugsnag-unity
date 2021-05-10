@@ -20,7 +20,7 @@ namespace BugsnagUnity
 
     void BeforeNotify(Middleware middleware);
 
-    void Notify(System.Exception exception);
+    void Notify(System.Exception exception, bool handled = true);
 
     void Notify(System.Exception exception, Middleware callback);
 
