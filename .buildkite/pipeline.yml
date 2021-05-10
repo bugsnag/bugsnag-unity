@@ -16,47 +16,47 @@ steps:
     concurrency: 2
     concurrency_group: 'unity-license'
 
-#  - label: Run e2e tests for Unity 2017.4.40f1
-#    depends_on: 'build-artifacts'
-#    timeout_in_minutes: 30
-#    agents:
-#      queue: opensource-mac-unity
-#    env:
-#      UNITY_VERSION: "2017.4.40f1"
-#    plugins:
-#      artifacts#v1.2.0:
-#        download:
-#          - Bugsnag.unitypackage
-#          - Bugsnag-with-android-64bit.unitypackage
-#        upload:
-#          - test/desktop/maze_output/*
-#    commands:
-#      - cd test/desktop
-#      - bundle install
-#      - bundle exec bugsnag-maze-runner
-#    concurrency: 2
-#    concurrency_group: 'unity-license'
-#
-#  - label: Run e2e tests for Unity 2018.4.34f1
-#    depends_on: 'build-artifacts'
-#    timeout_in_minutes: 30
-#    agents:
-#      queue: opensource-mac-unity
-#    env:
-#      UNITY_VERSION: "2018.4.34f1"
-#    plugins:
-#      artifacts#v1.2.0:
-#        download:
-#          - Bugsnag.unitypackage
-#          - Bugsnag-with-android-64bit.unitypackage
-#        upload:
-#          - test/desktop/maze_output/*
-#    commands:
-#      - cd test/desktop
-#      - bundle install
-#      - bundle exec bugsnag-maze-runner
-#    concurrency: 2
-#    concurrency_group: 'unity-license'
+  - label: Run e2e tests for Unity 2017.4.40f1
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2017.4.40f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/desktop/maze_output/*
+    commands:
+      - cd test/desktop
+      - bundle install
+      - bundle exec bugsnag-maze-runner
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: Run e2e tests for Unity 2018.4.34f1
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2018.4.34f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/desktop/maze_output/*
+    commands:
+      - cd test/desktop
+      - bundle install
+      - bundle exec bugsnag-maze-runner
+    concurrency: 2
+    concurrency_group: 'unity-license'
 
   - label: ':android: Build Android test fixture for Unity 2017'
     key: 'build-android-fixture-2017'
@@ -99,6 +99,7 @@ steps:
     concurrency_group: 'unity-license'
 
   - label: ':android: Build Android test fixture for Unity 2019'
+    skip: Pending PLAT-6447
     key: 'build-android-fixture-2019'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -117,9 +118,6 @@ steps:
       - ./test/mobile/features/scripts/build_fixture.sh
     concurrency: 2
     concurrency_group: 'unity-license'
-
-
-  # 2019.4.24f1
 
   - label: ':android: Run Android e2e tests for Unity 2017'
     depends_on: 'build-android-fixture-2017'
@@ -160,6 +158,7 @@ steps:
     concurrency_group: browserstack-app
 
   - label: ':android: Run Android e2e tests for Unity 2019'
+    skip: Pending PLAT-6447
     depends_on: 'build-android-fixture-2019'
     timeout_in_minutes: 30
     agents:
