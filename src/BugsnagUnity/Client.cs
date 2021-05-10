@@ -379,5 +379,23 @@ namespace BugsnagUnity
         SessionTracking.StartSession();
       }
     }
+
+    public void SetContext(string context)
+    {
+      // set the context property on Configuration, as it currently holds the global state
+      Configuration.Context = context;
+
+      // propagate the change to the native property also
+      NativeClient.SetContext(context);
+    }
+
+    public void SetAutoNotify(bool autoNotify)
+    {
+      // set the AutoNotify property on Configuration, as it currently controls whether C# errors are reported
+      Configuration.AutoNotify = autoNotify;
+
+      // propagate the change to the native property also
+      NativeClient.SetAutoNotify(autoNotify);
+    }
   }
 }

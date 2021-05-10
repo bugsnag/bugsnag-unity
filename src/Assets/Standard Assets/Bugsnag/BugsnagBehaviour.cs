@@ -46,18 +46,18 @@ namespace BugsnagUnity
     /// </summary>
     void Awake()
     {
-      Bugsnag.Init(BugsnagApiKey, AutoNotify);
-      Bugsnag.Configuration.AutoNotify = AutoNotify;
-      Bugsnag.Configuration.AutoDetectAnrs = AutoNotify && AutoDetectAnrs;
-      Bugsnag.Configuration.AutoCaptureSessions = AutoCaptureSessions;
-      Bugsnag.Configuration.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
-      Bugsnag.Configuration.NotifyLevel = NotifyLevel;
-      Bugsnag.Configuration.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
-      Bugsnag.Configuration.MaximumBreadcrumbs = MaximumBreadcrumbs;
-
-      Bugsnag.Configuration.ScriptingBackend = FindScriptingBackend();
-      Bugsnag.Configuration.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
-      Bugsnag.Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
+      Configuration config = new Configuration(BugsnagApiKey);
+      config.AutoNotify = AutoNotify;
+      config.AutoDetectAnrs = AutoNotify && AutoDetectAnrs;
+      config.AutoCaptureSessions = AutoCaptureSessions;
+      config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
+      config.NotifyLevel = NotifyLevel;
+      config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
+      config.MaximumBreadcrumbs = MaximumBreadcrumbs;
+      config.ScriptingBackend = FindScriptingBackend();
+      config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
+      config.DotnetApiCompatibility = FindDotnetApiCompatibility();
+      Bugsnag.Start(config);
     }
 
     /*** Determine runtime versions ***/

@@ -1,0 +1,498 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8A18BDE02164393500D39F97 /* BugsnagNative_tvOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A18BDDF2164393500D39F97 /* BugsnagNative_tvOS.m */; };
+		8A18BDE12164393500D39F97 /* BugsnagNative_tvOS.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8A18BDDE2164393500D39F97 /* BugsnagNative_tvOS.h */; };
+		8A18BDE52164394400D39F97 /* BugsnagNative.m in Sources */ = {isa = PBXBuildFile; fileRef = A1BC00BA214BE4120053AFCC /* BugsnagNative.m */; };
+		8A18BDE62164394400D39F97 /* UnityBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1BC00C3214BE9F90053AFCC /* UnityBridge.mm */; };
+		8A18BDEE2164398700D39F97 /* BugsnagNative_macOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A18BDED2164398700D39F97 /* BugsnagNative_macOS.h */; };
+		8A18BDF02164398700D39F97 /* BugsnagNative_macOS.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A18BDEF2164398700D39F97 /* BugsnagNative_macOS.m */; };
+		8A18BDF42164398F00D39F97 /* BugsnagNative.m in Sources */ = {isa = PBXBuildFile; fileRef = A1BC00BA214BE4120053AFCC /* BugsnagNative.m */; };
+		8A18BDF52164398F00D39F97 /* UnityBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1BC00C3214BE9F90053AFCC /* UnityBridge.mm */; };
+		A1BC00BB214BE4120053AFCC /* BugsnagNative.m in Sources */ = {isa = PBXBuildFile; fileRef = A1BC00BA214BE4120053AFCC /* BugsnagNative.m */; };
+		A1BC00BC214BE4120053AFCC /* BugsnagNative.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A1BC00B9214BE4120053AFCC /* BugsnagNative.h */; };
+		A1BC00C4214BE9F90053AFCC /* UnityBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = A1BC00C3214BE9F90053AFCC /* UnityBridge.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8A18BDDA2164393500D39F97 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				8A18BDE12164393500D39F97 /* BugsnagNative_tvOS.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1BC00B4214BE4120053AFCC /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				A1BC00BC214BE4120053AFCC /* BugsnagNative.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8A18BDDC2164393500D39F97 /* libBugsnagNative-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libBugsnagNative-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A18BDDE2164393500D39F97 /* BugsnagNative_tvOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagNative_tvOS.h; sourceTree = "<group>"; };
+		8A18BDDF2164393500D39F97 /* BugsnagNative_tvOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagNative_tvOS.m; sourceTree = "<group>"; };
+		8A18BDEB2164398700D39F97 /* libBugsnagNative-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libBugsnagNative-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A18BDED2164398700D39F97 /* BugsnagNative_macOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagNative_macOS.h; sourceTree = "<group>"; };
+		8A18BDEF2164398700D39F97 /* BugsnagNative_macOS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagNative_macOS.m; sourceTree = "<group>"; };
+		A1BC00B6214BE4120053AFCC /* libBugsnagNative.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBugsnagNative.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1BC00B9214BE4120053AFCC /* BugsnagNative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BugsnagNative.h; sourceTree = "<group>"; };
+		A1BC00BA214BE4120053AFCC /* BugsnagNative.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BugsnagNative.m; sourceTree = "<group>"; };
+		A1BC00C2214BE9F90053AFCC /* UnityBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnityBridge.h; sourceTree = "<group>"; };
+		A1BC00C3214BE9F90053AFCC /* UnityBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = UnityBridge.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8A18BDD92164393500D39F97 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A18BDE82164398700D39F97 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1BC00B3214BE4120053AFCC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8A18BDDD2164393500D39F97 /* BugsnagNative-tvOS */ = {
+			isa = PBXGroup;
+			children = (
+				8A18BDDE2164393500D39F97 /* BugsnagNative_tvOS.h */,
+				8A18BDDF2164393500D39F97 /* BugsnagNative_tvOS.m */,
+			);
+			path = "BugsnagNative-tvOS";
+			sourceTree = "<group>";
+		};
+		8A18BDEC2164398700D39F97 /* BugsnagNative-macOS */ = {
+			isa = PBXGroup;
+			children = (
+				8A18BDED2164398700D39F97 /* BugsnagNative_macOS.h */,
+				8A18BDEF2164398700D39F97 /* BugsnagNative_macOS.m */,
+			);
+			path = "BugsnagNative-macOS";
+			sourceTree = "<group>";
+		};
+		A1BC00AD214BE4120053AFCC = {
+			isa = PBXGroup;
+			children = (
+				A1BC00B8214BE4120053AFCC /* BugsnagNative */,
+				8A18BDDD2164393500D39F97 /* BugsnagNative-tvOS */,
+				8A18BDEC2164398700D39F97 /* BugsnagNative-macOS */,
+				A1BC00B7214BE4120053AFCC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A1BC00B7214BE4120053AFCC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A1BC00B6214BE4120053AFCC /* libBugsnagNative.a */,
+				8A18BDDC2164393500D39F97 /* libBugsnagNative-tvOS.a */,
+				8A18BDEB2164398700D39F97 /* libBugsnagNative-macOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A1BC00B8214BE4120053AFCC /* BugsnagNative */ = {
+			isa = PBXGroup;
+			children = (
+				A1BC00B9214BE4120053AFCC /* BugsnagNative.h */,
+				A1BC00BA214BE4120053AFCC /* BugsnagNative.m */,
+				A1BC00C2214BE9F90053AFCC /* UnityBridge.h */,
+				A1BC00C3214BE9F90053AFCC /* UnityBridge.mm */,
+			);
+			path = BugsnagNative;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8A18BDE92164398700D39F97 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A18BDEE2164398700D39F97 /* BugsnagNative_macOS.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8A18BDDB2164393500D39F97 /* BugsnagNative-tvOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A18BDE42164393500D39F97 /* Build configuration list for PBXNativeTarget "BugsnagNative-tvOS" */;
+			buildPhases = (
+				8A18BDD82164393500D39F97 /* Sources */,
+				8A18BDD92164393500D39F97 /* Frameworks */,
+				8A18BDDA2164393500D39F97 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BugsnagNative-tvOS";
+			productName = "BugsnagNative-tvOS";
+			productReference = 8A18BDDC2164393500D39F97 /* libBugsnagNative-tvOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		8A18BDEA2164398700D39F97 /* BugsnagNative-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A18BDF12164398700D39F97 /* Build configuration list for PBXNativeTarget "BugsnagNative-macOS" */;
+			buildPhases = (
+				8A18BDE72164398700D39F97 /* Sources */,
+				8A18BDE82164398700D39F97 /* Frameworks */,
+				8A18BDE92164398700D39F97 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "BugsnagNative-macOS";
+			productName = "BugsnagNative-macOS";
+			productReference = 8A18BDEB2164398700D39F97 /* libBugsnagNative-macOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		A1BC00B5214BE4120053AFCC /* BugsnagNative */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A1BC00BF214BE4120053AFCC /* Build configuration list for PBXNativeTarget "BugsnagNative" */;
+			buildPhases = (
+				A1BC00B2214BE4120053AFCC /* Sources */,
+				A1BC00B3214BE4120053AFCC /* Frameworks */,
+				A1BC00B4214BE4120053AFCC /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BugsnagNative;
+			productName = BugsnagNative;
+			productReference = A1BC00B6214BE4120053AFCC /* libBugsnagNative.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A1BC00AE214BE4120053AFCC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = Bugsnag;
+				TargetAttributes = {
+					8A18BDDB2164393500D39F97 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					8A18BDEA2164398700D39F97 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					A1BC00B5214BE4120053AFCC = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A1BC00B1214BE4120053AFCC /* Build configuration list for PBXProject "BugsnagNative" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = A1BC00AD214BE4120053AFCC;
+			productRefGroup = A1BC00B7214BE4120053AFCC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A1BC00B5214BE4120053AFCC /* BugsnagNative */,
+				8A18BDDB2164393500D39F97 /* BugsnagNative-tvOS */,
+				8A18BDEA2164398700D39F97 /* BugsnagNative-macOS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8A18BDD82164393500D39F97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A18BDE62164394400D39F97 /* UnityBridge.mm in Sources */,
+				8A18BDE52164394400D39F97 /* BugsnagNative.m in Sources */,
+				8A18BDE02164393500D39F97 /* BugsnagNative_tvOS.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A18BDE72164398700D39F97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8A18BDF52164398F00D39F97 /* UnityBridge.mm in Sources */,
+				8A18BDF42164398F00D39F97 /* BugsnagNative.m in Sources */,
+				8A18BDF02164398700D39F97 /* BugsnagNative_macOS.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1BC00B2214BE4120053AFCC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1BC00C4214BE9F90053AFCC /* UnityBridge.mm in Sources */,
+				A1BC00BB214BE4120053AFCC /* BugsnagNative.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		8A18BDE22164393500D39F97 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		8A18BDE32164393500D39F97 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
+		8A18BDF22164398700D39F97 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				EXECUTABLE_PREFIX = lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		8A18BDF32164398700D39F97 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				EXECUTABLE_PREFIX = lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		A1BC00BD214BE4120053AFCC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		A1BC00BE214BE4120053AFCC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A1BC00C0214BE4120053AFCC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A1BC00C1214BE4120053AFCC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 372ZUL2ZB7;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8A18BDE42164393500D39F97 /* Build configuration list for PBXNativeTarget "BugsnagNative-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A18BDE22164393500D39F97 /* Debug */,
+				8A18BDE32164393500D39F97 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8A18BDF12164398700D39F97 /* Build configuration list for PBXNativeTarget "BugsnagNative-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8A18BDF22164398700D39F97 /* Debug */,
+				8A18BDF32164398700D39F97 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1BC00B1214BE4120053AFCC /* Build configuration list for PBXProject "BugsnagNative" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1BC00BD214BE4120053AFCC /* Debug */,
+				A1BC00BE214BE4120053AFCC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A1BC00BF214BE4120053AFCC /* Build configuration list for PBXNativeTarget "BugsnagNative" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A1BC00C0214BE4120053AFCC /* Debug */,
+				A1BC00C1214BE4120053AFCC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A1BC00AE214BE4120053AFCC /* Project object */;
+}
