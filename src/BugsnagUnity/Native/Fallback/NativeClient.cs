@@ -51,5 +51,9 @@ namespace BugsnagUnity
     public void SetAutoNotify(bool autoNotify)
     {
     }
-  }
+
+    public void SetAutoDetectAnrs(bool autoDetectAnrs)
+    {
+    }
+    }
 }
