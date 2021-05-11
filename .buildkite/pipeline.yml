@@ -36,6 +36,8 @@ steps:
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
       - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
+    concurrency: 2
+    concurrency_group: 'unity-license'
 
   - label: Build Unity 2018 desktop test fixture
     key: 'cocoa-2018-fixture'
@@ -55,6 +57,8 @@ steps:
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
       - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
+    concurrency: 2
+    concurrency_group: 'unity-license'
 
   - label: Run e2e tests for Unity 2017.4.40f1
     depends_on: 'cocoa-2017-fixture'
@@ -71,8 +75,6 @@ steps:
       - cd test/desktop
       - bundle install
       - bundle exec bugsnag-maze-runner
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: Run e2e tests for Unity 2018.4.34f1
     depends_on: 'cocoa-2018-fixture'
@@ -89,5 +91,3 @@ steps:
       - cd test/desktop
       - bundle install
       - bundle exec bugsnag-maze-runner
-    concurrency: 2
-    concurrency_group: 'unity-license'
