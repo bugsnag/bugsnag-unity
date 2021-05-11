@@ -33,7 +33,7 @@ steps:
           - test/desktop/maze_output/*
     commands:
       - cd test/desktop
-      - ./features/scripts/create_unity_project.sh
+      - ./features/scripts/build_maze_runner.sh
     artifact_paths:
       - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
 
@@ -52,7 +52,7 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
     commands:
       - cd test/desktop
-      - ./features/scripts/create_unity_project.sh
+      - ./features/scripts/build_maze_runner.sh
     artifact_paths:
       - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
 

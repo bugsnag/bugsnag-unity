@@ -5,7 +5,7 @@
 
 ENV['BUGSNAG_APIKEY'] = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
 unity_project_name = ENV['UNITY_PROJECT_NAME'] = "Mazerunner-#{ENV['UNITY_VERSION']}"
-unity_test_project = "features/fixtures/#{unity_project_name}.app"
+unity_test_project = "features/fixtures/maze-runner/#{unity_project_name}.app"
 
 `cd features/fixtures && tar -xzf #{unity_project_name}.app.zip`
 
