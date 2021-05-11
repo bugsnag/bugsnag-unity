@@ -16,7 +16,8 @@ steps:
     concurrency: 2
     concurrency_group: 'unity-license'
 
-  - label: Run e2e tests for Unity 2017.4.40f1
+  - label: Build Unity 2017 desktop test fixture
+    key: 'cocoa-2017-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -32,12 +33,12 @@ steps:
           - test/desktop/maze_output/*
     commands:
       - cd test/desktop
-      - bundle install
-      - bundle exec bugsnag-maze-runner
-    concurrency: 2
-    concurrency_group: 'unity-license'
+      - ./features/scripts/create_unity_project.sh
+    artifact_paths:
+      - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
 
-  - label: Run e2e tests for Unity 2018.4.34f1
+  - label: Build Unity 2018 desktop test fixture
+    key: 'cocoa-2018-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -49,8 +50,41 @@ steps:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/desktop/maze_output/*
+    commands:
+      - cd test/desktop
+      - ./features/scripts/create_unity_project.sh
+    artifact_paths:
+      - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
+
+  - label: Run e2e tests for Unity 2017.4.40f1
+    depends_on: 'cocoa-2017-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      UNITY_VERSION: "2017.4.40f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
+    commands:
+      - cd test/desktop
+      - bundle install
+      - bundle exec bugsnag-maze-runner
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: Run e2e tests for Unity 2018.4.34f1
+    depends_on: 'cocoa-2018-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa
+    env:
+      UNITY_VERSION: "2018.4.34f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
     commands:
       - cd test/desktop
       - bundle install
