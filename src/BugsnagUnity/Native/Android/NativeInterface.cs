@@ -524,7 +524,8 @@ namespace BugsnagUnity
 
         if (key != IntPtr.Zero && value != IntPtr.Zero)
         {
-          metadata.Add(AndroidJNI.GetStringUTFChars(key), AndroidJNI.GetStringUTFChars(value));
+          var obj = AndroidJNI.CallStringMethod(value, ObjectToString, new jvalue[]{});
+          metadata.Add(AndroidJNI.GetStringUTFChars(key), obj);
         }
         AndroidJNI.DeleteLocalRef(key);
         AndroidJNI.DeleteLocalRef(value);
