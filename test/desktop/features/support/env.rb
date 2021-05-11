@@ -4,9 +4,10 @@
 # definitions
 
 ENV['BUGSNAG_APIKEY'] = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
-run_required_commands([
-  ["features/scripts/build_maze_runner.sh"]
-])
+unity_project_name = ENV['UNITY_PROJECT_NAME'] = "Mazerunner"
+unity_test_project = "features/fixtures/maze_runner/#{unity_project_name}.app"
+
+`cd features/fixtures && tar -xzf #{unity_project_name}-#{ENV['UNITY_VERSION']}.app.zip`
 
 # Scenario hooks
 Before do
@@ -19,5 +20,5 @@ end
 
 at_exit do
   `pkill Mazerunner`
-  FileUtils.rm_rf('features/fixtures/Mazerunner.app')
+  FileUtils.rm_rf(unity_test_project)
 end

@@ -30,5 +30,9 @@ pushd "${0%/*}"
       -executeMethod Builder.MacOSBuild
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+
+    tar -czf "Mazerunner-$UNITY_VERSION.app.zip" "maze_runner/Mazerunner.app"
+    RESULT=$?
+     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
   popd
 popd
