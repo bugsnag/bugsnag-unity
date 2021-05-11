@@ -65,13 +65,13 @@ namespace BugsnagUnity
         public void LogException(System.Exception exception, UnityEngine.Object context)
         {
             var unityException = new UnityLogMessage(exception);
-            var shouldSend = Bugsnag.Configuration.AutoNotify
+            var shouldSend = _client.Configuration.AutoNotify
                 && Exception.ShouldSend(unityException)
                 && _client.UniqueCounter.ShouldSend(unityException)
                 && _client.LogTypeCounter.ShouldSend(unityException);
             if ( shouldSend )
             {
-                Bugsnag.Notify(exception, Bugsnag.Configuration.ReportUncaughtExceptionsAsHandled);
+                Bugsnag.Notify(exception, _client.Configuration.ReportUncaughtExceptionsAsHandled);
             }
             if (_oldLogHandler != null)
             {
