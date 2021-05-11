@@ -97,5 +97,15 @@ namespace BugsnagUnity
     {
       Client.SetAutoNotify(autoNotify);
     }
-  }
+
+    /// <summary>
+    /// Enable or disable Bugsnag reporting any Android not responding errors (ANRs) in your game.
+    /// </summary>
+    /// <param name="autoDetectAnrs"></param>
+    public static void SetAutoDetectAnrs(bool autoDetectAnrs)
+    {
+      Client.SetAutoDetectAnrs(autoDetectAnrs);
+    }
+
+    }
 }
