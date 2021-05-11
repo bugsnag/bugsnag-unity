@@ -179,5 +179,9 @@ namespace BugsnagUnity
     {
       NativeCode.bugsnag_setAutoNotify(NativeConfiguration, autoNotify);
     }
-  }
+
+    public void SetAutoDetectAnrs(bool autoDetectAnrs)
+    {
+    }
+    }
 }
