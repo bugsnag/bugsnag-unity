@@ -335,5 +335,11 @@ namespace BugsnagUnity
       // propagate the change to the native property also
       NativeClient.SetAutoNotify(autoNotify);
     }
+
+    public void SetAutoDetectAnrs(bool autoDetectAnrs)
+    {
+      // Set the native property
+      NativeClient.SetAutoDetectAnrs(autoDetectAnrs);
+    }
   }
 }
