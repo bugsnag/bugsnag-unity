@@ -343,7 +343,7 @@ namespace :example do
 end
 
 namespace :test do
-  namespace :mobile do
+  namespace :android do
     task :build do
 
       # Check that a Unity version has been selected and the path exists before calling the build script
