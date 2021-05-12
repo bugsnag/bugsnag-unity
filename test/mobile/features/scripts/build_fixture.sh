@@ -19,9 +19,6 @@ pushd "$script_path/../fixtures"
 DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log -noUpm"
 project_path=`pwd`/maze_runner
 
-# Creating a new project in the MyProject directory
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -createProject $project_path
-
 # Installing the Bugsnag package
 echo "Importing Bugsnag.unitypackage into $project_path"
 $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -importPackage $script_path/../../../../Bugsnag.unitypackage
