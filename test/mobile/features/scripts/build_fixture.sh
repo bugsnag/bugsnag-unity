@@ -30,12 +30,7 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -importPackage $s
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-cp -r Assets/Scenes maze_runner/Assets/
-cp -r Assets/Scripts maze_runner/Assets/
-cp Assets/Editor/Builder.cs maze_runner/Assets/Scripts/
-cp Assets/Plugins/Android/AndroidManifest.xml maze_runner/Assets/Plugins/Android
-
-# Running a custom script - must reference a static method
+# Build for Android
 $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Builder.AndroidBuild
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
