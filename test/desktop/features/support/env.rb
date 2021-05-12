@@ -4,9 +4,10 @@
 # definitions
 
 ENV['BUGSNAG_APIKEY'] = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
+
+# Extract the test fixture app
 unity_project_name = ENV['UNITY_PROJECT_NAME'] = "Mazerunner"
 unity_test_project = "features/fixtures/maze_runner/#{unity_project_name}.app"
-
 `cd features/fixtures && tar -xzf #{unity_project_name}-#{ENV['UNITY_VERSION']}.app.zip`
 
 # Scenario hooks

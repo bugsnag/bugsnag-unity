@@ -91,3 +91,122 @@ steps:
       - cd test/desktop
       - bundle install
       - bundle exec bugsnag-maze-runner
+
+  - label: ':android: Build Android test fixture for Unity 2017'
+    key: 'build-android-fixture-2017'
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2017.4.40f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
+    commands:
+      - ./test/mobile/features/scripts/build_fixture.sh
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: ':android: Run Android e2e tests for Unity 2017'
+    depends_on: 'build-android-fixture-2017'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download:
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
+      docker-compose#v3.3.0:
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
+          - "--farm=bs"
+          - "--device=ANDROID_9_0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
+
+  - label: ':android: Build Android test fixture for Unity 2018'
+    key: 'build-android-fixture-2018'
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2018.4.34f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
+    commands:
+      - ./test/mobile/features/scripts/build_fixture.sh
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: ':android: Run Android e2e tests for Unity 2018'
+    depends_on: 'build-android-fixture-2018'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download:
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk"
+      docker-compose#v3.3.0:
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk"
+          - "--farm=bs"
+          - "--device=ANDROID_9_0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
+
+  - label: ':android: Build Android test fixture for Unity 2019'
+    skip: Pending PLAT-6447
+    key: 'build-android-fixture-2019'
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2019.4.25f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
+    commands:
+      - ./test/mobile/features/scripts/build_fixture.sh
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: ':android: Run Android e2e tests for Unity 2019'
+    skip: Pending PLAT-6447
+    depends_on: 'build-android-fixture-2019'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download:
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
+      docker-compose#v3.3.0:
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
+          - "--farm=bs"
+          - "--device=ANDROID_9_0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
