@@ -107,6 +107,7 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
+          - test/mobile/features/fixtures/unity.log
     commands:
       - rake test:android:build
     concurrency: 2
@@ -146,6 +147,7 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
+          - test/mobile/features/fixtures/unity.log
     commands:
       - rake test:android:build
     concurrency: 2
