@@ -21,12 +21,18 @@ project_path=`pwd`/maze_runner
 
 # Installing the Bugsnag package
 echo "Importing Bugsnag.unitypackage into $project_path"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -importPackage $script_path/../../../../Bugsnag.unitypackage
+$UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
+                  -projectPath $project_path \
+                  -ignoreCompilerErrors \
+                  -importPackage $script_path/../../../../Bugsnag.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
 echo "Importing Bugsnag-with-android-64bit.unitypackage into $project_path"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -importPackage $script_path/../../../../Bugsnag-with-android-64bit.unitypackage
+$UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
+                  -projectPath $project_path \
+                  -ignoreCompilerErrors \
+                  -importPackage $script_path/../../../../Bugsnag-with-android-64bit.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
