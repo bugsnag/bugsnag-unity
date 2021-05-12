@@ -360,7 +360,7 @@ namespace :test do
       env = { "UNITY_PATH" => unity_path }
       script = File.join("test", "mobile", "features", "scripts", "build_fixture.sh")
       unless system env, script
-        raise 'Maze Runner tests failed'
+        raise 'Build failed'
       end
     end
   end
