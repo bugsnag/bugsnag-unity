@@ -29,8 +29,6 @@ steps:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/desktop/maze_output/*
     commands:
       - cd test/desktop
       - ./features/scripts/build_maze_runner.sh
@@ -71,6 +69,8 @@ steps:
       artifacts#v1.2.0:
         download:
           - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
+        upload:
+          - test/desktop/maze_output/*
     commands:
       - cd test/desktop
       - bundle install
@@ -87,6 +87,8 @@ steps:
       artifacts#v1.2.0:
         download:
           - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
+        upload:
+          - test/desktop/maze_output/*
     commands:
       - cd test/desktop
       - bundle install
