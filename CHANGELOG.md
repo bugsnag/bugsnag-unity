@@ -7,6 +7,9 @@
 * Added new log interceptor to gain access to the original System.Exception
   [#225](https://github.com/bugsnag/bugsnag-unity/pull/244)
   
+* Add SetAutoDetectAnrs method to Bugsnag interface
+  [#246](https://github.com/bugsnag/bugsnag-unity/pull/246)
+
 * Dont Destroy TimingTrackerObject, so it persists across scenes
   [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
 
@@ -18,6 +21,7 @@
 
 * Update bugsnag-android dependency to v5
   [#233](https://github.com/bugsnag/bugsnag-unity/pull/233)
+  
 
 
 ## 4.8.8 (2021-04-21)

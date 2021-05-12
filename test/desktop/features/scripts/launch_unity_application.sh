@@ -2,6 +2,6 @@
 
 pushd "${0%/*}"
   pushd ../fixtures/maze_runner
-    Mazerunner.app/Contents/MacOS/Mazerunner -batchmode -nographics
+    ${UNITY_PROJECT_NAME}.app/Contents/MacOS/${UNITY_PROJECT_NAME} -batchmode -nographics
   popd
 popd

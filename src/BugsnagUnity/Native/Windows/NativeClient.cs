@@ -74,7 +74,11 @@ namespace BugsnagUnity
     {
     }
 
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    public void SetAutoDetectAnrs(bool autoDetectAnrs)
+    {
+    }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
       out ulong lpFreeBytesAvailable,
@@ -85,7 +89,9 @@ namespace BugsnagUnity
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+       
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     private class MEMORYSTATUSEX
     {
       public uint dwLength;

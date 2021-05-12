@@ -10,8 +10,8 @@ public class ReporterBehavior : MonoBehaviour {
     // Use this for initialization
     void Start () {
         Configuration config = new Configuration("12312312312312312312312312312312");
-        config.Endpoint = new Uri("http://192.168.178.53:9339/notify");
-        config.Endpoint = new Uri("http://192.168.178.53:9339/session");
+        config.Endpoint = new Uri("http://bs-local.com:9339/notify");
+        config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
         config.Context = "My context";
         config.AppVersion = "1.2.3";
         Bugsnag.Start(config);
@@ -39,7 +39,7 @@ public class ReporterBehavior : MonoBehaviour {
         }
     }
 
-    public void LogWithClasPrefix() {
+    public void LogWithClassPrefix() {
         throw new ExecutionEngineException("Haven't gotten around to making this work, sorry");
     }
 

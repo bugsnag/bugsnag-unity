@@ -88,6 +88,11 @@ namespace BugsnagUnity
       NativeInterface.SetAutoNotify(autoNotify);
       NativeInterface.SetAutoDetectAnrs(autoNotify && Configuration.AutoDetectAnrs);
     }
+
+    public void SetAutoDetectAnrs(bool autoDetectAnrs)
+    {
+      NativeInterface.SetAutoDetectAnrs(autoDetectAnrs);
+    }
   }
 
 }
