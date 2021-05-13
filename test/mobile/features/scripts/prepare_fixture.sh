@@ -35,10 +35,3 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
                   -importPackage $script_path/../../../../Bugsnag-with-android-64bit.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
-# Build for Android
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Builder.AndroidBuild
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
-mv $project_path/mazerunner.apk $project_path/mazerunner_$UNITY_VERSION.apk
