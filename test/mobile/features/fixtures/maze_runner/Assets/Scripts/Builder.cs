@@ -6,7 +6,7 @@ using UnityEditor;
 
 public class Builder : MonoBehaviour
 {
-    // Generates AndroidBuild/MyApp.apk
+    // Generates mazerunner.apk
     public static void AndroidBuild()
     {
         Debug.Log("Building Android app...");
@@ -14,6 +14,20 @@ public class Builder : MonoBehaviour
         PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
         var opts = CommonOptions("mazerunner.apk");
         opts.target = BuildTarget.Android;
+
+        var result = BuildPipeline.BuildPlayer(opts);
+
+        Debug.Log("Result: " + result);
+    }
+
+    // Generates mazerunner.apk
+    public static void IosBuild()
+    {
+        Debug.Log("Building iOS app...");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.mazerunner");
+        PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
+        var opts = CommonOptions("mazerunner_xcode");
+        opts.target = BuildTarget.iOS;
 
         var result = BuildPipeline.BuildPlayer(opts);
 
