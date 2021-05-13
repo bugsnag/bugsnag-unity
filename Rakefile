@@ -357,10 +357,17 @@ namespace :test do
         raise "Unity not found at path #{unity}"
       end
 
+      # Prepare the test fixture project by importing th plugins
       env = { "UNITY_PATH" => unity_path }
       script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
       unless system env, script
-        raise 'Build failed'
+        raise 'Preparation of test fixture failed'
+      end
+
+      # Build the Android APK
+      script = File.join("test", "mobile", "features", "scripts", "build_android.sh")
+      unless system env, script
+        raise 'APK build failed'
       end
     end
   end
