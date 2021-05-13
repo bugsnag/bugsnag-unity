@@ -25,8 +25,7 @@ RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
 # Archive and export the project
-xcrun xcodebuild -project $project_path \
-                 mazerunner_xcode/Unity-iPhone.xcodeproj
+xcrun xcodebuild -project $project_path/mazerunner_xcode/Unity-iPhone.xcodeproj \
                  -scheme Unity-iPhone \
                  -configuration Debug \
                  -archivePath $project_path/archive/Unity-iPhone.xcarchive \
@@ -44,7 +43,7 @@ xcrun xcodebuild -exportArchive \
                  -archivePath $project_path/archive/Unity-iPhone.xcarchive \
                  -exportPath $project_path/output/ \
                  -quiet \
-                 -exportOptionsPlist exportOptions.plist
+                 -exportOptionsPlist $script_path/exportOptions.plist
 
 if [ $? -ne 0 ]; then
   echo "Failed to export app"
