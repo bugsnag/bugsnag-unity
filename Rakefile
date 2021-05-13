@@ -358,7 +358,7 @@ namespace :test do
       end
 
       env = { "UNITY_PATH" => unity_path }
-      script = File.join("test", "mobile", "features", "scripts", "build_fixture.sh")
+      script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
       unless system env, script
         raise 'Build failed'
       end
