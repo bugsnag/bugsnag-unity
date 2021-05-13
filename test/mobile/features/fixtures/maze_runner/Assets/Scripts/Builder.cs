@@ -22,25 +22,10 @@ public class Builder : MonoBehaviour
 
     private static BuildPlayerOptions CommonOptions(string outputFile)
     {
-        var paths = new string[] { "Assets/Scenes/SampleScene.unity", "Assets/Scenes/OtherScene.unity" };
-        var newScenes = new EditorBuildSettingsScene[]
-        {
-            new EditorBuildSettingsScene()
-            {
-                path = paths[0],
-                enabled = true
-            },
-            new EditorBuildSettingsScene()
-            {
-                path = paths[1],
-                enabled = true
-            }
-        };
-
-        EditorBuildSettings.scenes = newScenes;
+        var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
 
         BuildPlayerOptions opts = new BuildPlayerOptions();
-        opts.scenes = paths;
+        opts.scenes = scenes;
         opts.locationPathName = Application.dataPath + "/../" + outputFile;
         opts.options = BuildOptions.None;
 

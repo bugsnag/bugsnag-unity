@@ -1,6 +1,4 @@
 # Prebuilt stuffs
-Sample*
-
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -43,4 +41,3 @@ Assets/Standard\ Assets/Bugsnag/BugsnagBehaviour.cs
 # Builds
 *.apk
 *.unitypackage
-maze_runner
