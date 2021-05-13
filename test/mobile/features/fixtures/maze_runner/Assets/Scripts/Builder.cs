@@ -3,6 +3,7 @@ using UnityEngine;
 
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEditor.Callbacks;
 
 public class Builder : MonoBehaviour
 {
@@ -11,7 +12,6 @@ public class Builder : MonoBehaviour
     {
         Debug.Log("Building Android app...");
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.mazerunner");
-        PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
         var opts = CommonOptions("mazerunner.apk");
         opts.target = BuildTarget.Android;
 
@@ -25,7 +25,8 @@ public class Builder : MonoBehaviour
     {
         Debug.Log("Building iOS app...");
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.mazerunner");
-        PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
+        PlayerSettings.SetAdditionalIl2CppArgs("--linker-flags=ObjC");
+
         var opts = CommonOptions("mazerunner_xcode");
         opts.target = BuildTarget.iOS;
 
@@ -38,12 +39,19 @@ public class Builder : MonoBehaviour
     {
         var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
 
+        PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
         BuildPlayerOptions opts = new BuildPlayerOptions();
         opts.scenes = scenes;
         opts.locationPathName = Application.dataPath + "/../" + outputFile;
         opts.options = BuildOptions.None;
 
         return opts;
+    }
+
+    [PostProcessBuildAttribute(1)]
+    public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
+    {
+        Debug.Log("SKW:" + pathToBuiltProject);
     }
 }
 #endif
