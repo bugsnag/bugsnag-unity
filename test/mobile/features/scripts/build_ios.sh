@@ -23,3 +23,31 @@ project_path=`pwd`/maze_runner
 $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Builder.IosBuild
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+
+# Archive and export the project
+xcrun xcodebuild -project $project_path \
+                 mazerunner_xcode/Unity-iPhone.xcodeproj
+                 -scheme Unity-iPhone \
+                 -configuration Debug \
+                 -archivePath $project_path/archive/Unity-iPhone.xcarchive \
+                 -allowProvisioningUpdates \
+                 -quiet \
+                 archive
+
+if [ $? -ne 0 ]
+then
+  echo "Failed to archive project"
+  exit 1
+fi
+
+xcrun xcodebuild -exportArchive \
+                 -archivePath $project_path/archive/Unity-iPhone.xcarchive \
+                 -exportPath $project_path/output/ \
+                 -quiet \
+                 -exportOptionsPlist exportOptions.plist
+
+if [ $? -ne 0 ]; then
+  echo "Failed to export app"
+  exit 1
+fi
+

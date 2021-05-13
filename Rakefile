@@ -393,10 +393,12 @@ namespace :test do
         raise 'Preparation of test fixture failed'
       end
 
-      # Build the Android APK
-      script = File.join("test", "mobile", "features", "scripts", "build_ios.sh")
-      unless system env, script
-        raise 'APK build failed'
+      # Generate, build and archive from the XCode project
+      cd File.join("test", "mobile", "features") do
+        script = File.join("scripts", "build_ios.sh")
+        unless system env, script
+          raise 'IPA build failed'
+        end
       end
     end
   end
