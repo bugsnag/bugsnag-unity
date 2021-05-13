@@ -110,7 +110,7 @@ steps:
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
     commands:
-      - ./test/mobile/features/scripts/build_fixture.sh
+      - rake test:android:build
     concurrency: 2
     concurrency_group: 'unity-license'
 
@@ -149,7 +149,7 @@ steps:
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
     commands:
-      - ./test/mobile/features/scripts/build_fixture.sh
+      - rake test:android:build
     concurrency: 2
     concurrency_group: 'unity-license'
 
@@ -189,7 +189,7 @@ steps:
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
     commands:
-      - ./test/mobile/features/scripts/build_fixture.sh
+      - rake test:android:build
     concurrency: 2
     concurrency_group: 'unity-license'
 
