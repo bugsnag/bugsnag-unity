@@ -29,8 +29,6 @@ steps:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/desktop/maze_output/*
     commands:
       - cd test/desktop
       - ./features/scripts/build_maze_runner.sh
@@ -71,6 +69,8 @@ steps:
       artifacts#v1.2.0:
         download:
           - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
+        upload:
+          - test/desktop/maze_output/*
     commands:
       - cd test/desktop
       - bundle install
@@ -87,6 +87,8 @@ steps:
       artifacts#v1.2.0:
         download:
           - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
+        upload:
+          - test/desktop/maze_output/*
     commands:
       - cd test/desktop
       - bundle install
@@ -107,8 +109,9 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
+          - test/mobile/features/fixtures/unity.log
     commands:
-      - ./test/mobile/features/scripts/build_fixture.sh
+      - rake test:android:build
     concurrency: 2
     concurrency_group: 'unity-license'
 
@@ -146,8 +149,9 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
+          - test/mobile/features/fixtures/unity.log
     commands:
-      - ./test/mobile/features/scripts/build_fixture.sh
+      - rake test:android:build
     concurrency: 2
     concurrency_group: 'unity-license'
 
@@ -187,7 +191,7 @@ steps:
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
     commands:
-      - ./test/mobile/features/scripts/build_fixture.sh
+      - rake test:android:build
     concurrency: 2
     concurrency_group: 'unity-license'
 

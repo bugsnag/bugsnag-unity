@@ -25,7 +25,7 @@ This will generate the following files:
 
 To build the Android test fixture:
 ```
-UNITY_VERSION=2018.4.34f1 ./test/mobile/features/scripts/build_fixture.sh
+UNITY_VERSION=2018.4.34f1 rake test:android:build
 ```
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
