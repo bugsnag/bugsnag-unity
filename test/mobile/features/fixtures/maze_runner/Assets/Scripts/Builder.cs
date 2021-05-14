@@ -24,7 +24,7 @@ public class Builder : MonoBehaviour
     public static void IosBuild()
     {
         Debug.Log("Building iOS app...");
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.mazerunner");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.unity.mazerunner");
         PlayerSettings.SetAdditionalIl2CppArgs("--linker-flags=ObjC");
         PlayerSettings.iOS.appleDeveloperTeamID = "372ZUL2ZB7";
 
