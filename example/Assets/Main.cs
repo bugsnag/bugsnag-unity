@@ -3,6 +3,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -35,84 +36,50 @@ public class Main : MonoBehaviour
 #endif
 
 	public Button
-		Stacktrace,
-		Segfault,
-		ManagedCrash,
-		Notify,
-		DivideByZero,
-		LogDebugException,
+		LogDebug,
+		LogDebugWarning,
 		LogDebugError,
-		NativeCrash,
-		NativeBackgroundCrash,
-		NDKCrash,
-		ANR;
+		LogDebugException,
+		CSHException,
+		Notify,
+		OOM,
+		AppHang,
+		CPPException,
+		Signal,
+		NullDereference;
 
 	void Start ()
 	{
-		Stacktrace.GetComponent<Button>().onClick.AddListener(OnStacktraceClick);
-		Segfault.GetComponent<Button>().onClick.AddListener(OnSegfaultClick);
-		ManagedCrash.GetComponent<Button>().onClick.AddListener(OnManagedCrashClick);
-		Notify.GetComponent<Button>().onClick.AddListener(OnNotifyClick);
-		DivideByZero.GetComponent<Button>().onClick.AddListener(OnDivideByZeroClick);
-		LogDebugException.GetComponent<Button>().onClick.AddListener(OnLogDebugExceptionClick);
+		LogDebug.GetComponent<Button>().onClick.AddListener(OnLogDebugClick);
+		LogDebugWarning.GetComponent<Button>().onClick.AddListener(OnLogDebugWarningClick);
 		LogDebugError.GetComponent<Button>().onClick.AddListener(OnLogDebugErrorClick);
-		NativeCrash.GetComponent<Button>().onClick.AddListener(OnNativeCrashClick);
-		NativeBackgroundCrash.GetComponent<Button>().onClick.AddListener(OnNativeBackgroundCrashClick);
-		NDKCrash.GetComponent<Button>().onClick.AddListener(OnNDKCrashClick);
-		ANR.GetComponent<Button>().onClick.AddListener(OnANRClick);
+		LogDebugException.GetComponent<Button>().onClick.AddListener(OnLogDebugExceptionClick);
+		CSHException.GetComponent<Button>().onClick.AddListener(OnCSHExceptionClick);
+		Notify.GetComponent<Button>().onClick.AddListener(OnNotifyClick);
+		OOM.GetComponent<Button>().onClick.AddListener(OnOOMClick);
+		AppHang.GetComponent<Button>().onClick.AddListener(OnAppHangClick);
+		CPPException.GetComponent<Button>().onClick.AddListener(OnCPPExceptionClick);
+		Signal.GetComponent<Button>().onClick.AddListener(OnSignalClick);
+		NullDereference.GetComponent<Button>().onClick.AddListener(OnNullDereferenceClick);
 	}
 
 #if UNITY_IOS
 	[DllImport("__Internal")]
-	private static extern void Crash();
+	private static extern void TriggerCPPException();
 
 	[DllImport("__Internal")]
-	private static extern void CrashInBackground();
+	private static extern void TriggerSignal();
 #endif
 
-	private void OnNativeCrashClick()
+	private void OnLogDebugClick()
 	{
-#if UNITY_IOS
-		Crash();
-#elif UNITY_ANDROID
-		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
-		{
-			java.Call("Crash");
-		}
-
-#endif
+		Debug.Log("LogDebug clicked");
 	}
 
-	private void OnNativeBackgroundCrashClick()
+	private void OnLogDebugWarningClick()
 	{
-#if UNITY_IOS
-		CrashInBackground();
-#elif UNITY_ANDROID
-		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
-		{
-			java.Call("BackgroundCrash");
-		}
-#endif
-	}
-	
-	private void OnNDKCrashClick()
-	{
-#if UNITY_ANDROID
-		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
-		{
-			java.Call("NdkCrash");
-		}
-#endif
-	}
-	
-	private void OnANRClick()
-	{
-#if UNITY_ANDROID
-		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
-		{
-			java.Call("AnrCrash");
-		}
-#endif
+		Debug.Log("LogDebugWarning clicked");
+		Debug.LogWarning(new Exception("LogDebugWarning clicked"));
 	}
 
 	private void OnLogDebugErrorClick()
@@ -127,43 +94,69 @@ public class Main : MonoBehaviour
 		Debug.LogException(new Exception("LogDebugException clicked"));
 	}
 
-	private void OnDivideByZeroClick()
+	private void OnOOMClick()
 	{
-		Debug.Log ("DivideByZero clicked");
-		try {
-			int a = 0;
-			int b = 1;
-			int c = b / a;
-		} catch (Exception e) {
-			BugsnagUnity.Bugsnag.Client.Notify(e);
+		Debug.Log("OOM clicked");
+		var list = new List<object>();
+		while(true)
+		{
+			list.Add(AllocLargeObject());
 		}
+	}
+
+	private void OnAppHangClick()
+	{
+		Debug.Log("AppHang clicked");
+        while(true)
+        {
+            Debug.Log("Forever loop");
+        }
+	}
+
+	private void OnCPPExceptionClick()
+	{
+		Debug.Log("CPPException clicked");
+#if UNITY_IOS
+		TriggerCPPException();
+#endif
+	}
+
+	private void OnSignalClick()
+	{
+		Debug.Log("Signal clicked");
+#if UNITY_IOS
+		TriggerSignal();
+#endif
+	}
+
+    object AllocLargeObject() {
+        var tmp = new System.Object[1024];
+        for (int i = 0; i < 1024; i++)
+            tmp[i] = new byte[1024*1024];
+
+		return tmp;
+    }
+
+	private void OnCSHExceptionClick()
+	{
+		Debug.Log("CSH Exception clicked");
+		throw new Exception("CSH Exeception clicked");
 	}
 
 	private void OnNotifyClick()
 	{
-		Debug.Log ("Notify clicked");
-		 BugsnagUnity.Bugsnag.Client.Notify(new Exception ("Notify clicked!"), report =>
-		 	{
-		 		report.Context = "NotifyClicked";
-		 	});
+		Debug.Log("Notify clicked");
+		BugsnagUnity.Bugsnag.Client.Notify(new Exception("Notify clicked!"), report =>
+		{
+			report.Context = "NotifyClicked";
+		});
 	}
 
-	private void OnManagedCrashClick()
-	{
-		Debug.Log("ManagedCrash clicked");
-		throw new Exception("ManagedCrash clicked");
-	}
-
-	private void OnSegfaultClick()
-	{
-		Debug.Log("Segfault clicked");
-		Marshal.ReadInt32(IntPtr.Zero);
-	}
-
-	private void OnStacktraceClick()
-	{
-		Debug.Log("Stacktrace clicked");
-		Debug.Log(new System.Diagnostics.StackTrace(true).ToString());
+	private void OnNullDereferenceClick()
+    {
+		Debug.Log("Null Dereference clicked");
+		object o = null;
+		o.ToString();
 	}
 
 	void Update () {

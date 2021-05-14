@@ -1,6 +1,20 @@
+#include <stdexcept>
+#include <stdlib.h>
+
 extern "C" {
+  void TriggerSignal();
+  void TriggerCPPException();
   void Crash();
   void CrashInBackground();
+}
+
+void TriggerSignal() {
+  abort();
+}
+
+
+void TriggerCPPException() {
+  throw std::invalid_argument( "Oops!" );
 }
 
 void Crash() {
