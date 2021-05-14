@@ -28,6 +28,7 @@ public class Builder : MonoBehaviour
         PlayerSettings.SetAdditionalIl2CppArgs("--linker-flags=ObjC");
         PlayerSettings.iOS.appleDeveloperTeamID = "372ZUL2ZB7";
         PlayerSettings.iOS.appleEnableAutomaticSigning = true;
+        PlayerSettings.iOS.allowHTTPDownload = true;
 
         var opts = CommonOptions("mazerunner_xcode");
         opts.target = BuildTarget.iOS;
