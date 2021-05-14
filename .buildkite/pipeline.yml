@@ -277,7 +277,6 @@ steps:
       - rake test:ios:build_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2017 - macOS 11'
-    key: 'build-ios-fixture-2017'
     depends_on: 'generate-fixture-project-2017'
     timeout_in_minutes: 30
     agents:
@@ -342,7 +341,6 @@ steps:
       - rake test:ios:build_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2018 - macOS 11'
-    key: 'build-ios-fixture-2018'
     depends_on: 'generate-fixture-project-2018'
     timeout_in_minutes: 30
     agents:
