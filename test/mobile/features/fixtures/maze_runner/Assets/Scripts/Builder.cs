@@ -27,6 +27,7 @@ public class Builder : MonoBehaviour
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.unity.mazerunner");
         PlayerSettings.SetAdditionalIl2CppArgs("--linker-flags=ObjC");
         PlayerSettings.iOS.appleDeveloperTeamID = "372ZUL2ZB7";
+        PlayerSettings.iOS.appleEnableAutomaticSigning = true;
 
         var opts = CommonOptions("mazerunner_xcode");
         opts.target = BuildTarget.iOS;
