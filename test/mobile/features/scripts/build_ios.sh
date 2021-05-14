@@ -30,6 +30,7 @@ xcrun xcodebuild -project $project_path/mazerunner_xcode/Unity-iPhone.xcodeproj 
                  -configuration Debug \
                  -archivePath $project_path/archive/Unity-iPhone.xcarchive \
                  -allowProvisioningUpdates \
+                 -allowProvisioningDeviceRegistration \
                  -quiet \
                  archive
 
