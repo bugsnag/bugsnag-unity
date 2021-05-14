@@ -6,6 +6,9 @@
 
 * Add SetAutoDetectAnrs method to Bugsnag interface
   [#246](https://github.com/bugsnag/bugsnag-unity/pull/246)
+  
+* Stop scene changes overiding context when manually set
+  [#255](https://github.com/bugsnag/bugsnag-unity/pull/255)
 
 * Dont Destroy TimingTrackerObject, so it persists across scenes
   [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
