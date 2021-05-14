@@ -17,13 +17,13 @@ public class BugsnagNative {
             case RuntimePlatform.IPhonePlayer:
             case RuntimePlatform.OSXPlayer:
             case RuntimePlatform.tvOS:
-                BugsnagNative.IOSCrash ();
+                BugsnagNative.IOSCrash();
                 break;
             case RuntimePlatform.Android:
-                BugsnagNative.AndroidCrash ();
+                BugsnagNative.AndroidCrash();
                 break;
             default:
-                BugsnagNative.UnhandledCrash ();
+                BugsnagNative.UnhandledCrash();
                 break;
         }
     }
@@ -37,16 +37,16 @@ public class BugsnagNative {
 
     private static void AndroidCrash()
     {
-        AndroidJavaClass crashClass = new AndroidJavaClass ("com.example.bugsnagcrashplugin.CrashHelper");
-        crashClass.CallStatic ("UnhandledCrash");
+        AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+        crashClass.CallStatic("UnhandledCrash");
     }
 
     private static void UnhandledCrash()
     {
-        Debug.Log ("Generating UnhandledCrash");
+        Debug.Log("Generating UnhandledCrash");
         int x = 0;
         int y = 42;
         int z = y / x;
-        Debug.Log (z.ToString ());
+        Debug.Log(z.ToString());
     }
 }
