@@ -248,10 +248,10 @@ steps:
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
           - test/mobile/features/fixtures/unity.log
-          - project.tgz
+          - project_2017.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+      - tar -zvcf project_2017.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
     concurrency: 2
     concurrency_group: 'unity-license'
 
@@ -268,6 +268,27 @@ steps:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
+          - project_2017.tgz
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
+          - test/mobile/features/fixtures/unity.log
+    commands:
+      - tar -zxf project_2017.tgz test/mobile/features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+
+  - label: ':ios: Build iOS test fixture for Unity 2017 - macOS 11'
+    key: 'build-ios-fixture-2017'
+    depends_on: 'generate-fixture-project-2017'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2017.4.40f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
           - project.tgz
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
@@ -275,11 +296,9 @@ steps:
     commands:
       - tar -zxf project.tgz test/mobile/features/fixtures/maze_runner
       - rake test:ios:build_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
-  - label: ':ios: Build iOS test fixture for Unity 2018'
-    key: 'build-ios-fixture-2018'
+  - label: ':ios: Generate test fixture Xcode project for Unity 2018'
+    key: 'generate-fixture-project-2018'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -294,14 +313,58 @@ steps:
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
           - test/mobile/features/fixtures/unity.log
+          - project_2018.tgz
     commands:
-      - rake test:ios:build
+      - rake test:ios:generate_xcode
+      - tar -zvcf project_2018.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
     concurrency: 2
     concurrency_group: 'unity-license'
 
-  - label: ':ios: Build iOS test fixture for Unity 2019'
+  - label: ':ios: Build iOS test fixture for Unity 2018'
+    key: 'build-ios-fixture-2018'
+    depends_on: 'generate-fixture-project-2018'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-10.15
+    env:
+      UNITY_VERSION: "2018.4.34f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+          - project_2018.tgz
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
+          - test/mobile/features/fixtures/unity.log
+    commands:
+      - tar -zxf project_2018.tgz test/mobile/features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+
+  - label: ':ios: Build iOS test fixture for Unity 2018 - macOS 11'
+    key: 'build-ios-fixture-2018'
+    depends_on: 'generate-fixture-project-2018'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2018.4.34f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+          - project_2018.tgz
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
+          - test/mobile/features/fixtures/unity.log
+    commands:
+      - tar -zxf project_2018.tgz test/mobile/features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+
+  - label: ':ios: Generate test fixture Xcode project for Unity 2019'
     skip: Pending PLAT-6447
-    key: 'build-ios-fixture-2019'
+    key: 'generate-fixture-project-2019'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -315,7 +378,32 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
+          - test/mobile/features/fixtures/unity.log
+          - project_2019.tgz
     commands:
-      - rake test:ios:build
+      - rake test:ios:generate_xcode
+      - tar -zvcf project_2019.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
     concurrency: 2
     concurrency_group: 'unity-license'
+
+  - label: ':ios: Build iOS test fixture for Unity 2019'
+    skip: Pending PLAT-6447
+    key: 'build-ios-fixture-2019'
+    depends_on: 'generate-fixture-project-2019'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-10.15
+    env:
+      UNITY_VERSION: "2019.4.25f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+          - project_2019.tgz
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
+          - test/mobile/features/fixtures/unity.log
+    commands:
+      - tar -zxf project_2019.tgz test/mobile/features/fixtures/maze_runner
+      - rake test:ios:build_xcode
