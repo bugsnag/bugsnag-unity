@@ -25,7 +25,11 @@ extern "C" {
 
   void bugsnag_setAppVersion(const void *configuration, char *appVersion);
 
-  void bugsnag_setAutoNotify(const void *configuration, bool autoNotify);
+  void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
+
+  void bugsnag_setAppHangs(const void *configuration, bool appHangs);
+
+  void bugsnag_setAutoNotify(bool autoNotify);
 
   void bugsnag_setContext(const void *configuration, char *context);
 
@@ -82,8 +86,16 @@ void bugsnag_setContext(const void *configuration, char *context) {
   ((__bridge BugsnagConfiguration *)configuration).context = ns_Context;
 }
 
-void bugsnag_setAutoNotify(const void *configuration, bool autoNotify) {
+void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
+}
+
+void bugsnag_setAppHangs(const void *configuration, bool appHangs) {
+  ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = appHangs;
+}
+
+void bugsnag_setAutoNotify(bool autoNotify) {
+  Bugsnag.client.autoNotify = autoNotify;
 }
 
 void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
