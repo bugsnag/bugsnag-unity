@@ -373,8 +373,7 @@ namespace :test do
   end
 
   namespace :ios do
-    task :build do
-
+    task :generate_xcode do
       # Check that a Unity version has been selected and the path exists before calling the build script
       if ENV.has_key? 'UNITY_VERSION'
         unity_path = "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}/Unity.app/Contents/MacOS"
@@ -393,13 +392,26 @@ namespace :test do
         raise 'Preparation of test fixture failed'
       end
 
-      # Generate, build and archive from the XCode project
+      # Generate the Xcode project
       cd File.join("test", "mobile", "features") do
-        script = File.join("scripts", "build_ios.sh")
+        script = File.join("scripts", "generate_xcode_project.sh")
         unless system env, script
           raise 'IPA build failed'
         end
       end
+    end
+
+    task :build_xcode do
+      # Build and archive from the Xcode project
+      cd File.join("test", "mobile", "features") do
+        script = File.join("scripts", "build_ios.sh")
+        unless system script
+          raise 'IPA build failed'
+        end
+      end
+    end
+
+    task build: %w[test:ios:generate_xcode test:ios:build_xcode] do
     end
   end
 end

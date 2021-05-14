@@ -160,7 +160,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.bugsnag.mazerunner
-    iOS: com.bugsnag.mazerunner
+    iOS: com.bugsnag.unity.mazerunner
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 19
@@ -240,7 +240,7 @@ PlayerSettings:
   appleDeveloperTeamID: 372ZUL2ZB7
   iOSManualSigningProvisioningProfileID: 
   tvOSManualSigningProvisioningProfileID: 
-  appleEnableAutomaticSigning: 0
+  appleEnableAutomaticSigning: 1
   clonedFromGUID: 00000000000000000000000000000000
   AndroidTargetArchitectures: 5
   AndroidSplashScreenScale: 0
