@@ -1,14 +1,42 @@
 When("I run the game in the {string} state") do |state|
-  steps %Q{
-    When I set environment variable "BUGSNAG_SCENARIO" to "#{state}"
-    When I set environment variable "MAZE_ENDPOINT" to "http://localhost:#{MOCK_API_PORT}"
-    And I run the script "features/scripts/launch_unity_application.sh"
-    And I wait for 8 seconds
-  }
+  Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
+  Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
+  Maze::Runner.environment['MAZE_ENDPOINT'] = 'http://localhost:9339'
+  Maze::Runner.environment['UNITY_PROJECT_NAME'] = "#{Maze.config.app}.app"
+  command = %(
+    cd features/fixtures/maze_runner &&
+    #{Maze.config.app}.app/Contents/MacOS/#{Maze.config.app} -batchmode -nographics
+  )
+  Maze::Runner.run_command(command)
+end
+
+Then("the error is valid for the error reporting API sent by the {string}") do |notifier_name|
+  steps %(
+    Then the error "Bugsnag-Api-Key" header equals "#{$api_key}"
+    And the error payload field "apiKey" equals "#{$api_key}"
+    And the error "Bugsnag-Payload-Version" header equals "4.0"
+    And the error "Content-Type" header equals "application/json"
+    And the error "Bugsnag-Sent-At" header is a timestamp
+    And the error Bugsnag-Integrity header is valid
+
+    And the error payload field "notifier.name" equals "#{notifier_name}"
+    And the error payload field "notifier.url" is not null
+    And the error payload field "notifier.version" is not null
+    And the error payload field "events" is a non-empty array
+
+    And each element in error payload field "events" has "severity"
+    And each element in error payload field "events" has "severityReason.type"
+    And each element in error payload field "events" has "unhandled"
+    And each element in error payload field "events" has "exceptions"
+  )
+end
+
+Then("the errors are valid for the error reporting API sent by the {string}") do |notifier_name|
+  
 end
 
 Then("the first significant stack frame methods and files should match:") do |expected_values|
-  stacktrace = read_key_path(find_request(0)[:body], "events.0.exceptions.0.stacktrace")
+  stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   expected_frame_values = expected_values.raw
   expected_index = 0
   flunk("The stacktrace is empty") if stacktrace.length == 0
@@ -23,15 +51,15 @@ Then("the first significant stack frame methods and files should match:") do |ex
   end
 end
 
-Then("the events in requests {string} match one of:") do |request_indices, table|
-  events = request_indices.split(',').map do |index|
-    read_key_path(find_request(index.to_i)[:body], "events")
+Then("the current error request events match one of:") do |table|
+  events = Maze::Server.errors.all.map do |error|
+    Maze::Helper.read_key_path(error[:body], "events")
   end.flatten
   table.hashes.each do |values|
     assert_not_nil(events.detect do |event|
-      handled_count = read_key_path(event, "session.events.handled")
-      unhandled_count = read_key_path(event, "session.events.unhandled")
-      message = read_key_path(event, "exceptions.0.message")
+      handled_count = Maze::Helper.read_key_path(event, "session.events.handled")
+      unhandled_count = Maze::Helper.read_key_path(event, "session.events.unhandled")
+      message = Maze::Helper.read_key_path(event, "exceptions.0.message")
       handled_count == values["handled"].to_i &&
         unhandled_count == values["unhandled"].to_i &&
         message == values["message"]
@@ -40,7 +68,7 @@ Then("the events in requests {string} match one of:") do |request_indices, table
 end
 
 Then("the event {string} matches one of:") do |path, table|
-  payload_value = read_key_path(find_request(nil)[:body], "events.0.#{path}")
+  payload_value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{path}")
   valid_values = table.raw.flat_map { |e| e }
   assert(valid_values.any? { |frame| frame == payload_value }, "Value #{payload_value} did not match any of the expected values")
 end

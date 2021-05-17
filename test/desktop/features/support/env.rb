@@ -1,25 +1,30 @@
-# Any 'run once' setup should go here as this file is evaluated
-# when the environment loads.
-# Any helper functions added here will be available in step
-# definitions
+require 'fileutils'
 
-ENV['BUGSNAG_APIKEY'] = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
+$api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
 
-# Extract the test fixture app
-unity_project_name = ENV['UNITY_PROJECT_NAME'] = "Mazerunner"
-unity_test_project = "features/fixtures/maze_runner/#{unity_project_name}.app"
-`cd features/fixtures && tar -xzf #{unity_project_name}-#{ENV['UNITY_VERSION']}.app.zip`
+AfterConfiguration do |_config|
+  Maze.config.enforce_bugsnag_integrity = false
 
-# Scenario hooks
-Before do
-# Runs before every Scenario
-end
+  project_name = Maze.config.app
+  fixture_dir = 'features/fixtures'
+  project_dir = "#{fixture_dir}/maze_runner"
+  app_file = "#{project_name}.app"
+  zip_file = "#{project_name}-#{ENV['UNITY_VERSION']}.app.zip"
 
-After do
-# Runs after every Scenario
-end
+  unless File.exist?("#{fixture_dir}/#{zip_file}")
+    raise StandardError, "Test fixture build archive not found at #{fixture_dir}/#{zip_file}"
+  end
 
-at_exit do
-  `pkill Mazerunner`
-  FileUtils.rm_rf(unity_test_project)
+  `cd #{fixture_dir} && tar -xzf #{zip_file}`
+
+  unless File.exist?("#{project_dir}/#{app_file}")
+    raise StandardError, "Test fixture wasn't successfully extracted to #{project_dir}/#{app_file}"
+  end
+
+  Maze::Runner.environment['UNITY_PROJECT_NAME'] = project_name
+
+  at_exit do
+    FileUtils.rm_rf(project_dir + app_file)
+    Maze::Runner.run_command("log show --predicate '(process == \"#{Maze.config.app}\")' --style syslog --start '#{Maze.start_time}' > #{Maze.config.app}.log")
+  end
 end

@@ -64,9 +64,9 @@ public class Main : MonoBehaviour {
     var config = new Configuration(apiKey);
 
     // setup default endpoints etc
-    var endpoint = new System.Uri(Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
-    config.Endpoint = endpoint;
-    config.SessionEndpoint = endpoint;
+    var endpoint = Environment.GetEnvironmentVariable("MAZE_ENDPOINT");
+    config.Endpoint = new System.Uri(endpoint + "/notify");
+    config.SessionEndpoint = new System.Uri(endpoint + "/sessions");
     config.AutoCaptureSessions = scenario.Contains("AutoSession");
 
     // replacement for BugsnagBehaviour as not practical to load script in fixture
