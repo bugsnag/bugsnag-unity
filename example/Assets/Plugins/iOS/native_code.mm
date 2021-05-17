@@ -1,14 +1,22 @@
 extern "C" {
-  void Crash();
-  void CrashInBackground();
+  void RaiseCocoaSignal();
+  void TriggerCocoaCppException();
+  void TriggerCocoaOom();
+  void TriggerCocoaAppHang();
 }
 
-void Crash() {
+void RaiseCocoaSignal() {
   [NSArray new][1];
 }
 
-void CrashInBackground() {
-  dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    Crash();
-  });
+void TriggerCocoaCppException() {
+  // TODO implement me
+}
+
+void TriggerCocoaOom() {
+  // TODO implement me
+}
+
+void TriggerCocoaAppHang() {
+  // TODO implement me
 }

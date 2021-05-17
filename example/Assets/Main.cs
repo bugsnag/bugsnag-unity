@@ -34,139 +34,156 @@ public class Main : MonoBehaviour
 	}
 #endif
 
+#if UNITY_IOS
+	[DllImport("__Internal")]
+	private static extern void RaiseCocoaSignal();
+
+	[DllImport("__Internal")]
+	private static extern void TriggerCocoaCppException();
+
+	[DllImport("__Internal")]
+	private static extern void TriggerCocoaOom();
+
+	[DllImport("__Internal")]
+	private static extern void TriggerCocoaAppHang();
+#endif
+
 	public Button
-		Stacktrace,
-		Segfault,
 		ManagedCrash,
-		Notify,
-		DivideByZero,
-		LogDebugException,
-		LogDebugError,
-		NativeCrash,
-		NativeBackgroundCrash,
-		NDKCrash,
-		ANR;
+		BugsnagNotify,
+		LogException,
+		LogError,
+		LogWarning,
+		Log,
+		Segfault,
+		NativeSignal,
+		NativeCppException,
+		JvmException,
+		ApplicationNotResponding,
+		OutOfMemory,
+		AppHang;
 
-	void Start ()
+	void Start()
 	{
-		Stacktrace.GetComponent<Button>().onClick.AddListener(OnStacktraceClick);
-		Segfault.GetComponent<Button>().onClick.AddListener(OnSegfaultClick);
 		ManagedCrash.GetComponent<Button>().onClick.AddListener(OnManagedCrashClick);
-		Notify.GetComponent<Button>().onClick.AddListener(OnNotifyClick);
-		DivideByZero.GetComponent<Button>().onClick.AddListener(OnDivideByZeroClick);
-		LogDebugException.GetComponent<Button>().onClick.AddListener(OnLogDebugExceptionClick);
-		LogDebugError.GetComponent<Button>().onClick.AddListener(OnLogDebugErrorClick);
-		NativeCrash.GetComponent<Button>().onClick.AddListener(OnNativeCrashClick);
-		NativeBackgroundCrash.GetComponent<Button>().onClick.AddListener(OnNativeBackgroundCrashClick);
-		NDKCrash.GetComponent<Button>().onClick.AddListener(OnNDKCrashClick);
-		ANR.GetComponent<Button>().onClick.AddListener(OnANRClick);
+		BugsnagNotify.GetComponent<Button>().onClick.AddListener(OnBugsnagNotifyClick);
+		LogException.GetComponent<Button>().onClick.AddListener(OnLogExceptionClick);
+		LogError.GetComponent<Button>().onClick.AddListener(OnLogErrorClick);
+		LogWarning.GetComponent<Button>().onClick.AddListener(OnLogWarningClick);
+		Log.GetComponent<Button>().onClick.AddListener(OnLogClick);
+		Segfault.GetComponent<Button>().onClick.AddListener(OnSegfaultClick);
+		NativeSignal.GetComponent<Button>().onClick.AddListener(OnNativeSignalClick);
+		NativeCppException.GetComponent<Button>().onClick.AddListener(OnNativeCppExceptionClick);
+		JvmException.GetComponent<Button>().onClick.AddListener(OnJvmExceptionClick);
+		ApplicationNotResponding.GetComponent<Button>().onClick.AddListener(OnApplicationNotRespondingClick);
+		OutOfMemory.GetComponent<Button>().onClick.AddListener(OnOutOfMemoryClick);
+		AppHang.GetComponent<Button>().onClick.AddListener(OnAppHangClick);
 	}
 
-#if UNITY_IOS
-	[DllImport("__Internal")]
-	private static extern void Crash();
-
-	[DllImport("__Internal")]
-	private static extern void CrashInBackground();
-#endif
-
-	private void OnNativeCrashClick()
+	private void OnManagedCrashClick()
 	{
-#if UNITY_IOS
-		Crash();
-#elif UNITY_ANDROID
-		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
-		{
-			java.Call("Crash");
-		}
-
-#endif
+		throw new Exception("Triggered an uncaught C# exception");
 	}
 
-	private void OnNativeBackgroundCrashClick()
+	private void OnBugsnagNotifyClick()
 	{
-#if UNITY_IOS
-		CrashInBackground();
-#elif UNITY_ANDROID
-		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
-		{
-			java.Call("BackgroundCrash");
-		}
-#endif
-	}
-	
-	private void OnNDKCrashClick()
-	{
-#if UNITY_ANDROID
-		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
-		{
-			java.Call("NdkCrash");
-		}
-#endif
-	}
-	
-	private void OnANRClick()
-	{
-#if UNITY_ANDROID
-		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash"))
-		{
-			java.Call("AnrCrash");
-		}
-#endif
-	}
-
-	private void OnLogDebugErrorClick()
-	{
-		Debug.Log("LogDebugError clicked");
-		Debug.LogError(new Exception("LogDebugError clicked"));
-	}
-
-	private void OnLogDebugExceptionClick()
-	{
-		Debug.Log("LogDebugException clicked");
-		Debug.LogException(new Exception("LogDebugException clicked"));
-	}
-
-	private void OnDivideByZeroClick()
-	{
-		Debug.Log ("DivideByZero clicked");
-		try {
-			int a = 0;
-			int b = 1;
-			int c = b / a;
-		} catch (Exception e) {
-			BugsnagUnity.Bugsnag.Client.Notify(e);
-		}
-	}
-
-	private void OnNotifyClick()
-	{
-		Debug.Log ("Notify clicked");
-		 BugsnagUnity.Bugsnag.Client.Notify(new Exception ("Notify clicked!"), report =>
+		BugsnagUnity.Bugsnag.Client.Notify(new Exception ("Sending a caught C# exception to Bugsnag"), report =>
 		 	{
 		 		report.Context = "NotifyClicked";
 		 	});
 	}
 
-	private void OnManagedCrashClick()
+	private void OnLogExceptionClick()
 	{
-		Debug.Log("ManagedCrash clicked");
-		throw new Exception("ManagedCrash clicked");
+		Debug.LogException(new Exception("Sent an exception to Debug.LogException"));
+	}
+	
+
+	private void OnLogErrorClick()
+	{
+		Debug.LogError(new Exception("Logged an error message in Debug.LogError"));
+	}
+
+	private void OnLogWarningClick()
+	{
+		Debug.LogWarning("Logged a warning message in Debug.LogWarning");
+	}
+	private void OnLogClick()
+	{
+		Debug.Log("Logged a message in Debug.Log");
 	}
 
 	private void OnSegfaultClick()
 	{
-		Debug.Log("Segfault clicked");
 		Marshal.ReadInt32(IntPtr.Zero);
 	}
 
-	private void OnStacktraceClick()
+	private void OnNativeSignalClick()
 	{
-		Debug.Log("Stacktrace clicked");
-		Debug.Log(new System.Diagnostics.StackTrace(true).ToString());
+	#if UNITY_IOS
+		RaiseCocoaSignal();
+	#elif UNITY_ANDROID
+		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
+			java.Call("raiseNdkSignal");
+		}
+	#else
+		WarnPlatformNotSupported();
+	#endif
 	}
 
-	void Update () {
+	private void OnNativeCppExceptionClick()
+	{
+	#if UNITY_IOS
+		TriggerCocoaCppException();
+	#elif UNITY_ANDROID
+		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
+			java.Call("throwCppException");
+		}
+	#else
+		WarnPlatformNotSupported();
+	#endif
+	}
 
+	private void OnJvmExceptionClick()
+	{
+		if (Application.platform == RuntimePlatform.Android) {
+			using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
+				java.Call("throwBackgroundJvmException");
+			}
+		} else {
+			WarnPlatformNotSupported();
+		}
+	}
+
+	private void OnApplicationNotRespondingClick()
+	{
+		if (Application.platform == RuntimePlatform.Android) {
+			using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
+				java.Call("triggerAnr");
+			}
+		} else {
+			WarnPlatformNotSupported();
+		}
+	}
+
+	private void OnOutOfMemoryClick()
+	{
+	#if UNITY_IOS
+		TriggerCocoaOom();
+	#else
+		WarnPlatformNotSupported();
+	#endif
+	}
+	private void OnAppHangClick()
+	{
+	#if UNITY_IOS
+		TriggerCocoaAppHang();
+	#else
+		WarnPlatformNotSupported();
+	#endif
+	}
+
+	private void WarnPlatformNotSupported() {
+		Debug.Log("The current platform does not support triggering this type of error.");
 	}
 }
