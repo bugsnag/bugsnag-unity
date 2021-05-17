@@ -14,6 +14,13 @@ popd
 
 pushd "$script_path/../fixtures"
 
+# Assemble the Android AAR and copy it into the Unity plugins directory
+echo "Assembling Android mazerunner code into AAR"
+./nativeplugin/android/gradlew -p nativeplugin/android assembleRelease
+
+echo "Copying Android mazerunner AAR into Unity plugins dir"
+cp nativeplugin/android/build/outputs/aar/android-release.aar maze_runner/Assets/Plugins/Android/mazerunner_code.aar
+
 # Run unity and immediately exit afterwards, log all output, disable the
 # package manager (we just don't need it and it slows things down)
 DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log -noUpm"
