@@ -21,7 +21,7 @@ steps:
   #
   # Build desktop test fixtures
   #
-  - label: Build Unity 2017 desktop test fixture
+  - label: Build Unity 2017 MacOS test fixture
     key: 'cocoa-2017-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -42,7 +42,7 @@ steps:
     concurrency: 2
     concurrency_group: 'unity-license'
 
-  - label: Build Unity 2018 desktop test fixture
+  - label: Build Unity 2018 MacOS test fixture
     key: 'cocoa-2018-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -66,7 +66,7 @@ steps:
   #
   # Run desktop tests
   #
-  - label: Run e2e tests for Unity 2017.4.40f1
+  - label: Run MacOS e2e tests for Unity 2017.4.40f1
     depends_on: 'cocoa-2017-fixture'
     timeout_in_minutes: 30
     agents:
@@ -85,7 +85,7 @@ steps:
       - bundle install
       - bundle exec maze-runner --app=Mazerunner
 
-  - label: Run e2e tests for Unity 2018.4.34f1
+  - label: Run MacOS e2e tests for Unity 2018.4.34f1
     depends_on: 'cocoa-2018-fixture'
     timeout_in_minutes: 30
     agents:
