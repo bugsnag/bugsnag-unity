@@ -14,7 +14,10 @@ public class ReporterBehavior : MonoBehaviour {
         config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
         config.Context = "My context";
         config.AppVersion = "1.2.3";
+        config.NotifyLevel = LogType.Error;
         Bugsnag.Start(config);
+        LeaveBreadcrumbString();
+        LeaveBreadcrumbTuple();
     }
 
     public void ThrowException() {
@@ -22,8 +25,8 @@ public class ReporterBehavior : MonoBehaviour {
     }
 
     public void AssertionFailure() {
-        var items = new int[]{1, 2, 3};
-        Debug.Log("Item4 is: " + items[4]);
+        SetUser();
+        Debug.LogError("Something went wrong.");
     }
 
     public void NativeException() {
