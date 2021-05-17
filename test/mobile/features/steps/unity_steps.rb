@@ -4,7 +4,7 @@ When("I wait for the game to start") do
 end
 
 When("I tap the {string} button") do |button|
-  # TODO Currently specific to the ANDROID_9_0 device (Google Pixel 3)
+  # TODO Currently specific to the ANDROID_9_0 device (Google Pixel 3), which has a screen resolution of 1080x2160
   middle = 2160 / 2
   case button
   when "throw Exception"

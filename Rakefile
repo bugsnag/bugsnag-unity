@@ -357,11 +357,61 @@ namespace :test do
         raise "Unity not found at path #{unity}"
       end
 
+      # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => unity_path }
-      script = File.join("test", "mobile", "features", "scripts", "build_fixture.sh")
+      script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
       unless system env, script
-        raise 'Build failed'
+        raise 'Preparation of test fixture failed'
       end
+
+      # Build the Android APK
+      script = File.join("test", "mobile", "features", "scripts", "build_android.sh")
+      unless system env, script
+        raise 'APK build failed'
+      end
+    end
+  end
+
+  namespace :ios do
+    task :generate_xcode do
+      # Check that a Unity version has been selected and the path exists before calling the build script
+      if ENV.has_key? 'UNITY_VERSION'
+        unity_path = "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}/Unity.app/Contents/MacOS"
+      else
+        raise 'UNITY_VERSION must be set'
+      end
+      unity = File.join(unity_path, "Unity")
+      unless File.exists? unity
+        raise "Unity not found at path #{unity}"
+      end
+
+      # Prepare the test fixture project by importing the plugins
+      env = { "UNITY_PATH" => unity_path }
+      script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
+      unless system env, script
+        raise 'Preparation of test fixture failed'
+      end
+
+      # Generate the Xcode project
+      cd File.join("test", "mobile", "features") do
+        script = File.join("scripts", "generate_xcode_project.sh")
+        unless system env, script
+          raise 'IPA build failed'
+        end
+      end
+    end
+
+    task :build_xcode do
+      # Build and archive from the Xcode project
+      cd File.join("test", "mobile", "features") do
+        script = File.join("scripts", "build_ios.sh")
+        unless system script
+          raise 'IPA build failed'
+        end
+      end
+    end
+
+    task build: %w[test:ios:generate_xcode test:ios:build_xcode] do
     end
   end
 end
