@@ -79,6 +79,7 @@ steps:
           - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
         upload:
           - test/desktop/maze_output/*
+          - test/desktop/Mazerunner.log
     commands:
       - cd test/desktop
       - bundle install
@@ -97,6 +98,7 @@ steps:
           - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
         upload:
           - test/desktop/maze_output/*
+          - test/desktop/Mazerunner.log
     commands:
       - cd test/desktop
       - bundle install
