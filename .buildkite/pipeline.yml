@@ -83,7 +83,7 @@ steps:
     commands:
       - cd test/desktop
       - bundle install
-      - bundle exec bugsnag-maze-runner
+      - bundle exec maze-runner --app=Mazerunner
 
   - label: Run e2e tests for Unity 2018.4.34f1
     depends_on: 'cocoa-2018-fixture'
@@ -102,7 +102,7 @@ steps:
     commands:
       - cd test/desktop
       - bundle install
-      - bundle exec bugsnag-maze-runner
+      - bundle exec maze-runner --app=Mazerunner
 
   #
   # Build Android test fixtures
