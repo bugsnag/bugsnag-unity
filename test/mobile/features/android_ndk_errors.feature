@@ -33,7 +33,7 @@ Feature: Android manual smoke tests
         And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
         And the event "app.inForeground" is true
-        And the event "app.isLaunching" is true
+        And the event "app.isLaunching" is not null
         And the event "app.binaryArch" is not null
 
         # Device data
@@ -52,9 +52,6 @@ Feature: Android manual smoke tests
 
         # User
         And the event "user.id" is not null
-
-        # Breadcrumbs
-        And the event has a "state" breadcrumb named "Bugsnag loaded"
 
         # Native context override
         And the event "context" equals "My context"
