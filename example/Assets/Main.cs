@@ -135,14 +135,14 @@ public class Main : MonoBehaviour
 			int b = 1;
 			int c = b / a;
 		} catch (Exception e) {
-			BugsnagUnity.Bugsnag.Client.Notify(e);
+			BugsnagUnity.Bugsnag.Notify(e);
 		}
 	}
 
 	private void OnNotifyClick()
 	{
 		Debug.Log ("Notify clicked");
-		 BugsnagUnity.Bugsnag.Client.Notify(new Exception ("Notify clicked!"), report =>
+		 BugsnagUnity.Bugsnag.Notify(new Exception ("Notify clicked!"), report =>
 		 	{
 		 		report.Context = "NotifyClicked";
 		 	});
