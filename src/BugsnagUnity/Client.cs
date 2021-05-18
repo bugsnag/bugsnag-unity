@@ -66,9 +66,11 @@ namespace BugsnagUnity
       UnityMetadata.InitDefaultMetadata();
       Device.InitUnityVersion();
       NativeClient.SetMetadata(UnityMetadataKey, UnityMetadata.ForNativeClient());
-
       NativeClient.PopulateUser(User);
-
+      if (!string.IsNullOrEmpty(nativeClient.Configuration.Context))
+      {
+        _contextSetManually = true;
+      }
       SceneManager.sceneLoaded += SceneLoaded;
       Application.logMessageReceivedThreaded += MultiThreadedNotify;
       Application.logMessageReceived += Notify;
