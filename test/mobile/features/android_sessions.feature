@@ -69,6 +69,3 @@ Feature: Android smoke tests for sessions
         And the error payload field "events.0.session.id" equals the stored value "automated_session_id"
         And the event "session.events.handled" equals 1
         And the event "session.events.unhandled" equals 0
-
-    # Scenario: JVM errors contain session information
-    # TODO receive and validate sessions in a JVM payload here

@@ -19,9 +19,6 @@ public class BugsnagNative {
             case RuntimePlatform.tvOS:
                 BugsnagNative.IOSCrash();
                 break;
-            case RuntimePlatform.Android:
-                BugsnagNative.AndroidCrash();
-                break;
             default:
                 BugsnagNative.UnhandledCrash();
                 break;
@@ -35,10 +32,20 @@ public class BugsnagNative {
         #endif
     }
 
-    private static void AndroidCrash()
+    public static void TriggerJvmException()
     {
-        AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
-        crashClass.CallStatic("UnhandledCrash");
+        if (Application.platform == RuntimePlatform.Android) {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("triggerJvmException");
+        }
+    }
+
+    public static void RaiseNdkSignal()
+    {
+        if (Application.platform == RuntimePlatform.Android) {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("raiseNdkSignal");
+        }
     }
 
     private static void UnhandledCrash()

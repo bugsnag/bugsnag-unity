@@ -30,7 +30,7 @@ public class ReporterBehavior : MonoBehaviour {
     }
 
     public void NativeException() {
-        BugsnagNative.Crash();
+        BugsnagNative.TriggerJvmException();
     }
 
     public void LogCaughtException() {
@@ -43,7 +43,7 @@ public class ReporterBehavior : MonoBehaviour {
     }
 
     public void LogWithClassPrefix() {
-        throw new ExecutionEngineException("Haven't gotten around to making this work, sorry");
+        BugsnagNative.RaiseNdkSignal();
     }
 
     public void NotifyCaughtException() {
