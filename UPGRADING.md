@@ -43,7 +43,7 @@ config.AutoNotify = true;
 
 ### Bugsnag.Configuration accessor removed
 
-The `Bugsnag.Configuration` accessor has been removed. You should supply all your configuration options up-front as recommended [here](#new-recommended-way-for-initializing-bugsnag).
+The `Bugsnag.Configuration` and `Bugsnag.Client.Configuration` accessors have been removed. You should supply all your configuration options up-front as recommended [here](#new-recommended-way-for-initializing-bugsnag).
 
 ### AutoNotify and Context replaced
 
