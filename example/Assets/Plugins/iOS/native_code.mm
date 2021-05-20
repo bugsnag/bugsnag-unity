@@ -1,22 +1,20 @@
+#include <stdexcept>
+#include <stdlib.h>
+
 extern "C" {
   void RaiseCocoaSignal();
   void TriggerCocoaCppException();
-  void TriggerCocoaOom();
   void TriggerCocoaAppHang();
 }
 
 void RaiseCocoaSignal() {
-  [NSArray new][1];
+    abort();
 }
 
 void TriggerCocoaCppException() {
-  // TODO implement me
-}
-
-void TriggerCocoaOom() {
-  // TODO implement me
+	throw "CocoaCppException";
 }
 
 void TriggerCocoaAppHang() {
-  // TODO implement me
+    sleep(10000);
 }

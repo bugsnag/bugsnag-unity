@@ -3,6 +3,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
+using BugsnagUnity;
+using System.Collections.Generic;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -42,9 +44,6 @@ public class Main : MonoBehaviour
 	private static extern void TriggerCocoaCppException();
 
 	[DllImport("__Internal")]
-	private static extern void TriggerCocoaOom();
-
-	[DllImport("__Internal")]
 	private static extern void TriggerCocoaAppHang();
 #endif
 
@@ -82,15 +81,19 @@ public class Main : MonoBehaviour
 
 	private void OnManagedCrashClick()
 	{
+		Debug.Log("OnManagedCrashClicked");
+
 		throw new Exception("Triggered an uncaught C# exception");
 	}
 
 	private void OnBugsnagNotifyClick()
 	{
-		BugsnagUnity.Bugsnag.Client.Notify(new Exception ("Sending a caught C# exception to Bugsnag"), report =>
-		 	{
-		 		report.Context = "NotifyClicked";
-		 	});
+		Debug.Log("OnBugsnagNotifyClicked");
+
+		Bugsnag.Notify(new Exception ("Sending a caught C# exception to Bugsnag"), report =>
+		{
+		 	report.Context = "NotifyClicked";
+		});
 	}
 
 	private void OnLogExceptionClick()
@@ -115,75 +118,101 @@ public class Main : MonoBehaviour
 
 	private void OnSegfaultClick()
 	{
+		Debug.Log("OnSegfaultClicked");
+
 		Marshal.ReadInt32(IntPtr.Zero);
 	}
 
 	private void OnNativeSignalClick()
 	{
-	#if UNITY_IOS
+		Debug.Log("OnNativeSignalClicked");
+
+#if UNITY_IOS && !UNITY_EDITOR
 		RaiseCocoaSignal();
-	#elif UNITY_ANDROID
+#elif UNITY_ANDROID && !UNITY_EDITOR
 		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
 			java.Call("raiseNdkSignal");
 		}
-	#else
+#else
 		WarnPlatformNotSupported();
-	#endif
+#endif
 	}
 
 	private void OnNativeCppExceptionClick()
 	{
-	#if UNITY_IOS
+		Debug.Log("OnNativeCppExceptionClicked");
+
+#if UNITY_IOS && !UNITY_EDITOR
 		TriggerCocoaCppException();
-	#elif UNITY_ANDROID
+#elif UNITY_ANDROID && !UNITY_EDITOR
 		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
 			java.Call("throwCppException");
 		}
-	#else
+#else
 		WarnPlatformNotSupported();
-	#endif
+#endif
 	}
 
 	private void OnJvmExceptionClick()
 	{
-		if (Application.platform == RuntimePlatform.Android) {
-			using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
-				java.Call("throwBackgroundJvmException");
-			}
-		} else {
-			WarnPlatformNotSupported();
+		Debug.Log("OnJvmExceptionClicked");
+#if UNITY_ANDROID && !UNITY_EDITOR
+		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
+			java.Call("throwBackgroundJvmException");
 		}
+#else
+		WarnPlatformNotSupported();
+#endif
 	}
 
 	private void OnApplicationNotRespondingClick()
 	{
-		if (Application.platform == RuntimePlatform.Android) {
-			using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
-				java.Call("triggerAnr");
-			}
-		} else {
-			WarnPlatformNotSupported();
+		Debug.Log("OnApplicationNotRespondingClicked");
+#if UNITY_ANDROID && !UNITY_EDITOR
+		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
+			java.Call("triggerAnr");
 		}
+#else
+		WarnPlatformNotSupported();
+#endif
+	
 	}
 
 	private void OnOutOfMemoryClick()
 	{
-	#if UNITY_IOS
-		TriggerCocoaOom();
-	#else
-		WarnPlatformNotSupported();
-	#endif
+		Debug.Log("OnOutOfMemoryClicked");
+		var list = new List<object>();
+		while (true)
+		{
+			list.Add(AllocLargeObject());
+		}
 	}
+
+	private object AllocLargeObject()
+	{
+		var tmp = new System.Object[1024];
+		for (int i = 0; i < 1024; i++)
+			tmp[i] = new byte[1024 * 1024];
+		return tmp;
+	}
+
 	private void OnAppHangClick()
 	{
-	#if UNITY_IOS
+		Debug.Log("OnAppHangClicked");
+
+#if UNITY_IOS && !UNITY_EDITOR
 		TriggerCocoaAppHang();
-	#else
+#else
 		WarnPlatformNotSupported();
-	#endif
+#endif
+
 	}
 
 	private void WarnPlatformNotSupported() {
+#if UNITY_EDITOR
+		Debug.Log("This kind of error cannot be triggered in the Unity Editor.");
+#else
 		Debug.Log("The current platform does not support triggering this type of error.");
+#endif
 	}
 }
