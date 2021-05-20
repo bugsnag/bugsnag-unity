@@ -1,0 +1,255 @@
+2021-05-20 08:56:28 +0000 [MT] Initial pipeline context: <IDEDistributionProcessingPipelineContext: 0x7fca846c1a20; archive(resolved)='<IDEArchive: 0x7fcab606df80>', distributionTask(resolved)='2', distributionDestination(resolved)='1', distributionMethod(resolved)='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team(resolved)='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	Chain (13, self inclusive):
+	<IDEDistributionProcessingPipelineContext: 0x7fca846c1a20; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionProcessingPipelineContext: 0x7fca8468adc0; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionContext: 0x7fca846d7480; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionContext: 0x7fca846bbfa0; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionContext: 0x7fca846ba5d0; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionContext: 0x7fca846b8ef0; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionContext: 0x7fca846b61b0; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionContext: 0x7fca846b4e90; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionContext: 0x7fcaa45b1230; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='<IDEProvisioningBasicTeam: 0x7fca84685d90; teamID='372ZUL2ZB7', teamName='(null)'>'>
+	<IDEDistributionContext: 0x7fca84695b50; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='(null)'>
+	<IDEDistributionContext: 0x7fca97945ad0; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='(null)'>
+	<IDEDistributionContext: 0x7fca947097a0; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='<IDEDistributionMethodDevelopmentSigned: 0x7fcab457aef0>', team='(null)'>
+	<IDEDistributionContext: 0x7fcab606e470; archive = '<IDEArchive: 0x7fcab606df80>', distributionMethod='(null)', team='(null)'>
+</IDEDistributionProcessingPipelineContext: 0x7fca846c1a20>
+2021-05-20 08:56:28 +0000 [MT] Processing step: IDEDistributionCreateDestRootStep
+2021-05-20 08:56:28 +0000 [MT] Processing step: IDEDistributionCopyItemStep
+2021-05-20 08:56:28 +0000 [MT] Running /usr/bin/ditto '-V' '/Users/karl/work/code/bugsnag-unity/test/mobile/features/fixtures/maze_runner/archive/Unity-iPhone.xcarchive/Products/Applications/mazerunner.app' '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root/Payload/mazerunner.app'
+2021-05-20 08:56:28 +0000  >>> Copying /Users/karl/work/code/bugsnag-unity/test/mobile/features/fixtures/maze_runner/archive/Unity-iPhone.xcarchive/Products/Applications/mazerunner.app 
+2021-05-20 08:56:28 +0000  copying file ./_CodeSignature/CodeResources ... 
+2021-05-20 08:56:28 +0000  12649 bytes for ./_CodeSignature/CodeResources
+2021-05-20 08:56:28 +0000  copying file ./LaunchScreen-iPhonePortrait.png ... 
+2021-05-20 08:56:28 +0000  138 bytes for ./LaunchScreen-iPhonePortrait.png
+copying file ./LaunchScreen-iPhoneLandscape.png ... 
+2021-05-20 08:56:28 +0000  138 bytes for ./LaunchScreen-iPhoneLandscape.png
+copying file ./AppIcon60x60@2x.png ... 
+2021-05-20 08:56:28 +0000  2149 bytes for ./AppIcon60x60@2x.png
+copying file ./AppIcon60x60@3x.png ... 
+2021-05-20 08:56:28 +0000  3144 bytes for ./AppIcon60x60@3x.png
+copying file ./LaunchScreen-iPad.png ... 
+2021-05-20 08:56:28 +0000  138 bytes for ./LaunchScreen-iPad.png
+2021-05-20 08:56:28 +0000  copying file ./LaunchScreen-iPad.storyboardc/UIViewController-UnityLaunchScreen-ViewController.nib ... 
+2021-05-20 08:56:28 +0000  934 bytes for ./LaunchScreen-iPad.storyboardc/UIViewController-UnityLaunchScreen-ViewController.nib
+2021-05-20 08:56:28 +0000  copying file ./LaunchScreen-iPad.storyboardc/UnityLaunchScreen-ViewController-view-UnityLaunchScreen-RootView.nib ... 
+2021-05-20 08:56:28 +0000  2395 bytes for ./LaunchScreen-iPad.storyboardc/UnityLaunchScreen-ViewController-view-UnityLaunchScreen-RootView.nib
+2021-05-20 08:56:28 +0000  copying file ./LaunchScreen-iPad.storyboardc/Info.plist ... 
+2021-05-20 08:56:28 +0000  333 bytes for ./LaunchScreen-iPad.storyboardc/Info.plist
+2021-05-20 08:56:28 +0000  copying file ./Assets.car ... 
+2021-05-20 08:56:28 +0000  29624 bytes for ./Assets.car
+2021-05-20 08:56:28 +0000  copying file ./AppIcon76x76@2x~ipad.png ... 
+2021-05-20 08:56:28 +0000  2663 bytes for ./AppIcon76x76@2x~ipad.png
+2021-05-20 08:56:28 +0000  copying file ./AppIcon83.5x83.5@2x~ipad.png ... 
+2021-05-20 08:56:28 +0000  2949 bytes for ./AppIcon83.5x83.5@2x~ipad.png
+2021-05-20 08:56:28 +0000  copying file ./LaunchScreen-iPhone.storyboardc/UIViewController-UnityLaunchScreen-ViewController.nib ... 
+2021-05-20 08:56:28 +0000  934 bytes for ./LaunchScreen-iPhone.storyboardc/UIViewController-UnityLaunchScreen-ViewController.nib
+2021-05-20 08:56:28 +0000  copying file ./LaunchScreen-iPhone.storyboardc/UnityLaunchScreen-ViewController-view-UnityLaunchScreen-RootView.nib ... 
+2021-05-20 08:56:28 +0000  2405 bytes for ./LaunchScreen-iPhone.storyboardc/UnityLaunchScreen-ViewController-view-UnityLaunchScreen-RootView.nib
+2021-05-20 08:56:28 +0000  copying file ./LaunchScreen-iPhone.storyboardc/Info.plist ... 
+2021-05-20 08:56:28 +0000  333 bytes for ./LaunchScreen-iPhone.storyboardc/Info.plist
+2021-05-20 08:56:28 +0000  copying file ./mazerunner ... 
+2021-05-20 08:56:29 +0000  419107024 bytes for ./mazerunner
+2021-05-20 08:56:29 +0000  copying file ./embedded.mobileprovision ... 
+69798 bytes for ./embedded.mobileprovision
+copying file ./Data/Managed/SymbolMap-32 ... 
+190444 bytes for ./Data/Managed/SymbolMap-32
+copying file ./Data/Managed/Resources/mscorlib.dll-resources.dat ... 
+337563 bytes for ./Data/Managed/Resources/mscorlib.dll-resources.dat
+copying file ./Data/Managed/mono/2.0/machine.config ... 
+2021-05-20 08:56:29 +0000  27625 bytes for ./Data/Managed/mono/2.0/machine.config
+2021-05-20 08:56:29 +0000  copying file ./Data/Managed/mono/4.0/machine.config ... 
+2021-05-20 08:56:29 +0000  33648 bytes for ./Data/Managed/mono/4.0/machine.config
+2021-05-20 08:56:29 +0000  copying file ./Data/Managed/Metadata/global-metadata.dat ... 
+2021-05-20 08:56:29 +0000  2939956 bytes for ./Data/Managed/Metadata/global-metadata.dat
+2021-05-20 08:56:29 +0000  copying file ./Data/globalgamemanagers ... 
+29184 bytes for ./Data/globalgamemanagers
+copying file ./Data/sharedassets1.assets ... 
+4313 bytes for ./Data/sharedassets1.assets
+copying file ./Data/boot.config ... 
+2021-05-20 08:56:29 +0000  124 bytes for ./Data/boot.config
+2021-05-20 08:56:29 +0000  copying file ./Data/Resources/unity_builtin_extra ... 
+2021-05-20 08:56:29 +0000  611648 bytes for ./Data/Resources/unity_builtin_extra
+2021-05-20 08:56:29 +0000  copying file ./Data/unity default resources ... 
+2021-05-20 08:56:29 +0000  6277916 bytes for ./Data/unity default resources
+2021-05-20 08:56:29 +0000  copying file ./Data/sharedassets0.assets.resS ... 
+5460 bytes for ./Data/sharedassets0.assets.resS
+copying file ./Data/level1.resS ... 
+393212 bytes for ./Data/level1.resS
+copying file ./Data/sharedassets0.assets ... 
+21284 bytes for ./Data/sharedassets0.assets
+copying file ./Data/level0.resS ... 
+393212 bytes for ./Data/level0.resS
+copying file ./Data/level0 ... 
+14616 bytes for ./Data/level0
+copying file ./Data/level1 ... 
+2021-05-20 08:56:29 +0000  7176 bytes for ./Data/level1
+2021-05-20 08:56:29 +0000  copying file ./Data/globalgamemanagers.assets ... 
+2021-05-20 08:56:29 +0000  24372 bytes for ./Data/globalgamemanagers.assets
+2021-05-20 08:56:29 +0000  copying file ./Info.plist ... 
+2021-05-20 08:56:29 +0000  1674 bytes for ./Info.plist
+2021-05-20 08:56:29 +0000  copying file ./PkgInfo ... 
+2021-05-20 08:56:29 +0000  8 bytes for ./PkgInfo
+2021-05-20 08:56:29 +0000  copying file ./AppIcon76x76~ipad.png ... 
+2021-05-20 08:56:29 +0000  2929 bytes for ./AppIcon76x76~ipad.png
+2021-05-20 08:56:29 +0000 [MT] /usr/bin/ditto exited with 0
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionEmbedProfileStep
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionInfoPlistStep
+2021-05-20 08:56:29 +0000 [MT] Skipping step: IDEDistributionInfoPlistStep because it said so
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionAppThinningPlistStep
+2021-05-20 08:56:29 +0000 [MT] Skipping step: IDEDistributionAppThinningPlistStep because it said so
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionCompileBitcodeStep
+2021-05-20 08:56:29 +0000 [MT] Skipping step: IDEDistributionCompileBitcodeStep because it said so
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionCodeSlimmingStep
+2021-05-20 08:56:29 +0000 [MT] Running /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root/Payload/mazerunner.app/mazerunner' '-r' '-o' '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root/Payload/mazerunner.app/mazerunner'
+2021-05-20 08:56:29 +0000 [MT] /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip exited with 0
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionCopyBCSymbolMapsStep
+2021-05-20 08:56:29 +0000 [MT] Skipping step: IDEDistributionCopyBCSymbolMapsStep because it said so
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionSymbolsStep
+2021-05-20 08:56:29 +0000 [MT] Skipping step: IDEDistributionSymbolsStep because it said so
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionAppThinningStep
+2021-05-20 08:56:29 +0000 [MT] Skipping step: IDEDistributionAppThinningStep because it said so
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionArchThinningStep
+2021-05-20 08:56:29 +0000 [MT] Running /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root/Payload/mazerunner.app/mazerunner' '-verify_arch' 'arm64e'
+2021-05-20 08:56:29 +0000 [MT] /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo exited with 1
+2021-05-20 08:56:29 +0000 [MT] Skipping architecture thinning for item "mazerunner" because arch "arm64e" wasn't found
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionODRStep
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionStripXattrsStep
+2021-05-20 08:56:29 +0000 [MT] Running /usr/bin/xattr '-crs' '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root/Payload/mazerunner.app'
+2021-05-20 08:56:29 +0000 [MT] /usr/bin/xattr exited with 0
+2021-05-20 08:56:29 +0000 [MT] Processing step: IDEDistributionCodesignStep
+2021-05-20 08:56:29 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7fca8468da70; bundleID='com.bugsnag.unity.mazerunner', path='<DVTFilePath:0x7fcab606d7f0:'/Users/karl/work/code/bugsnag-unity/test/mobile/features/fixtures/maze_runner/archive/Unity-iPhone.xcarchive/Products/Applications/mazerunner.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7fcaa45dd850; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7fcaa45f4530; name='Apple Development: Karl Stenerud (5JGXYYA29V)', hash='7BB44D83AAF2A4C06068F5629D4FEDD9AA6C3705', serialNumber='<DVTSigningCertificateSerialNumber: 0x7fcaa45ed390>', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2020-09-10 09:55:42 +0000''>', entitlements='{
+    "application-identifier" = "372ZUL2ZB7.com.bugsnag.unity.mazerunner";
+    "com.apple.developer.team-identifier" = 372ZUL2ZB7;
+    "get-task-allow" = 1;
+    "keychain-access-groups" =     (
+        "372ZUL2ZB7.com.bugsnag.unity.mazerunner"
+    );
+}', teamID='372ZUL2ZB7', identifier='com.bugsnag.unity.mazerunner', executablePath='<DVTFilePath:0x7fcab6085da0:'/Users/karl/work/code/bugsnag-unity/test/mobile/features/fixtures/maze_runner/archive/Unity-iPhone.xcarchive/Products/Applications/mazerunner.app/mazerunner'>', hardenedRuntime='0'>'>: {
+    "application-identifier" = "372ZUL2ZB7.com.bugsnag.unity.mazerunner";
+    "com.apple.developer.team-identifier" = 372ZUL2ZB7;
+    "get-task-allow" = 1;
+    "keychain-access-groups" =     (
+        "372ZUL2ZB7.com.bugsnag.unity.mazerunner"
+    );
+}
+2021-05-20 08:56:29 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7fca8468da70; bundleID='com.bugsnag.unity.mazerunner', path='<DVTFilePath:0x7fcab606d7f0:'/Users/karl/work/code/bugsnag-unity/test/mobile/features/fixtures/maze_runner/archive/Unity-iPhone.xcarchive/Products/Applications/mazerunner.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7fcaa45dd850; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7fcaa45fa110; name='Apple Development: Karl Stenerud (5JGXYYA29V)', hash='7BB44D83AAF2A4C06068F5629D4FEDD9AA6C3705', serialNumber='<DVTSigningCertificateSerialNumber: 0x7fcaa45f93c0>', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2020-09-10 09:55:42 +0000''>', entitlements='{
+    "application-identifier" = "372ZUL2ZB7.com.bugsnag.unity.mazerunner";
+    "com.apple.developer.team-identifier" = 372ZUL2ZB7;
+    "get-task-allow" = 1;
+    "keychain-access-groups" =     (
+        "372ZUL2ZB7.com.bugsnag.unity.mazerunner"
+    );
+}', teamID='372ZUL2ZB7', identifier='com.bugsnag.unity.mazerunner', executablePath='<DVTFilePath:0x7fcab6085da0:'/Users/karl/work/code/bugsnag-unity/test/mobile/features/fixtures/maze_runner/archive/Unity-iPhone.xcarchive/Products/Applications/mazerunner.app/mazerunner'>', hardenedRuntime='0'>'> are: {
+    "application-identifier" = "372ZUL2ZB7.com.bugsnag.unity.mazerunner";
+    "com.apple.developer.team-identifier" = 372ZUL2ZB7;
+    "get-task-allow" = 1;
+    "keychain-access-groups" =     (
+        "372ZUL2ZB7.com.bugsnag.unity.mazerunner"
+    );
+}
+2021-05-20 08:56:29 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x7fca8468da70; bundleID='com.bugsnag.unity.mazerunner', path='<DVTFilePath:0x7fcab606d7f0:'/Users/karl/work/code/bugsnag-unity/test/mobile/features/fixtures/maze_runner/archive/Unity-iPhone.xcarchive/Products/Applications/mazerunner.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7fcaa45dd850; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7fca846cc320; name='Apple Development: Karl Stenerud (5JGXYYA29V)', hash='7BB44D83AAF2A4C06068F5629D4FEDD9AA6C3705', serialNumber='<DVTSigningCertificateSerialNumber: 0x7fca846cc450>', certificateKinds='(
+    "1.2.840.113635.100.6.1.12",
+    "1.2.840.113635.100.6.1.2"
+), issueDate='2020-09-10 09:55:42 +0000''>', entitlements='{
+    "application-identifier" = "372ZUL2ZB7.com.bugsnag.unity.mazerunner";
+    "com.apple.developer.team-identifier" = 372ZUL2ZB7;
+    "get-task-allow" = 1;
+    "keychain-access-groups" =     (
+        "372ZUL2ZB7.com.bugsnag.unity.mazerunner"
+    );
+}', teamID='372ZUL2ZB7', identifier='com.bugsnag.unity.mazerunner', executablePath='<DVTFilePath:0x7fcab6085da0:'/Users/karl/work/code/bugsnag-unity/test/mobile/features/fixtures/maze_runner/archive/Unity-iPhone.xcarchive/Products/Applications/mazerunner.app/mazerunner'>', hardenedRuntime='0'>'> to: /var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/entitlements~~~1l7CD1
+2021-05-20 08:56:29 +0000 [MT] Running /usr/bin/codesign '-vvv' '--force' '--sign' '7BB44D83AAF2A4C06068F5629D4FEDD9AA6C3705' '--entitlements' '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/entitlements~~~1l7CD1' '--preserve-metadata=identifier,flags,runtime' '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root/Payload/mazerunner.app'
+2021-05-20 08:56:30 +0000  /var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root/Payload/mazerunner.app: signed app bundle with Mach-O universal (armv7 arm64) [com.bugsnag.unity.mazerunner]
+2021-05-20 08:56:30 +0000 [MT] /usr/bin/codesign exited with 0
+2021-05-20 08:56:30 +0000 [MT] Processing step: IDEDistributionZipODRItemStep
+2021-05-20 08:56:30 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2021-05-20 08:56:30 +0000 [MT] Processing step: IDEDistributionCreateIPAStep
+2021-05-20 08:56:30 +0000 [MT] Running /usr/bin/ditto '-V' '-c' '-k' '--norsrc' '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root' '/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Packages/mazerunner.ipa'
+2021-05-20 08:56:30 +0000  >>> Copying /var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root 
+2021-05-20 08:56:30 +0000  copying file ./Payload/mazerunner.app/_CodeSignature/CodeResources ... 
+2021-05-20 08:56:30 +0000  12649 bytes for ./Payload/mazerunner.app/_CodeSignature/CodeResources
+copying file ./Payload/mazerunner.app/LaunchScreen-iPhonePortrait.png ... 
+2021-05-20 08:56:30 +0000  138 bytes for ./Payload/mazerunner.app/LaunchScreen-iPhonePortrait.png
+copying file ./Payload/mazerunner.app/LaunchScreen-iPhoneLandscape.png ... 
+138 bytes for ./Payload/mazerunner.app/LaunchScreen-iPhoneLandscape.png
+2021-05-20 08:56:30 +0000  copying file ./Payload/mazerunner.app/AppIcon60x60@2x.png ... 
+2149 bytes for ./Payload/mazerunner.app/AppIcon60x60@2x.png
+copying file ./Payload/mazerunner.app/AppIcon60x60@3x.png ... 
+2021-05-20 08:56:30 +0000  3144 bytes for ./Payload/mazerunner.app/AppIcon60x60@3x.png
+copying file ./Payload/mazerunner.app/LaunchScreen-iPad.png ... 
+2021-05-20 08:56:30 +0000  138 bytes for ./Payload/mazerunner.app/LaunchScreen-iPad.png
+copying file ./Payload/mazerunner.app/LaunchScreen-iPad.storyboardc/UIViewController-UnityLaunchScreen-ViewController.nib ... 
+934 bytes for ./Payload/mazerunner.app/LaunchScreen-iPad.storyboardc/UIViewController-UnityLaunchScreen-ViewController.nib
+2021-05-20 08:56:30 +0000  copying file ./Payload/mazerunner.app/LaunchScreen-iPad.storyboardc/UnityLaunchScreen-ViewController-view-UnityLaunchScreen-RootView.nib ... 
+2395 bytes for ./Payload/mazerunner.app/LaunchScreen-iPad.storyboardc/UnityLaunchScreen-ViewController-view-UnityLaunchScreen-RootView.nib
+2021-05-20 08:56:30 +0000  copying file ./Payload/mazerunner.app/LaunchScreen-iPad.storyboardc/Info.plist ... 
+333 bytes for ./Payload/mazerunner.app/LaunchScreen-iPad.storyboardc/Info.plist
+copying file ./Payload/mazerunner.app/Assets.car ... 
+2021-05-20 08:56:30 +0000  29624 bytes for ./Payload/mazerunner.app/Assets.car
+2021-05-20 08:56:30 +0000  copying file ./Payload/mazerunner.app/AppIcon76x76@2x~ipad.png ... 
+2021-05-20 08:56:30 +0000  2663 bytes for ./Payload/mazerunner.app/AppIcon76x76@2x~ipad.png
+copying file ./Payload/mazerunner.app/AppIcon83.5x83.5@2x~ipad.png ... 
+2021-05-20 08:56:30 +0000  2949 bytes for ./Payload/mazerunner.app/AppIcon83.5x83.5@2x~ipad.png
+copying file ./Payload/mazerunner.app/LaunchScreen-iPhone.storyboardc/UIViewController-UnityLaunchScreen-ViewController.nib ... 
+2021-05-20 08:56:30 +0000  934 bytes for ./Payload/mazerunner.app/LaunchScreen-iPhone.storyboardc/UIViewController-UnityLaunchScreen-ViewController.nib
+copying file ./Payload/mazerunner.app/LaunchScreen-iPhone.storyboardc/UnityLaunchScreen-ViewController-view-UnityLaunchScreen-RootView.nib ... 
+2021-05-20 08:56:30 +0000  2405 bytes for ./Payload/mazerunner.app/LaunchScreen-iPhone.storyboardc/UnityLaunchScreen-ViewController-view-UnityLaunchScreen-RootView.nib
+copying file ./Payload/mazerunner.app/LaunchScreen-iPhone.storyboardc/Info.plist ... 
+2021-05-20 08:56:30 +0000  333 bytes for ./Payload/mazerunner.app/LaunchScreen-iPhone.storyboardc/Info.plist
+copying file ./Payload/mazerunner.app/mazerunner ... 
+2021-05-20 08:56:32 +0000  46727360 bytes for ./Payload/mazerunner.app/mazerunner
+copying file ./Payload/mazerunner.app/embedded.mobileprovision ... 
+2021-05-20 08:56:32 +0000  69798 bytes for ./Payload/mazerunner.app/embedded.mobileprovision
+2021-05-20 08:56:32 +0000  copying file ./Payload/mazerunner.app/Data/Managed/SymbolMap-32 ... 
+2021-05-20 08:56:32 +0000  190444 bytes for ./Payload/mazerunner.app/Data/Managed/SymbolMap-32
+2021-05-20 08:56:32 +0000  copying file ./Payload/mazerunner.app/Data/Managed/Resources/mscorlib.dll-resources.dat ... 
+2021-05-20 08:56:32 +0000  337563 bytes for ./Payload/mazerunner.app/Data/Managed/Resources/mscorlib.dll-resources.dat
+2021-05-20 08:56:32 +0000  copying file ./Payload/mazerunner.app/Data/Managed/mono/2.0/machine.config ... 
+2021-05-20 08:56:32 +0000  27625 bytes for ./Payload/mazerunner.app/Data/Managed/mono/2.0/machine.config
+2021-05-20 08:56:32 +0000  copying file ./Payload/mazerunner.app/Data/Managed/mono/4.0/machine.config ... 
+2021-05-20 08:56:32 +0000  33648 bytes for ./Payload/mazerunner.app/Data/Managed/mono/4.0/machine.config
+2021-05-20 08:56:32 +0000  copying file ./Payload/mazerunner.app/Data/Managed/Metadata/global-metadata.dat ... 
+2021-05-20 08:56:32 +0000  2939956 bytes for ./Payload/mazerunner.app/Data/Managed/Metadata/global-metadata.dat
+2021-05-20 08:56:32 +0000  copying file ./Payload/mazerunner.app/Data/globalgamemanagers ... 
+2021-05-20 08:56:32 +0000  29184 bytes for ./Payload/mazerunner.app/Data/globalgamemanagers
+2021-05-20 08:56:32 +0000  copying file ./Payload/mazerunner.app/Data/sharedassets1.assets ... 
+4313 bytes for ./Payload/mazerunner.app/Data/sharedassets1.assets
+copying file ./Payload/mazerunner.app/Data/boot.config ... 
+2021-05-20 08:56:32 +0000  124 bytes for ./Payload/mazerunner.app/Data/boot.config
+copying file ./Payload/mazerunner.app/Data/Resources/unity_builtin_extra ... 
+2021-05-20 08:56:32 +0000  611648 bytes for ./Payload/mazerunner.app/Data/Resources/unity_builtin_extra
+2021-05-20 08:56:32 +0000  copying file ./Payload/mazerunner.app/Data/unity default resources ... 
+2021-05-20 08:56:32 +0000  6277916 bytes for ./Payload/mazerunner.app/Data/unity default resources
+copying file ./Payload/mazerunner.app/Data/sharedassets0.assets.resS ... 
+2021-05-20 08:56:32 +0000  5460 bytes for ./Payload/mazerunner.app/Data/sharedassets0.assets.resS
+copying file ./Payload/mazerunner.app/Data/level1.resS ... 
+2021-05-20 08:56:32 +0000  393212 bytes for ./Payload/mazerunner.app/Data/level1.resS
+copying file ./Payload/mazerunner.app/Data/sharedassets0.assets ... 
+2021-05-20 08:56:32 +0000  21284 bytes for ./Payload/mazerunner.app/Data/sharedassets0.assets
+copying file ./Payload/mazerunner.app/Data/level0.resS ... 
+2021-05-20 08:56:32 +0000  393212 bytes for ./Payload/mazerunner.app/Data/level0.resS
+copying file ./Payload/mazerunner.app/Data/level0 ... 
+2021-05-20 08:56:32 +0000  14616 bytes for ./Payload/mazerunner.app/Data/level0
+copying file ./Payload/mazerunner.app/Data/level1 ... 
+2021-05-20 08:56:32 +0000  7176 bytes for ./Payload/mazerunner.app/Data/level1
+copying file ./Payload/mazerunner.app/Data/globalgamemanagers.assets ... 
+2021-05-20 08:56:32 +0000  24372 bytes for ./Payload/mazerunner.app/Data/globalgamemanagers.assets
+copying file ./Payload/mazerunner.app/Info.plist ... 
+2021-05-20 08:56:32 +0000  1674 bytes for ./Payload/mazerunner.app/Info.plist
+copying file ./Payload/mazerunner.app/PkgInfo ... 
+2021-05-20 08:56:32 +0000  8 bytes for ./Payload/mazerunner.app/PkgInfo
+copying file ./Payload/mazerunner.app/AppIcon76x76~ipad.png ... 
+2929 bytes for ./Payload/mazerunner.app/AppIcon76x76~ipad.png
+2021-05-20 08:56:32 +0000 [MT] /usr/bin/ditto exited with 0
+2021-05-20 08:56:32 +0000 [MT] Processing step: IDEDistributionAppStoreInformationStep
+2021-05-20 08:56:32 +0000 [MT] Skipping step: IDEDistributionAppStoreInformationStep because it said so
+2021-05-20 08:56:32 +0000 [MT] Processing step: IDEDistributionGenerateProcessedDistributionItems
+2021-05-20 08:56:32 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x7fca846c12f0:'/var/folders/46/_hbjnrvs56d_1phm2hvfk70h0000gn/T/XcodeDistPipeline.~~~wI5Ao1/Root/Payload/mazerunner.app'>
+2021-05-20 08:56:32 +0000 [MT] Processing step: IDEDistributionCreateManifestStep

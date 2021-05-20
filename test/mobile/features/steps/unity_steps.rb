@@ -10,8 +10,11 @@ When('I relaunch the Unity app') do
 end
 
 When("I tap the {string} button") do |button|
-  # TODO Currently specific to the ANDROID_9_0 device (Google Pixel 3), which has a screen resolution of 1080x2160
-  middle = 2160 / 2
+  # TODO: Better screen res support. Uses 1920 by default, or 2160 for ANDROID_9_0 device (Google Pixel 3)
+  middle = 1920 / 2
+  if Maze.config.device == "ANDROID_9_0"
+    middle = 2160 / 2
+  end
   case button
   when "throw Exception"
     press_at 540, middle - 750

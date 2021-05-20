@@ -33,4 +33,4 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-mv $project_path/output/Unity-iPhone.ipa $project_path/mazerunner_$UNITY_VERSION.ipa
+mv $project_path/output/mazerunner.ipa $project_path/mazerunner_$UNITY_VERSION.ipa

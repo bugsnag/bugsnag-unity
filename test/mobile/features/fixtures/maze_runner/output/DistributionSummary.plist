@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>mazerunner.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>armv7</string>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>7BB44D83AAF2A4C06068F5629D4FEDD9AA6C3705</string>
+				<key>dateExpires</key>
+				<string>10.09.21</string>
+				<key>type</key>
+				<string>Apple Development</string>
+			</dict>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>372ZUL2ZB7.com.bugsnag.unity.mazerunner</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>372ZUL2ZB7</string>
+				<key>get-task-allow</key>
+				<true/>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>372ZUL2ZB7.com.bugsnag.unity.mazerunner</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>mazerunner.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>275c512b-c4bc-4201-82ab-2ae96ba49ee2</string>
+				<key>name</key>
+				<string>iOS Team Provisioning Profile: *</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>372ZUL2ZB7</string>
+				<key>name</key>
+				<string></string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
