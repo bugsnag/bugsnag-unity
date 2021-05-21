@@ -37,6 +37,22 @@ This will generate a test fixture APK named according to the `UNITY_VERSION`, e.
 ./test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
 ```
 
+#### iOS
+
+To build the iOS test fixture:
+```
+UNITY_VERSION=2018.4.34f1 rake test:ios:build
+```
+Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
+```
+/Applications/Unity/Hub/Editor/2018.4.34f1/Unity.app/Contents/MacOS/Unity
+```
+
+This will generate a test fixture IPA named according to the `UNITY_VERSION`, e.g:
+```
+./test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
+```
+
 ### Running an end-to-end test
 
 __Note: only Bugsnag employees can run the end-to-end tests for mobile targets.__ We have dedicated test infrastructure 
@@ -49,7 +65,7 @@ the following environment variables:
 - A BrowserStack App Automate Access Key: `BROWSER_STACK_ACCESS_KEY`
 - A path to a [BrowserStack local testing binary](https://www.browserstack.com/local-testing/app-automate): `MAZE_BS_LOCAL`
 
-#### Android 
+#### Android
 
 1. `cd test/mobile`
 1. Run `bundle install` if you haven't run end-to-end tests before
@@ -59,4 +75,16 @@ the following environment variables:
     bundle exec maze-runner --app=./features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk \
                             --farm=bs                                                        \
                             --device=ANDROID_9_0
+    ```
+
+#### iOS
+
+1. `cd test/mobile`
+1. Run `bundle install` if you haven't run end-to-end tests before
+1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
+1. To run the tests:
+    ```shell script
+    bundle exec maze-runner --app=./features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa \
+                            --farm=bs                                                        \
+                            --device=IOS_14
     ```

@@ -4,6 +4,9 @@
 
 ### Bug fixes
 
+* Remove Bugsnag.Client from public API 
+  [#259](https://github.com/bugsnag/bugsnag-unity/pull/259)
+
 * Add SetAutoDetectAnrs method to Bugsnag interface
   [#246](https://github.com/bugsnag/bugsnag-unity/pull/246)
   
