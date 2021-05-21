@@ -150,7 +150,6 @@ steps:
     concurrency_group: 'unity-license'
 
   - label: ':android: Build Android test fixture for Unity 2019'
-    skip: Pending PLAT-6447
     key: 'build-android-fixture-2019'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -165,6 +164,7 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
+          - test/mobile/features/fixtures/unity.log
     commands:
       - rake test:android:build
     concurrency: 2
@@ -212,7 +212,6 @@ steps:
     concurrency_group: browserstack-app
 
   - label: ':android: Run Android e2e tests for Unity 2019'
-    skip: Pending PLAT-6447
     depends_on: 'build-android-fixture-2019'
     timeout_in_minutes: 30
     agents:
@@ -323,7 +322,6 @@ steps:
       - rake test:ios:build_xcode
 
   - label: ':ios: Generate test fixture Xcode project for Unity 2019'
-    skip: Pending PLAT-6447
     key: 'generate-fixture-project-2019'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
