@@ -26,3 +26,5 @@ bugsnag-cocoa-build/
 unity.log
 bugsnag-android-unity/.cxx
 test/**/*.app.zip
+*.ipa
+**/maze_runner/output/
