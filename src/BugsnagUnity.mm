@@ -103,6 +103,8 @@ void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
     return;
   NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
   ((__bridge BugsnagConfiguration *)configuration).endpoints.notify = ns_notifyURL;
+  // Workaround for endpoint stale-cache issue: Force-trigger re-processing by reassinging endpoint
+  ((__bridge BugsnagConfiguration *)configuration).endpoints = ((__bridge BugsnagConfiguration *)configuration).endpoints;
 }
 
 void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
