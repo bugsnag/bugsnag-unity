@@ -181,11 +181,16 @@ public class Main : MonoBehaviour
 	private void OnOutOfMemoryClick()
 	{
 		Debug.Log("OnOutOfMemoryClicked");
+
+#if UNITY_IOS && !UNITY_EDITOR
 		var list = new List<object>();
 		while (true)
 		{
 			list.Add(AllocLargeObject());
 		}
+#else
+		WarnPlatformNotSupported();
+#endif
 	}
 
 	private object AllocLargeObject()
