@@ -12,9 +12,12 @@ void RaiseCocoaSignal() {
 }
 
 void TriggerCocoaCppException() {
-	throw "CocoaCppException";
+    throw std::runtime_error("CocoaCppException");
 }
 
 void TriggerCocoaAppHang() {
-    sleep(10000);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        sleep(10000);
+    });
 }
+
