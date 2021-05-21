@@ -10,19 +10,19 @@ public class BugsnagCrash {
         System.loadLibrary("unity-example-lib");
     }
 
-    public void Crash() {
-        throw new RuntimeException("from java");
+    public void throwJvmException() {
+        throw new RuntimeException("Uncaught JVM exception");
     }
 
-    public void BackgroundCrash() {
+    public void throwBackgroundJvmException() {
         new Thread(new Runnable() {
             public void run() {
-                throw new RuntimeException("from java background thread");
+                throw new RuntimeException("Uncaught JVM exception from background thread");
             }
         }).start();
     }
 
-    public void AnrCrash() {
+    public void triggerAnr() {
         Log.d("Bugsnag", "Performing ANR in Unity app");
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
@@ -37,5 +37,7 @@ public class BugsnagCrash {
         });
     }
 
-    public native void NdkCrash();
+    public native void raiseNdkSignal();
+
+    public native void throwCppException();
 }
