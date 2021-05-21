@@ -16,7 +16,7 @@ pushd "$script_path/../fixtures"
 
 # Run unity and immediately exit afterwards, log all output, disable the
 # package manager (we just don't need it and it slows things down)
-DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log -noUpm"
+DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log"
 project_path=`pwd`/maze_runner
 
 # Build for Android
