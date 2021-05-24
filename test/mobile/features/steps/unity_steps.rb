@@ -10,31 +10,38 @@ When('I relaunch the Unity app') do
 end
 
 When("I tap the {string} button") do |button|
-  # TODO: Better screen res support. Uses 1920 by default, or 2160 for ANDROID_9_0 device (Google Pixel 3)
-  middle = 1920 / 2
-  if Maze.config.device == "ANDROID_9_0"
-    middle = 2160 / 2
-  end
+  viewport = Maze.driver.session_capabilities['viewportRect']
+  width = viewport['left'] + viewport['width']
+  height = viewport['top'] + viewport['height']
+
+  STDOUT.puts "width: #{width}"
+  STDOUT.puts "height: #{height}"
+
+  center = width / 2
+
   case button
   when "throw Exception"
-    press_at 540, middle - 750
+    press_at center, height - 750
   when "Assertion failure"
-    press_at 540, middle - 650
+    press_at center, height - 650
   when "Native exception"
-    press_at 540, middle - 550
+    press_at center, height - 550
   when "Log caught exception"
-    press_at 540, middle - 450
+    press_at center, height - 450
   when "Log with class prefix"
-    press_at 540, middle - 350
+    press_at center, height - 350
   when "Notify caught exception"
-    press_at 540, middle - 250
+    press_at center, height - 250
   when "Notify with callback"
-    press_at 540, middle - 150
+    press_at center, height - 150
+  when "Change scene"
+    press_at center, height - 50
   end
 end
 
 def press_at(x, y)
-  STDOUT.puts "tap #{x}. #{y}"
+  STDOUT.puts "tap: #{x},#{y}"
+
   touch_action = Appium::TouchAction.new
   touch_action.tap({:x => x, :y => y})
   touch_action.perform
