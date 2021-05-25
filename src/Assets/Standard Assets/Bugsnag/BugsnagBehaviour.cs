@@ -39,11 +39,9 @@ namespace BugsnagUnity
         public LogType NotifyLevel = LogType.Exception;
 
         [Header("Advanced Settings")]
-        // FIXME: The name of this property is incorrect, as it is the number of
-        // seconds between unique logs, not the other way around. Its represented
-        // in the UI as "Seconds per unique log" and in the next major, this
-        // property should be renamed accordingly.
-        public int UniqueLogsPerSecond = 5;
+
+        [Tooltip("The number seconds required between unique Unity logs that Bugsnag will convert to breadcrumbs or report as errors(if configured). Increase the value to reduce the number of logs sent.")]
+        public int SecondsPerUniqueLog = 5;
 
         public int MaximumBreadcrumbs = 25;
 
@@ -58,7 +56,7 @@ namespace BugsnagUnity
             config.AutoNotify = AutoNotify;
             config.AutoDetectAnrs = AutoNotify && AutoDetectAnrs;
             config.AutoCaptureSessions = AutoCaptureSessions;
-            config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsPerSecond);
+            config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             config.NotifyLevel = NotifyLevel;
             config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
             config.MaximumBreadcrumbs = MaximumBreadcrumbs;
