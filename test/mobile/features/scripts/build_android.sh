@@ -14,9 +14,13 @@ popd
 
 pushd "$script_path/../fixtures"
 
-# Run unity and immediately exit afterwards, log all output, disable the
-# package manager (we just don't need it and it slows things down)
+# Run unity and immediately exit afterwards, log all output
 DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log"
+# Disable the package manager only on Unity 2018 due to dependency clashes
+if [[ "$UNITY_PATH" == *"2018"* ]]; then
+  DEFAULT_CLI_ARGS += " -noUpm"
+fi
+
 project_path=`pwd`/maze_runner
 
 # Build for Android
