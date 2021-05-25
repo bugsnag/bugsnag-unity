@@ -19,7 +19,7 @@ namespace BugsnagUnity
         /// Exposed in the Unity Editor to configure this behaviour
         /// </summary>
 		[Tooltip("Your Bugsnag API Key from the project settings page.")]
-        public string ApiKey = "";
+        public string APIKey = "";
 
         /// <summary>
         /// Exposed in the Unity Editor to configure this behaviour
@@ -54,7 +54,7 @@ namespace BugsnagUnity
         /// </summary>
         void Awake()
         {
-            Configuration config = new Configuration(ApiKey);
+            Configuration config = new Configuration(APIKey);
             config.AutoNotify = AutoNotify;
             config.AutoDetectAnrs = AutoNotify && AutoDetectAnrs;
             config.AutoCaptureSessions = AutoCaptureSessions;
