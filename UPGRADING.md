@@ -61,6 +61,11 @@ Bugsnag.SetAutoNotify(false);
 Bugsnag.SetContext("MyContext");
 ```
 
+### Event payload changes
+
+- (Android) Removed `packageName` from the app metadata tab, as the field is duplicated by `app.id`
+- (Android) Removed `versionName` from the app metadata tab, as the field is duplicated by `app.version` and this has been known to cause confusion amongst users in the past
+
 ## 4.1 to 4.2
 
 4.2.0 adds support for reporting C/C++ crashes in Android code. If you are using
