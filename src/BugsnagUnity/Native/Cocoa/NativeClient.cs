@@ -34,6 +34,7 @@ namespace BugsnagUnity
       NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
       NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
       NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
+
       if (config.Context != null) {
         NativeCode.bugsnag_setContext(obj, config.Context);
       }
