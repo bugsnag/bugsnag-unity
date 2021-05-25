@@ -16,8 +16,15 @@ pushd "$script_path/../fixtures"
 
 # Run unity and immediately exit afterwards, log all output
 DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log"
-# Disable the package manager only on Unity 2018 due to dependency clashes
-if [[ "$UNITY_PATH" == *"2018"* ]]; then
+
+if [[ "$UNITY_PATH" == *"2020"* ]]; then
+  # Copy the 2020 package manifest in for that version
+  cp manifests/manifest_2020.json maze_runner/Packages/manifest.json
+elif [[ "$UNITY_PATH" == *"2019" ]]; then
+  # Copy the 2019 package manifest in for that version
+  cp manifests/manifest_2019.json maze_runner/Packages/manifest.json
+else
+  # On all other versions disable the package manager
   DEFAULT_CLI_ARGS="${DEFAULT_CLI_ARGS} -noUpm"
 fi
 
