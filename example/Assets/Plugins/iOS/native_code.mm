@@ -1,14 +1,23 @@
+#include <stdexcept>
+#include <stdlib.h>
+
 extern "C" {
-  void Crash();
-  void CrashInBackground();
+  void RaiseCocoaSignal();
+  void TriggerCocoaCppException();
+  void TriggerCocoaAppHang();
 }
 
-void Crash() {
-  [NSArray new][1];
+void RaiseCocoaSignal() {
+    abort();
 }
 
-void CrashInBackground() {
-  dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    Crash();
-  });
+void TriggerCocoaCppException() {
+    throw std::runtime_error("CocoaCppException");
 }
+
+void TriggerCocoaAppHang() {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        sleep(10000);
+    });
+}
+
