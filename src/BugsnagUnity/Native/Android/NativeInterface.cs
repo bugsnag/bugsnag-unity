@@ -193,10 +193,12 @@ namespace BugsnagUnity
         }
       }
 
-      // set version/context
+      // set version/context/maxbreadcrumbs
       obj.Call("setAppVersion", config.AppVersion);
       obj.Call("setContext", config.Context);
-      return obj;
+      obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
+
+    return obj;
     }
 
     private void ConfigureNotifierInfo(AndroidJavaObject client) {

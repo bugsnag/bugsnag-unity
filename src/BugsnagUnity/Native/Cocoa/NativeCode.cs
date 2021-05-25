@@ -48,6 +48,9 @@ namespace BugsnagUnity
     internal static extern void bugsnag_setContext(IntPtr configuration, string context);
 
     [DllImport(Import)]
+    internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
+
+    [DllImport(Import)]
     internal static extern void bugsnag_setAppVersion(IntPtr configuration, string appVersion);
 
     [DllImport(Import)]

@@ -33,6 +33,8 @@ extern "C" {
 
   void bugsnag_setContext(const void *configuration, char *context);
 
+  void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
+
   void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
 
   void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
@@ -84,6 +86,10 @@ void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
 void bugsnag_setContext(const void *configuration, char *context) {
   NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
   ((__bridge BugsnagConfiguration *)configuration).context = ns_Context;
+}
+
+void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs) {
+  ((__bridge BugsnagConfiguration *)configuration).maxBreadcrumbs = maxBreadcrumbs;
 }
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
