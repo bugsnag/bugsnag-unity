@@ -18,7 +18,7 @@ pushd "$script_path/../fixtures"
 DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log"
 # Disable the package manager only on Unity 2018 due to dependency clashes
 if [[ "$UNITY_PATH" == *"2018"* ]]; then
-  DEFAULT_CLI_ARGS+="${DEFAULT_CLI_ARGS} -noUpm"
+  DEFAULT_CLI_ARGS="${DEFAULT_CLI_ARGS} -noUpm"
 fi
 
 project_path=`pwd`/maze_runner
