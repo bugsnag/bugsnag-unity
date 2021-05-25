@@ -170,6 +170,27 @@ steps:
     concurrency: 2
     concurrency_group: 'unity-license'
 
+  - label: ':android: Build Android test fixture for Unity 2020'
+    key: 'build-android-fixture-2020'
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2020.3.5f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.apk
+          - test/mobile/features/fixtures/unity.log
+    commands:
+      - rake test:android:build
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
   #
   # Run Android tests
   #
@@ -224,6 +245,25 @@ steps:
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
+          - "--farm=bs"
+          - "--device=ANDROID_9_0"
+          - "--fail-fast"
+    concurrency: 9
+    concurrency_group: browserstack-app
+
+  - label: ':android: Run Android e2e tests for Unity 2020'
+    depends_on: 'build-android-fixture-2020'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download:
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.apk"
+      docker-compose#v3.3.0:
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.5f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "--fail-fast"
