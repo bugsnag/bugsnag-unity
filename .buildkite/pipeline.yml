@@ -526,5 +526,5 @@ steps:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.ipa
           - test/mobile/features/fixtures/unity.log
     commands:
-      - tar -zxf project_2019.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2020.tgz test/mobile/features/fixtures/maze_runner
       - rake test:ios:build_xcode
