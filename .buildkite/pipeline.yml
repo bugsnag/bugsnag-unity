@@ -91,7 +91,7 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.5f1"
+      UNITY_VERSION: "2020.3.9f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -101,7 +101,7 @@ steps:
       - cd test/desktop
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2020.3.5f1.app.zip
+      - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
     concurrency: 2
     concurrency_group: 'unity-license'
 
@@ -165,17 +165,17 @@ steps:
       - bundle install
       - bundle exec maze-runner --app=Mazerunner
 
-  - label: Run MacOS e2e tests for Unity 2020.3.5f1
+  - label: Run MacOS e2e tests for Unity 2020.3.9f1
     depends_on: 'cocoa-2020-fixture'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-10.15
     env:
-      UNITY_VERSION: "2020.3.5f1"
+      UNITY_VERSION: "2020.3.9f1"
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/Mazerunner-2020.3.5f1.app.zip
+          - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
         upload:
           - test/desktop/maze_output/*
           - test/desktop/Mazerunner.log
@@ -257,14 +257,14 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.5f1"
+      UNITY_VERSION: "2020.3.9f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.apk
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.apk
           - test/mobile/features/fixtures/unity.log
     commands:
       - rake test:android:build
@@ -339,11 +339,11 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.apk"
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.5f1.apk"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.9f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "--fail-fast"
@@ -492,14 +492,14 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.5f1"
+      UNITY_VERSION: "2020.3.9f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.ipa
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.ipa
           - test/mobile/features/fixtures/unity.log
           - project_2020.tgz
     commands:
@@ -515,7 +515,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.15
     env:
-      UNITY_VERSION: "2020.3.5f1"
+      UNITY_VERSION: "2020.3.9f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -523,7 +523,7 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2020.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.ipa
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.ipa
           - test/mobile/features/fixtures/unity.log
     commands:
       - tar -zxf project_2020.tgz test/mobile/features/fixtures/maze_runner
