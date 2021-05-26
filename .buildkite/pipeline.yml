@@ -486,7 +486,7 @@ steps:
       - rake test:ios:build_xcode
 
   - label: ':ios: Generate test fixture Xcode project for Unity 2020'
-    key: 'generate-fixture-project-2019'
+    key: 'generate-fixture-project-2020'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
