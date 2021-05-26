@@ -63,6 +63,48 @@ steps:
     concurrency: 2
     concurrency_group: 'unity-license'
 
+  - label: Build Unity 2019 MacOS test fixture
+    key: 'cocoa-2019-fixture'
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2019.4.25f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+    commands:
+      - cd test/desktop
+      - ./features/scripts/build_maze_runner.sh
+    artifact_paths:
+      - test/desktop/features/fixtures/Mazerunner-2019.4.25f1.app.zip
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: Build Unity 2020 MacOS test fixture
+    key: 'cocoa-2020-fixture'
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2020.3.5f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+    commands:
+      - cd test/desktop
+      - ./features/scripts/build_maze_runner.sh
+    artifact_paths:
+      - test/desktop/features/fixtures/Mazerunner-2020.3.5f1.app.zip
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
   #
   # Run desktop tests
   #
@@ -96,6 +138,44 @@ steps:
       artifacts#v1.2.0:
         download:
           - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
+        upload:
+          - test/desktop/maze_output/*
+          - test/desktop/Mazerunner.log
+    commands:
+      - cd test/desktop
+      - bundle install
+      - bundle exec maze-runner --app=Mazerunner
+
+  - label: Run MacOS e2e tests for Unity 2019.4.25f1
+    depends_on: 'cocoa-2019-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-10.15
+    env:
+      UNITY_VERSION: "2019.4.25f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - test/desktop/features/fixtures/Mazerunner-2019.4.25f1.app.zip
+        upload:
+          - test/desktop/maze_output/*
+          - test/desktop/Mazerunner.log
+    commands:
+      - cd test/desktop
+      - bundle install
+      - bundle exec maze-runner --app=Mazerunner
+
+  - label: Run MacOS e2e tests for Unity 2020.3.5f1
+    depends_on: 'cocoa-2020-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-10.15
+    env:
+      UNITY_VERSION: "2020.3.5f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - test/desktop/features/fixtures/Mazerunner-2020.3.5f1.app.zip
         upload:
           - test/desktop/maze_output/*
           - test/desktop/Mazerunner.log
