@@ -385,7 +385,6 @@ steps:
     concurrency_group: 'unity-license'
 
   - label: ':ios: Build iOS test fixture for Unity 2019'
-    skip: Pending PLAT-6447
     key: 'build-ios-fixture-2019'
     depends_on: 'generate-fixture-project-2019'
     timeout_in_minutes: 30
@@ -401,6 +400,50 @@ steps:
           - project_2019.tgz
         upload:
           - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
+          - test/mobile/features/fixtures/unity.log
+    commands:
+      - tar -zxf project_2019.tgz test/mobile/features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+
+  - label: ':ios: Generate test fixture Xcode project for Unity 2020'
+    key: 'generate-fixture-project-2019'
+    depends_on: 'build-artifacts'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-unity
+    env:
+      UNITY_VERSION: "2020.3.5f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.ipa
+          - test/mobile/features/fixtures/unity.log
+          - project_2020.tgz
+    commands:
+      - rake test:ios:generate_xcode
+      - tar -zvcf project_2020.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+    concurrency: 2
+    concurrency_group: 'unity-license'
+
+  - label: ':ios: Build iOS test fixture for Unity 2020'
+    key: 'build-ios-fixture-2020'
+    depends_on: 'generate-fixture-project-2020'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-10.15
+    env:
+      UNITY_VERSION: "2020.3.5f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - Bugsnag.unitypackage
+          - Bugsnag-with-android-64bit.unitypackage
+          - project_2020.tgz
+        upload:
+          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.5f1.ipa
           - test/mobile/features/fixtures/unity.log
     commands:
       - tar -zxf project_2019.tgz test/mobile/features/fixtures/maze_runner
