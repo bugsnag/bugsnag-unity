@@ -127,7 +127,7 @@ public class Main : MonoBehaviour
 	{
 		Debug.Log("OnNativeSignalClicked");
 
-#if UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_TVOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_TVOS) && !UNITY_EDITOR
 		RaiseCocoaSignal();
 #elif UNITY_ANDROID && !UNITY_EDITOR
 		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
@@ -142,7 +142,7 @@ public class Main : MonoBehaviour
 	{
 		Debug.Log("OnNativeCppExceptionClicked");
 
-#if UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_TVOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_TVOS) && !UNITY_EDITOR
 		TriggerCocoaCppException();
 #elif UNITY_ANDROID && !UNITY_EDITOR
 		using (var java = new AndroidJavaObject("com.example.lib.BugsnagCrash")) {
@@ -182,7 +182,7 @@ public class Main : MonoBehaviour
 	{
 		Debug.Log("OnOutOfMemoryClicked");
 
-#if UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_TVOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_TVOS) && !UNITY_EDITOR
 		var list = new List<object>();
 		while (true)
 		{
@@ -205,7 +205,7 @@ public class Main : MonoBehaviour
 	{
 		Debug.Log("OnAppHangClicked");
 
-#if UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_TVOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX || UNITY_TVOS) && !UNITY_EDITOR
 		TriggerCocoaAppHang();
 #else
 		WarnPlatformNotSupported();
