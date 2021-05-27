@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class BugsnagNative {
@@ -18,6 +16,9 @@ public class BugsnagNative {
             case RuntimePlatform.OSXPlayer:
             case RuntimePlatform.tvOS:
                 BugsnagNative.IOSCrash();
+                break;
+            case RuntimePlatform.Android:
+                BugsnagNative.TriggerJvmException();
                 break;
             default:
                 BugsnagNative.UnhandledCrash();
