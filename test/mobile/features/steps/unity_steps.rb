@@ -28,7 +28,7 @@ When("I tap the {string} button") do |button|
     press_at center, height - 550
   when "Log caught exception"
     press_at center, height - 450
-  when "Log with class prefix"
+  when "NDK signal"
     press_at center, height - 350
   when "Notify caught exception"
     press_at center, height - 250

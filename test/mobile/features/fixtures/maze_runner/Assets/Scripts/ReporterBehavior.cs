@@ -42,7 +42,7 @@ public class ReporterBehavior : MonoBehaviour {
         }
     }
 
-    public void LogWithClassPrefix() {
+    public void NdkSignal() {
         BugsnagNative.RaiseNdkSignal();
     }
 
