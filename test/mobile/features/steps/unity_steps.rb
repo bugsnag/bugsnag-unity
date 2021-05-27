@@ -11,31 +11,25 @@ end
 
 When("I tap the {string} button") do |button|
   viewport = Maze.driver.session_capabilities['viewportRect']
-  width = viewport['left'] + viewport['width']
-  height = viewport['top'] + viewport['height']
-
-  STDOUT.puts "width: #{width}"
-  STDOUT.puts "height: #{height}"
-
-  center = width / 2
+  center = viewport['width'] / 2
 
   case button
   when "throw Exception"
-    press_at center, height - 750
+    press_at center, 50
   when "Assertion failure"
-    press_at center, height - 650
+    press_at center, 150
   when "Native exception"
-    press_at center, height - 550
+    press_at center, 250
   when "Log caught exception"
-    press_at center, height - 450
+    press_at center, 350
   when "NDK signal"
-    press_at center, height - 350
+    press_at center, 450
   when "Notify caught exception"
-    press_at center, height - 250
+    press_at center, 550
   when "Notify with callback"
-    press_at center, height - 150
+    press_at center, 650
   when "Change scene"
-    press_at center, height - 50
+    press_at center, 750
   end
 end
 
