@@ -14,8 +14,6 @@ popd
 
 pushd "$script_path/../fixtures"
 
-# Run unity and immediately exit afterwards, log all output, disable the
-# package manager (we just don't need it and it slows things down)
 DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log"
 
 if [[ "$UNITY_PATH" == *"2020"* ]]; then
