@@ -16,7 +16,7 @@ When("I tap the {string} button") do |button|
   case button
   when "throw Exception"
     press_at center, 50
-  when "Assertion failure"
+  when "Log error"
     press_at center, 150
   when "Native exception"
     press_at center, 250
