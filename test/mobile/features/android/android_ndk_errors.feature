@@ -1,4 +1,3 @@
-@android_only
 Feature: Android manual smoke tests
 
     Background:

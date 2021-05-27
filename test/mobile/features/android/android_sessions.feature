@@ -1,4 +1,3 @@
-@android_only
 Feature: Android smoke tests for sessions
 
     Background:

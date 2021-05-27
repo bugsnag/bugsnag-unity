@@ -1,4 +1,3 @@
-@ios_only
 Feature: iOS smoke tests for C# errors
 
     Background:
