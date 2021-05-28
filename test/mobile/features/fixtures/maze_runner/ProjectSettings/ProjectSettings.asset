@@ -161,6 +161,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.bugsnag.mazerunner
     iOS: com.bugsnag.unity.mazerunner
+    iPhone: com.bugsnag.unity.mazerunner
   buildNumber: {}
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 19
@@ -507,7 +508,7 @@ PlayerSettings:
   psp2LiveAreaTrialPath: 
   psp2PatchChangeInfoPath: 
   psp2PatchOriginalPackage: 
-  psp2PackagePassword: qRMhTvhLamclFCUG85pLHZEa3cm75Yle
+  psp2PackagePassword: 5PN2qmWqBlQ9wQj99nsQzldVI5ZuGXbE
   psp2KeystoneFile: 
   psp2MemoryExpansionMode: 0
   psp2DRMType: 0

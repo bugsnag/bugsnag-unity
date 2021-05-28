@@ -290,6 +290,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "--fail-fast"
+          - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
 
@@ -309,6 +310,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "--fail-fast"
+          - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
 
@@ -328,6 +330,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "--fail-fast"
+          - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
 
@@ -349,6 +352,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "--fail-fast"
+          - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
 
@@ -369,7 +373,6 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
           - test/mobile/features/fixtures/unity.log
           - project_2017.tgz
     commands:
@@ -413,7 +416,6 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
           - test/mobile/features/fixtures/unity.log
           - project_2018.tgz
     commands:
@@ -457,7 +459,6 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
           - test/mobile/features/fixtures/unity.log
           - project_2019.tgz
     commands:
@@ -486,6 +487,7 @@ steps:
     commands:
       - tar -zxf project_2019.tgz test/mobile/features/fixtures/maze_runner
       - rake test:ios:build_xcode
+
 
   - label: ':ios: Generate test fixture Xcode project for Unity 2020'
     key: 'generate-fixture-project-2020'
@@ -530,3 +532,93 @@ steps:
     commands:
       - tar -zxf project_2020.tgz test/mobile/features/fixtures/maze_runner
       - rake test:ios:build_xcode
+
+  #
+  # Run iOS tests
+  #
+  # TODO: PLAT-6656 - Avoid having to use --separate-sessions
+  - label: ':ios: Run iOS e2e tests for Unity 2017'
+    depends_on: 'build-ios-fixture-2017'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download:
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
+      docker-compose#v3.3.0:
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--fail-fast"
+          - "--separate-sessions"
+          - "features/ios"
+    concurrency: 9
+    concurrency_group: browserstack-app
+
+  - label: ':ios: Run iOS e2e tests for Unity 2018'
+    depends_on: 'build-ios-fixture-2018'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download:
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa"
+      docker-compose#v3.3.0:
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--fail-fast"
+          - "--separate-sessions"
+          - "features/ios"
+    concurrency: 9
+    concurrency_group: browserstack-app
+
+  - label: ':ios: Run iOS e2e tests for Unity 2019'
+    skip: "Pending PLAT-6653"
+    depends_on: 'build-ios-fixture-2019'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download:
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa"
+      docker-compose#v3.3.0:
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--fail-fast"
+          - "--separate-sessions"
+          - "features/ios"
+    concurrency: 9
+    concurrency_group: browserstack-app
+
+  - label: ':ios: Run iOS e2e tests for Unity 2020'
+    skip: "Pending PLAT-6653"
+    depends_on: 'build-ios-fixture-2020'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.3.0:
+        download:
+          - "test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.ipa"
+      docker-compose#v3.3.0:
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.9f1.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--fail-fast"
+          - "--separate-sessions"
+          - "features/ios"
+    concurrency: 9
+    concurrency_group: browserstack-app

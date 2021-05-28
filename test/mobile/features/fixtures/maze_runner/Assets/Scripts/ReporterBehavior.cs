@@ -19,18 +19,18 @@ public class ReporterBehavior : MonoBehaviour {
         LeaveBreadcrumbString();
         LeaveBreadcrumbTuple();
     }
-
+     
     public void ThrowException() {
         throw new System.Exception("You threw an exception!");
     }
 
-    public void AssertionFailure() {
+    public void LogError() {
         SetUser();
         Debug.LogError("Something went wrong.");
     }
 
     public void NativeException() {
-        BugsnagNative.TriggerJvmException();
+        BugsnagNative.Crash();
     }
 
     public void LogCaughtException() {
@@ -42,7 +42,7 @@ public class ReporterBehavior : MonoBehaviour {
         }
     }
 
-    public void LogWithClassPrefix() {
+    public void NdkSignal() {
         BugsnagNative.RaiseNdkSignal();
     }
 
