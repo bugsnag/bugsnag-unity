@@ -332,6 +332,7 @@ steps:
     concurrency_group: browserstack-app
 
   - label: ':android: Run Android e2e tests for Unity 2020'
+    skip: PLAT-6645
     depends_on: 'build-android-fixture-2020'
     timeout_in_minutes: 30
     agents:
