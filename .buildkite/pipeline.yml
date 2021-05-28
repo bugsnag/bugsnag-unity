@@ -368,6 +368,7 @@ steps:
   #
   # Run iOS tests
   #
+  # TODO: PLAT-6656 - Avoid having to use --separate-sessions
   - label: ':ios: Run iOS e2e tests for Unity 2017'
     depends_on: 'build-ios-fixture-2017'
     timeout_in_minutes: 30
@@ -411,6 +412,7 @@ steps:
     concurrency_group: browserstack-app
 
   - label: ':ios: Run iOS e2e tests for Unity 2019'
+    skip: "Pending PLAT-6653"
     depends_on: 'build-ios-fixture-2019'
     timeout_in_minutes: 30
     agents:
