@@ -4,6 +4,7 @@ Feature: iOS smoke tests for C# errors
         Given I wait for the game to start
 
     Scenario: Calling Bugsnag.Notify() with caught C# exception
+
         When I tap the "Notify with callback" button
         Then I wait to receive an error
 
@@ -22,44 +23,44 @@ Feature: iOS smoke tests for C# errors
         And the error payload field "events.0.threads" is null
 
         # App data
-        And the event "app.id" equals "com.bugsnag.mazerunner"
+        And the event "app.id" equals "com.bugsnag.unity.mazerunner"
         And the event "app.releaseStage" equals "production"
-        And the event "app.type" equals "android"
+        And the event "app.type" equals "iOS"
         And the event "app.version" equals "1.2.3"
-        And the event "app.versionCode" equals "1"
-        And the error payload field "events.0.app.duration" is not null
+#        And the event "app.versionCode" equals "1"
+#        And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
-        And the event "app.inForeground" equals "true"
-        And the event "app.isLaunching" equals "false"
-        And the error payload field "events.0.app.memoryUsage" is not null
-        And the event "app.name" equals "maze_runner"
-        And the event "app.lowMemory" equals "false"
+#        And the event "app.inForeground" equals "true"
+#        And the event "app.isLaunching" equals "false"
+#        And the event "app.memoryUsage" is not null
+#        And the event "app.name" equals "maze_runner"
+#        And the event "app.lowMemory" equals "false"
 
         # Device data
-        And the error payload field "events.0.device.cpuAbi" is a non-empty array
-        And the event "device.jailbroken" equals "false"
+        And the event "device.jailbroken" is false
         And the event "device.id" is not null
         And the error payload field "events.0.device.id" is stored as the value "device_id"
         And the event "device.locale" is not null
         And the event "device.manufacturer" is not null
         And the event "device.model" is not null
-        And the event "device.osName" equals "android"
+        And the event "device.osName" equals "iOS"
         And the event "device.osVersion" is not null
         And the event "device.runtimeVersions" is not null
-        And the error payload field "events.0.device.totalMemory" is not null
-        And the error payload field "events.0.device.freeDisk" is not null
-        And the error payload field "events.0.device.freeMemory" is not null
-        And the event "device.orientation" equals "portrait"
+
+#        And the event "device.totalMemory" is not null
+        And the event "device.freeDisk" is not null
+        And the event "device.freeMemory" is not null
+#        And the event "device.orientation" equals "portrait"
         And the event "device.time" is not null
-        And the event "device.locationStatus" is not null
-        And the event "device.emulator" equals "false"
-        And the event "device.networkAccess" is not null
-        And the event "device.charging" is not null
-        And the event "device.screenDensity" is not null
-        And the event "device.dpi" is not null
-        And the event "device.screenResolution" is not null
-        And the event "device.brand" is not null
-        And the event "device.batteryLevel" is not null
+#        And the event "device.locationStatus" is not null
+#        And the event "device.emulator" equals "false"
+#        And the event "device.networkAccess" is not null
+#        And the event "device.charging" is not null
+#        And the event "device.screenDensity" is not null
+#        And the event "device.dpi" is not null
+#        And the event "device.screenResolution" is not null
+#        And the event "device.brand" is not null
+#        And the event "device.batteryLevel" is not null
 
         # User
         And the event "user.id" is not null
@@ -76,14 +77,13 @@ Feature: iOS smoke tests for C# errors
         # MetaData
         And the event "metaData.Unity.unityException" equals "true"
         And the event "metaData.Unity.osLanguage" is not null
-        And the event "metaData.Unity.platform" equals "Android"
+        And the event "metaData.Unity.platform" equals "IPhonePlayer"
         And the event "metaData.Unity.version" equals "1.0"
         And the event "metaData.Unity.companyName" equals "DefaultCompany"
         And the event "metaData.Unity.productName" equals "maze_runner"
         And the event "metaData.Callback.region" equals "US"
 
         # Runtime versions
-        And the error payload field "events.0.device.runtimeVersions.androidApiLevel" is not null
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
 
@@ -107,44 +107,39 @@ Feature: iOS smoke tests for C# errors
         And the error payload field "events.0.threads" is null
 
         # App data
-        And the event "app.id" equals "com.bugsnag.mazerunner"
+        And the event "app.id" equals "com.bugsnag.unity.mazerunner"
         And the event "app.releaseStage" equals "production"
-        And the event "app.type" equals "android"
+        And the event "app.type" equals "iOS"
         And the event "app.version" equals "1.2.3"
-        And the event "app.versionCode" equals "1"
-        And the error payload field "events.0.app.duration" is not null
-        And the error payload field "events.0.app.durationInForeground" is not null
-        And the event "app.inForeground" equals "true"
-        And the event "app.isLaunching" equals "false"
-        And the error payload field "events.0.app.memoryUsage" is not null
-        And the event "app.name" equals "maze_runner"
-        And the event "app.lowMemory" equals "false"
+#        And the event "app.bundleVersion" equals "???"
+#        And the event "app.versionCode" equals "1"
+#        And the error payload field "events.0.app.durationInForeground" is greater than 0
+#        And the event "app.inForeground" equals "true"
 
         # Device data
-        And the error payload field "events.0.device.cpuAbi" is a non-empty array
-        And the event "device.jailbroken" equals "false"
+        And the event "device.jailbroken" is false
         And the event "device.id" is not null
         And the error payload field "events.0.device.id" is stored as the value "device_id"
         And the event "device.locale" is not null
         And the event "device.manufacturer" is not null
         And the event "device.model" is not null
-        And the event "device.osName" equals "android"
+        And the event "device.osName" equals "iOS"
         And the event "device.osVersion" is not null
         And the event "device.runtimeVersions" is not null
-        And the error payload field "events.0.device.totalMemory" is not null
-        And the error payload field "events.0.device.freeDisk" is not null
-        And the error payload field "events.0.device.freeMemory" is not null
-        And the event "device.orientation" equals "portrait"
+#        And the event "device.totalMemory" is not null
+        And the event "device.freeDisk" is not null
+        And the event "device.freeMemory" is not null
+#        And the event "device.orientation" equals "portrait"
         And the event "device.time" is not null
-        And the event "device.locationStatus" is not null
-        And the event "device.emulator" equals "false"
-        And the event "device.networkAccess" is not null
-        And the event "device.charging" is not null
-        And the event "device.screenDensity" is not null
-        And the event "device.dpi" is not null
-        And the event "device.screenResolution" is not null
-        And the event "device.brand" is not null
-        And the event "device.batteryLevel" is not null
+#        And the event "device.locationStatus" is not null
+#        And the event "device.emulator" equals "false"
+#        And the event "device.networkAccess" is not null
+#        And the event "device.charging" is not null
+#        And the event "device.screenDensity" is not null
+#        And the event "device.dpi" is not null
+#        And the event "device.screenResolution" is not null
+#        And the event "device.brand" is not null
+#        And the event "device.batteryLevel" is not null
 
         # User
         And the event "user.id" is not null
@@ -161,12 +156,11 @@ Feature: iOS smoke tests for C# errors
         # MetaData
         And the event "metaData.Unity.unityException" equals "true"
         And the event "metaData.Unity.osLanguage" is not null
-        And the event "metaData.Unity.platform" equals "Android"
+        And the event "metaData.Unity.platform" equals "IPhonePlayer"
         And the event "metaData.Unity.version" equals "1.0"
         And the event "metaData.Unity.companyName" equals "DefaultCompany"
         And the event "metaData.Unity.productName" equals "maze_runner"
 
         # Runtime versions
-        And the error payload field "events.0.device.runtimeVersions.androidApiLevel" is not null
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
