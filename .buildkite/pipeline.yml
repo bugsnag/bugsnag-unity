@@ -352,6 +352,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "--fail-fast"
+          - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
 
