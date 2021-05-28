@@ -36,3 +36,9 @@ AfterConfiguration do |_config|
     Maze::Runner.run_command("log show --predicate '(process == \"#{Maze.config.app}\")' --style syslog --start '#{Maze.start_time}' > #{Maze.config.app}.log")
   end
 end
+
+Before('@skip_unity_android_2020') do |_scenario|
+  if Maze.driver.capabilities['os'] == 'android' && ENV['UNITY_VERSION'].include?('2020')
+    skip_this_scenario('Skipping Unity 2020 on Android, see PLAT-6645')
+  end
+end
