@@ -336,6 +336,8 @@ steps:
     timeout_in_minutes: 30
     agents:
       queue: opensource
+    env:
+      UNITY_VERSION: "2020.3.9f1"
     plugins:
       artifacts#v1.3.0:
         download:
