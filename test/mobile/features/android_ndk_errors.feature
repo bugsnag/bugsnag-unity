@@ -3,6 +3,7 @@ Feature: Android manual smoke tests
     Background:
         Given I wait for the game to start
 
+    @skip_unity_android_2020
     Scenario: NDK Signal raised
         When I tap the "Log with class prefix" button
         And I relaunch the Unity app
