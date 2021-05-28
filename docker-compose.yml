@@ -7,6 +7,7 @@ services:
       DEBUG:
       BUILDKITE:
       BUILDKITE_PIPELINE_NAME:
+      UNITY_VERSION:
       BROWSER_STACK_USERNAME:
       BROWSER_STACK_ACCESS_KEY:
     volumes:
