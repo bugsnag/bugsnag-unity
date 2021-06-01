@@ -28,7 +28,7 @@ namespace BugsnagUnity
 
     static Client InternalClient { get; set; }
 
-    public static IClient Client => InternalClient;
+    private static IClient Client => InternalClient;
 
     public static IBreadcrumbs Breadcrumbs => Client.Breadcrumbs;
 

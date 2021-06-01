@@ -43,7 +43,7 @@ config.AutoNotify = true;
 
 ### Bugsnag.Configuration accessor removed
 
-The `Bugsnag.Configuration` accessor has been removed. You should supply all your configuration options up-front as recommended [here](#new-recommended-way-for-initializing-bugsnag).
+The `Bugsnag.Configuration` and `Bugsnag.Client.Configuration` accessors have been removed. You should supply all your configuration options up-front as recommended [here](#new-recommended-way-for-initializing-bugsnag).
 
 ### AutoNotify and Context replaced
 
@@ -60,6 +60,11 @@ This has been replaced by the following API:
 Bugsnag.SetAutoNotify(false);
 Bugsnag.SetContext("MyContext");
 ```
+
+### Event payload changes
+
+- (Android) Removed `packageName` from the app metadata tab, as the field is duplicated by `app.id`
+- (Android) Removed `versionName` from the app metadata tab, as the field is duplicated by `app.version` and this has been known to cause confusion amongst users in the past
 
 ## 4.1 to 4.2
 

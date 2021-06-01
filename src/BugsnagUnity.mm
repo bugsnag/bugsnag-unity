@@ -25,9 +25,14 @@ extern "C" {
 
   void bugsnag_setAppVersion(const void *configuration, char *appVersion);
 
-  void bugsnag_setAutoNotify(const void *configuration, bool autoNotify);
+  void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
+
+  void bugsnag_setAppHangs(const void *configuration, bool appHangs);
+
+  void bugsnag_setAutoNotify(bool autoNotify);
 
   void bugsnag_setContext(const void *configuration, char *context);
+  void bugsnag_setContextConfig(const void *configuration, char *context);
 
   void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
 
@@ -79,11 +84,24 @@ void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
 
 void bugsnag_setContext(const void *configuration, char *context) {
   NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
+  [Bugsnag.client setContext:ns_Context];
+}
+
+void bugsnag_setContextConfig(const void *configuration, char *context) {
+  NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
   ((__bridge BugsnagConfiguration *)configuration).context = ns_Context;
 }
 
-void bugsnag_setAutoNotify(const void *configuration, bool autoNotify) {
+void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
+}
+
+void bugsnag_setAppHangs(const void *configuration, bool appHangs) {
+  ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = appHangs;
+}
+
+void bugsnag_setAutoNotify(bool autoNotify) {
+  Bugsnag.client.autoNotify = autoNotify;
 }
 
 void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
@@ -91,6 +109,8 @@ void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
     return;
   NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
   ((__bridge BugsnagConfiguration *)configuration).endpoints.notify = ns_notifyURL;
+  // Workaround for endpoint stale-cache issue: Force-trigger re-processing by reassinging endpoint
+  ((__bridge BugsnagConfiguration *)configuration).endpoints = ((__bridge BugsnagConfiguration *)configuration).endpoints;
 }
 
 void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {

@@ -88,6 +88,8 @@ namespace BugsnagUnity
         }
     }
 
+    private static bool _contextSetManually;
+
     public Client(INativeClient nativeClient)
     {
       MainThread = Thread.CurrentThread;
@@ -103,9 +105,11 @@ namespace BugsnagUnity
       UnityMetadata.InitDefaultMetadata();
       Device.InitUnityVersion();
       NativeClient.SetMetadata(UnityMetadataKey, UnityMetadata.ForNativeClient());
-
       NativeClient.PopulateUser(User);
-
+      if (!string.IsNullOrEmpty(nativeClient.Configuration.Context))
+      {
+        _contextSetManually = true;
+      }
       SceneManager.sceneLoaded += SceneLoaded;
 
         SetupLogListeners();
@@ -154,7 +158,13 @@ namespace BugsnagUnity
     /// <param name="loadSceneMode"></param>
     void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
-      Configuration.Context = scene.name;
+     if (!_contextSetManually)
+     {
+        Configuration.Context = scene.name;
+
+        // propagate the change to the native property also
+        NativeClient.SetContext(scene.name);
+     }
       Breadcrumbs.Leave("Scene Loaded", BreadcrumbType.State, new Dictionary<string, string> { { "sceneName", scene.name } });
     }
 
@@ -382,6 +392,9 @@ namespace BugsnagUnity
 
     public void SetContext(string context)
     {
+
+      _contextSetManually = true;
+
       // set the context property on Configuration, as it currently holds the global state
       Configuration.Context = context;
 

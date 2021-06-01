@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using UnityEngine;
 
 public class BugsnagNative {
@@ -17,13 +15,13 @@ public class BugsnagNative {
             case RuntimePlatform.IPhonePlayer:
             case RuntimePlatform.OSXPlayer:
             case RuntimePlatform.tvOS:
-                BugsnagNative.IOSCrash ();
+                BugsnagNative.IOSCrash();
                 break;
             case RuntimePlatform.Android:
-                BugsnagNative.AndroidCrash ();
+                BugsnagNative.TriggerJvmException();
                 break;
             default:
-                BugsnagNative.UnhandledCrash ();
+                BugsnagNative.UnhandledCrash();
                 break;
         }
     }
@@ -35,18 +33,28 @@ public class BugsnagNative {
         #endif
     }
 
-    private static void AndroidCrash()
+    public static void TriggerJvmException()
     {
-        AndroidJavaClass crashClass = new AndroidJavaClass ("com.example.bugsnagcrashplugin.CrashHelper");
-        crashClass.CallStatic ("UnhandledCrash");
+        if (Application.platform == RuntimePlatform.Android) {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("triggerJvmException");
+        }
+    }
+
+    public static void RaiseNdkSignal()
+    {
+        if (Application.platform == RuntimePlatform.Android) {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("raiseNdkSignal");
+        }
     }
 
     private static void UnhandledCrash()
     {
-        Debug.Log ("Generating UnhandledCrash");
+        Debug.Log("Generating UnhandledCrash");
         int x = 0;
         int y = 42;
         int z = y / x;
-        Debug.Log (z.ToString ());
+        Debug.Log(z.ToString());
     }
 }

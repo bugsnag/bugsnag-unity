@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
+using UnityEngine.SceneManagement;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -64,9 +65,9 @@ public class Main : MonoBehaviour {
     var config = new Configuration(apiKey);
 
     // setup default endpoints etc
-    var endpoint = new System.Uri(Environment.GetEnvironmentVariable("MAZE_ENDPOINT"));
-    config.Endpoint = endpoint;
-    config.SessionEndpoint = endpoint;
+    var endpoint = Environment.GetEnvironmentVariable("MAZE_ENDPOINT");
+    config.Endpoint = new System.Uri(endpoint + "/notify");
+    config.SessionEndpoint = new System.Uri(endpoint + "/sessions");
     config.AutoCaptureSessions = scenario.Contains("AutoSession");
 
     // replacement for BugsnagBehaviour as not practical to load script in fixture
@@ -286,6 +287,9 @@ public class Main : MonoBehaviour {
       case "NativeCrashReEnableAutoNotify":
         crashy_signal_runner(8);
         break;
+            case "CheckForManualContextAfterSceneLoad":
+                StartCoroutine(SetManualContextReloadSceneAndNotify());
+                break;
       case "AutoSessionNativeCrash":
         new Thread(() => {
           Thread.Sleep(900);
@@ -358,6 +362,14 @@ public class Main : MonoBehaviour {
     yield return new WaitForSeconds(1);
     Bugsnag.Notify(new ExecutionEngineException("Invalid runtime"));
   }
+
+    IEnumerator SetManualContextReloadSceneAndNotify()
+    {
+        Bugsnag.SetContext("Manually-Set");
+        SceneManager.LoadScene(0);
+        yield return new WaitForSeconds(0.5f);
+        Bugsnag.Notify(new System.Exception("ManualContext"));
+    }
 
   void LeaveMessageBreadcrumbAndNotify() {
     Bugsnag.LeaveBreadcrumb("Initialize bumpers");
