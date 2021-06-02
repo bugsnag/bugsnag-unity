@@ -13,6 +13,32 @@ namespace BugsnagUnity
     public class BugsnagBehaviour : MonoBehaviour
     {
 
+        private class LabelOverride : PropertyAttribute
+        {
+            public string label;
+            public LabelOverride(string label)
+            {
+                this.label = label;
+            }
+
+#if UNITY_EDITOR
+            [CustomPropertyDrawer(typeof(LabelOverride))]
+            public class ThisPropertyDrawer : PropertyDrawer
+            {
+                public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+                {
+                    try
+                    {
+                        var propertyAttribute = this.attribute as LabelOverride;
+                        label.text = propertyAttribute.label;
+                        EditorGUI.PropertyField(position, property, label);
+                    }
+                    catch (System.Exception ex) { Debug.LogException(ex); }
+                }
+            }
+#endif
+        }
+
         [Header("Basic Settings")]
 
         /// <summary>
@@ -31,6 +57,7 @@ namespace BugsnagUnity
         /// Exposed in the Unity Editor to configure this behaviour
         /// </summary>
 		[Tooltip("Should Bugsnag automatically detect Android not responding errors.")]
+        [LabelOverride("AutoDetectANRs")]
         public bool AutoDetectAnrs = false;
 
         [Tooltip("Should Bugsnag automatically collect data about sessions.")]
@@ -115,3 +142,4 @@ namespace BugsnagUnity
 #endif
     }
 }
+
