@@ -9,6 +9,9 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
   
 * Fix MaxBreadcrumbs config setting
   [#275](https://github.com/bugsnag/bugsnag-unity/pull/275)
+  
+* Correct android session start times
+  [#291](https://github.com/bugsnag/bugsnag-unity/pull/291)
 
 ## 4.8.8 (2021-04-21)
 

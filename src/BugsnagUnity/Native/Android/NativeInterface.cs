@@ -266,7 +266,7 @@ namespace BugsnagUnity
         });
       } else {
         // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
-        var startedAt = (session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).Milliseconds;
+        var startedAt = (long)(session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalMilliseconds;
         CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
           startedAt, session.Id.ToString(), session.UnhandledCount(),
           session.HandledCount()
