@@ -65,7 +65,7 @@ namespace BugsnagUnity.Payload
     internal HandledState HandledState { get; }
 
     private static string AndroidJavaErrorClass = "AndroidJavaException";
-    private static string ErrorClassMessagePattern = @"^(?<errorClass>\S+):\s*(?<message>.*)";
+    private static string ErrorClassMessagePattern = @"^(?<errorClass>\S+):\s+(?<message>.*)";
     private static string BugsnagStackTraceMarker = "libbugsnag";
 
     internal Exception(string errorClass, string message, StackTraceLine[] stackTrace)

@@ -6,6 +6,8 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
 
 
 ### Bug fixes
+* Timestamps in log messages
+  [#292](https://github.com/bugsnag/bugsnag-unity/pull/292)
   
 * Fix MaxBreadcrumbs config setting
   [#275](https://github.com/bugsnag/bugsnag-unity/pull/275)
