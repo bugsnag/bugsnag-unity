@@ -107,6 +107,9 @@ namespace BugsnagUnity
      if (!_contextSetManually)
      {
         Configuration.Context = scene.name;
+
+        // propagate the change to the native property also
+        NativeClient.SetContext(scene.name);
      }
       Breadcrumbs.Leave("Scene Loaded", BreadcrumbType.State, new Dictionary<string, string> { { "sceneName", scene.name } });
     }

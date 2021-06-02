@@ -35,7 +35,7 @@ namespace BugsnagUnity
       NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
 
       if (config.Context != null) {
-        NativeCode.bugsnag_setContext(obj, config.Context);
+        NativeCode.bugsnag_setContextConfig(obj, config.Context);
       }
       var releaseStages = config.NotifyReleaseStages;
       if (releaseStages != null) {

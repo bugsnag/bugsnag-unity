@@ -89,7 +89,7 @@ Feature: Android smoke tests for C# errors
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
 
     Scenario: Calling Debug.LogError()
-        When I tap the "Assertion failure" button
+        When I tap the "Log error" button
         Then I wait to receive 1 errors
 
         # Exception details

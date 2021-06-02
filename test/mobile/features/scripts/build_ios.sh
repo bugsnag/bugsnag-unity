@@ -6,6 +6,9 @@ popd
 pushd "$script_path/../fixtures"
 project_path=`pwd`/maze_runner
 
+# Clean any previous builds
+find $project_path/output/ -name "*.ipa" -exec rm '{}' \;
+
 # Archive and export the project
 xcrun xcodebuild -project $project_path/mazerunner_xcode/Unity-iPhone.xcodeproj \
                  -scheme Unity-iPhone \
@@ -33,4 +36,5 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-mv $project_path/output/Unity-iPhone.ipa $project_path/mazerunner_$UNITY_VERSION.ipa
+# Move to known location for running (note - the name of the .ipa differs between Xcode versions)
+find $project_path/output/ -name "*.ipa" -exec mv '{}' $project_path/mazerunner_$UNITY_VERSION.ipa \;

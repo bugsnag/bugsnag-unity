@@ -1,5 +1,9 @@
 #include <stdexcept>
 #include <stdlib.h>
+#include <unistd.h>
+
+#import <dispatch/dispatch.h>
+
 
 extern "C" {
   void RaiseCocoaSignal();
