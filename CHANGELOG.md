@@ -4,6 +4,9 @@
 
 ### Bug fixes
 
+* Adjust post build script to allow unity 2021 builds
+  [#289](https://github.com/bugsnag/bugsnag-unity/pull/289)
+
 * Remove Bugsnag.Client from public API 
   [#259](https://github.com/bugsnag/bugsnag-unity/pull/259)
 
