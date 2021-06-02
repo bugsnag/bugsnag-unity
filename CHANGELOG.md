@@ -8,11 +8,9 @@ Please see the [upgrade guide](UPGRADING.md) for details of all the changes and 
 
 ### Bug fixes
   
-* Stop scene changes overiding context when manually set
-  [#255](https://github.com/bugsnag/bugsnag-unity/pull/255)
+* Correct android session start times
+  [#291](https://github.com/bugsnag/bugsnag-unity/pull/291)
 
-* Dont Destroy TimingTrackerObject, so it persists across scenes
-  [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
 
 ## 4.8.8 (2021-04-21)
 
