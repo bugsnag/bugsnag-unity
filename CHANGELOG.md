@@ -9,6 +9,10 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
 
 * Adjust post build script to allow unity 2021 builds
   [#289](https://github.com/bugsnag/bugsnag-unity/pull/289)
+  
+* Correct android session start times
+  [#291](https://github.com/bugsnag/bugsnag-unity/pull/291)
+
 
 ## 4.8.8 (2021-04-21)
 
