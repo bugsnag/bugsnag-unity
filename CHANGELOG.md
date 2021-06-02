@@ -2,32 +2,13 @@
 
 ## TBD
 
+This version contains **breaking** changes, as bugsnag-unity has been updated to use the latest available versions of bugsnag-android (v4.22.2 -> v5.9.4) and bugsnag-cocoa (v5.23.5 -> v6.9.3).
+
+
 ### Bug fixes
 
 * Adjust post build script to allow unity 2021 builds
   [#289](https://github.com/bugsnag/bugsnag-unity/pull/289)
-
-* Remove Bugsnag.Client from public API 
-  [#259](https://github.com/bugsnag/bugsnag-unity/pull/259)
-
-* Add SetAutoDetectAnrs method to Bugsnag interface
-  [#246](https://github.com/bugsnag/bugsnag-unity/pull/246)
-  
-* Stop scene changes overiding context when manually set
-  [#255](https://github.com/bugsnag/bugsnag-unity/pull/255)
-
-* Dont Destroy TimingTrackerObject, so it persists across scenes
-  [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
-
-* Replace Bugsnag.init with Bugsnag.start
-  [#227](https://github.com/bugsnag/bugsnag-unity/pull/227)
-
-* Add Bugsnag.SetContext and Bugsnag.SetAutoNotify
-  [#229](https://github.com/bugsnag/bugsnag-unity/pull/229)
-
-* Update bugsnag-android dependency to v5
-  [#233](https://github.com/bugsnag/bugsnag-unity/pull/233)
-  
 
 ## 4.8.8 (2021-04-21)
 

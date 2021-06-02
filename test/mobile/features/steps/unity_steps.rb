@@ -1,5 +1,6 @@
 When("I wait for the game to start") do
   # Wait for a fixed time period
+  # TODO: PLAT-6655 Remove the Unity splash screen so we don't have to wait so long
   sleep 10
 end
 
@@ -10,29 +11,41 @@ When('I relaunch the Unity app') do
 end
 
 When("I tap the {string} button") do |button|
-  # TODO Currently specific to the ANDROID_9_0 device (Google Pixel 3), which has a screen resolution of 1080x2160
-  middle = 2160 / 2
+  # Ensure we tap in the button
+  viewport = Maze.driver.session_capabilities['viewportRect']
+
+  center = viewport['width'] / 2
+
   case button
   when "throw Exception"
-    press_at 540, middle - 750
-  when "Assertion failure"
-    press_at 540, middle - 650
+    press_at center, 50
+  when "Log error"
+    press_at center, 150
   when "Native exception"
-    press_at 540, middle - 550
+    press_at center, 250
   when "Log caught exception"
-    press_at 540, middle - 450
-  when "Log with class prefix"
-    press_at 540, middle - 350
+    press_at center, 350
+  when "NDK signal"
+    press_at center, 450
   when "Notify caught exception"
-    press_at 540, middle - 250
+    press_at center, 550
   when "Notify with callback"
-    press_at 540, middle - 150
+    press_at center, 650
+  when "Change scene"
+    press_at center, 750
   end
 end
 
 def press_at(x, y)
-  STDOUT.puts "tap #{x}. #{y}"
+
+  # TODO: PLAT-6654 Figure out why the scale is different on iOS
+  factor = if Maze.driver.capabilities['os'] == 'ios'
+             0.5
+           else
+             1
+           end
+
   touch_action = Appium::TouchAction.new
-  touch_action.tap({:x => x, :y => y})
+  touch_action.tap({:x => x * factor, :y => y * factor})
   touch_action.perform
 end
