@@ -81,9 +81,9 @@ Feature: Handled Errors and Exceptions
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
-            | Main:DoLogUnthrownAsUnhandled() |
-            | Main:RunScenario(String) |
-            | Main:Start() |
+            | Main.DoLogUnthrownAsUnhandled() |
+            | Main.RunScenario(string scenario) |
+            | Main.Start() |
 
     Scenario: Logging a warning from a background thread to Bugsnag
         When I run the game in the "ReportLoggedWarningThreaded" state

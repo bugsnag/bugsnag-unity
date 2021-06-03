@@ -4,7 +4,6 @@
 
 This version contains **breaking** changes, as bugsnag-unity has been updated to use the latest available versions of bugsnag-android (v4.22.2 -> v5.9.4) and bugsnag-cocoa (v5.23.5 -> v6.9.3).
 
-Please see the [upgrade guide](UPGRADING.md) for details of all the changes and instructions on how to upgrade.
 
 
 ### Bug fixes
@@ -12,28 +11,12 @@ Please see the [upgrade guide](UPGRADING.md) for details of all the changes and 
 * Added new log interceptor to gain access to the original System.Exception
   [#225](https://github.com/bugsnag/bugsnag-unity/pull/244)
   
-* Add SetAutoDetectAnrs method to Bugsnag interface
-  [#246](https://github.com/bugsnag/bugsnag-unity/pull/246)
-
-* Stop scene changes overiding context when manually set
-  [#255](https://github.com/bugsnag/bugsnag-unity/pull/255)
-
-* Dont Destroy TimingTrackerObject, so it persists across scenes
-  [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
-
-* Replace Bugsnag.init with Bugsnag.start
-  [#227](https://github.com/bugsnag/bugsnag-unity/pull/227)
-
-* Add Bugsnag.SetContext and Bugsnag.SetAutoNotify
-  [#229](https://github.com/bugsnag/bugsnag-unity/pull/229)
-
-* Update bugsnag-android dependency to v5
-  [#233](https://github.com/bugsnag/bugsnag-unity/pull/233)
+* Fix MaxBreadcrumbs config setting
+  [#275](https://github.com/bugsnag/bugsnag-unity/pull/275)
   
+* Correct android session start times
+  [#291](https://github.com/bugsnag/bugsnag-unity/pull/291)
 
-
-=======
->>>>>>> integration/unity-native-notifier-uplifts
 ## 4.8.8 (2021-04-21)
 
 ### Bug fixes
