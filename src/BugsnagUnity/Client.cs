@@ -49,14 +49,14 @@ namespace BugsnagUnity
 
     private static object autoSessionLock = new object();
 
-    private class BugSnagLogHandler : ILogHandler
+    private class BugsnagLogHandler : ILogHandler
     {
 
         private ILogHandler _oldLogHandler;
 
         private Client _client;
 
-        public BugSnagLogHandler(ILogHandler oldLogHandler, Client client)
+        public BugsnagLogHandler(ILogHandler oldLogHandler, Client client)
         {
             _oldLogHandler = oldLogHandler;
             _client = client;
@@ -66,9 +66,9 @@ namespace BugsnagUnity
         {
             var unityException = new UnityLogMessage(exception);
             var shouldSend = _client.Configuration.AutoNotify
-                && Exception.ShouldSend(unityException)
-                && _client.UniqueCounter.ShouldSend(unityException)
-                && _client.LogTypeCounter.ShouldSend(unityException);
+            && Exception.ShouldSend(unityException)
+            && _client.UniqueCounter.ShouldSend(unityException)
+            && _client.LogTypeCounter.ShouldSend(unityException);
             if ( shouldSend )
             {
                 Bugsnag.Notify(exception, _client.Configuration.ReportUncaughtExceptionsAsHandled);
@@ -138,7 +138,7 @@ namespace BugsnagUnity
         private void SetupExceptionInterceptor()
         {
             var oldHandler = UnityEngine.Debug.unityLogger.logHandler;
-            UnityEngine.Debug.unityLogger.logHandler = new BugSnagLogHandler(oldHandler,this);
+            UnityEngine.Debug.unityLogger.logHandler = new BugsnagLogHandler(oldHandler,this);
         }
 
         public void Send(IPayload payload)
@@ -191,16 +191,24 @@ namespace BugsnagUnity
     /// <param name="logType"></param>
     void Notify(string condition, string stackTrace, LogType logType)
     {
-        if (logType.Equals(LogType.Exception))
+
+        var logMessage = new UnityLogMessage(condition, stackTrace, logType);
+
+        //Exceptions that do not inherit from System.Exception will get handled in this method, and system exceptions will get handled in the BugsnagLogHandler
+        //However if an exception is thrown like so Debug.LogException(new Exception()) it will end up in both of these places
+        //and so we check if the BugsnagLogHandler has already handled this exception
+        if (logType.Equals(LogType.Exception) && UniqueCounter.WasAlreadyReportedAsSystemException(logMessage))
         {
+            //This exception was already reported through our moer advanced exception interceptor
             return;
         }
+
         if (Configuration.AutoNotify && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
-      {
-        var logMessage = new UnityLogMessage(condition, stackTrace, logType);
-        var shouldSend = Exception.ShouldSend(logMessage)
+        {
+          var shouldSend = Exception.ShouldSend(logMessage)
           && UniqueCounter.ShouldSend(logMessage)
           && LogTypeCounter.ShouldSend(logMessage);
+
         if (shouldSend)
         {
           var severity = Configuration.LogTypeSeverityMapping.Map(logType);

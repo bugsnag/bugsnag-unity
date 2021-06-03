@@ -68,9 +68,9 @@ Feature: Handled Errors and Exceptions
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
-            | Main:DoLogUnthrown() |
-            | Main:RunScenario(String) |
-            | Main:Start() |
+            | Main.DoLogUnthrown() |
+            | Main.RunScenario(string scenario) |
+            | Main.Start() |
 
     Scenario: Logging an unthrown exception as unhandled
         When I run the game in the "LogUnthrownAsUnhandled" state
