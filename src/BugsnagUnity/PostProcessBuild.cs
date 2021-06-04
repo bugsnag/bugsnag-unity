@@ -49,8 +49,7 @@ namespace BugsnagUnity
      
         /// <summary>
         /// Processes the build configuration section. Here we need to enable two
-        /// build flags relating to certain exception types. We also need to ensure
-        /// that the -ObjC linker flag has been applied.
+        /// build flags relating to certain exception types.
         /// </summary>
         /// <param name="info">Data.</param>
         static void ProcessBuildConfigurationSection(XcodeProjectInformation info)
