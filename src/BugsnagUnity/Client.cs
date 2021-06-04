@@ -194,12 +194,8 @@ namespace BugsnagUnity
 
         var logMessage = new UnityLogMessage(condition, stackTrace, logType);
 
-        //Exceptions that do not inherit from System.Exception will get handled in this method, and system exceptions will get handled in the BugsnagLogHandler
-        //However if an exception is thrown like so Debug.LogException(new Exception()) it will end up in both of these places
-        //and so we check if the BugsnagLogHandler has already handled this exception
-        if (logType.Equals(LogType.Exception) && UniqueCounter.WasAlreadyReportedAsSystemException(logMessage))
+        if (logType.Equals(LogType.Exception))
         {
-            //This exception was already reported through our moer advanced exception interceptor
             return;
         }
 

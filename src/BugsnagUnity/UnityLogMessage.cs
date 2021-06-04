@@ -19,15 +19,12 @@ namespace BugsnagUnity
 
     public DateTime CreatedAt { get; }
 
-    public bool IsFromSystemException;
-
     public UnityLogMessage(string condition, string stackTrace, LogType type)
     {
       CreatedAt = DateTime.UtcNow;
       Condition = condition;
       StackTrace = stackTrace;
       Type = type;
-      IsFromSystemException = false;
     }
 
     public UnityLogMessage(Exception exception)
@@ -44,7 +41,6 @@ namespace BugsnagUnity
             StackTrace = exception.StackTrace;
         }
         Type = LogType.Exception;
-        IsFromSystemException = true;
     }
 
     private string FormatSystemCondition(Exception exception)

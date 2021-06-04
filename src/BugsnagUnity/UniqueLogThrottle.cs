@@ -64,28 +64,6 @@ namespace BugsnagUnity
       return shouldSend;
     }
 
-    public bool WasAlreadyReportedAsSystemException(UnityLogMessage logMessage)
-    {
-        foreach (var existingEvent in Counter)
-        {
-            if (existingEvent.Key.IsFromSystemException)
-            {
-                if (CompareWithSystemExceptionLog(existingEvent.Key, logMessage))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private bool CompareWithSystemExceptionLog(UnityLogMessage x, UnityLogMessage y)
-    {
-        return x.Condition == y.Condition
-        && x.CreatedAt.ToLongTimeString() == y.CreatedAt.ToLongTimeString()
-        && x.Type == y.Type;
-    }
-
     /// <summary>
     /// Used to determine if log messages are unique.
     /// </summary>
