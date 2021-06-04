@@ -288,7 +288,7 @@ public class Main : MonoBehaviour {
         crashy_signal_runner(8);
         break;
             case "CheckForManualContextAfterSceneLoad":
-                StartCoroutine(SetManualContextReloadSceneAndNotify());
+                StartCoroutine(SetManualContextLoadExtraSceneAndNotify());
                 break;
       case "AutoSessionNativeCrash":
         new Thread(() => {
@@ -363,10 +363,10 @@ public class Main : MonoBehaviour {
     Bugsnag.Notify(new ExecutionEngineException("Invalid runtime"));
   }
 
-    IEnumerator SetManualContextReloadSceneAndNotify()
+    IEnumerator SetManualContextLoadExtraSceneAndNotify()
     {
         Bugsnag.SetContext("Manually-Set");
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1,LoadSceneMode.Additive);
         yield return new WaitForSeconds(0.5f);
         Bugsnag.Notify(new System.Exception("ManualContext"));
     }
