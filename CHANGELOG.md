@@ -6,6 +6,10 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
 
 
 ### Bug fixes
+
+* Adjust post build script to allow unity 2021 builds
+  [#289](https://github.com/bugsnag/bugsnag-unity/pull/289)
+  
 * Fix an issue where timestamps and other `:`-containing log message content was interpreted as the error class
   [#292](https://github.com/bugsnag/bugsnag-unity/pull/292)
   
