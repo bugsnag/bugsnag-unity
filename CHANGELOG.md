@@ -1,5 +1,19 @@
 # Changelog
 
+## 5.0.0 (2021-06-08)
+
+This version contains **breaking** changes, as bugsnag-unity has been updated to use the latest available versions of bugsnag-android (v4.22.2 -> v5.9.4) and bugsnag-cocoa (v5.23.5 -> v6.9.3).
+
+Please see the [upgrade guide](UPGRADING.md) for details of all the changes and instructions on how to upgrade.
+
+### Bug fixes
+  
+* Stop scene changes overiding context when manually set
+  [#255](https://github.com/bugsnag/bugsnag-unity/pull/255)
+
+* Dont Destroy TimingTrackerObject, so it persists across scenes
+  [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
+
 ## 4.8.8 (2021-04-21)
 
 ### Bug fixes

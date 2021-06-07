@@ -12,7 +12,7 @@ namespace BugsnagUnity
 
     public IDelivery Delivery { get; }
 
-    public NativeClient(Configuration configuration)
+    public NativeClient(IConfiguration configuration)
     {
       Configuration = configuration;
       Breadcrumbs = new Breadcrumbs(configuration);
@@ -67,8 +67,18 @@ namespace BugsnagUnity
     public void SetUser(User user)
     {
     }
+    public void SetContext(string context)
+    {
+    }
+    public void SetAutoNotify(bool autoNotify)
+    {
+    }
 
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    public void SetAutoDetectAnrs(bool autoDetectAnrs)
+    {
+    }
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
       out ulong lpFreeBytesAvailable,
@@ -79,7 +89,9 @@ namespace BugsnagUnity
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+       
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     private class MEMORYSTATUSEX
     {
       public uint dwLength;

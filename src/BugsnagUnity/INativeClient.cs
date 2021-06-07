@@ -62,5 +62,24 @@ namespace BugsnagUnity
     /// </summary>
     /// <param name="metadata"></param>
     void PopulateMetadata(Metadata metadata);
-  }
+
+    /// <summary>
+    /// Mutates the context.
+    /// </summary>
+    /// <param name="context"></param>
+    void SetContext(string context);
+
+    /// <summary>
+    /// Mutates autoNotify.
+    /// </summary>
+    /// <param name="autoNotify"></param>
+    void SetAutoNotify(bool autoNotify);
+
+    /// <summary>
+    /// Enables or disables Anr detection.
+    /// </summary>
+    /// <param name="autoDetectAnrs"></param>
+    void SetAutoDetectAnrs(bool autoDetectAnrs);
+
+    }
 }
