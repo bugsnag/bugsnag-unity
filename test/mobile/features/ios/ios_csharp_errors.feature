@@ -76,13 +76,10 @@ Feature: iOS smoke tests for C# errors
         And the event "context" equals "Callback Context"
 
         # MetaData
-        And the event "metaData.Unity.unityException" equals "true"
-        And the event "metaData.Unity.osLanguage" is not null
-        And the event "metaData.Unity.platform" equals "IPhonePlayer"
-        And the event "metaData.Unity.version" equals "1.0"
-        And the event "metaData.Unity.companyName" equals "DefaultCompany"
-        And the event "metaData.Unity.productName" equals "maze_runner"
         And the event "metaData.Callback.region" equals "US"
+        And the event "metaData.Device.osLanguage" is not null
+        And the event "metaData.App.companyName" equals "DefaultCompany"
+        And the event "metaData.App.name" equals "maze_runner"
 
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
@@ -155,12 +152,9 @@ Feature: iOS smoke tests for C# errors
         And the event "context" equals "My context"
 
         # MetaData
-        And the event "metaData.Unity.unityException" equals "true"
-        And the event "metaData.Unity.osLanguage" is not null
-        And the event "metaData.Unity.platform" equals "IPhonePlayer"
-        And the event "metaData.Unity.version" equals "1.0"
-        And the event "metaData.Unity.companyName" equals "DefaultCompany"
-        And the event "metaData.Unity.productName" equals "maze_runner"
+        And the event "metaData.Device.osLanguage" is not null
+        And the event "metaData.App.companyName" equals "DefaultCompany"
+        And the event "metaData.App.name" equals "maze_runner"
 
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null

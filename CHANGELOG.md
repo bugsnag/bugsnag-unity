@@ -5,7 +5,13 @@
 This version contains **breaking** changes, as bugsnag-unity has been updated to use the latest available versions of bugsnag-android (v4.22.2 -> v5.9.4) and bugsnag-cocoa (v5.23.5 -> v6.9.3).
 
 
+### Enhancements
+
+* Added more metadata to events and removed duplicate/unnecessary metadata
+	[#297](https://github.com/bugsnag/bugsnag-unity/pull/297)
+	
 ### Bug fixes
+
 * Fix an issue where timestamps and other `:`-containing log message content was interpreted as the error class
   [#292](https://github.com/bugsnag/bugsnag-unity/pull/292)
   

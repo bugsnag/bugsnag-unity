@@ -40,6 +40,7 @@ extern "C" {
 
   void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
   void bugsnag_removeMetadata(const void *configuration, const char *tab);
+  void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab, const char *keys[], int keys_size, const char *values[], int values_size));
 
   void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
@@ -120,7 +121,6 @@ void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
 }
 
 void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
-  BugsnagConfiguration *ns_configuration = (__bridge BugsnagConfiguration *)configuration;
   if (tab == NULL)
     return;
 
@@ -138,19 +138,40 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
         ? [NSString stringWithUTF8String:metadata[i+1]]
         : nil;
     ns_metadata[key] = value;
-  }
 
-  [ns_configuration clearMetadataFromSection:tabName];
-  [ns_configuration addMetadata:ns_metadata toSection:tabName];
+  }
+  [Bugsnag.client addMetadata:ns_metadata toSection:tabName];
+}
+
+void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab,const char *keys[], int keys_size, const char *values[], int values_size)) {
+    
+    for (NSString* sectionKey in [Bugsnag.client metadata].dictionary.allKeys) {
+              NSLog(@"Found Section Key: %@", sectionKey);
+                   
+             NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
+             NSArray *keys = [sectionDictionary allKeys];
+             NSArray *values = [sectionDictionary allValues];
+             int count = 0;
+             if ([keys count] <= INT_MAX) {
+               count = (int)[keys count];
+             }
+             const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+             const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+             for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
+               c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+               c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
+             }
+             callback(metadata, [sectionKey UTF8String],c_keys,count,c_values,count);
+       }
+    
 }
 
 void bugsnag_removeMetadata(const void *configuration, const char *tab) {
-  BugsnagConfiguration *ns_configuration = (__bridge BugsnagConfiguration *)configuration;
   if (tab == NULL)
     return;
 
   NSString *tabName = [NSString stringWithUTF8String:tab];
-  [ns_configuration clearMetadataFromSection:tabName];
+  [Bugsnag.client clearMetadataFromSection:tabName];
 }
 
 void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {

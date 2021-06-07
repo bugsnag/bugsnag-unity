@@ -26,6 +26,10 @@ namespace BugsnagUnity
     [DllImport(Import)]
     internal static extern void bugsnag_retrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
+    internal delegate void MetadataInformation(IntPtr instance, string tab, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] values, int valuesSize);
+    [DllImport(Import)]
+    internal static extern void bugsnag_retrieveMetaData(IntPtr instance, MetadataInformation visitor);
+
     [DllImport(Import)]
     internal static extern void bugsnag_populateUser(ref NativeUser user);
 
