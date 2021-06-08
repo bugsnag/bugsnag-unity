@@ -13,7 +13,9 @@ def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
 # install location for both windows and mac.
 #
 def unity_directory
-  if ENV.has_key? "UNITY_DIR"
+  if ENV.has_key? 'UNITY_VERSION'
+    "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
+  elsif ENV.has_key? "UNITY_DIR"
     ENV["UNITY_DIR"]
   else
     ['/Applications/Unity', 'C:\Program Files\Unity'].find do |dir|
@@ -86,7 +88,7 @@ def assemble_android filter_abis=true
   android_dir = File.join(assets_path, "Android")
 
   cd "bugsnag-android" do
-    sh "./gradlew", "bugsnag-android-core:assembleRelease", "bugsnag-plugin-android-ndk:assembleRelease", "bugsnag-plugin-android-anr:assembleRelease", abi_filters
+    sh "./gradlew", "assembleRelease", abi_filters
   end
 
   cd "bugsnag-android-unity" do
@@ -100,9 +102,9 @@ def assemble_android filter_abis=true
 
   # copy kotlin dependencies required by bugsnag-android. the exact files required for each
   # version can be found here:
-  # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.61/kotlin-stdlib-1.3.61.pom
-  kotlin_stdlib = File.join("android-libs", "kotlin-stdlib-1.3.61.jar")
-  kotlin_stdlib_common = File.join("android-libs", "kotlin-stdlib-common-1.3.61.jar")
+  # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72.pom
+  kotlin_stdlib = File.join("android-libs", "kotlin-stdlib-1.3.72.jar")
+  kotlin_stdlib_common = File.join("android-libs", "kotlin-stdlib-common-1.3.72.jar")
   kotlin_annotations = File.join("android-libs", "annotations-13.0.jar")
 
   # copy unity lib
@@ -145,16 +147,9 @@ namespace :plugin do
       next unless is_mac?
       build_type = "Release" # "Debug" or "Release"
       FileUtils.mkdir_p cocoa_build_dir
-      FileUtils.cp_r "bugsnag-cocoa/Source", cocoa_build_dir
+      FileUtils.cp_r "bugsnag-cocoa/Bugsnag", cocoa_build_dir
       bugsnag_unity_file = File.realpath("BugsnagUnity.mm", "src")
-      public_headers = [
-        "BugsnagMetaData.h",
-        "Bugsnag.h",
-        "BugsnagBreadcrumb.h",
-        "BugsnagCrashReport.h",
-        "BSG_KSCrashReportWriter.h",
-        "BugsnagConfiguration.h",
-      ]
+      public_headers = Dir.entries(File.join(cocoa_build_dir, "Bugsnag", "include", "Bugsnag"))
 
       cd cocoa_build_dir do
         ["bugsnag-ios", "bugsnag-osx", "bugsnag-tvos"].each do |project_name|
@@ -191,7 +186,7 @@ namespace :plugin do
 
           group = project.new_group("Bugsnag")
 
-          source_files = Dir.glob(File.join("Source", "**", "*.{c,h,mm,cpp,m}"))
+          source_files = Dir.glob(File.join("Bugsnag", "**", "*.{c,h,mm,cpp,m}"))
             .map(&File.method(:realpath))
             .tap { |files| files << bugsnag_unity_file }
             .map { |f| group.new_file(f) }
@@ -203,6 +198,7 @@ namespace :plugin do
           end
 
           project.build_configurations.each do |build_configuration|
+            build_configuration.build_settings["HEADER_SEARCH_PATHS"] = " $(SRCROOT)/Bugsnag/include/"
             if ["bugsnag-ios", "bugsnag-tvos"].include? project_name
               build_configuration.build_settings["ONLY_ACTIVE_ARCH"] = "NO"
               build_configuration.build_settings["VALID_ARCHS"] = ["x86_64", "i386", "armv7", "arm64"]
@@ -232,6 +228,10 @@ namespace :plugin do
 
       cd cocoa_build_dir do
         cd "build" do
+          def is_fat library_path
+            stdout, stderr, status = Open3.capture3("lipo", "-info", library_path)
+            return !stdout.start_with?('Non-fat')
+          end
           # we just need to copy the os x bundle into the correct directory
           cp_r File.join(build_type, "bugsnag-osx.bundle"), osx_dir
 
@@ -240,10 +240,23 @@ namespace :plugin do
           [["iphone", "ios", ios_dir], ["appletv", "tvos", tvos_dir]].each do |long_name, short_name, directory|
             library = "libbugsnag-#{short_name}.a"
             device_library = File.join("#{build_type}-#{long_name}os", library)
-            simulator_library = File.join("#{build_type}-#{long_name}simulator", library)
-
+            simulator_dir = "#{build_type}-#{long_name}simulator"
+            simulator_library = File.join(simulator_dir, library)
+            simulator_x86 = File.join(simulator_dir, "libBugsnagStatic-x86.a")
+            simulator_x64 = File.join(simulator_dir, "libBugsnagStatic-x64.a")
             output_library = File.join(directory, library)
-            sh "lipo", "-create", device_library, simulator_library, "-output", output_library
+
+            if is_fat simulator_library
+              sh "lipo", "-extract", "x86_64", simulator_library, "-output", simulator_x64
+            else
+              simulator_x64 = simulator_library
+            end
+            if short_name == "ios"
+              sh "lipo", "-extract", "i386", simulator_library, "-output", simulator_x86
+              sh "lipo", "-create", device_library, simulator_x86, simulator_x64, "-output", output_library
+            else
+              sh "lipo", "-create", device_library, simulator_x64, "-output", output_library
+            end
           end
         end
       end
@@ -297,42 +310,6 @@ namespace :plugin do
     Rake::Task["plugin:build:all_android64"].invoke
     export_package("Bugsnag-with-android-64bit.unitypackage")
   end
-
-  desc "Run integration tests"
-  task maze_runner: %w[plugin:export] do
-    sh "bundle", "exec", "bugsnag-maze-runner"
-  end
-end
-
-namespace :travis do
-  def with_license &block
-    # Ensure a Packages/manifest.json exists in all locations
-    `mkdir Packages && echo '{}' > Packages/manifest.json`
-    `mkdir #{unity_directory}/Unity.app/Contents/Packages && echo '{}' > #{unity_directory}/Unity.app/Contents/Packages/manifest.json`
-
-    # activate the unity license
-    unity "-serial", ENV["UNITY_SERIAL"], "-username", ENV["UNITY_USERNAME"], "-password", ENV["UNITY_PASSWORD"], force_free: false, no_graphics: false
-    sleep 10
-    begin
-      yield
-    ensure
-      unity "-returnlicense", force_free: false, no_graphics: false
-      sleep 10
-    end
-
-  end
-
-  task :export_plugin do
-    with_license do
-      Rake::Task["plugin:export"].invoke
-    end
-  end
-
-  task :maze_runner do
-    with_license do
-      sh "bundle", "exec", "bugsnag-maze-runner", "--color", "--verbose"
-    end
-  end
 end
 
 namespace :example do
@@ -346,7 +323,7 @@ namespace :example do
       # here we have to uncomment the lines that reference bugsnag. These are
       # commented out so that we can import the package above and have it compile
       # before the bugsnag references have been added.
-      bugsnag_file = File.join(example, "Assets", "Main.cs")
+      bugsnag_file = File.join(example, "Assets", "Scripts", "Main.cs")
       c = File.read(bugsnag_file).gsub("//", "")
       File.write(bugsnag_file, c)
     end
@@ -365,4 +342,76 @@ namespace :example do
   end
 end
 
-task default: %w[plugin:maze_runner]
+namespace :test do
+  namespace :android do
+    task :build do
+
+      # Check that a Unity version has been selected and the path exists before calling the build script
+      if ENV.has_key? 'UNITY_VERSION'
+        unity_path = "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}/Unity.app/Contents/MacOS"
+      else
+        raise 'UNITY_VERSION must be set'
+      end
+      unity = File.join(unity_path, "Unity")
+      unless File.exists? unity
+        raise "Unity not found at path #{unity}"
+      end
+
+      # Prepare the test fixture project by importing the plugins
+      env = { "UNITY_PATH" => unity_path }
+      script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
+      unless system env, script
+        raise 'Preparation of test fixture failed'
+      end
+
+      # Build the Android APK
+      script = File.join("test", "mobile", "features", "scripts", "build_android.sh")
+      unless system env, script
+        raise 'APK build failed'
+      end
+    end
+  end
+
+  namespace :ios do
+    task :generate_xcode do
+      # Check that a Unity version has been selected and the path exists before calling the build script
+      if ENV.has_key? 'UNITY_VERSION'
+        unity_path = "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}/Unity.app/Contents/MacOS"
+      else
+        raise 'UNITY_VERSION must be set'
+      end
+      unity = File.join(unity_path, "Unity")
+      unless File.exists? unity
+        raise "Unity not found at path #{unity}"
+      end
+
+      # Prepare the test fixture project by importing the plugins
+      env = { "UNITY_PATH" => unity_path }
+      script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
+      unless system env, script
+        raise 'Preparation of test fixture failed'
+      end
+
+      # Generate the Xcode project
+      cd File.join("test", "mobile", "features") do
+        script = File.join("scripts", "generate_xcode_project.sh")
+        unless system env, script
+          raise 'IPA build failed'
+        end
+      end
+    end
+
+    task :build_xcode do
+      # Build and archive from the Xcode project
+      cd File.join("test", "mobile", "features") do
+        script = File.join("scripts", "build_ios.sh")
+        unless system script
+          raise 'IPA build failed'
+        end
+      end
+    end
+
+    task build: %w[test:ios:generate_xcode test:ios:build_xcode] do
+    end
+  end
+end

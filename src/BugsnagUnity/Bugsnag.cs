@@ -7,18 +7,19 @@ namespace BugsnagUnity
   {
     static object _clientLock = new object();
 
-    public static IClient Init(string apiKey)
+    public static IClient Start(string apiKey)
     {
-      return Init(apiKey, true);
+      return Start(new Configuration(apiKey));
     }
 
-    public static IClient Init(string apiKey, bool autoNotify)
+    public static IClient Start(IConfiguration configuration)
     {
       lock (_clientLock)
       {
         if (InternalClient == null)
         {
-          InternalClient = new Client(new NativeClient(new Configuration(apiKey, autoNotify)));
+          var nativeClient = new NativeClient(configuration);
+          InternalClient = new Client(nativeClient);
         }
       }
 
@@ -27,9 +28,7 @@ namespace BugsnagUnity
 
     static Client InternalClient { get; set; }
 
-    public static IClient Client => InternalClient;
-
-    public static IConfiguration Configuration => Client.Configuration;
+    private static IClient Client => InternalClient;
 
     public static IBreadcrumbs Breadcrumbs => Client.Breadcrumbs;
 
@@ -76,5 +75,37 @@ namespace BugsnagUnity
     /// </summary>
     /// <param name="inFocus"></param>
     public static void SetApplicationState(bool inFocus) => Client.SetApplicationState(inFocus);
-  }
+
+    /// <summary>
+    /// Bugsnag uses the concept of contexts to help display and group your errors.
+    /// Contexts represent what was happening in your game at the time an error
+    /// occurs. By default, this will be set to be your currently active Unity Scene.
+    /// </summary>
+    /// <param name="context"></param>
+    public static void SetContext(string context)
+    {
+      Client.SetContext(context);
+    }
+
+    /// <summary>
+    /// By default, we will automatically notify Bugsnag of any fatal errors (crashes) in your game.
+    /// If you want to stop this from happening, you can set the AutoNotify property to false. It
+    /// is recommended that you set this value by Configuration rather than this method.
+    /// </summary>
+    /// <param name="autoNotify"></param>
+    public static void SetAutoNotify(bool autoNotify)
+    {
+      Client.SetAutoNotify(autoNotify);
+    }
+
+    /// <summary>
+    /// Enable or disable Bugsnag reporting any Android not responding errors (ANRs) in your game.
+    /// </summary>
+    /// <param name="autoDetectAnrs"></param>
+    public static void SetAutoDetectAnrs(bool autoDetectAnrs)
+    {
+      Client.SetAutoDetectAnrs(autoDetectAnrs);
+    }
+
+    }
 }

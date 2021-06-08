@@ -35,5 +35,11 @@ namespace BugsnagUnity
     /// </summary>
     /// <param name="inFocus"></param>
     void SetApplicationState(bool inFocus);
+
+    void SetContext(string context);
+
+    void SetAutoNotify(bool autoNotify);
+
+    void SetAutoDetectAnrs(bool autoDetectAnrs);
   }
 }

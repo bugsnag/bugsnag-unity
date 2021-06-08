@@ -1,0 +1,15 @@
+version: '3.6'
+services:
+
+  maze-runner:
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v5-cli
+    environment:
+      DEBUG:
+      BUILDKITE:
+      BUILDKITE_PIPELINE_NAME:
+      UNITY_VERSION:
+      BROWSER_STACK_USERNAME:
+      BROWSER_STACK_ACCESS_KEY:
+    volumes:
+      - ./test:/app/test
+      - ./test/mobile/features/:/app/features
