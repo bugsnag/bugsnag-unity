@@ -568,7 +568,6 @@
 				1984447697B50992FF7B71F3 /* Sources */,
 				7B84486ABE0D25523243AE77 /* Resources */,
 				120943439F2C11A4A2EF8C58 /* Frameworks */,
-				186208CC13E64B42A13CCD74 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -587,9 +586,7 @@
 				83D0C1FD0E6C8D7700EBCE5D /* CopyFiles */,
 				1D60588E0D05DD3D006BFB54 /* Sources */,
 				1D60588F0D05DD3D006BFB54 /* Frameworks */,
-				033966F41B18B03000ECD701 /* ShellScript */,
 				5D0844359B6763E1774306B4 /* Embed App Extensions */,
-				186208CC13E64B42A13CCD74 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -608,7 +605,6 @@
 				5623C56F17FDCB0800090B9E /* Sources */,
 				5623C57017FDCB0800090B9E /* Frameworks */,
 				5623C57117FDCB0800090B9E /* Resources */,
-				186208CC13E64B42A13CCD74 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -694,35 +690,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		033966F41B18B03000ECD701 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"$PROJECT_DIR/MapFileParser.sh\"\n";
-		};
-		186208CC13E64B42A13CCD74 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = "/usr/bin/env ruby";
-			shellScript = "# bugsnag dsym upload script\nfork do\n  Process.setsid\n  STDIN.reopen(\"/dev/null\")\n  STDOUT.reopen(\"/dev/null\", \"a\")\n  STDERR.reopen(\"/dev/null\", \"a\")\n\n  require \"shellwords\"\n\n  Dir[\"#{ENV[\"DWARF_DSYM_FOLDER_PATH\"]}/*/Contents/Resources/DWARF/*\"].each do |dsym|\n    system(\"curl -F dsym=@#{Shellwords.escape(dsym)} -F projectRoot=#{Shellwords.escape(ENV[\"PROJECT_DIR\"])} https://upload.bugsnag.com/\")\n  end\nend\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1984447697B50992FF7B71F3 /* Sources */ = {
@@ -1136,7 +1103,6 @@
 					CoreMotion,
 					"-weak-lSystem",
 					"-Wl,-undefined,dynamic_lookup",
-					"-ObjC",
 				);
 				PRODUCT_NAME = ProductName;
 				PROVISIONING_PROFILE = "";
@@ -1261,7 +1227,6 @@
 					CoreMotion,
 					"-weak-lSystem",
 					"-Wl,-undefined,dynamic_lookup",
-					"-ObjC",
 				);
 				PRODUCT_NAME = ProductName;
 				PROVISIONING_PROFILE = "";
