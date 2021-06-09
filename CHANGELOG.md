@@ -7,8 +7,14 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
 
 ### Enhancements
 
-* Added event metadata for CPU and graphics capabilities and removed duplicate/unnecessary metadata
-	[#297](https://github.com/bugsnag/bugsnag-unity/pull/297)
+* Added event metadata for CPU and graphics capabilities and migrated entries from the Unity tab to the device and app tabs, to better match other platforms ([#297](https://github.com/bugsnag/bugsnag-unity/pull/297)):
+  * `unity.companyName` -> `app.companyName`
+  * `unity.productName` -> `app.name`
+  * `unity.version` -> `app.version`
+  * `unity.platform` -> `app.type`
+  * `unity.osLanguage` -> `device.osLanguage`
+  * `unity.unityException` -> removed as a duplicate of the error class
+  * `unity.unityLogType` -> removed as is contained in the error class for generic logs
 	
 ### Bug fixes
 
