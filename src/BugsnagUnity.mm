@@ -146,23 +146,23 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
 void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab,const char *keys[], int keys_size, const char *values[], int values_size)) {
     
     for (NSString* sectionKey in [Bugsnag.client metadata].dictionary.allKeys) {
-              NSLog(@"Found Section Key: %@", sectionKey);
-                   
-             NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
-             NSArray *keys = [sectionDictionary allKeys];
-             NSArray *values = [sectionDictionary allValues];
-             int count = 0;
-             if ([keys count] <= INT_MAX) {
-               count = (int)[keys count];
-             }
-             const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-             const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-             for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
-               c_keys[i] = [[keys objectAtIndex: i] UTF8String];
-               c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
-             }
-             callback(metadata, [sectionKey UTF8String],c_keys,count,c_values,count);
-       }
+                 NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
+                 NSArray *keys = [sectionDictionary allKeys];
+                 NSArray *values = [sectionDictionary allValues];
+                 int count = 0;
+                 if ([keys count] <= INT_MAX) {
+                   count = (int)[keys count];
+                 }
+                 const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+                 const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+                 for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
+                   c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+                   c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
+                 }
+                callback(metadata, [sectionKey UTF8String],c_keys,count,c_values,count);
+                free(c_keys);
+                free(c_values);
+           }
     
 }
 
@@ -238,6 +238,8 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
     }
 
     breadcrumb(managedBreadcrumbs, message, timestamp, type, c_keys, count, c_values, count);
+    free(c_keys);
+    free(c_values);
   }];
 }
 

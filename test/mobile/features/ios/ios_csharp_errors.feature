@@ -77,9 +77,9 @@ Feature: iOS smoke tests for C# errors
 
         # MetaData
         And the event "metaData.Callback.region" equals "US"
-        And the event "metaData.Device.osLanguage" is not null
-        And the event "metaData.App.companyName" equals "DefaultCompany"
-        And the event "metaData.App.name" equals "maze_runner"
+        And the event "metaData.device.osLanguage" is not null
+        And the event "metaData.app.companyName" equals "DefaultCompany"
+        And the event "metaData.app.name" equals "maze_runner"
 
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
@@ -152,9 +152,9 @@ Feature: iOS smoke tests for C# errors
         And the event "context" equals "My context"
 
         # MetaData
-        And the event "metaData.Device.osLanguage" is not null
-        And the event "metaData.App.companyName" equals "DefaultCompany"
-        And the event "metaData.App.name" equals "maze_runner"
+        And the event "metaData.device.osLanguage" is not null
+        And the event "metaData.app.companyName" equals "DefaultCompany"
+        And the event "metaData.app.name" equals "maze_runner"
 
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null

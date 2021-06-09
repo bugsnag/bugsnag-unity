@@ -39,9 +39,9 @@ namespace BugsnagUnity
 
     bool InForeground => ForegroundStopwatch.IsRunning;
 
-    const string AppMetadataKey = "App";
+    const string AppMetadataKey = "app";
 
-    const string DeviceMetadataKey = "Device";
+    const string DeviceMetadataKey = "device";
 
     private Thread MainThread;
 
