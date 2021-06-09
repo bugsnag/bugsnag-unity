@@ -7,7 +7,7 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
 
 ### Enhancements
 
-* Added more metadata to events and removed duplicate/unnecessary metadata
+* Added event metadata for CPU and graphics capabilities and removed duplicate/unnecessary metadata
 	[#297](https://github.com/bugsnag/bugsnag-unity/pull/297)
 	
 ### Bug fixes
