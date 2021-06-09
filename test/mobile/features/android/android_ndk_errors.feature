@@ -67,7 +67,7 @@ Feature: Android manual smoke tests
         And the event "metaData.device.networkAccess" is not null
         And the event "metaData.device.screenDensity" is not null
         And the event "metaData.device.screenResolution" is not null
-        And the event "metaData.Device.osLanguage" is not null
+        And the event "metaData.device.osLanguage" is not null
         And the event "app.type" equals "android"
         And the event "metaData.app.companyName" equals "DefaultCompany"
         And the event "metaData.app.name" equals "maze_runner"
