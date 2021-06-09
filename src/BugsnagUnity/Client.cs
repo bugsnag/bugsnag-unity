@@ -39,7 +39,9 @@ namespace BugsnagUnity
 
     bool InForeground => ForegroundStopwatch.IsRunning;
 
-    const string UnityMetadataKey = "Unity";
+    const string AppMetadataKey = "app";
+
+    const string DeviceMetadataKey = "device";
 
     private Thread MainThread;
 
@@ -63,9 +65,12 @@ namespace BugsnagUnity
       UniqueCounter = new UniqueLogThrottle(Configuration);
       LogTypeCounter = new MaximumLogTypeCounter(Configuration);
       SessionTracking = new SessionTracker(this);
+
       UnityMetadata.InitDefaultMetadata();
+      NativeClient.SetMetadata(AppMetadataKey, UnityMetadata.DefaultAppMetadata);
+      NativeClient.SetMetadata(DeviceMetadataKey, UnityMetadata.DefaultDeviceMetadata);
+
       Device.InitUnityVersion();
-      NativeClient.SetMetadata(UnityMetadataKey, UnityMetadata.ForNativeClient());
       NativeClient.PopulateUser(User);
       if (!string.IsNullOrEmpty(nativeClient.Configuration.Context))
       {
@@ -232,13 +237,11 @@ namespace BugsnagUnity
 
       var metadata = new Metadata();
       NativeClient.PopulateMetadata(metadata);
-
+     
       foreach (var item in Metadata)
       {
         metadata.AddToPayload(item.Key, item.Value);
       }
-
-      metadata.AddToPayload(UnityMetadataKey, UnityMetadata.WithLogType(logType));
 
       var @event = new Payload.Event(
         Configuration.Context,

@@ -142,7 +142,7 @@ namespace BugsnagUnity
           }
           index += 2;
         }
-        NativeCode.bugsnag_setMetadata(NativeConfiguration, tab, metadata, count);
+        NativeCode.bugsnag_setMetadata(NativeConfiguration, tab, metadata, count);      
       } else {
         NativeCode.bugsnag_removeMetadata(NativeConfiguration, tab);
       }
@@ -150,6 +150,36 @@ namespace BugsnagUnity
 
     public void PopulateMetadata(Metadata metadata)
     {
+        var handle = GCHandle.Alloc(metadata);
+        try
+        {
+            NativeCode.bugsnag_retrieveMetaData(GCHandle.ToIntPtr(handle), PopulateMetaDataData);
+        }
+        finally
+        {
+            handle.Free();
+        }
+    }
+
+    [MonoPInvokeCallback(typeof(NativeCode.MetadataInformation))]
+    static void PopulateMetaDataData(IntPtr instance, string tab, string[] keys,int keysSize, string[] values, int valuesSize)
+    {
+        var handle = GCHandle.FromIntPtr(instance);
+        if (handle.Target is Metadata metadata)
+        {
+            var metadataObject = new Dictionary<string, string>();
+            for (int i = 0; i < keys.Length; i++)
+            {
+                var key = keys[i];
+                var value = values[i];
+                if (key.Equals("simulator"))
+                {
+                    value = value.Equals("0") || value.Equals("false") ? "false" : "true";
+                }
+                metadataObject.Add(key, value);
+            }
+            metadata.AddToPayload(tab, metadataObject);         
+        }
     }
 
     public void SetSession(Session session)
