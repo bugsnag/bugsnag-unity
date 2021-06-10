@@ -117,9 +117,12 @@ namespace BugsnagUnity
       }
       SceneManager.sceneLoaded += SceneLoaded;
 
-        SetupLogListeners();
+      SetupLogListeners();
 
-        SetupExceptionInterceptor();
+      if (IsUnity2019OrHigher())
+      {
+          SetupAdvancedExceptionInterceptor();
+      }
 
       User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
       TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
@@ -134,13 +137,20 @@ namespace BugsnagUnity
       }
     }
 
+        private bool IsUnity2019OrHigher()
+        {
+            var version = Application.unityVersion;
+            return !version.Contains("2017") &&
+                !!version.Contains("2018");
+        }
+
         private void SetupLogListeners()
         {
             Application.logMessageReceivedThreaded += MultiThreadedNotify;
             Application.logMessageReceived += Notify;
         }
 
-        private void SetupExceptionInterceptor()
+        private void SetupAdvancedExceptionInterceptor()
         {
             var oldHandler = UnityEngine.Debug.unityLogger.logHandler;
             UnityEngine.Debug.unityLogger.logHandler = new BugsnagLogHandler(oldHandler,this);
@@ -199,7 +209,7 @@ namespace BugsnagUnity
 
         var logMessage = new UnityLogMessage(condition, stackTrace, logType);
 
-        if (logType.Equals(LogType.Exception))
+        if (IsUnity2019OrHigher() && logType.Equals(LogType.Exception))
         {
             return;
         }

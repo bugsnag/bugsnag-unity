@@ -10,7 +10,7 @@ namespace UnityEngine
     //
     // Summary:
     //     The version of the Unity runtime used to play the content.
-    public static string unityVersion { get; }
+    public static string unityVersion { get { return "2018"; } }
 
     //
     // Summary:
