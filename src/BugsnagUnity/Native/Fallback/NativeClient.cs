@@ -3,68 +3,68 @@ using System.Collections.Generic;
 
 namespace BugsnagUnity
 {
-  class NativeClient : INativeClient
-  {
-    public IConfiguration Configuration { get; }
-
-    public IBreadcrumbs Breadcrumbs { get; }
-
-    public IDelivery Delivery { get; }
-
-    private Dictionary<string, object> _editorMetadata = new Dictionary<string, object>();
-
-    public NativeClient(IConfiguration configuration)
+    class NativeClient : INativeClient
     {
-      Configuration = configuration;
-      Breadcrumbs = new Breadcrumbs(configuration);
-      Delivery = new Delivery();
-    }
+        public IConfiguration Configuration { get; }
 
-    public void PopulateApp(App app)
-    {
-    }
+        public IBreadcrumbs Breadcrumbs { get; }
 
-    public void PopulateDevice(Device device)
-    {
-    }
+        public IDelivery Delivery { get; }
 
-    public void PopulateMetadata(Metadata metadata)
-    {
-        MergeDictionaries(metadata,_editorMetadata);
-    }
-    private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)
-    {
-        foreach (var entry in another)
+        private Dictionary<string, object> _editorMetadata = new Dictionary<string, object>();
+
+        public NativeClient(IConfiguration configuration)
         {
-            dest.AddToPayload(entry.Key, entry.Value);
+            Configuration = configuration;
+            Breadcrumbs = new Breadcrumbs(configuration);
+            Delivery = new Delivery();
         }
-    }
 
-    public void PopulateUser(User user)
-    {
-    }
+        public void PopulateApp(App app)
+        {
+        }
 
-    public void SetMetadata(string tab, Dictionary<string, string> metadata)
-    {
-        _editorMetadata[tab] = metadata;
-    }
+        public void PopulateDevice(Device device)
+        {
+        }
 
-    public void SetSession(Session session)
-    {
-    }
+        public void PopulateMetadata(Metadata metadata)
+        {
+            MergeDictionaries(metadata, _editorMetadata);
+        }
+        private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)
+        {
+            foreach (var entry in another)
+            {
+                dest.AddToPayload(entry.Key, entry.Value);
+            }
+        }
 
-    public void SetUser(User user)
-    {
-    }
-    public void SetContext(string context)
-    {
-    }
-    public void SetAutoNotify(bool autoNotify)
-    {
-    }
+        public void PopulateUser(User user)
+        {
+        }
 
-    public void SetAutoDetectAnrs(bool autoDetectAnrs)
-    {
-    }
+        public void SetMetadata(string tab, Dictionary<string, string> metadata)
+        {
+            _editorMetadata[tab] = metadata;
+        }
+
+        public void SetSession(Session session)
+        {
+        }
+
+        public void SetUser(User user)
+        {
+        }
+        public void SetContext(string context)
+        {
+        }
+        public void SetAutoNotify(bool autoNotify)
+        {
+        }
+
+        public void SetAutoDetectAnrs(bool autoDetectAnrs)
+        {
+        }
     }
 }

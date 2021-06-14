@@ -5,7 +5,7 @@ namespace BugsnagUnity
 {
     public static class PostProcessBuild
     {
-      
+
         class XcodeProjectInformation
         {
             public LinkedList<string> Lines { get; }
@@ -44,9 +44,9 @@ namespace BugsnagUnity
             {
                 ProcessBuildConfigurationSection(info);
                 info.AdvanceCurrentLine();
-            }            
+            }
         }
-     
+
         /// <summary>
         /// Processes the build configuration section. Here we need to enable two
         /// build flags relating to certain exception types.

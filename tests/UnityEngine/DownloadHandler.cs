@@ -5,12 +5,12 @@ using System.Text;
 
 namespace UnityEngine
 {
-  public class DownloadHandler
-  {
-  }
+    public class DownloadHandler
+    {
+    }
 
-  public class DownloadHandlerBuffer : DownloadHandler
-  {
+    public class DownloadHandlerBuffer : DownloadHandler
+    {
 
-  }
+    }
 }

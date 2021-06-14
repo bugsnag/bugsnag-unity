@@ -4,51 +4,51 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  public interface IConfiguration
-  {
-    string ApiKey { get; }
+    public interface IConfiguration
+    {
+        string ApiKey { get; }
 
-    bool ReportUncaughtExceptionsAsHandled { get; set; }
+        bool ReportUncaughtExceptionsAsHandled { get; set; }
 
-    TimeSpan MaximumLogsTimePeriod { get; }
+        TimeSpan MaximumLogsTimePeriod { get; }
 
-    LogType BreadcrumbLogLevel { get; set; }
+        LogType BreadcrumbLogLevel { get; set; }
 
-    Dictionary<LogType, int> MaximumTypePerTimePeriod { get; }
+        Dictionary<LogType, int> MaximumTypePerTimePeriod { get; }
 
-    TimeSpan UniqueLogsTimePeriod { get; set; }
+        TimeSpan UniqueLogsTimePeriod { get; set; }
 
-    int MaximumBreadcrumbs { get; set; }
+        int MaximumBreadcrumbs { get; set; }
 
-    string ReleaseStage { get; set; }
+        string ReleaseStage { get; set; }
 
-    string[] NotifyReleaseStages { get; set; }
+        string[] NotifyReleaseStages { get; set; }
 
-    string AppVersion { get; set; }
+        string AppVersion { get; set; }
 
-    Uri Endpoint { get; set; }
+        Uri Endpoint { get; set; }
 
-    string PayloadVersion { get; }
+        string PayloadVersion { get; }
 
-    Uri SessionEndpoint { get; set; }
+        Uri SessionEndpoint { get; set; }
 
-    string SessionPayloadVersion { get; }
+        string SessionPayloadVersion { get; }
 
-    string Context { get; set; }
+        string Context { get; set; }
 
-    LogType NotifyLevel { get; set; }
+        LogType NotifyLevel { get; set; }
 
-    bool AutoNotify { get; set; }
+        bool AutoNotify { get; set; }
 
-    bool AutoDetectAnrs { get; set; }
+        bool AutoDetectAnrs { get; set; }
 
-    bool AutoCaptureSessions { get; set; }
+        bool AutoCaptureSessions { get; set; }
 
-    LogTypeSeverityMapping LogTypeSeverityMapping { get; }
-    string ScriptingBackend { get; set; }
+        LogTypeSeverityMapping LogTypeSeverityMapping { get; }
+        string ScriptingBackend { get; set; }
 
-    string DotnetScriptingRuntime { get; set; }
+        string DotnetScriptingRuntime { get; set; }
 
-    string DotnetApiCompatibility { get; set; }
-  }
+        string DotnetApiCompatibility { get; set; }
+    }
 }

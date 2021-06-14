@@ -4,109 +4,109 @@ using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-  class NativeClient : INativeClient
-  {
-    public IConfiguration Configuration { get; }
-
-    public IBreadcrumbs Breadcrumbs { get; }
-
-    public IDelivery Delivery { get; }
-
-    public NativeClient(IConfiguration configuration)
+    class NativeClient : INativeClient
     {
-      Configuration = configuration;
-      Breadcrumbs = new Breadcrumbs(configuration);
-      Delivery = new Delivery();
-    }
+        public IConfiguration Configuration { get; }
 
-    public void PopulateApp(App app)
-    {
-    }
+        public IBreadcrumbs Breadcrumbs { get; }
 
-    public void PopulateDevice(Device device)
-    {
-      device.AddToPayload("jailbroken", false);
+        public IDelivery Delivery { get; }
 
-      device.AddToPayload("manufacturer", "PC");
-      device.AddToPayload("model", UnityEngine.SystemInfo.deviceModel);
+        public NativeClient(IConfiguration configuration)
+        {
+            Configuration = configuration;
+            Breadcrumbs = new Breadcrumbs(configuration);
+            Delivery = new Delivery();
+        }
 
-      MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
-      if (GlobalMemoryStatusEx(memStatus))
-      {
-        device.AddToPayload("freeMemory", memStatus.ullAvailPhys);
-      }
+        public void PopulateApp(App app)
+        {
+        }
 
-      // This is generally the main drive on a Windows machine
-      // A future enhancement would be to determine which drive the application
-      // is running on and use that drive letter instead of defaulting to C
-      if (GetDiskFreeSpaceEx(@"C:\",
-                                        out ulong freeBytesAvailable,
-                                        out ulong totalNumberOfBytes,
-                                        out ulong totalNumberOfFreeBytes))
-      {
-        device.AddToPayload("freeDisk", freeBytesAvailable);
-      }
-    }
+        public void PopulateDevice(Device device)
+        {
+            device.AddToPayload("jailbroken", false);
 
-    public void PopulateMetadata(Metadata metadata)
-    {
-    }
+            device.AddToPayload("manufacturer", "PC");
+            device.AddToPayload("model", UnityEngine.SystemInfo.deviceModel);
 
-    public void PopulateUser(User user)
-    {
-    }
+            MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
+            if (GlobalMemoryStatusEx(memStatus))
+            {
+                device.AddToPayload("freeMemory", memStatus.ullAvailPhys);
+            }
 
-    public void SetMetadata(string tab, Dictionary<string, string> metadata)
-    {
-    }
+            // This is generally the main drive on a Windows machine
+            // A future enhancement would be to determine which drive the application
+            // is running on and use that drive letter instead of defaulting to C
+            if (GetDiskFreeSpaceEx(@"C:\",
+                                              out ulong freeBytesAvailable,
+                                              out ulong totalNumberOfBytes,
+                                              out ulong totalNumberOfFreeBytes))
+            {
+                device.AddToPayload("freeDisk", freeBytesAvailable);
+            }
+        }
 
-    public void SetSession(Session session)
-    {
-    }
+        public void PopulateMetadata(Metadata metadata)
+        {
+        }
 
-    public void SetUser(User user)
-    {
-    }
-    public void SetContext(string context)
-    {
-    }
-    public void SetAutoNotify(bool autoNotify)
-    {
-    }
+        public void PopulateUser(User user)
+        {
+        }
 
-    public void SetAutoDetectAnrs(bool autoDetectAnrs)
-    {
-    }
+        public void SetMetadata(string tab, Dictionary<string, string> metadata)
+        {
+        }
+
+        public void SetSession(Session session)
+        {
+        }
+
+        public void SetUser(User user)
+        {
+        }
+        public void SetContext(string context)
+        {
+        }
+        public void SetAutoNotify(bool autoNotify)
+        {
+        }
+
+        public void SetAutoDetectAnrs(bool autoDetectAnrs)
+        {
+        }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetDiskFreeSpaceEx(string lpDirectoryName,
       out ulong lpFreeBytesAvailable,
       out ulong lpTotalNumberOfBytes,
       out ulong lpTotalNumberOfFreeBytes);
 
-    [return: MarshalAs(UnmanagedType.Bool)]
-    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
 
-       
+
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    private class MEMORYSTATUSEX
-    {
-      public uint dwLength;
-      public uint dwMemoryLoad;
-      public ulong ullTotalPhys;
-      public ulong ullAvailPhys;
-      public ulong ullTotalPageFile;
-      public ulong ullAvailPageFile;
-      public ulong ullTotalVirtual;
-      public ulong ullAvailVirtual;
-      public ulong ullAvailExtendedVirtual;
-      public MEMORYSTATUSEX()
-      {
-        dwLength = (uint)Marshal.SizeOf(this);
-      }
+        private class MEMORYSTATUSEX
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad;
+            public ulong ullTotalPhys;
+            public ulong ullAvailPhys;
+            public ulong ullTotalPageFile;
+            public ulong ullAvailPageFile;
+            public ulong ullTotalVirtual;
+            public ulong ullAvailVirtual;
+            public ulong ullAvailExtendedVirtual;
+            public MEMORYSTATUSEX()
+            {
+                dwLength = (uint)Marshal.SizeOf(this);
+            }
+        }
     }
-  }
 }

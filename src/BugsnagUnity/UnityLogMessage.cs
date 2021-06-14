@@ -3,25 +3,25 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  /// <summary>
-  /// Represents a log message received from Unity
-  /// </summary>
-  public class UnityLogMessage
-  {
-    public UnityLogMessage(string condition, string stackTrace, LogType type)
+    /// <summary>
+    /// Represents a log message received from Unity
+    /// </summary>
+    public class UnityLogMessage
     {
-      CreatedAt = DateTime.UtcNow;
-      Condition = condition;
-      StackTrace = stackTrace;
-      Type = type;
+        public UnityLogMessage(string condition, string stackTrace, LogType type)
+        {
+            CreatedAt = DateTime.UtcNow;
+            Condition = condition;
+            StackTrace = stackTrace;
+            Type = type;
+        }
+
+        public string Condition { get; }
+
+        public string StackTrace { get; }
+
+        public LogType Type { get; }
+
+        public DateTime CreatedAt { get; }
     }
-
-    public string Condition { get; }
-
-    public string StackTrace { get; }
-
-    public LogType Type { get; }
-
-    public DateTime CreatedAt { get; }
-  }
 }

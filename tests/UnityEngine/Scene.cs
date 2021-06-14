@@ -5,8 +5,8 @@ using System.Text;
 
 namespace UnityEngine
 {
-  public struct Scene
-  {
-    public string name { get; }
-  }
+    public struct Scene
+    {
+        public string name { get; }
+    }
 }

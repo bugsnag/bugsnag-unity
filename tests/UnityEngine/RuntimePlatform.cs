@@ -1,6 +1,6 @@
 ﻿namespace UnityEngine
 {
-  public enum RuntimePlatform
-  {
-  }
+    public enum RuntimePlatform
+    {
+    }
 }

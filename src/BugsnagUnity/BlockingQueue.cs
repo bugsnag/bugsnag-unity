@@ -3,37 +3,37 @@ using System.Threading;
 
 namespace BugsnagUnity
 {
-  class BlockingQueue<T>
-  {
-    Queue<T> Queue { get; }
-    object QueueLock { get; }
-
-    internal BlockingQueue()
+    class BlockingQueue<T>
     {
-      QueueLock = new object();
-      Queue = new Queue<T>();
-    }
+        Queue<T> Queue { get; }
+        object QueueLock { get; }
 
-    internal void Enqueue(T item)
-    {
-      lock (QueueLock)
-      {
-        Queue.Enqueue(item);
-        Monitor.Pulse(QueueLock);
-      }
-    }
-
-    internal T Dequeue()
-    {
-      lock (QueueLock)
-      {
-        while (Queue.Count == 0)
+        internal BlockingQueue()
         {
-          Monitor.Wait(QueueLock);
+            QueueLock = new object();
+            Queue = new Queue<T>();
         }
 
-        return Queue.Dequeue();
-      }
+        internal void Enqueue(T item)
+        {
+            lock (QueueLock)
+            {
+                Queue.Enqueue(item);
+                Monitor.Pulse(QueueLock);
+            }
+        }
+
+        internal T Dequeue()
+        {
+            lock (QueueLock)
+            {
+                while (Queue.Count == 0)
+                {
+                    Monitor.Wait(QueueLock);
+                }
+
+                return Queue.Dequeue();
+            }
+        }
     }
-  }
 }
