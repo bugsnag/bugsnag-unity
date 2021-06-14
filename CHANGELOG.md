@@ -18,6 +18,9 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
 	
 ### Bug fixes
 
+* Fix an issue where the Device.time of an event was missing the milliseconds
+  [#298](https://github.com/bugsnag/bugsnag-unity/pull/298)
+
 * Adjust post build script to allow unity 2021 builds
   [#289](https://github.com/bugsnag/bugsnag-unity/pull/289)
   

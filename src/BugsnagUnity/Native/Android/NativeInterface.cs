@@ -19,6 +19,8 @@ namespace BugsnagUnity
     private IntPtr IteratorClass;
     private IntPtr ListClass;
     private IntPtr MapClass;
+    private IntPtr DateClass;
+    private IntPtr DateUtilsClass;
     private IntPtr MapEntryClass;
     private IntPtr SetClass;
     private IntPtr StringClass;
@@ -36,6 +38,8 @@ namespace BugsnagUnity
     private IntPtr MapEntrySet;
     private IntPtr ObjectGetClass;
     private IntPtr ObjectToString;
+    private IntPtr ToIso8601;
+
 
     private bool CanRunOnBackgroundThread;
 
@@ -100,6 +104,13 @@ namespace BugsnagUnity
         MapClass = AndroidJNI.NewGlobalRef(mapRef);
         AndroidJNI.DeleteLocalRef(mapRef);
 
+        IntPtr dateRef = AndroidJNI.FindClass("java/util/Date");
+        DateClass = AndroidJNI.NewGlobalRef(dateRef);
+        AndroidJNI.DeleteLocalRef(dateRef);
+
+        IntPtr dateUtilsRef = AndroidJNI.FindClass("com/bugsnag/android/DateUtils");
+        DateUtilsClass = AndroidJNI.NewGlobalRef(dateUtilsRef);
+        
         IntPtr entryRef = AndroidJNI.FindClass("java/util/Map$Entry");
         MapEntryClass = AndroidJNI.NewGlobalRef(entryRef);
         AndroidJNI.DeleteLocalRef(entryRef);
@@ -131,6 +142,9 @@ namespace BugsnagUnity
         IntPtr classRef = AndroidJNI.FindClass("java/lang/Class");
         ClassIsArray = AndroidJNI.GetMethodID(classRef, "isArray", "()Z");
         AndroidJNI.DeleteLocalRef(classRef);
+
+        ToIso8601 = AndroidJNI.GetStaticMethodID(DateUtilsClass, "toIso8601", "(Ljava/util/Date;)Ljava/lang/String;");
+        AndroidJNI.DeleteLocalRef(dateUtilsRef);
 
         // the bugsnag-android notifier uses Activity lifecycle tracking to
         // determine if the application is in the foreground. As the unity
@@ -636,6 +650,13 @@ namespace BugsnagUnity
           else if (AndroidJNI.IsInstanceOf(value, MapClass))
           {
             dict.AddToPayload(key, DictionaryFromJavaMap(value));
+          }
+          else if (AndroidJNI.IsInstanceOf(value, DateClass))
+          {
+            jvalue[] args = new jvalue[1];
+            args[0].l = value;
+            var time = AndroidJNI.CallStaticStringMethod(DateUtilsClass, ToIso8601, args);
+            dict.AddToPayload(key, time);
           }
           else
           {
