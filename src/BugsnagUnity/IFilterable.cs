@@ -2,7 +2,7 @@
 
 namespace BugsnagUnity
 {
-  interface IFilterable : IDictionary
-  {
-  }
+    interface IFilterable : IDictionary
+    {
+    }
 }

@@ -26,80 +26,80 @@ using UnityEngine;
 /// </summary>
 namespace BugsnagUnity
 {
-  public class MainThreadDispatchBehaviour : MonoBehaviour
-  {
-    private static readonly Queue<Action> _executionQueue = new Queue<Action>();
-
-    public void Update()
+    public class MainThreadDispatchBehaviour : MonoBehaviour
     {
-      lock (_executionQueue)
-      {
-        while (_executionQueue.Count > 0)
+        private static readonly Queue<Action> _executionQueue = new Queue<Action>();
+
+        public void Update()
         {
-          _executionQueue.Dequeue().Invoke();
+            lock (_executionQueue)
+            {
+                while (_executionQueue.Count > 0)
+                {
+                    _executionQueue.Dequeue().Invoke();
+                }
+            }
         }
-      }
-    }
 
-    /// <summary>
-    /// Locks the queue and adds the IEnumerator to the queue
-    /// </summary>
-    /// <param name="action">IEnumerator function that will be executed from the main thread.</param>
-    public void Enqueue(IEnumerator action)
-    {
-      lock (_executionQueue)
-      {
-        _executionQueue.Enqueue(() =>
+        /// <summary>
+        /// Locks the queue and adds the IEnumerator to the queue
+        /// </summary>
+        /// <param name="action">IEnumerator function that will be executed from the main thread.</param>
+        public void Enqueue(IEnumerator action)
         {
-          StartCoroutine(action);
-        });
-      }
+            lock (_executionQueue)
+            {
+                _executionQueue.Enqueue(() =>
+                {
+                    StartCoroutine(action);
+                });
+            }
+        }
+
+        /// <summary>
+        /// Locks the queue and adds the Action to the queue
+        /// </summary>
+        /// <param name="action">function that will be executed from the main thread.</param>
+        public void Enqueue(Action action)
+        {
+            Enqueue(ActionWrapper(action));
+        }
+        IEnumerator ActionWrapper(Action a)
+        {
+            a();
+            yield return null;
+        }
+
+
+        private static MainThreadDispatchBehaviour _instance = null;
+
+        public static bool Exists()
+        {
+            return _instance != null;
+        }
+
+        public static MainThreadDispatchBehaviour Instance()
+        {
+            if (!Exists())
+            {
+                throw new Exception("MainThreadDispatchBehaviour could not find the MainThreadDispatchBehaviour object. Please ensure you have added the MainThreadExecutor Prefab to your scene.");
+            }
+            return _instance;
+        }
+
+
+        void Awake()
+        {
+            if (_instance == null)
+            {
+                _instance = this;
+                DontDestroyOnLoad(this.gameObject);
+            }
+        }
+
+        void OnDestroy()
+        {
+            _instance = null;
+        }
     }
-
-    /// <summary>
-    /// Locks the queue and adds the Action to the queue
-    /// </summary>
-    /// <param name="action">function that will be executed from the main thread.</param>
-    public void Enqueue(Action action)
-    {
-      Enqueue(ActionWrapper(action));
-    }
-    IEnumerator ActionWrapper(Action a)
-    {
-      a();
-      yield return null;
-    }
-
-
-    private static MainThreadDispatchBehaviour _instance = null;
-
-    public static bool Exists()
-    {
-      return _instance != null;
-    }
-
-    public static MainThreadDispatchBehaviour Instance()
-    {
-      if (!Exists())
-      {
-        throw new Exception("MainThreadDispatchBehaviour could not find the MainThreadDispatchBehaviour object. Please ensure you have added the MainThreadExecutor Prefab to your scene.");
-      }
-      return _instance;
-    }
-
-
-    void Awake()
-    {
-      if (_instance == null)
-      {
-        _instance = this;
-        DontDestroyOnLoad(this.gameObject);
-      }
-    }
-
-    void OnDestroy()
-    {
-      _instance = null;
-    }
-  }
 }

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace BugsnagUnity.Payload
 {
-  public interface IPayload
-  {
-    Uri Endpoint { get; }
+    public interface IPayload
+    {
+        Uri Endpoint { get; }
 
-    KeyValuePair<string, string>[] Headers { get; }
-  }
+        KeyValuePair<string, string>[] Headers { get; }
+    }
 }

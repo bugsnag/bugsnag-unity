@@ -5,11 +5,11 @@ using System.Text;
 
 namespace UnityEngine
 {
-  public class AndroidJavaObject
-  {
-    public void CallStatic(string name, params object[] args)
+    public class AndroidJavaObject
     {
+        public void CallStatic(string name, params object[] args)
+        {
 
+        }
     }
-  }
 }

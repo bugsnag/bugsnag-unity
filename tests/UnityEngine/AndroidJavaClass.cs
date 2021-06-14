@@ -5,11 +5,11 @@ using System.Text;
 
 namespace UnityEngine
 {
-  public class AndroidJavaClass
-  {
-    public AndroidJavaClass(string name)
+    public class AndroidJavaClass
     {
+        public AndroidJavaClass(string name)
+        {
 
+        }
     }
-  }
 }

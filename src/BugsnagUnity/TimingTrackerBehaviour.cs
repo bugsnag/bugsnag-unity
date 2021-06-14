@@ -3,11 +3,11 @@ using System.Collections;
 
 namespace BugsnagUnity
 {
-  /// <summary>
-  /// Manages events related to application state such as whether the app
-  /// is in the foreground or background to improve report metadata.
-  class TimingTrackerBehaviour : MonoBehaviour
-  {
+    /// <summary>
+    /// Manages events related to application state such as whether the app
+    /// is in the foreground or background to improve report metadata.
+    class TimingTrackerBehaviour : MonoBehaviour
+    {
 
 
         private void Awake()
@@ -36,5 +36,5 @@ namespace BugsnagUnity
             var hasFocus = !paused;
             Bugsnag.SetApplicationState(hasFocus);
         }
-  }
+    }
 }
