@@ -17,6 +17,7 @@ xcrun xcodebuild -project $project_path/mazerunner_xcode/Unity-iPhone.xcodeproj 
                  -allowProvisioningUpdates \
                  -allowProvisioningDeviceRegistration \
                  -quiet \
+                 GCC_WARN_INHIBIT_ALL_WARNINGS=YES \
                  archive
 
 if [ $? -ne 0 ]

@@ -2,9 +2,6 @@
 
 ## TBD
 
-This version contains **breaking** changes, as bugsnag-unity has been updated to use the latest available versions of bugsnag-android (v4.22.2 -> v5.9.4) and bugsnag-cocoa (v5.23.5 -> v6.9.3).
-
-
 ### Enhancements
 
 * Added event metadata for CPU and graphics capabilities and migrated entries from the Unity tab to the device and app tabs, to better match other platforms ([#297](https://github.com/bugsnag/bugsnag-unity/pull/297)):
@@ -15,23 +12,38 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
   * `unity.osLanguage` -> `device.osLanguage`
   * `unity.unityException` -> removed as a duplicate of the error class
   * `unity.unityLogType` -> removed as is contained in the error class for generic logs
-	
+
 ### Bug fixes
 
 * Fix an issue where the Device.time of an event was missing the milliseconds
   [#298](https://github.com/bugsnag/bugsnag-unity/pull/298)
 
-* Adjust post build script to allow unity 2021 builds
+* Adjust post build script to support unity 2021 builds
   [#289](https://github.com/bugsnag/bugsnag-unity/pull/289)
-  
+
 * Fix an issue where timestamps and other `:`-containing log message content was interpreted as the error class
   [#292](https://github.com/bugsnag/bugsnag-unity/pull/292)
-  
+
 * Fix MaxBreadcrumbs config setting
   [#275](https://github.com/bugsnag/bugsnag-unity/pull/275)
-  
+
 * Correct android session start times
   [#291](https://github.com/bugsnag/bugsnag-unity/pull/291)
+
+
+## 5.0.0 (2021-06-08)
+
+This version contains **breaking** changes, as bugsnag-unity has been updated to use the latest available versions of bugsnag-android (v4.22.2 -> v5.9.4) and bugsnag-cocoa (v5.23.5 -> v6.9.3).
+
+Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
+
+### Bug fixes
+
+* Stop scene changes overrriding context when manually set
+  [#255](https://github.com/bugsnag/bugsnag-unity/pull/255)
+
+* Don't Destroy TimingTrackerObject, so it persists across scenes
+  [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
 
 ## 4.8.8 (2021-04-21)
 
@@ -83,7 +95,7 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
     [#637](https://github.com/bugsnag/bugsnag-cocoa/pull/637)
     [Naugladur](https://github.com/Naugladur)
 
-  * Fixed an issue where an app could deadlock during a crash if unfavourable 
+  * Fixed an issue where an app could deadlock during a crash if unfavourable
     timing caused DYLD lock contention.
     [#580](https://github.com/bugsnag/bugsnag-cocoa/pull/580)
     [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)
