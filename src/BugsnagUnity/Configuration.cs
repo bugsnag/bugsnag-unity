@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BugsnagUnity.Payload;
 using UnityEngine;
 
 namespace BugsnagUnity
@@ -26,17 +27,19 @@ namespace BugsnagUnity
         public virtual TimeSpan MaximumLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(1);
 
         public virtual Dictionary<LogType, int> MaximumTypePerTimePeriod { get; set; } = new Dictionary<LogType, int>
-    {
-        { LogType.Assert, 5 },
-        { LogType.Error, 5 },
-        { LogType.Exception, 20 },
-        { LogType.Log, 5 },
-        { LogType.Warning, 5 },
-    };
+        {
+            { LogType.Assert, 5 },
+            { LogType.Error, 5 },
+            { LogType.Exception, 20 },
+            { LogType.Log, 5 },
+            { LogType.Warning, 5 },
+        };
 
         public virtual TimeSpan UniqueLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(5);
 
         public virtual LogType BreadcrumbLogLevel { get; set; } = LogType.Log;
+
+        public BreadcrumbType[] EnabledBreadcrumbTypes { get; set; }
 
         public virtual string ApiKey { get; protected set; }
 
@@ -45,6 +48,7 @@ namespace BugsnagUnity
         public virtual string ReleaseStage { get; set; } = "production";
 
         public virtual string[] NotifyReleaseStages { get; set; }
+
 
         public virtual string AppVersion { get; set; }
 

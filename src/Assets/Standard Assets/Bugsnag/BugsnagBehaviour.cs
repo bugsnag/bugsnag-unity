@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using BugsnagUnity.Payload;
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -36,8 +37,28 @@ namespace BugsnagUnity
                     catch (System.Exception ex) { Debug.LogException(ex); }
                 }
             }
+
+          
 #endif
         }
+
+        public class EnumFlagsAttribute : PropertyAttribute
+        {
+            public EnumFlagsAttribute() { }
+        }
+
+#if UNITY_EDITOR
+
+        [CustomPropertyDrawer(typeof(EnumFlagsAttribute))]
+        public class EnumFlagsAttributeDrawer : PropertyDrawer
+        {
+            public override void OnGUI(Rect _position, SerializedProperty _property, GUIContent _label)
+            {
+                _property.intValue = EditorGUI.MaskField(_position, _label, _property.intValue, _property.enumNames);
+            }
+        }
+
+#endif
 
         [Header("Basic Settings")]
 
@@ -72,6 +93,9 @@ namespace BugsnagUnity
 
         public int MaximumBreadcrumbs = 25;
 
+        [EnumFlags]
+        public BreadcrumbType EnabledBreadcrumbTypes = (BreadcrumbType)(-1);
+
         /// <summary>
         /// Awake is called when the script instance is being loaded.
         /// We use this to pull the fields that have been set in the
@@ -90,7 +114,28 @@ namespace BugsnagUnity
             config.ScriptingBackend = FindScriptingBackend();
             config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
             config.DotnetApiCompatibility = FindDotnetApiCompatibility();
+            config.EnabledBreadcrumbTypes = GetEnabledBreadcrumbTypes();
             Bugsnag.Start(config);
+        }
+
+
+        private BreadcrumbType[] GetEnabledBreadcrumbTypes()
+        {
+            List<BreadcrumbType> selectedElements = new List<BreadcrumbType>();
+
+            for (int i = 0; i < Enum.GetValues(typeof(BreadcrumbType)).Length; i++)
+            {
+                int layer = 1 << i;
+                if (((int)EnabledBreadcrumbTypes & layer) != 0)
+                {
+                    var selectedType = (BreadcrumbType)Enum.GetValues(typeof(BreadcrumbType)).GetValue(i);
+                    selectedElements.Add(selectedType);
+                }
+            }
+
+            var allSelected = selectedElements.Count == Enum.GetValues(typeof(BreadcrumbType)).Length;
+            //Notifier spec suggests that the default should be null which enables all types
+            return allSelected ? null : selectedElements.ToArray();
         }
 
         /*** Determine runtime versions ***/
