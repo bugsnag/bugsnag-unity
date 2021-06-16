@@ -33,6 +33,8 @@ When("I tap the {string} button") do |button|
     press_at center, 650
   when "Change scene"
     press_at center, 750
+  when "Disable Breadcrumbs"
+    press_at center, 850
   end
 end
 

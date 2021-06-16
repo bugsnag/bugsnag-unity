@@ -7,8 +7,17 @@ using UnityEngine.SceneManagement;
 
 public class ReporterBehavior : MonoBehaviour {
 
-    // Use this for initialization
-    void Start () {
+    private bool _bugsnagStarted;
+
+    
+
+    private void StartBugsnagAsNormal()
+    {
+        if (_bugsnagStarted)
+        {
+            return;
+        }
+        _bugsnagStarted = true;
         Configuration config = new Configuration("12312312312312312312312312312312");
         config.Endpoint = new Uri("http://bs-local.com:9339/notify");
         config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
@@ -19,22 +28,43 @@ public class ReporterBehavior : MonoBehaviour {
         LeaveBreadcrumbString();
         LeaveBreadcrumbTuple();
     }
+
+    public void TestDisabledBreadcrumbs()
+    {
+        Configuration config = new Configuration("12312312312312312312312312312312");
+        config.Endpoint = new Uri("http://bs-local.com:9339/notify");
+        config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
+        config.Context = "My context";
+        config.AppVersion = "1.2.3";
+        config.NotifyLevel = LogType.Exception;
+        config.EnabledBreadcrumbTypes = new BreadcrumbType[0];
+        Bugsnag.Start(config);
+        throw new System.Exception("Disabled Breadcrumbs");
+    }
      
     public void ThrowException() {
+        StartBugsnagAsNormal();
         throw new System.Exception("You threw an exception!");
     }
 
     public void LogError() {
+        StartBugsnagAsNormal();
+
         SetUser();
         Debug.LogError("Something went wrong.");
     }
 
     public void NativeException() {
+        StartBugsnagAsNormal();
+
         BugsnagNative.Crash();
     }
 
     public void LogCaughtException() {
-        try {
+        StartBugsnagAsNormal();
+
+        try
+        {
             var items = new int[]{1, 2, 3};
             Debug.Log("Item4 is: " + items[4]);
         } catch (System.Exception ex) {
@@ -43,11 +73,16 @@ public class ReporterBehavior : MonoBehaviour {
     }
 
     public void NdkSignal() {
+        StartBugsnagAsNormal();
+
         BugsnagNative.RaiseNdkSignal();
     }
 
     public void NotifyCaughtException() {
-        try {
+        StartBugsnagAsNormal();
+
+        try
+        {
             var items = new int[]{1, 2, 3};
             Debug.Log("Item4 is: " + items[4]);
         } catch (System.Exception ex) {
@@ -55,6 +90,8 @@ public class ReporterBehavior : MonoBehaviour {
         }
     }
     public void NotifyWithCallback() {
+        StartBugsnagAsNormal();
+
         Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), report =>
         {
             report.Context = "Callback Context";
@@ -65,6 +102,7 @@ public class ReporterBehavior : MonoBehaviour {
         });
     }
     public void StartSession() {
+
         Bugsnag.SessionTracking.StartSession();
     }
     public void SetUser() {
