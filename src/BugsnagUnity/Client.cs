@@ -76,11 +76,9 @@ namespace BugsnagUnity
             {
                 _contextSetManually = true;
             }
-            if (NativeClient.Configuration.EnabledBreadcrumbTypes == null ||
-                NativeClient.Configuration.EnabledBreadcrumbTypes.Contains(BreadcrumbType.Navigation))
-            {
-                SceneManager.sceneLoaded += SceneLoaded;
-            }
+
+            SetupSceneLoadedBreadcrumbTracking();
+
             Application.logMessageReceivedThreaded += MultiThreadedNotify;
             Application.logMessageReceived += Notify;
             User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
@@ -96,6 +94,15 @@ namespace BugsnagUnity
             catch (System.Exception ex)
             {
                 // Async behavior is not available in a test environment
+            }
+        }
+
+        private void SetupSceneLoadedBreadcrumbTracking()
+        {
+            if (Configuration.EnabledBreadcrumbTypes == null ||
+               Configuration.EnabledBreadcrumbTypes.Contains(BreadcrumbType.Navigation))
+            {
+                SceneManager.sceneLoaded += SceneLoaded;
             }
         }
 
@@ -160,13 +167,18 @@ namespace BugsnagUnity
                     Notify(new Exception[] { exception }, exception.HandledState, null, logType);
                 }
             }
-            else if ((Configuration.EnabledBreadcrumbTypes == null || Configuration.EnabledBreadcrumbTypes.Contains(BreadcrumbType.Log))
-                && logType.IsGreaterThanOrEqualTo(Configuration.BreadcrumbLogLevel))
+            else if (ShouldLeaveLogBreadcrumb(logType))
             {
                 Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
                     { "message", condition },
                 });
             }
+        }
+
+        private bool ShouldLeaveLogBreadcrumb(LogType logType)
+        {
+            return (Configuration.EnabledBreadcrumbTypes == null || Configuration.EnabledBreadcrumbTypes.Contains(BreadcrumbType.Log))
+                && logType.IsGreaterThanOrEqualTo(Configuration.BreadcrumbLogLevel);
         }
 
         public void BeforeNotify(Middleware middleware)
