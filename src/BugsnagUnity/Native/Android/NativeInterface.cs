@@ -214,8 +214,6 @@ namespace BugsnagUnity
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
 
-
-
             // set EnabledBreadcrumbTypes
             if (config.EnabledBreadcrumbTypes != null)
             {

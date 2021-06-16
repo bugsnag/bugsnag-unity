@@ -76,7 +76,11 @@ namespace BugsnagUnity
             {
                 _contextSetManually = true;
             }
-            SceneManager.sceneLoaded += SceneLoaded;
+            if (NativeClient.Configuration.EnabledBreadcrumbTypes == null ||
+                NativeClient.Configuration.EnabledBreadcrumbTypes.Contains(BreadcrumbType.Navigation))
+            {
+                SceneManager.sceneLoaded += SceneLoaded;
+            }
             Application.logMessageReceivedThreaded += MultiThreadedNotify;
             Application.logMessageReceived += Notify;
             User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
@@ -156,11 +160,12 @@ namespace BugsnagUnity
                     Notify(new Exception[] { exception }, exception.HandledState, null, logType);
                 }
             }
-            else if (logType.IsGreaterThanOrEqualTo(Configuration.BreadcrumbLogLevel))
+            else if ((Configuration.EnabledBreadcrumbTypes == null || Configuration.EnabledBreadcrumbTypes.Contains(BreadcrumbType.Log))
+                && logType.IsGreaterThanOrEqualTo(Configuration.BreadcrumbLogLevel))
             {
                 Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
-          { "message", condition },
-        });
+                    { "message", condition },
+                });
             }
         }
 

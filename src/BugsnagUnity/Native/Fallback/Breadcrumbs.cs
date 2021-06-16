@@ -10,7 +10,6 @@ namespace BugsnagUnity
         IConfiguration Configuration { get; }
         Breadcrumb[] _breadcrumbs;
         int _current;
-        BreadcrumbType[] EnabledBreadcrumbTypes;
 
         /// <summary>
         /// Constructs a collection of breadcrumbs
@@ -21,7 +20,6 @@ namespace BugsnagUnity
             Configuration = configuration;
             _current = 0;
             _breadcrumbs = new Breadcrumb[Configuration.MaximumBreadcrumbs];
-            EnabledBreadcrumbTypes = configuration.EnabledBreadcrumbTypes;
         }
 
         /// <summary>
@@ -54,10 +52,6 @@ namespace BugsnagUnity
             {
                 lock (_lock)
                 {
-                    if (!IsBreadcrumbTypeEnabled(breadcrumb))
-                    {
-                        return;
-                    }
                     var maximumBreadcrumbs = Configuration.MaximumBreadcrumbs;
                     if (_breadcrumbs.Length != maximumBreadcrumbs)
                     {
@@ -73,22 +67,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool IsBreadcrumbTypeEnabled(Breadcrumb breadcrumb)
-        {
-            if (EnabledBreadcrumbTypes == null)
-            {
-                return true;
-            }
-            foreach (var enabledType in EnabledBreadcrumbTypes)
-            {
-                var enabledTypeName = Enum.GetName(typeof(BreadcrumbType), enabledType).ToLower();
-                if (breadcrumb.Type == enabledTypeName)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+       
 
         /// <summary>
         /// Retrieve the collection of breadcrumbs at this point in time.
