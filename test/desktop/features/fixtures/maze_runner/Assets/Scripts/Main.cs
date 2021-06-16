@@ -85,6 +85,13 @@ public class Main : MonoBehaviour {
    */
   void PrepareConfigForScenario(Configuration config, string scenario) {
     switch (scenario) {
+      case "DisableBreadcrumbs":
+        config.EnabledBreadcrumbTypes = new BreadcrumbType[0];
+        break;
+      case "OnlyLogBreadcrumbs":
+        config.EnabledBreadcrumbTypes = new BreadcrumbType[] { BreadcrumbType.Log };
+        config.BreadcrumbLogLevel = LogType.Log;
+        break;
       case "LogExceptionOutsideNotifyReleaseStages":
         config.ReleaseStage = "dev";
         config.NotifyReleaseStages = new [] { "production" };
@@ -168,6 +175,13 @@ public class Main : MonoBehaviour {
    */
   void RunScenario(string scenario) {
     switch (scenario) {
+      case "OnlyLogBreadcrumbs":
+        Debug.Log("Log");
+        DoUnhandledException(0);
+        break;
+      case "DisableBreadcrumbs":
+        DoUnhandledException(0);
+        break;
       case "LogExceptionOutsideNotifyReleaseStages":
         DoLogUnthrown();
         break;
