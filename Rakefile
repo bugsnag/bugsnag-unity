@@ -18,9 +18,7 @@ def unity_directory
   elsif ENV.has_key? "UNITY_DIR"
     ENV["UNITY_DIR"]
   else
-    ['/Applications/Unity', 'C:\Program Files\Unity'].find do |dir|
-      File.exists? dir
-    end
+    raise 'No unity directory set - use $UNITY_DIR or $UNITY_VERSION'
   end
 end
 
@@ -28,8 +26,10 @@ end
 #
 # Find the Unity executable based on the unity directory.
 #
-def unity_executable
-  [File.join(unity_directory, "Unity.app", "Contents", "MacOS", "Unity"), File.join(unity_directory, "Editor", "Unity.exe")].find do |unity|
+def unity_executable dir=unity_directory
+  [File.join(dir, "Unity.app", "Contents", "MacOS", "Unity"),
+   File.join(dir, "Editor", "Unity"),
+   File.join(dir, "Editor", "Unity.exe")].find do |unity|
     File.exists? unity
   end
 end
@@ -38,6 +38,20 @@ def unity_dll_location
   [File.join(unity_directory, "Unity.app", "Contents", "Managed"), File.join(unity_directory, "Editor", "Data", "Managed")].find do |unity|
     File.exists? unity
   end
+end
+
+##
+# Get existing unity executable path or exit with error
+#
+# Returns pair containing unity path and executable
+def get_required_unity_paths
+  dir = unity_directory
+  exe = unity_executable(dir)
+  raise "No unity executable found in '#{dir}'" if exe.nil?
+  unless File.exists? exe
+    raise "Unity not found at path '#{exe}' - set $UNITY_DIR (full path) or $UNITY_VERSION (loaded via hub) to customize"
+  end
+  [dir, exe]
 end
 
 ##
@@ -345,20 +359,11 @@ end
 namespace :test do
   namespace :android do
     task :build do
-
       # Check that a Unity version has been selected and the path exists before calling the build script
-      if ENV.has_key? 'UNITY_VERSION'
-        unity_path = "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}/Unity.app/Contents/MacOS"
-      else
-        raise 'UNITY_VERSION must be set'
-      end
-      unity = File.join(unity_path, "Unity")
-      unless File.exists? unity
-        raise "Unity not found at path #{unity}"
-      end
+      unity_path, unity = get_required_unity_paths
 
       # Prepare the test fixture project by importing the plugins
-      env = { "UNITY_PATH" => unity_path }
+      env = { "UNITY_PATH" => File.dirname(unity) }
       script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
       unless system env, script
         raise 'Preparation of test fixture failed'
@@ -375,18 +380,10 @@ namespace :test do
   namespace :ios do
     task :generate_xcode do
       # Check that a Unity version has been selected and the path exists before calling the build script
-      if ENV.has_key? 'UNITY_VERSION'
-        unity_path = "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}/Unity.app/Contents/MacOS"
-      else
-        raise 'UNITY_VERSION must be set'
-      end
-      unity = File.join(unity_path, "Unity")
-      unless File.exists? unity
-        raise "Unity not found at path #{unity}"
-      end
+      unity_path, unity = get_required_unity_paths
 
       # Prepare the test fixture project by importing the plugins
-      env = { "UNITY_PATH" => unity_path }
+      env = { "UNITY_PATH" => File.dirname(unity) }
       script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
       unless system env, script
         raise 'Preparation of test fixture failed'
