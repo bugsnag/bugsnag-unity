@@ -58,7 +58,6 @@ namespace BugsnagUnity.Payload.Tests
             string stacktrace = @"java.lang.Error: signal 11 (SIGSEGV), code 1 (SEGV_MAPERR), fault addr 0102192a9accb1876a
 libunity.0033c25b(Unknown:-2)
 libunity.003606e3(Unknown:-2)
-libbugsnag-ndk.bsg_handle_signal(bsg_handle_signal:472)
 app_process64.000d1b11(Unknown:-2)";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);

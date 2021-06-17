@@ -66,7 +66,9 @@ namespace BugsnagUnity.Payload
 
         private static string AndroidJavaErrorClass = "AndroidJavaException";
         private static string ErrorClassMessagePattern = @"^(?<errorClass>\S+):\s+(?<message>.*)";
-        private static string BugsnagStackTraceMarker = "libbugsnag";
+        // Used to detect native Android events
+        private static string NativeAndroidErrorClass = "java.lang.Error";
+        private static string NativeAndroidMessagePattern = @"signal \d+ \(SIG\w+\)";
 
         internal Exception(string errorClass, string message, StackTraceLine[] stackTrace)
           : this(errorClass, message, stackTrace, HandledState.ForHandledException()) { }
@@ -173,17 +175,35 @@ namespace BugsnagUnity.Payload
         /// </summary>
         public static bool ShouldSend(UnityLogMessage logMessage)
         {
-            var match = Regex.Match(logMessage.Condition, ErrorClassMessagePattern, RegexOptions.Singleline);
-            if (match.Success)
+            if (logMessage.StackTrace == null)
             {
-                var errorClass = match.Groups["errorClass"].Value;
-                if (errorClass == AndroidJavaErrorClass)
-                {
-                    return logMessage.StackTrace == null
-                      || !logMessage.StackTrace.Contains(BugsnagStackTraceMarker);
-                }
+                return true;
             }
-            return true;
+            // Discard any messages matching native Android events as they are captured (and more
+            // accurate) via bugsnag-android. Any Java `Error` generated from a POSIX signal is
+            // discarded. For Unity 2017/2018:
+            var match = Regex.Match(logMessage.Condition, ErrorClassMessagePattern, RegexOptions.Singleline);
+            if (!match.Success)
+            {
+                return true;
+            }
+
+            var errorClass = match.Groups["errorClass"].Value;
+            if (errorClass != AndroidJavaErrorClass)
+            {
+                return true;
+            }
+
+            var message = match.Groups["message"].Value;
+            match = Regex.Match(message, ErrorClassMessagePattern, RegexOptions.Singleline);
+            errorClass = match.Success ? match.Groups["errorClass"].Value : message;
+            if (errorClass != NativeAndroidErrorClass)
+            {
+                return true;
+            }
+
+            match = Regex.Match(logMessage.StackTrace, NativeAndroidMessagePattern, RegexOptions.Singleline);
+            return !match.Success;
         }
     }
 }

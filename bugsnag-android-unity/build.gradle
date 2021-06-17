@@ -37,3 +37,7 @@ android {
         }
     }
 }
+
+dependencies {
+    api "com.bugsnag:bugsnag-android-core:5.9.4"
+}

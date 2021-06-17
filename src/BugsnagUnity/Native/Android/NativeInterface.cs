@@ -214,6 +214,10 @@ namespace BugsnagUnity
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
 
+            // add unity event callback
+            var BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.BugsnagUnity");
+            obj.Call("addOnError", BugsnagUnity.CallStatic<AndroidJavaObject>("getNativeCallback", new object[] { }));
+
             return obj;
         }
 
