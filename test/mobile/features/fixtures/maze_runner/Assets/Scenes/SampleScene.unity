@@ -451,7 +451,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1943442692}
-        m_MethodName: NativeException
+        m_MethodName: TriggerNativeException
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -798,7 +798,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1943442692}
-        m_MethodName: NotifyCaughtException
+        m_MethodName: TriggerNotifyCaughtException
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -920,7 +920,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1943442692}
-        m_MethodName: ThrowException
+        m_MethodName: TriggerThrowException
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1403,7 +1403,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1943442692}
-        m_MethodName: LogError
+        m_MethodName: TriggerLogError
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1602,7 +1602,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1943442692}
-        m_MethodName: NdkSignal
+        m_MethodName: TriggerNdkSignal
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2034,7 +2034,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1943442692}
-        m_MethodName: NotifyWithCallback
+        m_MethodName: TriggerNotifyWithCallback
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2218,7 +2218,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1943442692}
-        m_MethodName: LogCaughtException
+        m_MethodName: TriggerLogCaughtException
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
