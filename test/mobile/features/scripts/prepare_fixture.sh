@@ -6,7 +6,7 @@ then
   exit 1
 fi
 
-echo "\`which Unity\`=`which Unity`"
+echo "\`Unity\` executable = $UNITY_PATH/Unity"
 
 pushd "${0%/*}"
   script_path=`pwd`
