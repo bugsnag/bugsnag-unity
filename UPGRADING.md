@@ -7,7 +7,15 @@ v5.0.0 contains breaking changes to Bugsnag's API that improve the reliability o
 
 ### New recommended way for initializing Bugsnag
 
-The API has changed for initializing Bugsnag. It is now recommended that you supply all your configuration options up-front, and then call `Bugsnag.start()`:
+#### GameObject initialization
+
+If you initialize Bugsnag using a `GameObject` and only configure Bugsnag via the Unity Inspector UI then no migration is necessary. The necessary changes will be copied over in the `BugsnagBehaviour` script when you import the `Bugsnag.unitypackage`.
+
+#### Code initialization
+
+If you initialize Bugsnag in code then a migration is required. You should replace any call to `Bugsnag.Init()` with `Bugsnag.Start()`.
+
+It is also now necessary to supply all your configuration options up-front, and pass them in as a parameter to `Bugsnag.Start()`:
 
 ```c#
 Configuration config = new Configuration("your-api-key");
@@ -17,8 +25,6 @@ config.ReleaseStage = "beta"
 // initialize Bugsnag
 Bugsnag.Start(config);
 ```
-
-If you initialize Bugsnag using a `GameObject` then no migration is necessary - the `BugsnagBehaviour.cs` script will be copied over when importing the `BugsnagUnity.package`.
 
 ### Configuration options must be supplied before Bugsnag.Start()
 
@@ -45,12 +51,13 @@ config.AutoNotify = true;
 
 The `Bugsnag.Configuration` and `Bugsnag.Client.Configuration` accessors have been removed. You should supply all your configuration options up-front as recommended [here](#new-recommended-way-for-initializing-bugsnag).
 
-### AutoNotify and Context replaced
+### AutoNotify, AutoDetectAnrs, and Context replaced
 
-Previously it was possible to set `AutoNotify` and `Context` after Bugsnag has initialized:
+Previously it was possible to set `AutoNotify`, `AutoDetectAnrs` and `Context` after Bugsnag has initialized:
 
 ```c#
 Bugsnag.Configuration.AutoNotify = false;
+Bugsnag.Configuration.AutoDetectAnrs = false;
 Bugsnag.Configuration.Context = "MyContext";
 ```
 
@@ -58,6 +65,7 @@ This has been replaced by the following API:
 
 ```c#
 Bugsnag.SetAutoNotify(false);
+Bugsnag.SetAutoDetectAnrs(false);
 Bugsnag.SetContext("MyContext");
 ```
 
