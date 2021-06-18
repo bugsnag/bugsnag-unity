@@ -74,6 +74,7 @@ public class ReporterBehavior : MonoBehaviour {
 
     public void TriggerLogError() {
         StartBugsnagAsNormal();
+        SetUser();
         StartCoroutine(WaitAndDo(LogError));
     }
 
