@@ -8,17 +8,11 @@ using UnityEngine.SceneManagement;
 
 public class ReporterBehavior : MonoBehaviour {
 
-    private bool _bugsnagStarted;
 
     private const float WAIT_TIME = 6;
 
     private void StartBugsnagAsNormal()
     {
-        if (_bugsnagStarted)
-        {
-            return;
-        }
-        _bugsnagStarted = true;
         Configuration config = new Configuration("12312312312312312312312312312312");
         config.Endpoint = new Uri("http://bs-local.com:9339/notify");
         config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
@@ -48,6 +42,11 @@ public class ReporterBehavior : MonoBehaviour {
     {
         yield return new WaitForSeconds(WAIT_TIME);
         action.Invoke();
+    }
+
+    public void StartSDK()
+    {
+        StartBugsnagAsNormal();
     }
 
 
@@ -178,8 +177,6 @@ public class ReporterBehavior : MonoBehaviour {
             });
         });
     }
-
-
 
 
     public void StartSession() {
