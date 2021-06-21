@@ -4,7 +4,7 @@
 
 ### Enhancements
 
-* Added event metadata for CPU and graphics capabilities and migrated entries from the Unity tab to the device and app tabs, to better match other platforms ([#297](https://github.com/bugsnag/bugsnag-unity/pull/297)):
+* Add event metadata for CPU and graphics capabilities and migrated entries from the Unity tab to the device and app tabs, to better match other platforms [#297](https://github.com/bugsnag/bugsnag-unity/pull/297):
   * `unity.companyName` -> `app.companyName`
   * `unity.productName` -> `app.name`
   * `unity.version` -> `app.version`
