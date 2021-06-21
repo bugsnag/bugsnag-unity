@@ -33,6 +33,7 @@
 * Correct android session start times
   [#291](https://github.com/bugsnag/bugsnag-unity/pull/291)
 
+* Fix duplicate events being sent for Android C/C++ crashes
 
 ## 5.0.0 (2021-06-08)
 
