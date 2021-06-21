@@ -99,8 +99,7 @@ namespace BugsnagUnity
 
         private void SetupSceneLoadedBreadcrumbTracking()
         {
-            if (Configuration.EnabledBreadcrumbTypes == null ||
-               Configuration.EnabledBreadcrumbTypes.Contains(BreadcrumbType.Navigation))
+            if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Navigation))
             {
                 SceneManager.sceneLoaded += SceneLoaded;
             }
@@ -167,7 +166,7 @@ namespace BugsnagUnity
                     Notify(new Exception[] { exception }, exception.HandledState, null, logType);
                 }
             }
-            else if (ShouldLeaveLogBreadcrumb(logType))
+            else if (Configuration.ShouldLeaveLogBreadcrumb(logType))
             {
                 Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
                     { "message", condition },
@@ -175,11 +174,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool ShouldLeaveLogBreadcrumb(LogType logType)
-        {
-            return (Configuration.EnabledBreadcrumbTypes == null || Configuration.EnabledBreadcrumbTypes.Contains(BreadcrumbType.Log))
-                && logType.IsGreaterThanOrEqualTo(Configuration.BreadcrumbLogLevel);
-        }
+      
 
         public void BeforeNotify(Middleware middleware)
         {

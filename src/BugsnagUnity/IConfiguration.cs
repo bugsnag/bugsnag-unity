@@ -17,6 +17,10 @@ namespace BugsnagUnity
 
         BreadcrumbType[] EnabledBreadcrumbTypes { get; set; }
 
+        bool IsBreadcrumbTypeEnabled(BreadcrumbType breadcrumbType);
+
+        bool ShouldLeaveLogBreadcrumb(LogType logType);
+
         Dictionary<LogType, int> MaximumTypePerTimePeriod { get; }
 
         TimeSpan UniqueLogsTimePeriod { get; set; }

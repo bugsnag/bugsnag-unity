@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BugsnagUnity.Payload;
 using UnityEngine;
 
@@ -39,7 +40,19 @@ namespace BugsnagUnity
 
         public virtual LogType BreadcrumbLogLevel { get; set; } = LogType.Log;
 
+        public virtual bool ShouldLeaveLogBreadcrumb(LogType logType)
+        {
+            return IsBreadcrumbTypeEnabled(BreadcrumbType.Log)
+                && logType.IsGreaterThanOrEqualTo(BreadcrumbLogLevel);
+        }
+
         public BreadcrumbType[] EnabledBreadcrumbTypes { get; set; }
+
+        public virtual bool IsBreadcrumbTypeEnabled(BreadcrumbType breadcrumbType)
+        {
+            return EnabledBreadcrumbTypes == null ||
+               EnabledBreadcrumbTypes.Contains(breadcrumbType);
+        }
 
         public virtual string ApiKey { get; protected set; }
 
@@ -48,7 +61,6 @@ namespace BugsnagUnity
         public virtual string ReleaseStage { get; set; } = "production";
 
         public virtual string[] NotifyReleaseStages { get; set; }
-
 
         public virtual string AppVersion { get; set; }
 
