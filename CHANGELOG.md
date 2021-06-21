@@ -6,24 +6,24 @@
 
 * Update bugsnag-cocoa to v6.9.6:
 	
-	* Improve accuracy of app hang event information to better reflect state at time of detection.
+ * Improve accuracy of app hang event information to better reflect state at time of detection.
   [#1118](https://github.com/bugsnag/bugsnag-cocoa/pull/1118)
   
-  	* Stop app hangs being reported if app is launched in the background.
+ * Stop app hangs being reported if app is launched in the background.
   [#1112](https://github.com/bugsnag/bugsnag-cocoa/pull/1112)
 
-	* Stop session being reported if app is launched in the background.
+ * Stop session being reported if app is launched in the background.
   [#1107](https://github.com/bugsnag/bugsnag-cocoa/pull/1107)
 
-	* Fix KSCrash state storage for apps with no CFBundleName.
+ * Fix KSCrash state storage for apps with no CFBundleName.
   [#1103](https://github.com/bugsnag/bugsnag-cocoa/pull/1103)
   
-  	* Improve performance of `notify()`.
+ * Improve performance of `notify()`.
   [#1102](https://github.com/bugsnag/bugsnag-cocoa/pull/1102)
   [#1104](https://github.com/bugsnag/bugsnag-cocoa/pull/1104)
   [#1105](https://github.com/bugsnag/bugsnag-cocoa/pull/1105)
 
-	* Fix a crash in `-[BugsnagApp deserializeFromJson:]` if main Mach-O image could not be identified, and improve reliability of identification.
+ * Fix a crash in `-[BugsnagApp deserializeFromJson:]` if main Mach-O image could not be identified, and improve reliability of identification.
   [#1097](https://github.com/bugsnag/bugsnag-cocoa/issues/1097)
   [#1101](https://github.com/bugsnag/bugsnag-cocoa/pull/1101)
 
