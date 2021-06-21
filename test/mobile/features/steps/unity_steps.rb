@@ -37,6 +37,8 @@ When("I tap the {string} button") do |button|
     press_at center, 850
   when "Start SDK"
     press_at center, 950
+  when "Max Breadcrumbs"
+    press_at center, 1050
   end
 end
 

@@ -56,7 +56,26 @@ namespace BugsnagUnity
 
         public virtual string ApiKey { get; protected set; }
 
-        public virtual int MaximumBreadcrumbs { get; set; } = 25;
+        private int _maximumBreadcrumbs = 25;
+
+        public virtual int MaximumBreadcrumbs
+        {
+            get { return _maximumBreadcrumbs; }
+            set
+            {
+                if (value < 0 || value > 100)
+                {
+#if UNITY_EDITOR
+                    UnityEngine.Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-100. Supplied value is " + value);
+#endif
+                    return;
+                }
+                else
+                {
+                    _maximumBreadcrumbs = value;
+                }
+            }
+        }
 
         public virtual string ReleaseStage { get; set; } = "production";
 
