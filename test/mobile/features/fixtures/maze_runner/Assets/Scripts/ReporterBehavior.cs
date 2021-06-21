@@ -1,14 +1,18 @@
 ﻿using System;
 using UnityEngine;
 using BugsnagUnity;
+using System.Collections;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
 
 public class ReporterBehavior : MonoBehaviour {
 
-    // Use this for initialization
-    void Start () {
+
+    private const float WAIT_TIME = 6;
+
+    private void StartBugsnagAsNormal()
+    {
         Configuration config = new Configuration("12312312312312312312312312312312");
         config.Endpoint = new Uri("http://bs-local.com:9339/notify");
         config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
@@ -19,42 +23,151 @@ public class ReporterBehavior : MonoBehaviour {
         LeaveBreadcrumbString();
         LeaveBreadcrumbTuple();
     }
-     
-    public void ThrowException() {
+
+    public void TestDisabledBreadcrumbs()
+    {
+        Configuration config = new Configuration("12312312312312312312312312312312");
+        config.Endpoint = new Uri("http://bs-local.com:9339/notify");
+        config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
+        config.Context = "My context";
+        config.AppVersion = "1.2.3";
+        config.NotifyLevel = LogType.Exception;
+        config.EnabledBreadcrumbTypes = new BreadcrumbType[0];
+        Bugsnag.Start(config);
+        throw new System.Exception("Disabled Breadcrumbs");
+    }
+
+
+    private IEnumerator WaitAndDo(Action action)
+    {
+        yield return new WaitForSeconds(WAIT_TIME);
+        action.Invoke();
+    }
+
+    public void StartSDK()
+    {
+        StartBugsnagAsNormal();
+    }
+
+
+    /// <summary>
+    /// test throw an exception
+    /// </summary>
+
+    public void TriggerThrowException() {
+        StartBugsnagAsNormal();
+        StartCoroutine(WaitAndDo(ThrowException));
+    }
+
+    private void ThrowException()
+    {
         throw new System.Exception("You threw an exception!");
     }
 
-    public void LogError() {
+
+
+    /// <summary>
+    /// test log an error
+    /// </summary>
+
+
+    public void TriggerLogError() {
+        StartBugsnagAsNormal();
         SetUser();
+        StartCoroutine(WaitAndDo(LogError));
+    }
+
+    private void LogError()
+    {
         Debug.LogError("Something went wrong.");
     }
 
-    public void NativeException() {
+    /// <summary>
+    /// test a native exception
+    /// </summary>
+
+    public void TriggerNativeException() {
+        StartBugsnagAsNormal();
+        StartCoroutine(WaitAndDo(NativeException));
+    }
+
+    private void NativeException()
+    {
         BugsnagNative.Crash();
     }
 
-    public void LogCaughtException() {
-        try {
-            var items = new int[]{1, 2, 3};
+    /// <summary>
+    /// test log caught exception
+    /// </summary>
+
+    public void TriggerLogCaughtException() {
+        StartBugsnagAsNormal();
+        StartCoroutine(WaitAndDo(LogCaughtException));
+    }
+
+    private void LogCaughtException()
+    {
+        try
+        {
+            var items = new int[] { 1, 2, 3 };
             Debug.Log("Item4 is: " + items[4]);
-        } catch (System.Exception ex) {
+        }
+        catch (System.Exception ex)
+        {
             Debug.LogException(ex);
         }
     }
 
-    public void NdkSignal() {
+    /// <summary>
+    /// test ndk signal
+    /// </summary>
+
+    public void TriggerNdkSignal() {
+        StartBugsnagAsNormal();
+        StartCoroutine(WaitAndDo(NdkSignal));
+    }
+
+    private void NdkSignal()
+    {
         BugsnagNative.RaiseNdkSignal();
     }
 
-    public void NotifyCaughtException() {
-        try {
-            var items = new int[]{1, 2, 3};
+
+    /// <summary>
+    /// test notify caught exception
+    /// </summary>
+
+    public void TriggerNotifyCaughtException() {
+        StartBugsnagAsNormal();
+        StartCoroutine(WaitAndDo(NotifyCaughtException));
+    }
+
+    private void NotifyCaughtException()
+    {
+        try
+        {
+            var items = new int[] { 1, 2, 3 };
             Debug.Log("Item4 is: " + items[4]);
-        } catch (System.Exception ex) {
+        }
+        catch (System.Exception ex)
+        {
             Bugsnag.Notify(ex);
         }
     }
-    public void NotifyWithCallback() {
+
+
+    /// <summary>
+    /// test notify with callback
+    /// </summary>
+
+
+    public void TriggerNotifyWithCallback() {
+        StartBugsnagAsNormal();
+        StartCoroutine(WaitAndDo(NotifyWithCallback));
+    }
+
+    public void NotifyWithCallback()
+    {
         Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), report =>
         {
             report.Context = "Callback Context";
@@ -64,7 +177,10 @@ public class ReporterBehavior : MonoBehaviour {
             });
         });
     }
+
+
     public void StartSession() {
+
         Bugsnag.SessionTracking.StartSession();
     }
     public void SetUser() {

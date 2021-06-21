@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BugsnagUnity.Payload;
 using UnityEngine;
 
 namespace BugsnagUnity
@@ -13,6 +14,12 @@ namespace BugsnagUnity
         TimeSpan MaximumLogsTimePeriod { get; }
 
         LogType BreadcrumbLogLevel { get; set; }
+
+        BreadcrumbType[] EnabledBreadcrumbTypes { get; set; }
+
+        bool IsBreadcrumbTypeEnabled(BreadcrumbType breadcrumbType);
+
+        bool ShouldLeaveLogBreadcrumb(LogType logType);
 
         Dictionary<LogType, int> MaximumTypePerTimePeriod { get; }
 

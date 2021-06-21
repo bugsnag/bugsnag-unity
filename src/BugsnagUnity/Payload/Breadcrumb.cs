@@ -62,35 +62,11 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("timestamp", DateTime.UtcNow);
             this.AddToPayload("metaData", metadata);
 
-            string breadcrumbType;
+            string breadcrumbType = Enum.GetName(typeof(BreadcrumbType), type).ToLower();
 
-            switch (type)
+            if (string.IsNullOrEmpty(breadcrumbType))
             {
-                case BreadcrumbType.Navigation:
-                    breadcrumbType = "navigation";
-                    break;
-                case BreadcrumbType.Request:
-                    breadcrumbType = "request";
-                    break;
-                case BreadcrumbType.Process:
-                    breadcrumbType = "process";
-                    break;
-                case BreadcrumbType.Log:
-                    breadcrumbType = "log";
-                    break;
-                case BreadcrumbType.User:
-                    breadcrumbType = "user";
-                    break;
-                case BreadcrumbType.State:
-                    breadcrumbType = "state";
-                    break;
-                case BreadcrumbType.Error:
-                    breadcrumbType = "error";
-                    break;
-                case BreadcrumbType.Manual:
-                default:
-                    breadcrumbType = "manual";
-                    break;
+                breadcrumbType = "manual";
             }
 
             this.AddToPayload("type", breadcrumbType);

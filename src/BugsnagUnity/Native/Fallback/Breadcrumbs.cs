@@ -67,6 +67,8 @@ namespace BugsnagUnity
             }
         }
 
+       
+
         /// <summary>
         /// Retrieve the collection of breadcrumbs at this point in time.
         /// </summary>

@@ -35,7 +35,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
             NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
-
+            SetEnabledBreadcrumbTypes(obj,config);
             if (config.Context != null)
             {
                 NativeCode.bugsnag_setContextConfig(obj, config.Context);
@@ -46,6 +46,22 @@ namespace BugsnagUnity
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }
             return obj;
+        }
+
+        private void SetEnabledBreadcrumbTypes(IntPtr obj, IConfiguration config)
+        {
+            if (config.EnabledBreadcrumbTypes == null)
+            {
+                NativeCode.bugsnag_setEnabledBreadcrumbTypes(obj, null, 0);
+                return;
+            }
+            var enabledTypes = new List<string>();
+            foreach (var enabledType in config.EnabledBreadcrumbTypes)
+            {
+                var typeName = Enum.GetName(typeof(BreadcrumbType), enabledType);
+                enabledTypes.Add(typeName);
+            }
+            NativeCode.bugsnag_setEnabledBreadcrumbTypes(obj, enabledTypes.ToArray(),enabledTypes.Count);
         }
 
         public void PopulateApp(App app)

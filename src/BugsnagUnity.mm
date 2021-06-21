@@ -35,6 +35,7 @@ extern "C" {
   void bugsnag_setContextConfig(const void *configuration, char *context);
 
   void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
+  void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
 
   void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
 
@@ -97,6 +98,53 @@ void bugsnag_setContextConfig(const void *configuration, char *context) {
 
 void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs) {
   ((__bridge BugsnagConfiguration *)configuration).maxBreadcrumbs = maxBreadcrumbs;
+}
+
+void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count){
+    if(types == NULL)
+    {
+        ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
+        return;
+    }
+    
+    ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeNone;
+    
+    for (int i = 0; i < count; i++) {
+        const char *enabledType = types[i];
+        if (enabledType != nil) {
+				
+			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
+
+            if([typeString isEqualToString:@"Navigation"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeNavigation;
+            }
+            if([typeString isEqualToString:@"Request"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeRequest;
+            }
+            if([typeString isEqualToString:@"Process"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeProcess;
+            }
+            if([typeString isEqualToString:@"Log"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeLog;
+            }
+            if([typeString isEqualToString:@"User"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeUser;
+            }
+            if([typeString isEqualToString:@"State"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeState;
+            }
+            if([typeString isEqualToString:@"Error"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeError;
+            }
+        }
+      }
 }
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {

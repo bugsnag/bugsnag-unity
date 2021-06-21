@@ -36,6 +36,9 @@
   * `unity.osLanguage` -> `device.osLanguage`
   * `unity.unityException` -> removed as a duplicate of the error class
   * `unity.unityLogType` -> removed as is contained in the error class for generic logs
+	
+* Added advanced config option 'EnabledBreadcrumbTypes' to enable/disable automatically recorded breadcrumbs ([#301](https://github.com/bugsnag/bugsnag-unity/pull/301))	
+	
 
 ### Bug fixes
 

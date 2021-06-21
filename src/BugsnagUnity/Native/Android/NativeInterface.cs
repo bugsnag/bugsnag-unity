@@ -214,6 +214,25 @@ namespace BugsnagUnity
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
 
+            // set EnabledBreadcrumbTypes
+            if (config.EnabledBreadcrumbTypes != null)
+            {
+
+                using (AndroidJavaObject enabledBreadcrumbs = new AndroidJavaObject("java.util.HashSet"))
+                {
+                    AndroidJavaClass androidBreadcrumbEnumClass = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType");
+                    for (int i = 0; i < config.EnabledBreadcrumbTypes.Length; i++)
+                    {
+                        var stringValue = Enum.GetName(typeof(BreadcrumbType), config.EnabledBreadcrumbTypes[i]).ToUpper();
+                        using (AndroidJavaObject crumbType = androidBreadcrumbEnumClass.CallStatic<AndroidJavaObject>("valueOf", stringValue))
+                        {
+                            enabledBreadcrumbs.Call<Boolean>("add", crumbType);
+                        }
+                    }
+                    obj.Call("setEnabledBreadcrumbTypes", enabledBreadcrumbs);
+                }
+            }
+            
             // add unity event callback
             var BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.BugsnagUnity");
             obj.Call("addOnError", BugsnagUnity.CallStatic<AndroidJavaObject>("getNativeCallback", new object[] { }));
