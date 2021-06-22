@@ -48,11 +48,9 @@ Feature: iOS smoke tests for log entries
         And the event "context" equals "My context"
 
         # MetaData
-        And the event "metaData.Unity.unityException" equals "true"
-        And the event "metaData.Unity.unityLogType" equals "Error"
-        And the event "metaData.Unity.platform" equals "IPhonePlayer"
-        And the event "metaData.Unity.companyName" equals "DefaultCompany"
-        And the event "metaData.Unity.productName" equals "maze_runner"
+        And the event "metaData.device.osLanguage" is not null
+        And the event "metaData.app.companyName" equals "DefaultCompany"
+        And the event "metaData.app.name" equals "maze_runner"
 
     Scenario: Calling Bugsnag.Log() with an exception
 
@@ -99,8 +97,6 @@ Feature: iOS smoke tests for log entries
         And the event "context" equals "My context"
 
         # MetaData
-        And the event "metaData.Unity.unityException" equals "true"
-        And the event "metaData.Unity.unityLogType" equals "Exception"
-        And the event "metaData.Unity.platform" equals "IPhonePlayer"
-        And the event "metaData.Unity.companyName" equals "DefaultCompany"
-        And the event "metaData.Unity.productName" equals "maze_runner"
+        And the event "metaData.device.osLanguage" is not null
+        And the event "metaData.app.companyName" equals "DefaultCompany"
+        And the event "metaData.app.name" equals "maze_runner"

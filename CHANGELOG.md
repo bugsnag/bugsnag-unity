@@ -1,17 +1,74 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Add event metadata for CPU and graphics capabilities and migrated entries from the Unity tab to the device and app tabs, to better match other platforms [#297](https://github.com/bugsnag/bugsnag-unity/pull/297):
+  * `unity.companyName` -> `app.companyName`
+  * `unity.productName` -> `app.name`
+  * `unity.version` -> `app.version`
+  * `unity.platform` -> `app.type`
+  * `unity.osLanguage` -> `device.osLanguage`
+  * `unity.unityException` -> removed as a duplicate of the error class
+  * `unity.unityLogType` -> removed as is contained in the error class for generic logs
+	
+* Add `EnabledBreadcrumbTypes` configuration option to enable/disable automatically recorded breadcrumbs [#301](https://github.com/bugsnag/bugsnag-unity/pull/301)
+* Add `MaxBreadcrumbs` configuration option to control the number of breadcrumbs collected on all platforms
+  [#275](https://github.com/bugsnag/bugsnag-unity/pull/275)
+  [#304](https://github.com/bugsnag/bugsnag-unity/pull/304)
+
+* Update bugsnag-cocoa to v6.9.6:
+	
+  * Improve accuracy of app hang event information to better reflect state at time of detection.
+  [#1118](https://github.com/bugsnag/bugsnag-cocoa/pull/1118)
+  
+  * Stop app hangs being reported if app is launched in the background.
+  [#1112](https://github.com/bugsnag/bugsnag-cocoa/pull/1112)
+
+  * Stop session being reported if app is launched in the background.
+  [#1107](https://github.com/bugsnag/bugsnag-cocoa/pull/1107)
+
+  * Fix KSCrash state storage for apps with no CFBundleName.
+  [#1103](https://github.com/bugsnag/bugsnag-cocoa/pull/1103)
+  
+  * Improve performance of `notify()`.
+  [#1102](https://github.com/bugsnag/bugsnag-cocoa/pull/1102)
+  [#1104](https://github.com/bugsnag/bugsnag-cocoa/pull/1104)
+  [#1105](https://github.com/bugsnag/bugsnag-cocoa/pull/1105)
+
+  * Fix a crash in `-[BugsnagApp deserializeFromJson:]` if main Mach-O image could not be identified, and improve reliability of identification.
+  [#1097](https://github.com/bugsnag/bugsnag-cocoa/issues/1097)
+  [#1101](https://github.com/bugsnag/bugsnag-cocoa/pull/1101)
+
+### Bug fixes
+
+* Fix an issue where the Device.time of an event was missing the milliseconds
+  [#298](https://github.com/bugsnag/bugsnag-unity/pull/298)
+
+* Adjust post build script to support Unity 2021 builds
+  [#289](https://github.com/bugsnag/bugsnag-unity/pull/289)
+
+* Fix an issue where timestamps and other `:`-containing log message content was interpreted as the error class
+  [#292](https://github.com/bugsnag/bugsnag-unity/pull/292)
+
+* Correct Android session start times
+  [#291](https://github.com/bugsnag/bugsnag-unity/pull/291)
+
+* Fix duplicate events being sent for Android C/C++ crashes
+ 
 ## 5.0.0 (2021-06-08)
 
 This version contains **breaking** changes, as bugsnag-unity has been updated to use the latest available versions of bugsnag-android (v4.22.2 -> v5.9.4) and bugsnag-cocoa (v5.23.5 -> v6.9.3).
 
-Please see the [upgrade guide](UPGRADING.md) for details of all the changes and instructions on how to upgrade.
+Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
 
 ### Bug fixes
-  
-* Stop scene changes overiding context when manually set
+
+* Stop scene changes overrriding context when manually set
   [#255](https://github.com/bugsnag/bugsnag-unity/pull/255)
 
-* Dont Destroy TimingTrackerObject, so it persists across scenes
+* Don't Destroy TimingTrackerObject, so it persists across scenes
   [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
 
 ## 4.8.8 (2021-04-21)
@@ -64,7 +121,7 @@ Please see the [upgrade guide](UPGRADING.md) for details of all the changes and 
     [#637](https://github.com/bugsnag/bugsnag-cocoa/pull/637)
     [Naugladur](https://github.com/Naugladur)
 
-  * Fixed an issue where an app could deadlock during a crash if unfavourable 
+  * Fixed an issue where an app could deadlock during a crash if unfavourable
     timing caused DYLD lock contention.
     [#580](https://github.com/bugsnag/bugsnag-cocoa/pull/580)
     [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)

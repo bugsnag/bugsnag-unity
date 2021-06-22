@@ -5,13 +5,13 @@ using System.Text;
 
 namespace UnityEngine
 {
-  public class AsyncOperation
-  {
-    public event Action<AsyncOperation> completed;
-  }
+    public class AsyncOperation
+    {
+        public event Action<AsyncOperation> completed;
+    }
 
-  public class UnityWebRequestAsyncOperation : AsyncOperation
-  {
+    public class UnityWebRequestAsyncOperation : AsyncOperation
+    {
 
-  }
+    }
 }

@@ -4,95 +4,101 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-  class NativeClient : INativeClient
-  {
-    public IConfiguration Configuration { get; }
-
-    public IBreadcrumbs Breadcrumbs { get; }
-
-    public IDelivery Delivery { get; }
-
-    private NativeInterface NativeInterface;
-
-    public NativeClient(IConfiguration configuration)
+    class NativeClient : INativeClient
     {
-      NativeInterface = new NativeInterface(configuration);
-      Configuration = configuration;
-      Delivery = new Delivery();
-      Breadcrumbs = new Breadcrumbs(NativeInterface);
-    }
+        public IConfiguration Configuration { get; }
 
-    public void PopulateApp(App app)
-    {
-      MergeDictionaries(app, NativeInterface.GetApp());
-    }
+        public IBreadcrumbs Breadcrumbs { get; }
 
-    public void PopulateDevice(Device device)
-    {
-      Dictionary<string, object> runtimeVersions = (Dictionary<string, object>) device.Get("runtimeVersions");
-      Dictionary<string, object> deviceData = NativeInterface.GetDevice();
-      Dictionary<string, object> nativeVersions = (Dictionary<string, object>) deviceData.Get("runtimeVersions");
+        public IDelivery Delivery { get; }
 
-      deviceData.Remove("runtimeVersions"); // don't overwrite the unity version values
-      MergeDictionaries(device, deviceData);
-      MergeDictionaries(runtimeVersions, nativeVersions); // merge the native version values
-    }
+        private NativeInterface NativeInterface;
 
-    public void PopulateUser(User user)
-    {
-      foreach(var entry in NativeInterface.GetUser()) {
-        user.AddToPayload(entry.Key, entry.Value.ToString());
-      }
-    }
-
-    public void SetMetadata(string tab, Dictionary<string, string> metadata)
-    {
-      if (metadata != null) {
-        foreach (var item in metadata)
+        public NativeClient(IConfiguration configuration)
         {
-          NativeInterface.AddToTab(tab, item.Key, item.Value);
+            NativeInterface = new NativeInterface(configuration);
+            Configuration = configuration;
+            Delivery = new Delivery();
+            Breadcrumbs = new Breadcrumbs(NativeInterface);
         }
-      } else {
-        NativeInterface.RemoveMetadata(tab);
-      }
-    }
 
-    public void PopulateMetadata(Metadata metadata)
-    {
-      MergeDictionaries(metadata, NativeInterface.GetMetadata());
-    }
+        public void PopulateApp(App app)
+        {
+            MergeDictionaries(app, NativeInterface.GetApp());
+        }
 
-    private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another) {
-      foreach(var entry in another) {
-        dest.AddToPayload(entry.Key, entry.Value);
-      }
-    }
+        public void PopulateDevice(Device device)
+        {
+            Dictionary<string, object> runtimeVersions = (Dictionary<string, object>)device.Get("runtimeVersions");
+            Dictionary<string, object> deviceData = NativeInterface.GetDevice();
+            Dictionary<string, object> nativeVersions = (Dictionary<string, object>)deviceData.Get("runtimeVersions");
 
-    public void SetSession(Session session)
-    {
-      NativeInterface.SetSession(session);
-    }
+            deviceData.Remove("runtimeVersions"); // don't overwrite the unity version values
+            MergeDictionaries(device, deviceData);
+            MergeDictionaries(runtimeVersions, nativeVersions); // merge the native version values
+        }
 
-    public void SetUser(User user)
-    {
-      NativeInterface.SetUser(user);
-    }
+        public void PopulateUser(User user)
+        {
+            foreach (var entry in NativeInterface.GetUser())
+            {
+                user.AddToPayload(entry.Key, entry.Value.ToString());
+            }
+        }
 
-    public void SetContext(string context)
-    {
-      NativeInterface.SetContext(context);
-    }
+        public void SetMetadata(string tab, Dictionary<string, string> metadata)
+        {
+            if (metadata != null)
+            {
+                foreach (var item in metadata)
+                {
+                    NativeInterface.AddToTab(tab, item.Key, item.Value);
+                }
+            }
+            else
+            {
+                NativeInterface.RemoveMetadata(tab);
+            }
+        }
 
-    public void SetAutoNotify(bool autoNotify)
-    {
-      NativeInterface.SetAutoNotify(autoNotify);
-      NativeInterface.SetAutoDetectAnrs(autoNotify && Configuration.AutoDetectAnrs);
-    }
+        public void PopulateMetadata(Metadata metadata)
+        {
+            MergeDictionaries(metadata, NativeInterface.GetMetadata());
+        }
 
-    public void SetAutoDetectAnrs(bool autoDetectAnrs)
-    {
-      NativeInterface.SetAutoDetectAnrs(autoDetectAnrs);
+        private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)
+        {
+            foreach (var entry in another)
+            {
+                dest.AddToPayload(entry.Key, entry.Value);
+            }
+        }
+
+        public void SetSession(Session session)
+        {
+            NativeInterface.SetSession(session);
+        }
+
+        public void SetUser(User user)
+        {
+            NativeInterface.SetUser(user);
+        }
+
+        public void SetContext(string context)
+        {
+            NativeInterface.SetContext(context);
+        }
+
+        public void SetAutoNotify(bool autoNotify)
+        {
+            NativeInterface.SetAutoNotify(autoNotify);
+            NativeInterface.SetAutoDetectAnrs(autoNotify && Configuration.AutoDetectAnrs);
+        }
+
+        public void SetAutoDetectAnrs(bool autoDetectAnrs)
+        {
+            NativeInterface.SetAutoDetectAnrs(autoDetectAnrs);
+        }
     }
-  }
 
 }

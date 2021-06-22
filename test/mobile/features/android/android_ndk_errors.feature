@@ -3,10 +3,17 @@ Feature: Android manual smoke tests
     Background:
         Given I wait for the game to start
 
-    @skip_unity_android_2020
     Scenario: NDK Signal raised
         When I tap the "NDK signal" button
+        And I wait for 8 seconds
         And I relaunch the Unity app
+        When I tap the "Start SDK" button
+        # Intentionally adding long wait times here - a core component of this
+        # feature is ensuring that only a SINGLE event is sent. Unity includes
+        # a handler for NDK events which are delivered immediately and should
+        # be intentionally ignored and the event discarded, since the same
+        # event has already been captured and will be sent next launch
+        And I wait for 5 seconds
         Then I wait to receive 1 error
 
         # Exception details
@@ -67,9 +74,7 @@ Feature: Android manual smoke tests
         And the event "metaData.device.networkAccess" is not null
         And the event "metaData.device.screenDensity" is not null
         And the event "metaData.device.screenResolution" is not null
-        And the event "metaData.Unity.unityException" equals "false"
-        And the event "metaData.Unity.osLanguage" is not null
-        And the event "metaData.Unity.platform" equals "Android"
-        And the event "metaData.Unity.version" equals "1.0"
-        And the event "metaData.Unity.companyName" equals "DefaultCompany"
-        And the event "metaData.Unity.productName" equals "maze_runner"
+        And the event "metaData.device.osLanguage" is not null
+        And the event "app.type" equals "android"
+        And the event "metaData.app.companyName" equals "DefaultCompany"
+        And the event "metaData.app.name" equals "maze_runner"

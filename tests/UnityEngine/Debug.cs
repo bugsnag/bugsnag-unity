@@ -5,8 +5,8 @@ using System.Text;
 
 namespace UnityEngine
 {
-  public class Debug
-  {
-    public static bool isDebugBuild { get; }
-  }
+    public class Debug
+    {
+        public static bool isDebugBuild { get; }
+    }
 }
