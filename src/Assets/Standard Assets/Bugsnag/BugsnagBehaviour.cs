@@ -91,6 +91,7 @@ namespace BugsnagUnity
         [Tooltip("The number seconds required between unique Unity logs that Bugsnag will convert to breadcrumbs or report as errors (if configured). Increase the value to reduce the number of logs sent.")]
         public int SecondsPerUniqueLog = 5;
 
+        [Range(0, 100)]
         public int MaximumBreadcrumbs = 25;
 
         [EnumFlags]

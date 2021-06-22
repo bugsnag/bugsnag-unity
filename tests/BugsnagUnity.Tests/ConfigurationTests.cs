@@ -20,5 +20,18 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("https://sessions.bugsnag.com/", config.SessionEndpoint.ToString());
             Assert.AreEqual("foo", config.ApiKey);
         }
+
+
+        [Test]
+        public void MaxBreadcrumbsLimit()
+        {
+            var config = new Configuration("foo");
+            config.MaximumBreadcrumbs = 101;
+            Assert.AreEqual(config.MaximumBreadcrumbs, 25);
+            config.MaximumBreadcrumbs = -1;
+            Assert.AreEqual(config.MaximumBreadcrumbs, 25);
+            config.MaximumBreadcrumbs = 20;
+            Assert.AreEqual(config.MaximumBreadcrumbs, 20);
+        }
     }
 }

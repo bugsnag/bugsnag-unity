@@ -37,6 +37,23 @@ public class ReporterBehavior : MonoBehaviour {
         throw new System.Exception("Disabled Breadcrumbs");
     }
 
+    public void TestMaxBreadcrumbs()
+    {
+        Configuration config = new Configuration("12312312312312312312312312312312");
+        config.Endpoint = new Uri("http://bs-local.com:9339/notify");
+        config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
+        config.Context = "My context";
+        config.AppVersion = "1.2.3";
+        config.NotifyLevel = LogType.Exception;
+        config.MaximumBreadcrumbs = 5;
+        Bugsnag.Start(config);
+        for (int i = 0; i < 5; i++)
+        {
+            Bugsnag.LeaveBreadcrumb("Crumb " + i);
+        }
+        throw new System.Exception("Max Breadcrumbs");
+    }
+
 
     private IEnumerator WaitAndDo(Action action)
     {

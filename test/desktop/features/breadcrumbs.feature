@@ -52,3 +52,9 @@ Feature: Leaving breadcrumbs to attach to reports
         And I wait to receive an error
         Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
         And the event "breadcrumbs.0.type" equals "log"
+
+    Scenario: Setting max breadcrumbs
+        When I run the game in the "MaxBreadcrumbs" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        And the error payload field "events.0.breadcrumbs" is an array with 5 elements
