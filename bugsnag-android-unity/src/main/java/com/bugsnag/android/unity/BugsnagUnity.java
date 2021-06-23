@@ -25,12 +25,8 @@ public class BugsnagUnity {
                 Error error = event.getErrors().get(0);
                 String errorClass = error.getErrorClass();
                 String message = error.getErrorMessage();
-                if(discardedEventErrorClass.equals(errorClass))
-                {
-                    if(message == null || !pattern.matcher(message).find())
-                    {
-                        return false;
-                    }
+                if(discardedEventErrorClass.equals(errorClass)) {
+                    return message == null || !pattern.matcher(message).find();
                 }
                 return true;
             }
