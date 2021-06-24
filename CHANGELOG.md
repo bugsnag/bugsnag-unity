@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.1 (2021-06-24)
+
+* Fixes a packaging issue in the 5.1.0 where the library version was incorrectly
+  reported
+  [#309](https://github.com/bugsnag/bugsnag-unity/pull/309)
+
 ## 5.1.0 (2021-06-24)
 
 ### Enhancements
