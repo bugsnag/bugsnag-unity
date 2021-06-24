@@ -40,3 +40,21 @@ Feature: Leaving breadcrumbs to attach to reports
         And the event "breadcrumbs.1.type" equals "error"
         And the event "breadcrumbs.1.name" equals "Exception"
         And the event "breadcrumbs.1.metaData.message" equals "Rollback failed"
+
+    Scenario: Disabling Breadcrumbs
+        When I run the game in the "DisableBreadcrumbs" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        And the event "breadcrumbs.0" is null
+
+    Scenario: Only enable Log Breadcrumbs
+        When I run the game in the "OnlyLogBreadcrumbs" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        And the event "breadcrumbs.0.type" equals "log"
+
+    Scenario: Setting max breadcrumbs
+        When I run the game in the "MaxBreadcrumbs" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        And the error payload field "events.0.breadcrumbs" is an array with 5 elements

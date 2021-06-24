@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UnityEngine
 {
-  public enum SystemLanguage
-  {
-  }
+    public enum SystemLanguage
+    {
+    }
 }

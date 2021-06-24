@@ -1,54 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
+using BugsnagUnity.Payload;
 using UnityEngine;
 
 namespace BugsnagUnity
 {
-  public interface IConfiguration
-  {
-    string ApiKey { get; }
+    public interface IConfiguration
+    {
+        string ApiKey { get; }
 
-    bool ReportUncaughtExceptionsAsHandled { get; set; }
+        bool ReportUncaughtExceptionsAsHandled { get; set; }
 
-    TimeSpan MaximumLogsTimePeriod { get; }
+        TimeSpan MaximumLogsTimePeriod { get; }
 
-    LogType BreadcrumbLogLevel { get; set; }
+        LogType BreadcrumbLogLevel { get; set; }
 
-    Dictionary<LogType, int> MaximumTypePerTimePeriod { get; }
+        BreadcrumbType[] EnabledBreadcrumbTypes { get; set; }
 
-    TimeSpan UniqueLogsTimePeriod { get; set; }
+        bool IsBreadcrumbTypeEnabled(BreadcrumbType breadcrumbType);
 
-    int MaximumBreadcrumbs { get; set; }
+        bool ShouldLeaveLogBreadcrumb(LogType logType);
 
-    string ReleaseStage { get; set; }
+        Dictionary<LogType, int> MaximumTypePerTimePeriod { get; }
 
-    string[] NotifyReleaseStages { get; set; }
+        TimeSpan UniqueLogsTimePeriod { get; set; }
 
-    string AppVersion { get; set; }
+        int MaximumBreadcrumbs { get; set; }
 
-    Uri Endpoint { get; set; }
+        string ReleaseStage { get; set; }
 
-    string PayloadVersion { get; }
+        string[] NotifyReleaseStages { get; set; }
 
-    Uri SessionEndpoint { get; set; }
+        string AppVersion { get; set; }
 
-    string SessionPayloadVersion { get; }
+        Uri Endpoint { get; set; }
 
-    string Context { get; set; }
+        string PayloadVersion { get; }
 
-    LogType NotifyLevel { get; set; }
+        Uri SessionEndpoint { get; set; }
 
-    bool AutoNotify { get; set; }
+        string SessionPayloadVersion { get; }
 
-    bool AutoDetectAnrs { get; set; }
+        string Context { get; set; }
 
-    bool AutoCaptureSessions { get; set; }
+        LogType NotifyLevel { get; set; }
 
-    LogTypeSeverityMapping LogTypeSeverityMapping { get; }
-    string ScriptingBackend { get; set; }
+        bool AutoNotify { get; set; }
 
-    string DotnetScriptingRuntime { get; set; }
+        bool AutoDetectAnrs { get; set; }
 
-    string DotnetApiCompatibility { get; set; }
-  }
+        bool AutoCaptureSessions { get; set; }
+
+        LogTypeSeverityMapping LogTypeSeverityMapping { get; }
+        string ScriptingBackend { get; set; }
+
+        string DotnetScriptingRuntime { get; set; }
+
+        string DotnetApiCompatibility { get; set; }
+    }
 }
