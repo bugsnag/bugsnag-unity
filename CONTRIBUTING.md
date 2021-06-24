@@ -113,23 +113,26 @@ bundle exec maze-runner features/handled_errors.feature
 
 #### Making the release
 
-0. Set the version number in the change log and `build.cake`
-1. Commit the changelog and version updates:
+1. Checkout the `next` branch. Set the version number in the change log and `build.cake`.
+
+2. Commit the changelog and version updates:
 
     ```
     git add CHANGELOG.md build.cake
-    git commit -m "Release v4.x.x"
+    git commit -m "Release v5.x.x"
     ```
-2. Make a pull request to merge the changes
-3. Once merged, tag the new release version, pushing the tag to GitHub:
+3. Make a pull request to merge the changes into `master`
+
+4. Once merged, tag the new release version, pushing the tag to GitHub:
 
    ```
-   git tag v4.x.x
-   git push origin v4.x.x
+   git tag v5.x.x
+   git push origin v5.x.x
    ```
-4. Wait. The CI build will build the new package and create a draft release.
-   Verify that the release looks good, copy in the changelog entry and publish
-   the draft.
+
+5. Wait. The CI build will build the new package and create a draft release.
+
+6. Verify that the release looks good, upload the unity packages to the release, copy in the changelog entry into the release notes and publish the draft.
 
 #### Post-release
 
