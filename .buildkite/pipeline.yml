@@ -580,7 +580,6 @@ steps:
     concurrency_group: browserstack-app
 
   - label: ':ios: Run iOS e2e tests for Unity 2019'
-    skip: "Pending PLAT-6653"
     depends_on: 'build-ios-fixture-2019'
     timeout_in_minutes: 30
     agents:
@@ -602,7 +601,6 @@ steps:
     concurrency_group: browserstack-app
 
   - label: ':ios: Run iOS e2e tests for Unity 2020'
-    skip: "Pending PLAT-6653"
     depends_on: 'build-ios-fixture-2020'
     timeout_in_minutes: 30
     agents:
