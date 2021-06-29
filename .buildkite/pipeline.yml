@@ -117,7 +117,7 @@ steps:
   #
   # Build iOS test fixtures
   #
-  - label: ':ios: Generate test fixture Xcode project for Unity 2020'
+  - label: ':ios: Generate Xcode project - Unity 2020'
     key: 'generate-fixture-project-2020'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30

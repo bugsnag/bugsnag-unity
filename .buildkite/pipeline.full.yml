@@ -258,7 +258,7 @@ steps:
   #
   # Build iOS test fixtures
   #
-  - label: ':ios: Generate test fixture Xcode project for Unity 2017'
+  - label: ':ios: Generate Xcode project - Unity 2017'
     key: 'generate-fixture-project-2017'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -301,7 +301,7 @@ steps:
       - tar -zxf project_2017.tgz test/mobile/features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
-  - label: ':ios: Generate test fixture Xcode project for Unity 2018'
+  - label: ':ios: Generate Xcode project - Unity 2018'
     key: 'generate-fixture-project-2018'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -344,7 +344,7 @@ steps:
       - tar -zxf project_2018.tgz test/mobile/features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
-  - label: ':ios: Generate test fixture Xcode project for Unity 2019'
+  - label: ':ios: Generate Xcode project - Unity 2019'
     key: 'generate-fixture-project-2019'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
