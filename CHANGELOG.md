@@ -1,14 +1,5 @@
 # Changelog
 
-## TBD
-
-### Enhancements
-
-* Update bugsnag-cocoa to v6.9.7:
-
-  * Prevent some potential false positive detection of app hangs.
-    [#1122](https://github.com/bugsnag/bugsnag-cocoa/pull/1122)
-
 ## 5.1.1 (2021-06-24)
 
 * Fixes a packaging issue in the 5.1.0 where the library version was incorrectly
