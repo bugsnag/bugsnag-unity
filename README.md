@@ -1,4 +1,5 @@
-# Bugsnag exception reporter for Unity
+
+:# Bugsnag exception reporter for Unity
 [![Documentation](https://img.shields.io/badge/documentation-latest-blue.svg)](http://docs.bugsnag.com/platforms/unity/)
 
 The Bugsnag Notifier for Unity gives you instant notification of exceptions
