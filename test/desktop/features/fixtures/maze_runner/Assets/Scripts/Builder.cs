@@ -17,9 +17,15 @@ public class Builder : MonoBehaviour {
     }
 
     // Generates Mazerunner.app
-    public static void MacOSBuild()
+    public static void MacOS()
     {
         Build("Mazerunner", BuildTarget.StandaloneOSX);
+    }
+
+    // Generates Mazerunner.app
+    public static void Win64()
+    {
+        Build("WindowsBuild/Mazerunner.exe", BuildTarget.StandaloneWindows64);
     }
 }
 #endif
