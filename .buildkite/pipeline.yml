@@ -16,8 +16,6 @@ steps:
     artifact_paths:
       - Bugsnag.unitypackage
       - Bugsnag-with-android-64bit.unitypackage
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   #
   # Build desktop test fixture
@@ -38,10 +36,8 @@ steps:
     commands:
       - cd test/desktop
       - ./features/scripts/build_maze_runner.sh
-    artifact_paths: 
+    artifact_paths:
       - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   #
   # Run desktop tests
@@ -86,8 +82,6 @@ steps:
           - test/mobile/features/fixtures/unity.log
     commands:
       - rake test:android:build
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   #
   # Run Android tests
@@ -137,8 +131,6 @@ steps:
     commands:
       - rake test:ios:generate_xcode
       - tar -zvcf project_2020.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: ':ios: Build iOS test fixture for Unity 2020'
     key: 'build-ios-fixture-2020'
@@ -194,7 +186,6 @@ steps:
 
   - block: "Build Windows fixtures"
     key: block-windows
-    depends_on: build-artifacts
     prompt: "Build Windows fixtures - Is a suitable agent running?"
 
   #
@@ -247,15 +238,15 @@ steps:
 
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
-    depends_on: 'build-artifacts'
+#    depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2020.3.12f1"
-    command:
+    commands:
       - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
       - 'cd test\\desktop'
       - 'c:\\Progra~1\\Git\\bin\\bash.exe ./features/scripts/build_maze_runner.sh'
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/WindowsBuild/Mazerunner.exe
+      - test\\desktop\\features\\fixtures\\maze_runner\\WindowsBuild/Mazerunner.exe

@@ -21,8 +21,6 @@ steps:
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
       - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: Build Unity 2018 MacOS test fixture
     key: 'cocoa-2018-fixture'
@@ -42,8 +40,6 @@ steps:
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
       - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: Build Unity 2019 MacOS test fixture
     key: 'cocoa-2019-fixture'
@@ -63,8 +59,6 @@ steps:
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
       - test/desktop/features/fixtures/Mazerunner-2019.4.25f1.app.zip
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   #
   # Run desktop tests
@@ -147,8 +141,6 @@ steps:
           - test/mobile/features/fixtures/unity.log
     commands:
       - rake test:android:build
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: ':android: Build Android test fixture for Unity 2018'
     key: 'build-android-fixture-2018'
@@ -168,8 +160,6 @@ steps:
           - test/mobile/features/fixtures/unity.log
     commands:
       - rake test:android:build
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: ':android: Build Android test fixture for Unity 2019'
     key: 'build-android-fixture-2019'
@@ -189,8 +179,6 @@ steps:
           - test/mobile/features/fixtures/unity.log
     commands:
       - rake test:android:build
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   #
   # Run Android tests
@@ -277,8 +265,6 @@ steps:
     commands:
       - rake test:ios:generate_xcode
       - tar -zvcf project_2017.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: ':ios: Build iOS test fixture for Unity 2017'
     key: 'build-ios-fixture-2017'
@@ -320,8 +306,6 @@ steps:
     commands:
       - rake test:ios:generate_xcode
       - tar -zvcf project_2018.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: ':ios: Build iOS test fixture for Unity 2018'
     key: 'build-ios-fixture-2018'
@@ -363,8 +347,6 @@ steps:
     commands:
       - rake test:ios:generate_xcode
       - tar -zvcf project_2019.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   - label: ':ios: Build iOS test fixture for Unity 2019'
     key: 'build-ios-fixture-2019'
