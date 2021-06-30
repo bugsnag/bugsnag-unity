@@ -4,7 +4,16 @@
 
 ### Enhancements
 
-* Update bugsnag-cocoa to v6.9.7:
+* Update bugsnag-cocoa to v6.10.0
+
+  * Fix an issue that could cause C++ exceptions with very long descriptions to not be reported.
+    [#1137](https://github.com/bugsnag/bugsnag-cocoa/pull/1137)
+
+  * Improve performance of adding metadata by using async file I/O.
+    [#1133](https://github.com/bugsnag/bugsnag-cocoa/pull/1133)
+
+  * Improve performance of leaving breadcrumbs by using async file I/O.
+    [#1124](https://github.com/bugsnag/bugsnag-cocoa/pull/1124)
 
   * Prevent some potential false positive detection of app hangs.
     [#1122](https://github.com/bugsnag/bugsnag-cocoa/pull/1122)
