@@ -185,6 +185,7 @@ steps:
     command: sh -c .buildkite/pipeline_trigger.sh
 
   - block: "Build Windows fixtures"
+    key: 'block-windows'
     prompt: "Build Windows fixtures - Is a suitable agent running?"
 
   #
@@ -192,13 +193,14 @@ steps:
   #
   - label: Build Unity 2017 Windows test fixture
     key: 'windows-2017-fixture'
-    depends_on: 'build-artifacts'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2017.4.40f1"
     command:
+      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
       - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
       - 'cd test\\desktop'
       - 'c:\\Progra~1\\Git\\bin\\bash.exe ./features/scripts/build_maze_runner.sh'
@@ -207,13 +209,14 @@ steps:
 
   - label: Build Unity 2018 Windows test fixture
     key: 'windows-2018-fixture'
-    depends_on: 'build-artifacts'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2018.4.36f1"
     command:
+      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
       - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
       - 'cd test\\desktop'
       - 'c:\\Progra~1\\Git\\bin\\bash.exe ./features/scripts/build_maze_runner.sh'
@@ -222,13 +225,14 @@ steps:
 
   - label: Build Unity 2019 Windows test fixture
     key: 'windows-2019-fixture'
-    depends_on: 'build-artifacts'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2019.4.28f1"
     command:
+      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
       - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
       - 'cd test\\desktop'
       - 'c:\\Progra~1\\Git\\bin\\bash.exe ./features/scripts/build_maze_runner.sh'
@@ -237,13 +241,14 @@ steps:
 
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
-    depends_on: 'build-artifacts'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2020.3.12f1"
     commands:
+      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
       - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
       - 'cd test\\desktop'
       - 'c:\\Progra~1\\Git\\bin\\bash.exe ./features/scripts/build_maze_runner.sh'
