@@ -185,7 +185,6 @@ steps:
     command: sh -c .buildkite/pipeline_trigger.sh
 
   - block: "Build Windows fixtures"
-    key: block-windows
     prompt: "Build Windows fixtures - Is a suitable agent running?"
 
   #
@@ -238,7 +237,7 @@ steps:
 
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
-#    depends_on: 'build-artifacts'
+    depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
