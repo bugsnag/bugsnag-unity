@@ -68,15 +68,13 @@ pushd $SCRIPT_DIR
 
 
     if [ "$PLATFORM" == "MacOS" ]; then
-
-       zip -r "Mazerunner-$UNITY_VERSION.app.zip" "maze_runner/Mazerunner.app"
-        RESULT=$?
-         if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
+      zip -r "Mazerunner-$UNITY_VERSION.app.zip" "maze_runner/Mazerunner.app"
+      RESULT=$?
+      if [ $RESULT -ne 0 ]; then exit $RESULT; fi
     else
-       gzip -r "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild/"
-        RESULT=$?
-         if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+      7z a -r "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild"
+      RESULT=$?
+      if [ $RESULT -ne 0 ]; then exit $RESULT; fi
     fi
   popd
 popd
