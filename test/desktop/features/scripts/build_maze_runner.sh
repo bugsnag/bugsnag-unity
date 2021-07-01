@@ -74,7 +74,7 @@ pushd $SCRIPT_DIR
          if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
     else
-       zip -r "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild/"
+       gzip -r "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild/"
         RESULT=$?
          if [ $RESULT -ne 0 ]; then exit $RESULT; fi
     fi
