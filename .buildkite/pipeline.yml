@@ -205,7 +205,7 @@ steps:
       - 'cd test/desktop/features/scripts'
       - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
     artifact_paths:
-      - test\\desktop\\features\\fixtures\\Mazerunner-2017.4.40f1.zip
+      - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.zip
 
   - label: Build Unity 2018 Windows test fixture
     key: 'windows-2018-fixture'
@@ -221,7 +221,7 @@ steps:
       - 'cd test/desktop/features/scripts'
       - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
     artifact_paths:
-      - test\\desktop\\features\\fixtures\\Mazerunner-2018.4.36f1.zip
+      - test/desktop/features/fixtures/Mazerunner-2018.4.36f1.zip
 
   - label: Build Unity 2019 Windows test fixture
     key: 'windows-2019-fixture'
@@ -237,7 +237,7 @@ steps:
       - 'cd test/desktop/features/scripts'
       - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
     artifact_paths:
-      - test\\desktop\\features\\fixtures\\Mazerunner-2019.4.28f1.zip
+      - test/desktop/features/fixtures/Mazerunner-2019.4.28f1.zip
 
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
@@ -253,4 +253,4 @@ steps:
       - 'cd test/desktop/features/scripts'
       - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
     artifact_paths:
-      - test\\desktop\\features\\fixtures\\Mazerunner-2020.3.12f1.zip
+      - test/desktop/features/fixtures/Mazerunner-2020.3.12f1.zip
