@@ -69,12 +69,12 @@ pushd $SCRIPT_DIR
 
     if [ "$PLATFORM" == "MacOS" ]; then
 
-       tar -czf "Mazerunner-$UNITY_VERSION.app.zip" "maze_runner/Mazerunner.app"
+       zip -r "Mazerunner-$UNITY_VERSION.app.zip" "maze_runner/Mazerunner.app"
         RESULT=$?
          if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
     else
-       tar -czf "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild/"
+       zip -r "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild/"
         RESULT=$?
          if [ $RESULT -ne 0 ]; then exit $RESULT; fi
     fi
