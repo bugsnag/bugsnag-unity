@@ -16,16 +16,19 @@ public class Builder : MonoBehaviour {
         BuildPipeline.BuildPlayer(opts);
     }
 
-    // Generates Mazerunner.app
     public static void MacOS()
     {
         Build("Mazerunner", BuildTarget.StandaloneOSX);
     }
 
-    // Generates Mazerunner.app
     public static void Win64()
     {
         Build("WindowsBuild/Mazerunner.exe", BuildTarget.StandaloneWindows64);
+    }
+
+    public static void WebGL()
+    {
+        Build("Mazerunner", BuildTarget.WebGL);
     }
 }
 #endif
