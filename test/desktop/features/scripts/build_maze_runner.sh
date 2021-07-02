@@ -9,21 +9,22 @@ fi
 
 if [ "$(uname)" == "Darwin" ]; then
 
-  PLATFORM="MacOS"    
+  PLATFORM="MacOS"
   echo "MacOS Detected"
   UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
 
 elif [ $OS == "Windows_NT" ]; then
 
-    PLATFORM="Win64"  
+    PLATFORM="Win64"
     set -m
     echo "Windows64 Detected"
-    UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe" 
+    UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
 
 fi
 
 # Set project_path to the repo root
-pushd "${0%/*}"
+SCRIPT_DIR=$(dirname "$(realpath $0)")
+pushd $SCRIPT_DIR
   pushd ../../../..
     package_path=`pwd`
     echo "Expecting to find Bugsnag package in: $package_path"
@@ -56,7 +57,7 @@ pushd "${0%/*}"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-    
+
     echo "Building the fixture for $PLATFORM"
 
     "$UNITY_PATH" $DEFAULT_CLI_ARGS \
@@ -67,19 +68,13 @@ pushd "${0%/*}"
 
 
     if [ "$PLATFORM" == "MacOS" ]; then
-
-       tar -czf "Mazerunner-$UNITY_VERSION.app.zip" "maze_runner/Mazerunner.app"
-        RESULT=$?
-         if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
+      zip -r "Mazerunner-$UNITY_VERSION.app.zip" "maze_runner/Mazerunner.app"
+      RESULT=$?
+      if [ $RESULT -ne 0 ]; then exit $RESULT; fi
     else
-       tar -czf "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild/"
-        RESULT=$?
-         if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+      7z a -r "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild"
+      RESULT=$?
+      if [ $RESULT -ne 0 ]; then exit $RESULT; fi
     fi
-
-
-
-   
   popd
 popd

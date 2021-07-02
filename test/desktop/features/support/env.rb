@@ -23,7 +23,7 @@ AfterConfiguration do |_config|
     raise StandardError, "Test fixture build archive not found at #{fixture_dir}/#{zip_file}"
   end
 
-  `cd #{fixture_dir} && tar -xzf #{zip_file}`
+  `cd #{fixture_dir} && unzip #{zip_file}`
 
   unless File.exist?("#{project_dir}/#{app_file}")
     raise StandardError, "Test fixture wasn't successfully extracted to #{project_dir}/#{app_file}"
