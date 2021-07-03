@@ -3,8 +3,7 @@ When("I run the game in the {string} state") do |state|
   Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
   Maze::Runner.environment['MAZE_ENDPOINT'] = 'http://localhost:9339'
   command = %(
-    cd features/fixtures/maze_runner &&
-    #{Maze.config.app}.app/Contents/MacOS/#{Maze.config.app} -batchmode -nographics
+    open #{Maze.config.app} --args -batchmode -nographics
   )
   Maze::Runner.run_command(command)
 end

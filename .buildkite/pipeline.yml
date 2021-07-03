@@ -36,8 +36,10 @@ steps:
     commands:
       - cd test/desktop
       - ./features/scripts/build_maze_runner.sh
+      - cd features/fixtures/maze_runner
+      - zip -r Mazerunner-2020.3.9f1.app.zip Mazerunner.app
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
+      - test/desktop/features/fixtures/maze_runner/Mazerunner-2020.3.9f1.app.zip
 
   #
   # Run desktop tests
@@ -52,14 +54,16 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
+          - test/desktop/features/fixtures/maze_runner/Mazerunner-2020.3.9f1.app.zip
         upload:
           - test/desktop/maze_output/*
           - test/desktop/Mazerunner.log
     commands:
-      - cd test/desktop
+      - cd test/desktop/features/fixtures/maze_runner
+      - unzip Mazerunner-2020.3.9f1.app.zip
+      - cd ../../..
       - bundle install
-      - bundle exec maze-runner --app=Mazerunner
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app
 
   #
   # Build Android test fixtures

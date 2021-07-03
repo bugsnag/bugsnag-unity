@@ -21,6 +21,7 @@ end
 
 at_exit do
   if Maze.config.os == 'macos'
-    Maze::Runner.run_command("log show --predicate '(process == \"#{Maze.config.app}\")' --style syslog --start '#{Maze.start_time}' > #{Maze.config.app}.log")
+    app_name = Maze.config.app.gsub /\.app$/, ''
+    Maze::Runner.run_command("log show --predicate '(process == \"#{app_name}\")' --style syslog --start '#{Maze.start_time}' > #{app_name}.log")
   end
 end
