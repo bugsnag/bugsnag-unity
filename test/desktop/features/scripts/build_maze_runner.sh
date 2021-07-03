@@ -8,18 +8,14 @@ fi
 #!/usr/bin/env bash
 
 if [ "$(uname)" == "Darwin" ]; then
-
   PLATFORM="MacOS"
   echo "MacOS Detected"
   UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
-
 elif [ $OS == "Windows_NT" ]; then
-
     PLATFORM="Win64"
     set -m
     echo "Windows64 Detected"
     UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-
 fi
 
 # Set project_path to the repo root
@@ -65,16 +61,5 @@ pushd $SCRIPT_DIR
       -executeMethod "Builder.$PLATFORM"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
-
-    if [ "$PLATFORM" == "MacOS" ]; then
-      zip -r "Mazerunner-$UNITY_VERSION.app.zip" "maze_runner/Mazerunner.app"
-      RESULT=$?
-      if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-    else
-      7z a -r "Mazerunner-$UNITY_VERSION.zip" "maze_runner/WindowsBuild"
-      RESULT=$?
-      if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-    fi
   popd
 popd

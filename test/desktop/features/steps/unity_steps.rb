@@ -2,7 +2,6 @@ When("I run the game in the {string} state") do |state|
   Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
   Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
   Maze::Runner.environment['MAZE_ENDPOINT'] = 'http://localhost:9339'
-  Maze::Runner.environment['UNITY_PROJECT_NAME'] = "#{Maze.config.app}.app"
   command = %(
     cd features/fixtures/maze_runner &&
     #{Maze.config.app}.app/Contents/MacOS/#{Maze.config.app} -batchmode -nographics
@@ -32,7 +31,7 @@ Then("the error is valid for the error reporting API sent by the {string}") do |
 end
 
 Then("the errors are valid for the error reporting API sent by the {string}") do |notifier_name|
-  
+
 end
 
 Then("the first significant stack frame methods and files should match:") do |expected_values|
