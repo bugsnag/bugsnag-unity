@@ -4,8 +4,9 @@ $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
 
 Maze.hooks.before do
   if Maze.config.os == 'macos'
-    $logger.info 'Clearing '
-    FileUtils.rm_rf('~/Library/Application Support/com.bugsnag.Bugsnag')
+    support_dir = File.expand_path '~/Library/Application Support/com.bugsnag.Bugsnag'
+    $logger.info 'Clearing #{support_dir}'
+    FileUtils.rm_rf(support_dir)
   end
 end
 
