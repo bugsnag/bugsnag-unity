@@ -5,10 +5,16 @@ When("I run the game in the {string} state") do |state|
 
   if Maze.config.os == 'macos'
     command = "open -W #{Maze.config.app} --args -batchmode -nographics"
+    Maze::Runner.run_command(command)
   else
     command = "#{Maze.config.app} -batchmode -nographics"
+    env = {
+        'BUGSNAG_SCENARIO' => state,
+        'BUGSNAG_APIKEY' => $api_key,
+        'MAZE_ENDPOINT' => 'http://localhost:9339'
+    }
+    system(env, command)
   end
-  Maze::Runner.run_command(command)
 end
 
 Then("the error is valid for the error reporting API sent by the {string}") do |notifier_name|
