@@ -197,7 +197,7 @@ steps:
   #
   - label: Build Unity 2017 Windows test fixture
     key: 'windows-2017-fixture'
-    depends_on: 'build-artifacts'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
@@ -211,11 +211,11 @@ steps:
       - 'cd ../fixtures/maze_runner'
       - '7z a -r WindowsBuild-2017.4.40f1.zip WindowsBuild'
     artifact_paths:
-      - test/desktop/features/fixtures/WindowsBuild-2017.4.40f1.zip
+      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2017.4.40f1.zip
 
   - label: Build Unity 2018 Windows test fixture
     key: 'windows-2018-fixture'
-    depends_on: 'build-artifacts'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
@@ -229,11 +229,11 @@ steps:
       - 'cd ../fixtures/maze_runner'
       - '7z a -r WindowsBuild-2018.4.36f1.zip WindowsBuild'
     artifact_paths:
-      - test/desktop/features/fixtures/WindowsBuild-2018.4.36f1.zip
+      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2018.4.36f1.zip
 
   - label: Build Unity 2019 Windows test fixture
     key: 'windows-2019-fixture'
-    depends_on: 'build-artifacts'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
@@ -247,11 +247,11 @@ steps:
       - 'cd ../fixtures/maze_runner'
       - '7z a -r WindowsBuild-2019.4.28f1.zip WindowsBuild'
     artifact_paths:
-      - test/desktop/features/fixtures/WindowsBuild-2019.4.28f1.zip
+      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2019.4.28f1.zip
 
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
-    depends_on: 'build-artifacts'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
@@ -265,4 +265,4 @@ steps:
       - 'cd ../fixtures/maze_runner'
       - '7z a -r WindowsBuild-2020.3.12f1.zip WindowsBuild'
     artifact_paths:
-      - test/desktop/features/fixtures/WindowsBuild-2020.3.12f1.zip
+      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2020.3.12f1.zip
