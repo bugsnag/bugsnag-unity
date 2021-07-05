@@ -2,9 +2,10 @@ require 'fileutils'
 
 $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
 
-raise '--os option must be set (to "macos" or "windows"' if Maze.config.os.nil?
 
 AfterConfiguration do |_config|
+  raise '--os option must be set (to "macos" or "windows"' if Maze.config.os.nil?
+
   Maze.config.enforce_bugsnag_integrity = false
 
   if Maze.config.os.downcase == 'macos'
