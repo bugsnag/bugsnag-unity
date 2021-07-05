@@ -189,6 +189,7 @@ steps:
     command: sh -c .buildkite/pipeline_trigger.sh
 
   - block: "Build Windows fixtures"
+    depends_on: 'build-artifacts'
     key: 'block-windows'
     prompt: "Build Windows fixtures - Is a suitable agent running?"
 
