@@ -18,7 +18,7 @@ end
 Maze.hooks.before do
   if Maze.config.os == 'macos'
     support_dir = File.expand_path '~/Library/Application Support/com.bugsnag.Bugsnag'
-    $logger.info 'Clearing #{support_dir}'
+    $logger.info "Clearing #{support_dir}"
     FileUtils.rm_rf(support_dir)
   end
 end
