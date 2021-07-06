@@ -28,3 +28,4 @@ bugsnag-android-unity/.cxx
 test/**/*.app.zip
 *.ipa
 **/maze_runner/output/
+**/maze_output
