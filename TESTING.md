@@ -120,8 +120,9 @@ This will generate the test fixture app:
 
 Building the test fixture on Windows requires a Git bash terminal.
 
+In a Git bash terminal:
 1. `cd test/desktop`
-1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh`
+1. `UNITY_VERSION=2018.4.36f1 ./features/scripts/build_maze_runner.sh`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
@@ -143,5 +144,18 @@ dependencies:
 1. Run `bundle install` if you haven't run end-to-end tests before
 1. To run the tests:
     ```shell script
-    UNITY_VERSION=2018.4.34f1 bundle exec maze-runner --app=Mazerunner
+    bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app --os=macos
+    ```
+
+#### Windows
+
+Running the Maze Runner tests on Windows requires the Ubuntu app (using WSL).
+
+In the Ubuntu terminal:
+1. `cd test/desktop`
+1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
+1. Run `bundle install` if you haven't run end-to-end tests before
+1. To run the tests:
+    ```shell script
+    bundle exec maze-runner --app=features/fixtures/maze_runner/WindowsBuild/Mazerunner.exe --os=windows
     ```
