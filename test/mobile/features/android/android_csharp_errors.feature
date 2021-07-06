@@ -86,7 +86,7 @@ Feature: Android smoke tests for C# errors
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
 
     Scenario: Uncaught C# exception
-        When I tap the "throw Exception" button
+        When I run the "ThrowException" scenario
         Then I wait to receive an error
 
         # Exception details

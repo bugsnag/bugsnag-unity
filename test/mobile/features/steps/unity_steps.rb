@@ -10,36 +10,17 @@ When('I relaunch the Unity app') do
   sleep 5
 end
 
-When("I tap the {string} button") do |button|
+When("I run the {string} scenario") do |scenario|
   # Ensure we tap in the button
   viewport = Maze.driver.session_capabilities['viewportRect']
 
   center = viewport['width'] / 2
+  middle = viewport['height'] / 2
 
-  case button
-  when "throw Exception"
-    press_at center, 50
-  when "Log error"
-    press_at center, 150
-  when "Native exception"
-    press_at center, 250
-  when "Log caught exception"
-    press_at center, 350
-  when "NDK signal"
-    press_at center, 450
-  when "Notify caught exception"
-    press_at center, 550
-  when "Notify with callback"
-    press_at center, 650
-  when "Change scene"
-    press_at center, 750
-  when "Disable Breadcrumbs"
-    press_at center, 850
-  when "Start SDK"
-    press_at center, 950
-  when "Max Breadcrumbs"
-    press_at center, 1050
-  end
+  press_at center, middle
+  sleep 1
+  Maze.driver.send_keys(scenario)
+
 end
 
 def press_at(x, y)

@@ -5,9 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ReporterBehavior : MonoBehaviour {
 
+
+    public InputField InputField;
 
     private const float WAIT_TIME = 6;
 
@@ -66,6 +69,20 @@ public class ReporterBehavior : MonoBehaviour {
         StartBugsnagAsNormal();
     }
 
+    public void GetScenario()
+    {
+
+        var scenario = InputField.text;
+        switch (scenario)
+        {
+            case "ThrowException":
+                TriggerThrowException();
+                break;
+            default:
+                break;
+        }
+
+    }
 
     /// <summary>
     /// test throw an exception
