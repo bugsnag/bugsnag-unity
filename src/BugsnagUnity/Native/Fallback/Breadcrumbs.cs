@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
@@ -8,8 +7,7 @@ namespace BugsnagUnity
     {
         readonly object _lock = new object();
         IConfiguration Configuration { get; }
-        Breadcrumb[] _breadcrumbs;
-        int _current;
+        List<Breadcrumb> _breadcrumbs;
 
         /// <summary>
         /// Constructs a collection of breadcrumbs
@@ -18,8 +16,7 @@ namespace BugsnagUnity
         internal Breadcrumbs(IConfiguration configuration)
         {
             Configuration = configuration;
-            _current = 0;
-            _breadcrumbs = new Breadcrumb[Configuration.MaximumBreadcrumbs];
+            _breadcrumbs = new List<Breadcrumb>();
         }
 
         /// <summary>
@@ -53,16 +50,13 @@ namespace BugsnagUnity
                 lock (_lock)
                 {
                     var maximumBreadcrumbs = Configuration.MaximumBreadcrumbs;
-                    if (_breadcrumbs.Length != maximumBreadcrumbs)
+
+                    if (_breadcrumbs.Count == maximumBreadcrumbs)
                     {
-                        Array.Resize(ref _breadcrumbs, maximumBreadcrumbs);
-                        if (_current >= maximumBreadcrumbs)
-                        {
-                            _current = 0;
-                        }
+                        _breadcrumbs.RemoveAt(0);
                     }
-                    _breadcrumbs[_current] = breadcrumb;
-                    _current = (_current + 1) % maximumBreadcrumbs;
+
+                    _breadcrumbs.Add(breadcrumb);
                 }
             }
         }
@@ -77,18 +71,7 @@ namespace BugsnagUnity
         {
             lock (_lock)
             {
-                var numberOfBreadcrumbs = Array.IndexOf(_breadcrumbs, null);
-
-                if (numberOfBreadcrumbs < 0) numberOfBreadcrumbs = _breadcrumbs.Length;
-
-                var breadcrumbs = new Breadcrumb[numberOfBreadcrumbs];
-
-                for (var i = 0; i < numberOfBreadcrumbs; i++)
-                {
-                    breadcrumbs[i] = _breadcrumbs[i];
-                }
-
-                return breadcrumbs;
+                return _breadcrumbs.ToArray();
             }
         }
     }

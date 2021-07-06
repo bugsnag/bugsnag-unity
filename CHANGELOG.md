@@ -18,11 +18,6 @@
   * Prevent some potential false positive detection of app hangs.
     [#1122](https://github.com/bugsnag/bugsnag-cocoa/pull/1122)
     
-### Bug fixes
-
-* Fixed an issue where WebGL web requests that initially fail were not respecting the 10 second delay before retrying 
-  [#321](https://github.com/bugsnag/bugsnag-unity/pull/321)
-
 * Update bugsnag-android to v5.9.5:
 
   * Properly handle ANRs after multiple calls to autoNotify and autoDetectAnrs
@@ -71,7 +66,17 @@
     [#1293](https://github.com/bugsnag/bugsnag-android/pull/1293)
 
   * Optimize capture of thread traces
-    [#1300](https://github.com/bugsnag/bugsnag-android/pull/1300)
+    [#1300](https://github.com/bugsnag/bugsnag-android/pull/1300)    
+    
+### Bug fixes
+
+* Fixed an issue where WebGL web requests that initially fail were not respecting the 10 second delay before retrying 
+  [#321](https://github.com/bugsnag/bugsnag-unity/pull/321)
+  
+* Fixed an issue where Breadcrumbs were reported in the wrong order on Windows and in the Unity Editor
+  [#322](https://github.com/bugsnag/bugsnag-unity/pull/322)
+
+
 
 ## 5.1.1 (2021-06-24)
 
