@@ -48,7 +48,7 @@ namespace BugsnagUnity
                     if (DelayBeforeDelivery)
                     {
                         DelayBeforeDelivery = false;
-                        System.Threading.Thread.Sleep(DeliveryFailureDelay);
+                        Thread.Sleep(DeliveryFailureDelay);
                     }
                     else
                     {
@@ -84,7 +84,15 @@ namespace BugsnagUnity
             }
             else
             {
-                SerializeAndDeliverPayload(payload);
+                if (DelayBeforeDelivery)
+                {
+                    DelayBeforeDelivery = false;
+                    MainThreadDispatchBehaviour.Instance().EnqueueWithDelayCoroutine(()=> { SerializeAndDeliverPayload(payload); }, DeliveryFailureDelay / 1000);
+                }
+                else
+                {
+                    SerializeAndDeliverPayload(payload);
+                }
             }
         }
 
@@ -102,21 +110,18 @@ namespace BugsnagUnity
                 req.downloadHandler = new DownloadHandlerBuffer();
                 req.method = UnityWebRequest.kHttpVerbPOST;
 
-                // we are using the deprecated Send method here so that we can continue
-                // to support unity 5.6, once this support is dropped we can use the
-                // newer SendWebRequest method
-                yield return req.Send();
+                yield return req.SendWebRequest();
+
                 while (!req.isDone)
+                {
                     yield return new WaitForEndOfFrame();
+                }
 
                 if (req.responseCode >= 200 && req.responseCode < 300)
                 {
                     // success!
                 }
-                // once we can drop support for unity 5.6 we can use req.isNetworkError
-                // instead of req.error != null. According to the unity docs though this
-                // should have the same effect
-                else if (req.responseCode >= 500 || req.error != null)
+                else if (req.responseCode >= 500)
                 {
                     // Something is wrong with the server/connection, retry after a delay
                     DelayBeforeDelivery = true;

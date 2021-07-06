@@ -17,6 +17,11 @@
 
   * Prevent some potential false positive detection of app hangs.
     [#1122](https://github.com/bugsnag/bugsnag-cocoa/pull/1122)
+    
+### Bug fixes
+
+* Fixed an issue where WebGL web requests that initially fail were not respecting the 10 second delay before retrying 
+  [#321](https://github.com/bugsnag/bugsnag-unity/pull/321)
 
 * Update bugsnag-android to v5.9.5:
 
