@@ -198,12 +198,7 @@ steps:
     env:
       UNITY_VERSION: "2017.4.40f1"
     command:
-      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
-      - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
-      - 'cd test/desktop/features/scripts'
-      - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
-      - 'cd ../fixtures/maze_runner'
-      - '7z a -r WindowsBuild-2017.4.40f1.zip WindowsBuild'
+      - scripts/ci-build-windows-package.bat
     artifact_paths:
       - test/desktop/features/fixtures/maze_runner/WindowsBuild-2017.4.40f1.zip
 
@@ -216,12 +211,7 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
     command:
-      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
-      - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
-      - 'cd test/desktop/features/scripts'
-      - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
-      - 'cd ../fixtures/maze_runner'
-      - '7z a -r WindowsBuild-2018.4.36f1.zip WindowsBuild'
+      - scripts/ci-build-windows-package.bat
     artifact_paths:
       - test/desktop/features/fixtures/maze_runner/WindowsBuild-2018.4.36f1.zip
 
@@ -234,12 +224,7 @@ steps:
     env:
       UNITY_VERSION: "2019.4.28f1"
     command:
-      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
-      - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
-      - 'cd test/desktop/features/scripts'
-      - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
-      - 'cd ../fixtures/maze_runner'
-      - '7z a -r WindowsBuild-2019.4.28f1.zip WindowsBuild'
+      - scripts/ci-build-windows-package.bat
     artifact_paths:
       - test/desktop/features/fixtures/maze_runner/WindowsBuild-2019.4.28f1.zip
 
@@ -252,11 +237,6 @@ steps:
     env:
       UNITY_VERSION: "2020.3.12f1"
     commands:
-      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
-      - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
-      - 'cd test/desktop/features/scripts'
-      - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
-      - 'cd ../fixtures/maze_runner'
-      - '7z a -r WindowsBuild-2020.3.12f1.zip WindowsBuild'
+      - scripts/ci-build-windows-package.bat
     artifact_paths:
       - test/desktop/features/fixtures/maze_runner/WindowsBuild-2020.3.12f1.zip
