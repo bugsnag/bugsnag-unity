@@ -12,6 +12,9 @@ AfterConfiguration do |_config|
     # The default macOS Crash Reporter "#{app_name} quit unexpectedly" alert grabs focus which can cause tests to flake.
     # This option, which appears to have been introduced in macOS 10.11, displays a notification instead of the alert.
     Maze::Runner.run_command('defaults write com.apple.CrashReporter UseUNC 1')
+  elsif Maze.config.os.downcase == 'windows'
+    # Allow the necessary environment variables to be passed from Ubuntu (under WSL) to the Windows test fixture
+    ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
   end
 end
 
