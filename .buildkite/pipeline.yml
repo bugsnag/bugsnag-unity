@@ -63,7 +63,7 @@ steps:
       - unzip Mazerunner-2020.3.9f1.app.zip
       - cd ../../..
       - bundle install
-      - bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app --os=macos
 
   #
   # Build Android test fixtures

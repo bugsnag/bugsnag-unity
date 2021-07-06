@@ -20,7 +20,7 @@ steps:
       - cd test/desktop
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
+      - test/desktop/features/fixtures/maze_runner/Mazerunner-2017.4.40f1.app.zip
 
   - label: Build Unity 2018 MacOS test fixture
     key: 'cocoa-2018-fixture'
@@ -39,7 +39,7 @@ steps:
       - cd test/desktop
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
+      - test/desktop/features/fixtures/maze_runner/Mazerunner-2018.4.34f1.app.zip
 
   - label: Build Unity 2019 MacOS test fixture
     key: 'cocoa-2019-fixture'
@@ -58,7 +58,7 @@ steps:
       - cd test/desktop
       - ./features/scripts/build_maze_runner.sh
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2019.4.25f1.app.zip
+      - test/desktop/features/fixtures/maze_runner/Mazerunner-2019.4.25f1.app.zip
 
   #
   # Run desktop tests
@@ -78,9 +78,11 @@ steps:
           - test/desktop/maze_output/*
           - test/desktop/Mazerunner.log
     commands:
-      - cd test/desktop
+      - cd test/desktop/features/fixtures/maze_runner
+      - unzip Mazerunner-2017.4.40f1.app.zip
+      - cd ../../..
       - bundle install
-      - bundle exec maze-runner --app=Mazerunner
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app --os=macos
 
   - label: Run MacOS e2e tests for Unity 2018.4.34f1
     depends_on: 'cocoa-2018-fixture'
@@ -97,9 +99,11 @@ steps:
           - test/desktop/maze_output/*
           - test/desktop/Mazerunner.log
     commands:
-      - cd test/desktop
+      - cd test/desktop/features/fixtures/maze_runner
+      - unzip Mazerunner-2018.4.34f1.app.zip
+      - cd ../../..
       - bundle install
-      - bundle exec maze-runner --app=Mazerunner
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app --os=macos
 
   - label: Run MacOS e2e tests for Unity 2019.4.25f1
     depends_on: 'cocoa-2019-fixture'
@@ -116,9 +120,11 @@ steps:
           - test/desktop/maze_output/*
           - test/desktop/Mazerunner.log
     commands:
-      - cd test/desktop
+      - cd test/desktop/features/fixtures/maze_runner
+      - unzip Mazerunner-2019.4.25f1.app.zip
+      - cd ../../..
       - bundle install
-      - bundle exec maze-runner --app=Mazerunner
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app --os=macos
 
   #
   # Build Android test fixtures
