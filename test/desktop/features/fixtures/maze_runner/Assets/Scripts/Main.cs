@@ -19,9 +19,15 @@ public class Main : MonoBehaviour
 
     bool sent = false;
 
+    private Dictionary<string, string> _webGlArguments;
+
     public void Start()
     {
-        var scenario = Environment.GetEnvironmentVariable("BUGSNAG_SCENARIO");
+
+#if UNITY_WEBGL
+        ParseUrlParameters();
+#endif
+        var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);
         Bugsnag.Start(config);
 
@@ -45,6 +51,41 @@ public class Main : MonoBehaviour
         RunScenario(scenario);
     }
 
+
+    private void ParseUrlParameters()
+    {
+
+        //Expected url format for webgl tests
+        //http://localhost:8888/index.html?BUGSNAG_SCENARIO=MaxBreadcrumbs&BUGSNAG_APIKEY=123344343289478347238947&MAZE_ENDPOINT=http://localhost:9339
+
+        string parameters = Application.absoluteURL.Substring(Application.absoluteURL.IndexOf("?")+1);
+
+        var splitParams = parameters.Split(new char[] { '&', '=' });
+
+        _webGlArguments = new Dictionary<string, string>();
+
+        var currentindex = 0;
+
+        while (currentindex < splitParams.Length)
+        {
+            _webGlArguments.Add(splitParams[currentindex],splitParams[currentindex + 1]);
+            currentindex += 2;
+        }    
+    }
+
+    private string GetWebGLEnvVar(string key)
+    {
+        foreach (var pair in _webGlArguments)
+        {
+            if (pair.Key == key)
+            {
+                return pair.Value;
+            }
+        }
+        throw new System.Exception("COULD NOT GET ENV VAR: " + key);
+    }
+
+
     void Update()
     {
         // only send one crash
@@ -67,11 +108,11 @@ public class Main : MonoBehaviour
      */
     Configuration PrepareConfig(string scenario)
     {
-        string apiKey = System.Environment.GetEnvironmentVariable("BUGSNAG_APIKEY");
+        string apiKey = GetEvnVar("BUGSNAG_APIKEY");
         var config = new Configuration(apiKey);
 
         // setup default endpoints etc
-        var endpoint = Environment.GetEnvironmentVariable("MAZE_ENDPOINT");
+        var endpoint = GetEvnVar("MAZE_ENDPOINT");
         config.Endpoint = new System.Uri(endpoint + "/notify");
         config.SessionEndpoint = new System.Uri(endpoint + "/sessions");
         config.AutoCaptureSessions = scenario.Contains("AutoSession");
@@ -84,6 +125,15 @@ public class Main : MonoBehaviour
         // prepare scenario-specific config
         PrepareConfigForScenario(config, scenario);
         return config;
+    }
+
+    private string GetEvnVar(string key)
+    {
+#if UNITY_WEBGL
+        return GetWebGLEnvVar(key);
+#else
+        return System.Environment.GetEnvironmentVariable(key);
+#endif
     }
 
     /**
