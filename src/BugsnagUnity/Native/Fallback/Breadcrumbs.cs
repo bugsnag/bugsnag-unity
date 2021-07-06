@@ -45,13 +45,17 @@ namespace BugsnagUnity
         /// <param name="breadcrumb"></param>
         public void Leave(Breadcrumb breadcrumb)
         {
+            if (Configuration.MaximumBreadcrumbs == 0)
+            {
+                return;
+            }
+
             if (breadcrumb != null)
             {
                 lock (_lock)
                 {
-                    var maximumBreadcrumbs = Configuration.MaximumBreadcrumbs;
-
-                    if (_breadcrumbs.Count == maximumBreadcrumbs)
+                   
+                    if (_breadcrumbs.Count == Configuration.MaximumBreadcrumbs)
                     {
                         _breadcrumbs.RemoveAt(0);
                     }
