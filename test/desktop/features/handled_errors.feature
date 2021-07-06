@@ -27,8 +27,7 @@ Feature: Handled Errors and Exceptions
         And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
         And the event "app.type" equals "Mac OS"
         And the first significant stack frame methods and files should match:
-            | Main.DoNotify()           | |
-            | Main.<RunScenario>m__0() | Main.<RunScenario>b__7_0() |
+            | Main.DoNotify()           | 
 
     Scenario: Reporting a handled exception with a callback
         When I run the game in the "NotifyCallback" state
