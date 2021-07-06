@@ -390,7 +390,7 @@ public class Main : MonoBehaviour
 
     private void LeaveBreadcrumbs()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 6; i++)
         {
             Bugsnag.LeaveBreadcrumb("Crumb " + i);
         }
