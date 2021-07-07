@@ -76,7 +76,8 @@
 * Fixed an issue where Breadcrumbs were reported in the wrong order on Windows and in the Unity Editor
   [#322](https://github.com/bugsnag/bugsnag-unity/pull/322)
 
-
+* Fixed an issue where the fallback was not reporting the correct app.type
+  [#325](https://github.com/bugsnag/bugsnag-unity/pull/325)
 
 ## 5.1.1 (2021-06-24)
 
