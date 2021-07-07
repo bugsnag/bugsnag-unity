@@ -251,10 +251,5 @@ steps:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2017.4.40f1"
-    plugins:
-      artifacts#v1.2.0:
-        upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
     command:
       - scripts/ci-run-windows-tests.bat
