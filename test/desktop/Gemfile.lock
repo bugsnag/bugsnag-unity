@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: f7536f3128462c5e56963b6c75372b3e96243823
-  tag: v5.1.0
+  revision: 8fc4686ab165613071f504408a41f73e1c9cd874
+  tag: v5.5.1
   specs:
-    bugsnag-maze-runner (5.1.0)
+    bugsnag-maze-runner (5.5.1)
       appium_lib (~> 11.2.0)
       cucumber (~> 3.1.2)
       cucumber-expressions (~> 6.0.0)
@@ -23,7 +23,7 @@ GEM
       appium_lib_core (~> 4.1)
       nokogiri (~> 1.8, >= 1.8.1)
       tomlrb (~> 1.1)
-    appium_lib_core (4.5.0)
+    appium_lib_core (4.6.0)
       faye-websocket (~> 0.11.0)
       selenium-webdriver (~> 3.14, >= 3.14.1)
     backports (3.21.0)
@@ -48,32 +48,32 @@ GEM
     curb (0.9.11)
     diff-lcs (1.4.4)
     eventmachine (1.2.7)
-    faye-websocket (0.11.0)
+    faye-websocket (0.11.1)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
     gherkin (5.1.0)
-    mini_portile2 (2.5.1)
+    mini_portile2 (2.5.3)
     minitest (5.14.4)
     multi_json (1.15.0)
     multi_test (0.1.2)
-    nokogiri (1.11.3)
+    nokogiri (1.11.7)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
-    nokogiri (1.11.3-x86_64-darwin)
+    nokogiri (1.11.7-x86_64-darwin)
       racc (~> 1.4)
     optimist (3.0.1)
     os (1.0.1)
     power_assert (2.0.0)
     racc (1.5.2)
     rake (12.3.3)
-    rubyzip (2.3.0)
+    rubyzip (2.3.2)
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
     test-unit (3.3.9)
       power_assert
     tomlrb (1.3.0)
-    websocket-driver (0.7.3)
+    websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
 
