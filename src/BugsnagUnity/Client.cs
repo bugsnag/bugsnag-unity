@@ -95,6 +95,30 @@ namespace BugsnagUnity
             {
                 // Async behavior is not available in a test environment
             }
+            AddBugsnagLoadedBreadcrumb();
+        }
+
+        private void AddBugsnagLoadedBreadcrumb()
+        {
+            if (IsUsingFallback() && Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.State))
+            {
+                Breadcrumbs.Leave("Bugsnag loaded", BreadcrumbType.State, null);
+            }
+        }
+
+        private bool IsUsingFallback()
+        {
+            switch (Application.platform)
+            {
+                case RuntimePlatform.OSXEditor:
+                case RuntimePlatform.WindowsPlayer:
+                case RuntimePlatform.WindowsEditor:
+                case RuntimePlatform.LinuxPlayer:
+                case RuntimePlatform.LinuxEditor:
+                case RuntimePlatform.WebGLPlayer:
+                    return true;
+            }
+            return false;
         }
 
         private void SetupSceneLoadedBreadcrumbTracking()
