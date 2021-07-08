@@ -111,7 +111,6 @@ namespace BugsnagUnity
             switch (Application.platform)
             {
                 case RuntimePlatform.OSXEditor:
-                case RuntimePlatform.OSXPlayer:
                 case RuntimePlatform.WindowsPlayer:
                 case RuntimePlatform.WindowsEditor:
                 case RuntimePlatform.LinuxPlayer:
