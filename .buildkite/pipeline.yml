@@ -34,10 +34,9 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
     commands:
-      - cd test/desktop
-      - ./features/scripts/build_maze_runner.sh
+      - scripts/ci-build-macos-package.sh
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
+      - test/desktop/features/fixtures/maze_runner/Mazerunner-2020.3.9f1.app.zip
 
   #
   # Run desktop tests
@@ -52,14 +51,12 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
+          - test/desktop/features/fixtures/maze_runner/Mazerunner-2020.3.9f1.app.zip
         upload:
           - test/desktop/maze_output/*
           - test/desktop/Mazerunner.log
     commands:
-      - cd test/desktop
-      - bundle install
-      - bundle exec maze-runner --app=Mazerunner
+      - scripts/ci-run-macos-tests.sh
 
   #
   # Build Android test fixtures
@@ -185,6 +182,7 @@ steps:
     command: sh -c .buildkite/pipeline_trigger.sh
 
   - block: "Build Windows fixtures"
+    depends_on: 'build-artifacts'
     key: 'block-windows'
     prompt: "Build Windows fixtures - Is a suitable agent running?"
 
@@ -200,12 +198,9 @@ steps:
     env:
       UNITY_VERSION: "2017.4.40f1"
     command:
-      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
-      - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
-      - 'cd test/desktop/features/scripts'
-      - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
+      - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.zip
+      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2017.4.40f1.zip
 
   - label: Build Unity 2018 Windows test fixture
     key: 'windows-2018-fixture'
@@ -216,12 +211,9 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
     command:
-      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
-      - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
-      - 'cd test/desktop/features/scripts'
-      - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
+      - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2018.4.36f1.zip
+      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2018.4.36f1.zip
 
   - label: Build Unity 2019 Windows test fixture
     key: 'windows-2019-fixture'
@@ -232,12 +224,9 @@ steps:
     env:
       UNITY_VERSION: "2019.4.28f1"
     command:
-      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
-      - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
-      - 'cd test/desktop/features/scripts'
-      - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
+      - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2019.4.28f1.zip
+      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2019.4.28f1.zip
 
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
@@ -248,9 +237,6 @@ steps:
     env:
       UNITY_VERSION: "2020.3.12f1"
     commands:
-      # Using the artifacts plugin v1.3 on Windows seem to break the whole step
-      - 'buildkite-agent artifact download "Bugsnag.unitypackage" .'
-      - 'cd test/desktop/features/scripts'
-      - 'c:/Progra~1/Git/bin/bash.exe build_maze_runner.sh'
+      - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2020.3.12f1.zip
+      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2020.3.12f1.zip

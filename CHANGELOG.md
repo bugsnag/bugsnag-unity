@@ -79,6 +79,8 @@
 * Fixed an issue where a "Bugsnag loaded" breadcrumb was not added on Windows, Linux, WebGL, and editor builds
   [#327](https://github.com/bugsnag/bugsnag-unity/pull/327)
 
+* Fixed an issue where the fallback was not reporting the correct app.type
+  [#325](https://github.com/bugsnag/bugsnag-unity/pull/325)
 
 ## 5.1.1 (2021-06-24)
 
