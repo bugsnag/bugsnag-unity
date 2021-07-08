@@ -76,6 +76,8 @@
 * Fixed an issue where Breadcrumbs were reported in the wrong order on Windows and in the Unity Editor
   [#322](https://github.com/bugsnag/bugsnag-unity/pull/322)
 
+* Fixed an issue where platforms using the fallback implementation were not leaving a Bugsnag loaded breadcrumb 
+  [#327](https://github.com/bugsnag/bugsnag-unity/pull/327)
 
 
 ## 5.1.1 (2021-06-24)
