@@ -4,7 +4,16 @@
 
 ### Enhancements
 
-* Update bugsnag-cocoa to v6.10.0
+* Update bugsnag-cocoa to v6.10.1
+
+  * Fix a potential stack overflow in `+[BugsnagThread allThreadsWithCurrentThreadBacktrace:]`.
+    [#1148](https://github.com/bugsnag/bugsnag-cocoa/pull/1148)
+
+  * Fix `NSNull` handling in `+[BugsnagError errorFromJson:]` and `+[BugsnagStackframe frameFromJson:]`.
+    [#1143](https://github.com/bugsnag/bugsnag-cocoa/pull/1143)
+
+  * Fix a rare crash in `bsg_ksmachgetThreadQueueName`.
+    [#1147](https://github.com/bugsnag/bugsnag-cocoa/pull/1147)
 
   * Fix an issue that could cause C++ exceptions with very long descriptions to not be reported.
     [#1137](https://github.com/bugsnag/bugsnag-cocoa/pull/1137)
