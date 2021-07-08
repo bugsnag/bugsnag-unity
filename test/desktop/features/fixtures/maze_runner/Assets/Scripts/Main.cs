@@ -143,6 +143,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "NewSession":
+                config.AutoCaptureSessions = false;
+                break;
             case "MaxBreadcrumbs":
                 config.MaximumBreadcrumbs = 5;
                 break;
@@ -410,12 +413,18 @@ public class Main : MonoBehaviour
 
     void RunNewSession()
     {
+        StartCoroutine(DoRunNewSession());
+    }
+
+    private IEnumerator DoRunNewSession()
+    {
         // send 1st exception which should include session info
         Bugsnag.StartSession();
         Bugsnag.Notify(new System.Exception("First Error"));
 
         // stop tracking the existing session
         Bugsnag.StopSession();
+        yield return new WaitForSeconds(1);
         Bugsnag.StartSession();
 
         // send 2nd exception which should contain new session info
