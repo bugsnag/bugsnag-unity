@@ -10,9 +10,13 @@ Feature: Session Tracking
             | macos | Mac OS |
             | windows | Windows |
         And the session payload field "device.osVersion" is not null
-        And the session payload field "device.osName" equals "Mac OS"
+        And the session payload field "device.osName" equals the platform-dependent string:
+            | macos | Mac OS |
+            | windows | Microsoft Windows NT |
         And the session payload field "device.model" is not null
-        And the session payload field "device.manufacturer" equals "Apple"
+        And the session payload field "device.manufacturer" equals the platform-dependent string:
+            | macos | Apple |
+            | windows | PC |
         And the session "id" is not null
         And the session "startedAt" is not null
         And the session "user.id" is not null
@@ -23,6 +27,7 @@ Feature: Session Tracking
             | AutoSession                      |
             | AutoSessionInNotifyReleaseStages |
 
+    @macos_only
     Scenario: Automatically receiving a session before a native crash
         When I run the game in the "AutoSessionNativeCrash" state
         And I run the game in the "(noop)" state
@@ -45,9 +50,13 @@ Feature: Session Tracking
             | macos | Mac OS |
             | windows | Windows |
         And the session payload field "device.osVersion" is not null
-        And the session payload field "device.osName" equals "Mac OS"
+        And the session payload field "device.osName" equals the platform-dependent string:
+            | macos | Mac OS |
+            | windows | Microsoft Windows NT |
         And the session payload field "device.model" is not null
-        And the session payload field "device.manufacturer" equals "Apple"
+        And the session payload field "device.manufacturer" equals the platform-dependent string:
+            | macos | Apple |
+            | windows | PC |
 
         And the session "id" is not null
         And the session "startedAt" is not null

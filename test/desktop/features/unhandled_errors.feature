@@ -40,6 +40,7 @@ Feature: Reporting unhandled events
             | Main.RunScenario(System.String scenario)                      | |
             | Main.Start()                            | |
 
+    @macos_only
     Scenario: Reporting a native crash
         When I run the game in the "NativeCrash" state
         And I run the game in the "(noop)" state
@@ -72,12 +73,14 @@ Feature: Reporting unhandled events
         And I wait for 5 seconds
         Then I should receive no requests
 
+    @macos_only
     Scenario: Reporting a native crash when AutoNotify = false
         When I run the game in the "NativeCrashWithoutAutoNotify" state
         And I run the game in the "(noop)" state
         And I wait for 5 seconds
         Then I should receive no requests
 
+    @macos_only
     Scenario: Reporting a native crash after toggling AutoNotify off then on again
         When I run the game in the "NativeCrashReEnableAutoNotify" state
         And I run the game in the "(noop)" state
