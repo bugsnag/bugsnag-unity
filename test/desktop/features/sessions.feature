@@ -6,18 +6,18 @@ Feature: Session Tracking
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
         And the session payload field "app.version" is not null
         And the session payload field "app.releaseStage" equals "production"
-        And the session payload field "app.type" equals "Mac OS"
+        And the session payload field "app.type" equals the platform-dependent string:
+        | macos | Mac OS |
+        | windows | Windows |
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals "Mac OS"
         And the session payload field "device.model" is not null
         And the session payload field "device.manufacturer" equals "Apple"
-
         And the session "id" is not null
         And the session "startedAt" is not null
         And the session "user.id" is not null
         And the session "user.email" is null
         And the session "user.name" is null
-
         Examples:
             | scenario                         |
             | AutoSession                      |
@@ -29,7 +29,11 @@ Feature: Session Tracking
         And I wait to receive a session
         And I wait to receive an error
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-        And the error is valid for the error reporting API sent by the "OSX Bugsnag Notifier"
+        And the error is valid for the error reporting API sent by the platform-dependent string:
+        | macos | OSX Bugsnag Notifier |
+        | windows | Unity Bugsnag Notifier |
+
+
         And the event "session.events.handled" equals 0
         And the event "session.events.unhandled" equals 1
         And the error payload field "events.0.session.id" is stored as the value "session_id"
@@ -41,7 +45,9 @@ Feature: Session Tracking
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
         And the session payload field "app.version" is not null
         And the session payload field "app.releaseStage" equals "production"
-        And the session payload field "app.type" equals "Mac OS"
+        And the session payload field "app.type" equals the platform-dependent string:
+        | macos | Mac OS |
+        | windows | Windows |
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals "Mac OS"
         And the session payload field "device.model" is not null
