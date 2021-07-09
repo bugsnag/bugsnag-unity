@@ -17,7 +17,7 @@ When("I run the game in the {string} state") do |state|
   end
 end
 
-Then("the error is valid for the error reporting API sent by the Unity notifier")
+Then("the error is valid for the error reporting API sent by the Unity notifier") do
 
   if Maze.config.farm == :bs
     # Mobile - could be ios or android
@@ -55,6 +55,7 @@ Then("the error is valid for the error reporting API sent by the Unity notifier"
     And each element in error payload field "events" has "unhandled"
     And each element in error payload field "events" has "exceptions"
   )
+
 end
 
 Then("the first significant stack frame methods and files should match:") do |expected_values|
