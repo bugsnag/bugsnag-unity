@@ -3,7 +3,7 @@ Feature: Reporting unhandled events
     Scenario: Reporting an uncaught exception
         When I run the game in the "UncaughtException" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "ExecutionEngineException"
         And the exception "message" equals "Promise Rejection"
         And the event "unhandled" is false
@@ -16,7 +16,7 @@ Feature: Reporting unhandled events
     Scenario: Forcing uncaught exceptions to be unhandled
         When I run the game in the "UncaughtExceptionAsUnhandled" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "ExecutionEngineException"
         And the exception "message" equals "Invariant state failure"
         And the event "unhandled" is true
@@ -28,7 +28,7 @@ Feature: Reporting unhandled events
     Scenario: Reporting an assertion failure
         When I run the game in the "AssertionFailure" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "IndexOutOfRangeException"
         And the event "exceptions.0.message" matches one of:
             | Array index is out of range. |
@@ -44,7 +44,7 @@ Feature: Reporting unhandled events
         When I run the game in the "NativeCrash" state
         And I run the game in the "(noop)" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "OSX Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "SIGABRT"
         And the event "unhandled" is true
         And the first significant stack frame methods and files should match:
@@ -82,7 +82,7 @@ Feature: Reporting unhandled events
         When I run the game in the "NativeCrashReEnableAutoNotify" state
         And I run the game in the "(noop)" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "OSX Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "SIGABRT"
         And the event "unhandled" is true
         And the first significant stack frame methods and files should match:

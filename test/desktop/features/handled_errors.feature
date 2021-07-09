@@ -3,7 +3,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Reporting a handled exception
         When I run the game in the "Notify" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
@@ -16,7 +16,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Reporting a handled exception from a background thread
         When I run the game in the "NotifyBackground" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
@@ -26,15 +26,15 @@ Feature: Handled Errors and Exceptions
         And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
         And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
         And the event "app.type" equals the platform-dependent string:
-        | macos | Mac OS |
-        | windows | Windows |
+            | macos | Mac OS |
+            | windows | Windows |
         And the first significant stack frame methods and files should match:
-            | Main.DoNotify()           | 
+            | Main.DoNotify()           |
 
     Scenario: Reporting a handled exception with a callback
         When I run the game in the "NotifyCallback" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "FunnyBusiness"
         And the exception "message" equals "cake"
         And the event "unhandled" is false
@@ -48,7 +48,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Reporting a handled exception with a custom severity
         When I run the game in the "NotifySeverity" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "blorb"
         And the event "severity" equals "info"
@@ -63,7 +63,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Logging an unthrown exception
         When I run the game in the "LogUnthrown" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "auth failed!"
         And the event "unhandled" is false
@@ -76,7 +76,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Logging an unthrown exception as unhandled
         When I run the game in the "LogUnthrownAsUnhandled" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "WAT"
         And the event "unhandled" is true
@@ -89,7 +89,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Logging a warning from a background thread to Bugsnag
         When I run the game in the "ReportLoggedWarningThreaded" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "UnityLogWarning"
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
@@ -100,7 +100,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Logging a warning to Bugsnag
         When I run the game in the "ReportLoggedWarning" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "UnityLogWarning"
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
@@ -113,7 +113,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Logging an error to Bugsnag
         When I run the game in the "ReportLoggedError" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "UnityLogError"
         And the exception "message" equals "Bad bad things"
         And the event "unhandled" is false
@@ -126,7 +126,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Logging a warning to Bugsnag with 'ReportAsHandled = false'
         When I run the game in the "ReportLoggedWarningWithHandledConfig" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "UnityLogWarning"
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
@@ -149,7 +149,7 @@ Feature: Handled Errors and Exceptions
     Scenario: Reporting a handled exception when AutoNotify = false
         When I run the game in the "NotifyWithoutAutoNotify" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the "Unity Bugsnag Notifier"
+        Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
