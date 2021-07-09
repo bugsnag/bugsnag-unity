@@ -96,12 +96,16 @@ Feature: Session Tracking
         And I wait to receive a session
         And I wait to receive 3 errors
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-        And the errors are valid for the error reporting API sent by the "Unity Bugsnag Notifier"
         And the current error request events match one of:
             | message                      | handled | unhandled |
             | blorb                        | 1       | 0         |
             | Something went terribly awry | 2       | 0         |
             | Invariant state failure      | 2       | 1         |
+        And the error is valid for the error reporting API sent by the Unity notifier
+        And I discard the oldest error
+        And the error is valid for the error reporting API sent by the Unity notifier
+        And I discard the oldest error
+        And the error is valid for the error reporting API sent by the Unity notifier
 
     Scenario Outline: Launching the app but the current release stage is not in "notify release stages"
         When I run the game in the "<scenario>" state
