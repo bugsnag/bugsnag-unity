@@ -26,11 +26,8 @@ Feature: Handled Errors and Exceptions
         And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
         And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
         And the event "app.type" equals the platform-dependent string:
-        | macos | "Mac OS" |
-        | windows | "Windows" |
-
-
-
+        | macos | Mac OS |
+        | windows | Windows |
         And the first significant stack frame methods and files should match:
             | Main.DoNotify()           | 
 
