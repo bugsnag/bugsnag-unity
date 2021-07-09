@@ -3,4 +3,4 @@ buildkite-agent artifact download "Bugsnag.unitypackage" .
 cd test\desktop\features\scripts
 C:\Progra~1\Git\bin\bash.exe build_maze_runner.sh
 cd ..\fixtures\maze_runner
-7z a -r WindowsBuild-%UNITY_VERSION%.zip WindowsBuild
+7z a -mx9 -r WindowsBuild-%UNITY_VERSION%.zip WindowsBuild
