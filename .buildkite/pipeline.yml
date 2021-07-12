@@ -34,9 +34,10 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
     commands:
-      - scripts/ci-build-macos-package.sh
+      - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - features/fixtures/maze_runner/build/MacOS-2020.3.13f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2020.3.13f1.zip
 
   #
   # Run desktop tests
