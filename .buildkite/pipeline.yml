@@ -36,7 +36,7 @@ steps:
     commands:
       - scripts/ci-build-macos-package.sh
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/Mazerunner-2020.3.9f1.app.zip
+      - features/fixtures/maze_runner/Mazerunner-2020.3.9f1.app.zip
 
   #
   # Run desktop tests
@@ -51,10 +51,10 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/maze_runner/Mazerunner-2020.3.9f1.app.zip
+          - features/fixtures/maze_runner/Mazerunner-2020.3.9f1.app.zip
         upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
+          - maze_output/*
+          - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
 
@@ -200,7 +200,7 @@ steps:
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2017.4.40f1.zip
+      - features/fixtures/maze_runner/WindowsBuild-2017.4.40f1.zip
 
   - label: Build Unity 2018 Windows test fixture
     key: 'windows-2018-fixture'
@@ -213,7 +213,7 @@ steps:
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2018.4.36f1.zip
+      - features/fixtures/maze_runner/WindowsBuild-2018.4.36f1.zip
 
   - label: Build Unity 2019 Windows test fixture
     key: 'windows-2019-fixture'
@@ -226,7 +226,7 @@ steps:
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2019.4.28f1.zip
+      - features/fixtures/maze_runner/WindowsBuild-2019.4.28f1.zip
 
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
@@ -239,7 +239,7 @@ steps:
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/WindowsBuild-2020.3.12f1.zip
+      - features/fixtures/maze_runner/WindowsBuild-2020.3.12f1.zip
 
   #
   # Run Windows e2e tests

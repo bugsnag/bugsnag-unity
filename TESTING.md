@@ -103,7 +103,6 @@ This will generate the following files:
 
 #### MacOS
 
-1. `cd test/desktop`
 1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
@@ -113,7 +112,7 @@ Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 
 This will generate the test fixture app:
 ```
-./test/desktop/features/fixtures/maze_runner/Mazerunner.app
+./features/fixtures/maze_runner/Mazerunner.app
 ```
 
 #### Windows
@@ -121,7 +120,6 @@ This will generate the test fixture app:
 Building the test fixture on Windows requires a Git bash terminal.
 
 In a Git bash terminal:
-1. `cd test/desktop`
 1. `UNITY_VERSION=2018.4.36f1 ./features/scripts/build_maze_runner.sh`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
@@ -132,14 +130,13 @@ Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 This will generate a build folder containing the test fixture executable, together with the UnityPlayer.dll and other
 dependencies:
 ```
-./test/desktop/features/fixtures/maze_runner/WindowsBuild
+./features/fixtures/maze_runner/WindowsBuild
 ```
 
 ### Running an end-to-end test
 
 #### MacOS
 
-1. `cd test/desktop`
 1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
 1. Run `bundle install` if you haven't run end-to-end tests before
 1. To run the tests:
@@ -152,7 +149,6 @@ dependencies:
 Running the Maze Runner tests on Windows requires the Ubuntu app (using WSL).
 
 In the Ubuntu terminal:
-1. `cd test/desktop`
 1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
 1. Run `bundle install` if you haven't run end-to-end tests before
 1. To run the tests:

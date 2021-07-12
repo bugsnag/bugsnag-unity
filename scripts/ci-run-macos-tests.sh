@@ -1,5 +1,5 @@
 #!/bin/bash
-pushd test/desktop/features/fixtures/maze_runner
+pushd features/fixtures/maze_runner
   unzip Mazerunner-$UNITY_VERSION.app.zip
   pushd ../../..
     bundle install

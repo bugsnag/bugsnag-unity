@@ -9,7 +9,7 @@ UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/Mac
 
 # Set project_path to the repo root
 pushd "${0%/*}"
-  pushd ../../../..
+  pushd ../..
     package_path=`pwd`
     echo "Expecting to find Bugsnag package in: $package_path"
   popd
@@ -53,6 +53,6 @@ pushd "${0%/*}"
 
 
 
-   
+
   popd
 popd
