@@ -2,6 +2,9 @@ require 'fileutils'
 
 $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
 
+Before('@macos_only') do |scenario|
+  skip_this_scenario("Skipping scenario") unless Maze.config.os == 'macos'
+end
 
 AfterConfiguration do |_config|
   raise '--os option must be set (to "macos" or "windows"' if Maze.config.os.nil?

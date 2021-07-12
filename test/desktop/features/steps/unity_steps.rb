@@ -17,7 +17,26 @@ When("I run the game in the {string} state") do |state|
   end
 end
 
-Then("the error is valid for the error reporting API sent by the {string}") do |notifier_name|
+Then("the error is valid for the error reporting API sent by the Unity notifier") do
+
+  if Maze.config.farm == :bs
+    # Mobile - could be ios or android
+    os = Maze.config.capabilities['os']
+  else
+    # Could be windows or macos
+    os = Maze.config.os
+  end
+
+  if os == 'macos'
+    notifier_name = 'OSX Bugsnag Notifier'
+  elsif os == 'ios'
+    notifier_name = 'iOS Bugsnag Notifier'
+  elsif os == 'android'
+    notifier_name = 'Android Bugsnag Notifier'
+  else
+    notifier_name = 'Unity Bugsnag Notifier'
+  end
+
   steps %(
     Then the error "Bugsnag-Api-Key" header equals "#{$api_key}"
     And the error payload field "apiKey" equals "#{$api_key}"
@@ -36,9 +55,6 @@ Then("the error is valid for the error reporting API sent by the {string}") do |
     And each element in error payload field "events" has "unhandled"
     And each element in error payload field "events" has "exceptions"
   )
-end
-
-Then("the errors are valid for the error reporting API sent by the {string}") do |notifier_name|
 
 end
 
