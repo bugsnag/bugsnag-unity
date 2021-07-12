@@ -21,7 +21,7 @@ fi
 # Set project_path to the repo root
 SCRIPT_DIR=$(dirname "$(realpath $0)")
 pushd $SCRIPT_DIR
-  pushd ../../../..
+  pushd ../..
     package_path=`pwd`
     echo "Expecting to find Bugsnag package in: $package_path"
   popd

@@ -19,7 +19,7 @@ steps:
     commands:
       - scripts/ci-build-macos-package.sh
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/Mazerunner-2017.4.40f1.app.zip
+      - features/fixtures/maze_runner/Mazerunner-2017.4.40f1.app.zip
 
   - label: Build Unity 2018 MacOS test fixture
     key: 'cocoa-2018-fixture'
@@ -37,7 +37,7 @@ steps:
     commands:
       - scripts/ci-build-macos-package.sh
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/Mazerunner-2018.4.34f1.app.zip
+      - features/fixtures/maze_runner/Mazerunner-2018.4.34f1.app.zip
 
   - label: Build Unity 2019 MacOS test fixture
     key: 'cocoa-2019-fixture'
@@ -55,7 +55,7 @@ steps:
     commands:
       - scripts/ci-build-macos-package.sh
     artifact_paths:
-      - test/desktop/features/fixtures/maze_runner/Mazerunner-2019.4.25f1.app.zip
+      - features/fixtures/maze_runner/Mazerunner-2019.4.25f1.app.zip
 
   #
   # Run macOS desktop tests
@@ -70,10 +70,10 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/maze_runner/Mazerunner-2017.4.40f1.app.zip
+          - features/fixtures/maze_runner/Mazerunner-2017.4.40f1.app.zip
         upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
+          - maze_output/*
+          - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
 
@@ -87,10 +87,10 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/maze_runner/Mazerunner-2018.4.34f1.app.zip
+          - features/fixtures/maze_runner/Mazerunner-2018.4.34f1.app.zip
         upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
+          - maze_output/*
+          - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
 
@@ -104,10 +104,10 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/maze_runner/Mazerunner-2019.4.25f1.app.zip
+          - features/fixtures/maze_runner/Mazerunner-2019.4.25f1.app.zip
         upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
+          - maze_output/*
+          - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
 
