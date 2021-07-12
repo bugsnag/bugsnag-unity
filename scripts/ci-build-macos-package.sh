@@ -1,10 +1,9 @@
 #!/bin/bash
-./features/scripts/build_maze_runner.sh
+./features/scripts/build_maze_runner.sh macos
 if [[ $? != 0 ]]; then
-  popd
   exit $1
 fi
 
-pushd features/fixtures/maze_runner
-  zip -r Mazerunner-$UNITY_VERSION.app.zip Mazerunner.app
+pushd features/fixtures/maze_runner/build
+  zip -r MacOS-$UNITY_VERSION.zip macos
 popd

@@ -130,7 +130,7 @@ Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 This will generate a build folder containing the test fixture executable, together with the UnityPlayer.dll and other
 dependencies:
 ```
-./features/fixtures/maze_runner/WindowsBuild
+./features/fixtures/maze_runner/build/Windows
 ```
 
 ### Running an end-to-end test
@@ -153,5 +153,5 @@ In the Ubuntu terminal:
 1. Run `bundle install` if you haven't run end-to-end tests before
 1. To run the tests:
     ```shell script
-    bundle exec maze-runner --app=features/fixtures/maze_runner/WindowsBuild/Mazerunner.exe --os=windows
+    bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows
     ```

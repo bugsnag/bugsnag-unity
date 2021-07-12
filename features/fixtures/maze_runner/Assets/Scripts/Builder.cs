@@ -18,17 +18,17 @@ public class Builder : MonoBehaviour {
 
     public static void MacOS()
     {
-        Build("Mazerunner", BuildTarget.StandaloneOSX);
+        Build("build/MacOS/Mazerunner", BuildTarget.StandaloneOSX);
     }
 
     public static void Win64()
     {
-        Build("WindowsBuild/Mazerunner.exe", BuildTarget.StandaloneWindows64);
+        Build("build/Windows/Mazerunner.exe", BuildTarget.StandaloneWindows64);
     }
 
     public static void WebGL()
     {
-        Build("Mazerunner", BuildTarget.WebGL);
+        Build("build/WebGL/Mazerunner", BuildTarget.WebGL);
     }
 }
 #endif
