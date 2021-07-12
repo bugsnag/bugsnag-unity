@@ -64,7 +64,6 @@ pushd $SCRIPT_DIR
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-
     echo "Building the fixture for $PLATFORM"
 
     "$UNITY_PATH" $DEFAULT_CLI_ARGS \

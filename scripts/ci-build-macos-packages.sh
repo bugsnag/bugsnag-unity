@@ -2,13 +2,17 @@
 
 # Build the MacOS and WebGL fixtures
 ./features/scripts/build_maze_runner.sh macos
-if [[ $? != 0 ]]; then
-  exit $1
+CODE=$?
+if [[ $CODE != 0 ]]; then
+  echo "Error, exit code: $CODE"
+  exit $CODE
 fi
 
 ./features/scripts/build_maze_runner.sh webgl
+CODE=$?
 if [[ $? != 0 ]]; then
-  exit $1
+  echo "Error, exit code: $CODE"
+  exit $CODE
 fi
 
 pushd features/fixtures/maze_runner/build
