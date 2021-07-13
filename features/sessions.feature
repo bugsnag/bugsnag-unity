@@ -34,7 +34,7 @@ Feature: Session Tracking
         And I wait to receive a session
         And I wait to receive an error
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-        And the error is valid for the error reporting API sent by the Unity notifier
+        And the error is valid for the error reporting API sent by the native Unity notifier
         And the event "session.events.handled" equals 0
         And the event "session.events.unhandled" equals 1
         And the error payload field "events.0.session.id" is stored as the value "session_id"
