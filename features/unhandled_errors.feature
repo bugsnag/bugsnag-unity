@@ -45,7 +45,7 @@ Feature: Reporting unhandled events
         When I run the game in the "NativeCrash" state
         And I run the game in the "(noop)" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the Unity notifier
+        Then the error is valid for the error reporting API sent by the native Unity notifier
         And the exception "errorClass" equals "SIGABRT"
         And the event "unhandled" is true
         And the first significant stack frame methods and files should match:
@@ -85,7 +85,7 @@ Feature: Reporting unhandled events
         When I run the game in the "NativeCrashReEnableAutoNotify" state
         And I run the game in the "(noop)" state
         And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the Unity notifier
+        Then the error is valid for the error reporting API sent by the native Unity notifier
         And the exception "errorClass" equals "SIGABRT"
         And the event "unhandled" is true
         And the first significant stack frame methods and files should match:

@@ -17,26 +17,7 @@ When("I run the game in the {string} state") do |state|
   end
 end
 
-Then("the error is valid for the error reporting API sent by the Unity notifier") do
-
-  if Maze.config.farm == :bs
-    # Mobile - could be ios or android
-    os = Maze.config.capabilities['os']
-  else
-    # Could be windows or macos
-    os = Maze.config.os
-  end
-
-  if os == 'macos'
-    notifier_name = 'OSX Bugsnag Notifier'
-  elsif os == 'ios'
-    notifier_name = 'iOS Bugsnag Notifier'
-  elsif os == 'android'
-    notifier_name = 'Android Bugsnag Notifier'
-  else
-    notifier_name = 'Unity Bugsnag Notifier'
-  end
-
+def check_error_reporting_api(notifier_name)
   steps %(
     Then the error "Bugsnag-Api-Key" header equals "#{$api_key}"
     And the error payload field "apiKey" equals "#{$api_key}"
@@ -55,7 +36,32 @@ Then("the error is valid for the error reporting API sent by the Unity notifier"
     And each element in error payload field "events" has "unhandled"
     And each element in error payload field "events" has "exceptions"
   )
+end
 
+Then("the error is valid for the error reporting API sent by the native Unity notifier") do
+  # This step currently only applies to native errors on macOS macOS
+  check_error_reporting_api 'OSX Bugsnag Notifier'
+end
+
+Then("the error is valid for the error reporting API sent by the Unity notifier") do
+
+  if Maze.config.farm == :bs
+    # Mobile - could be ios or android
+    os = Maze.config.capabilities['os']
+  else
+    # Could be windows or macos
+    os = Maze.config.os
+  end
+
+  if os == 'ios'
+    notifier_name = 'iOS Bugsnag Notifier'
+  elsif os == 'android'
+    notifier_name = 'Android Bugsnag Notifier'
+  else
+    notifier_name = 'Unity Bugsnag Notifier'
+  end
+
+  check_error_reporting_api notifier_name
 end
 
 Then("the first significant stack frame methods and files should match:") do |expected_values|
