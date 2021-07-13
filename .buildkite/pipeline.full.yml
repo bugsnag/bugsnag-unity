@@ -1,7 +1,7 @@
 steps:
 
   #
-  # Build MacOS nad WebGL test fixtures
+  # Build MacOS and WebGL test fixtures
   #
   - label: Build Unity 2017 MacOS and WebGL test fixtures
     key: 'cocoa-2017-fixture'
