@@ -1,9 +1,9 @@
 steps:
 
   #
-  # Build desktop test fixtures
+  # Build MacOS and WebGL test fixtures
   #
-  - label: Build Unity 2017 MacOS test fixture
+  - label: Build Unity 2017 MacOS and WebGL test fixtures
     key: 'cocoa-2017-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -17,11 +17,12 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
     commands:
-      - scripts/ci-build-macos-package.sh
+      - scripts/ci-build-macos-packages.sh
     artifact_paths:
-      - features/fixtures/maze_runner/Mazerunner-2017.4.40f1.app.zip
+      - features/fixtures/maze_runner/build/MacOS-2017.4.40f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2017.4.40f1.zip
 
-  - label: Build Unity 2018 MacOS test fixture
+  - label: Build Unity 2018 MacOS and WebGL test fixtures
     key: 'cocoa-2018-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -35,11 +36,12 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
     commands:
-      - scripts/ci-build-macos-package.sh
+      - scripts/ci-build-macos-packages.sh
     artifact_paths:
-      - features/fixtures/maze_runner/Mazerunner-2018.4.34f1.app.zip
+      - features/fixtures/maze_runner/build/MacOS-2018.4.34f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2018.4.34f1.zip
 
-  - label: Build Unity 2019 MacOS test fixture
+  - label: Build Unity 2019 MacOS and WebGL test fixtures
     key: 'cocoa-2019-fixture'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -53,9 +55,10 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
     commands:
-      - scripts/ci-build-macos-package.sh
+      - scripts/ci-build-macos-packages.sh
     artifact_paths:
-      - features/fixtures/maze_runner/Mazerunner-2019.4.25f1.app.zip
+      - features/fixtures/maze_runner/build/MacOS-2019.4.25f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2019.4.25f1.zip
 
   #
   # Run macOS desktop tests
@@ -70,7 +73,7 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/Mazerunner-2017.4.40f1.app.zip
+          - features/fixtures/maze_runner/build/MacOS-2017.4.40f1.zip
         upload:
           - maze_output/*
           - Mazerunner.log
@@ -87,7 +90,7 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/Mazerunner-2018.4.34f1.app.zip
+          - features/fixtures/maze_runner/build/MacOS-2018.4.34f1.zip
         upload:
           - maze_output/*
           - Mazerunner.log
@@ -104,7 +107,7 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/Mazerunner-2019.4.25f1.app.zip
+          - features/fixtures/maze_runner/build/MacOS-2019.4.25f1.zip
         upload:
           - maze_output/*
           - Mazerunner.log

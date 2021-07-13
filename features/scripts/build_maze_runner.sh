@@ -5,17 +5,28 @@ if [ -z "$UNITY_VERSION" ]; then
   exit 1
 fi
 
-#!/usr/bin/env bash
+if [[ $# != 1 ]]; then
+  echo "Build platform (macos/webgl/windows) must be passed as a parameter"
+  exit 2
+fi
 
-if [ "$(uname)" == "Darwin" ]; then
+if [ "$1" == "macos" ]; then
   PLATFORM="MacOS"
-  echo "MacOS Detected"
   UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
-elif [ $OS == "Windows_NT" ]; then
-    PLATFORM="Win64"
-    set -m
-    echo "Windows64 Detected"
+elif [ "$1" == "windows" ]; then
+  PLATFORM="Win64"
+  set -m
+  UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+elif [ "$1" == "webgl" ]; then
+  PLATFORM="WebGL"
+  if [ "$(uname)" == "Darwin" ]; then
+    UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
+  else
     UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+  fi
+else
+  echo "Unsupported platform: $1"
+  exit 3
 fi
 
 # Set project_path to the repo root
@@ -52,7 +63,6 @@ pushd $SCRIPT_DIR
       -importPackage "$package_path/Bugsnag.unitypackage"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
 
     echo "Building the fixture for $PLATFORM"
 
