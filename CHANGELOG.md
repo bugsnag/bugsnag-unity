@@ -4,7 +4,13 @@
 
 ### Enhancements
 
-* Update bugsnag-cocoa to v6.10.1
+* Update bugsnag-cocoa to v6.10.2
+
+  * Fix ThreadSanitizer data race warning in `BSGAppHangDetector`.
+    [#1153](https://github.com/bugsnag/bugsnag-cocoa/pull/1153)
+
+  * Remove (duplicated) `user` information from `metaData`.
+    [#1151](https://github.com/bugsnag/bugsnag-cocoa/pull/1151)
 
   * Fix a potential stack overflow in `+[BugsnagThread allThreadsWithCurrentThreadBacktrace:]`.
     [#1148](https://github.com/bugsnag/bugsnag-cocoa/pull/1148)
