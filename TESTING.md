@@ -103,7 +103,7 @@ This will generate the following files:
 
 #### MacOS
 
-1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh`
+1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh macos`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
@@ -120,7 +120,7 @@ This will generate the test fixture app:
 Building the test fixture on Windows requires a Git bash terminal.
 
 In a Git bash terminal:
-1. `UNITY_VERSION=2018.4.36f1 ./features/scripts/build_maze_runner.sh`
+1. `UNITY_VERSION=2018.4.36f1 ./features/scripts/build_maze_runner.sh windows`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
