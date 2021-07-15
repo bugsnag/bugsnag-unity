@@ -118,7 +118,8 @@ steps:
   # Run WebGL tests
   #
   - label: Run WebGL e2e tests for Unity 2017
-    depends_on: 'cocoa-wegl-2017-fixtures'
+    skip: WebGL test fixture fails to start with Unity 2017 (apparent Unity bug)
+    depends_on: 'cocoa-webgl-2017-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-11
@@ -129,13 +130,12 @@ steps:
         download:
           - features/fixtures/maze_runner/build/WebGL-2017.4.40f1.zip
         upload:
-          - maze_output/*
-          - Mazerunner.log
+          - maze_output/failed/**/*
     commands:
       - scripts/ci-run-webgl-tests.sh
 
   - label: Run WebGL e2e tests for Unity 2018
-    depends_on: 'cocoa-wegl-2018-fixtures'
+    depends_on: 'cocoa-webgl-2018-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-11
@@ -146,13 +146,12 @@ steps:
         download:
           - features/fixtures/maze_runner/build/WebGL-2018.4.34f1.zip
         upload:
-          - maze_output/*
-          - Mazerunner.log
+          - maze_output/failed/**/*
     commands:
       - scripts/ci-run-webgl-tests.sh
 
   - label: Run WebGL e2e tests for Unity 2019
-    depends_on: 'cocoa-wegl-2019-fixtures'
+    depends_on: 'cocoa-webgl-2019-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-11
@@ -163,8 +162,7 @@ steps:
         download:
           - features/fixtures/maze_runner/build/WebGL-2019.4.25f1.zip
         upload:
-          - maze_output/*
-          - Mazerunner.log
+          - maze_output/failed/**/*
     commands:
       - scripts/ci-run-webgl-tests.sh
 

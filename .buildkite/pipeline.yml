@@ -63,7 +63,7 @@ steps:
   # Run WebGL tests
   #
   - label: Run WebGL e2e tests for Unity 2020
-    depends_on: 'cocoa-wegl-2020-fixtures'
+    depends_on: 'cocoa-webgl-2020-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-11
@@ -74,8 +74,7 @@ steps:
         download:
           - features/fixtures/maze_runner/build/WebGL-2020.3.13f1.zip
         upload:
-          - maze_output/*
-          - Mazerunner.log
+          - maze_output/failed/**/*
     commands:
       - scripts/ci-run-webgl-tests.sh
 
