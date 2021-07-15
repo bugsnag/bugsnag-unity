@@ -27,7 +27,34 @@
   * Prevent some potential false positive detection of app hangs.
     [#1122](https://github.com/bugsnag/bugsnag-cocoa/pull/1122)
     
-* Update bugsnag-android to v5.9.5:
+* Update bugsnag-android to v5.10.1:
+
+  * Prefer `calloc()` to `malloc()` in NDK code
+    [#1320](https://github.com/bugsnag/bugsnag-android/pull/1320)
+
+  * Ensure correct value always collected for activeScreen
+    [#1322](https://github.com/bugsnag/bugsnag-android/pull/1322)
+
+  * Capture process name in Event payload
+    [#1318](https://github.com/bugsnag/bugsnag-android/pull/1318)
+
+  * Avoid unnecessary BroadcastReceiver registration for monitoring device orientation
+    [#1303](https://github.com/bugsnag/bugsnag-android/pull/1303)
+
+  * Register system callbacks on background thread
+    [#1292](https://github.com/bugsnag/bugsnag-android/pull/1292)
+
+  * Fix rare NullPointerExceptions from ConnectivityManager
+    [#1311](https://github.com/bugsnag/bugsnag-android/pull/1311)
+
+  * Respect manual setting of context
+    [#1310](https://github.com/bugsnag/bugsnag-android/pull/1310)
+
+  * Handle interrupt when shutting down executors
+    [#1315](https://github.com/bugsnag/bugsnag-android/pull/1315)
+
+  * Allow serializing enabledBreadcrumbTypes as null
+    [#1316](https://github.com/bugsnag/bugsnag-android/pull/1316)
 
   * Properly handle ANRs after multiple calls to autoNotify and autoDetectAnrs
     [#1265](https://github.com/bugsnag/bugsnag-android/pull/1265)
