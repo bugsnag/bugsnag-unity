@@ -4,7 +4,7 @@ steps:
   # Build MacOS and WebGL test fixtures
   #
   - label: Build Unity 2017 MacOS and WebGL test fixtures
-    key: 'cocoa-2017-fixture'
+    key: 'cocoa-webgl-2017-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -23,7 +23,7 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2017.4.40f1.zip
 
   - label: Build Unity 2018 MacOS and WebGL test fixtures
-    key: 'cocoa-2018-fixture'
+    key: 'cocoa-webgl-2018-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -42,7 +42,7 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2018.4.34f1.zip
 
   - label: Build Unity 2019 MacOS and WebGL test fixtures
-    key: 'cocoa-2019-fixture'
+    key: 'cocoa-webgl-2019-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -63,8 +63,8 @@ steps:
   #
   # Run macOS desktop tests
   #
-  - label: Run MacOS e2e tests for Unity 2017.4.40f1
-    depends_on: 'cocoa-2017-fixture'
+  - label: Run MacOS e2e tests for Unity 2017
+    depends_on: 'cocoa-webgl-2017-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-10.15
@@ -80,8 +80,8 @@ steps:
     commands:
       - scripts/ci-run-macos-tests.sh
 
-  - label: Run MacOS e2e tests for Unity 2018.4.34f1
-    depends_on: 'cocoa-2018-fixture'
+  - label: Run MacOS e2e tests for Unity 2018
+    depends_on: 'cocoa-webgl-2018-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-10.15
@@ -97,8 +97,8 @@ steps:
     commands:
       - scripts/ci-run-macos-tests.sh
 
-  - label: Run MacOS e2e tests for Unity 2019.4.25f1
-    depends_on: 'cocoa-2019-fixture'
+  - label: Run MacOS e2e tests for Unity 2019
+    depends_on: 'cocoa-webgl-2019-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-10.15
@@ -113,6 +113,60 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
+
+  #
+  # Run WebGL tests
+  #
+  - label: Run WebGL e2e tests for Unity 2017
+    depends_on: 'cocoa-wegl-2017-fixtures'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2017.4.40f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2017.4.40f1.zip
+        upload:
+          - maze_output/*
+          - Mazerunner.log
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e tests for Unity 2018
+    depends_on: 'cocoa-wegl-2018-fixtures'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2018.4.34f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2018.4.34f1.zip
+        upload:
+          - maze_output/*
+          - Mazerunner.log
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e tests for Unity 2019
+    depends_on: 'cocoa-wegl-2019-fixtures'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2019.4.25f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2019.4.25f1.zip
+        upload:
+          - maze_output/*
+          - Mazerunner.log
+    commands:
+      - scripts/ci-run-webgl-tests.sh
 
   #
   # Build Android test fixtures
