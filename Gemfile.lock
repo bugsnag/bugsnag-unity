@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 9be7cc7b5e358a034c439d989088b07fc227b9a2
-  tag: v5.7.0
+  revision: 320e1f5ddccf7dd6205d1814f8d1d960372f9d19
+  branch: tms/local-browser
   specs:
     bugsnag-maze-runner (5.7.0)
       appium_lib (~> 11.2.0)

@@ -1,3 +1,5 @@
+require 'cgi'
+
 #
 # Mobile steps
 #
@@ -75,23 +77,33 @@ end
 #
 # Desktop steps
 #
-
 When("I run the game in the {string} state") do |state|
-  Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
-  Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
-  Maze::Runner.environment['MAZE_ENDPOINT'] = 'http://localhost:9339'
+  endpoint = "http://localhost:#{Maze.config.port}"
 
   if Maze.config.os == 'macos'
+    Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
+    Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
+    Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
+
     command = "open -W #{Maze.config.app} --args -batchmode -nographics"
     Maze::Runner.run_command(command)
-  else
+
+  elsif Maze.config.os == 'windows'
     command = "#{Maze.config.app} -batchmode -nographics"
     env = {
         'BUGSNAG_SCENARIO' => state,
         'BUGSNAG_APIKEY' => $api_key,
-        'MAZE_ENDPOINT' => 'http://localhost:9339'
+        'MAZE_ENDPOINT' => endpoint
     }
     system(env, command)
+
+  else
+    # WebGL in a browser
+    # endpoint = CGI.escape endpoint
+    fixture_host = "http://localhost:#{Maze.config.document_server_port}"
+    url = "#{fixture_host}/index.html?BUGSNAG_SCENARIO=#{state}&BUGSNAG_APIKEY=#{$api_key}&MAZE_ENDPOINT=#{endpoint}"
+    $logger.debug "Navigating to URL: #{url}"
+    step("I navigate to the URL \"#{url}\"")
   end
 end
 

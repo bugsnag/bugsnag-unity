@@ -18,6 +18,10 @@ AfterConfiguration do |_config|
   elsif Maze.config.os&.downcase == 'windows'
     # Allow the necessary environment variables to be passed from Ubuntu (under WSL) to the Windows test fixture
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
+  elsif Maze.config.browser != nil # WebGL
+    Maze.config.document_server_root = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
+  else
+    raise 'Either an --os option must be set (to "macos" or "windows") or --browser for WebGL'
   end
 end
 
