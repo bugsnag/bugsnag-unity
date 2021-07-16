@@ -21,7 +21,7 @@ steps:
   # Build MacOS and WebGL test fixtures
   #
   - label: Build Unity 2020 MacOS and WebGL test fixtures
-    key: 'cocoa-2020-fixture'
+    key: 'cocoa-webgl-2020-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -42,11 +42,11 @@ steps:
   #
   # Run desktop tests
   #
-  - label: Run MacOS e2e tests for Unity 2020.3.13f1
-    depends_on: 'cocoa-2020-fixture'
+  - label: Run MacOS e2e tests for Unity 2020
+    depends_on: 'cocoa-webgl-2020-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2020.3.13f1"
     plugins:
@@ -58,6 +58,25 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
+
+  #
+  # Run WebGL tests
+  #
+  - label: Run WebGL e2e tests for Unity 2020
+    depends_on: 'cocoa-webgl-2020-fixtures'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2020.3.13f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2020.3.13f1.zip
+        upload:
+          - maze_output/failed/**/*
+    commands:
+      - scripts/ci-run-webgl-tests.sh
 
   #
   # Build Android test fixtures

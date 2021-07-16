@@ -70,7 +70,7 @@ public class Main : MonoBehaviour
         {
             _webGlArguments.Add(splitParams[currentindex],splitParams[currentindex + 1]);
             currentindex += 2;
-        }    
+        }
     }
 
     private string GetWebGLEnvVar(string key)

@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 626bbe9d8e72e46fc8cae757a032bea88b6e3829
-  tag: v5.6.0
+  revision: d4cd09709d146836313dc8cbdfb6bd2335109f40
+  branch: tms/local-browser
   specs:
-    bugsnag-maze-runner (5.6.0)
+    bugsnag-maze-runner (5.7.0)
       appium_lib (~> 11.2.0)
       cucumber (~> 3.1.2)
       cucumber-expressions (~> 6.0.0)
@@ -13,6 +13,7 @@ GIT
       optimist (~> 3.0.1)
       os (~> 1.0.0)
       rake (~> 12.3.3)
+      rubyzip (~> 2.3.2)
       selenium-webdriver (~> 3.11)
       test-unit (~> 3.3.0)
 
