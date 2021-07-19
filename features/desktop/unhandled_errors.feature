@@ -74,25 +74,21 @@ Feature: Reporting unhandled events
 
     Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
         When I run the game in the "UncaughtExceptionOutsideNotifyReleaseStages" state
-        And I wait for 5 seconds
         Then I should receive no requests
 
     Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
         When I run the game in the "NativeCrashOutsideNotifyReleaseStages" state
         And I run the game in the "(noop)" state
-        And I wait for 5 seconds
         Then I should receive no requests
 
     Scenario: Reporting an uncaught exception when AutoNotify = false
         When I run the game in the "UncaughtExceptionWithoutAutoNotify" state
-        And I wait for 5 seconds
         Then I should receive no requests
 
     @macos_only
     Scenario: Reporting a native crash when AutoNotify = false
         When I run the game in the "NativeCrashWithoutAutoNotify" state
         And I run the game in the "(noop)" state
-        And I wait for 5 seconds
         Then I should receive no requests
 
     @macos_only
