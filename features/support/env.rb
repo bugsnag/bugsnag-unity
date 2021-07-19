@@ -2,7 +2,11 @@ require 'fileutils'
 
 $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
 
-Before('@macos_only') do |scenario|
+Before('@skip_webgl') do |_scenario|
+  skip_this_scenario("Skipping scenario") unless Maze.config.browser.nil?
+end
+
+Before('@macos_only') do |_scenario|
   skip_this_scenario("Skipping scenario") unless Maze.config.os == 'macos'
 end
 

@@ -13,6 +13,7 @@ Feature: Handled Errors and Exceptions
             | Main.RunScenario(string scenario)  |
             | Main.Start()        |
 
+    @skip_webgl
     Scenario: Reporting a handled exception from a background thread
         When I run the game in the "NotifyBackground" state
         And I wait to receive an error
@@ -86,6 +87,7 @@ Feature: Handled Errors and Exceptions
             | Main:RunScenario(String) |
             | Main:Start() |
 
+    @skip_webgl
     Scenario: Logging a warning from a background thread to Bugsnag
         When I run the game in the "ReportLoggedWarningThreaded" state
         And I wait to receive an error
