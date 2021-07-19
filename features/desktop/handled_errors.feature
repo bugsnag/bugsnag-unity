@@ -99,45 +99,6 @@ Feature: Handled Errors and Exceptions
         And the first significant stack frame methods and files should match:
             | Main.DoLogWarning()       |
 
-    Scenario: Logging a warning to Bugsnag
-        When I run the game in the "ReportLoggedWarning" state
-        And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the Unity notifier
-        And the exception "errorClass" equals "UnityLogWarning"
-        And the exception "message" equals "Something went terribly awry"
-        And the event "unhandled" is false
-        And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
-            | Main.DoLogWarning()  |
-            | Main.RunScenario(string scenario)  |
-            | Main.Start()        |
-
-    Scenario: Logging an error to Bugsnag
-        When I run the game in the "ReportLoggedError" state
-        And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the Unity notifier
-        And the exception "errorClass" equals "UnityLogError"
-        And the exception "message" equals "Bad bad things"
-        And the event "unhandled" is false
-        And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
-            | Main.DoLogError()  |
-            | Main.RunScenario(string scenario)  |
-            | Main.Start()        |
-
-    Scenario: Logging a warning to Bugsnag with 'ReportAsHandled = false'
-        When I run the game in the "ReportLoggedWarningWithHandledConfig" state
-        And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the Unity notifier
-        And the exception "errorClass" equals "UnityLogWarning"
-        And the exception "message" equals "Something went terribly awry"
-        And the event "unhandled" is false
-        And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
-            | Main.DoLogWarningWithHandledConfig()  |
-            | Main.RunScenario(string scenario)  |
-            | Main.Start()        |
-
     Scenario: Notifying when the current release stage is not in "notify release stages"
         When I run the game in the "NotifyOutsideNotifyReleaseStages" state
         And I wait for 5 seconds
@@ -165,3 +126,90 @@ Feature: Handled Errors and Exceptions
         When I run the game in the "LoggedExceptionWithoutAutoNotify" state
         And I wait for 5 seconds
         Then I should receive no errors
+
+    #
+    # TODO The scenarios below are currently duplicated due to slight differences in stack frames for WebGL.
+    #
+    @skip_webgl
+    Scenario: Logging a warning to Bugsnag
+        When I run the game in the "ReportLoggedWarning" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "UnityLogWarning"
+        And the exception "message" equals "Something went terribly awry"
+        And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | Main.DoLogWarning()  |
+            | Main.RunScenario(string scenario)  |
+            | Main.Start()        |
+
+    @webgl_only
+    Scenario: Logging a warning to Bugsnag
+        When I run the game in the "ReportLoggedWarning" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "UnityLogWarning"
+        And the exception "message" equals "Something went terribly awry"
+        And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | Main:DoLogWarning()  |
+            | Main:RunScenario(String)  |
+            | Main:Start()        |
+
+    @skip_webgl
+    Scenario: Logging an error to Bugsnag
+        When I run the game in the "ReportLoggedError" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "UnityLogError"
+        And the exception "message" equals "Bad bad things"
+        And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | Main.DoLogError()  |
+            | Main.RunScenario(string scenario)  |
+            | Main.Start()        |
+
+    @webgl_only
+    Scenario: Logging an error to Bugsnag
+        When I run the game in the "ReportLoggedError" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "UnityLogError"
+        And the exception "message" equals "Bad bad things"
+        And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | Main:DoLogError()  |
+            | Main:RunScenario(String)  |
+            | Main:Start()        |
+
+    @skip_webgl
+    Scenario: Logging a warning to Bugsnag with 'ReportAsHandled = false'
+        When I run the game in the "ReportLoggedWarningWithHandledConfig" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "UnityLogWarning"
+        And the exception "message" equals "Something went terribly awry"
+        And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | Main.DoLogWarningWithHandledConfig()  |
+            | Main.RunScenario(string scenario)  |
+            | Main.Start()        |
+
+    @webgl_only
+    Scenario: Logging a warning to Bugsnag with 'ReportAsHandled = false'
+        When I run the game in the "ReportLoggedWarningWithHandledConfig" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "UnityLogWarning"
+        And the exception "message" equals "Something went terribly awry"
+        And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | Main:DoLogWarningWithHandledConfig()  |
+            | Main:RunScenario(String)  |
+            | Main:Start()        |

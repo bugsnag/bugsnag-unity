@@ -6,6 +6,10 @@ Before('@skip_webgl') do |_scenario|
   skip_this_scenario("Skipping scenario") unless Maze.config.browser.nil?
 end
 
+Before('@webgl_only') do |_scenario|
+  skip_this_scenario("Skipping scenario") if Maze.config.browser.nil?
+end
+
 Before('@macos_only') do |_scenario|
   skip_this_scenario("Skipping scenario") unless Maze.config.os == 'macos'
 end

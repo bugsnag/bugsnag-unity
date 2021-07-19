@@ -141,12 +141,24 @@ dependencies:
 1. Run `bundle install` if you haven't run end-to-end tests before
 1. To run the tests:
     ```shell script
-    bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app --os=macos
+    bundle exec maze-runner --app=features/fixtures/maze_runner/build/MacOS/Mazerunner.app --os=macos
     ```
 
 #### Windows
 
 Running the Maze Runner tests on Windows requires the Ubuntu app (using WSL).
+
+In the Ubuntu terminal:
+1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
+1. Run `bundle install` if you haven't run end-to-end tests before
+1. To run the tests:
+    ```shell script
+    bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows
+    ```
+
+#### WebGL
+
+The WebGL e2e tests depend on Chrome and `chromedriver` (available from Homebrew).
 
 In the Ubuntu terminal:
 1. Check the contents of `Gemfile` to select the version of `maze-runner` to use

@@ -162,10 +162,12 @@ Then("the first significant stack frame methods and files should match:") do |ex
   stacktrace.each_with_index do |item, index|
     next if expected_index >= expected_frame_values.length
     expected_frames = expected_frame_values[expected_index]
-    next if item["method"].start_with? "UnityEngine"
-    next if item["method"].start_with? "BugsnagUnity"
 
-    assert(expected_frames.any? { |frame| frame == item["method"] }, "None of the given methods match the frame #{item["method"]}")
+    method = item['method']
+    next if method.start_with? 'UnityEngine' or 'method'.start_with? 'BugsnagUnity'
+
+    frame_matches = expected_frames.any? { |frame| frame == method }
+    assert(frame_matches, "None of the given methods match the frame #{method}")
     expected_index += 1
   end
 end
