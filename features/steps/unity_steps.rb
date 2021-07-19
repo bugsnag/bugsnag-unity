@@ -164,7 +164,7 @@ Then("the first significant stack frame methods and files should match:") do |ex
     expected_frames = expected_frame_values[expected_index]
 
     method = item['method']
-    next if method.start_with? 'UnityEngine' or 'method'.start_with? 'BugsnagUnity'
+    next if method.start_with? 'UnityEngine' or method.start_with? 'BugsnagUnity'
 
     frame_matches = expected_frames.any? { |frame| frame == method }
     assert(frame_matches, "None of the given methods match the frame #{method}")
