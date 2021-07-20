@@ -65,8 +65,15 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void HandleScenarioInput()
     {
+        // Only process valid inputs
         var input = InputField.text;
-        switch (input)
+        if (input == null || !input.EndsWith("#"))
+        {
+            return;
+        }
+        var scenarioName = input.Remove(input.Length - 1);
+
+        switch (scenarioName)
         {
             case "throw Exception":
                 TriggerThrowException();
