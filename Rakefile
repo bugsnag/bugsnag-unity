@@ -379,13 +379,13 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "mobile", "prepare_fixture.sh")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end
 
       # Build the Android APK
-      script = File.join("test", "mobile", "features", "scripts", "build_android.sh")
+      script = File.join("features", "scripts", "mobile", "build_android.sh")
       unless system env, script
         raise 'APK build failed'
       end
