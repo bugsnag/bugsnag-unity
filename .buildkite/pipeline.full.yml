@@ -131,8 +131,8 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
+          - features/fixtures/unity.log
     commands:
       - rake test:android:build
 
@@ -150,8 +150,8 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
+          - features/fixtures/unity.log
     commands:
       - rake test:android:build
 
@@ -169,8 +169,8 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
+          - features/fixtures/unity.log
     commands:
       - rake test:android:build
 
@@ -185,7 +185,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -205,7 +205,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -225,7 +225,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -254,11 +254,11 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/unity.log
           - project_2017.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project_2017.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+      - tar -zvcf project_2017.tgz  features/fixtures/maze_runner/mazerunner_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2017'
     key: 'build-ios-fixture-2017'
@@ -275,10 +275,10 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2017.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
+          - features/fixtures/unity.log
     commands:
-      - tar -zxf project_2017.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2017.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
   - label: ':ios: Generate Xcode project - Unity 2018'
@@ -295,11 +295,11 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/unity.log
           - project_2018.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project_2018.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+      - tar -zvcf project_2018.tgz  features/fixtures/maze_runner/mazerunner_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2018'
     key: 'build-ios-fixture-2018'
@@ -316,10 +316,10 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2018.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
+          - features/fixtures/unity.log
     commands:
-      - tar -zxf project_2018.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2018.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
   - label: ':ios: Generate Xcode project - Unity 2019'
@@ -336,11 +336,11 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/unity.log
           - project_2019.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project_2019.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+      - tar -zvcf project_2019.tgz features/fixtures/maze_runner/mazerunner_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2019'
     key: 'build-ios-fixture-2019'
@@ -357,10 +357,10 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2019.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
+          - features/fixtures/unity.log
     commands:
-      - tar -zxf project_2019.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2019.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
   #
@@ -375,7 +375,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -396,7 +396,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -417,7 +417,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa"
       docker-compose#v3.3.0:
         run: maze-runner
         command:

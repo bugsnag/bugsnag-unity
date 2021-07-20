@@ -7,15 +7,15 @@ Before('@macos_only') do |scenario|
 end
 
 AfterConfiguration do |_config|
-  raise '--os option must be set (to "macos" or "windows"' if Maze.config.os.nil?
+  raise '--device or --os option must be set (to "macos" or "windows"' if Maze.config.os.nil? and Maze.config.device.nil?
 
   Maze.config.enforce_bugsnag_integrity = false
 
-  if Maze.config.os.downcase == 'macos'
+  if Maze.config.os&.downcase == 'macos'
     # The default macOS Crash Reporter "#{app_name} quit unexpectedly" alert grabs focus which can cause tests to flake.
     # This option, which appears to have been introduced in macOS 10.11, displays a notification instead of the alert.
     Maze::Runner.run_command('defaults write com.apple.CrashReporter UseUNC 1')
-  elsif Maze.config.os.downcase == 'windows'
+  elsif Maze.config.os&.downcase == 'windows'
     # Allow the necessary environment variables to be passed from Ubuntu (under WSL) to the Windows test fixture
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
   end
