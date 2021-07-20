@@ -7,6 +7,7 @@ using System.Threading;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -23,6 +24,10 @@ public class Main : MonoBehaviour
 
     public void Start()
     {
+
+#if UNITY_ANDROID || UNITY_IOS
+        return;
+#endif
 
 #if UNITY_WEBGL
         ParseUrlParameters();
@@ -50,7 +55,6 @@ public class Main : MonoBehaviour
         // trigger the crash
         RunScenario(scenario);
     }
-
 
     private void ParseUrlParameters()
     {
