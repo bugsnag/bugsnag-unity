@@ -13,6 +13,14 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public InputField InputField;
 
+
+    private void Awake()
+    {
+#if UNITY_ANDROID || UNITY_IOS
+        InputField.Select();
+#endif
+    }
+
     private Configuration GetMobileTestingConfig()
     {
         Configuration config = new Configuration("12312312312312312312312312312312");
