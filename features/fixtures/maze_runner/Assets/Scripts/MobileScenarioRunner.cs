@@ -23,7 +23,6 @@ public class MobileScenarioRunner : MonoBehaviour {
         return config;
     }
 
-
     private void StartBugsnagAsNormal()
     {
         var config = GetMobileTestingConfig();
@@ -65,15 +64,15 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void HandleScenarioInput()
     {
-        // Only process valid inputs
+
         var input = InputField.text;
-        if (input == null || !input.EndsWith("#"))
+
+        if (string.IsNullOrEmpty(input))
         {
             return;
         }
-        var scenarioName = input.Remove(input.Length - 1);
 
-        switch (scenarioName)
+        switch (input)
         {
             case "throw Exception":
                 TriggerThrowException();

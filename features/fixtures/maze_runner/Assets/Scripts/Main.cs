@@ -18,19 +18,21 @@ public class Main : MonoBehaviour
     [DllImport("NativeCrashy")]
     private static extern void crashy_signal_runner(float num);
 
-    bool sent = false;
-
     private Dictionary<string, string> _webGlArguments;
 
     public void Start()
     {
 
 #if UNITY_ANDROID || UNITY_IOS
+        Debug.Log("Mobile detected");
         return;
 #endif
 
 #if UNITY_WEBGL
         ParseUrlParameters();
+#else
+        //close the desktop fixture automatically
+        Invoke("CloseApplication", 5);
 #endif
         var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);
@@ -54,6 +56,11 @@ public class Main : MonoBehaviour
 
         // trigger the crash
         RunScenario(scenario);
+    }
+
+    void CloseApplication()
+    {
+        Application.Quit();
     }
 
     private void ParseUrlParameters()
@@ -87,24 +94,6 @@ public class Main : MonoBehaviour
             }
         }
         throw new System.Exception("COULD NOT GET ENV VAR: " + key);
-    }
-
-
-    void Update()
-    {
-        // only send one crash
-        if (!sent)
-        {
-            sent = true;
-            // wait for 5 seconds before exiting the application
-            StartCoroutine(WaitForBugsnag());
-        }
-    }
-
-    IEnumerator WaitForBugsnag()
-    {
-        yield return new WaitForSeconds(5);
-        Application.Quit();
     }
 
     /**
