@@ -12,12 +12,12 @@ end
 
 When("I run the {string} mobile scenario") do |scenario|
   # Ensure we tap in the button
-  viewport = Maze.driver.session_capabilities['viewportRect']
+  # viewport = Maze.driver.session_capabilities['viewportRect']
+  #
+  # center = viewport['width'] / 2
+  # middle = viewport['height'] / 2
 
-  center = viewport['width'] / 2
-  middle = viewport['height'] / 2
-
-  press_at center, middle
+  press_at 100, 100
   sleep 1
   Maze.driver.send_keys(scenario)
 
