@@ -11,15 +11,8 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     private const float WAIT_TIME = 6;
 
-    public InputField InputField;
-
-
-    private void Awake()
-    {
-#if UNITY_ANDROID || UNITY_IOS
-        InputField.Select();
-#endif
-    }
+    public InputField Dialled;
+    public InputField ScenarioName;
 
     private Configuration GetMobileTestingConfig()
     {
@@ -69,11 +62,82 @@ public class MobileScenarioRunner : MonoBehaviour {
         action.Invoke();
     }
 
+    public void Dial0()
+    {
+        Dialled.text += "0";
+    }
+
+    public void Dial1()
+    {
+        Dialled.text += "1";
+    }
+
+    public void Dial2()
+    {
+        Dialled.text += "2";
+    }
+
+    public void Dial3()
+    {
+        Dialled.text += "3";
+    }
+
+    public void Dial4()
+    {
+        Dialled.text += "4";
+    }
+
+    public void Dial5()
+    {
+        Dialled.text += "5";
+    }
+
+    public void Dial6()
+    {
+        Dialled.text += "6";
+    }
+
+    public void Dial7()
+    {
+        Dialled.text += "7";
+    }
+
+    public void Dial8()
+    {
+        Dialled.text += "8";
+    }
+
+    public void Dial9()
+    {
+        Dialled.text += "9";
+    }
+
+    public void Translate()
+    {
+        var code = Dialled.text;
+        if (code.Length != 2) return;
+
+        var lookup = new Dictionary<String, String>
+        {
+            {"01", "throw Exception" },
+            {"02", "Log error" },
+            {"03", "Native exception" },
+            {"04", "Log caught exception" },
+            {"05", "NDK signal" },
+            {"06", "Notify caught exception" },
+            {"07", "Notify with callback" },
+            {"08", "Change scene" },
+            {"09", "Disable Breadcrumbs" },
+            {"10", "Start SDK" },
+            {"11", "Max Breadcrumbs" }
+        };
+
+        ScenarioName.text = lookup[code] + "#";
+    }
 
     public void HandleScenarioInput()
     {
-
-        var input = InputField.text;
+        var input = ScenarioName.text;
 
         if (string.IsNullOrEmpty(input) || !input.EndsWith("#"))
         {
