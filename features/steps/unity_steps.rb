@@ -1,3 +1,50 @@
+#MOBILE
+
+When("I wait for the mobile game to start") do
+  # Wait for a fixed time period
+  # TODO: PLAT-6655 Remove the Unity splash screen so we don't have to wait so long
+  sleep 5
+end
+
+When('I relaunch the Unity mobile app') do
+  Maze.driver.launch_app
+  # Wait for a fixed time period
+  sleep 5
+end
+
+When("I run the {string} mobile scenario") do |scenario|
+
+  sleep 1
+  Maze.driver.send_keys(scenario)
+  sleep 1
+  if Maze.config.capabilities['os'] == 'android'
+    Maze.driver.press_android_enter()
+  end
+  
+end
+
+def press_at(x, y)
+
+  # TODO: PLAT-6654 Figure out why the scale is different on iOS
+  factor = if Maze.driver.capabilities['os'] == 'ios'
+             0.5
+           else
+             1
+           end
+
+  touch_action = Appium::TouchAction.new
+  touch_action.tap({:x => x * factor, :y => y * factor})
+  touch_action.perform
+end
+
+
+
+
+
+
+
+#DESKTOP
+
 When("I run the game in the {string} state") do |state|
   Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
   Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
