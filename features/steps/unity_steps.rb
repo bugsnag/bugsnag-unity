@@ -14,13 +14,8 @@ end
 
 When("I run the {string} mobile scenario") do |scenario|
 
-  sleep 1
-  Maze.driver.send_keys(scenario)
-  sleep 1
-  if Maze.config.capabilities['os'] == 'android'
-    Maze.driver.press_android_enter()
-  end
-  
+  Maze.driver.send_keys(scenario + "#") 
+
 end
 
 def press_at(x, y)

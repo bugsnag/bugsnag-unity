@@ -75,12 +75,14 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         var input = InputField.text;
 
-        if (string.IsNullOrEmpty(input))
+        if (string.IsNullOrEmpty(input) || !input.EndsWith("#"))
         {
             return;
         }
 
-        switch (input)
+        var scenarioName = input.Remove(input.Length - 1);
+
+        switch (scenarioName)
         {
             case "throw Exception":
                 TriggerThrowException();
@@ -113,7 +115,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 StartSDK();
                 break;
             case "Max Breadcrumbs":
-                StartSDK();
+                TestMaxBreadcrumbs();
                 break;
         }
     }
