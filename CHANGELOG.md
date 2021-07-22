@@ -4,6 +4,9 @@
 
 ### Enhancements
 
+* Automatic ANR detection is now enabled by default  
+  [#339](https://github.com/bugsnag/bugsnag-unity/pull/339)
+
 * Update bugsnag-cocoa to v6.10.1
 
   * Fix a potential stack overflow in `+[BugsnagThread allThreadsWithCurrentThreadBacktrace:]`.
