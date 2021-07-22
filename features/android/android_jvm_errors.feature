@@ -33,7 +33,7 @@ Feature: Android manual smoke tests
         And the event "app.inForeground" equals "true"
         And the event "app.isLaunching" equals "false"
         And the error payload field "events.0.app.memoryUsage" is not null
-        And the event "app.name" equals "maze_runner"
+        And the event "app.name" equals "Mazerunner"
         And the event "app.lowMemory" equals "false"
 
         # Device data
@@ -76,8 +76,8 @@ Feature: Android manual smoke tests
         # MetaData
         And the event "metaData.device.osLanguage" is not null
         And the event "app.type" equals "android"
-        And the event "metaData.app.companyName" equals "DefaultCompany"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"
 
 
         # Runtime versions

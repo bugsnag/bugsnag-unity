@@ -49,8 +49,8 @@ Feature: iOS smoke tests for log entries
 
         # MetaData
         And the event "metaData.device.osLanguage" is not null
-        And the event "metaData.app.companyName" equals "DefaultCompany"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"
 
     Scenario: Calling Bugsnag.Log() with an exception
 
@@ -98,5 +98,5 @@ Feature: iOS smoke tests for log entries
 
         # MetaData
         And the event "metaData.device.osLanguage" is not null
-        And the event "metaData.app.companyName" equals "DefaultCompany"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"

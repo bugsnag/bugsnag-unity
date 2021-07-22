@@ -17,7 +17,7 @@ Feature: Android smoke tests for C# errors
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" ends with "ReporterBehavior.NotifyWithCallback()"
+        And the event "exceptions.0.stacktrace.0.method" ends with "MobileScenarioRunner.NotifyWithCallback()"
         And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
         And the error payload field "events.0.threads" is null
 
@@ -32,7 +32,7 @@ Feature: Android smoke tests for C# errors
         And the event "app.inForeground" equals "true"
         And the event "app.isLaunching" equals "false"
         And the error payload field "events.0.app.memoryUsage" is not null
-        And the event "app.name" equals "maze_runner"
+        And the event "app.name" equals "Mazerunner"
         And the event "app.lowMemory" equals "false"
 
         # Device data
@@ -76,8 +76,8 @@ Feature: Android smoke tests for C# errors
         # MetaData
         And the event "metaData.device.osLanguage" is not null
         And the event "app.type" equals "android"
-        And the event "metaData.app.companyName" equals "DefaultCompany"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"
         And the event "metaData.Callback.region" equals "US"
 
         # Runtime versions
@@ -99,7 +99,7 @@ Feature: Android smoke tests for C# errors
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" equals "ReporterBehavior.ThrowException()"
+        And the event "exceptions.0.stacktrace.0.method" equals "MobileScenarioRunner.ThrowException()"
         And the event "exceptions.0.stacktrace.0.file" is not null
         And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
         And the error payload field "events.0.threads" is null
@@ -115,7 +115,7 @@ Feature: Android smoke tests for C# errors
         And the event "app.inForeground" equals "true"
         And the event "app.isLaunching" equals "false"
         And the error payload field "events.0.app.memoryUsage" is not null
-        And the event "app.name" equals "maze_runner"
+        And the event "app.name" equals "Mazerunner"
         And the event "app.lowMemory" equals "false"
 
         # Device data
@@ -159,8 +159,8 @@ Feature: Android smoke tests for C# errors
         # MetaData
         And the event "metaData.device.osLanguage" is not null
         And the event "app.type" equals "android"
-        And the event "metaData.app.companyName" equals "DefaultCompany"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"
 
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.androidApiLevel" is not null

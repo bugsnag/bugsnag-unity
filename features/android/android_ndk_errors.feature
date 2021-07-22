@@ -66,7 +66,7 @@ Feature: Android manual smoke tests
 
         # Metadata
         And the event "metaData.app.activeScreen" equals "UnityPlayerActivity"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.name" equals "Mazerunner"
         And the event "metaData.device.brand" equals "google"
         And the event "metaData.device.dpi" equals 440
         And the event "metaData.device.emulator" is false
@@ -76,5 +76,5 @@ Feature: Android manual smoke tests
         And the event "metaData.device.screenResolution" is not null
         And the event "metaData.device.osLanguage" is not null
         And the event "app.type" equals "android"
-        And the event "metaData.app.companyName" equals "DefaultCompany"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"

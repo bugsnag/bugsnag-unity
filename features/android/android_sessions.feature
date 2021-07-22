@@ -26,7 +26,7 @@ Feature: Android smoke tests for sessions
         And the session payload field "app.duration" is not null
         And the session payload field "app.inForeground" equals "true"
         And the session payload field "app.activeScreen" equals "UnityPlayerActivity"
-        And the session payload field "app.name" equals "maze_runner"
+        And the session payload field "app.name" equals "Mazerunner"
         And the session payload field "app.id" equals "com.bugsnag.mazerunner"
         And the session payload field "app.lowMemory" equals "false"
 

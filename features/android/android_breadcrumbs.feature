@@ -6,7 +6,7 @@ Feature: android breadcrumbs
     Scenario: Disable Breadcrumbs
         When I run the "Disable Breadcrumbs" mobile scenario
         Then I wait to receive an error
-        And the error payload field "events.0.breadcrumbs.0" is null       
+        And the error payload field "events.0.breadcrumbs.0" is null
 
 
     Scenario: Max Breadcrumbs
