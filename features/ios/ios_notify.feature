@@ -19,7 +19,7 @@ Feature: iOS smoke tests for C# errors
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" ends with "ReporterBehavior.NotifyCaughtException()"
+        And the event "exceptions.0.stacktrace.0.method" ends with "MobileScenarioRunner.NotifyCaughtException()"
         And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
         And the error payload field "events.0.threads" is null
 
@@ -69,8 +69,8 @@ Feature: iOS smoke tests for C# errors
 
         # MetaData
         And the event "metaData.device.osLanguage" is not null
-        And the event "metaData.app.companyName" equals "DefaultCompany"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"
 
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
@@ -91,7 +91,7 @@ Feature: iOS smoke tests for C# errors
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" ends with "ReporterBehavior.NotifyWithCallback()"
+        And the event "exceptions.0.stacktrace.0.method" ends with "MobileScenarioRunner.NotifyWithCallback()"
         And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
         And the error payload field "events.0.threads" is null
 
@@ -141,8 +141,8 @@ Feature: iOS smoke tests for C# errors
 
         # MetaData
         And the event "metaData.device.osLanguage" is not null
-        And the event "metaData.app.companyName" equals "DefaultCompany"
-        And the event "metaData.app.name" equals "maze_runner"
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"
         And the event "metaData.Callback.region" equals "US"
 
         # Runtime versions
