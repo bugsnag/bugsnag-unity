@@ -26,7 +26,7 @@ AfterConfiguration do |_config|
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
   elsif Maze.config.browser != nil # WebGL
     Maze.config.document_server_root = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
-  else
+  elsif Maze.config.device.nil?
     raise '--browser (WebGL), --device (for Android/iOS) or --os (for desktop) option must be set'
   end
 end
