@@ -46,7 +46,7 @@ steps:
     depends_on: 'cocoa-2020-fixture'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10-15
+      queue: opensource-mac-cocoa-10.15
     env:
       UNITY_VERSION: "2020.3.13f1"
     plugins:

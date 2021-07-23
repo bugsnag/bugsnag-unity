@@ -7,7 +7,6 @@ using UnityEditor.Callbacks;
 
 public class Builder : MonoBehaviour {
 
-
     static void Build(string folder, BuildTarget target)
     {
         BuildPlayerOptions opts = new BuildPlayerOptions();
@@ -35,9 +34,7 @@ public class Builder : MonoBehaviour {
         Build("build/WebGL/Mazerunner", BuildTarget.WebGL);
     }
 
-
-
-    // Generates mazerunner.apk
+    // Generates the Mazerunner APK
     public static void AndroidBuild()
     {
         Debug.Log("Building Android app...");
@@ -46,11 +43,10 @@ public class Builder : MonoBehaviour {
         opts.target = BuildTarget.Android;
 
         var result = BuildPipeline.BuildPlayer(opts);
-
         Debug.Log("Result: " + result);
     }
 
-    // Generates mazerunner.apk
+    // Generates the Mazerunner IPA
     public static void IosBuild()
     {
         Debug.Log("Building iOS app...");
@@ -63,7 +59,6 @@ public class Builder : MonoBehaviour {
         opts.target = BuildTarget.iOS;
 
         var result = BuildPipeline.BuildPlayer(opts);
-
         Debug.Log("Result: " + result);
     }
 
@@ -79,13 +74,5 @@ public class Builder : MonoBehaviour {
 
         return opts;
     }
-
-    [PostProcessBuildAttribute(1)]
-    public static void OnPostprocessBuild(BuildTarget target, string pathToBuiltProject)
-    {
-        Debug.Log("SKW:" + pathToBuiltProject);
-    }
-
-
 }
 #endif

@@ -55,7 +55,6 @@ public class MobileScenarioRunner : MonoBehaviour {
         throw new System.Exception("Max Breadcrumbs");
     }
 
-
     private IEnumerator WaitAndDo(Action action)
     {
         yield return new WaitForSeconds(WAIT_TIME);
@@ -184,18 +183,14 @@ public class MobileScenarioRunner : MonoBehaviour {
         }
     }
 
-
-
     public void StartSDK()
     {
         StartBugsnagAsNormal();
     }
 
-
     /// <summary>
     /// test throw an exception
     /// </summary>
-
     public void TriggerThrowException()
     {
         StartBugsnagAsNormal();
@@ -207,13 +202,9 @@ public class MobileScenarioRunner : MonoBehaviour {
         throw new System.Exception("You threw an exception!");
     }
 
-
-
     /// <summary>
     /// test log an error
     /// </summary>
-
-
     public void TriggerLogError()
     {
         StartBugsnagAsNormal();
@@ -229,7 +220,6 @@ public class MobileScenarioRunner : MonoBehaviour {
     /// <summary>
     /// test a native exception
     /// </summary>
-
     public void TriggerNativeException()
     {
         StartBugsnagAsNormal();
@@ -244,7 +234,6 @@ public class MobileScenarioRunner : MonoBehaviour {
     /// <summary>
     /// test log caught exception
     /// </summary>
-
     public void TriggerLogCaughtException()
     {
         StartBugsnagAsNormal();
@@ -267,7 +256,6 @@ public class MobileScenarioRunner : MonoBehaviour {
     /// <summary>
     /// test ndk signal
     /// </summary>
-
     public void TriggerNdkSignal()
     {
         StartBugsnagAsNormal();
@@ -279,11 +267,9 @@ public class MobileScenarioRunner : MonoBehaviour {
         MobileNative.RaiseNdkSignal();
     }
 
-
     /// <summary>
     /// test notify caught exception
     /// </summary>
-
     public void TriggerNotifyCaughtException()
     {
         StartBugsnagAsNormal();
@@ -303,12 +289,9 @@ public class MobileScenarioRunner : MonoBehaviour {
         }
     }
 
-
     /// <summary>
     /// test notify with callback
     /// </summary>
-
-
     public void TriggerNotifyWithCallback()
     {
         StartBugsnagAsNormal();
@@ -327,28 +310,31 @@ public class MobileScenarioRunner : MonoBehaviour {
         });
     }
 
-
     public void StartSession()
     {
 
         Bugsnag.SessionTracking.StartSession();
     }
+
     public void SetUser()
     {
         Bugsnag.User.Id = "mcpacman";
         Bugsnag.User.Name = "Geordi McPacman";
         Bugsnag.User.Email = "configureduser@example.com";
     }
+
     public void ClearUser()
     {
         Bugsnag.User.Clear();
     }
+
     public void AddMetadata()
     {
         Bugsnag.Metadata.Add("ConfigMetadata", new Dictionary<string, string>(){
           { "subsystem", "Player Mechanics" }
         });
     }
+
     public void AddCallbackMetadata()
     {
         Bugsnag.BeforeNotify(report =>
@@ -358,6 +344,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             });
         });
     }
+
     public void AddCallbackContext()
     {
         Bugsnag.BeforeNotify(report =>
@@ -365,6 +352,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             report.Context = "BeforeNotify Context";
         });
     }
+
     public void AddCallbackUser()
     {
         Bugsnag.BeforeNotify(report =>
@@ -374,6 +362,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             report.User.Email = "beforenotifyuser@example.com";
         });
     }
+
     public void AddCallbackSeverity()
     {
         Bugsnag.BeforeNotify(report =>
@@ -381,6 +370,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             report.Severity = Severity.Info;
         });
     }
+
     public void AddCallbackCancellation()
     {
         Bugsnag.BeforeNotify(report =>
@@ -388,14 +378,17 @@ public class MobileScenarioRunner : MonoBehaviour {
             report.Ignore();
         });
     }
+
     public void RemoveAllCallbacks()
     {
         throw new ExecutionEngineException("Hmm, doesn't seem to exist");
     }
+
     public void LeaveBreadcrumbString()
     {
         Bugsnag.Breadcrumbs.Leave("String breadcrumb clicked");
     }
+
     public void LeaveBreadcrumbTuple()
     {
         Bugsnag.Breadcrumbs.Leave(
@@ -404,6 +397,7 @@ public class MobileScenarioRunner : MonoBehaviour {
           new Dictionary<string, string>() { { "scene", "SomeVeryRealScene" } }
         );
     }
+
     public void ChangeScene()
     {
         SceneManager.LoadScene("OtherScene");

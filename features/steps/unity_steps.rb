@@ -1,4 +1,6 @@
-#MOBILE
+#
+# Mobile steps
+#
 
 When("I wait for the mobile game to start") do
   # Wait for a fixed time period
@@ -70,11 +72,9 @@ def press_at(x, y)
   touch_action.perform
 end
 
-
-
-
-
-#DESKTOP
+#
+# Desktop steps
+#
 
 When("I run the game in the {string} state") do |state|
   Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
