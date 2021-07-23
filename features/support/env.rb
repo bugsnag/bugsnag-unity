@@ -15,8 +15,6 @@ Before('@macos_only') do |_scenario|
 end
 
 AfterConfiguration do |_config|
-  raise '--device or --os option must be set (to "macos" or "windows"' if Maze.config.os.nil? and Maze.config.device.nil?
-
   Maze.config.enforce_bugsnag_integrity = false
 
   if Maze.config.os&.downcase == 'macos'
@@ -29,7 +27,7 @@ AfterConfiguration do |_config|
   elsif Maze.config.browser != nil # WebGL
     Maze.config.document_server_root = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
   else
-    raise 'Either an --os option must be set (to "macos" or "windows") or --browser for WebGL'
+    raise '--browser (WebGL), --device (for Android/iOS) or --os (for desktop) option must be set'
   end
 end
 
