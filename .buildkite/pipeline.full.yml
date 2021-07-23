@@ -67,7 +67,7 @@ steps:
     depends_on: 'cocoa-2017-fixture'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-mac-cocoa-10-15
     env:
       UNITY_VERSION: "2017.4.40f1"
     plugins:
@@ -84,7 +84,7 @@ steps:
     depends_on: 'cocoa-2018-fixture'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-mac-cocoa-10-15
     env:
       UNITY_VERSION: "2018.4.34f1"
     plugins:
@@ -101,7 +101,7 @@ steps:
     depends_on: 'cocoa-2019-fixture'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-11
+      queue: opensource-mac-cocoa-10-15
     env:
       UNITY_VERSION: "2019.4.25f1"
     plugins:
