@@ -180,6 +180,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Max Breadcrumbs":
                 TestMaxBreadcrumbs();
                 break;
+            default:
+                throw new System.Exception("Unknown scenario: " + scenarioName);
+
         }
     }
 
