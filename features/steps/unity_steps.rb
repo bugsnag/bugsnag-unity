@@ -1,3 +1,81 @@
+#
+# Mobile steps
+#
+
+When("I wait for the mobile game to start") do
+  # Wait for a fixed time period
+  # TODO: PLAT-6655 Remove the Unity splash screen so we don't have to wait so long
+  sleep 5
+end
+
+When('I relaunch the Unity mobile app') do
+  Maze.driver.launch_app
+  # Wait for a fixed time period
+  sleep 5
+end
+
+When("I run the {string} mobile scenario") do |scenario|
+
+  lookup = {
+      "throw Exception" => 1,
+      "Log error" => 2,
+      "Native exception" => 3,
+      "Log caught exception" => 4,
+      "NDK signal" => 5,
+      "Notify caught exception" => 6,
+      "Notify with callback" => 7,
+      "Change scene" => 8,
+      "Disable Breadcrumbs" => 9,
+      "Start SDK" => 10,
+      "Max Breadcrumbs" => 11,
+  }
+  number = lookup[scenario]
+  $logger.debug "#{scenario}' has dial-in code #{number}"
+
+  step("I dial #{number / 10}")
+  sleep 1
+  step("I dial #{number % 10}")
+  sleep 1
+  step("I press dial")
+  sleep 1
+end
+
+When("I dial {int}") do |number|
+  $logger.debug "Dialling #{number}"
+  # Ensure we tap in the button
+  viewport = Maze.driver.session_capabilities['viewportRect']
+  center = viewport['width'] / 2
+  press_at center, 50 + (number * 100)
+  sleep 1
+end
+
+When("I press dial") do
+  # Ensure we tap in the button
+  viewport = Maze.driver.session_capabilities['viewportRect']
+  center = viewport['width'] / 2
+  press_at center, 1050
+end
+
+def press_at(x, y)
+
+  $logger.debug "Press at: #{x},#{y}"
+
+  # TODO: PLAT-6654 Figure out why the scale is different on iOS
+  factor = if Maze.driver.capabilities['os'] == 'ios'
+             0.5
+           else
+             1
+           end
+
+  touch_action = Appium::TouchAction.new
+  touch_action.tap({:x => x * factor, :y => y * factor})
+  touch_action.perform
+end
+
+#
+# Desktop steps
+#
+
 When("I run the game in the {string} state") do |state|
   Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
   Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key

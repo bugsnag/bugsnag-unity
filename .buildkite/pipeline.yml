@@ -76,8 +76,8 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.13f1.apk
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2020.3.13f1.apk
+          - features/fixtures/unity.log
     commands:
       - rake test:android:build
 
@@ -94,7 +94,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.13f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.13f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -123,19 +123,19 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa
+          - features/fixtures/unity.log
           - project_2020.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project_2020.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+      - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2020'
     key: 'build-ios-fixture-2020'
     depends_on: 'generate-fixture-project-2020'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2020.3.13f1"
     plugins:
@@ -145,10 +145,10 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2020.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa
+          - features/fixtures/unity.log
     commands:
-      - tar -zxf project_2020.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2020.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
   #
@@ -163,7 +163,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa"
       docker-compose#v3.3.0:
         run: maze-runner
         command:

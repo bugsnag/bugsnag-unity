@@ -12,4 +12,4 @@ services:
       BROWSER_STACK_ACCESS_KEY:
     volumes:
       - ./test:/app/test
-      - ./test/mobile/features/:/app/features
+      - ./features/:/app/features

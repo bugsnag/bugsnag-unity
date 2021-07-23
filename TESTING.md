@@ -34,7 +34,7 @@ Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 
 This will generate a test fixture APK named according to the `UNITY_VERSION`, e.g:
 ```
-./test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
+./features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
 ```
 
 #### iOS
@@ -50,7 +50,7 @@ Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 
 This will generate a test fixture IPA named according to the `UNITY_VERSION`, e.g:
 ```
-./test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
+./features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
 ```
 
 ### Running an end-to-end test
