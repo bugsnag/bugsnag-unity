@@ -177,7 +177,9 @@ namespace BugsnagUnity
             // configure automatic tracking of errors/sessions
             using (AndroidJavaObject errorTypes = new AndroidJavaObject("com.bugsnag.android.ErrorTypes"))
             {
-                errorTypes.Call("setAnrs", config.AutoDetectAnrs);
+                errorTypes.Call("setAnrs", config.AutoDetectAnrs && config.EnabledErrorTypes.ANRs);
+                errorTypes.Call("setNdkCrashes", config.EnabledErrorTypes.NdkCrashes);
+                errorTypes.Call("setUnhandledExceptions", config.EnabledErrorTypes.UnhandledExceptions);
                 obj.Call("setEnabledErrorTypes", errorTypes);
             }
             obj.Call("setAutoTrackSessions", false);
