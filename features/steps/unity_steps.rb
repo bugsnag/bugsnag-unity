@@ -1,19 +1,109 @@
+require 'cgi'
+
+#
+# Mobile steps
+#
+
+When("I wait for the mobile game to start") do
+  # Wait for a fixed time period
+  # TODO: PLAT-6655 Remove the Unity splash screen so we don't have to wait so long
+  sleep 5
+end
+
+When('I relaunch the Unity mobile app') do
+  Maze.driver.launch_app
+  # Wait for a fixed time period
+  sleep 5
+end
+
+When("I run the {string} mobile scenario") do |scenario|
+
+  lookup = {
+      "throw Exception" => 1,
+      "Log error" => 2,
+      "Native exception" => 3,
+      "Log caught exception" => 4,
+      "NDK signal" => 5,
+      "Notify caught exception" => 6,
+      "Notify with callback" => 7,
+      "Change scene" => 8,
+      "Disable Breadcrumbs" => 9,
+      "Start SDK" => 10,
+      "Max Breadcrumbs" => 11,
+  }
+  number = lookup[scenario]
+  $logger.debug "#{scenario}' has dial-in code #{number}"
+
+  step("I dial #{number / 10}")
+  sleep 1
+  step("I dial #{number % 10}")
+  sleep 1
+  step("I press dial")
+  sleep 1
+end
+
+When("I dial {int}") do |number|
+  $logger.debug "Dialling #{number}"
+  # Ensure we tap in the button
+  viewport = Maze.driver.session_capabilities['viewportRect']
+  center = viewport['width'] / 2
+  press_at center, 50 + (number * 100)
+  sleep 1
+end
+
+When("I press dial") do
+  # Ensure we tap in the button
+  viewport = Maze.driver.session_capabilities['viewportRect']
+  center = viewport['width'] / 2
+  press_at center, 1050
+end
+
+def press_at(x, y)
+
+  $logger.debug "Press at: #{x},#{y}"
+
+  # TODO: PLAT-6654 Figure out why the scale is different on iOS
+  factor = if Maze.driver.capabilities['os'] == 'ios'
+             0.5
+           else
+             1
+           end
+
+  touch_action = Appium::TouchAction.new
+  touch_action.tap({:x => x * factor, :y => y * factor})
+  touch_action.perform
+end
+
+#
+# Desktop steps
+#
 When("I run the game in the {string} state") do |state|
-  Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
-  Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
-  Maze::Runner.environment['MAZE_ENDPOINT'] = 'http://localhost:9339'
+  endpoint = "http://localhost:#{Maze.config.port}"
 
   if Maze.config.os == 'macos'
+    Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
+    Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
+    Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
+
     command = "open -W #{Maze.config.app} --args -batchmode -nographics"
     Maze::Runner.run_command(command)
-  else
+
+  elsif Maze.config.os == 'windows'
     command = "#{Maze.config.app} -batchmode -nographics"
     env = {
         'BUGSNAG_SCENARIO' => state,
         'BUGSNAG_APIKEY' => $api_key,
-        'MAZE_ENDPOINT' => 'http://localhost:9339'
+        'MAZE_ENDPOINT' => endpoint
     }
     system(env, command)
+
+  else
+    # WebGL in a browser
+    # endpoint = CGI.escape endpoint
+    fixture_host = "http://localhost:#{Maze.config.document_server_port}"
+    url = "#{fixture_host}/index.html?BUGSNAG_SCENARIO=#{state}&BUGSNAG_APIKEY=#{$api_key}&MAZE_ENDPOINT=#{endpoint}"
+    $logger.debug "Navigating to URL: #{url}"
+    step("I navigate to the URL \"#{url}\"")
   end
 end
 
@@ -72,10 +162,12 @@ Then("the first significant stack frame methods and files should match:") do |ex
   stacktrace.each_with_index do |item, index|
     next if expected_index >= expected_frame_values.length
     expected_frames = expected_frame_values[expected_index]
-    next if item["method"].start_with? "UnityEngine"
-    next if item["method"].start_with? "BugsnagUnity"
 
-    assert(expected_frames.any? { |frame| frame == item["method"] }, "None of the given methods match the frame #{item["method"]}")
+    method = item['method']
+    next if method.start_with? 'UnityEngine' or method.start_with? 'BugsnagUnity'
+
+    frame_matches = expected_frames.any? { |frame| frame == method }
+    assert(frame_matches, "None of the given methods match the frame #{method}")
     expected_index += 1
   end
 end

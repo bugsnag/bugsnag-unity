@@ -4,7 +4,7 @@ steps:
   # Build MacOS and WebGL test fixtures
   #
   - label: Build Unity 2017 MacOS and WebGL test fixtures
-    key: 'cocoa-2017-fixture'
+    key: 'cocoa-webgl-2017-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -23,7 +23,7 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2017.4.40f1.zip
 
   - label: Build Unity 2018 MacOS and WebGL test fixtures
-    key: 'cocoa-2018-fixture'
+    key: 'cocoa-webgl-2018-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -42,7 +42,7 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2018.4.34f1.zip
 
   - label: Build Unity 2019 MacOS and WebGL test fixtures
-    key: 'cocoa-2019-fixture'
+    key: 'cocoa-webgl-2019-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
@@ -63,8 +63,8 @@ steps:
   #
   # Run macOS desktop tests
   #
-  - label: Run MacOS e2e tests for Unity 2017.4.40f1
-    depends_on: 'cocoa-2017-fixture'
+  - label: Run MacOS e2e tests for Unity 2017
+    depends_on: 'cocoa-webgl-2017-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-10.15
@@ -80,8 +80,8 @@ steps:
     commands:
       - scripts/ci-run-macos-tests.sh
 
-  - label: Run MacOS e2e tests for Unity 2018.4.34f1
-    depends_on: 'cocoa-2018-fixture'
+  - label: Run MacOS e2e tests for Unity 2018
+    depends_on: 'cocoa-webgl-2018-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-10.15
@@ -97,8 +97,8 @@ steps:
     commands:
       - scripts/ci-run-macos-tests.sh
 
-  - label: Run MacOS e2e tests for Unity 2019.4.25f1
-    depends_on: 'cocoa-2019-fixture'
+  - label: Run MacOS e2e tests for Unity 2019
+    depends_on: 'cocoa-webgl-2019-fixtures'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-10.15
@@ -113,6 +113,58 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
+
+  #
+  # Run WebGL tests
+  #
+  - label: Run WebGL e2e tests for Unity 2017
+    skip: WebGL test fixture fails to start with Unity 2017 (apparent Unity bug)
+    depends_on: 'cocoa-webgl-2017-fixtures'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2017.4.40f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2017.4.40f1.zip
+        upload:
+          - maze_output/failed/**/*
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e tests for Unity 2018
+    depends_on: 'cocoa-webgl-2018-fixtures'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2018.4.34f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2018.4.34f1.zip
+        upload:
+          - maze_output/failed/**/*
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e tests for Unity 2019
+    depends_on: 'cocoa-webgl-2019-fixtures'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2019.4.25f1"
+    plugins:
+      artifacts#v1.2.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2019.4.25f1.zip
+        upload:
+          - maze_output/failed/**/*
+    commands:
+      - scripts/ci-run-webgl-tests.sh
 
   #
   # Build Android test fixtures
@@ -131,8 +183,8 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
+          - features/fixtures/unity.log
     commands:
       - rake test:android:build
 
@@ -150,8 +202,8 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
+          - features/fixtures/unity.log
     commands:
       - rake test:android:build
 
@@ -169,8 +221,8 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
+          - features/fixtures/unity.log
     commands:
       - rake test:android:build
 
@@ -185,7 +237,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -205,7 +257,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -225,7 +277,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -254,18 +306,18 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/unity.log
           - project_2017.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project_2017.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+      - tar -zvcf project_2017.tgz  features/fixtures/maze_runner/mazerunner_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2017'
     key: 'build-ios-fixture-2017'
     depends_on: 'generate-fixture-project-2017'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2017.4.40f1"
     plugins:
@@ -275,10 +327,10 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2017.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
+          - features/fixtures/unity.log
     commands:
-      - tar -zxf project_2017.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2017.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
   - label: ':ios: Generate Xcode project - Unity 2018'
@@ -295,18 +347,18 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/unity.log
           - project_2018.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project_2018.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+      - tar -zvcf project_2018.tgz  features/fixtures/maze_runner/mazerunner_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2018'
     key: 'build-ios-fixture-2018'
     depends_on: 'generate-fixture-project-2018'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2018.4.34f1"
     plugins:
@@ -316,10 +368,10 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2018.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
+          - features/fixtures/unity.log
     commands:
-      - tar -zxf project_2018.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2018.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
   - label: ':ios: Generate Xcode project - Unity 2019'
@@ -336,18 +388,18 @@ steps:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/unity.log
           - project_2019.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project_2019.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
+      - tar -zvcf project_2019.tgz features/fixtures/maze_runner/mazerunner_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2019'
     key: 'build-ios-fixture-2019'
     depends_on: 'generate-fixture-project-2019'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2019.4.25f1"
     plugins:
@@ -357,10 +409,10 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2019.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
+          - features/fixtures/unity.log
     commands:
-      - tar -zxf project_2019.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2019.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
   #
@@ -375,7 +427,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -396,7 +448,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -417,7 +469,7 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
