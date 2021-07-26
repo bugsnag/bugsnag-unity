@@ -123,6 +123,13 @@
 
 * Fixed an issue where the fallback was not reporting the correct app.type
   [#325](https://github.com/bugsnag/bugsnag-unity/pull/325)
+  
+### Deprecated
+
+* `Configuration.AutoNotify` has been deprecated in favour of `Configuration.AutoDetectErrors` and will be removed in the next major release.
+
+* `Configuration.AutoCaptureSessions` has been deprecated in favour of `Configuration.AutoTrackSessions` and will be removed in the next major release.
+ 
 
 ## 5.1.1 (2021-06-24)
 
