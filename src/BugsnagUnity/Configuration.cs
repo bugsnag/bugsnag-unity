@@ -16,8 +16,8 @@ namespace BugsnagUnity
         {
             ApiKey = apiKey;
             AppVersion = Application.version;
-            AutoCaptureSessions = true;
-            AutoNotify = true;
+            AutoTrackSessions = true;
+            AutoDetectErrors = true;
             ReleaseStage = "production";
             Endpoint = new Uri(DefaultEndpoint);
             SessionEndpoint = new Uri(DefaultSessionEndpoint);
@@ -95,11 +95,37 @@ namespace BugsnagUnity
 
         public virtual LogType NotifyLevel { get; set; } = LogType.Exception;
 
-        public virtual bool AutoNotify { get; set; } = true;
+        private bool _autoDetectErrors = true; 
+
+        [Obsolete("AutoNotify is depricated, please use AutoDetectErrors instead.", false)]
+        public virtual bool AutoNotify
+        {
+            get { return _autoDetectErrors; }
+            set { _autoDetectErrors = value; }
+        }
+
+        public virtual bool AutoDetectErrors
+        {
+            get { return _autoDetectErrors; }
+            set { _autoDetectErrors = value; }
+        }
 
         public virtual bool AutoDetectAnrs { get; set; } = false;
 
-        public virtual bool AutoCaptureSessions { get; set; }
+        private bool _autoTrackSessions = true;
+
+        [Obsolete("AutoCaptureSessions is depricated, please use AutoTrackSessions instead.", false)]
+        public virtual bool AutoCaptureSessions
+        {
+            get { return _autoTrackSessions; }
+            set { _autoTrackSessions = value; }
+        }
+
+        public virtual bool AutoTrackSessions
+        {
+            get { return _autoTrackSessions; }
+            set { _autoTrackSessions = value; }
+        }
 
         public virtual LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
 

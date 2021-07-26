@@ -44,12 +44,12 @@ namespace BugsnagUnity
         string Context { get; set; }
 
         LogType NotifyLevel { get; set; }
-
-        bool AutoNotify { get; set; }
+        
+        bool AutoDetectErrors { get; set; }
 
         bool AutoDetectAnrs { get; set; }
 
-        bool AutoCaptureSessions { get; set; }
+        bool AutoTrackSessions { get; set; }
 
         LogTypeSeverityMapping LogTypeSeverityMapping { get; }
         string ScriptingBackend { get; set; }
