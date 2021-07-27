@@ -4,6 +4,8 @@
 
 ### Enhancements
 
+* Add `EnabledErrorTypes` configuration option to enable/disable different types of errors [#341](https://github.com/bugsnag/bugsnag-unity/pull/341)
+
 * [Android] Automatic [App Not Responding](https://developer.android.com/topic/performance/vitals/anr) (ANR) detection is now enabled by default  
   [#339](https://github.com/bugsnag/bugsnag-unity/pull/339)
 
