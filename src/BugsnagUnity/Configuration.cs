@@ -18,6 +18,7 @@ namespace BugsnagUnity
             AppVersion = Application.version;
             AutoCaptureSessions = true;
             AutoNotify = true;
+            AutoDetectAnrs = true;
             ReleaseStage = "production";
             Endpoint = new Uri(DefaultEndpoint);
             SessionEndpoint = new Uri(DefaultSessionEndpoint);
@@ -97,7 +98,7 @@ namespace BugsnagUnity
 
         public virtual bool AutoNotify { get; set; } = true;
 
-        public virtual bool AutoDetectAnrs { get; set; } = false;
+        public virtual bool AutoDetectAnrs { get; set; } = true;
 
         public virtual bool AutoCaptureSessions { get; set; }
 

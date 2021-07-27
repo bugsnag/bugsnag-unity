@@ -4,6 +4,9 @@
 
 ### Enhancements
 
+* [Android] Automatic [App Not Responding](https://developer.android.com/topic/performance/vitals/anr) (ANR) detection is now enabled by default  
+  [#339](https://github.com/bugsnag/bugsnag-unity/pull/339)
+
 * Update bugsnag-cocoa to v6.10.2
 
   * Fix ThreadSanitizer data race warning in `BSGAppHangDetector`.

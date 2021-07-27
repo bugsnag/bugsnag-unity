@@ -98,7 +98,7 @@ namespace BugsnagUnity
         /// </summary>
 		[Tooltip("Should Bugsnag automatically detect Android not responding errors.")]
         [LabelOverride("Auto Detect ANRs")]
-        public bool AutoDetectAnrs = false;
+        public bool AutoDetectAnrs = true;
 
         [Tooltip("Should Bugsnag automatically collect data about sessions.")]
         public bool AutoCaptureSessions = true;
