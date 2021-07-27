@@ -136,6 +136,20 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "EnableUnhandledExceptions":
+                config.EnabledErrorTypes.SetAllDisabled();
+                config.EnabledErrorTypes.UnhandledExceptions = true;
+                config.NotifyLevel = LogType.Log;
+                break;
+            case "EnableLogLogs":
+                config.EnabledErrorTypes.SetAllDisabled();
+                config.EnabledErrorTypes.UnityLogLogs = true;
+                config.NotifyLevel = LogType.Log;
+                break;
+            case "DisableAllErrorTypes":
+                config.EnabledErrorTypes.SetAllDisabled();
+                config.NotifyLevel = LogType.Log;
+                break;
             case "NewSession":
                 config.AutoCaptureSessions = false;
                 break;
@@ -234,6 +248,15 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "EnableUnhandledExceptions":
+                CheckEnabledErrorTypes();
+                break;
+            case "EnableLogLogs":
+                CheckEnabledErrorTypes();
+                break;
+            case "DisableAllErrorTypes":
+                CheckDisabledErrorTypes();
+                break;
             case "MaxBreadcrumbs":
                 LeaveBreadcrumbs();
                 DoUnhandledException(0);
@@ -382,6 +405,23 @@ public class Main : MonoBehaviour
                 throw new ArgumentException("Unable to run unexpected scenario: " + scenario);
                 break;
         }
+    }
+
+    private void CheckEnabledErrorTypes()
+    {
+        Debug.Log("LogLog");
+        Debug.LogWarning("LogWarning");
+        Debug.LogError("LogError");
+        throw new System.Exception("Exception");
+    }
+
+    private void CheckDisabledErrorTypes()
+    {
+        Debug.Log("LogLog");
+        Debug.LogWarning("LogWarning");
+        Debug.LogError("LogError");
+        Bugsnag.Notify(new System.Exception("Notify"));
+        throw new System.Exception("Exception");
     }
 
     private void LeaveBreadcrumbs()

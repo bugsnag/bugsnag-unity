@@ -42,6 +42,17 @@ public class MobileScenarioRunner : MonoBehaviour {
         throw new System.Exception("Disabled Breadcrumbs");
     }
 
+    private void TestDisabledUncaughtExceptions()
+    {
+        var config = GetMobileTestingConfig();
+        config.NotifyLevel = LogType.Exception;
+        config.EnabledErrorTypes.SetAllDisabled();
+        config.AutoCaptureSessions = false;
+        Bugsnag.Start(config);
+        Bugsnag.Notify(new System.Exception("Notify"));
+        NativeException();
+    }
+
     public void TestMaxBreadcrumbs()
     {
         var config = GetMobileTestingConfig();
@@ -128,7 +139,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             {"08", "Change scene" },
             {"09", "Disable Breadcrumbs" },
             {"10", "Start SDK" },
-            {"11", "Max Breadcrumbs" }
+            {"11", "Max Breadcrumbs" },
+            {"12", "Disable Uncaught Exceptions" }
+
         };
 
         ScenarioName.text = lookup[code] + "#";
@@ -147,6 +160,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Disable Uncaught Exceptions":
+                TestDisabledUncaughtExceptions();
+                break;
             case "throw Exception":
                 TriggerThrowException();
                 break;

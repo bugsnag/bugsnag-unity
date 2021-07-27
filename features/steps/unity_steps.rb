@@ -30,6 +30,7 @@ When("I run the {string} mobile scenario") do |scenario|
       "Disable Breadcrumbs" => 9,
       "Start SDK" => 10,
       "Max Breadcrumbs" => 11,
+      "Disable Uncaught Exceptions" => 12,
   }
   number = lookup[scenario]
   $logger.debug "#{scenario}' has dial-in code #{number}"
