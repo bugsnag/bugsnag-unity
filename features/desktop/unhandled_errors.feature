@@ -13,6 +13,7 @@ Feature: Reporting unhandled events
             | Main.RunScenario(System.String scenario)         | |
             | Main.Start()               | |
 
+    @skip_webgl
     Scenario: Forcing uncaught exceptions to be unhandled
         When I run the game in the "UncaughtExceptionAsUnhandled" state
         And I wait to receive an error
@@ -23,6 +24,20 @@ Feature: Reporting unhandled events
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
             | Main.RunScenario(System.String scenario)         |
+            | Main.Start()               |
+
+    @webgl_only
+    Scenario: Forcing uncaught exceptions to be unhandled
+        When I run the game in the "UncaughtExceptionAsUnhandled" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "ExecutionEngineException"
+        And the exception "message" equals "Invariant state failure"
+        And the event "unhandled" is true
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | Main.UncaughtExceptionAsUnhandled() |
+            | Main.RunScenario(System.String scenario) |
             | Main.Start()               |
 
     Scenario: Reporting an assertion failure
@@ -59,25 +74,21 @@ Feature: Reporting unhandled events
 
     Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
         When I run the game in the "UncaughtExceptionOutsideNotifyReleaseStages" state
-        And I wait for 5 seconds
         Then I should receive no requests
 
     Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
         When I run the game in the "NativeCrashOutsideNotifyReleaseStages" state
         And I run the game in the "(noop)" state
-        And I wait for 5 seconds
         Then I should receive no requests
 
     Scenario: Reporting an uncaught exception when AutoNotify = false
         When I run the game in the "UncaughtExceptionWithoutAutoNotify" state
-        And I wait for 5 seconds
         Then I should receive no requests
 
     @macos_only
     Scenario: Reporting a native crash when AutoNotify = false
         When I run the game in the "NativeCrashWithoutAutoNotify" state
         And I run the game in the "(noop)" state
-        And I wait for 5 seconds
         Then I should receive no requests
 
     @macos_only

@@ -18,6 +18,7 @@ namespace BugsnagUnity
             AppVersion = Application.version;
             AutoTrackSessions = true;
             AutoDetectErrors = true;
+            AutoDetectAnrs = true;
             ReleaseStage = "production";
             Endpoint = new Uri(DefaultEndpoint);
             SessionEndpoint = new Uri(DefaultSessionEndpoint);
@@ -110,7 +111,7 @@ namespace BugsnagUnity
             set { _autoDetectErrors = value; }
         }
 
-        public virtual bool AutoDetectAnrs { get; set; } = false;
+        public virtual bool AutoDetectAnrs { get; set; } = true;
 
         private bool _autoTrackSessions = true;
 

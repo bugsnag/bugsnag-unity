@@ -103,7 +103,7 @@ This will generate the following files:
 
 #### MacOS
 
-1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh`
+1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh macos`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
@@ -120,7 +120,7 @@ This will generate the test fixture app:
 Building the test fixture on Windows requires a Git bash terminal.
 
 In a Git bash terminal:
-1. `UNITY_VERSION=2018.4.36f1 ./features/scripts/build_maze_runner.sh`
+1. `UNITY_VERSION=2018.4.36f1 ./features/scripts/build_maze_runner.sh windows`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
@@ -141,7 +141,7 @@ dependencies:
 1. Run `bundle install` if you haven't run end-to-end tests before
 1. To run the tests:
     ```shell script
-    bundle exec maze-runner --app=features/fixtures/maze_runner/Mazerunner.app --os=macos
+    bundle exec maze-runner --app=features/fixtures/maze_runner/build/MacOS/Mazerunner.app --os=macos
     ```
 
 #### Windows
@@ -154,4 +154,16 @@ In the Ubuntu terminal:
 1. To run the tests:
     ```shell script
     bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows
+    ```
+
+#### WebGL
+
+The WebGL e2e tests depend on Chrome and `chromedriver` (available from Homebrew).
+
+In the Ubuntu terminal:
+1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
+1. Run `bundle install` if you haven't run end-to-end tests before
+1. To run the tests:
+    ```shell script
+    bundle exec maze-runner --farm=local --browser=chrome
     ```

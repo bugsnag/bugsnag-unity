@@ -2,13 +2,19 @@ require 'fileutils'
 
 $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
 
-Before('@macos_only') do |scenario|
+Before('@skip_webgl') do |_scenario|
+  skip_this_scenario("Skipping scenario") unless Maze.config.browser.nil?
+end
+
+Before('@webgl_only') do |_scenario|
+  skip_this_scenario("Skipping scenario") if Maze.config.browser.nil?
+end
+
+Before('@macos_only') do |_scenario|
   skip_this_scenario("Skipping scenario") unless Maze.config.os == 'macos'
 end
 
 AfterConfiguration do |_config|
-  raise '--device or --os option must be set (to "macos" or "windows"' if Maze.config.os.nil? and Maze.config.device.nil?
-
   Maze.config.enforce_bugsnag_integrity = false
 
   if Maze.config.os&.downcase == 'macos'
@@ -18,6 +24,10 @@ AfterConfiguration do |_config|
   elsif Maze.config.os&.downcase == 'windows'
     # Allow the necessary environment variables to be passed from Ubuntu (under WSL) to the Windows test fixture
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
+  elsif Maze.config.browser != nil # WebGL
+    Maze.config.document_server_root = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
+  elsif Maze.config.device.nil?
+    raise '--browser (WebGL), --device (for Android/iOS) or --os (for desktop) option must be set'
   end
 end
 

@@ -1,5 +1,6 @@
 Feature: Session Tracking
 
+    @skip_webgl
     Scenario Outline: Automatically receiving a session
         When I run the game in the "<scenario>" state
         And I wait to receive a session
@@ -27,6 +28,28 @@ Feature: Session Tracking
             | AutoSession                      |
             | AutoSessionInNotifyReleaseStages |
 
+    @webgl_only
+    Scenario Outline: Automatically receiving a session
+        When I run the game in the "<scenario>" state
+        And I wait to receive a session
+        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        And the session payload field "app.version" is not null
+        And the session payload field "app.releaseStage" equals "production"
+        And the session payload field "app.type" equals "WebGL"
+        And the session payload field "device.osVersion" is not null
+        And the session payload field "device.osName" equals "Unix"
+        And the session payload field "device.model" is null
+        And the session payload field "device.manufacturer" is null
+        And the session "id" is not null
+        And the session "startedAt" is not null
+        And the session "user.id" is not null
+        And the session "user.email" is null
+        And the session "user.name" is null
+        Examples:
+            | scenario                         |
+            | AutoSession                      |
+            | AutoSessionInNotifyReleaseStages |
+
     @macos_only
     Scenario: Automatically receiving a session before a native crash
         When I run the game in the "AutoSessionNativeCrash" state
@@ -40,6 +63,7 @@ Feature: Session Tracking
         And the error payload field "events.0.session.id" is stored as the value "session_id"
         And the session payload field "sessions.0.id" equals the stored value "session_id"
 
+    @skip_webgl
     Scenario Outline: Manually logging a session
         When I run the game in the "<scenario>" state
         And I wait to receive a session
@@ -58,6 +82,29 @@ Feature: Session Tracking
             | macos | Apple |
             | windows | PC |
 
+        And the session "id" is not null
+        And the session "startedAt" is not null
+        And the session "user.id" is not null
+        And the session "user.email" is null
+        And the session "user.name" is null
+
+        Examples:
+            | scenario                           |
+            | ManualSession                      |
+            | ManualSessionInNotifyReleaseStages |
+
+    @webgl_only
+    Scenario Outline: Manually logging a session
+        When I run the game in the "<scenario>" state
+        And I wait to receive a session
+        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        And the session payload field "app.version" is not null
+        And the session payload field "app.releaseStage" equals "production"
+        And the session payload field "app.type" equals "WebGL"
+        And the session payload field "device.osVersion" is not null
+        And the session payload field "device.osName" equals "Unix"
+        And the session payload field "device.model" is null
+        And the session payload field "device.manufacturer" is null
         And the session "id" is not null
         And the session "startedAt" is not null
         And the session "user.id" is not null
