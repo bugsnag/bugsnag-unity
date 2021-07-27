@@ -384,7 +384,7 @@ namespace BugsnagUnity
 
         public void SetAutoDetectErrors(bool autoDetectErrors)
         {
-            // set the AutoNotify property on Configuration, as it currently controls whether C# errors are reported
+            // set the property on Configuration, as it currently controls whether C# errors are reported
             Configuration.AutoDetectErrors = autoDetectErrors;
 
             // propagate the change to the native property also
