@@ -33,6 +33,13 @@ public class MobileScenarioRunner : MonoBehaviour {
         LeaveBreadcrumbTuple();
     }
 
+    private void StartBugsnagNoErrorsEnabled()
+    {
+        var config = GetMobileTestingConfig();
+        config.EnabledErrorTypes.SetAllDisabled();
+        Bugsnag.Start(config);
+    }
+
     public void TestDisabledBreadcrumbs()
     {
         var config = GetMobileTestingConfig();
@@ -140,7 +147,8 @@ public class MobileScenarioRunner : MonoBehaviour {
             {"09", "Disable Breadcrumbs" },
             {"10", "Start SDK" },
             {"11", "Max Breadcrumbs" },
-            {"12", "Disable Uncaught Exceptions" }
+            {"12", "Disable Uncaught Exceptions" },
+            {"13", "Start No Errors Enabled" }
 
         };
 
@@ -160,6 +168,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Start No Errors Enabled":
+                StartBugsnagNoErrorsEnabled();
+                break;
             case "Disable Uncaught Exceptions":
                 TestDisabledUncaughtExceptions();
                 break;
