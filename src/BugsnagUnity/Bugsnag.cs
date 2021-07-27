@@ -95,7 +95,7 @@ namespace BugsnagUnity
         /// is recommended that you set this value by Configuration at init rather than this method.
         /// </summary>
         /// <param name="autoNotify"></param>
-        [Obsolete("SetAutoNotify is depricated, please use SetAutoDetectErrors instead.", false)]
+        [Obsolete("SetAutoNotify is deprecated, please use SetAutoDetectErrors instead.", false)]
         public static void SetAutoNotify(bool autoNotify)
         {
             SetAutoDetectErrors(autoNotify);

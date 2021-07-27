@@ -98,7 +98,7 @@ namespace BugsnagUnity
 
         private bool _autoDetectErrors = true; 
 
-        [Obsolete("AutoNotify is depricated, please use AutoDetectErrors instead.", false)]
+        [Obsolete("AutoNotify is deprecated, please use AutoDetectErrors instead.", false)]
         public virtual bool AutoNotify
         {
             get { return _autoDetectErrors; }
@@ -115,7 +115,7 @@ namespace BugsnagUnity
 
         private bool _autoTrackSessions = true;
 
-        [Obsolete("AutoCaptureSessions is depricated, please use AutoTrackSessions instead.", false)]
+        [Obsolete("AutoCaptureSessions is deprecated, please use AutoTrackSessions instead.", false)]
         public virtual bool AutoCaptureSessions
         {
             get { return _autoTrackSessions; }
