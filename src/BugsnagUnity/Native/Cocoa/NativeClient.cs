@@ -68,27 +68,27 @@ namespace BugsnagUnity
         private void SetEnabledErrorTypes(IntPtr obj, IConfiguration config)
         {
             var enabledTypes = new List<string>();
-            if (config.EnabledErrorTypes.AppHangs)
+            if (config.IsErrorTypeEnabled(ErrorTypes.AppHangs))
             {
                 enabledTypes.Add("AppHangs");
             }
-            if (config.EnabledErrorTypes.UnhandledExceptions)
+            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
             {
                 enabledTypes.Add("UnhandledExceptions");
             }
-            if (config.EnabledErrorTypes.Signals)
+            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
             {
                 enabledTypes.Add("Signals");
             }
-            if (config.EnabledErrorTypes.CppExceptions)
+            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
             {
                 enabledTypes.Add("CppExceptions");
             }
-            if (config.EnabledErrorTypes.MachExceptions)
+            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
             {
                 enabledTypes.Add("MachExceptions");
             }
-            if (config.EnabledErrorTypes.OOMs)
+            if (config.IsErrorTypeEnabled(ErrorTypes.OOMs))
             {
                 enabledTypes.Add("OOMs");
             }

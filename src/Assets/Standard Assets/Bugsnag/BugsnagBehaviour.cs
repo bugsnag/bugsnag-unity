@@ -15,24 +15,6 @@ namespace BugsnagUnity
 {
     public class BugsnagBehaviour : MonoBehaviour
     {
-        [Serializable]
-        [Flags]
-        private enum BugsnagBehaviourErrorTypes
-        {
-            ANRs = 0,
-            AppHangs = 1,
-            CppExceptions = 2,
-            MachExceptions = 3,
-            NdkCrashes = 4,
-            OOMs = 5,
-            Signals = 6,
-            UnhandledExceptions = 7,
-            UnityLogLogs = 8,
-            UnityWarningLogs = 9,
-            UnityAssertLogs = 10,
-            UnityErrorLogs = 11
-        }
-
         private class LabelOverride : PropertyAttribute
         {
             public string label;
@@ -116,9 +98,8 @@ namespace BugsnagUnity
         [EnumFlags]
         public BreadcrumbType EnabledBreadcrumbTypes = (BreadcrumbType)(-1);
 
-        [SerializeField]
         [EnumFlags]
-        private BugsnagBehaviourErrorTypes EnabledErrorTypes = (BugsnagBehaviourErrorTypes)(-1);
+        public ErrorTypes EnabledErrorTypes = (ErrorTypes)(-1);
 
         /// <summary>
         /// Awake is called when the script instance is being loaded.
@@ -143,73 +124,25 @@ namespace BugsnagUnity
             Bugsnag.Start(config);
         }
 
-        private ErrorTypes GetEnabledErrorTypes()
+
+        private ErrorTypes[] GetEnabledErrorTypes()
         {
+            List<ErrorTypes> selectedElements = new List<ErrorTypes>();
 
-            List<BugsnagBehaviourErrorTypes> selectedElements = new List<BugsnagBehaviourErrorTypes>();
-
-            for (int i = 0; i < Enum.GetValues(typeof(BugsnagBehaviourErrorTypes)).Length; i++)
+            for (int i = 0; i < Enum.GetValues(typeof(ErrorTypes)).Length; i++)
             {
                 int layer = 1 << i;
                 if (((int)EnabledErrorTypes & layer) != 0)
                 {
-                    var selectedType = (BugsnagBehaviourErrorTypes)Enum.GetValues(typeof(BugsnagBehaviourErrorTypes)).GetValue(i);
+                    var selectedType = (ErrorTypes)Enum.GetValues(typeof(ErrorTypes)).GetValue(i);
                     selectedElements.Add(selectedType);
                 }
             }
 
-            var enabledTypes = new ErrorTypes();
+            var allSelected = selectedElements.Count == Enum.GetValues(typeof(ErrorTypes)).Length;
 
-            enabledTypes.SetAllDisabled();
-
-            foreach (var errorType in selectedElements)
-            {
-                switch (errorType)
-                {
-                    case BugsnagBehaviourErrorTypes.ANRs:
-                        enabledTypes.ANRs = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.AppHangs:
-                        enabledTypes.AppHangs = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.CppExceptions:
-                        enabledTypes.CppExceptions = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.MachExceptions:
-                        enabledTypes.MachExceptions = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.NdkCrashes:
-                        enabledTypes.NdkCrashes = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.OOMs:
-                        enabledTypes.OOMs = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.Signals:
-                        enabledTypes.Signals = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.UnhandledExceptions:
-                        enabledTypes.UnhandledExceptions = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.UnityLogLogs:
-                        enabledTypes.UnityLogLogs = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.UnityWarningLogs:
-                        enabledTypes.UnityWarningLogs = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.UnityAssertLogs:
-                        enabledTypes.UnityAssertLogs = true;
-                        break;
-                    case BugsnagBehaviourErrorTypes.UnityErrorLogs:
-                        enabledTypes.UnityErrorLogs = true;
-                        break;
-                }
-
-            }
-
-            return enabledTypes;
-
+            return allSelected ? null : selectedElements.ToArray();
         }
-
 
         private BreadcrumbType[] GetEnabledBreadcrumbTypes()
         {

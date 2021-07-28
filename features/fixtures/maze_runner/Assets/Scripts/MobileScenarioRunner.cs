@@ -33,31 +33,14 @@ public class MobileScenarioRunner : MonoBehaviour {
         LeaveBreadcrumbTuple();
     }
 
-    private void StartBugsnagNoErrorsEnabled()
-    {
-        var config = GetMobileTestingConfig();
-        config.EnabledErrorTypes.SetAllDisabled();
-        Bugsnag.Start(config);
-    }
-
     public void TestDisabledBreadcrumbs()
     {
         var config = GetMobileTestingConfig();
         config.NotifyLevel = LogType.Exception;
         config.EnabledBreadcrumbTypes = new BreadcrumbType[0];
-        Bugsnag.Start(config);
-        throw new System.Exception("Disabled Breadcrumbs");
-    }
-
-    private void TestDisabledUncaughtExceptions()
-    {
-        var config = GetMobileTestingConfig();
-        config.NotifyLevel = LogType.Exception;
-        config.EnabledErrorTypes.SetAllDisabled();
         config.AutoCaptureSessions = false;
         Bugsnag.Start(config);
-        Bugsnag.Notify(new System.Exception("Notify"));
-        NativeException();
+        throw new System.Exception("Disabled Breadcrumbs");
     }
 
     public void TestMaxBreadcrumbs()
@@ -71,6 +54,16 @@ public class MobileScenarioRunner : MonoBehaviour {
             Bugsnag.LeaveBreadcrumb("Crumb " + i);
         }
         throw new System.Exception("Max Breadcrumbs");
+    }
+
+    private void TestDisableNativeErrors()
+    {
+        var config = GetMobileTestingConfig();
+        config.NotifyLevel = LogType.Exception;
+        config.EnabledErrorTypes = new ErrorTypes[0];
+        config.AutoCaptureSessions = false;
+        Bugsnag.Start(config);
+        NativeException();
     }
 
     private IEnumerator WaitAndDo(Action action)
@@ -147,8 +140,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             {"09", "Disable Breadcrumbs" },
             {"10", "Start SDK" },
             {"11", "Max Breadcrumbs" },
-            {"12", "Disable Uncaught Exceptions" },
-            {"13", "Start No Errors Enabled" }
+            {"12", "Disable Native Errors" }
 
         };
 
@@ -168,11 +160,8 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
-            case "Start No Errors Enabled":
-                StartBugsnagNoErrorsEnabled();
-                break;
-            case "Disable Uncaught Exceptions":
-                TestDisabledUncaughtExceptions();
+            case "Disable Native Errors":
+                TestDisableNativeErrors();
                 break;
             case "throw Exception":
                 TriggerThrowException();

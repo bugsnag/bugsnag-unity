@@ -1,38 +1,27 @@
 ﻿using System;
 namespace BugsnagUnity
 {
-    public class ErrorTypes
+    [Serializable]
+    [Flags]
+    public enum ErrorTypes
     {
+       
+        ANRs = 0,
 
-        public bool ANRs = true;
-        public bool AppHangs = true;
-        public bool CppExceptions = true;
-        public bool MachExceptions = true;
-        public bool NdkCrashes = true;
-        public bool OOMs = true;
-        public bool Signals = true;
-        public bool UnhandledExceptions = true;
-        public bool UnityLogLogs = true;
-        public bool UnityWarningLogs = true;
-        public bool UnityAssertLogs = true;
-        public bool UnityErrorLogs = true;
+        AppHangs = 1,
 
+        OOMs = 2,
 
-        public void SetAllDisabled()
-        {
-            ANRs = false;
-            AppHangs = false;
-            CppExceptions = false;
-            MachExceptions = false;
-            NdkCrashes = false;
-            OOMs = false;
-            Signals = false;
-            UnhandledExceptions = false;
-            UnityLogLogs = false;
-            UnityWarningLogs = false;
-            UnityAssertLogs = false;
-            UnityErrorLogs = false;
-        }
+        NativeCrashes = 3,
 
+        UnhandledExceptions = 4,
+
+        UnityLogLogs = 5,
+
+        UnityWarningLogs = 6,
+
+        UnityAssertLogs = 7,
+
+        UnityErrorLogs = 8
     }
 }

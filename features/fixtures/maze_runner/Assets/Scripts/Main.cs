@@ -137,17 +137,15 @@ public class Main : MonoBehaviour
         switch (scenario)
         {
             case "EnableUnhandledExceptions":
-                config.EnabledErrorTypes.SetAllDisabled();
-                config.EnabledErrorTypes.UnhandledExceptions = true;
+                config.EnabledErrorTypes = new ErrorTypes[] {ErrorTypes.UnhandledExceptions };
                 config.NotifyLevel = LogType.Log;
                 break;
             case "EnableLogLogs":
-                config.EnabledErrorTypes.SetAllDisabled();
-                config.EnabledErrorTypes.UnityLogLogs = true;
+                config.EnabledErrorTypes = new ErrorTypes[] { ErrorTypes.UnityLogLogs };
                 config.NotifyLevel = LogType.Log;
                 break;
             case "DisableAllErrorTypes":
-                config.EnabledErrorTypes.SetAllDisabled();
+                config.EnabledErrorTypes = new ErrorTypes[0];
                 config.NotifyLevel = LogType.Log;
                 break;
             case "NewSession":

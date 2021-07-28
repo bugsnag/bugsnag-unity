@@ -1,12 +1,13 @@
-Feature: android breadcrumbs
+Feature: Enabled Error Types
 
     Background:
         Given I wait for the mobile game to start
 
-    Scenario: Disable Unhandled Exceptions
-        When I run the "Disable Uncaught Exceptions" mobile scenario
-        And I wait to receive an error
-        And I discard the oldest error
-        Then I should receive no requests
+    Scenario: Disable Native Errors
+        When I run the "Disable Native Errors" mobile scenario
+        And I wait for 8 seconds
+        And I relaunch the Unity mobile app
+        When I run the "Start SDK" mobile scenario
+        Then I should receive no errors
 
 
