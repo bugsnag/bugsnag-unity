@@ -7,13 +7,13 @@ require 'cgi'
 When("I wait for the mobile game to start") do
   # Wait for a fixed time period
   # TODO: PLAT-6655 Remove the Unity splash screen so we don't have to wait so long
-  sleep 5
+  sleep 3
 end
 
 When('I relaunch the Unity mobile app') do
   Maze.driver.launch_app
   # Wait for a fixed time period
-  sleep 5
+  sleep 3
 end
 
 When("I run the {string} mobile scenario") do |scenario|
