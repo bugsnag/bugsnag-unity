@@ -175,7 +175,8 @@ namespace BugsnagUnity
         /// <param name="logType"></param>
         void Notify(string condition, string stackTrace, LogType logType)
         {
-            if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
+
+            if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel) && Configuration.IsUnityLogErrorTypeEnabled(logType))
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
                 var shouldSend = Exception.ShouldSend(logMessage)

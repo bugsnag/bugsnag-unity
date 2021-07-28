@@ -11,6 +11,12 @@ namespace BugsnagUnity
 
         bool ReportUncaughtExceptionsAsHandled { get; set; }
 
+        ErrorTypes[] EnabledErrorTypes { get; set; }
+
+        bool IsUnityLogErrorTypeEnabled(LogType logType);
+
+        bool IsErrorTypeEnabled(ErrorTypes errorType);
+
         TimeSpan MaximumLogsTimePeriod { get; }
 
         LogType BreadcrumbLogLevel { get; set; }

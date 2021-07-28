@@ -54,6 +54,9 @@ extern "C" {
   void bugsnag_populateUser(bugsnag_user *user);
   void bugsnag_setUser(char *userId, char *userName, char *userEmail);
   void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
+
+  void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
+
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
@@ -142,6 +145,49 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
             if([typeString isEqualToString:@"Error"])
             {
                 ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeError;
+            }
+        }
+      }
+}
+
+void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count){
+
+    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = NO;
+    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = NO;
+    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.signals = NO;
+    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = NO;
+    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.machExceptions = NO;
+    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.ooms = NO;
+
+    for (int i = 0; i < count; i++) {
+        const char *enabledType = types[i];
+        if (enabledType != nil) {
+				
+			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
+
+            if([typeString isEqualToString:@"AppHangs"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = YES;
+            }
+            if([typeString isEqualToString:@"UnhandledExceptions"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = YES;
+            }
+            if([typeString isEqualToString:@"Signals"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.signals = YES;
+            }
+            if([typeString isEqualToString:@"CppExceptions"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = YES;
+            }
+            if([typeString isEqualToString:@"MachExceptions"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.machExceptions = YES;
+            }
+            if([typeString isEqualToString:@"OOMs"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.ooms = YES;
             }
         }
       }

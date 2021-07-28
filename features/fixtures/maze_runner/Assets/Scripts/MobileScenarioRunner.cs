@@ -38,6 +38,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         var config = GetMobileTestingConfig();
         config.NotifyLevel = LogType.Exception;
         config.EnabledBreadcrumbTypes = new BreadcrumbType[0];
+        config.AutoCaptureSessions = false;
         Bugsnag.Start(config);
         throw new System.Exception("Disabled Breadcrumbs");
     }
@@ -53,6 +54,16 @@ public class MobileScenarioRunner : MonoBehaviour {
             Bugsnag.LeaveBreadcrumb("Crumb " + i);
         }
         throw new System.Exception("Max Breadcrumbs");
+    }
+
+    private void TestDisableNativeErrors()
+    {
+        var config = GetMobileTestingConfig();
+        config.NotifyLevel = LogType.Exception;
+        config.EnabledErrorTypes = new ErrorTypes[0];
+        config.AutoCaptureSessions = false;
+        Bugsnag.Start(config);
+        NativeException();
     }
 
     private IEnumerator WaitAndDo(Action action)
@@ -128,7 +139,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             {"08", "Change scene" },
             {"09", "Disable Breadcrumbs" },
             {"10", "Start SDK" },
-            {"11", "Max Breadcrumbs" }
+            {"11", "Max Breadcrumbs" },
+            {"12", "Disable Native Errors" }
+
         };
 
         ScenarioName.text = lookup[code] + "#";
@@ -147,6 +160,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Disable Native Errors":
+                TestDisableNativeErrors();
+                break;
             case "throw Exception":
                 TriggerThrowException();
                 break;
