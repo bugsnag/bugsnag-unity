@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using BugsnagUnity.Payload;
+using BugsnagUnity;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -13,7 +15,6 @@ namespace BugsnagUnity
 {
     public class BugsnagBehaviour : MonoBehaviour
     {
-
         private class LabelOverride : PropertyAttribute
         {
             public string label;
@@ -97,6 +98,9 @@ namespace BugsnagUnity
         [EnumFlags]
         public BreadcrumbType EnabledBreadcrumbTypes = (BreadcrumbType)(-1);
 
+        [EnumFlags]
+        public ErrorTypes EnabledErrorTypes = (ErrorTypes)(-1);
+
         /// <summary>
         /// Awake is called when the script instance is being loaded.
         /// We use this to pull the fields that have been set in the
@@ -116,9 +120,29 @@ namespace BugsnagUnity
             config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
             config.DotnetApiCompatibility = FindDotnetApiCompatibility();
             config.EnabledBreadcrumbTypes = GetEnabledBreadcrumbTypes();
+            config.EnabledErrorTypes = GetEnabledErrorTypes();
             Bugsnag.Start(config);
         }
 
+
+        private ErrorTypes[] GetEnabledErrorTypes()
+        {
+            List<ErrorTypes> selectedElements = new List<ErrorTypes>();
+
+            for (int i = 0; i < Enum.GetValues(typeof(ErrorTypes)).Length; i++)
+            {
+                int layer = 1 << i;
+                if (((int)EnabledErrorTypes & layer) != 0)
+                {
+                    var selectedType = (ErrorTypes)Enum.GetValues(typeof(ErrorTypes)).GetValue(i);
+                    selectedElements.Add(selectedType);
+                }
+            }
+
+            var allSelected = selectedElements.Count == Enum.GetValues(typeof(ErrorTypes)).Length;
+
+            return allSelected ? null : selectedElements.ToArray();
+        }
 
         private BreadcrumbType[] GetEnabledBreadcrumbTypes()
         {
@@ -188,3 +212,5 @@ namespace BugsnagUnity
 #endif
     }
 }
+
+

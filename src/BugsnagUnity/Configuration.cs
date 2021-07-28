@@ -109,6 +109,36 @@ namespace BugsnagUnity
         public virtual string DotnetScriptingRuntime { get; set; }
 
         public virtual string DotnetApiCompatibility { get; set; }
+
+        public ErrorTypes[] EnabledErrorTypes { get; set; }
+
+        public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)
+        {
+            return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);
+        }
+
+        public virtual bool IsUnityLogErrorTypeEnabled(LogType logType)
+        {
+            if (EnabledErrorTypes == null)
+            {
+                return true;
+            }
+            switch (logType)
+            {
+                case LogType.Error:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnityErrorLogs);
+                case LogType.Warning:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnityWarningLogs);
+                case LogType.Log:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnityLogLogs);
+                case LogType.Exception:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnhandledExceptions);
+                case LogType.Assert:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnityAssertLogs);
+                default:
+                    return false;
+            }
+        }
     }
 }
 

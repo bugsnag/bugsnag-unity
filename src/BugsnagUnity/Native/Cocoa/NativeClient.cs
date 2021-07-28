@@ -36,6 +36,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
             SetEnabledBreadcrumbTypes(obj,config);
+            SetEnabledErrorTypes(obj, config);
             if (config.Context != null)
             {
                 NativeCode.bugsnag_setContextConfig(obj, config.Context);
@@ -62,6 +63,37 @@ namespace BugsnagUnity
                 enabledTypes.Add(typeName);
             }
             NativeCode.bugsnag_setEnabledBreadcrumbTypes(obj, enabledTypes.ToArray(),enabledTypes.Count);
+        }
+
+        private void SetEnabledErrorTypes(IntPtr obj, IConfiguration config)
+        {
+            var enabledTypes = new List<string>();
+            if (config.IsErrorTypeEnabled(ErrorTypes.AppHangs))
+            {
+                enabledTypes.Add("AppHangs");
+            }
+            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
+            {
+                enabledTypes.Add("UnhandledExceptions");
+            }
+            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
+            {
+                enabledTypes.Add("Signals");
+            }
+            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
+            {
+                enabledTypes.Add("CppExceptions");
+            }
+            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
+            {
+                enabledTypes.Add("MachExceptions");
+            }
+            if (config.IsErrorTypeEnabled(ErrorTypes.OOMs))
+            {
+                enabledTypes.Add("OOMs");
+            }
+
+            NativeCode.bugsnag_setEnabledErrorTypes(obj, enabledTypes.ToArray(), enabledTypes.Count);
         }
 
         public void PopulateApp(App app)
