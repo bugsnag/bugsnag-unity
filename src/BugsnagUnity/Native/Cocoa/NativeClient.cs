@@ -29,7 +29,6 @@ namespace BugsnagUnity
         IntPtr CreateNativeConfig(IConfiguration config)
         {
             IntPtr obj = NativeCode.bugsnag_createConfiguration(config.ApiKey);
-            NativeCode.bugsnag_setAppHangs(obj, true);
             NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoNotify);
             NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);

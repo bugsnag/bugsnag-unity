@@ -31,7 +31,6 @@ Feature: Android smoke tests for C# errors
         And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
         And the event "app.inForeground" equals "true"
-        And the event "app.isLaunching" equals "false"
         And the error payload field "events.0.app.memoryUsage" is not null
         And the event "app.name" equals "Mazerunner"
         And the event "app.lowMemory" equals "false"
@@ -112,7 +111,6 @@ Feature: Android smoke tests for C# errors
         And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
         And the event "app.inForeground" equals "true"
-        And the event "app.isLaunching" equals "false"
         And the error payload field "events.0.app.memoryUsage" is not null
         And the event "app.name" equals "Mazerunner"
         And the event "app.lowMemory" equals "false"
@@ -149,8 +147,6 @@ Feature: Android smoke tests for C# errors
 
         # Breadcrumbs
         And the event has a "state" breadcrumb named "Bugsnag loaded"
-        And the event has a "manual" breadcrumb named "String breadcrumb clicked"
-        And the event has a "navigation" breadcrumb named "Tuple breadcrumb clicked"
 
         # Context
         And the event "context" equals "My context"

@@ -5,7 +5,7 @@ Feature: iOS smoke tests for C# errors
         Given I wait for the mobile game to start
 
     Scenario: Uncaught C# exception
-        When I run the "throw Exception" mobile scenario
+        When I run the "throw Exception with breadcrumbs" mobile scenario
         Then I wait to receive an error
 
         # Exception details

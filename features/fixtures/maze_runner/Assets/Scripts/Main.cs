@@ -24,7 +24,6 @@ public class Main : MonoBehaviour
     {
 
 #if UNITY_ANDROID || UNITY_IOS
-        Debug.Log("Mobile detected");
         return;
 #endif
 

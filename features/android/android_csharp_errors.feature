@@ -99,7 +99,7 @@ Feature: Android smoke tests for C# errors
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" equals "MobileScenarioRunner.ThrowException()"
+        And the event "exceptions.0.stacktrace.0.method" equals "MobileScenarioRunner.DoTestAction(System.String scenarioName)"
         And the event "exceptions.0.stacktrace.0.file" is not null
         And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
         And the error payload field "events.0.threads" is null
@@ -113,7 +113,6 @@ Feature: Android smoke tests for C# errors
         And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
         And the event "app.inForeground" equals "true"
-        And the event "app.isLaunching" equals "false"
         And the error payload field "events.0.app.memoryUsage" is not null
         And the event "app.name" equals "Mazerunner"
         And the event "app.lowMemory" equals "false"
@@ -150,8 +149,6 @@ Feature: Android smoke tests for C# errors
 
         # Breadcrumbs
         And the event has a "state" breadcrumb named "Bugsnag loaded"
-        And the event has a "manual" breadcrumb named "String breadcrumb clicked"
-        And the event has a "navigation" breadcrumb named "Tuple breadcrumb clicked"
 
         # Context
         And the event "context" equals "My context"

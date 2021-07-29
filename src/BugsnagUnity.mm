@@ -27,8 +27,6 @@ extern "C" {
 
   void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
-  void bugsnag_setAppHangs(const void *configuration, bool appHangs);
-
   void bugsnag_setAutoNotify(bool autoNotify);
 
   void bugsnag_setContext(const void *configuration, char *context);
@@ -195,10 +193,6 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
-}
-
-void bugsnag_setAppHangs(const void *configuration, bool appHangs) {
-  ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = appHangs;
 }
 
 void bugsnag_setAutoNotify(bool autoNotify) {
