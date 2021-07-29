@@ -61,8 +61,7 @@ Feature: iOS smoke tests for C# errors
 
         # Breadcrumbs
         And the event has a "state" breadcrumb named "Bugsnag loaded"
-        And the event has a "manual" breadcrumb named "String breadcrumb clicked"
-        And the event has a "navigation" breadcrumb named "Tuple breadcrumb clicked"
+
 
         # Context
         And the event "context" equals "My context"
@@ -133,8 +132,6 @@ Feature: iOS smoke tests for C# errors
 
         # Breadcrumbs
         And the event has a "state" breadcrumb named "Bugsnag loaded"
-        And the event has a "manual" breadcrumb named "String breadcrumb clicked"
-        And the event has a "navigation" breadcrumb named "Tuple breadcrumb clicked"
 
         # Context
         And the event "context" equals "Callback Context"
