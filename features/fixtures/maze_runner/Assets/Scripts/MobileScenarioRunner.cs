@@ -24,7 +24,10 @@ public class MobileScenarioRunner : MonoBehaviour {
             {"09", "Disable Breadcrumbs" },
             {"10", "Start SDK" },
             {"11", "Max Breadcrumbs" },
-            {"12", "Disable Native Errors" }
+            {"12", "Disable Native Errors" },
+            {"13", "throw Exception with breadcrumbs" },
+            {"14", "Start SDK no errors" }
+
         };
 
     private string GetScenarioNameFromDialCode(string code)
@@ -82,6 +85,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Start SDK no errors":
             case "Disable Native Errors":
                 config.EnabledErrorTypes = new ErrorTypes[0];
                 break;
@@ -108,11 +112,17 @@ public class MobileScenarioRunner : MonoBehaviour {
         switch (scenarioName)
         {
             case "Start SDK":
+            case "Start SDK no errors":
                 break;
             case "Disable Native Errors":
                 NativeException();
                 break;
             case "throw Exception":
+                ThrowException();
+                break;
+            case "throw Exception with breadcrumbs":
+                LeaveBreadcrumbString();
+                LeaveBreadcrumbTuple();
                 ThrowException();
                 break;
             case "Log error":
@@ -130,7 +140,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 LogCaughtException();
                 break;
             case "NDK signal":
-                Invoke("NdkSignal",3);
+                NdkSignal();
                 break;
             case "Notify caught exception":
                 NotifyCaughtException();

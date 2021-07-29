@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class MobileNative : MonoBehaviour {
 
-#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_TVOS || UNITY_OSX
+#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
+
     [DllImport("__Internal")]
-    private static extern void framework_crash_me();
+    private static extern void TriggerCocoaCppException();
+
 #endif
 
     public static void Crash()
@@ -30,8 +32,8 @@ public class MobileNative : MonoBehaviour {
 
     private static void IOSCrash()
     {
-#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_TVOS || UNITY_OSX
-        framework_crash_me();
+#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
+        TriggerCocoaCppException();
 #endif
     }
 
