@@ -29,7 +29,7 @@ namespace BugsnagUnity
         IntPtr CreateNativeConfig(IConfiguration config)
         {
             IntPtr obj = NativeCode.bugsnag_createConfiguration(config.ApiKey);
-            NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoNotify);
+            NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoDetectErrors);
             NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
             NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
@@ -263,9 +263,9 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setContext(NativeConfiguration, context);
         }
 
-        public void SetAutoNotify(bool autoNotify)
+        public void SetAutoDetectErrors(bool autoDetectErrors)
         {
-            NativeCode.bugsnag_setAutoNotify(autoNotify);
+            NativeCode.bugsnag_setAutoNotify(autoDetectErrors);
         }
 
         public void SetAutoDetectAnrs(bool autoDetectAnrs)

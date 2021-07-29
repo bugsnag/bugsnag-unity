@@ -71,7 +71,7 @@ namespace BugsnagUnity
         public void SetContext(string context)
         {
         }
-        public void SetAutoNotify(bool autoNotify)
+        public void SetAutoDetectErrors(bool autoDetectErrors)
         {
         }
 

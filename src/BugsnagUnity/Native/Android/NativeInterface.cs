@@ -183,7 +183,7 @@ namespace BugsnagUnity
                 obj.Call("setEnabledErrorTypes", errorTypes);
             }
             obj.Call("setAutoTrackSessions", false);
-            obj.Call("setAutoDetectErrors", config.AutoNotify);
+            obj.Call("setAutoDetectErrors", config.AutoDetectErrors);
 
             // set endpoints
             var notify = config.Endpoint.ToString();
@@ -280,7 +280,7 @@ namespace BugsnagUnity
             AndroidJNI.PopLocalFrame(System.IntPtr.Zero);
         }
 
-        public void SetAutoNotify(bool newValue)
+        public void SetAutoDetectErrors(bool newValue)
         {
             CallNativeVoidMethod("setAutoNotify", "(Z)V", new object[] { newValue });
         }
