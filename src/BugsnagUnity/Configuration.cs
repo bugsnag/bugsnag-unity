@@ -112,6 +112,8 @@ namespace BugsnagUnity
 
         public ErrorTypes[] EnabledErrorTypes { get; set; }
 
+        public int AppHangThresholdMillis { get; set; } = 5000;
+
         public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)
         {
             return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);

@@ -63,5 +63,7 @@ namespace BugsnagUnity
         string DotnetScriptingRuntime { get; set; }
 
         string DotnetApiCompatibility { get; set; }
+
+        int AppHangThresholdMillis { get; set; }
     }
 }
