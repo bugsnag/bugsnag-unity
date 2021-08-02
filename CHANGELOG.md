@@ -4,6 +4,8 @@
 
 ### Enhancements
 
+* Add `AppHangThresholdMillis` to set the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#apphangthresholdmillis) [#347](https://github.com/bugsnag/bugsnag-unity/pull/347)
+
 * Add `EnabledErrorTypes` configuration option to enable/disable different types of errors [#341](https://github.com/bugsnag/bugsnag-unity/pull/341)
 
 * [Android] Automatic [App Not Responding](https://developer.android.com/topic/performance/vitals/anr) (ANR) detection is now enabled by default  
