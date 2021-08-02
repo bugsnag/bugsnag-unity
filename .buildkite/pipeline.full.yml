@@ -248,6 +248,9 @@ steps:
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
+    # TODO Soft fail pending PLAT-7058
+    soft_fail:
+      - exit_status: "*"
 
   - label: ':android: Run Android e2e tests for Unity 2018'
     depends_on: 'build-android-fixture-2018'
