@@ -10,6 +10,9 @@ public class MobileNative : MonoBehaviour {
     [DllImport("__Internal")]
     private static extern void TriggerCocoaCppException();
 
+    [DllImport("__Internal")]
+    private static extern void ClearPersistentData();
+
 #endif
 
     public static void Crash()
@@ -34,6 +37,13 @@ public class MobileNative : MonoBehaviour {
     {
 #if UNITY_IOS || UNITY_TVOS || UNITY_OSX
         TriggerCocoaCppException();
+#endif
+    }
+
+    public static void ClearPersistantData()
+    {
+#if UNITY_IOS
+        ClearPersistentData();
 #endif
     }
 
