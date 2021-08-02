@@ -209,44 +209,18 @@ steps:
   #
   # TODO Once Windows infrastructure is fully in place, refactor the following steps into the basic and full pipelines.
   #
-  - label: Build Unity 2017 Windows test fixture
-    key: 'windows-2017-fixture'
+  - label: Build Unity 2021 Windows test fixture
+    key: 'windows-2021-fixture'
     depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2017.4.40f1"
-    command:
+      UNITY_VERSION: "2021.1.16f1"
+    commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2017.4.40f1.zip
-
-  - label: Build Unity 2018 Windows test fixture
-    key: 'windows-2018-fixture'
-    depends_on: 'block-windows'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2018.4.36f1"
-    command:
-      - scripts/ci-build-windows-package.bat
-    artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
-
-  - label: Build Unity 2019 Windows test fixture
-    key: 'windows-2019-fixture'
-    depends_on: 'block-windows'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2019.4.28f1"
-    command:
-      - scripts/ci-build-windows-package.bat
-    artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2019.4.28f1.zip
+      - features/fixtures/maze_runner/build/Windows-2021.1.16f1.zip
 
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
@@ -261,26 +235,65 @@ steps:
     artifact_paths:
       - features/fixtures/maze_runner/build/Windows-2020.3.12f1.zip
 
-  #
-  # Run Windows e2e tests
-  #
-  - label: Run Windows e2e tests for Unity 2017
-    depends_on: 'windows-2017-fixture'
+  - label: Build Unity 2019 Windows test fixture
+    key: 'windows-2019-fixture'
+    depends_on: 'block-windows'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2019.4.28f1"
+    command:
+      - scripts/ci-build-windows-package.bat
+    artifact_paths:
+      - features/fixtures/maze_runner/build/Windows-2019.4.28f1.zip
+
+  - label: Build Unity 2018 Windows test fixture
+    key: 'windows-2018-fixture'
+    depends_on: 'block-windows'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2018.4.36f1"
+    command:
+      - scripts/ci-build-windows-package.bat
+    artifact_paths:
+      - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
+
+  - label: Build Unity 2017 Windows test fixture
+    key: 'windows-2017-fixture'
+    depends_on: 'block-windows'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2017.4.40f1"
     command:
-      - scripts/ci-run-windows-tests.bat
+      - scripts/ci-build-windows-package.bat
+    artifact_paths:
+      - features/fixtures/maze_runner/build/Windows-2017.4.40f1.zip
 
-  - label: Run Windows e2e tests for Unity 2018
-    depends_on: 'windows-2018-fixture'
+  #
+  # Run Windows e2e tests
+  #
+  - label: Run Windows e2e tests for Unity 2021
+    depends_on: 'windows-2021-fixture'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2018.4.36f1"
+      UNITY_VERSION: "2021.1.16f1"
+    command:
+      - scripts/ci-run-windows-tests.bat
+
+  - label: Run Windows e2e tests for Unity 2020
+    depends_on: 'windows-2020-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2020.3.12f1"
     command:
       - scripts/ci-run-windows-tests.bat
 
@@ -294,12 +307,22 @@ steps:
     command:
       - scripts/ci-run-windows-tests.bat
 
-  - label: Run Windows e2e tests for Unity 2020
-    depends_on: 'windows-2020-fixture'
+  - label: Run Windows e2e tests for Unity 2018
+    depends_on: 'windows-2018-fixture'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.12f1"
+      UNITY_VERSION: "2018.4.36f1"
+    command:
+      - scripts/ci-run-windows-tests.bat
+
+  - label: Run Windows e2e tests for Unity 2017
+    depends_on: 'windows-2017-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2017.4.40f1"
     command:
       - scripts/ci-run-windows-tests.bat
