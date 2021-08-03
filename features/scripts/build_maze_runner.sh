@@ -43,7 +43,11 @@ pushd $SCRIPT_DIR
     # Run unity and immediately exit afterwards, log all output
     DEFAULT_CLI_ARGS="-nographics -quit -batchmode -logFile $log_file"
 
-    if [[ "$UNITY_PATH" == *"2020"* ]]; then
+    if [[ "$UNITY_PATH" == *"2021"* ]]; then
+      # Copy the 2021 package manifest in for that version
+      mkdir -p maze_runner/Packages
+      cp manifests/manifest_2021.json maze_runner/Packages/manifest.json
+    elif [[ "$UNITY_PATH" == *"2020"* ]]; then
       # Copy the 2020 package manifest in for that version
       mkdir -p maze_runner/Packages
       cp manifests/manifest_2020.json maze_runner/Packages/manifest.json

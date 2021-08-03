@@ -43,3 +43,4 @@ Assets/Standard\ Assets/Bugsnag/BugsnagBehaviour.cs
 *.unitypackage
 maze_runner/mazerunner_xcode
 maze_runner/archive
+maze_runner/Packages/manifest.json

@@ -15,9 +15,13 @@ popd
 pushd "$script_path/../../fixtures"
 
 # Run unity and immediately exit afterwards, log all output
-DEFAULT_CLI_ARGS="-quit -batchmode -logFile unity.log"
+DEFAULT_CLI_ARGS="-quit -batchmode -nographics -logFile unity.log"
 
-if [[ "$UNITY_PATH" == *"2020"* ]]; then
+if [[ "$UNITY_PATH" == *"2021"* ]]; then
+  # Copy the 2021 package manifest in for that version
+  mkdir -p maze_runner/Packages
+  cp manifests/manifest_2021.json maze_runner/Packages/manifest.json
+elif [[ "$UNITY_PATH" == *"2020"* ]]; then
   # Copy the 2020 package manifest in for that version
   mkdir -p maze_runner/Packages
   cp manifests/manifest_2020.json maze_runner/Packages/manifest.json
@@ -33,6 +37,7 @@ fi
 project_path=`pwd`/maze_runner
 
 # Build for Android
+
 $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Builder.AndroidBuild
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
