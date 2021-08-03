@@ -164,7 +164,7 @@ Then("the first significant stack frame methods and files should match:") do |ex
   expected_index = 0
   
   flunk("The stacktrace is empty") if stacktrace.length == 0
-  flunk("The stacktrace is not long enough") if stacktrace.length < 3
+  flunk("The stacktrace is not long enough") if stacktrace.length < expected_frame_values.length
 
   stacktrace.each_with_index do |item, index|
     next if expected_index >= expected_frame_values.length
