@@ -34,6 +34,10 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
             NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
+            if (config.AppHangThresholdMillis > 0)
+            {
+                NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
+            }
             SetEnabledBreadcrumbTypes(obj,config);
             SetEnabledErrorTypes(obj, config);
             if (config.Context != null)
