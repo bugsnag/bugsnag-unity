@@ -26,7 +26,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             {"11", "Max Breadcrumbs" },
             {"12", "Disable Native Errors" },
             {"13", "throw Exception with breadcrumbs" },
-            {"14", "Start SDK no errors" }
+            {"14", "Start SDK no errors" },
+            {"15", "Clear iOS Data" }
+
 
         };
 
@@ -160,6 +162,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Max Breadcrumbs":
                 LeaveFiveBreadcrumbs();
                 ThrowException();
+                break;
+            case "Clear iOS Data":
+                MobileNative.ClearPersistantData();
                 break;
             default:
                 throw new System.Exception("Unknown scenario: " + scenarioName);
