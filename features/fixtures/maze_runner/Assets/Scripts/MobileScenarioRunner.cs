@@ -12,25 +12,23 @@ public class MobileScenarioRunner : MonoBehaviour {
     public Text Dialled, ScenarioName;
 
     private Dictionary<String, String> SCENARIOS = new Dictionary<String, String>
-        {
-            {"01", "throw Exception" },
-            {"02", "Log error" },
-            {"03", "Native exception" },
-            {"04", "Log caught exception" },
-            {"05", "NDK signal" },
-            {"06", "Notify caught exception" },
-            {"07", "Notify with callback" },
-            {"08", "Change scene" },
-            {"09", "Disable Breadcrumbs" },
-            {"10", "Start SDK" },
-            {"11", "Max Breadcrumbs" },
-            {"12", "Disable Native Errors" },
-            {"13", "throw Exception with breadcrumbs" },
-            {"14", "Start SDK no errors" },
-            {"15", "Clear iOS Data" }
-
-
-        };
+    {
+        {"01", "throw Exception" },
+        {"02", "Log error" },
+        {"03", "Native exception" },
+        {"04", "Log caught exception" },
+        {"05", "NDK signal" },
+        {"06", "Notify caught exception" },
+        {"07", "Notify with callback" },
+        {"08", "Change scene" },
+        {"09", "Disable Breadcrumbs" },
+        {"10", "Start SDK" },
+        {"11", "Max Breadcrumbs" },
+        {"12", "Disable Native Errors" },
+        {"13", "throw Exception with breadcrumbs" },
+        {"14", "Start SDK no errors" },
+        {"15", "Clear iOS Data" }
+    };
 
     private string GetScenarioNameFromDialCode(string code)
     {
@@ -50,7 +48,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         config.Context = "My context";
         config.AppVersion = "1.2.3";
         return config;
-    }   
+    }
 
     public void Dial(string number)
     {
@@ -66,9 +64,10 @@ public class MobileScenarioRunner : MonoBehaviour {
             throw new System.Exception("Code is empty or not correctly formatted: " + code);
         }
 
-        // 2: Get the scenario name
+        // 2: Get the scenario name and clear the number
         var scenarioName = GetScenarioNameFromDialCode(code);
         ScenarioName.text = scenarioName;
+        Dialled.text = string.Empty;
 
         // 3: Get the config for that scenario
         var config = PreapareConfigForScenario(scenarioName);
@@ -78,7 +77,6 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         //5: Trigger the actions for the test
         DoTestAction(scenarioName);
-
     }
 
     private Configuration PreapareConfigForScenario(string scenarioName)
@@ -164,11 +162,10 @@ public class MobileScenarioRunner : MonoBehaviour {
                 ThrowException();
                 break;
             case "Clear iOS Data":
-                MobileNative.ClearPersistantData();
+                MobileNative.ClearIOSData();
                 break;
             default:
                 throw new System.Exception("Unknown scenario: " + scenarioName);
-
         }
     }
 
@@ -238,7 +235,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         });
     }
 
-   
+
     public void StartSession()
     {
 

@@ -40,7 +40,7 @@ public class MobileNative : MonoBehaviour {
 #endif
     }
 
-    public static void ClearPersistantData()
+    public static void ClearIOSData()
     {
 #if UNITY_IOS
         ClearPersistentData();
