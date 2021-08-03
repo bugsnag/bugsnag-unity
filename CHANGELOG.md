@@ -117,6 +117,9 @@
     
 ### Bug fixes
 
+* Fixed an issue where Windows events would have incorrectly split stacktraces resulting in all lines being bundled into one 
+  [#350](https://github.com/bugsnag/bugsnag-unity/pull/350)
+
 * Fixed an issue where WebGL web requests that initially fail were not respecting the 10 second delay before retrying 
   [#321](https://github.com/bugsnag/bugsnag-unity/pull/321)
   
