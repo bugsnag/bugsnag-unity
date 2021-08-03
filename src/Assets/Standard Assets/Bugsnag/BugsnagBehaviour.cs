@@ -88,7 +88,8 @@ namespace BugsnagUnity
         [FormerlySerializedAs("AutoCaptureSessions")]
         public bool AutoTrackSessions = true;
 
-        public LogType NotifyLevel = LogType.Exception;
+        [FormerlySerializedAs("NotifyLevel")]
+        public LogType NotifyLogLevel = LogType.Exception;
 
         [Header("Advanced Settings")]
 
@@ -116,7 +117,7 @@ namespace BugsnagUnity
             config.AutoDetectAnrs = AutoDetectErrors && AutoDetectAnrs;
             config.AutoTrackSessions = AutoTrackSessions;
             config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(SecondsPerUniqueLog);
-            config.NotifyLevel = NotifyLevel;
+            config.NotifyLogLevel = NotifyLogLevel;
             config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
             config.MaximumBreadcrumbs = MaximumBreadcrumbs;
             config.ScriptingBackend = FindScriptingBackend();
