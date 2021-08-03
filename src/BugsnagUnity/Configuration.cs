@@ -94,7 +94,32 @@ namespace BugsnagUnity
 
         public virtual string Context { get; set; }
 
-        public virtual LogType NotifyLevel { get; set; } = LogType.Exception;
+
+        private LogType _notifyLogLevel = LogType.Exception;
+
+        [Obsolete("NotifyLevel is deprecated, please use NotifyLogLevel instead.", false)]
+        public virtual LogType NotifyLevel {
+            get
+            {
+                return _notifyLogLevel;
+            }
+            set
+            {
+                _notifyLogLevel = value;
+            }
+        }
+
+        public virtual LogType NotifyLogLevel
+        {
+            get
+            {
+                return _notifyLogLevel;
+            }
+            set
+            {
+                _notifyLogLevel = value;
+            }
+        }
 
         private bool _autoDetectErrors = true; 
 

@@ -49,7 +49,7 @@ namespace BugsnagUnity
 
         string Context { get; set; }
 
-        LogType NotifyLevel { get; set; }
+        LogType NotifyLogLevel { get; set; }
         
         bool AutoDetectErrors { get; set; }
 
