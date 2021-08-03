@@ -10,6 +10,10 @@ When("I wait for the mobile game to start") do
   sleep 3
 end
 
+When('I clear all persistent data') do
+  step('I run the "Clear iOS Data" mobile scenario')
+end
+
 When('I relaunch the Unity mobile app') do
   Maze.driver.launch_app
   # Wait for a fixed time period
