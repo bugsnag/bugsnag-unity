@@ -66,9 +66,10 @@ namespace BugsnagUnity
             {
                 if (value < 0 || value > 100)
                 {
-#if UNITY_EDITOR
-                    UnityEngine.Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-100. Supplied value is " + value);
-#endif
+                    if (IsRunningInEditor())
+                    {
+                        Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-100. Supplied value is " + value);
+                    }
                     return;
                 }
                 else
@@ -138,7 +139,28 @@ namespace BugsnagUnity
 
         public ErrorTypes[] EnabledErrorTypes { get; set; }
 
-        public int AppHangThresholdMillis { get; set; } = -1;
+
+        private ulong _appHangThresholdMillis = 0;
+
+        public ulong AppHangThresholdMillis
+        {
+            get { return _appHangThresholdMillis; }
+            set
+            {
+                if (value < 250)
+                {
+                    if (IsRunningInEditor())
+                    {
+                        Debug.LogError("Invalid configuration value detected. Option AppHangThresholdMillis should be a ulong higher than 249. Supplied value is " + value);
+                    }
+                    return;
+                }
+                else
+                {
+                    _appHangThresholdMillis = value;
+                }
+            }
+        }
 
         public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)
         {
@@ -166,6 +188,13 @@ namespace BugsnagUnity
                 default:
                     return false;
             }
+        }
+
+        private bool IsRunningInEditor()
+        {
+            return Application.platform == RuntimePlatform.OSXEditor
+                || Application.platform == RuntimePlatform.WindowsEditor
+                || Application.platform == RuntimePlatform.LinuxEditor;
         }
     }
 }

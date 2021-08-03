@@ -55,7 +55,7 @@ extern "C" {
 
   void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
 
-  void bugsnag_setAppHangThresholdMillis(const void *configuration, int appHangThresholdMillis);
+  void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
 
 
 }
@@ -90,7 +90,7 @@ void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
   ((__bridge BugsnagConfiguration *)configuration).appVersion = ns_appVersion;
 }
 
-void bugsnag_setAppHangThresholdMillis(const void *configuration, int appHangThresholdMillis) {
+void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis) {
   ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
 }
 
