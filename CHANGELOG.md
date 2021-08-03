@@ -131,6 +131,8 @@
   
 ### Deprecated
 
+* `Configuration.NotifyLevel` has been deprecated in favour of `Configuration.NotifyLogLevel` and will be removed in the next major release.
+
 * `Configuration.AutoNotify` has been deprecated in favour of `Configuration.AutoDetectErrors` and will be removed in the next major release.
 
 * `Configuration.AutoCaptureSessions` has been deprecated in favour of `Configuration.AutoTrackSessions` and will be removed in the next major release.
