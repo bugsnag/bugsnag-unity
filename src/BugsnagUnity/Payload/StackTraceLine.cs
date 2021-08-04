@@ -31,7 +31,7 @@ namespace BugsnagUnity.Payload
 
         internal StackTrace(string stackTrace, StackTraceFormat format)
         {
-            string[] lines = stackTrace.Split(new[] {"\r\n","\r","\n", System.Environment.NewLine },
+            string[] lines = stackTrace.Split(new[] { System.Environment.NewLine },
                                               System.StringSplitOptions.RemoveEmptyEntries);
             var frames = new List<StackTraceLine>();
             for (int i = 0; i < lines.Length; i++)

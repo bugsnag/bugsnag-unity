@@ -11,12 +11,6 @@ namespace BugsnagUnity
 
         bool ReportUncaughtExceptionsAsHandled { get; set; }
 
-        ErrorTypes[] EnabledErrorTypes { get; set; }
-
-        bool IsUnityLogErrorTypeEnabled(LogType logType);
-
-        bool IsErrorTypeEnabled(ErrorTypes errorType);
-
         TimeSpan MaximumLogsTimePeriod { get; }
 
         LogType BreadcrumbLogLevel { get; set; }
@@ -49,13 +43,13 @@ namespace BugsnagUnity
 
         string Context { get; set; }
 
-        LogType NotifyLogLevel { get; set; }
-        
-        bool AutoDetectErrors { get; set; }
+        LogType NotifyLevel { get; set; }
+
+        bool AutoNotify { get; set; }
 
         bool AutoDetectAnrs { get; set; }
 
-        bool AutoTrackSessions { get; set; }
+        bool AutoCaptureSessions { get; set; }
 
         LogTypeSeverityMapping LogTypeSeverityMapping { get; }
         string ScriptingBackend { get; set; }
@@ -63,7 +57,5 @@ namespace BugsnagUnity
         string DotnetScriptingRuntime { get; set; }
 
         string DotnetApiCompatibility { get; set; }
-
-        ulong AppHangThresholdMillis { get; set; }
     }
 }

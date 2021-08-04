@@ -177,13 +177,11 @@ namespace BugsnagUnity
             // configure automatic tracking of errors/sessions
             using (AndroidJavaObject errorTypes = new AndroidJavaObject("com.bugsnag.android.ErrorTypes"))
             {
-                errorTypes.Call("setAnrs", config.AutoDetectAnrs &&  config.IsErrorTypeEnabled(ErrorTypes.ANRs));
-                errorTypes.Call("setNdkCrashes", config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes));
-                errorTypes.Call("setUnhandledExceptions", config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes));
+                errorTypes.Call("setAnrs", config.AutoDetectAnrs);
                 obj.Call("setEnabledErrorTypes", errorTypes);
             }
             obj.Call("setAutoTrackSessions", false);
-            obj.Call("setAutoDetectErrors", config.AutoDetectErrors);
+            obj.Call("setAutoDetectErrors", config.AutoNotify);
 
             // set endpoints
             var notify = config.Endpoint.ToString();
@@ -280,7 +278,7 @@ namespace BugsnagUnity
             AndroidJNI.PopLocalFrame(System.IntPtr.Zero);
         }
 
-        public void SetAutoDetectErrors(bool newValue)
+        public void SetAutoNotify(bool newValue)
         {
             CallNativeVoidMethod("setAutoNotify", "(Z)V", new object[] { newValue });
         }

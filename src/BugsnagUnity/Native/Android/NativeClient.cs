@@ -89,10 +89,10 @@ namespace BugsnagUnity
             NativeInterface.SetContext(context);
         }
 
-        public void SetAutoDetectErrors(bool autoDetectErrors)
+        public void SetAutoNotify(bool autoNotify)
         {
-            NativeInterface.SetAutoDetectErrors(autoDetectErrors);
-            NativeInterface.SetAutoDetectAnrs(autoDetectErrors && Configuration.AutoDetectAnrs);
+            NativeInterface.SetAutoNotify(autoNotify);
+            NativeInterface.SetAutoDetectAnrs(autoNotify && Configuration.AutoDetectAnrs);
         }
 
         public void SetAutoDetectAnrs(bool autoDetectAnrs)

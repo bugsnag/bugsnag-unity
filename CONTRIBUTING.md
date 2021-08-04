@@ -81,6 +81,7 @@ We have a very simple maze-runner setup, which builds a MacOS X Unity game that 
 NOTE: This does not currently run on Windows
 
 ```
+cd test/desktop
 bundle install
 bundle exec maze-runner features/handled_errors.feature
 ```
