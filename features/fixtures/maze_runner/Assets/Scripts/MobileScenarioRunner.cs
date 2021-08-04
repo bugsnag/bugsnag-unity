@@ -27,7 +27,6 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"12", "Disable Native Errors" },
         {"13", "throw Exception with breadcrumbs" },
         {"14", "Start SDK no errors" },
-        {"15", "Clear iOS Data" }
     };
 
     private string GetScenarioNameFromDialCode(string code)
