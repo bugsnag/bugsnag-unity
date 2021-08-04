@@ -29,6 +29,8 @@ extern "C" {
 
   void bugsnag_setAutoNotify(bool autoNotify);
 
+  void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion);
+
   void bugsnag_setContext(const void *configuration, char *context);
   void bugsnag_setContextConfig(const void *configuration, char *context);
 
@@ -92,6 +94,11 @@ void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
 
 void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis) {
   ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
+}
+
+void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion) {
+  NSString *ns_bundleVersion = bundleVersion == NULL ? nil : [NSString stringWithUTF8String: bundleVersion];
+  ((__bridge BugsnagConfiguration *)configuration).bundleVersion = ns_bundleVersion;
 }
 
 void bugsnag_setContext(const void *configuration, char *context) {
@@ -341,9 +348,15 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
 void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
-  callback(appData, "bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
+  NSString *bundleVersion = [Bugsnag configuration].bundleVersion ?: sysInfo[@BSG_KSSystemField_BundleVersion];
+  callback(appData, "bundleVersion", [bundleVersion UTF8String]);
+
   callback(appData, "id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
-  callback(appData, "type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
+
+  NSString *appType = [Bugsnag configuration].appType ?: sysInfo[@BSG_KSSystemField_SystemName];
+  callback(appData, "type", [appType UTF8String]);
+  
+
   NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
   callback(appData, "version", [version UTF8String]);
 }

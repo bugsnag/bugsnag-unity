@@ -12,6 +12,8 @@ namespace BugsnagUnity
 
         public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
+        public string BundleVersion { get; set; }
+
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;
@@ -187,6 +189,7 @@ namespace BugsnagUnity
             }
         }
 
+
         public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)
         {
             return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);
@@ -221,6 +224,8 @@ namespace BugsnagUnity
                 || Application.platform == RuntimePlatform.WindowsEditor
                 || Application.platform == RuntimePlatform.LinuxEditor;
         }
+
+       
     }
 }
 
