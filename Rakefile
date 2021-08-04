@@ -13,8 +13,15 @@ def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
 # install location for both windows and mac.
 #
 def unity_directory
+
   if ENV.has_key? 'UNITY_VERSION'
+
+    if is_mac?
     "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
+    elsif is_windows?
+      "C:\\Program Files\\Unity\\Hub\\Editor\\#{ENV['UNITY_VERSION']}"
+    end
+
   elsif ENV.has_key? "UNITY_DIR"
     ENV["UNITY_DIR"]
   else
@@ -136,8 +143,14 @@ end
 namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
-    task all: [:assets, :cocoa, :csharp, :android]
-    task all_android64: [:assets, :cocoa, :csharp, :android_64bit]
+    if is_windows?
+      task all: [:assets, :csharp]
+      task all_android64: [:assets, :csharp]
+    else
+      task all: [:assets, :cocoa, :csharp, :android]
+      task all_android64: [:assets, :cocoa, :csharp, :android_64bit]
+    end
+
 
     desc "Delete all build artifacts"
     task :clean do
@@ -145,13 +158,15 @@ namespace :plugin do
       sh "git", "clean", "-dfx", "unity"
       # remove cocoa build area
       FileUtils.rm_rf cocoa_build_dir
-      # remove android build area
-      cd "bugsnag-android" do
-        sh "./gradlew", "clean"
-      end
+      unless is_windows?
+        # remove android build area
+        cd "bugsnag-android" do
+          sh "./gradlew", "clean"
+        end
 
-      cd "bugsnag-android-unity" do
-        sh "./gradlew", "clean"
+        cd "bugsnag-android-unity" do
+          sh "./gradlew", "clean"
+        end
       end
     end
     task :assets do
@@ -364,13 +379,13 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "mobile", "prepare_fixture.sh")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end
 
       # Build the Android APK
-      script = File.join("test", "mobile", "features", "scripts", "build_android.sh")
+      script = File.join("features", "scripts", "mobile", "build_android.sh")
       unless system env, script
         raise 'APK build failed'
       end
@@ -384,14 +399,14 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("test", "mobile", "features", "scripts", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "mobile", "prepare_fixture.sh")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end
 
       # Generate the Xcode project
-      cd File.join("test", "mobile", "features") do
-        script = File.join("scripts", "generate_xcode_project.sh")
+      cd "features" do
+        script = File.join("scripts", "mobile", "generate_xcode_project.sh")
         unless system env, script
           raise 'IPA build failed'
         end
@@ -400,8 +415,8 @@ namespace :test do
 
     task :build_xcode do
       # Build and archive from the Xcode project
-      cd File.join("test", "mobile", "features") do
-        script = File.join("scripts", "build_ios.sh")
+      cd "features" do
+        script = File.join("scripts", "mobile", "build_ios.sh")
         unless system script
           raise 'IPA build failed'
         end

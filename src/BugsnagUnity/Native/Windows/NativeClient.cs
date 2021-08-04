@@ -21,6 +21,7 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
+            app.AddToPayload("type", "Windows");
         }
 
         public void PopulateDevice(Device device)
@@ -70,7 +71,7 @@ namespace BugsnagUnity
         public void SetContext(string context)
         {
         }
-        public void SetAutoNotify(bool autoNotify)
+        public void SetAutoDetectErrors(bool autoDetectErrors)
         {
         }
 
