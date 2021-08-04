@@ -43,7 +43,10 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setAutoNotify(bool autoNotify);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);       
+        internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setAppHangs(IntPtr configuration, bool appHangs);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setContext(IntPtr configuration, string context);
@@ -52,13 +55,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setAppHangThresholdMillis(IntPtr configuration, ulong appHangThresholdMillis);
-
-        [DllImport(Import)]
         internal static extern void bugsnag_setEnabledBreadcrumbTypes(IntPtr configuration, string[] types, int count);
-
-        [DllImport(Import)]
-        internal static extern void bugsnag_setEnabledErrorTypes(IntPtr configuration, string[] types, int count);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setContextConfig(IntPtr configuration, string context);

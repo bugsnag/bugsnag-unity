@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
 
@@ -92,24 +91,12 @@ namespace BugsnagUnity
         /// <summary>
         /// By default, we will automatically notify Bugsnag of any fatal errors (crashes) in your game.
         /// If you want to stop this from happening, you can set the AutoNotify property to false. It
-        /// is recommended that you set this value by Configuration at init rather than this method.
+        /// is recommended that you set this value by Configuration rather than this method.
         /// </summary>
         /// <param name="autoNotify"></param>
-        [Obsolete("SetAutoNotify is deprecated, please use SetAutoDetectErrors instead.", false)]
         public static void SetAutoNotify(bool autoNotify)
         {
-            SetAutoDetectErrors(autoNotify);
-        }
-
-        /// <summary>
-        /// By default, we will automatically notify Bugsnag of any fatal errors (crashes) in your game.
-        /// If you want to stop this from happening, you can set the AutoDetectErrors property to false. It
-        /// is recommended that you set this value by Configuration at init rather than this method.
-        /// </summary>
-        /// <param name="autoDetectErrors"></param>
-        public static void SetAutoDetectErrors(bool autoDetectErrors)
-        {
-            Client.SetAutoDetectErrors(autoDetectErrors);
+            Client.SetAutoNotify(autoNotify);
         }
 
         /// <summary>

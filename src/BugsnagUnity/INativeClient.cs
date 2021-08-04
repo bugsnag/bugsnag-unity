@@ -73,7 +73,7 @@ namespace BugsnagUnity
         /// Mutates autoNotify.
         /// </summary>
         /// <param name="autoNotify"></param>
-        void SetAutoDetectErrors(bool autoDetectErrors);
+        void SetAutoNotify(bool autoNotify);
 
         /// <summary>
         /// Enables or disables Anr detection.

@@ -70,17 +70,6 @@ namespace BugsnagUnity
             yield return null;
         }
 
-        public void EnqueueWithDelayCoroutine(Action action, float delay)
-        {
-            StartCoroutine(DelayAction(action,delay));
-        }
-
-        private IEnumerator DelayAction(Action action, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            action.Invoke();
-        }
-
 
         private static MainThreadDispatchBehaviour _instance = null;
 
@@ -93,7 +82,7 @@ namespace BugsnagUnity
         {
             if (!Exists())
             {
-                throw new Exception("MainThreadDispatchBehaviour could not find the MainThreadDispatchBehaviour object.");
+                throw new Exception("MainThreadDispatchBehaviour could not find the MainThreadDispatchBehaviour object. Please ensure you have added the MainThreadExecutor Prefab to your scene.");
             }
             return _instance;
         }

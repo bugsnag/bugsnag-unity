@@ -1,6 +1,5 @@
 ﻿using BugsnagUnity.Payload;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace BugsnagUnity
 {
@@ -23,7 +22,6 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            app.AddToPayload("type",GetAppType());
         }
 
         public void PopulateDevice(Device device)
@@ -61,32 +59,12 @@ namespace BugsnagUnity
         public void SetContext(string context)
         {
         }
-        public void SetAutoDetectErrors(bool autoDetectErrors)
+        public void SetAutoNotify(bool autoNotify)
         {
         }
 
         public void SetAutoDetectAnrs(bool autoDetectAnrs)
         {
-        }
-
-        private string GetAppType()
-        {
-            switch (Application.platform)
-            {
-                case RuntimePlatform.OSXEditor:
-                case RuntimePlatform.OSXPlayer:
-                    return "MacOS";
-                case RuntimePlatform.WindowsPlayer:      
-                case RuntimePlatform.WindowsEditor:
-                    return "Windows";               
-                case RuntimePlatform.LinuxPlayer:
-                case RuntimePlatform.LinuxEditor:
-                    return "Linux";
-                case RuntimePlatform.WebGLPlayer:
-                    return "WebGL";
-                default:
-                    return string.Empty;
-            }
         }
     }
 }

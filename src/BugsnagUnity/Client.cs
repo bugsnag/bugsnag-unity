@@ -95,30 +95,6 @@ namespace BugsnagUnity
             {
                 // Async behavior is not available in a test environment
             }
-            AddBugsnagLoadedBreadcrumb();
-        }
-
-        private void AddBugsnagLoadedBreadcrumb()
-        {
-            if (IsUsingFallback() && Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.State))
-            {
-                Breadcrumbs.Leave("Bugsnag loaded", BreadcrumbType.State, null);
-            }
-        }
-
-        private bool IsUsingFallback()
-        {
-            switch (Application.platform)
-            {
-                case RuntimePlatform.OSXEditor:
-                case RuntimePlatform.WindowsPlayer:
-                case RuntimePlatform.WindowsEditor:
-                case RuntimePlatform.LinuxPlayer:
-                case RuntimePlatform.LinuxEditor:
-                case RuntimePlatform.WebGLPlayer:
-                    return true;
-            }
-            return false;
         }
 
         private void SetupSceneLoadedBreadcrumbTracking()
@@ -175,8 +151,7 @@ namespace BugsnagUnity
         /// <param name="logType"></param>
         void Notify(string condition, string stackTrace, LogType logType)
         {
-
-            if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel) && Configuration.IsUnityLogErrorTypeEnabled(logType))
+            if (Configuration.AutoNotify && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLevel))
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
                 var shouldSend = Exception.ShouldSend(logMessage)
@@ -334,7 +309,7 @@ namespace BugsnagUnity
                 ForegroundStopwatch.Start();
                 lock (autoSessionLock)
                 {
-                    if (Configuration.AutoTrackSessions
+                    if (Configuration.AutoCaptureSessions
                      && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
                     {
                         SessionTracking.StartSession();
@@ -365,7 +340,7 @@ namespace BugsnagUnity
         private IEnumerator<UnityEngine.AsyncOperation> RunInitialSessionCheck()
         {
             yield return null;
-            if (Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
+            if (Configuration.AutoCaptureSessions && SessionTracking.CurrentSession == null)
             {
                 SessionTracking.StartSession();
             }
@@ -383,13 +358,13 @@ namespace BugsnagUnity
             NativeClient.SetContext(context);
         }
 
-        public void SetAutoDetectErrors(bool autoDetectErrors)
+        public void SetAutoNotify(bool autoNotify)
         {
-            // set the property on Configuration, as it currently controls whether C# errors are reported
-            Configuration.AutoDetectErrors = autoDetectErrors;
+            // set the AutoNotify property on Configuration, as it currently controls whether C# errors are reported
+            Configuration.AutoNotify = autoNotify;
 
             // propagate the change to the native property also
-            NativeClient.SetAutoDetectErrors(autoDetectErrors);
+            NativeClient.SetAutoNotify(autoNotify);
         }
 
         public void SetAutoDetectAnrs(bool autoDetectAnrs)

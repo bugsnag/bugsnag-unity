@@ -27,6 +27,8 @@ extern "C" {
 
   void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
+  void bugsnag_setAppHangs(const void *configuration, bool appHangs);
+
   void bugsnag_setAutoNotify(bool autoNotify);
 
   void bugsnag_setContext(const void *configuration, char *context);
@@ -52,12 +54,6 @@ extern "C" {
   void bugsnag_populateUser(bugsnag_user *user);
   void bugsnag_setUser(char *userId, char *userName, char *userEmail);
   void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
-
-  void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
-
-  void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
-
-
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
@@ -88,10 +84,6 @@ void bugsnag_setNotifyReleaseStages(const void *configuration, const char *relea
 void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
   NSString *ns_appVersion = appVersion == NULL ? nil : [NSString stringWithUTF8String: appVersion];
   ((__bridge BugsnagConfiguration *)configuration).appVersion = ns_appVersion;
-}
-
-void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis) {
-  ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
 }
 
 void bugsnag_setContext(const void *configuration, char *context) {
@@ -155,51 +147,12 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
       }
 }
 
-void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count){
-
-    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = NO;
-    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = NO;
-    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.signals = NO;
-    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = NO;
-    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.machExceptions = NO;
-    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.ooms = NO;
-
-    for (int i = 0; i < count; i++) {
-        const char *enabledType = types[i];
-        if (enabledType != nil) {
-				
-			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
-
-            if([typeString isEqualToString:@"AppHangs"])
-            {
-                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = YES;
-            }
-            if([typeString isEqualToString:@"UnhandledExceptions"])
-            {
-                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = YES;
-            }
-            if([typeString isEqualToString:@"Signals"])
-            {
-                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.signals = YES;
-            }
-            if([typeString isEqualToString:@"CppExceptions"])
-            {
-                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = YES;
-            }
-            if([typeString isEqualToString:@"MachExceptions"])
-            {
-                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.machExceptions = YES;
-            }
-            if([typeString isEqualToString:@"OOMs"])
-            {
-                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.ooms = YES;
-            }
-        }
-      }
-}
-
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
+}
+
+void bugsnag_setAppHangs(const void *configuration, bool appHangs) {
+  ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = appHangs;
 }
 
 void bugsnag_setAutoNotify(bool autoNotify) {
