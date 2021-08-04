@@ -55,6 +55,26 @@ public class MobileScenarioRunner : MonoBehaviour {
         Dialled.text += number;
     }
 
+    // Issues a command to the test fixture
+    public void RunCommand()
+    {
+        // 1: Get the dial code
+        var code = Dialled.text;
+        if (string.IsNullOrEmpty(code) || code.Length != 2)
+        {
+            throw new System.Exception("Code is empty or not correctly formatted: " + code);
+        }
+
+        // 2: Get the command name and clear the number
+        var scenarioName = GetScenarioNameFromDialCode(code);
+        ScenarioName.text = scenarioName;
+        Dialled.text = string.Empty;
+
+        // 3: Issue the command
+        DoTestAction(scenarioName);
+    }
+
+    // Tells the test fixture to run a particular test scenario
     public void RunScenario()
     {
         // 1: Get the dial code
@@ -75,7 +95,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         // 4: Start the Bugsnag SDK
         StartTheSdk(config);
 
-        //5: Trigger the actions for the test
+        // 5: Trigger the actions for the test
         DoTestAction(scenarioName);
     }
 

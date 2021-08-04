@@ -20,9 +20,9 @@ When('I relaunch the Unity mobile app') do
   sleep 3
 end
 
-When("I run the {string} mobile scenario") do |scenario|
-
+def dial_number_for(name)
   lookup = {
+      # Scenarios
       "throw Exception" => 1,
       "Log error" => 2,
       "Native exception" => 3,
@@ -37,36 +37,48 @@ When("I run the {string} mobile scenario") do |scenario|
       "Disable Native Errors" => 12,
       "throw Exception with breadcrumbs" => 13,
       "Start SDK no errors" => 14,
-      "Clear iOS Data" => 15
+
+      # Commands
+      "Clear iOS Data" => 90
   }
-  number = lookup[scenario]
-  $logger.debug "#{scenario}' has dial-in code #{number}"
+  number = lookup[name]
+  $logger.debug "Command/scenario '#{name}' has dial-in code #{number}"
 
   step("I dial #{number / 10}")
   sleep 1
   step("I dial #{number % 10}")
   sleep 1
-  step("I press dial")
-  sleep 1
+end
+
+When("I run the {string} command") do |command|
+  dial_number_for command
+  step("I press Run Command")
+end
+
+When("I run the {string} mobile scenario") do |scenario|
+  dial_number_for scenario
+  step("I press Run Scenario")
 end
 
 When("I dial {int}") do |number|
   $logger.debug "Dialling #{number}"
-  # Ensure we tap in the button
-  viewport = Maze.driver.session_capabilities['viewportRect']
-  center = viewport['width'] / 2
-  press_at center, 50 + (number * 100)
+  press_at 40 + (number * 80)
   sleep 1
 end
 
-When("I press dial") do
-  # Ensure we tap in the button
-  viewport = Maze.driver.session_capabilities['viewportRect']
-  center = viewport['width'] / 2
-  press_at center, 1050
+When("I press Run Scenario") do
+  press_at 840
 end
 
-def press_at(x, y)
+When("I press Run Command") do
+  press_at 920
+end
+
+def press_at(y)
+
+  # Ensure we tap in the button
+  viewport = Maze.driver.session_capabilities['viewportRect']
+  x = viewport['width'] / 2
 
   $logger.debug "Press at: #{x},#{y}"
 
