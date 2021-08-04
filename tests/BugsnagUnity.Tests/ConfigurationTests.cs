@@ -13,8 +13,8 @@ namespace BugsnagUnity.Payload.Tests
         {
             var config = new Configuration("foo");
             Assert.IsTrue(config.ReportUncaughtExceptionsAsHandled);
-            Assert.IsTrue(config.AutoNotify);
-            Assert.IsTrue(config.AutoCaptureSessions);
+            Assert.IsTrue(config.AutoDetectErrors);
+            Assert.IsTrue(config.AutoTrackSessions);
             Assert.AreEqual("production", config.ReleaseStage);
             Assert.AreEqual("https://notify.bugsnag.com/", config.Endpoint.ToString());
             Assert.AreEqual("https://sessions.bugsnag.com/", config.SessionEndpoint.ToString());

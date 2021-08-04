@@ -16,8 +16,9 @@ namespace BugsnagUnity
         {
             ApiKey = apiKey;
             AppVersion = Application.version;
-            AutoCaptureSessions = true;
-            AutoNotify = true;
+            AutoTrackSessions = true;
+            AutoDetectErrors = true;
+            AutoDetectAnrs = true;
             ReleaseStage = "production";
             Endpoint = new Uri(DefaultEndpoint);
             SessionEndpoint = new Uri(DefaultSessionEndpoint);
@@ -65,9 +66,10 @@ namespace BugsnagUnity
             {
                 if (value < 0 || value > 100)
                 {
-#if UNITY_EDITOR
-                    UnityEngine.Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-100. Supplied value is " + value);
-#endif
+                    if (IsRunningInEditor())
+                    {
+                        Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-100. Supplied value is " + value);
+                    }
                     return;
                 }
                 else
@@ -93,13 +95,64 @@ namespace BugsnagUnity
 
         public virtual string Context { get; set; }
 
-        public virtual LogType NotifyLevel { get; set; } = LogType.Exception;
 
-        public virtual bool AutoNotify { get; set; } = true;
+        private LogType _notifyLogLevel = LogType.Exception;
 
-        public virtual bool AutoDetectAnrs { get; set; } = false;
+        [Obsolete("NotifyLevel is deprecated, please use NotifyLogLevel instead.", false)]
+        public virtual LogType NotifyLevel {
+            get
+            {
+                return _notifyLogLevel;
+            }
+            set
+            {
+                _notifyLogLevel = value;
+            }
+        }
 
-        public virtual bool AutoCaptureSessions { get; set; }
+        public virtual LogType NotifyLogLevel
+        {
+            get
+            {
+                return _notifyLogLevel;
+            }
+            set
+            {
+                _notifyLogLevel = value;
+            }
+        }
+
+        private bool _autoDetectErrors = true; 
+
+        [Obsolete("AutoNotify is deprecated, please use AutoDetectErrors instead.", false)]
+        public virtual bool AutoNotify
+        {
+            get { return _autoDetectErrors; }
+            set { _autoDetectErrors = value; }
+        }
+
+        public virtual bool AutoDetectErrors
+        {
+            get { return _autoDetectErrors; }
+            set { _autoDetectErrors = value; }
+        }
+
+        public virtual bool AutoDetectAnrs { get; set; } = true;
+
+        private bool _autoTrackSessions = true;
+
+        [Obsolete("AutoCaptureSessions is deprecated, please use AutoTrackSessions instead.", false)]
+        public virtual bool AutoCaptureSessions
+        {
+            get { return _autoTrackSessions; }
+            set { _autoTrackSessions = value; }
+        }
+
+        public virtual bool AutoTrackSessions
+        {
+            get { return _autoTrackSessions; }
+            set { _autoTrackSessions = value; }
+        }
 
         public virtual LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
 
@@ -108,6 +161,66 @@ namespace BugsnagUnity
         public virtual string DotnetScriptingRuntime { get; set; }
 
         public virtual string DotnetApiCompatibility { get; set; }
+
+        public ErrorTypes[] EnabledErrorTypes { get; set; }
+
+
+        private ulong _appHangThresholdMillis = 0;
+
+        public ulong AppHangThresholdMillis
+        {
+            get { return _appHangThresholdMillis; }
+            set
+            {
+                if (value < 250)
+                {
+                    if (IsRunningInEditor())
+                    {
+                        Debug.LogError("Invalid configuration value detected. Option AppHangThresholdMillis should be a ulong higher than 249. Supplied value is " + value);
+                    }
+                    return;
+                }
+                else
+                {
+                    _appHangThresholdMillis = value;
+                }
+            }
+        }
+
+        public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)
+        {
+            return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);
+        }
+
+        public virtual bool IsUnityLogErrorTypeEnabled(LogType logType)
+        {
+            if (EnabledErrorTypes == null)
+            {
+                return true;
+            }
+            switch (logType)
+            {
+                case LogType.Error:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnityErrorLogs);
+                case LogType.Warning:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnityWarningLogs);
+                case LogType.Log:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnityLogLogs);
+                case LogType.Exception:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnhandledExceptions);
+                case LogType.Assert:
+                    return EnabledErrorTypes.Contains(ErrorTypes.UnityAssertLogs);
+                default:
+                    return false;
+            }
+        }
+
+        private bool IsRunningInEditor()
+        {
+            return Application.platform == RuntimePlatform.OSXEditor
+                || Application.platform == RuntimePlatform.WindowsEditor
+                || Application.platform == RuntimePlatform.LinuxEditor;
+        }
     }
 }
 

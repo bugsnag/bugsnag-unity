@@ -1,4 +1,5 @@
 steps:
+
   #
   # Build notifier.  We run tests for all Unity versions with the 2017 artifacts, as that is what we ship.
   #
@@ -15,241 +16,71 @@ steps:
     artifact_paths:
       - Bugsnag.unitypackage
       - Bugsnag-with-android-64bit.unitypackage
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   #
-  # Build desktop test fixtures
+  # Build MacOS and WebGL test fixtures
   #
-  - label: Build Unity 2017 MacOS test fixture
-    key: 'cocoa-2017-fixture'
+  - label: Build Unity 2020 MacOS and WebGL test fixtures
+    key: 'cocoa-webgl-2020-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2017.4.40f1"
+      UNITY_VERSION: "2020.3.13f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
     commands:
-      - cd test/desktop
-      - ./features/scripts/build_maze_runner.sh
+      - scripts/ci-build-macos-packages.sh
     artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: Build Unity 2018 MacOS test fixture
-    key: 'cocoa-2018-fixture'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2018.4.34f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-    commands:
-      - cd test/desktop
-      - ./features/scripts/build_maze_runner.sh
-    artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: Build Unity 2019 MacOS test fixture
-    key: 'cocoa-2019-fixture'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2019.4.25f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-    commands:
-      - cd test/desktop
-      - ./features/scripts/build_maze_runner.sh
-    artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2019.4.25f1.app.zip
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: Build Unity 2020 MacOS test fixture
-    key: 'cocoa-2020-fixture'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2020.3.9f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-    commands:
-      - cd test/desktop
-      - ./features/scripts/build_maze_runner.sh
-    artifact_paths:
-      - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
-    concurrency: 2
-    concurrency_group: 'unity-license'
+      - features/fixtures/maze_runner/build/MacOS-2020.3.13f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2020.3.13f1.zip
 
   #
   # Run desktop tests
   #
-  - label: Run MacOS e2e tests for Unity 2017.4.40f1
-    depends_on: 'cocoa-2017-fixture'
+  - label: Run MacOS e2e tests for Unity 2020
+    depends_on: 'cocoa-webgl-2020-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2017.4.40f1"
+      UNITY_VERSION: "2020.3.13f1"
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/Mazerunner-2017.4.40f1.app.zip
+          - features/fixtures/maze_runner/build/MacOS-2020.3.13f1.zip
         upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
+          - maze_output/*
+          - Mazerunner.log
     commands:
-      - cd test/desktop
-      - bundle install
-      - bundle exec maze-runner --app=Mazerunner
+      - scripts/ci-run-macos-tests.sh
 
-  - label: Run MacOS e2e tests for Unity 2018.4.34f1
-    depends_on: 'cocoa-2018-fixture'
+  #
+  # Run WebGL tests
+  #
+  - label: Run WebGL e2e tests for Unity 2020
+    depends_on: 'cocoa-webgl-2020-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2018.4.34f1"
+      UNITY_VERSION: "2020.3.13f1"
     plugins:
       artifacts#v1.2.0:
         download:
-          - test/desktop/features/fixtures/Mazerunner-2018.4.34f1.app.zip
+          - features/fixtures/maze_runner/build/WebGL-2020.3.13f1.zip
         upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
+          - maze_output/failed/**/*
     commands:
-      - cd test/desktop
-      - bundle install
-      - bundle exec maze-runner --app=Mazerunner
-
-  - label: Run MacOS e2e tests for Unity 2019.4.25f1
-    depends_on: 'cocoa-2019-fixture'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-cocoa-10.15
-    env:
-      UNITY_VERSION: "2019.4.25f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - test/desktop/features/fixtures/Mazerunner-2019.4.25f1.app.zip
-        upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
-    commands:
-      - cd test/desktop
-      - bundle install
-      - bundle exec maze-runner --app=Mazerunner
-
-  - label: Run MacOS e2e tests for Unity 2020.3.9f1
-    depends_on: 'cocoa-2020-fixture'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-cocoa-10.15
-    env:
-      UNITY_VERSION: "2020.3.9f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - test/desktop/features/fixtures/Mazerunner-2020.3.9f1.app.zip
-        upload:
-          - test/desktop/maze_output/*
-          - test/desktop/Mazerunner.log
-    commands:
-      - cd test/desktop
-      - bundle install
-      - bundle exec maze-runner --app=Mazerunner
+      - scripts/ci-run-webgl-tests.sh
 
   #
   # Build Android test fixtures
   #
-  - label: ':android: Build Android test fixture for Unity 2017'
-    key: 'build-android-fixture-2017'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2017.4.40f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk
-          - test/mobile/features/fixtures/unity.log
-    commands:
-      - rake test:android:build
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: ':android: Build Android test fixture for Unity 2018'
-    key: 'build-android-fixture-2018'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2018.4.34f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
-          - test/mobile/features/fixtures/unity.log
-    commands:
-      - rake test:android:build
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: ':android: Build Android test fixture for Unity 2019'
-    key: 'build-android-fixture-2019'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2019.4.25f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk
-          - test/mobile/features/fixtures/unity.log
-    commands:
-      - rake test:android:build
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
   - label: ':android: Build Android test fixture for Unity 2020'
     key: 'build-android-fixture-2020'
     depends_on: 'build-artifacts'
@@ -257,98 +88,36 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.9f1"
+      UNITY_VERSION: "2020.3.13f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.apk
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2020.3.13f1.apk
+          - features/fixtures/unity.log
     commands:
       - rake test:android:build
-    concurrency: 2
-    concurrency_group: 'unity-license'
 
   #
   # Run Android tests
   #
-  - label: ':android: Run Android e2e tests for Unity 2017'
-    depends_on: 'build-android-fixture-2017'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.3.0:
-        download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
-      docker-compose#v3.3.0:
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
-          - "--farm=bs"
-          - "--device=ANDROID_9_0"
-          - "--fail-fast"
-          - "features/android"
-    concurrency: 9
-    concurrency_group: browserstack-app
-
-  - label: ':android: Run Android e2e tests for Unity 2018'
-    depends_on: 'build-android-fixture-2018'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.3.0:
-        download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk"
-      docker-compose#v3.3.0:
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk"
-          - "--farm=bs"
-          - "--device=ANDROID_9_0"
-          - "--fail-fast"
-          - "features/android"
-    concurrency: 9
-    concurrency_group: browserstack-app
-
-  - label: ':android: Run Android e2e tests for Unity 2019'
-    depends_on: 'build-android-fixture-2019'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.3.0:
-        download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
-      docker-compose#v3.3.0:
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.25f1.apk"
-          - "--farm=bs"
-          - "--device=ANDROID_9_0"
-          - "--fail-fast"
-          - "features/android"
-    concurrency: 9
-    concurrency_group: browserstack-app
-
   - label: ':android: Run Android e2e tests for Unity 2020'
     depends_on: 'build-android-fixture-2020'
     timeout_in_minutes: 30
     agents:
       queue: opensource
     env:
-      UNITY_VERSION: "2020.3.9f1"
+      UNITY_VERSION: "2020.3.13f1"
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.13f1.apk"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.9f1.apk"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.13f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "--fail-fast"
@@ -359,167 +128,35 @@ steps:
   #
   # Build iOS test fixtures
   #
-  - label: ':ios: Generate test fixture Xcode project for Unity 2017'
-    key: 'generate-fixture-project-2017'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2017.4.40f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/mobile/features/fixtures/unity.log
-          - project_2017.tgz
-    commands:
-      - rake test:ios:generate_xcode
-      - tar -zvcf project_2017.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: ':ios: Build iOS test fixture for Unity 2017'
-    key: 'build-ios-fixture-2017'
-    depends_on: 'generate-fixture-project-2017'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-cocoa-10.15
-    env:
-      UNITY_VERSION: "2017.4.40f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-          - project_2017.tgz
-        upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa
-          - test/mobile/features/fixtures/unity.log
-    commands:
-      - tar -zxf project_2017.tgz test/mobile/features/fixtures/maze_runner
-      - rake test:ios:build_xcode
-
-  - label: ':ios: Generate test fixture Xcode project for Unity 2018'
-    key: 'generate-fixture-project-2018'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2018.4.34f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/mobile/features/fixtures/unity.log
-          - project_2018.tgz
-    commands:
-      - rake test:ios:generate_xcode
-      - tar -zvcf project_2018.tgz  test/mobile/features/fixtures/maze_runner/mazerunner_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: ':ios: Build iOS test fixture for Unity 2018'
-    key: 'build-ios-fixture-2018'
-    depends_on: 'generate-fixture-project-2018'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-cocoa-10.15
-    env:
-      UNITY_VERSION: "2018.4.34f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-          - project_2018.tgz
-        upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
-          - test/mobile/features/fixtures/unity.log
-    commands:
-      - tar -zxf project_2018.tgz test/mobile/features/fixtures/maze_runner
-      - rake test:ios:build_xcode
-
-  - label: ':ios: Generate test fixture Xcode project for Unity 2019'
-    key: 'generate-fixture-project-2019'
-    depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-unity
-    env:
-      UNITY_VERSION: "2019.4.25f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-        upload:
-          - test/mobile/features/fixtures/unity.log
-          - project_2019.tgz
-    commands:
-      - rake test:ios:generate_xcode
-      - tar -zvcf project_2019.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
-
-  - label: ':ios: Build iOS test fixture for Unity 2019'
-    key: 'build-ios-fixture-2019'
-    depends_on: 'generate-fixture-project-2019'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-mac-cocoa-10.15
-    env:
-      UNITY_VERSION: "2019.4.25f1"
-    plugins:
-      artifacts#v1.2.0:
-        download:
-          - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
-          - project_2019.tgz
-        upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa
-          - test/mobile/features/fixtures/unity.log
-    commands:
-      - tar -zxf project_2019.tgz test/mobile/features/fixtures/maze_runner
-      - rake test:ios:build_xcode
-
-
-  - label: ':ios: Generate test fixture Xcode project for Unity 2020'
+  - label: ':ios: Generate Xcode project - Unity 2020'
     key: 'generate-fixture-project-2020'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.9f1"
+      UNITY_VERSION: "2020.3.13f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa
+          - features/fixtures/unity.log
           - project_2020.tgz
     commands:
       - rake test:ios:generate_xcode
-      - tar -zvcf project_2020.tgz test/mobile/features/fixtures/maze_runner/mazerunner_xcode
-    concurrency: 2
-    concurrency_group: 'unity-license'
+      - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
 
   - label: ':ios: Build iOS test fixture for Unity 2020'
     key: 'build-ios-fixture-2020'
     depends_on: 'generate-fixture-project-2020'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2020.3.9f1"
+      UNITY_VERSION: "2020.3.13f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -527,82 +164,17 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2020.tgz
         upload:
-          - test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.ipa
-          - test/mobile/features/fixtures/unity.log
+          - features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa
+          - features/fixtures/unity.log
     commands:
-      - tar -zxf project_2020.tgz test/mobile/features/fixtures/maze_runner
+      - tar -zxf project_2020.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
 
   #
   # Run iOS tests
   #
   # TODO: PLAT-6656 - Avoid having to use --separate-sessions
-  - label: ':ios: Run iOS e2e tests for Unity 2017'
-    depends_on: 'build-ios-fixture-2017'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.3.0:
-        download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
-      docker-compose#v3.3.0:
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
-          - "--farm=bs"
-          - "--device=IOS_14"
-          - "--fail-fast"
-          - "--separate-sessions"
-          - "features/ios"
-    concurrency: 9
-    concurrency_group: browserstack-app
-
-  - label: ':ios: Run iOS e2e tests for Unity 2018'
-    depends_on: 'build-ios-fixture-2018'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.3.0:
-        download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa"
-      docker-compose#v3.3.0:
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa"
-          - "--farm=bs"
-          - "--device=IOS_14"
-          - "--fail-fast"
-          - "--separate-sessions"
-          - "features/ios"
-    concurrency: 9
-    concurrency_group: browserstack-app
-
-  - label: ':ios: Run iOS e2e tests for Unity 2019'
-    skip: "Pending PLAT-6653"
-    depends_on: 'build-ios-fixture-2019'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.3.0:
-        download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa"
-      docker-compose#v3.3.0:
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.25f1.ipa"
-          - "--farm=bs"
-          - "--device=IOS_14"
-          - "--fail-fast"
-          - "--separate-sessions"
-          - "features/ios"
-    concurrency: 9
-    concurrency_group: browserstack-app
-
   - label: ':ios: Run iOS e2e tests for Unity 2020'
-    skip: "Pending PLAT-6653"
     depends_on: 'build-ios-fixture-2020'
     timeout_in_minutes: 30
     agents:
@@ -610,11 +182,11 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "test/mobile/features/fixtures/maze_runner/mazerunner_2020.3.9f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.9f1.ipa"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.13f1.ipa"
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
@@ -622,3 +194,135 @@ steps:
           - "features/ios"
     concurrency: 9
     concurrency_group: browserstack-app
+
+  #
+  # Conditionally trigger full pipeline
+  #
+  - label: 'Conditionally trigger full set of tests'
+    command: sh -c .buildkite/pipeline_trigger.sh
+
+  - block: "Build Windows fixtures"
+    depends_on: 'build-artifacts'
+    key: 'block-windows'
+    prompt: "Build Windows fixtures - Is a suitable agent running?"
+
+  #
+  # TODO Once Windows infrastructure is fully in place, refactor the following steps into the basic and full pipelines.
+  #
+  - label: Build Unity 2021 Windows test fixture
+    key: 'windows-2021-fixture'
+    depends_on: 'block-windows'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2021.1.16f1"
+    commands:
+      - scripts/ci-build-windows-package.bat
+    artifact_paths:
+      - features/fixtures/maze_runner/build/Windows-2021.1.16f1.zip
+
+  - label: Build Unity 2020 Windows test fixture
+    key: 'windows-2020-fixture'
+    depends_on: 'block-windows'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2020.3.12f1"
+    commands:
+      - scripts/ci-build-windows-package.bat
+    artifact_paths:
+      - features/fixtures/maze_runner/build/Windows-2020.3.12f1.zip
+
+  - label: Build Unity 2019 Windows test fixture
+    key: 'windows-2019-fixture'
+    depends_on: 'block-windows'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2019.4.28f1"
+    command:
+      - scripts/ci-build-windows-package.bat
+    artifact_paths:
+      - features/fixtures/maze_runner/build/Windows-2019.4.28f1.zip
+
+  - label: Build Unity 2018 Windows test fixture
+    key: 'windows-2018-fixture'
+    depends_on: 'block-windows'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2018.4.36f1"
+    command:
+      - scripts/ci-build-windows-package.bat
+    artifact_paths:
+      - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
+
+  - label: Build Unity 2017 Windows test fixture
+    key: 'windows-2017-fixture'
+    depends_on: 'block-windows'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2017.4.40f1"
+    command:
+      - scripts/ci-build-windows-package.bat
+    artifact_paths:
+      - features/fixtures/maze_runner/build/Windows-2017.4.40f1.zip
+
+  #
+  # Run Windows e2e tests
+  #
+  - label: Run Windows e2e tests for Unity 2021
+    depends_on: 'windows-2021-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2021.1.16f1"
+    command:
+      - scripts/ci-run-windows-tests.bat
+
+  - label: Run Windows e2e tests for Unity 2020
+    depends_on: 'windows-2020-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2020.3.12f1"
+    command:
+      - scripts/ci-run-windows-tests.bat
+
+  - label: Run Windows e2e tests for Unity 2019
+    depends_on: 'windows-2019-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2019.4.28f1"
+    command:
+      - scripts/ci-run-windows-tests.bat
+
+  - label: Run Windows e2e tests for Unity 2018
+    depends_on: 'windows-2018-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2018.4.36f1"
+    command:
+      - scripts/ci-run-windows-tests.bat
+
+  - label: Run Windows e2e tests for Unity 2017
+    depends_on: 'windows-2017-fixture'
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2017.4.40f1"
+    command:
+      - scripts/ci-run-windows-tests.bat

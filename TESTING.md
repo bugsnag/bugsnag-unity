@@ -34,7 +34,7 @@ Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 
 This will generate a test fixture APK named according to the `UNITY_VERSION`, e.g:
 ```
-./test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
+./features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
 ```
 
 #### iOS
@@ -50,7 +50,7 @@ Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 
 This will generate a test fixture IPA named according to the `UNITY_VERSION`, e.g:
 ```
-./test/mobile/features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
+./features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
 ```
 
 ### Running an end-to-end test
@@ -93,8 +93,7 @@ the following environment variables:
 
 ### Building the test fixture
 
-Building the mobile test fixtures currently assumes a macOS based Unity installation.  To build any test fixture, 
-from the root of the repository, first build the notifier:
+To build any test fixture, from the root of the repository, first build the notifier:
 ```
 rake plugin:export
 ```
@@ -104,31 +103,67 @@ This will generate the following files:
 
 #### MacOS
 
-1. `cd test/desktop`
-1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh`
+1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh macos`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
 /Applications/Unity/Hub/Editor/2018.4.34f1/Unity.app/Contents/MacOS/Unity
 ```
 
-This will generate a zip file containing the test fixture named according to the `UNITY_VERSION`, e.g:
+This will generate the test fixture app:
 ```
-./test/desktop/features/fixtures/Mazerunner_2018.4.34f1.app.zip
+./features/fixtures/maze_runner/Mazerunner.app
 ```
 
-This file will automatically be unzipped when running the tests, so no further action is required.
+#### Windows
+
+Building the test fixture on Windows requires a Git bash terminal.
+
+In a Git bash terminal:
+1. `UNITY_VERSION=2018.4.36f1 ./features/scripts/build_maze_runner.sh windows`
+
+Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
+```
+/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe
+```
+
+This will generate a build folder containing the test fixture executable, together with the UnityPlayer.dll and other
+dependencies:
+```
+./features/fixtures/maze_runner/build/Windows
+```
 
 ### Running an end-to-end test
 
 #### MacOS
 
-1. `cd test/desktop`
 1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
 1. Run `bundle install` if you haven't run end-to-end tests before
 1. To run the tests:
     ```shell script
-    UNITY_VERSION=2018.4.34f1 bundle exec maze-runner --app=Mazerunner
+    bundle exec maze-runner --app=features/fixtures/maze_runner/build/MacOS/Mazerunner.app --os=macos
     ```
 
-Where `UNITY_VERSION` corresponds to the Unity version used to build the test fixture initially.
+#### Windows
+
+Running the Maze Runner tests on Windows requires the Ubuntu app (using WSL).
+
+In the Ubuntu terminal:
+1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
+1. Run `bundle install` if you haven't run end-to-end tests before
+1. To run the tests:
+    ```shell script
+    bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows
+    ```
+
+#### WebGL
+
+The WebGL e2e tests depend on Chrome and `chromedriver` (available from Homebrew).
+
+In the Ubuntu terminal:
+1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
+1. Run `bundle install` if you haven't run end-to-end tests before
+1. To run the tests:
+    ```shell script
+    bundle exec maze-runner --farm=local --browser=chrome
+    ```
