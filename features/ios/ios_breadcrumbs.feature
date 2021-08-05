@@ -1,8 +1,8 @@
 Feature: ios breadcrumbs
 
     Background:
-        Given I clear all persistent data
-        And I wait for the mobile game to start
+        Given I wait for the mobile game to start
+        And I clear all persistent data
 
     Scenario: Disable Breadcrumbs
         When I run the "Disable Breadcrumbs" mobile scenario

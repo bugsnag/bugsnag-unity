@@ -11,7 +11,7 @@ When("I wait for the mobile game to start") do
 end
 
 When('I clear all persistent data') do
-  step('I run the "Clear iOS Data" mobile scenario')
+  step('I run the "Clear iOS Data" command')
 end
 
 When('I relaunch the Unity mobile app') do

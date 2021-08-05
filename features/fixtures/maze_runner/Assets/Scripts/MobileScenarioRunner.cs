@@ -11,8 +11,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public Text Dialled, ScenarioName;
 
-    private Dictionary<String, String> SCENARIOS = new Dictionary<String, String>
+    private Dictionary<String, String> LOOKUP = new Dictionary<String, String>
     {
+        // Scenarios
         {"01", "throw Exception" },
         {"02", "Log error" },
         {"03", "Native exception" },
@@ -27,11 +28,14 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"12", "Disable Native Errors" },
         {"13", "throw Exception with breadcrumbs" },
         {"14", "Start SDK no errors" },
+
+        // Commands
+        {"90", "Clear iOS Data" },
     };
 
-    private string GetScenarioNameFromDialCode(string code)
+    private string GetNameFromDialCode(string code)
     {
-        var scenarioName = SCENARIOS[code];
+        var scenarioName = LOOKUP[code];
         if (string.IsNullOrEmpty(scenarioName))
         {
             throw new System.Exception("Unable to find Scenario name for code: " + code);
@@ -59,13 +63,14 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         // 1: Get the dial code
         var code = Dialled.text;
+        Debug.Log("RunCommand called, code is " + code);
         if (string.IsNullOrEmpty(code) || code.Length != 2)
         {
             throw new System.Exception("Code is empty or not correctly formatted: " + code);
         }
 
         // 2: Get the command name and clear the number
-        var scenarioName = GetScenarioNameFromDialCode(code);
+        var scenarioName = GetNameFromDialCode(code);
         ScenarioName.text = scenarioName;
         Dialled.text = string.Empty;
 
@@ -78,13 +83,14 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         // 1: Get the dial code
         var code = Dialled.text;
+        Debug.Log("RunScenario called, code is " + code);
         if (string.IsNullOrEmpty(code) || code.Length != 2)
         {
             throw new System.Exception("Code is empty or not correctly formatted: " + code);
         }
 
         // 2: Get the scenario name and clear the number
-        var scenarioName = GetScenarioNameFromDialCode(code);
+        var scenarioName = GetNameFromDialCode(code);
         ScenarioName.text = scenarioName;
         Dialled.text = string.Empty;
 
