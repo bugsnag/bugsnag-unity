@@ -173,7 +173,6 @@ steps:
   #
   # Run iOS tests
   #
-  # TODO: PLAT-6656 - Avoid having to use --separate-sessions
   - label: ':ios: Run iOS e2e tests for Unity 2020'
     depends_on: 'build-ios-fixture-2020'
     timeout_in_minutes: 30
@@ -190,7 +189,6 @@ steps:
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
-          - "--separate-sessions"
           - "features/ios"
     concurrency: 9
     concurrency_group: browserstack-app
