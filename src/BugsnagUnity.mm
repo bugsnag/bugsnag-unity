@@ -98,10 +98,7 @@ void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger app
 
 void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion) {
   NSString *ns_bundleVersion = bundleVersion == NULL ? nil : [NSString stringWithUTF8String: bundleVersion];
-  NSLog(@"Setting Bundle Version: %@" , ns_bundleVersion );
   ((__bridge BugsnagConfiguration *)configuration).bundleVersion = ns_bundleVersion;
-  NSLog(@"Is Bundle Version set: %@" , ((__bridge BugsnagConfiguration *)configuration).bundleVersion );
-
 }
 
 void bugsnag_setContext(const void *configuration, char *context) {
@@ -359,15 +356,7 @@ void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *i
   NSString *appType = [Bugsnag configuration].appType ?: sysInfo[@BSG_KSSystemField_SystemName];
   callback(appData, "type", [appType UTF8String]);
   
-
   NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
-
-  NSLog(@"Config Version: %@" , [Bugsnag configuration].appVersion );
-
-  NSLog(@"Sysinfo Version: %@" , sysInfo[@BSG_KSSystemField_BundleShortVersion] );
-
-
-  NSLog(@"Returning Bundle Version: %@" , version );
 
   callback(appData, "version", [version UTF8String]);
 }
