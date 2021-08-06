@@ -29,7 +29,7 @@ Feature: iOS smoke tests for C# errors
         And the event "app.releaseStage" equals "production"
         And the event "app.type" equals "iOS"
         And the event "app.version" equals "1.2.3"
-#        And the event "app.bundleVersion" equals "???"
+        And the event "app.bundleVersion" equals "1.2.3"
 #        And the event "app.versionCode" equals "1"
 #        And the error payload field "events.0.app.durationInForeground" is greater than 0
 #        And the event "app.inForeground" equals "true"

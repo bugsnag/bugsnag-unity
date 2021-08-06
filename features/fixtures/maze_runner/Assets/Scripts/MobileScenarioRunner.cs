@@ -50,6 +50,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
         config.Context = "My context";
         config.AppVersion = "1.2.3";
+        config.BundleVersion = "1.2.3";
         return config;
     }
 
