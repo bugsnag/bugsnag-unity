@@ -3,6 +3,7 @@ Feature: iOS smoke tests for sessions
     # TODO: Failing steps commented out pending full implementation of PLAT-6372
     Background:
         Given I wait for the mobile game to start
+        And I clear all persistent data
 
     Scenario: Bugsnag automatically tracks sessions
         When I run the "Notify with callback" mobile scenario
