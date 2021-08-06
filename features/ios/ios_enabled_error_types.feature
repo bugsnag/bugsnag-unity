@@ -2,6 +2,7 @@ Feature: Enabled Error Types
 
     Background:
         Given I wait for the mobile game to start
+        And I clear all persistent data
 
     Scenario: Disable Native Errors
         When I run the "Disable Native Errors" mobile scenario
