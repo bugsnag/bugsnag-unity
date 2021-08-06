@@ -1,5 +1,14 @@
 # Changelog
 
+## TBD
+
+* Update bugsnag-android to v5.11.0:
+  * Add Bugsnag listeners for StrictMode violation detection
+    [#1331](https://github.com/bugsnag/bugsnag-android/pull/1331)
+
+  * Address pre-existing StrictMode violations
+    [#1328](https://github.com/bugsnag/bugsnag-android/pull/1328)
+
 ## 5.2.0 (2021-08-04)
 
 ### Enhancements
