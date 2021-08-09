@@ -105,7 +105,8 @@ When("I run the game in the {string} state") do |state|
     Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
     Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
 
-    command = "open -W #{Maze.config.app} --args -batchmode -nographics"
+    # Call executable directly rather than use open, which flakes on CI
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -batchmode -nographics"
     Maze::Runner.run_command(command)
 
   elsif Maze.config.os == 'windows'
@@ -178,7 +179,7 @@ Then("the first significant stack frame methods and files should match:") do |ex
   stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
   expected_frame_values = expected_values.raw
   expected_index = 0
-  
+
   flunk("The stacktrace is empty") if stacktrace.length == 0
   flunk("The stacktrace is not long enough") if stacktrace.length < expected_frame_values.length
 
