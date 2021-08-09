@@ -6,6 +6,11 @@
 
 * Add `BundleVersion` to set the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#bundleversion) [#359](https://github.com/bugsnag/bugsnag-unity/pull/359)
 
+* Update bugsnag-cocoa to v6.10.3
+
+  * Fix another rare crash in `bsg_ksmachgetThreadQueueName`.
+    [#1157](https://github.com/bugsnag/bugsnag-cocoa/pull/1157)
+    
 * Update bugsnag-android to v5.11.0:
   * Add Bugsnag listeners for StrictMode violation detection
     [#1331](https://github.com/bugsnag/bugsnag-android/pull/1331)
