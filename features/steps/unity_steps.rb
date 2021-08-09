@@ -37,6 +37,7 @@ def dial_number_for(name)
       "Disable Native Errors" => 12,
       "throw Exception with breadcrumbs" => 13,
       "Start SDK no errors" => 14,
+      "Disgard Error Class" => 15,
 
       # Commands
       "Clear iOS Data" => 90

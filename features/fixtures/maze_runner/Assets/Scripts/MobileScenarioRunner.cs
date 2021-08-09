@@ -28,6 +28,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"12", "Disable Native Errors" },
         {"13", "throw Exception with breadcrumbs" },
         {"14", "Start SDK no errors" },
+        {"15", "Disgard Error Class" },
 
         // Commands
         {"90", "Clear iOS Data" },
@@ -114,6 +115,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Start SDK no errors":
             case "Disable Native Errors":
                 config.EnabledErrorTypes = new ErrorTypes[0];
+                config.DiscardClasses = new string[] { "St13runtime_error" };
                 break;
             case "Log error":
                 config.NotifyLevel = LogType.Error;
@@ -123,6 +125,14 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "Max Breadcrumbs":
                 config.MaximumBreadcrumbs = 5;
+                break;
+            case "Disgard Error Class":
+#if UNITY_IOS
+                config.DiscardClasses = new string[] { "St13runtime_error" };
+
+#elif UNITY_ANDROID
+                config.DiscardClasses = new string[] { "java.lang.ArrayIndexOutOfBoundsException" };
+#endif
                 break;
         }
         return config;
@@ -139,6 +149,9 @@ public class MobileScenarioRunner : MonoBehaviour {
         {
             case "Start SDK":
             case "Start SDK no errors":
+                break;
+            case "Disgard Error Class":
+                NativeException();
                 break;
             case "Disable Native Errors":
                 NativeException();

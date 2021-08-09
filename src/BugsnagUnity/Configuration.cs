@@ -189,6 +189,13 @@ namespace BugsnagUnity
             }
         }
 
+        public string[] DiscardClasses { get; set; }
+
+        public virtual bool ErrorClassIsDiscarded(string className)
+        {
+            return DiscardClasses != null && DiscardClasses.Contains(className);
+        }
+
         public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)
         {
             return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);

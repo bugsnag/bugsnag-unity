@@ -135,6 +135,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "DisgardErrorClass":
+                config.DiscardClasses = new string[] { "ExecutionEngineException" };
+                break;
             case "EnableUnhandledExceptions":
                 config.EnabledErrorTypes = new ErrorTypes[] {ErrorTypes.UnhandledExceptions };
                 config.NotifyLevel = LogType.Log;
@@ -245,6 +248,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "DisgardErrorClass":
+                DoUnhandledException(0);
+                break;
             case "EnableUnhandledExceptions":
                 CheckEnabledErrorTypes();
                 break;

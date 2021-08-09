@@ -234,7 +234,21 @@ namespace BugsnagUnity
                     obj.Call("setEnabledBreadcrumbTypes", enabledBreadcrumbs);
                 }
             }
-            
+
+            // set DisgardedClasses
+            if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
+            {
+
+                using (AndroidJavaObject discardClasses = new AndroidJavaObject("java.util.HashSet"))
+                {
+                    foreach (var className in config.DiscardClasses)
+                    {
+                        discardClasses.Call<Boolean>("add", className);
+                    }
+                    obj.Call("setDiscardClasses", discardClasses);
+                }
+            }
+
             // add unity event callback
             var BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.BugsnagUnity");
             obj.Call("addOnError", BugsnagUnity.CallStatic<AndroidJavaObject>("getNativeCallback", new object[] { }));
