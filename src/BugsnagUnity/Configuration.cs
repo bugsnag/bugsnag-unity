@@ -12,6 +12,8 @@ namespace BugsnagUnity
 
         public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
+        public string BundleVersion { get; set; }
+
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;
@@ -122,7 +124,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool _autoDetectErrors = true; 
+        private bool _autoDetectErrors = true;
 
         [Obsolete("AutoNotify is deprecated, please use AutoDetectErrors instead.", false)]
         public virtual bool AutoNotify

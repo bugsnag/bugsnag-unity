@@ -29,6 +29,8 @@ extern "C" {
 
   void bugsnag_setAutoNotify(bool autoNotify);
 
+  void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion);
+
   void bugsnag_setContext(const void *configuration, char *context);
   void bugsnag_setContextConfig(const void *configuration, char *context);
 
@@ -94,6 +96,11 @@ void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger app
   ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
 }
 
+void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion) {
+  NSString *ns_bundleVersion = bundleVersion == NULL ? nil : [NSString stringWithUTF8String: bundleVersion];
+  ((__bridge BugsnagConfiguration *)configuration).bundleVersion = ns_bundleVersion;
+}
+
 void bugsnag_setContext(const void *configuration, char *context) {
   NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
   [Bugsnag.client setContext:ns_Context];
@@ -114,13 +121,13 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
         ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
         return;
     }
-    
+
     ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeNone;
-    
+
     for (int i = 0; i < count; i++) {
         const char *enabledType = types[i];
         if (enabledType != nil) {
-				
+
 			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"Navigation"])
@@ -167,7 +174,7 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
     for (int i = 0; i < count; i++) {
         const char *enabledType = types[i];
         if (enabledType != nil) {
-				
+
 			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"AppHangs"])
@@ -239,7 +246,7 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
 }
 
 void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab,const char *keys[], int keys_size, const char *values[], int values_size)) {
-    
+
     for (NSString* sectionKey in [Bugsnag.client metadata].dictionary.allKeys) {
                  NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
                  NSArray *keys = [sectionDictionary allKeys];
@@ -258,7 +265,7 @@ void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void 
                 free(c_keys);
                 free(c_values);
            }
-    
+
 }
 
 void bugsnag_removeMetadata(const void *configuration, const char *tab) {
@@ -341,7 +348,9 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
 void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
-  callback(appData, "bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
+  NSString *bundleVersion = [Bugsnag configuration].bundleVersion ?: sysInfo[@BSG_KSSystemField_BundleVersion];
+  callback(appData, "bundleVersion", [bundleVersion UTF8String]);
+
   callback(appData, "id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
   callback(appData, "type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
   NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
