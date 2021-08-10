@@ -199,7 +199,7 @@ namespace BugsnagUnity
             }
         }
 
-      
+
 
         public void BeforeNotify(Middleware middleware)
         {
@@ -260,7 +260,7 @@ namespace BugsnagUnity
 
         void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
         {
-            if (!ShouldSendRequests() || EventContainsDisgardedClass(exceptions))
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions))
             {
                 return; // Skip overhead of computing payload to to ultimately not be sent
             }
@@ -328,7 +328,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool EventContainsDisgardedClass(Exception[] exceptions)
+        private bool EventContainsDiscardedClass(Exception[] exceptions)
         {
             foreach (var exception in exceptions)
             {

@@ -3,8 +3,8 @@ Feature: Android manual smoke tests
     Background:
         Given I wait for the mobile game to start
 
- Scenario: Disgard JVM Error Class
-        When I run the "Disgard Error Class" mobile scenario
+ Scenario: Discard JVM Error Class
+        When I run the "Discard Error Class" mobile scenario
         Then I should receive no errors
 
     Scenario: Uncaught JVM exception

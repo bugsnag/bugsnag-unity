@@ -85,8 +85,8 @@ Feature: Reporting unhandled events
         When I run the game in the "UncaughtExceptionWithoutAutoNotify" state
         Then I should receive no requests
 
-    Scenario: Disgarding An Error Class
-        When I run the game in the "DisgardErrorClass" state
+    Scenario: Discarding An Error Class
+        When I run the game in the "DiscardErrorClass" state
         Then I should receive no errors
 
     @macos_only

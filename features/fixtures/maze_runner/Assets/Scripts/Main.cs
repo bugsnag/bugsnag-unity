@@ -135,7 +135,7 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
-            case "DisgardErrorClass":
+            case "DiscardErrorClass":
                 config.DiscardClasses = new string[] { "ExecutionEngineException" };
                 break;
             case "EnableUnhandledExceptions":
@@ -248,7 +248,7 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
-            case "DisgardErrorClass":
+            case "DiscardErrorClass":
                 DoUnhandledException(0);
                 break;
             case "EnableUnhandledExceptions":

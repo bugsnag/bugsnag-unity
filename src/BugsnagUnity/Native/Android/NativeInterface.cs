@@ -235,7 +235,7 @@ namespace BugsnagUnity
                 }
             }
 
-            // set DisgardedClasses
+            // set DiscardedClasses
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
 

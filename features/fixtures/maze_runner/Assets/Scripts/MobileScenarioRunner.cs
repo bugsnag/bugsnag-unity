@@ -28,7 +28,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"12", "Disable Native Errors" },
         {"13", "throw Exception with breadcrumbs" },
         {"14", "Start SDK no errors" },
-        {"15", "Disgard Error Class" },
+        {"15", "Discard Error Class" },
 
         // Commands
         {"90", "Clear iOS Data" },
@@ -126,7 +126,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Max Breadcrumbs":
                 config.MaximumBreadcrumbs = 5;
                 break;
-            case "Disgard Error Class":
+            case "Discard Error Class":
 #if UNITY_IOS
                 config.DiscardClasses = new string[] { "St13runtime_error" };
 
@@ -150,7 +150,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Start SDK":
             case "Start SDK no errors":
                 break;
-            case "Disgard Error Class":
+            case "Discard Error Class":
                 NativeException();
                 break;
             case "Disable Native Errors":
