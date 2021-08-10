@@ -124,7 +124,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool _autoDetectErrors = true; 
+        private bool _autoDetectErrors = true;
 
         [Obsolete("AutoNotify is deprecated, please use AutoDetectErrors instead.", false)]
         public virtual bool AutoNotify
@@ -189,7 +189,6 @@ namespace BugsnagUnity
             }
         }
 
-
         public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)
         {
             return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);
@@ -224,8 +223,6 @@ namespace BugsnagUnity
                 || Application.platform == RuntimePlatform.WindowsEditor
                 || Application.platform == RuntimePlatform.LinuxEditor;
         }
-
-       
     }
 }
 
