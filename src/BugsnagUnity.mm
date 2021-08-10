@@ -121,13 +121,13 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
         ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
         return;
     }
-    
+
     ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeNone;
-    
+
     for (int i = 0; i < count; i++) {
         const char *enabledType = types[i];
         if (enabledType != nil) {
-				
+
 			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"Navigation"])
@@ -174,7 +174,7 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
     for (int i = 0; i < count; i++) {
         const char *enabledType = types[i];
         if (enabledType != nil) {
-				
+
 			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"AppHangs"])
@@ -246,7 +246,7 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
 }
 
 void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab,const char *keys[], int keys_size, const char *values[], int values_size)) {
-    
+
     for (NSString* sectionKey in [Bugsnag.client metadata].dictionary.allKeys) {
                  NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
                  NSArray *keys = [sectionDictionary allKeys];
@@ -265,7 +265,7 @@ void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void 
                 free(c_keys);
                 free(c_values);
            }
-    
+
 }
 
 void bugsnag_removeMetadata(const void *configuration, const char *tab) {
@@ -352,12 +352,9 @@ void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *i
   callback(appData, "bundleVersion", [bundleVersion UTF8String]);
 
   callback(appData, "id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
+  callback(appData, "type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
 
-  NSString *appType = [Bugsnag configuration].appType ?: sysInfo[@BSG_KSSystemField_SystemName];
-  callback(appData, "type", [appType UTF8String]);
-  
   NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
-
   callback(appData, "version", [version UTF8String]);
 }
 
