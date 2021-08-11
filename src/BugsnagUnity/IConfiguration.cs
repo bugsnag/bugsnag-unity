@@ -11,6 +11,10 @@ namespace BugsnagUnity
 
         bool ReportUncaughtExceptionsAsHandled { get; set; }
 
+        string[] DiscardClasses { get; set; }
+
+        bool ErrorClassIsDiscarded(string className);
+
         ErrorTypes[] EnabledErrorTypes { get; set; }
 
         bool IsUnityLogErrorTypeEnabled(LogType logType);

@@ -57,6 +57,9 @@ extern "C" {
 
   void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
 
+  void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count);
+
+
   void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
 
 
@@ -203,6 +206,18 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
             }
         }
       }
+}
+
+void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count){
+  NSMutableSet *ns_classNames = [NSMutableSet new];
+  for (int i = 0; i < count; i++) {
+    const char *className = classNames[i];
+    if (className != nil) {
+      NSString *ns_className = [NSString stringWithUTF8String: className];
+      [ns_classNames addObject: ns_className];
+    }
+  }
+  ((__bridge BugsnagConfiguration *)configuration).discardClasses = ns_classNames;
 }
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {

@@ -11,6 +11,8 @@
   * Fix another rare crash in `bsg_ksmachgetThreadQueueName`.
     [#1157](https://github.com/bugsnag/bugsnag-cocoa/pull/1157)
     
+* Add `DiscardClasses` configuration option to disable sending events that contain user defined error classes. [#361](https://github.com/bugsnag/bugsnag-unity/pull/361)
+
 * Update bugsnag-android to v5.11.0:
   * Add Bugsnag listeners for StrictMode violation detection
     [#1331](https://github.com/bugsnag/bugsnag-android/pull/1331)

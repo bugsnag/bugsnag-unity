@@ -199,7 +199,7 @@ namespace BugsnagUnity
             }
         }
 
-      
+
 
         public void BeforeNotify(Middleware middleware)
         {
@@ -260,10 +260,11 @@ namespace BugsnagUnity
 
         void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
         {
-            if (!ShouldSendRequests())
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions))
             {
                 return; // Skip overhead of computing payload to to ultimately not be sent
             }
+
             var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
             var app = new App(Configuration)
             {
@@ -325,6 +326,18 @@ namespace BugsnagUnity
 
                 SessionTracking.AddException(report);
             }
+        }
+
+        private bool EventContainsDiscardedClass(Exception[] exceptions)
+        {
+            foreach (var exception in exceptions)
+            {
+                if (Configuration.ErrorClassIsDiscarded(exception.ErrorClass))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void SetApplicationState(bool inFocus)

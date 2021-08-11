@@ -85,6 +85,10 @@ Feature: Reporting unhandled events
         When I run the game in the "UncaughtExceptionWithoutAutoNotify" state
         Then I should receive no requests
 
+    Scenario: Discarding An Error Class
+        When I run the game in the "DiscardErrorClass" state
+        Then I should receive no errors
+
     @macos_only
     Scenario: Reporting a native crash when AutoNotify = false
         When I run the game in the "NativeCrashWithoutAutoNotify" state
