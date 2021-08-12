@@ -85,6 +85,8 @@ namespace BugsnagUnity
 
         public virtual string[] NotifyReleaseStages { get; set; }
 
+        public virtual string[] ProjectPackages { get; set; }
+
         public virtual string AppVersion { get; set; }
 
         public virtual Uri Endpoint { get; set; } = new Uri(DefaultEndpoint);
