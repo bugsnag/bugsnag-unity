@@ -16,7 +16,7 @@ namespace BugsnagUnity.Payload
         /// Gets the endpoint that will be used to send the report to.
         /// </summary>
         /// <value>The endpoint.</value>
-        public Uri Endpoint => Configuration.Endpoint;
+        public Uri Endpoint => Configuration.Endpoints.Notify;
 
         /// <summary>
         /// Gets the headers that will be attached to the http request used to send

@@ -260,7 +260,7 @@ namespace BugsnagUnity
 
         void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
         {
-            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions))
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
                 return; // Skip overhead of computing payload to to ultimately not be sent
             }

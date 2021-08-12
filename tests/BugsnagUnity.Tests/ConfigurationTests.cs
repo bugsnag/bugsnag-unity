@@ -16,8 +16,8 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsTrue(config.AutoDetectErrors);
             Assert.IsTrue(config.AutoTrackSessions);
             Assert.AreEqual("production", config.ReleaseStage);
-            Assert.AreEqual("https://notify.bugsnag.com/", config.Endpoint.ToString());
-            Assert.AreEqual("https://sessions.bugsnag.com/", config.SessionEndpoint.ToString());
+            Assert.AreEqual("https://notify.bugsnag.com/", config.Endpoints.Notify.ToString());
+            Assert.AreEqual("https://sessions.bugsnag.com/", config.Endpoints.Session.ToString());
             Assert.AreEqual("foo", config.ApiKey);
         }
 

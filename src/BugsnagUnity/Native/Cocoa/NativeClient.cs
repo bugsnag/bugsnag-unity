@@ -32,7 +32,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoDetectErrors);
             NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
-            NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
+            NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoints.Notify.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
             NativeCode.bugsnag_setBundleVersion(obj, config.BundleVersion);
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
