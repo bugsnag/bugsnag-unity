@@ -135,6 +135,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "CustomAppType":
+                config.AppType = "test";
+                break;
             case "DiscardErrorClass":
                 config.DiscardClasses = new string[] { "ExecutionEngineException" };
                 break;
@@ -248,6 +251,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "CustomAppType":
+                DoNotify();
+                break;
             case "DiscardErrorClass":
                 DoUnhandledException(0);
                 break;

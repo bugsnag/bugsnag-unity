@@ -29,6 +29,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"13", "throw Exception with breadcrumbs" },
         {"14", "Start SDK no errors" },
         {"15", "Discard Error Class" },
+        {"16", "Custom App Type" },
+
 
         // Commands
         {"90", "Clear iOS Data" },
@@ -126,6 +128,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Max Breadcrumbs":
                 config.MaximumBreadcrumbs = 5;
                 break;
+            case "Custom App Type":
+                config.AppType = "test";
+                break;
             case "Discard Error Class":
 #if UNITY_IOS
                 config.DiscardClasses = new string[] { "St13runtime_error" };
@@ -147,6 +152,9 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Custom App Type":
+                ThrowException();
+                break;
             case "Start SDK":
             case "Start SDK no errors":
                 break;

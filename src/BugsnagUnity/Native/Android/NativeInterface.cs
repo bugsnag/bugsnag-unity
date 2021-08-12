@@ -211,10 +211,11 @@ namespace BugsnagUnity
                 }
             }
 
-            // set version/context/maxbreadcrumbs
+            // set version/context/maxbreadcrumbs/AppType
             obj.Call("setAppVersion", config.AppVersion);
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
+            obj.Call("setAppType",config.AppType);
 
             // set EnabledBreadcrumbTypes
             if (config.EnabledBreadcrumbTypes != null)

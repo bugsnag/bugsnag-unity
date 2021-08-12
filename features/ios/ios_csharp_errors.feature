@@ -71,3 +71,8 @@ Feature: iOS smoke tests for C# errors
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
+    
+    Scenario: Custom App Type
+        When I run the "Custom App Type" mobile scenario
+        Then I wait to receive an error
+        And the event "app.type" equals "test"
