@@ -56,6 +56,15 @@ public class MobileNative : MonoBehaviour {
         }
     }
 
+    public static void TriggerBackgroundJavaCrash()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("triggerBackgroundJvmException");
+        }
+    }
+
     public static void RaiseNdkSignal()
     {
         if (Application.platform == RuntimePlatform.Android)

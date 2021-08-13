@@ -36,6 +36,10 @@ namespace BugsnagUnity.Payload
             }
             this.AddToPayload("user", user);
         }
+        internal void AddAndroidProjectPackagesToEvent(string[] packages)
+        {
+            this.AddToPayload("projectPackages", packages);
+        }
 
         internal Metadata Metadata { get; }
 
@@ -90,6 +94,18 @@ namespace BugsnagUnity.Payload
         {
             get { return this.Get("user") as User; }
             set { this.AddToPayload("user", value); }
+        }
+
+        internal bool IsAndroidJavaError()
+        {
+            foreach (var exception in Exceptions)
+            {
+                if (exception.IsAndroidJavaException)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         HandledState HandledState

@@ -38,6 +38,8 @@ def dial_number_for(name)
       "throw Exception with breadcrumbs" => 13,
       "Start SDK no errors" => 14,
       "Discard Error Class" => 15,
+      "Java Background Crash" => 16,
+
 
       # Commands
       "Clear iOS Data" => 90
