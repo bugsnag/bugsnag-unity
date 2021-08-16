@@ -73,6 +73,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setBundleVersion(IntPtr configuration, string bundleVersion);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setAppType(IntPtr configuration, string appType);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setNotifyUrl(IntPtr configuration, string endpoint);
 
         internal delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] releaseStages, long count);

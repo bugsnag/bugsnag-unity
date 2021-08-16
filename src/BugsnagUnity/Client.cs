@@ -312,6 +312,13 @@ namespace BugsnagUnity
               handledState,
               Breadcrumbs.Retrieve(),
               SessionTracking.CurrentSession);
+
+            //Check for adding project packages to an android java error event
+            if (ShouldAddProjectPackagesToEvent(@event))
+            {
+                @event.AddAndroidProjectPackagesToEvent(Configuration.ProjectPackages);
+            }
+
             var report = new Report(Configuration, @event);
 
             lock (MiddlewareLock)
@@ -344,6 +351,14 @@ namespace BugsnagUnity
 
                 SessionTracking.AddException(report);
             }
+        }
+
+        private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
+        {
+            return Application.platform.Equals(RuntimePlatform.Android)
+               && Configuration.ProjectPackages != null
+               && Configuration.ProjectPackages.Length > 0
+               && theEvent.IsAndroidJavaError();
         }
 
         private bool EventContainsDiscardedClass(Exception[] exceptions)

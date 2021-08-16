@@ -11,6 +11,8 @@ namespace BugsnagUnity
 
         public string BundleVersion { get; set; }
 
+        public string AppType { get; set; }
+
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;
@@ -79,6 +81,8 @@ namespace BugsnagUnity
         public virtual string ReleaseStage { get; set; } = "production";
 
         public virtual string[] NotifyReleaseStages { get; set; }
+
+        public virtual string[] ProjectPackages { get; set; }
 
         public virtual string AppVersion { get; set; }
 

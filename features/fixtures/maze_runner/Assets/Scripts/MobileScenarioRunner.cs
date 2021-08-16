@@ -29,6 +29,9 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"13", "throw Exception with breadcrumbs" },
         {"14", "Start SDK no errors" },
         {"15", "Discard Error Class" },
+        {"16", "Java Background Crash" },
+        {"17", "Custom App Type" },
+
 
         // Commands
         {"90", "Clear iOS Data" },
@@ -112,6 +115,10 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Java Background Crash":
+            case "Native exception":
+                config.ProjectPackages = new string[] { "test.test.test" };
+                break;
             case "Start SDK no errors":
             case "Disable Native Errors":
                 config.EnabledErrorTypes = new ErrorTypes[0];
@@ -125,6 +132,9 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "Max Breadcrumbs":
                 config.MaximumBreadcrumbs = 5;
+                break;
+            case "Custom App Type":
+                config.AppType = "test";
                 break;
             case "Discard Error Class":
 #if UNITY_IOS
@@ -147,6 +157,9 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Custom App Type":
+                ThrowException();
+                break;
             case "Start SDK":
             case "Start SDK no errors":
                 break;
@@ -167,6 +180,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Log error":
                 SetUser();
                 LogError();
+                break;
+            case "Java Background Crash":
+                MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "Native exception":
                 LeaveBreadcrumbString();

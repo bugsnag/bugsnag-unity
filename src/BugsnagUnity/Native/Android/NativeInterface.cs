@@ -211,10 +211,16 @@ namespace BugsnagUnity
                 }
             }
 
-            // set version/context/maxbreadcrumbs
+            // set version/context/maxbreadcrumbs/AppType
             obj.Call("setAppVersion", config.AppVersion);
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
+
+            //Null or empty check necessary because android will set the app.type to empty if that or null is passed as default
+            if (!string.IsNullOrEmpty(config.AppType))
+            {
+                obj.Call("setAppType", config.AppType);
+            }
 
             // set EnabledBreadcrumbTypes
             if (config.EnabledBreadcrumbTypes != null)
@@ -246,6 +252,20 @@ namespace BugsnagUnity
                         discardClasses.Call<Boolean>("add", className);
                     }
                     obj.Call("setDiscardClasses", discardClasses);
+                }
+            }
+
+            // set ProjectPackages
+            if (config.ProjectPackages != null && config.ProjectPackages.Length > 0)
+            {
+
+                using (AndroidJavaObject projectPackages = new AndroidJavaObject("java.util.HashSet"))
+                {
+                    foreach (var packageName in config.ProjectPackages)
+                    {
+                        projectPackages.Call<Boolean>("add", packageName);
+                    }
+                    obj.Call("setProjectPackages", projectPackages);
                 }
             }
 
