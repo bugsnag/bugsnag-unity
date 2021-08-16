@@ -33,5 +33,25 @@ namespace BugsnagUnity.Payload.Tests
             config.MaximumBreadcrumbs = 20;
             Assert.AreEqual(config.MaximumBreadcrumbs, 20);
         }
+
+        [Test]
+        public void EndpointValidation()
+        {
+            var config = new Configuration("foo");
+
+            Assert.IsTrue(config.Endpoints.IsValid);
+
+            config.Endpoint = new System.Uri("https://www.richIsCool.com/");
+
+            Assert.IsFalse(config.Endpoints.IsValid);
+
+            config.SessionEndpoint = new System.Uri("https://www.richIsSuperCool.com/");
+
+            Assert.IsTrue(config.Endpoints.IsValid);
+
+            config.Endpoint = null;
+
+            Assert.IsFalse(config.Endpoints.IsValid);
+        }
     }
 }

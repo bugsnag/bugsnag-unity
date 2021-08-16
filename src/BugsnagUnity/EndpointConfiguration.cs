@@ -12,13 +12,17 @@ namespace BugsnagUnity
 
         internal Uri Session;
 
+        internal bool NotifyIsCustom => Notify != null && Notify.ToString() != new Uri( DefaultNotifyEndpoint ).ToString();
+
+        internal bool SessionIsCustom => Session != null && Session.ToString() != new Uri ( DefaultSessionEndpoint ).ToString();
+
         internal bool IsValid
         {
             get
             {
-                return Notify != null && Session != null;
+                return Notify != null && Session != null && (NotifyIsCustom && SessionIsCustom || !NotifyIsCustom && !SessionIsCustom);
             }
-        }
+        }        
 
         internal EndpointConfiguration()
         {
