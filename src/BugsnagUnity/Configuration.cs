@@ -14,6 +14,8 @@ namespace BugsnagUnity
 
         public string BundleVersion { get; set; }
 
+        public string AppType { get; set; }
+
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;

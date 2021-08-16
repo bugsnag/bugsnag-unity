@@ -71,5 +71,7 @@ namespace BugsnagUnity
         ulong AppHangThresholdMillis { get; set; }
 
         string BundleVersion { get; set; }
+
+        string AppType { get; set; }
     }
 }

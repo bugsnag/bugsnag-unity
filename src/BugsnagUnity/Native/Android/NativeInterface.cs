@@ -211,10 +211,16 @@ namespace BugsnagUnity
                 }
             }
 
-            // set version/context/maxbreadcrumbs
+            // set version/context/maxbreadcrumbs/AppType
             obj.Call("setAppVersion", config.AppVersion);
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
+
+            //Null or empty check necessary because android will set the app.type to empty if that or null is passed as default
+            if (!string.IsNullOrEmpty(config.AppType))
+            {
+                obj.Call("setAppType", config.AppType);
+            }
 
             // set EnabledBreadcrumbTypes
             if (config.EnabledBreadcrumbTypes != null)
