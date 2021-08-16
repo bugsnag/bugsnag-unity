@@ -39,6 +39,7 @@ def dial_number_for(name)
       "Start SDK no errors" => 14,
       "Discard Error Class" => 15,
       "Java Background Crash" => 16,
+      "Custom App Type" => 17,
 
 
       # Commands
