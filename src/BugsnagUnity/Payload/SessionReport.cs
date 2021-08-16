@@ -7,7 +7,7 @@ namespace BugsnagUnity.Payload
     {
         IConfiguration Configuration { get; }
 
-        public Uri Endpoint => Configuration.SessionEndpoint;
+        public Uri Endpoint => Configuration.Endpoints.Session;
 
         public KeyValuePair<string, string>[] Headers { get; }
 

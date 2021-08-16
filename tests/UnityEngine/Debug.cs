@@ -9,6 +9,7 @@ namespace UnityEngine
     {
         public static bool isDebugBuild { get; }
         public static void LogError(object message) { }
+        public static void LogWarning(object message) { }
 
     }
 }

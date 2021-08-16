@@ -95,7 +95,25 @@ namespace BugsnagUnity
             {
                 // Async behavior is not available in a test environment
             }
+            if (!Configuration.Endpoints.IsValid)
+            {
+                CheckForMisconfiguredEndpointsWarning();
+            }
             AddBugsnagLoadedBreadcrumb();
+        }
+
+        private void CheckForMisconfiguredEndpointsWarning()
+        {
+            var endpoints = Configuration.Endpoints;
+            if (endpoints.NotifyIsCustom && !endpoints.SessionIsCustom)
+            {
+                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Notify cannot be set without also setting endpoints.Session. Events will not be sent to Bugsnag.");
+            }
+            if (!endpoints.NotifyIsCustom && endpoints.SessionIsCustom)
+            {
+                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Session cannot be set without also setting endpoints.Notify. Sessions will not be sent to Bugsnag.");
+            }
+
         }
 
         private void AddBugsnagLoadedBreadcrumb()
@@ -260,7 +278,7 @@ namespace BugsnagUnity
 
         void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
         {
-            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions))
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
                 return; // Skip overhead of computing payload to to ultimately not be sent
             }

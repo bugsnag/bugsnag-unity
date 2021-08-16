@@ -8,9 +8,6 @@ namespace BugsnagUnity
 {
     public class Configuration : IConfiguration
     {
-        public const string DefaultEndpoint = "https://notify.bugsnag.com";
-
-        public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
 
         public string BundleVersion { get; set; }
 
@@ -24,8 +21,6 @@ namespace BugsnagUnity
             AutoDetectErrors = true;
             AutoDetectAnrs = true;
             ReleaseStage = "production";
-            Endpoint = new Uri(DefaultEndpoint);
-            SessionEndpoint = new Uri(DefaultSessionEndpoint);
         }
 
         public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
@@ -91,11 +86,35 @@ namespace BugsnagUnity
 
         public virtual string AppVersion { get; set; }
 
-        public virtual Uri Endpoint { get; set; } = new Uri(DefaultEndpoint);
+        [Obsolete("Endpoint is deprecated, please use Configuration.Endpoints instead.", false)]
+        public virtual Uri Endpoint
+        {
+            get
+            {
+                return Endpoints.Notify;
+            }
+            set
+            {
+                Endpoints.Notify = value;
+            }
+        }
+
+        [Obsolete("SessionEndpoint is deprecated, please use Configuration.Endpoints instead.", false)]
+        public virtual Uri SessionEndpoint
+        {
+            get
+            {
+                return Endpoints.Session;
+            }
+            set
+            {
+                Endpoints.Session = value;
+            }
+        }
+
+        public EndpointConfiguration Endpoints { get; set; } = new EndpointConfiguration();
 
         public virtual string PayloadVersion { get; } = "4.0";
-
-        public virtual Uri SessionEndpoint { get; set; } = new Uri(DefaultSessionEndpoint);
 
         public virtual string SessionPayloadVersion { get; } = "1.0";
 
@@ -105,7 +124,8 @@ namespace BugsnagUnity
         private LogType _notifyLogLevel = LogType.Exception;
 
         [Obsolete("NotifyLevel is deprecated, please use NotifyLogLevel instead.", false)]
-        public virtual LogType NotifyLevel {
+        public virtual LogType NotifyLevel
+        {
             get
             {
                 return _notifyLogLevel;
