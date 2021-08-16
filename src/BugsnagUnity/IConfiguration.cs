@@ -13,6 +13,8 @@ namespace BugsnagUnity
 
         string[] DiscardClasses { get; set; }
 
+        string[] ProjectPackages { get; set; }
+
         bool ErrorClassIsDiscarded(string className);
 
         ErrorTypes[] EnabledErrorTypes { get; set; }

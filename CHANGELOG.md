@@ -4,9 +4,11 @@
 
 ### Enhancements
 
-* Add `AppType` configuration option to enable setting a custom value for the app.type field in an event [#363](https://github.com/bugsnag/bugsnag-unity/pull/363)
+* Add `ProjectPackages` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#projectpackages) [#364](https://github.com/bugsnag/bugsnag-unity/pull/364)
 
-* Add `BundleVersion` to set the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#bundleversion) [#359](https://github.com/bugsnag/bugsnag-unity/pull/359)
+* Add `BundleVersion` config option to set the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#bundleversion) [#359](https://github.com/bugsnag/bugsnag-unity/pull/359)
+
+* Add `AppType` configuration option to enable setting a custom value for the app.type field in an event [#363](https://github.com/bugsnag/bugsnag-unity/pull/363)
 
 * Update bugsnag-cocoa to v6.10.4
 

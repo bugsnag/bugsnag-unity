@@ -63,7 +63,7 @@ namespace BugsnagUnity.Payload
     public class Exception : Dictionary<string, object>
     {
         internal HandledState HandledState { get; }
-
+        internal bool IsAndroidJavaException;
         private static string AndroidJavaErrorClass = "AndroidJavaException";
         private static string ErrorClassMessagePattern = @"^(?<errorClass>\S+):\s+(?<message>.*)";
         // Used to detect native Android events
@@ -71,14 +71,15 @@ namespace BugsnagUnity.Payload
         private static string NativeAndroidMessagePattern = @"signal \d+ \(SIG\w+\)";
 
         internal Exception(string errorClass, string message, StackTraceLine[] stackTrace)
-          : this(errorClass, message, stackTrace, HandledState.ForHandledException()) { }
+          : this(errorClass, message, stackTrace, HandledState.ForHandledException(),false) { }
 
-        internal Exception(string errorClass, string message, StackTraceLine[] stackTrace, HandledState handledState)
+        internal Exception(string errorClass, string message, StackTraceLine[] stackTrace, HandledState handledState,bool isAndroidJavaException)
         {
             this.AddToPayload("errorClass", errorClass);
             this.AddToPayload("message", message);
             this.AddToPayload("stacktrace", stackTrace);
             HandledState = handledState;
+            IsAndroidJavaException = isAndroidJavaException;
         }
 
         public IEnumerable<StackTraceLine> StackTrace { get { return this.Get("stacktrace") as IEnumerable<StackTraceLine>; } }
@@ -137,10 +138,12 @@ namespace BugsnagUnity.Payload
             {
                 var errorClass = match.Groups["errorClass"].Value;
                 var message = match.Groups["message"].Value.Trim();
+                var isAndroidJavaException = false;
                 // Exceptions starting with "AndroidJavaException" are uncaught Java exceptions reported
                 // via the Unity log handler
                 if (errorClass == AndroidJavaErrorClass)
                 {
+                    isAndroidJavaException = true;
                     match = Regex.Match(message, ErrorClassMessagePattern, RegexOptions.Singleline);
 
                     // If the message matches the "class: message" pattern, then the Java class is followed
@@ -161,12 +164,12 @@ namespace BugsnagUnity.Payload
                     lines = new StackTrace(logMessage.StackTrace, StackTraceFormat.AndroidJava).ToArray();
                     handledState = HandledState.ForUnhandledException();
                 }
-                return new Exception(errorClass, message, lines, handledState);
+                return new Exception(errorClass, message, lines, handledState, isAndroidJavaException);
             }
             else
             {
                 // include the type somehow in there
-                return new Exception($"UnityLog{logMessage.Type}", logMessage.Condition, lines, handledState);
+                return new Exception($"UnityLog{logMessage.Type}", logMessage.Condition, lines, handledState, false);
             }
         }
 

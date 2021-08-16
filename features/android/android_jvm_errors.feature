@@ -17,13 +17,14 @@ Feature: Android manual smoke tests
         And the exception "message" equals "length=2; index=2"
         And the event "unhandled" is true
         And the event "severity" equals "error"
+        And the error payload field "events.0.projectPackages" is a non-empty array
         And the event "severityReason.type" equals "unhandledException"
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
         And the event "exceptions.0.stacktrace.0.method" equals "com.example.bugsnagcrashplugin.CrashHelper.triggerJvmException()"
         And the exception "stacktrace.0.file" equals "CrashHelper.java"
-        And the event "exceptions.0.stacktrace.0.lineNumber" equals 12
+        And the event "exceptions.0.stacktrace.0.lineNumber" equals 13
         And the error payload field "events.0.threads" is null
 
         # App data
@@ -87,3 +88,36 @@ Feature: Android manual smoke tests
         And the error payload field "events.0.device.runtimeVersions.androidApiLevel" is not null
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
+
+    Scenario: Background JVM exception
+        When I run the "Java Background Crash" mobile scenario
+        And I wait for 8 seconds
+        And I relaunch the Unity mobile app
+        When I run the "Start SDK" mobile scenario
+        Then I wait to receive an error
+
+        # Exception details
+        And the error payload field "events" is an array with 1 elements
+        And the exception "errorClass" equals "java.lang.RuntimeException"
+        And the exception "message" equals "Uncaught JVM exception from background thread"
+        And the event "unhandled" is true
+        And the event "severity" equals "error"
+        And the error payload field "events.0.projectPackages" is a non-empty array
+        And the event "severityReason.type" equals "unhandledException"
+
+        # Stacktrace validation
+        And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
+        And the exception "stacktrace.0.file" equals "CrashHelper.java"
+        And the event "exceptions.0.stacktrace.0.lineNumber" equals 19
+        And the error payload field "events.0.threads" is not null
+
+        # App data
+        And the event "app.id" equals "com.bugsnag.mazerunner"
+        And the event "app.releaseStage" equals "production"
+        And the event "app.type" equals "android"
+        And the event "app.version" equals "1.2.3"
+        And the event "app.versionCode" equals 1
+        And the error payload field "events.0.app.duration" is not null
+        And the error payload field "events.0.app.durationInForeground" is not null
+
+ 

@@ -29,7 +29,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"13", "throw Exception with breadcrumbs" },
         {"14", "Start SDK no errors" },
         {"15", "Discard Error Class" },
-        {"16", "Custom App Type" },
+        {"16", "Java Background Crash" },
+        {"17", "Custom App Type" },
 
 
         // Commands
@@ -114,6 +115,10 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Java Background Crash":
+            case "Native exception":
+                config.ProjectPackages = new string[] { "test.test.test" };
+                break;
             case "Start SDK no errors":
             case "Disable Native Errors":
                 config.EnabledErrorTypes = new ErrorTypes[0];
@@ -175,6 +180,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Log error":
                 SetUser();
                 LogError();
+                break;
+            case "Java Background Crash":
+                MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "Native exception":
                 LeaveBreadcrumbString();

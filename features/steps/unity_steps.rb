@@ -38,7 +38,8 @@ def dial_number_for(name)
       "throw Exception with breadcrumbs" => 13,
       "Start SDK no errors" => 14,
       "Discard Error Class" => 15,
-      "Custom App Type" => 16,
+      "Java Background Crash" => 16,
+      "Custom App Type" => 17,
 
 
       # Commands

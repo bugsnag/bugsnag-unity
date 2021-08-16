@@ -255,6 +255,20 @@ namespace BugsnagUnity
                 }
             }
 
+            // set ProjectPackages
+            if (config.ProjectPackages != null && config.ProjectPackages.Length > 0)
+            {
+
+                using (AndroidJavaObject projectPackages = new AndroidJavaObject("java.util.HashSet"))
+                {
+                    foreach (var packageName in config.ProjectPackages)
+                    {
+                        projectPackages.Call<Boolean>("add", packageName);
+                    }
+                    obj.Call("setProjectPackages", projectPackages);
+                }
+            }
+
             // add unity event callback
             var BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.BugsnagUnity");
             obj.Call("addOnError", BugsnagUnity.CallStatic<AndroidJavaObject>("getNativeCallback", new object[] { }));
