@@ -175,8 +175,6 @@ public class MobileScenarioRunner : MonoBehaviour {
                 LogError();
                 break;
             case "Java Background Crash":
-                LeaveBreadcrumbString();
-                LeaveBreadcrumbTuple();
                 MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "Native exception":
