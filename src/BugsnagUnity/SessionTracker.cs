@@ -57,9 +57,15 @@ namespace BugsnagUnity
             Client.NativeClient.PopulateDevice(device);
             device.AddRuntimeVersions(Client.Configuration);
 
-            var payload = new SessionReport(Client.Configuration, app, device, Client.User, session);
-
-            Client.Send(payload);
+            if (Client.Configuration.Endpoints.IsValid)
+            {
+                var payload = new SessionReport(Client.Configuration, app, device, Client.User, session);
+                Client.Send(payload);
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("Invalid configuration. Configuration.Endpoints is not correctly configured, no sessions will be sent.");
+            }
         }
 
         public void StopSession()

@@ -4,6 +4,8 @@
 
 ### Enhancements
 
+* Add `Configuration.Endpoints` to enable setting custom endpoints for events and sessions [#366](https://github.com/bugsnag/bugsnag-unity/pull/366)
+
 * Add `ProjectPackages` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#projectpackages) [#364](https://github.com/bugsnag/bugsnag-unity/pull/364)
 
 * Add `BundleVersion` config option to set the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#bundleversion) [#359](https://github.com/bugsnag/bugsnag-unity/pull/359)
@@ -26,6 +28,12 @@
 
   * Address pre-existing StrictMode violations
     [#1328](https://github.com/bugsnag/bugsnag-android/pull/1328)
+    
+### Deprecated
+
+* `Configuration.Endpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.
+
+* `Configuration.SessionEndpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.    
 
 ## 5.2.0 (2021-08-04)
 

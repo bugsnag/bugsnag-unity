@@ -49,11 +49,9 @@ namespace BugsnagUnity
 
         string AppVersion { get; set; }
 
-        Uri Endpoint { get; set; }
+        EndpointConfiguration Endpoints { get; set; }
 
         string PayloadVersion { get; }
-
-        Uri SessionEndpoint { get; set; }
 
         string SessionPayloadVersion { get; }
 
