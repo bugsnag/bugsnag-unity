@@ -17,6 +17,8 @@ namespace BugsnagUnity
 
         string[] RedactedKeys { get; set; }
 
+        string PersistenceDirectory { get; set; }
+
         bool KeyIsRedacted(string key);
 
         bool ErrorClassIsDiscarded(string className);

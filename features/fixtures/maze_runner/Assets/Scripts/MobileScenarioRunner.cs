@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -31,7 +32,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"15", "Discard Error Class" },
         {"16", "Java Background Crash" },
         {"17", "Custom App Type" },
-
+        {"18", "Android Persistence Directory" },
 
         // Commands
         {"90", "Clear iOS Data" },
@@ -116,6 +117,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Android Persistence Directory":
+                config.PersistenceDirectory = Application.persistentDataPath + "/myBugsnagCache";
+                break;
             case "Java Background Crash":
             case "Native exception":
                 config.ProjectPackages = new string[] { "test.test.test" };
@@ -160,6 +164,9 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Android Persistence Directory":
+                CheckForCustomAndroidDir();
+                break;
             case "Custom App Type":
                 ThrowException();
                 break;
@@ -235,6 +242,14 @@ public class MobileScenarioRunner : MonoBehaviour {
                     {"test","test" },
                     { "password","password" }
                 });
+    }
+
+    private void CheckForCustomAndroidDir()
+    {
+        if (Directory.Exists(Application.persistentDataPath + "/myBugsnagCache"))
+        {
+            ThrowException();
+        }
     }
 
     public void LeaveFiveBreadcrumbs()

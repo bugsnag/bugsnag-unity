@@ -253,6 +253,13 @@ namespace BugsnagUnity
             var BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.BugsnagUnity");
             obj.Call("addOnError", BugsnagUnity.CallStatic<AndroidJavaObject>("getNativeCallback", new object[] { }));
 
+            // set persistence directory
+            if (!string.IsNullOrEmpty(config.PersistenceDirectory))
+            {
+                AndroidJavaObject androidFile = new AndroidJavaObject("java.io.File",config.PersistenceDirectory);
+                obj.Call("setPersistenceDirectory",androidFile);
+            }
+
             return obj;
         }
 
