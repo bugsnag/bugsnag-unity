@@ -193,24 +193,6 @@ namespace BugsnagUnity
                 obj.Call("setEndpoints", endpointConfig);
             }
 
-            // set release stages
-            obj.Call("setReleaseStage", config.ReleaseStage);
-
-            if (config.NotifyReleaseStages != null)
-            {
-                using (AndroidJavaObject releaseStages = new AndroidJavaObject("java.util.HashSet"))
-                {
-                    foreach (var element in config.NotifyReleaseStages)
-                    {
-                        using (AndroidJavaObject stage = BuildJavaStringDisposable(element))
-                        {
-                            releaseStages.Call<Boolean>("add", stage);
-                        }
-                    }
-                    obj.Call("setEnabledReleaseStages", releaseStages);
-                }
-            }
-
             // set version/context/maxbreadcrumbs/AppType
             obj.Call("setAppVersion", config.AppVersion);
             obj.Call("setContext", config.Context);
@@ -241,32 +223,30 @@ namespace BugsnagUnity
                 }
             }
 
+            // set release stages
+            obj.Call("setReleaseStage", config.ReleaseStage);
+
+            if (config.NotifyReleaseStages != null)
+            {
+                obj.Call("setEnabledReleaseStages", GetAndroidStringSetFromArray(config.NotifyReleaseStages));
+            }
+
             // set DiscardedClasses
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
-
-                using (AndroidJavaObject discardClasses = new AndroidJavaObject("java.util.HashSet"))
-                {
-                    foreach (var className in config.DiscardClasses)
-                    {
-                        discardClasses.Call<Boolean>("add", className);
-                    }
-                    obj.Call("setDiscardClasses", discardClasses);
-                }
+                obj.Call("setDiscardClasses", GetAndroidStringSetFromArray(config.DiscardClasses));
             }
 
             // set ProjectPackages
             if (config.ProjectPackages != null && config.ProjectPackages.Length > 0)
             {
+                obj.Call("setProjectPackages", GetAndroidStringSetFromArray(config.ProjectPackages));
+            }
 
-                using (AndroidJavaObject projectPackages = new AndroidJavaObject("java.util.HashSet"))
-                {
-                    foreach (var packageName in config.ProjectPackages)
-                    {
-                        projectPackages.Call<Boolean>("add", packageName);
-                    }
-                    obj.Call("setProjectPackages", projectPackages);
-                }
+            // set redacted keys
+            if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
+            {
+                obj.Call("setRedactedKeys", GetAndroidStringSetFromArray(config.RedactedKeys));
             }
 
             // add unity event callback
@@ -274,6 +254,16 @@ namespace BugsnagUnity
             obj.Call("addOnError", BugsnagUnity.CallStatic<AndroidJavaObject>("getNativeCallback", new object[] { }));
 
             return obj;
+        }
+
+        private AndroidJavaObject GetAndroidStringSetFromArray(string[] array)
+        {
+            AndroidJavaObject set = new AndroidJavaObject("java.util.HashSet");
+            foreach (var item in array)
+            {
+                set.Call<Boolean>("add", item);
+            }
+            return set;
         }
 
         private void ConfigureNotifierInfo(AndroidJavaObject client)

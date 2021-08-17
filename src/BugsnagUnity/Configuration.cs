@@ -16,6 +16,24 @@ namespace BugsnagUnity
 
         public string AppType { get; set; }
 
+        public string[] RedactedKeys { get; set; } = new string[] { "password" };
+
+        public bool KeyIsRedacted(string key)
+        {
+            if (RedactedKeys == null || RedactedKeys.Length == 0)
+            {
+                return false;
+            }
+            foreach (var redactedKey in RedactedKeys)
+            {
+                if (key.ToLower() == redactedKey.ToLower())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;

@@ -64,6 +64,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setDiscardClasses(IntPtr configuration, string[] classNames, int count);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setRedactedKeys(IntPtr configuration, string[] redactedKeys, int count);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setContextConfig(IntPtr configuration, string context);
 
         [DllImport(Import)]

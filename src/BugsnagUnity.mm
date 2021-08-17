@@ -61,6 +61,8 @@ extern "C" {
 
   void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count);
 
+  void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count);
+
 
   void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
 
@@ -225,6 +227,18 @@ void bugsnag_setDiscardClasses(const void *configuration, const char *classNames
     }
   }
   ((__bridge BugsnagConfiguration *)configuration).discardClasses = ns_classNames;
+}
+
+void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count){
+  NSMutableSet *ns_redactedKeys = [NSMutableSet new];
+  for (int i = 0; i < count; i++) {
+    const char *key = redactedKeys[i];
+    if (key != nil) {
+      NSString *ns_key = [NSString stringWithUTF8String: key];
+      [ns_redactedKeys addObject: ns_key];
+    }
+  }
+  ((__bridge BugsnagConfiguration *)configuration).redactedKeys = ns_redactedKeys;
 }
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
