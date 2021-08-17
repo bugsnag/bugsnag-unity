@@ -40,6 +40,8 @@ def dial_number_for(name)
       "Discard Error Class" => 15,
       "Java Background Crash" => 16,
       "Custom App Type" => 17,
+      "Disabled Release Stage" => 18,
+      "Enabled Release Stage" => 19,
 
 
       # Commands

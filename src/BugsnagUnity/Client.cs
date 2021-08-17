@@ -433,8 +433,8 @@ namespace BugsnagUnity
         private bool ShouldSendRequests()
         {
             return Configuration.ReleaseStage == null
-                || Configuration.NotifyReleaseStages == null
-                || Configuration.NotifyReleaseStages.Contains(Configuration.ReleaseStage);
+                || Configuration.EnabledReleaseStages == null
+                || Configuration.EnabledReleaseStages.Contains(Configuration.ReleaseStage);
         }
 
         /// <summary>

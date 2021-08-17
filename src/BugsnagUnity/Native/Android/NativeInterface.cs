@@ -226,9 +226,9 @@ namespace BugsnagUnity
             // set release stages
             obj.Call("setReleaseStage", config.ReleaseStage);
 
-            if (config.NotifyReleaseStages != null)
+            if (config.EnabledReleaseStages != null && config.EnabledReleaseStages.Length > 0)
             {
-                obj.Call("setEnabledReleaseStages", GetAndroidStringSetFromArray(config.NotifyReleaseStages));
+                obj.Call("setEnabledReleaseStages", GetAndroidStringSetFromArray(config.EnabledReleaseStages));
             }
 
             // set DiscardedClasses

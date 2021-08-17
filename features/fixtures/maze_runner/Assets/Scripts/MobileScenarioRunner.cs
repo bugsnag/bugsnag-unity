@@ -31,6 +31,10 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"15", "Discard Error Class" },
         {"16", "Java Background Crash" },
         {"17", "Custom App Type" },
+        {"18", "Disabled Release Stage" },
+        {"19", "Enabled Release Stage" },
+
+
 
 
         // Commands
@@ -116,6 +120,14 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Disabled Release Stage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage = "somevalue";
+                break;
+            case "Enabled Release Stage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage = "test";
+                break;
             case "Java Background Crash":
             case "Native exception":
                 config.ProjectPackages = new string[] { "test.test.test" };
@@ -160,6 +172,14 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Disabled Release Stage":
+            case "Enabled Release Stage":
+#if UNITY_ANDROID
+                MobileNative.TriggerBackgroundJavaCrash();
+#elif UNITY_IOS
+                NativeException();
+#endif  
+                break;
             case "Custom App Type":
                 ThrowException();
                 break;

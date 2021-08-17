@@ -135,6 +135,14 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "DisabledReleaseStage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage = "somevalue";
+                break;
+            case "EnabledReleaseStage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage =  "test";
+                break;
             case "RedactedKeys":
                 config.RedactedKeys = new string[] { "test", "password" };
                 break;
@@ -254,6 +262,10 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "DisabledReleaseStage":
+            case "EnabledReleaseStage":
+                DoNotify();
+                break;
             case "CustomAppType":
                 DoNotify();
                 break;
