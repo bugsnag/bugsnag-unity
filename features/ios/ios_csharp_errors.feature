@@ -67,7 +67,9 @@ Feature: iOS smoke tests for C# errors
         And the event "metaData.device.osLanguage" is not null
         And the event "metaData.app.companyName" equals "bugsnag"
         And the event "metaData.app.name" equals "Mazerunner"
-
+        And the event "metaData.User.test" equals "[REDACTED]"
+        And the event "metaData.User.password" equals "[REDACTED]"
+        
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
         And the error payload field "events.0.device.runtimeVersions.unity" is not null

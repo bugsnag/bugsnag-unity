@@ -135,6 +135,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "RedactedKeys":
+                config.RedactedKeys = new string[] { "test", "password" };
+                break;
             case "CustomAppType":
                 config.AppType = "test";
                 break;
@@ -283,6 +286,10 @@ public class Main : MonoBehaviour
             case "NotifyOutsideNotifyReleaseStages":
                 DoNotify();
                 break;
+            case "RedactedKeys":
+                AddKeysForRedaction();
+                DoNotify();
+                break;
             case "NativeCrashOutsideNotifyReleaseStages":
                 crashy_signal_runner(8);
                 break;
@@ -414,6 +421,14 @@ public class Main : MonoBehaviour
                 throw new ArgumentException("Unable to run unexpected scenario: " + scenario);
                 break;
         }
+    }
+
+    private void AddKeysForRedaction()
+    {
+        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+                    {"test","test" },
+                    { "password","password" }
+                });
     }
 
     private void CheckEnabledErrorTypes()

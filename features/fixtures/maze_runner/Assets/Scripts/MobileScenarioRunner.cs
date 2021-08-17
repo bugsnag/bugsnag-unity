@@ -55,6 +55,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         config.Context = "My context";
         config.AppVersion = "1.2.3";
         config.BundleVersion = "1.2.3";
+        config.RedactedKeys = new string[] { "test", "password" };
         return config;
     }
 
@@ -133,6 +134,8 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Max Breadcrumbs":
                 config.MaximumBreadcrumbs = 5;
                 break;
+            case "NDK signal":
+                break;
             case "Custom App Type":
                 config.AppType = "test";
                 break;
@@ -173,6 +176,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 ThrowException();
                 break;
             case "throw Exception with breadcrumbs":
+                AddMetadataForRedaction();
                 LeaveBreadcrumbString();
                 LeaveBreadcrumbTuple();
                 ThrowException();
@@ -182,6 +186,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 LogError();
                 break;
             case "Java Background Crash":
+                AddMetadataForRedaction();
                 MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "Native exception":
@@ -222,6 +227,14 @@ public class MobileScenarioRunner : MonoBehaviour {
             default:
                 throw new System.Exception("Unknown scenario: " + scenarioName);
         }
+    }
+
+    private void AddMetadataForRedaction()
+    {
+        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+                    {"test","test" },
+                    { "password","password" }
+                });
     }
 
     public void LeaveFiveBreadcrumbs()
