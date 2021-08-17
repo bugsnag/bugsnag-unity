@@ -4,6 +4,8 @@
 
 ### Enhancements
 
+* Add `PersistenceDirectory` to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistencedirectory) [#368](https://github.com/bugsnag/bugsnag-unity/pull/368)
+
 * Add `RedactedKeys` configuration option to enable redacting specific keys in metadata [#367](https://github.com/bugsnag/bugsnag-unity/pull/367)
 
 * Add `Configuration.Endpoints` to enable setting custom endpoints for events and sessions [#366](https://github.com/bugsnag/bugsnag-unity/pull/366)
