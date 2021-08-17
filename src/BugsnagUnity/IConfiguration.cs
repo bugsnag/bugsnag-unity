@@ -15,6 +15,10 @@ namespace BugsnagUnity
 
         string[] ProjectPackages { get; set; }
 
+        string[] RedactedKeys { get; set; }
+
+        bool KeyIsRedacted(string key);
+
         bool ErrorClassIsDiscarded(string className);
 
         ErrorTypes[] EnabledErrorTypes { get; set; }

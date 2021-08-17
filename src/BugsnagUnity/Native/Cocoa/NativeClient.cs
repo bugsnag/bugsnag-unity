@@ -40,6 +40,10 @@ namespace BugsnagUnity
             {
                 NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
             }
+            if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
+            {
+                NativeCode.bugsnag_setRedactedKeys(obj, config.RedactedKeys, config.RedactedKeys.Length);
+            }
             if (config.AppHangThresholdMillis > 0)
             {
                 NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);

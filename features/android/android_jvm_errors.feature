@@ -119,5 +119,6 @@ Feature: Android manual smoke tests
         And the event "app.versionCode" equals 1
         And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
-
+        And the event "metaData.User.test" equals "[REDACTED]"
+        And the event "metaData.User.password" equals "[REDACTED]"
  

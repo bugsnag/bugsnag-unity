@@ -302,6 +302,8 @@ namespace BugsnagUnity
                 metadata.AddToPayload(item.Key, item.Value);
             }
 
+            RedactMetadata(metadata);
+
             var @event = new Payload.Event(
               Configuration.Context,
               metadata,
@@ -350,6 +352,36 @@ namespace BugsnagUnity
                 Breadcrumbs.Leave(Breadcrumb.FromReport(report));
 
                 SessionTracking.AddException(report);
+            }
+        }
+
+        private void RedactMetadata(Metadata metadata)
+        {
+            foreach (var section in metadata)
+            {
+                var sectionDictionaryType = section.Value.GetType();
+                if (sectionDictionaryType == typeof(Dictionary<string, object>))
+                {
+                    var theSection = (Dictionary<string, object>)section.Value;
+                    foreach (var key in theSection.Keys.ToList())
+                    {
+                        if (Configuration.KeyIsRedacted(key))
+                        {
+                            theSection[key] = "[REDACTED]";
+                        }
+                    }
+                }
+                if (sectionDictionaryType == typeof(Dictionary<string, string>))
+                {
+                    var theSection = (Dictionary<string, string>)section.Value;
+                    foreach (var key in theSection.Keys.ToList())
+                    {
+                        if (Configuration.KeyIsRedacted(key))
+                        {
+                            theSection[key] = "[REDACTED]";
+                        }
+                    }
+                }
             }
         }
 
