@@ -302,7 +302,7 @@ namespace BugsnagUnity
                 metadata.AddToPayload(item.Key, item.Value);
             }
 
-            CheckMetadaForRedactedKeys(metadata);
+            RedactMetadata(metadata);
 
             var @event = new Payload.Event(
               Configuration.Context,
@@ -355,7 +355,7 @@ namespace BugsnagUnity
             }
         }
 
-        private void CheckMetadaForRedactedKeys(Metadata metadata)
+        private void RedactMetadata(Metadata metadata)
         {
             foreach (var section in metadata)
             {
