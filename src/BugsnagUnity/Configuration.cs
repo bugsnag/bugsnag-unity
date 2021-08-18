@@ -257,6 +257,10 @@ namespace BugsnagUnity
 
         public string[] DiscardClasses { get; set; }
 
+        public int MaxPersistedEvents { get; set; } = 32;
+
+        public int MaxPersistedSessions { get; set; } = 128;
+
         public virtual bool ErrorClassIsDiscarded(string className)
         {
             return DiscardClasses != null && DiscardClasses.Contains(className);

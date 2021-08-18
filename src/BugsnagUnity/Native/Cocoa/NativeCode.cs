@@ -52,6 +52,12 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setMaxPersistedEvents(IntPtr configuration, int maxPersistedEvents);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setMaxPersistedSessions(IntPtr configuration, int maxPersistedSessions);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setAppHangThresholdMillis(IntPtr configuration, ulong appHangThresholdMillis);
 
         [DllImport(Import)]
