@@ -98,7 +98,31 @@ namespace BugsnagUnity
 
         public virtual string ReleaseStage { get; set; } = "production";
 
-        public virtual string[] NotifyReleaseStages { get; set; }
+        private string[] _enabledReleaseStages;
+
+        [Obsolete("NotifyReleaseStages is deprecated, please use Configuration.EnabledReleaseStages instead.", false)]
+        public virtual string[] NotifyReleaseStages {
+            get
+            {
+                return _enabledReleaseStages;
+            }
+            set
+            {
+                _enabledReleaseStages = value;
+            }
+        }
+
+        public virtual string[] EnabledReleaseStages
+        {
+            get
+            {
+                return _enabledReleaseStages;
+            }
+            set
+            {
+                _enabledReleaseStages = value;
+            }
+        }
 
         public virtual string[] ProjectPackages { get; set; }
 
