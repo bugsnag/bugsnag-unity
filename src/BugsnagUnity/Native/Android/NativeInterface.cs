@@ -198,7 +198,6 @@ namespace BugsnagUnity
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
             obj.Call("setMaxPersistedEvents", config.MaxPersistedEvents);
-            obj.Call("setMaxPersistedSessions", config.MaxPersistedSessions);
 
 
 
