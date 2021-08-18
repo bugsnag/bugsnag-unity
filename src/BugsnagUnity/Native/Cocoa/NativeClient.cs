@@ -37,6 +37,8 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setBundleVersion(obj, config.BundleVersion);
             NativeCode.bugsnag_setAppType(obj, config.AppType);
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
+            NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
+
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
                 NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
