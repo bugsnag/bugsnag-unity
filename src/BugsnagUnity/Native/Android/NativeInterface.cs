@@ -193,11 +193,19 @@ namespace BugsnagUnity
                 obj.Call("setEndpoints", endpointConfig);
             }
 
-            // set version/context/maxbreadcrumbs/AppType/maxPersistedEvents/maxPersistedSessions
+            // set version/context/maxbreadcrumbs/AppType/maxPersistedEvents/maxPersistedSessions/versionCode
             obj.Call("setAppVersion", config.AppVersion);
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
             obj.Call("setMaxPersistedEvents", config.MaxPersistedEvents);
+
+            //android layer expects a nonnull java Integer not just an int, so we check if it has actually been set to a valid value
+            if (config.VersionCode > -1)
+            {
+                var javaInteger = new AndroidJavaObject("java.lang.Integer", config.VersionCode);
+                obj.Call("setVersionCode", javaInteger);
+            }
+            
 
 
 

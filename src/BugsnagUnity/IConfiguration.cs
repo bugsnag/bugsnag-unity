@@ -17,6 +17,8 @@ namespace BugsnagUnity
 
         string[] RedactedKeys { get; set; }
 
+        int VersionCode { get; set; }
+
         int MaxPersistedEvents { get; set; }
 
         bool KeyIsRedacted(string key);
