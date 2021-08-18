@@ -25,6 +25,8 @@ extern "C" {
 
   void bugsnag_setAppVersion(const void *configuration, char *appVersion);
 
+  void bugsnag_setPersistUser(const void *configuration, bool persistUser);
+
   void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
   void bugsnag_setAutoNotify(bool autoNotify);
@@ -243,6 +245,10 @@ void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
+}
+
+void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
+  ((__bridge BugsnagConfiguration *)configuration).persistUser = persistUser;
 }
 
 void bugsnag_setAutoNotify(bool autoNotify) {
