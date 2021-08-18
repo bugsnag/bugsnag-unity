@@ -39,6 +39,9 @@ extern "C" {
   void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
   void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
 
+  void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
+
+
   void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
 
   void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
@@ -125,6 +128,10 @@ void bugsnag_setContextConfig(const void *configuration, char *context) {
 
 void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs) {
   ((__bridge BugsnagConfiguration *)configuration).maxBreadcrumbs = maxBreadcrumbs;
+}
+
+void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents) {
+  ((__bridge BugsnagConfiguration *)configuration).maxPersistedEvents = maxPersistedEvents;
 }
 
 void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count){
