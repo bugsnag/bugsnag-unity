@@ -47,7 +47,7 @@ namespace BugsnagUnity
 
         string ReleaseStage { get; set; }
 
-        string[] NotifyReleaseStages { get; set; }
+        string[] EnabledReleaseStages { get; set; }
 
         string AppVersion { get; set; }
 

@@ -41,7 +41,8 @@ def dial_number_for(name)
       "Java Background Crash" => 16,
       "Custom App Type" => 17,
       "Android Persistence Directory" => 18,
-
+      "Disabled Release Stage" => 19,
+      "Enabled Release Stage" => 20,
 
 
       # Commands

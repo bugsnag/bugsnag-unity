@@ -33,6 +33,11 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"16", "Java Background Crash" },
         {"17", "Custom App Type" },
         {"18", "Android Persistence Directory" },
+        {"19", "Disabled Release Stage" },
+        {"20", "Enabled Release Stage" },
+
+
+
 
         // Commands
         {"90", "Clear iOS Data" },
@@ -120,6 +125,14 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Android Persistence Directory":
                 config.PersistenceDirectory = Application.persistentDataPath + "/myBugsnagCache";
                 break;
+            case "Disabled Release Stage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage = "somevalue";
+                break;
+            case "Enabled Release Stage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage = "test";
+                break;
             case "Java Background Crash":
             case "Native exception":
                 config.ProjectPackages = new string[] { "test.test.test" };
@@ -166,6 +179,14 @@ public class MobileScenarioRunner : MonoBehaviour {
         {
             case "Android Persistence Directory":
                 CheckForCustomAndroidDir();
+                break;
+            case "Disabled Release Stage":
+            case "Enabled Release Stage":
+#if UNITY_ANDROID
+                MobileNative.TriggerBackgroundJavaCrash();
+#elif UNITY_IOS
+                NativeException();
+#endif  
                 break;
             case "Custom App Type":
                 ThrowException();

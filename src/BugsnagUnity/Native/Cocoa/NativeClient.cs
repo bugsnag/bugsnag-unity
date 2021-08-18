@@ -54,8 +54,8 @@ namespace BugsnagUnity
             {
                 NativeCode.bugsnag_setContextConfig(obj, config.Context);
             }
-            var releaseStages = config.NotifyReleaseStages;
-            if (releaseStages != null)
+            var releaseStages = config.EnabledReleaseStages;
+            if (releaseStages != null && releaseStages.Length > 0)
             {
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }
