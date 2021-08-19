@@ -15,6 +15,8 @@ namespace BugsnagUnity
 
         public string[] RedactedKeys { get; set; } = new string[] { "password" };
 
+        public bool PersistUser { get; set; }
+
         public bool KeyIsRedacted(string key)
         {
             if (RedactedKeys == null || RedactedKeys.Length == 0)
@@ -258,6 +260,8 @@ namespace BugsnagUnity
         }
 
         public string[] DiscardClasses { get; set; }
+
+        public int MaxPersistedEvents { get; set; } = 32;
 
         public virtual bool ErrorClassIsDiscarded(string className)
         {

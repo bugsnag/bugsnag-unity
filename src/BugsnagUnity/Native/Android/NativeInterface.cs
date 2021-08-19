@@ -193,10 +193,12 @@ namespace BugsnagUnity
                 obj.Call("setEndpoints", endpointConfig);
             }
 
-            // set version/context/maxbreadcrumbs/AppType
+            // set version/context/maxbreadcrumbs/AppType/maxPersistedEvents/PersistUser
             obj.Call("setAppVersion", config.AppVersion);
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
+            obj.Call("setMaxPersistedEvents", config.MaxPersistedEvents);
+            obj.Call("setPersistUser",config.PersistUser);
 
             //Null or empty check necessary because android will set the app.type to empty if that or null is passed as default
             if (!string.IsNullOrEmpty(config.AppType))

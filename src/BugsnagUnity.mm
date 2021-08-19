@@ -25,6 +25,8 @@ extern "C" {
 
   void bugsnag_setAppVersion(const void *configuration, char *appVersion);
 
+  void bugsnag_setPersistUser(const void *configuration, bool persistUser);
+
   void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
   void bugsnag_setAutoNotify(bool autoNotify);
@@ -38,6 +40,9 @@ extern "C" {
 
   void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
   void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
+
+  void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
+
 
   void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
 
@@ -125,6 +130,10 @@ void bugsnag_setContextConfig(const void *configuration, char *context) {
 
 void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs) {
   ((__bridge BugsnagConfiguration *)configuration).maxBreadcrumbs = maxBreadcrumbs;
+}
+
+void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents) {
+  ((__bridge BugsnagConfiguration *)configuration).maxPersistedEvents = maxPersistedEvents;
 }
 
 void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count){
@@ -243,6 +252,10 @@ void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
+}
+
+void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
+  ((__bridge BugsnagConfiguration *)configuration).persistUser = persistUser;
 }
 
 void bugsnag_setAutoNotify(bool autoNotify) {

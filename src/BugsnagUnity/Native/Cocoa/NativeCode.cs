@@ -43,13 +43,19 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setAutoNotify(bool autoNotify);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);       
+        internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setPersistUser(IntPtr configuration, bool persistUser);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setContext(IntPtr configuration, string context);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setMaxPersistedEvents(IntPtr configuration, int maxPersistedEvents);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setAppHangThresholdMillis(IntPtr configuration, ulong appHangThresholdMillis);
