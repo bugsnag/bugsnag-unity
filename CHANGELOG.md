@@ -18,7 +18,10 @@
 
 * Add `AppType` configuration option to enable setting a custom value for the app.type field in an event [#363](https://github.com/bugsnag/bugsnag-unity/pull/363)
 
-* Update bugsnag-cocoa to v6.10.4
+* Update bugsnag-cocoa to v6.11.0
+
+  * Add breadcrumbs for `UIScene` notifications.
+    [#1165](https://github.com/bugsnag/bugsnag-cocoa/pull/1165)
 
   * Fix another rare crash in `bsg_ksmachgetThreadQueueName`.
     [#1157](https://github.com/bugsnag/bugsnag-cocoa/pull/1157)
