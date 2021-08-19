@@ -121,4 +121,14 @@ Feature: Android manual smoke tests
         And the error payload field "events.0.app.durationInForeground" is not null
         And the event "metaData.User.test" equals "[REDACTED]"
         And the event "metaData.User.password" equals "[REDACTED]"
+        And the event "threads" is not null
+
+    Scenario: Background JVM exception no threads
+        When I run the "Java Background Crash No Threads" mobile scenario
+        And I wait for 8 seconds
+        And I relaunch the Unity mobile app
+        When I run the "Start SDK" mobile scenario
+        Then I wait to receive an error
+        And the event "threads" is null
+
  

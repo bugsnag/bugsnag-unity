@@ -41,6 +41,7 @@ extern "C" {
 
   void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
 
+  void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy);
 
   void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
 
@@ -180,6 +181,24 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
         }
       }
 }
+
+void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy)
+{
+    NSString *ns_threadSendPolicy = [[NSString alloc] initWithUTF8String:threadSendPolicy];
+    if([ns_threadSendPolicy isEqualToString:@"ALWAYS"])
+    {
+        ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyAlways;
+    }
+    if([ns_threadSendPolicy isEqualToString:@"UNHANDLED_ONLY"])
+    {
+        ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyUnhandledOnly;
+    }
+    if([ns_threadSendPolicy isEqualToString:@"NEVER"])
+    {
+        ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyNever;
+    }
+}
+
 
 void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count){
 

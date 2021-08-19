@@ -193,7 +193,7 @@ namespace BugsnagUnity
                 obj.Call("setEndpoints", endpointConfig);
             }
 
-            // set version/context/maxbreadcrumbs/AppType/maxPersistedEvents/maxPersistedSessions
+            // set version/context/maxbreadcrumbs/AppType/maxPersistedEvents/maxPersistedSessions/SendThreads
             obj.Call("setAppVersion", config.AppVersion);
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
@@ -225,6 +225,15 @@ namespace BugsnagUnity
                     obj.Call("setEnabledBreadcrumbTypes", enabledBreadcrumbs);
                 }
             }
+
+            // set sendThreads
+            AndroidJavaClass androidThreadSendPolicyClass = new AndroidJavaClass("com.bugsnag.android.ThreadSendPolicy");
+            var threadSendStringValue = Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads);
+            using (AndroidJavaObject policy = androidThreadSendPolicyClass.CallStatic<AndroidJavaObject>("valueOf", threadSendStringValue))
+            {
+                obj.Call("setSendThreads", policy);
+            }
+                                   
 
             // set release stages
             obj.Call("setReleaseStage", config.ReleaseStage);

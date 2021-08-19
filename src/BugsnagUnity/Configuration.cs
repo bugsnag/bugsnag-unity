@@ -15,6 +15,8 @@ namespace BugsnagUnity
 
         public string[] RedactedKeys { get; set; } = new string[] { "password" };
 
+        public ThreadSendPolicy SendThreads { get; set; } = ThreadSendPolicy.UNHANDLED_ONLY;
+
         public bool KeyIsRedacted(string key)
         {
             if (RedactedKeys == null || RedactedKeys.Length == 0)

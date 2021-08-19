@@ -33,6 +33,10 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"17", "Custom App Type" },
         {"18", "Disabled Release Stage" },
         {"19", "Enabled Release Stage" },
+        {"20", "Java Background Crash No Threads" },
+        {"21", "iOS Native Error" },
+        {"22", "iOS Native Error No Threads" },
+
 
 
 
@@ -132,6 +136,10 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Native exception":
                 config.ProjectPackages = new string[] { "test.test.test" };
                 break;
+            case "iOS Native Error No Threads":
+            case "Java Background Crash No Threads":
+                config.SendThreads = ThreadSendPolicy.NEVER;
+                break;
             case "Start SDK no errors":
             case "Disable Native Errors":
                 config.EnabledErrorTypes = new ErrorTypes[0];
@@ -186,9 +194,9 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Start SDK":
             case "Start SDK no errors":
                 break;
+            case "iOS Native Error":
+            case "iOS Native Error No Threads":
             case "Discard Error Class":
-                NativeException();
-                break;
             case "Disable Native Errors":
                 NativeException();
                 break;
@@ -205,6 +213,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 SetUser();
                 LogError();
                 break;
+            case "Java Background Crash No Threads":
             case "Java Background Crash":
                 AddMetadataForRedaction();
                 MobileNative.TriggerBackgroundJavaCrash();
