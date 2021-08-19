@@ -38,6 +38,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAppType(obj, config.AppType);
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
+            NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
 
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
