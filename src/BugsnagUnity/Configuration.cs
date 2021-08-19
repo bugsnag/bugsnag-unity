@@ -15,6 +15,8 @@ namespace BugsnagUnity
 
         public string[] RedactedKeys { get; set; } = new string[] { "password" };
 
+        public bool PersistUser { get; set; }
+
         public bool KeyIsRedacted(string key)
         {
             if (RedactedKeys == null || RedactedKeys.Length == 0)
