@@ -27,7 +27,7 @@ Feature: Android smoke tests for C# errors
         And the event "app.releaseStage" equals "production"
         And the event "app.type" equals "android"
         And the event "app.version" equals "1.2.3"
-        And the event "app.versionCode" equals 123
+        And the event "app.versionCode" equals "123"
         And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
         And the event "app.inForeground" equals "true"
@@ -107,7 +107,7 @@ Feature: Android smoke tests for C# errors
         And the event "app.releaseStage" equals "production"
         And the event "app.type" equals "android"
         And the event "app.version" equals "1.2.3"
-        And the event "app.versionCode" equals 123
+        And the event "app.versionCode" equals "123"
         And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
         And the event "app.inForeground" equals "true"
