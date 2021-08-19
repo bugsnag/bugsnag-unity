@@ -17,6 +17,8 @@ namespace BugsnagUnity
 
         public ThreadSendPolicy SendThreads { get; set; } = ThreadSendPolicy.UNHANDLED_ONLY;
 
+        public bool PersistUser { get; set; }
+
         public bool KeyIsRedacted(string key)
         {
             if (RedactedKeys == null || RedactedKeys.Length == 0)
