@@ -19,6 +19,8 @@ namespace BugsnagUnity
 
         string PersistenceDirectory { get; set; }
 
+        ThreadSendPolicy SendThreads { get; set; }
+
         bool PersistUser { get; set; }
        
         int MaxPersistedEvents { get; set; }

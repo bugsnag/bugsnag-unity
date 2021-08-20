@@ -6,9 +6,11 @@
 
 * Add `PersistenceDirectory` to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistencedirectory) [#368](https://github.com/bugsnag/bugsnag-unity/pull/368)
 
-* Add `PersistUser ` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistuser) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#persistuser) [#372](https://github.com/bugsnag/bugsnag-unity/pull/372)
+* Add `SendThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendthreads) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendthreads) [#375](https://github.com/bugsnag/bugsnag-unity/pull/375)
 
-* Add `MaxPersistedEvents ` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxpersistedevents) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#maxpersistedevents) [#371](https://github.com/bugsnag/bugsnag-unity/pull/371)
+* Add `PersistUser` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistuser) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#persistuser) [#372](https://github.com/bugsnag/bugsnag-unity/pull/372)
+
+* Add `MaxPersistedEvents` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxpersistedevents) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#maxpersistedevents) [#371](https://github.com/bugsnag/bugsnag-unity/pull/371)
 
 * Add `RedactedKeys` configuration option to enable redacting specific keys in metadata [#367](https://github.com/bugsnag/bugsnag-unity/pull/367)
 
@@ -20,7 +22,10 @@
 
 * Add `AppType` configuration option to enable setting a custom value for the app.type field in an event [#363](https://github.com/bugsnag/bugsnag-unity/pull/363)
 
-* Update bugsnag-cocoa to v6.10.4
+* Update bugsnag-cocoa to v6.11.0
+
+  * Add breadcrumbs for `UIScene` notifications.
+    [#1165](https://github.com/bugsnag/bugsnag-cocoa/pull/1165)
 
   * Fix another rare crash in `bsg_ksmachgetThreadQueueName`.
     [#1157](https://github.com/bugsnag/bugsnag-cocoa/pull/1157)

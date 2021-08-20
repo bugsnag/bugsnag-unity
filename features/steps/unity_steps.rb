@@ -43,6 +43,10 @@ def dial_number_for(name)
       "Android Persistence Directory" => 18,
       "Disabled Release Stage" => 19,
       "Enabled Release Stage" => 20,
+      "Java Background Crash No Threads" => 21,
+      "iOS Native Error" => 22,
+      "iOS Native Error No Threads" => 23,
+
 
 
       # Commands

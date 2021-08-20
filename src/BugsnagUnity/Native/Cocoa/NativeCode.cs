@@ -82,6 +82,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setBundleVersion(IntPtr configuration, string bundleVersion);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setThreadSendPolicy(IntPtr configuration, string threadSendPolicy);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setAppType(IntPtr configuration, string appType);
 
         [DllImport(Import)]
