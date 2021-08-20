@@ -4,6 +4,8 @@
 
 ### Enhancements
 
+* Add `PersistenceDirectory` to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistencedirectory) [#368](https://github.com/bugsnag/bugsnag-unity/pull/368)
+
 * Add `SendThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendthreads) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendthreads) [#375](https://github.com/bugsnag/bugsnag-unity/pull/375)
 
 * Add `PersistUser` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistuser) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#persistuser) [#372](https://github.com/bugsnag/bugsnag-unity/pull/372)

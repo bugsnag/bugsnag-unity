@@ -17,6 +17,8 @@ namespace BugsnagUnity
 
         string[] RedactedKeys { get; set; }
 
+        string PersistenceDirectory { get; set; }
+
         ThreadSendPolicy SendThreads { get; set; }
 
         bool PersistUser { get; set; }

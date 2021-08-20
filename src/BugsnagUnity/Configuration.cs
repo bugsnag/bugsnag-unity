@@ -45,6 +45,8 @@ namespace BugsnagUnity
             ReleaseStage = "production";
         }
 
+        public string PersistenceDirectory { get; set; }
+
         public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
 
         public virtual TimeSpan MaximumLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(1);

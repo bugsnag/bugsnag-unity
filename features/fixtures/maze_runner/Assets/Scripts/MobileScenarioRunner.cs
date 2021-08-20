@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -31,11 +32,12 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"15", "Discard Error Class" },
         {"16", "Java Background Crash" },
         {"17", "Custom App Type" },
-        {"18", "Disabled Release Stage" },
-        {"19", "Enabled Release Stage" },
-        {"20", "Java Background Crash No Threads" },
-        {"21", "iOS Native Error" },
-        {"22", "iOS Native Error No Threads" },
+        {"18", "Android Persistence Directory" },
+        {"19", "Disabled Release Stage" },
+        {"20", "Enabled Release Stage" },
+        {"21", "Java Background Crash No Threads" },
+        {"22", "iOS Native Error" },
+        {"23", "iOS Native Error No Threads" },
 
 
 
@@ -124,6 +126,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Android Persistence Directory":
+                config.PersistenceDirectory = Application.persistentDataPath + "/myBugsnagCache";
+                break;
             case "Disabled Release Stage":
                 config.EnabledReleaseStages = new string[] { "test" };
                 config.ReleaseStage = "somevalue";
@@ -180,6 +185,9 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Android Persistence Directory":
+                CheckForCustomAndroidDir();
+                break;
             case "Disabled Release Stage":
             case "Enabled Release Stage":
 #if UNITY_ANDROID
@@ -264,6 +272,14 @@ public class MobileScenarioRunner : MonoBehaviour {
                     {"test","test" },
                     { "password","password" }
                 });
+    }
+
+    private void CheckForCustomAndroidDir()
+    {
+        if (Directory.Exists(Application.persistentDataPath + "/myBugsnagCache"))
+        {
+            ThrowException();
+        }
     }
 
     public void LeaveFiveBreadcrumbs()

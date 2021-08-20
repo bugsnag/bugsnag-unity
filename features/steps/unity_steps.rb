@@ -40,11 +40,12 @@ def dial_number_for(name)
       "Discard Error Class" => 15,
       "Java Background Crash" => 16,
       "Custom App Type" => 17,
-      "Disabled Release Stage" => 18,
-      "Enabled Release Stage" => 19,
-      "Java Background Crash No Threads" => 20,
-      "iOS Native Error" => 21,
-      "iOS Native Error No Threads" => 22,
+      "Android Persistence Directory" => 18,
+      "Disabled Release Stage" => 19,
+      "Enabled Release Stage" => 20,
+      "Java Background Crash No Threads" => 21,
+      "iOS Native Error" => 22,
+      "iOS Native Error No Threads" => 23,
 
 
 
