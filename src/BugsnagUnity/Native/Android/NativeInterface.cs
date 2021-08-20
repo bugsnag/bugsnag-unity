@@ -182,8 +182,14 @@ namespace BugsnagUnity
                 errorTypes.Call("setUnhandledExceptions", config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes));
                 obj.Call("setEnabledErrorTypes", errorTypes);
             }
+
             obj.Call("setAutoTrackSessions", false);
             obj.Call("setAutoDetectErrors", config.AutoDetectErrors);
+            obj.Call("setAppVersion", config.AppVersion);
+            obj.Call("setContext", config.Context);
+            obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
+            obj.Call("setMaxPersistedEvents", config.MaxPersistedEvents);
+            obj.Call("setPersistUser", config.PersistUser);
 
             // set endpoints
             var notify = config.Endpoints.Notify.ToString();
@@ -193,12 +199,6 @@ namespace BugsnagUnity
                 obj.Call("setEndpoints", endpointConfig);
             }
 
-            // set version/context/maxbreadcrumbs/AppType/maxPersistedEvents/PersistUser/versionCode
-            obj.Call("setAppVersion", config.AppVersion);
-            obj.Call("setContext", config.Context);
-            obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
-            obj.Call("setMaxPersistedEvents", config.MaxPersistedEvents);
-            obj.Call("setPersistUser",config.PersistUser);
             //android layer expects a nonnull java Integer not just an int, so we check if it has actually been set to a valid value
             if (config.VersionCode > -1)
             {
