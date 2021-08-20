@@ -279,7 +279,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         if (Directory.Exists(Application.persistentDataPath + "/myBugsnagCache"))
         {
-            ThrowException();
+            throw new System.Exception("Directory Found");
         }
     }
 
