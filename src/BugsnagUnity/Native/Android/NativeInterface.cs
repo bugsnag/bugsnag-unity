@@ -206,10 +206,6 @@ namespace BugsnagUnity
                 obj.Call("setVersionCode", javaInteger);
             }
             
-
-
-            
-
             //Null or empty check necessary because android will set the app.type to empty if that or null is passed as default
             if (!string.IsNullOrEmpty(config.AppType))
             {
@@ -273,6 +269,13 @@ namespace BugsnagUnity
             // add unity event callback
             var BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.BugsnagUnity");
             obj.Call("addOnError", BugsnagUnity.CallStatic<AndroidJavaObject>("getNativeCallback", new object[] { }));
+
+            // set persistence directory
+            if (!string.IsNullOrEmpty(config.PersistenceDirectory))
+            {
+                AndroidJavaObject androidFile = new AndroidJavaObject("java.io.File",config.PersistenceDirectory);
+                obj.Call("setPersistenceDirectory",androidFile);
+            }
 
             return obj;
         }
