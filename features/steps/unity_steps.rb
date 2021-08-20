@@ -42,6 +42,10 @@ def dial_number_for(name)
       "Custom App Type" => 17,
       "Disabled Release Stage" => 18,
       "Enabled Release Stage" => 19,
+      "Java Background Crash No Threads" => 20,
+      "iOS Native Error" => 21,
+      "iOS Native Error No Threads" => 22,
+
 
 
       # Commands

@@ -16,6 +16,8 @@ namespace BugsnagUnity
         public string[] RedactedKeys { get; set; } = new string[] { "password" };
 
         public int VersionCode { get; set; } = -1;
+        
+        public ThreadSendPolicy SendThreads { get; set; } = ThreadSendPolicy.UNHANDLED_ONLY;
 
         public bool PersistUser { get; set; }
 

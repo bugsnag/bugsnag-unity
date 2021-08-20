@@ -18,6 +18,8 @@ namespace BugsnagUnity
         string[] RedactedKeys { get; set; }
 
         int VersionCode { get; set; }
+      
+        ThreadSendPolicy SendThreads { get; set; }
 
         bool PersistUser { get; set; }
        

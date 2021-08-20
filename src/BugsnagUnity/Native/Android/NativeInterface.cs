@@ -235,6 +235,15 @@ namespace BugsnagUnity
                 }
             }
 
+            // set sendThreads
+            AndroidJavaClass androidThreadSendPolicyClass = new AndroidJavaClass("com.bugsnag.android.ThreadSendPolicy");
+            var threadSendStringValue = Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads);
+            using (AndroidJavaObject policy = androidThreadSendPolicyClass.CallStatic<AndroidJavaObject>("valueOf", threadSendStringValue))
+            {
+                obj.Call("setSendThreads", policy);
+            }
+                                   
+
             // set release stages
             obj.Call("setReleaseStage", config.ReleaseStage);
 
