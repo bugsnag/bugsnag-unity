@@ -6,6 +6,8 @@ Feature: Android custom config setting
     Scenario: Android Persistence Directory
         When I run the "Android Persistence Directory" mobile scenario
         Then I wait to receive an error
+        And the exception "message" equals "Directory Found"
+
 
      Scenario: Custom App Type
         When I run the "Custom App Type" mobile scenario
