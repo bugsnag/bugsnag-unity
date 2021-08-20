@@ -66,6 +66,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         config.AppVersion = "1.2.3";
         config.BundleVersion = "1.2.3";
         config.RedactedKeys = new string[] { "test", "password" };
+        config.VersionCode = 123;
         return config;
     }
 
