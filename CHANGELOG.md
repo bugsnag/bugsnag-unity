@@ -46,6 +46,8 @@
     
 ### Deprecated
 
+* `Bugsnag.SetContext(string context)` has been deprecated in favour of the new `Bugsnag.Context` property and will be removed in the next major release.
+
 * `Configuration.Endpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.
 
 * `Configuration.SessionEndpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.   
