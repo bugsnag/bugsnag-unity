@@ -461,6 +461,11 @@ namespace BugsnagUnity
             NativeClient.SetContext(context);
         }
 
+        public string GetContext()
+        {
+            return Configuration.Context;
+        }
+
         public void SetAutoDetectErrors(bool autoDetectErrors)
         {
             // set the property on Configuration, as it currently controls whether C# errors are reported
