@@ -84,12 +84,30 @@ namespace BugsnagUnity
         /// <summary>
         /// Bugsnag uses the concept of contexts to help display and group your errors.
         /// Contexts represent what was happening in your game at the time an error
-        /// occurs. By default, this will be set to be your currently active Unity Scene.
+        /// occurs. Unless manually set, this will be automatically set to be your currently active Unity Scene.
         /// </summary>
         /// <param name="context"></param>
+        [Obsolete("SetContext is deprecated, please use the property Bugsnag.Context instead.", false)]
         public static void SetContext(string context)
         {
             Client.SetContext(context);
+        }
+
+        /// <summary>
+        /// Bugsnag uses the concept of contexts to help display and group your errors.
+        /// Contexts represent what was happening in your game at the time an error
+        /// occurs. Unless manually set, this will be automatically set to be your currently active Unity Scene.
+        /// </summary>
+        public static string Context
+        {
+            get
+            {
+                return Client.GetContext();
+            }
+            set
+            {
+                Client.SetContext(value);
+            }
         }
 
         /// <summary>

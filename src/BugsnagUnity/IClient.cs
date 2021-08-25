@@ -38,6 +38,8 @@ namespace BugsnagUnity
 
         void SetContext(string context);
 
+        string GetContext();
+
         void SetAutoDetectErrors(bool AutoDetectErrors);
 
         void SetAutoDetectAnrs(bool autoDetectAnrs);
