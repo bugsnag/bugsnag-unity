@@ -27,6 +27,8 @@ extern "C" {
 
   void bugsnag_setPersistUser(const void *configuration, bool persistUser);
 
+  void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously);
+
   void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
   void bugsnag_setAutoNotify(bool autoNotify);
@@ -51,6 +53,8 @@ extern "C" {
   void bugsnag_removeMetadata(const void *configuration, const char *tab);
   void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab, const char *keys[], int keys_size, const char *values[], int values_size));
 
+  void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes));
+
   void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
   void bugsnag_addBreadcrumb(char *name, char *type, char *metadata[], int metadataCount);
@@ -69,10 +73,17 @@ extern "C" {
 
   void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count);
 
+  void bugsnag_markLaunchCompleted();
 
   void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
 
+  void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis);
 
+
+}
+
+void bugsnag_markLaunchCompleted() {
+  [Bugsnag markLaunchCompleted];
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
@@ -107,6 +118,10 @@ void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
 
 void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis) {
   ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
+}
+
+void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis) {
+  ((__bridge BugsnagConfiguration *)configuration).launchDurationMillis = launchDurationMillis;
 }
 
 void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion) {
@@ -277,6 +292,10 @@ void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
   ((__bridge BugsnagConfiguration *)configuration).persistUser = persistUser;
 }
 
+void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously) {
+  ((__bridge BugsnagConfiguration *)configuration).sendLaunchCrashesSynchronously = sendLaunchCrashesSynchronously;
+}
+
 void bugsnag_setAutoNotify(bool autoNotify) {
   Bugsnag.client.autoNotify = autoNotify;
 }
@@ -426,7 +445,23 @@ void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *i
 
   NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
   callback(appData, "version", [version UTF8String]);
+
+  BugsnagAppWithState *app = [[Bugsnag client] generateAppWithState:sysInfo];
+  NSString *isLaunching = app.isLaunching ? @"true" : @"false";
+  callback(appData, "isLaunching", [isLaunching UTF8String]);
+
 }
+
+void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)) {
+
+  int consecutiveLaunchCrashes = Bugsnag.lastRunInfo.consecutiveLaunchCrashes;
+  bool crashed = Bugsnag.lastRunInfo.crashed;
+  bool crashedDuringLaunch = Bugsnag.lastRunInfo.crashedDuringLaunch;
+
+  callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
+
+}
+
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];

@@ -17,6 +17,8 @@ namespace BugsnagUnity
 
         public ISessionTracker SessionTracking { get; }
 
+        public LastRunInfo LastRunInfo => NativeClient.GetLastRunInfo();
+
         public User User { get; }
 
         public Metadata Metadata { get; }
@@ -479,6 +481,11 @@ namespace BugsnagUnity
         {
             // Set the native property
             NativeClient.SetAutoDetectAnrs(autoDetectAnrs);
+        }
+
+        public void MarkLaunchCompleted()
+        {
+            NativeClient.MarkLaunchCompleted();
         }
     }
 }

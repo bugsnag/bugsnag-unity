@@ -99,6 +99,16 @@ namespace BugsnagUnity
         {
             NativeInterface.SetAutoDetectAnrs(autoDetectAnrs);
         }
+
+        public void MarkLaunchCompleted()
+        {
+            NativeInterface.MarkLaunchCompleted();
+        }
+
+        public LastRunInfo GetLastRunInfo()
+        {
+            return NativeInterface.GetlastRunInfo();
+        }
     }
 
 }
