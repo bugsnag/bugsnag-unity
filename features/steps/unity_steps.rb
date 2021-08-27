@@ -166,7 +166,7 @@ end
 
 Then("the error is valid for the error reporting API sent by the native Unity notifier") do
   # This step currently only applies to native errors on macOS macOS
-  check_error_reporting_api 'Bugsnag Unity (Cocoa)'
+  check_error_reporting_api 'OSX Bugsnag Notifier'
 end
 
 Then("the error is valid for the error reporting API sent by the Unity notifier") do

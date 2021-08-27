@@ -21,7 +21,7 @@ namespace BugsnagUnity
 
         public ThreadSendPolicy SendThreads { get; set; } = ThreadSendPolicy.UNHANDLED_ONLY;
 
-        public bool SendLaunchCrashesSynchronously { get; set; }
+        public bool SendLaunchCrashesSynchronously { get; set; } = true;
 
         public bool PersistUser { get; set; }
 
