@@ -46,6 +46,10 @@ def dial_number_for(name)
       "Java Background Crash No Threads" => 21,
       "iOS Native Error" => 22,
       "iOS Native Error No Threads" => 23,
+      "Mark Launch Complete" => 24,
+      "Check Last Run Info" => 25,
+
+
 
 
 
@@ -162,7 +166,7 @@ end
 
 Then("the error is valid for the error reporting API sent by the native Unity notifier") do
   # This step currently only applies to native errors on macOS macOS
-  check_error_reporting_api 'OSX Bugsnag Notifier'
+  check_error_reporting_api 'Bugsnag Unity (Cocoa)'
 end
 
 Then("the error is valid for the error reporting API sent by the Unity notifier") do

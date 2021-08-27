@@ -30,6 +30,8 @@ Feature: iOS smoke tests for C# errors
         And the event "app.type" equals "iOS"
         And the event "app.version" equals "1.2.3"
         And the event "app.bundleVersion" equals "1.2.3"
+        And the event "app.isLaunching" equals "true"
+
 #        And the event "app.versionCode" equals "1"
 #        And the error payload field "events.0.app.durationInForeground" is greater than 0
 #        And the event "app.inForeground" equals "true"
@@ -78,3 +80,14 @@ Feature: iOS smoke tests for C# errors
         When I run the "Custom App Type" mobile scenario
         Then I wait to receive an error
         And the event "app.type" equals "test"
+
+    Scenario: Mark Launch Complete
+        When I run the "Mark Launch Complete" mobile scenario
+        Then I wait to receive an error
+
+        # Exception details
+        And the error payload field "events" is an array with 1 elements
+        And the exception "errorClass" equals "Exception"
+        And the exception "message" equals "You threw an exception!"
+        And the event "app.isLaunching" equals "false"
+
