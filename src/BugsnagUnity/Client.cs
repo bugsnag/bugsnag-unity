@@ -227,6 +227,18 @@ namespace BugsnagUnity
             }
         }
 
+        public void Notify(string name, string message, string stackTrace, Middleware callback)
+        {
+            var exceptions = new Exception[] { Exception.FromStringInfo(name, message, stackTrace) };
+            Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
+        }
+
+        public void Notify(System.Exception exception, string stacktrace, Middleware callback)
+        {
+            var exceptions = new Exceptions(exception, stacktrace).ToArray();
+            Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
+        }
+
         public void Notify(System.Exception exception)
         {
             Notify(exception, 3);
