@@ -4,6 +4,8 @@
 
 ### Enhancements
 
+* Add new Bugsnag.Notify overloads: `Notify(exception, stacktrace)`  `Notify(exception, stacktrace, callback)` `Notify(name, message, stacktrace)` `Notify(name, message, stacktrace, callback)` [#380](https://github.com/bugsnag/bugsnag-unity/pull/380)
+
 * Add `Configuration.VersionCode` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#versioncode) [#373](https://github.com/bugsnag/bugsnag-unity/pull/373)
 
 * Add `Configuration.PersistenceDirectory` to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistencedirectory) [#368](https://github.com/bugsnag/bugsnag-unity/pull/368)
