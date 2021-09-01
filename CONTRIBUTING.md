@@ -91,9 +91,6 @@ bundle exec maze-runner features/handled_errors.feature
 
 #### Pre-release
 
-- [ ] Archive the iOS app and validate the bundle type
-- [ ] Archive the Mac app and validate the bundle type
-- [ ] Generate a signed APK for Android
 - [ ] Do the installation instructions work when creating an example app from scratch?
 - [ ] Are PRs open on the docs site for any new feature changes or version numbers?
 - [ ] Have the installation instructions been updated on the [dashboard](https://github.com/bugsnag/bugsnag-website/tree/master/app/views/dashboard/projects/install)
