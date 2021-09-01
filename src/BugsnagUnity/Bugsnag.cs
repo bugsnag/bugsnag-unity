@@ -66,7 +66,10 @@ namespace BugsnagUnity
 
         public static void StartSession() => InternalClient.SessionTracking.StartSession();
 
-        public static void StopSession() => InternalClient.SessionTracking.StopSession();
+        [Obsolete("StopSession is deprecated, please use PauseSession instead.", false)]
+        public static void StopSession() => PauseSession();
+
+        public static void PauseSession() => InternalClient.SessionTracking.PauseSession();
 
         public static bool ResumeSession() => InternalClient.SessionTracking.ResumeSession();
 

@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Deprecated
+
+* `Bugsnag.StopSession` has been deprecated in favour of `Bugsnag.PauseSession` and will be removed in the next major release.
+
 ### Enhancements
 
 * Update bugsnag-cocoa to v6.12.0

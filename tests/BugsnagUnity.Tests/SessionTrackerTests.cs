@@ -28,7 +28,7 @@ namespace BugsnagUnity.Payload.Tests
             var originalSession = Tracker.CurrentSession;
             Assert.IsNotNull(originalSession);
 
-            Tracker.StopSession();
+            Tracker.PauseSession();
             Assert.IsNull(Tracker.CurrentSession);
 
             Assert.IsTrue(Tracker.ResumeSession());
@@ -42,7 +42,7 @@ namespace BugsnagUnity.Payload.Tests
         public void ResumeWithNoStoppedSession()
         {
             Tracker.StartSession();
-            Tracker.StopSession();
+            Tracker.PauseSession();
             Assert.IsTrue(Tracker.ResumeSession());
             Assert.IsFalse(Tracker.ResumeSession());
         }
@@ -56,7 +56,7 @@ namespace BugsnagUnity.Payload.Tests
             Tracker.StartSession();
             var originalSession = Tracker.CurrentSession;
 
-            Tracker.StopSession();
+            Tracker.PauseSession();
             Tracker.StartSession();
             Assert.AreNotEqual(originalSession, Tracker.CurrentSession);
         }
@@ -69,7 +69,7 @@ namespace BugsnagUnity.Payload.Tests
         {
             Tracker.StartSession();
             var original = Tracker.CurrentSession;
-            Tracker.StopSession();
+            Tracker.PauseSession();
 
             Assert.IsTrue(Tracker.ResumeSession());
             Assert.AreEqual(original, Tracker.CurrentSession);
@@ -87,10 +87,10 @@ namespace BugsnagUnity.Payload.Tests
             Tracker.StartSession();
             Assert.IsNotNull(Tracker.CurrentSession);
 
-            Tracker.StopSession();
+            Tracker.PauseSession();
             Assert.IsNull(Tracker.CurrentSession);
 
-            Tracker.StopSession();
+            Tracker.PauseSession();
             Assert.IsNull(Tracker.CurrentSession);
         }
     }
