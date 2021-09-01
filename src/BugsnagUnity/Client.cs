@@ -124,7 +124,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool IsUsingFallback()
+        public bool IsUsingFallback()
         {
             switch (Application.platform)
             {
@@ -304,6 +304,8 @@ namespace BugsnagUnity
 
             RedactMetadata(metadata);
 
+            var session = IsUsingFallback() ? SessionTracking.CurrentSession : NativeClient.GetCurrentSession();
+
             var @event = new Payload.Event(
               Configuration.Context,
               metadata,
@@ -313,7 +315,7 @@ namespace BugsnagUnity
               exceptions,
               handledState,
               Breadcrumbs.Retrieve(),
-              SessionTracking.CurrentSession);
+              session);
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))
@@ -413,7 +415,8 @@ namespace BugsnagUnity
                 lock (autoSessionLock)
                 {
                     if (Configuration.AutoTrackSessions
-                     && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
+                     && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds
+                     && IsUsingFallback())
                     {
                         SessionTracking.StartSession();
                     }

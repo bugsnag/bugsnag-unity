@@ -43,5 +43,8 @@ namespace BugsnagUnity
         void SetAutoDetectErrors(bool AutoDetectErrors);
 
         void SetAutoDetectAnrs(bool autoDetectAnrs);
+
+        bool IsUsingFallback();
+
     }
 }

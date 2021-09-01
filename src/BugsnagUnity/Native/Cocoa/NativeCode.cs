@@ -26,6 +26,12 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
+
+        internal delegate void SessionInformation(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled);
+        [DllImport(Import)]
+        internal static extern void bugsnag_retrieveCurrentSession(IntPtr instance, SessionInformation visitor);
+
+
         internal delegate void MetadataInformation(IntPtr instance, string tab, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] values, int valuesSize);
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveMetaData(IntPtr instance, MetadataInformation visitor);
@@ -44,6 +50,9 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setAutoTrackSessions(IntPtr configuration, bool autoTrackSessions);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setPersistUser(IntPtr configuration, bool persistUser);
@@ -107,6 +116,12 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setUser(string id, string name, string email);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_registerSession(string id, long startedAt, int unhandledCount, int handledCount);
+        internal static extern void bugsnag_startSession();
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_pauseSession();
+
+        [DllImport(Import)]
+        internal static extern bool bugsnag_resumeSession();
     }
 }

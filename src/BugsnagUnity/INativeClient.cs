@@ -42,9 +42,24 @@ namespace BugsnagUnity
         void SetMetadata(string tab, Dictionary<string, string> metadata);
 
         /// <summary>
-        /// Adds session data to native client reports
+        /// Send the start session message to a native notifier
         /// </summary>
-        void SetSession(Session session);
+        void StartSession();
+
+        /// <summary>
+        /// Send the stop session message to a native notifier
+        /// </summary>
+        void PauseSession();
+
+        /// <summary>
+        /// Send the resume session message to a native notifier
+        /// </summary>
+        bool ResumeSession();
+
+        /// <summary>
+        /// Get the current session info for sending with an error
+        /// </summary>
+        Session GetCurrentSession();
 
         /// <summary>
         /// Adds user data to native client reports

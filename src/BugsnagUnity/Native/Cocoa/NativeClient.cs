@@ -39,7 +39,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
             NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
-
+            NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
                 NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
@@ -256,21 +256,6 @@ namespace BugsnagUnity
             }
         }
 
-        public void SetSession(Session session)
-        {
-            if (session == null)
-            {
-                // Clear session
-                NativeCode.bugsnag_registerSession(null, 0, 0, 0);
-            }
-            else
-            {
-                // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
-                var startedAt = Convert.ToInt64((session.StartedAt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
-                NativeCode.bugsnag_registerSession(session.Id.ToString(), startedAt, session.UnhandledCount(), session.HandledCount());
-            }
-        }
-
         public void SetUser(User user)
         {
             NativeCode.bugsnag_setUser(user.Id, user.Name, user.Email);
@@ -288,6 +273,47 @@ namespace BugsnagUnity
 
         public void SetAutoDetectAnrs(bool autoDetectAnrs)
         {
+        }
+
+        public void StartSession()
+        {
+            NativeCode.bugsnag_startSession();
+        }
+
+        public void PauseSession()
+        {
+            NativeCode.bugsnag_pauseSession();
+        }
+
+        public bool ResumeSession()
+        {
+            return NativeCode.bugsnag_resumeSession();
+        }
+
+        public Session GetCurrentSession()
+        {
+            var session = new Session();
+            var handle = GCHandle.Alloc(session);
+            try
+            {
+                NativeCode.bugsnag_retrieveCurrentSession(GCHandle.ToIntPtr(handle),PopulateSession);
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return session;
+        }
+
+        [MonoPInvokeCallback(typeof(NativeCode.SessionInformation))]
+        static void PopulateSession(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled)
+        {
+            var handle = GCHandle.FromIntPtr(instance);
+            if (handle.Target is Session session)
+            {
+                var startTime = DateTime.Parse(startedAt);
+                session = new Session(sessionId, startTime, handled, unhandled);
+            }
         }
     }
 }

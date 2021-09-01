@@ -90,7 +90,23 @@ namespace BugsnagUnity
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
 
+        public void StartSession()
+        {
+        }
 
+        public void PauseSession()
+        {
+        }
+
+        public bool ResumeSession()
+        {
+            return false;
+        }
+
+        public Session GetCurrentSession()
+        {
+            return null;
+        }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private class MEMORYSTATUSEX

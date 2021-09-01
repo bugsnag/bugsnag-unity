@@ -11,6 +11,7 @@
 #import "BSG_KSCrash.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagBreadcrumb+Private.h"
+#import "BugsnagSession+Private.h"
 
 extern "C" {
   struct bugsnag_user {
@@ -61,7 +62,6 @@ extern "C" {
 
   void bugsnag_populateUser(bugsnag_user *user);
   void bugsnag_setUser(char *userId, char *userName, char *userEmail);
-  void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 
   void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
 
@@ -69,9 +69,34 @@ extern "C" {
 
   void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count);
 
+  void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions);
 
   void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
 
+  void bugsnag_startSession();
+
+  void bugsnag_pauseSession();
+
+  bool bugsnag_resumeSession();
+
+  void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, char *sessionId, long startedAt, int handled, int unhandled));
+
+
+}
+
+  void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
+ 
+    NSDictionary * sessionDict = [[Bugsnag client].sessionTracker.runningSession toDictionary];
+    
+    const char * sessionId = [[sessionDict objectForKey:@"id"] UTF8String];
+
+    const char * timeString = [[sessionDict objectForKey:@"startedAt"] UTF8String];
+
+    int handled = [sessionDict[@"handledCount"] integerValue];
+
+    int unhandled = [sessionDict[@"unhandledCount"] integerValue];
+
+    callback(session, sessionId, timeString, handled, unhandled);
 
 }
 
@@ -79,7 +104,6 @@ void *bugsnag_createConfiguration(char *apiKey) {
   NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
   BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:ns_apiKey];
   config.apiKey = ns_apiKey;
-  config.autoTrackSessions = NO;
   return (void*)CFBridgingRetain(config);
 }
 
@@ -271,6 +295,10 @@ void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
+}
+
+void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions) {
+  ((__bridge BugsnagConfiguration *)configuration).autoTrackSessions  = autoTrackSessions;
 }
 
 void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
@@ -474,11 +502,14 @@ void bugsnag_setUser(char *userId, char *userName, char *userEmail) {
 + (BugsnagNotifier *)notifier;
 @end
 
-void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
-    BugsnagSessionTracker *tracker = Bugsnag.client.sessionTracker;
-    [tracker registerExistingSession:sessionId == NULL ? nil : [NSString stringWithUTF8String:sessionId]
-                           startedAt:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)startedAt]
-                                user:Bugsnag.user
-                        handledCount:(NSUInteger)handledCount
-                      unhandledCount:(NSUInteger)unhandledCount];
+void bugsnag_startSession() {
+    [Bugsnag startSession];
+}
+
+void bugsnag_pauseSession() {
+    [Bugsnag pauseSession];
+}
+
+bool bugsnag_resumeSession() {
+    return [Bugsnag resumeSession];
 }

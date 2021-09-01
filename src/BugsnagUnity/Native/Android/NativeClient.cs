@@ -74,11 +74,6 @@ namespace BugsnagUnity
             }
         }
 
-        public void SetSession(Session session)
-        {
-            NativeInterface.SetSession(session);
-        }
-
         public void SetUser(User user)
         {
             NativeInterface.SetUser(user);
@@ -98,6 +93,27 @@ namespace BugsnagUnity
         public void SetAutoDetectAnrs(bool autoDetectAnrs)
         {
             NativeInterface.SetAutoDetectAnrs(autoDetectAnrs);
+        }
+
+        public void StartSession()
+        {
+            NativeInterface.StartSession();
+        }
+
+        public void PauseSession()
+        {
+            NativeInterface.PauseSession();
+        }
+
+        public bool ResumeSession()
+        {
+            return NativeInterface.ResumeSession();
+
+        }
+
+        public Session GetCurrentSession()
+        {
+            return NativeInterface.GetCurrentSession();
         }
     }
 

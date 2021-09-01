@@ -16,6 +16,8 @@ namespace BugsnagUnity
         Session CurrentSession { get; }
 
         void AddException(Report report);
+
+        void StartTrackingFallbackSession();
     }
 
     class SessionTracker : ISessionTracker
@@ -44,12 +46,24 @@ namespace BugsnagUnity
             Client = client;
         }
 
+
         public void StartSession()
+        {
+            if (ShouldManageSessions())
+            {
+                StartTrackingFallbackSession();
+            }
+            else
+            {
+                Client.NativeClient.StartSession();
+            }
+        }
+
+        public void StartTrackingFallbackSession()
         {
             var session = new Session();
 
             CurrentSession = session;
-            Client.NativeClient.SetSession(session);
 
             var app = new App(Client.Configuration);
             Client.NativeClient.PopulateApp(app);
@@ -70,20 +84,42 @@ namespace BugsnagUnity
 
         public void StopSession()
         {
-            var session = _currentSession;
+            if (ShouldManageSessions())
+            {
+                PauseFallbackSession();
+            }
+            else
+            {
+                Client.NativeClient.PauseSession();
+            }
+        }
 
+        private void PauseFallbackSession()
+        {
+            var session = _currentSession;
             if (session != null)
             {
                 session.Stopped = true;
-                Client.NativeClient.SetSession(null);
             }
         }
 
         public bool ResumeSession()
         {
-            var session = _currentSession;
-            var resumed = false;
+            if (ShouldManageSessions())
+            {
+                return ResumeFallbackSession();
+            }
+            else
+            {
+                return Client.NativeClient.ResumeSession();
+            }
+             
+        }
 
+        private bool ResumeFallbackSession()
+        {
+            var session = _currentSession;
+            bool resumed;
             if (session == null)
             {
                 StartSession();
@@ -93,7 +129,6 @@ namespace BugsnagUnity
             {
                 resumed = session.Stopped;
                 session.Stopped = false;
-                Client.NativeClient.SetSession(session);
             }
             return resumed;
         }
@@ -101,6 +136,11 @@ namespace BugsnagUnity
         public void AddException(Report report)
         {
             _currentSession?.AddException(report);
+        }
+
+        private bool ShouldManageSessions()
+        {
+            return Client.IsUsingFallback();
         }
     }
 }
