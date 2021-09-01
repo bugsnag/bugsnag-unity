@@ -20,6 +20,11 @@ namespace BugsnagUnity.Payload
             UnwoundExceptions = FlattenAndReverseExceptionTree(exception).Select(e => Exception.FromSystemException(e, alternativeStackTrace));
         }
 
+        internal Exceptions(System.Exception exception, string providedStackTrace)
+        {
+            UnwoundExceptions = FlattenAndReverseExceptionTree(exception).Select(e => Exception.FromSystemException(e, providedStackTrace));
+        }
+
         public IEnumerator<Exception> GetEnumerator()
         {
             return UnwoundExceptions.GetEnumerator();
@@ -111,6 +116,20 @@ namespace BugsnagUnity.Payload
             {
                 lines = new StackTrace(alternativeStackTrace).ToArray();
             }
+
+            return new Exception(errorClass, exception.Message, lines);
+        }
+
+        internal static Exception FromStringInfo(string name, string message, string stacktrace)
+        {
+            var stackFrames = new StackTrace(stacktrace).ToArray();
+            return new Exception(name, message, stackFrames);
+        }
+
+        internal static Exception FromSystemException(System.Exception exception, string stackTrace)
+        {
+            var errorClass = exception.GetType().Name;
+            var lines = new StackTrace(stackTrace).ToArray();            
 
             return new Exception(errorClass, exception.Message, lines);
         }
