@@ -6,6 +6,17 @@
 
 * `Bugsnag.StopSession` has been deprecated in favour of `Bugsnag.PauseSession` and will be removed in the next major release.
 
+### Enhancements
+
+* Update bugsnag-cocoa to v6.12.0
+
+  * Events now include a `thermalState` property in the `device` tab, and unexpected app terminations that occur
+    when the thermal state is critical will now be reported as a "Thermal Kill" rather than Out Of Memory error.
+    [bugsnag-cocoa#1171](https://github.com/bugsnag/bugsnag-cocoa/pull/1171)
+
+  * Fatal app hangs will no longer be reported if the `willTerminateNotification` is received.
+    [bugsnag-cocoa#1176](https://github.com/bugsnag/bugsnag-cocoa/pull/1176)
+
 ## 5.3.0 (2021-09-01)
 
 ### Enhancements
