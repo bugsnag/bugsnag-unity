@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Deprecated
+
+* `Bugsnag.StopSession` has been deprecated in favour of `Bugsnag.PauseSession` and will be removed in the next major release.
+
 ## 5.3.0 (2021-09-01)
 
 ### Enhancements
@@ -45,8 +51,6 @@
     [#1328](https://github.com/bugsnag/bugsnag-android/pull/1328)
     
 ### Deprecated
-
-* `Bugsnag.StopSession` has been deprecated in favour of `Bugsnag.PauseSession` and will be removed in the next major release.
 
 * `Bugsnag.SetContext(string context)` has been deprecated in favour of the new `Bugsnag.Context` property and will be removed in the next major release.
 
