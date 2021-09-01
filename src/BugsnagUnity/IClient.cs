@@ -12,6 +12,8 @@ namespace BugsnagUnity
 
         ISessionTracker SessionTracking { get; }
 
+        LastRunInfo LastRunInfo { get; }
+
         User User { get; }
 
         void Send(IPayload payload);
@@ -47,5 +49,7 @@ namespace BugsnagUnity
         void SetAutoDetectErrors(bool AutoDetectErrors);
 
         void SetAutoDetectAnrs(bool autoDetectAnrs);
+
+        void MarkLaunchCompleted();
     }
 }

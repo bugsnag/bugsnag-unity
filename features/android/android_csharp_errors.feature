@@ -113,6 +113,8 @@ Feature: Android smoke tests for C# errors
         And the error payload field "events.0.app.duration" is not null
         And the error payload field "events.0.app.durationInForeground" is not null
         And the event "app.inForeground" equals "true"
+        And the event "app.isLaunching" equals "true"
+
         And the error payload field "events.0.app.memoryUsage" is not null
         And the event "app.name" equals "Mazerunner"
         And the event "app.lowMemory" equals "false"
@@ -163,5 +165,16 @@ Feature: Android smoke tests for C# errors
         And the error payload field "events.0.device.runtimeVersions.androidApiLevel" is not null
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
+
+     Scenario: Mark Launch Complete
+        When I run the "Mark Launch Complete" mobile scenario
+        Then I wait to receive an error
+
+        # Exception details
+        And the error payload field "events" is an array with 1 elements
+        And the exception "errorClass" equals "Exception"
+        And the exception "message" equals "You threw an exception!"
+        And the event "app.isLaunching" equals "false"
+
 
     

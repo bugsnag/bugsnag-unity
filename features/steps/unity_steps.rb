@@ -46,6 +46,10 @@ def dial_number_for(name)
       "Java Background Crash No Threads" => 21,
       "iOS Native Error" => 22,
       "iOS Native Error No Threads" => 23,
+      "Mark Launch Complete" => 24,
+      "Check Last Run Info" => 25,
+
+
 
 
 

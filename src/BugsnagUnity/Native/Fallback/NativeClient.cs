@@ -92,5 +92,14 @@ namespace BugsnagUnity
                     return string.Empty;
             }
         }
+
+        public void MarkLaunchCompleted()
+        {
+        }
+
+        public LastRunInfo GetLastRunInfo()
+        {
+            return null;
+        }
     }
 }

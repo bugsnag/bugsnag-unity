@@ -90,7 +90,9 @@ namespace BugsnagUnity
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
 
-
+        public void MarkLaunchCompleted()
+        {
+        }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private class MEMORYSTATUSEX
@@ -108,6 +110,11 @@ namespace BugsnagUnity
             {
                 dwLength = (uint)Marshal.SizeOf(this);
             }
+        }
+
+        public LastRunInfo GetLastRunInfo()
+        {
+            return null;
         }
     }
 }

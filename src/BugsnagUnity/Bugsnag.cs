@@ -150,5 +150,21 @@ namespace BugsnagUnity
             Client.SetAutoDetectAnrs(autoDetectAnrs);
         }
 
+        /// <summary>
+        /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
+        /// </summary>
+        public static void MarkLaunchCompleted()
+        {
+            Client.MarkLaunchCompleted();
+        }
+
+        /// <summary>
+        /// Get information regarding the last application run. This will be null on non mobile platforms.
+        /// </summary>
+        public static LastRunInfo GetLastRunInfo()
+        {
+            return Client.LastRunInfo;
+        }
+
     }
 }

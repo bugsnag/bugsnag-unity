@@ -39,6 +39,8 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
             NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
+            NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);
+            NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
 
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
@@ -289,5 +291,39 @@ namespace BugsnagUnity
         public void SetAutoDetectAnrs(bool autoDetectAnrs)
         {
         }
+
+        public void MarkLaunchCompleted()
+        {
+            NativeCode.bugsnag_markLaunchCompleted();
+        }
+
+        public LastRunInfo GetLastRunInfo()
+        {
+            var lastRunInfo = new LastRunInfo();
+            var handle = GCHandle.Alloc(lastRunInfo);
+            try
+            {
+                NativeCode.bugsnag_retrieveLastRunInfo(GCHandle.ToIntPtr(handle), PopulateLastRunInfo);
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return lastRunInfo;
+        }
+
+        [MonoPInvokeCallback(typeof(Action<IntPtr,bool, bool, int>))]
+        static void PopulateLastRunInfo(IntPtr instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)
+        {
+            var handle = GCHandle.FromIntPtr(instance);
+            if (handle.Target is LastRunInfo info)
+            {
+                info.Crashed = crashed;
+                info.CrashedDuringLaunch = crashedDuringLaunch;
+                info.ConsecutiveLaunchCrashes = consecutiveLaunchCrashes;
+            }
+        }
+
+
     }
 }
