@@ -30,6 +30,10 @@ namespace BugsnagUnity
 
         void Notify(System.Exception exception, Severity severity, Middleware callback);
 
+        void Notify(System.Exception exception, string stacktrace, Middleware callback);
+
+        void Notify(string name, string message, string stackTrace, Middleware callback);
+
         /// <summary>
         /// Used to signal to the Bugsnag client that the focused state of the
         /// application has changed. This is used for session tracking and also
