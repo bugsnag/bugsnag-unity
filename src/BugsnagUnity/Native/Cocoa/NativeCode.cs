@@ -43,13 +43,19 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setAutoNotify(bool autoNotify);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);       
+        internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setPersistUser(IntPtr configuration, bool persistUser);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setContext(IntPtr configuration, string context);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setMaxPersistedEvents(IntPtr configuration, int maxPersistedEvents);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setAppHangThresholdMillis(IntPtr configuration, ulong appHangThresholdMillis);
@@ -61,10 +67,25 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setEnabledErrorTypes(IntPtr configuration, string[] types, int count);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setDiscardClasses(IntPtr configuration, string[] classNames, int count);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setRedactedKeys(IntPtr configuration, string[] redactedKeys, int count);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setContextConfig(IntPtr configuration, string context);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setAppVersion(IntPtr configuration, string appVersion);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setBundleVersion(IntPtr configuration, string bundleVersion);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setThreadSendPolicy(IntPtr configuration, string threadSendPolicy);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setAppType(IntPtr configuration, string appType);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setNotifyUrl(IntPtr configuration, string endpoint);

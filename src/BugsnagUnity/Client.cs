@@ -95,7 +95,25 @@ namespace BugsnagUnity
             {
                 // Async behavior is not available in a test environment
             }
+            if (!Configuration.Endpoints.IsValid)
+            {
+                CheckForMisconfiguredEndpointsWarning();
+            }
             AddBugsnagLoadedBreadcrumb();
+        }
+
+        private void CheckForMisconfiguredEndpointsWarning()
+        {
+            var endpoints = Configuration.Endpoints;
+            if (endpoints.NotifyIsCustom && !endpoints.SessionIsCustom)
+            {
+                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Notify cannot be set without also setting endpoints.Session. Events will not be sent to Bugsnag.");
+            }
+            if (!endpoints.NotifyIsCustom && endpoints.SessionIsCustom)
+            {
+                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Session cannot be set without also setting endpoints.Notify. Sessions will not be sent to Bugsnag.");
+            }
+
         }
 
         private void AddBugsnagLoadedBreadcrumb()
@@ -199,7 +217,7 @@ namespace BugsnagUnity
             }
         }
 
-      
+
 
         public void BeforeNotify(Middleware middleware)
         {
@@ -260,10 +278,11 @@ namespace BugsnagUnity
 
         void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
         {
-            if (!ShouldSendRequests())
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
                 return; // Skip overhead of computing payload to to ultimately not be sent
             }
+
             var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
             var app = new App(Configuration)
             {
@@ -283,6 +302,8 @@ namespace BugsnagUnity
                 metadata.AddToPayload(item.Key, item.Value);
             }
 
+            RedactMetadata(metadata);
+
             var @event = new Payload.Event(
               Configuration.Context,
               metadata,
@@ -293,6 +314,13 @@ namespace BugsnagUnity
               handledState,
               Breadcrumbs.Retrieve(),
               SessionTracking.CurrentSession);
+
+            //Check for adding project packages to an android java error event
+            if (ShouldAddProjectPackagesToEvent(@event))
+            {
+                @event.AddAndroidProjectPackagesToEvent(Configuration.ProjectPackages);
+            }
+
             var report = new Report(Configuration, @event);
 
             lock (MiddlewareLock)
@@ -327,6 +355,56 @@ namespace BugsnagUnity
             }
         }
 
+        private void RedactMetadata(Metadata metadata)
+        {
+            foreach (var section in metadata)
+            {
+                var sectionDictionaryType = section.Value.GetType();
+                if (sectionDictionaryType == typeof(Dictionary<string, object>))
+                {
+                    var theSection = (Dictionary<string, object>)section.Value;
+                    foreach (var key in theSection.Keys.ToList())
+                    {
+                        if (Configuration.KeyIsRedacted(key))
+                        {
+                            theSection[key] = "[REDACTED]";
+                        }
+                    }
+                }
+                if (sectionDictionaryType == typeof(Dictionary<string, string>))
+                {
+                    var theSection = (Dictionary<string, string>)section.Value;
+                    foreach (var key in theSection.Keys.ToList())
+                    {
+                        if (Configuration.KeyIsRedacted(key))
+                        {
+                            theSection[key] = "[REDACTED]";
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
+        {
+            return Application.platform.Equals(RuntimePlatform.Android)
+               && Configuration.ProjectPackages != null
+               && Configuration.ProjectPackages.Length > 0
+               && theEvent.IsAndroidJavaError();
+        }
+
+        private bool EventContainsDiscardedClass(Exception[] exceptions)
+        {
+            foreach (var exception in exceptions)
+            {
+                if (Configuration.ErrorClassIsDiscarded(exception.ErrorClass))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void SetApplicationState(bool inFocus)
         {
             if (inFocus)
@@ -355,8 +433,8 @@ namespace BugsnagUnity
         private bool ShouldSendRequests()
         {
             return Configuration.ReleaseStage == null
-                || Configuration.NotifyReleaseStages == null
-                || Configuration.NotifyReleaseStages.Contains(Configuration.ReleaseStage);
+                || Configuration.EnabledReleaseStages == null
+                || Configuration.EnabledReleaseStages.Contains(Configuration.ReleaseStage);
         }
 
         /// <summary>
@@ -381,6 +459,11 @@ namespace BugsnagUnity
 
             // propagate the change to the native property also
             NativeClient.SetContext(context);
+        }
+
+        public string GetContext()
+        {
+            return Configuration.Context;
         }
 
         public void SetAutoDetectErrors(bool autoDetectErrors)

@@ -182,39 +182,35 @@ namespace BugsnagUnity
                 errorTypes.Call("setUnhandledExceptions", config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes));
                 obj.Call("setEnabledErrorTypes", errorTypes);
             }
+
             obj.Call("setAutoTrackSessions", false);
             obj.Call("setAutoDetectErrors", config.AutoDetectErrors);
+            obj.Call("setAppVersion", config.AppVersion);
+            obj.Call("setContext", config.Context);
+            obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
+            obj.Call("setMaxPersistedEvents", config.MaxPersistedEvents);
+            obj.Call("setPersistUser", config.PersistUser);
 
             // set endpoints
-            var notify = config.Endpoint.ToString();
-            var sessions = config.SessionEndpoint.ToString();
+            var notify = config.Endpoints.Notify.ToString();
+            var sessions = config.Endpoints.Session.ToString();
             using (AndroidJavaObject endpointConfig = new AndroidJavaObject("com.bugsnag.android.EndpointConfiguration", notify, sessions))
             {
                 obj.Call("setEndpoints", endpointConfig);
             }
 
-            // set release stages
-            obj.Call("setReleaseStage", config.ReleaseStage);
-
-            if (config.NotifyReleaseStages != null)
+            //android layer expects a nonnull java Integer not just an int, so we check if it has actually been set to a valid value
+            if (config.VersionCode > -1)
             {
-                using (AndroidJavaObject releaseStages = new AndroidJavaObject("java.util.HashSet"))
-                {
-                    foreach (var element in config.NotifyReleaseStages)
-                    {
-                        using (AndroidJavaObject stage = BuildJavaStringDisposable(element))
-                        {
-                            releaseStages.Call<Boolean>("add", stage);
-                        }
-                    }
-                    obj.Call("setEnabledReleaseStages", releaseStages);
-                }
+                var javaInteger = new AndroidJavaObject("java.lang.Integer", config.VersionCode);
+                obj.Call("setVersionCode", javaInteger);
             }
-
-            // set version/context/maxbreadcrumbs
-            obj.Call("setAppVersion", config.AppVersion);
-            obj.Call("setContext", config.Context);
-            obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
+            
+            //Null or empty check necessary because android will set the app.type to empty if that or null is passed as default
+            if (!string.IsNullOrEmpty(config.AppType))
+            {
+                obj.Call("setAppType", config.AppType);
+            }
 
             // set EnabledBreadcrumbTypes
             if (config.EnabledBreadcrumbTypes != null)
@@ -234,12 +230,64 @@ namespace BugsnagUnity
                     obj.Call("setEnabledBreadcrumbTypes", enabledBreadcrumbs);
                 }
             }
-            
+
+            // set sendThreads
+            AndroidJavaClass androidThreadSendPolicyClass = new AndroidJavaClass("com.bugsnag.android.ThreadSendPolicy");
+            var threadSendStringValue = Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads);
+            using (AndroidJavaObject policy = androidThreadSendPolicyClass.CallStatic<AndroidJavaObject>("valueOf", threadSendStringValue))
+            {
+                obj.Call("setSendThreads", policy);
+            }
+                                   
+
+            // set release stages
+            obj.Call("setReleaseStage", config.ReleaseStage);
+
+            if (config.EnabledReleaseStages != null && config.EnabledReleaseStages.Length > 0)
+            {
+                obj.Call("setEnabledReleaseStages", GetAndroidStringSetFromArray(config.EnabledReleaseStages));
+            }
+
+            // set DiscardedClasses
+            if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
+            {
+                obj.Call("setDiscardClasses", GetAndroidStringSetFromArray(config.DiscardClasses));
+            }
+
+            // set ProjectPackages
+            if (config.ProjectPackages != null && config.ProjectPackages.Length > 0)
+            {
+                obj.Call("setProjectPackages", GetAndroidStringSetFromArray(config.ProjectPackages));
+            }
+
+            // set redacted keys
+            if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
+            {
+                obj.Call("setRedactedKeys", GetAndroidStringSetFromArray(config.RedactedKeys));
+            }
+
             // add unity event callback
             var BugsnagUnity = new AndroidJavaClass("com.bugsnag.android.unity.BugsnagUnity");
             obj.Call("addOnError", BugsnagUnity.CallStatic<AndroidJavaObject>("getNativeCallback", new object[] { }));
 
+            // set persistence directory
+            if (!string.IsNullOrEmpty(config.PersistenceDirectory))
+            {
+                AndroidJavaObject androidFile = new AndroidJavaObject("java.io.File",config.PersistenceDirectory);
+                obj.Call("setPersistenceDirectory",androidFile);
+            }
+
             return obj;
+        }
+
+        private AndroidJavaObject GetAndroidStringSetFromArray(string[] array)
+        {
+            AndroidJavaObject set = new AndroidJavaObject("java.util.HashSet");
+            foreach (var item in array)
+            {
+                set.Call<Boolean>("add", item);
+            }
+            return set;
         }
 
         private void ConfigureNotifierInfo(AndroidJavaObject client)

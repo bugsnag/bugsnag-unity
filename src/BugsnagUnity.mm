@@ -25,15 +25,25 @@ extern "C" {
 
   void bugsnag_setAppVersion(const void *configuration, char *appVersion);
 
+  void bugsnag_setPersistUser(const void *configuration, bool persistUser);
+
   void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
   void bugsnag_setAutoNotify(bool autoNotify);
+
+  void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion);
+
+  void bugsnag_setAppType(const void *configuration, char *appType);
 
   void bugsnag_setContext(const void *configuration, char *context);
   void bugsnag_setContextConfig(const void *configuration, char *context);
 
   void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
   void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
+
+  void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
+
+  void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy);
 
   void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
 
@@ -54,6 +64,11 @@ extern "C" {
   void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 
   void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
+
+  void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count);
+
+  void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count);
+
 
   void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
 
@@ -94,6 +109,16 @@ void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger app
   ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
 }
 
+void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion) {
+  NSString *ns_bundleVersion = bundleVersion == NULL ? nil : [NSString stringWithUTF8String: bundleVersion];
+  ((__bridge BugsnagConfiguration *)configuration).bundleVersion = ns_bundleVersion;
+}
+
+void bugsnag_setAppType(const void *configuration, char *appType) {
+  NSString *ns_appType = appType == NULL ? nil : [NSString stringWithUTF8String: appType];
+  ((__bridge BugsnagConfiguration *)configuration).appType = ns_appType;
+}
+
 void bugsnag_setContext(const void *configuration, char *context) {
   NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
   [Bugsnag.client setContext:ns_Context];
@@ -108,19 +133,23 @@ void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs) {
   ((__bridge BugsnagConfiguration *)configuration).maxBreadcrumbs = maxBreadcrumbs;
 }
 
+void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents) {
+  ((__bridge BugsnagConfiguration *)configuration).maxPersistedEvents = maxPersistedEvents;
+}
+
 void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count){
     if(types == NULL)
     {
         ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeAll;
         return;
     }
-    
+
     ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes = BSGEnabledBreadcrumbTypeNone;
-    
+
     for (int i = 0; i < count; i++) {
         const char *enabledType = types[i];
         if (enabledType != nil) {
-				
+
 			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"Navigation"])
@@ -155,6 +184,24 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
       }
 }
 
+void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy)
+{
+    NSString *ns_threadSendPolicy = [[NSString alloc] initWithUTF8String:threadSendPolicy];
+    if([ns_threadSendPolicy isEqualToString:@"ALWAYS"])
+    {
+        ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyAlways;
+    }
+    if([ns_threadSendPolicy isEqualToString:@"UNHANDLED_ONLY"])
+    {
+        ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyUnhandledOnly;
+    }
+    if([ns_threadSendPolicy isEqualToString:@"NEVER"])
+    {
+        ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyNever;
+    }
+}
+
+
 void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count){
 
     ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.appHangs = NO;
@@ -167,7 +214,7 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
     for (int i = 0; i < count; i++) {
         const char *enabledType = types[i];
         if (enabledType != nil) {
-				
+
 			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"AppHangs"])
@@ -198,8 +245,36 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
       }
 }
 
+void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count){
+  NSMutableSet *ns_classNames = [NSMutableSet new];
+  for (int i = 0; i < count; i++) {
+    const char *className = classNames[i];
+    if (className != nil) {
+      NSString *ns_className = [NSString stringWithUTF8String: className];
+      [ns_classNames addObject: ns_className];
+    }
+  }
+  ((__bridge BugsnagConfiguration *)configuration).discardClasses = ns_classNames;
+}
+
+void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count){
+  NSMutableSet *ns_redactedKeys = [NSMutableSet new];
+  for (int i = 0; i < count; i++) {
+    const char *key = redactedKeys[i];
+    if (key != nil) {
+      NSString *ns_key = [NSString stringWithUTF8String: key];
+      [ns_redactedKeys addObject: ns_key];
+    }
+  }
+  ((__bridge BugsnagConfiguration *)configuration).redactedKeys = ns_redactedKeys;
+}
+
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
+}
+
+void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
+  ((__bridge BugsnagConfiguration *)configuration).persistUser = persistUser;
 }
 
 void bugsnag_setAutoNotify(bool autoNotify) {
@@ -239,7 +314,7 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
 }
 
 void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab,const char *keys[], int keys_size, const char *values[], int values_size)) {
-    
+
     for (NSString* sectionKey in [Bugsnag.client metadata].dictionary.allKeys) {
                  NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
                  NSArray *keys = [sectionDictionary allKeys];
@@ -258,7 +333,7 @@ void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void 
                 free(c_keys);
                 free(c_values);
            }
-    
+
 }
 
 void bugsnag_removeMetadata(const void *configuration, const char *tab) {
@@ -341,9 +416,14 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
 void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
 
-  callback(appData, "bundleVersion", [sysInfo[@BSG_KSSystemField_BundleVersion] UTF8String]);
+  NSString *bundleVersion = [Bugsnag configuration].bundleVersion ?: sysInfo[@BSG_KSSystemField_BundleVersion];
+  callback(appData, "bundleVersion", [bundleVersion UTF8String]);
+
   callback(appData, "id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
-  callback(appData, "type", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
+
+  NSString *appType = [Bugsnag configuration].appType ?: sysInfo[@BSG_KSSystemField_SystemName];
+  callback(appData, "type", [appType UTF8String]);
+
   NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
   callback(appData, "version", [version UTF8String]);
 }

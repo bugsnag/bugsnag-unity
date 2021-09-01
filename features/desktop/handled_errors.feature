@@ -32,6 +32,22 @@ Feature: Handled Errors and Exceptions
         And the first significant stack frame methods and files should match:
             | Main.DoNotify()           |
 
+    Scenario: Custom App Type
+        When I run the game in the "CustomAppType" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the event "app.type" equals "test"
+        And the first significant stack frame methods and files should match:
+            | Main.DoNotify()           |
+
+    Scenario: Redacted Keys
+        When I run the game in the "RedactedKeys" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the event "metaData.User.test" equals "[REDACTED]"
+        And the event "metaData.User.password" equals "[REDACTED]"
+
+
     Scenario: Reporting a handled exception with a callback
         When I run the game in the "NotifyCallback" state
         And I wait to receive an error

@@ -8,9 +8,34 @@ namespace BugsnagUnity
 {
     public class Configuration : IConfiguration
     {
-        public const string DefaultEndpoint = "https://notify.bugsnag.com";
 
-        public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
+        public string BundleVersion { get; set; }
+
+        public string AppType { get; set; }
+
+        public string[] RedactedKeys { get; set; } = new string[] { "password" };
+
+        public int VersionCode { get; set; } = -1;
+        
+        public ThreadSendPolicy SendThreads { get; set; } = ThreadSendPolicy.UNHANDLED_ONLY;
+
+        public bool PersistUser { get; set; }
+
+        public bool KeyIsRedacted(string key)
+        {
+            if (RedactedKeys == null || RedactedKeys.Length == 0)
+            {
+                return false;
+            }
+            foreach (var redactedKey in RedactedKeys)
+            {
+                if (key.ToLower() == redactedKey.ToLower())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public Configuration(string apiKey)
         {
@@ -20,9 +45,9 @@ namespace BugsnagUnity
             AutoDetectErrors = true;
             AutoDetectAnrs = true;
             ReleaseStage = "production";
-            Endpoint = new Uri(DefaultEndpoint);
-            SessionEndpoint = new Uri(DefaultSessionEndpoint);
         }
+
+        public string PersistenceDirectory { get; set; }
 
         public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
 
@@ -81,15 +106,65 @@ namespace BugsnagUnity
 
         public virtual string ReleaseStage { get; set; } = "production";
 
-        public virtual string[] NotifyReleaseStages { get; set; }
+        private string[] _enabledReleaseStages;
+
+        [Obsolete("NotifyReleaseStages is deprecated, please use Configuration.EnabledReleaseStages instead.", false)]
+        public virtual string[] NotifyReleaseStages {
+            get
+            {
+                return _enabledReleaseStages;
+            }
+            set
+            {
+                _enabledReleaseStages = value;
+            }
+        }
+
+        public virtual string[] EnabledReleaseStages
+        {
+            get
+            {
+                return _enabledReleaseStages;
+            }
+            set
+            {
+                _enabledReleaseStages = value;
+            }
+        }
+
+        public virtual string[] ProjectPackages { get; set; }
 
         public virtual string AppVersion { get; set; }
 
-        public virtual Uri Endpoint { get; set; } = new Uri(DefaultEndpoint);
+        [Obsolete("Endpoint is deprecated, please use Configuration.Endpoints instead.", false)]
+        public virtual Uri Endpoint
+        {
+            get
+            {
+                return Endpoints.Notify;
+            }
+            set
+            {
+                Endpoints.Notify = value;
+            }
+        }
+
+        [Obsolete("SessionEndpoint is deprecated, please use Configuration.Endpoints instead.", false)]
+        public virtual Uri SessionEndpoint
+        {
+            get
+            {
+                return Endpoints.Session;
+            }
+            set
+            {
+                Endpoints.Session = value;
+            }
+        }
+
+        public EndpointConfiguration Endpoints { get; set; } = new EndpointConfiguration();
 
         public virtual string PayloadVersion { get; } = "4.0";
-
-        public virtual Uri SessionEndpoint { get; set; } = new Uri(DefaultSessionEndpoint);
 
         public virtual string SessionPayloadVersion { get; } = "1.0";
 
@@ -99,7 +174,8 @@ namespace BugsnagUnity
         private LogType _notifyLogLevel = LogType.Exception;
 
         [Obsolete("NotifyLevel is deprecated, please use NotifyLogLevel instead.", false)]
-        public virtual LogType NotifyLevel {
+        public virtual LogType NotifyLevel
+        {
             get
             {
                 return _notifyLogLevel;
@@ -122,7 +198,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool _autoDetectErrors = true; 
+        private bool _autoDetectErrors = true;
 
         [Obsolete("AutoNotify is deprecated, please use AutoDetectErrors instead.", false)]
         public virtual bool AutoNotify
@@ -185,6 +261,15 @@ namespace BugsnagUnity
                     _appHangThresholdMillis = value;
                 }
             }
+        }
+
+        public string[] DiscardClasses { get; set; }
+
+        public int MaxPersistedEvents { get; set; } = 32;
+
+        public virtual bool ErrorClassIsDiscarded(string className)
+        {
+            return DiscardClasses != null && DiscardClasses.Contains(className);
         }
 
         public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)

@@ -21,7 +21,7 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            app.AddToPayload("type", "Windows");
+            app.AddToPayload("type", string.IsNullOrEmpty(Configuration.AppType) ? "Windows" : Configuration.AppType);
         }
 
         public void PopulateDevice(Device device)

@@ -32,8 +32,22 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoDetectErrors);
             NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
-            NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoint.ToString());
+            NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoints.Notify.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
+            NativeCode.bugsnag_setBundleVersion(obj, config.BundleVersion);
+            NativeCode.bugsnag_setAppType(obj, config.AppType);
+            NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
+            NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
+            NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
+
+            if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
+            {
+                NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
+            }
+            if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
+            {
+                NativeCode.bugsnag_setRedactedKeys(obj, config.RedactedKeys, config.RedactedKeys.Length);
+            }
             if (config.AppHangThresholdMillis > 0)
             {
                 NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
@@ -44,8 +58,8 @@ namespace BugsnagUnity
             {
                 NativeCode.bugsnag_setContextConfig(obj, config.Context);
             }
-            var releaseStages = config.NotifyReleaseStages;
-            if (releaseStages != null)
+            var releaseStages = config.EnabledReleaseStages;
+            if (releaseStages != null && releaseStages.Length > 0)
             {
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }

@@ -3,6 +3,7 @@ Feature: iOS smoke tests for C# errors
     # TODO: Failing steps commented out pending full implementation of PLAT-6372
     Background:
         Given I wait for the mobile game to start
+        And I clear all persistent data
 
     Scenario: Uncaught C# exception
         When I run the "throw Exception with breadcrumbs" mobile scenario
@@ -28,7 +29,7 @@ Feature: iOS smoke tests for C# errors
         And the event "app.releaseStage" equals "production"
         And the event "app.type" equals "iOS"
         And the event "app.version" equals "1.2.3"
-#        And the event "app.bundleVersion" equals "???"
+        And the event "app.bundleVersion" equals "1.2.3"
 #        And the event "app.versionCode" equals "1"
 #        And the error payload field "events.0.app.durationInForeground" is greater than 0
 #        And the event "app.inForeground" equals "true"
@@ -66,7 +67,14 @@ Feature: iOS smoke tests for C# errors
         And the event "metaData.device.osLanguage" is not null
         And the event "metaData.app.companyName" equals "bugsnag"
         And the event "metaData.app.name" equals "Mazerunner"
-
+        And the event "metaData.User.test" equals "[REDACTED]"
+        And the event "metaData.User.password" equals "[REDACTED]"
+        
         # Runtime versions
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
+    
+    Scenario: Custom App Type
+        When I run the "Custom App Type" mobile scenario
+        Then I wait to receive an error
+        And the event "app.type" equals "test"

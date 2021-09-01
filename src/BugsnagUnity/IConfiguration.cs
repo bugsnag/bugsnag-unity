@@ -11,6 +11,26 @@ namespace BugsnagUnity
 
         bool ReportUncaughtExceptionsAsHandled { get; set; }
 
+        string[] DiscardClasses { get; set; }
+
+        string[] ProjectPackages { get; set; }
+
+        string[] RedactedKeys { get; set; }
+
+        int VersionCode { get; set; }
+      
+        string PersistenceDirectory { get; set; }
+
+        ThreadSendPolicy SendThreads { get; set; }
+
+        bool PersistUser { get; set; }
+       
+        int MaxPersistedEvents { get; set; }
+
+        bool KeyIsRedacted(string key);
+
+        bool ErrorClassIsDiscarded(string className);
+
         ErrorTypes[] EnabledErrorTypes { get; set; }
 
         bool IsUnityLogErrorTypeEnabled(LogType logType);
@@ -35,15 +55,13 @@ namespace BugsnagUnity
 
         string ReleaseStage { get; set; }
 
-        string[] NotifyReleaseStages { get; set; }
+        string[] EnabledReleaseStages { get; set; }
 
         string AppVersion { get; set; }
 
-        Uri Endpoint { get; set; }
+        EndpointConfiguration Endpoints { get; set; }
 
         string PayloadVersion { get; }
-
-        Uri SessionEndpoint { get; set; }
 
         string SessionPayloadVersion { get; }
 
@@ -65,5 +83,9 @@ namespace BugsnagUnity
         string DotnetApiCompatibility { get; set; }
 
         ulong AppHangThresholdMillis { get; set; }
+
+        string BundleVersion { get; set; }
+
+        string AppType { get; set; }
     }
 }

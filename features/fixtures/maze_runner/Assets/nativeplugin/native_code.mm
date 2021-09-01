@@ -8,10 +8,6 @@ extern "C" {
   void ClearPersistentData();
 }
 
-
-
-
-
 void ClearPersistentData() {
     NSLog(@"Clear persistent data");
     [NSUserDefaults.standardUserDefaults removePersistentDomainForName:NSBundle.mainBundle.bundleIdentifier];
@@ -24,8 +20,6 @@ void ClearPersistentData() {
         }
     }
 }
-
-
 
 void RaiseCocoaSignal() {
     abort();

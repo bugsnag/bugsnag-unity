@@ -1,5 +1,59 @@
 # Changelog
 
+## 5.3.0 (2021-09-01)
+
+### Enhancements
+
+* Add `Configuration.VersionCode` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#versioncode) [#373](https://github.com/bugsnag/bugsnag-unity/pull/373)
+
+* Add `Configuration.PersistenceDirectory` to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistencedirectory) [#368](https://github.com/bugsnag/bugsnag-unity/pull/368)
+
+* Add `Configuration.SendThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendthreads) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendthreads) [#375](https://github.com/bugsnag/bugsnag-unity/pull/375)
+
+* Add `Configuration.PersistUser` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistuser) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#persistuser) [#372](https://github.com/bugsnag/bugsnag-unity/pull/372)
+
+* Add `Configuration.MaxPersistedEvents` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxpersistedevents) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#maxpersistedevents) [#371](https://github.com/bugsnag/bugsnag-unity/pull/371)
+
+* Add `Configuration.RedactedKeys` configuration option to enable redacting specific keys in metadata [#367](https://github.com/bugsnag/bugsnag-unity/pull/367)
+
+* Add `Configuration.Endpoints` to enable setting custom endpoints for events and sessions [#366](https://github.com/bugsnag/bugsnag-unity/pull/366)
+
+* Add `Configuration.ProjectPackages` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#projectpackages) [#364](https://github.com/bugsnag/bugsnag-unity/pull/364)
+
+* Add `Configuration.BundleVersion` config option to set the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#bundleversion) [#359](https://github.com/bugsnag/bugsnag-unity/pull/359)
+
+* Add `Configuration.AppType` configuration option to enable setting a custom value for the app.type field in an event [#363](https://github.com/bugsnag/bugsnag-unity/pull/363)
+
+* Update bugsnag-cocoa to v6.11.0
+
+  * Add breadcrumbs for `UIScene` notifications.
+    [#1165](https://github.com/bugsnag/bugsnag-cocoa/pull/1165)
+
+  * Fix another rare crash in `bsg_ksmachgetThreadQueueName`.
+    [#1157](https://github.com/bugsnag/bugsnag-cocoa/pull/1157)
+
+  * Fix ThreadSanitizer data race in `BugsnagBreadcrumbs`.
+    [#1160](https://github.com/bugsnag/bugsnag-cocoa/pull/1160)
+    
+* Add `DiscardClasses` configuration option to disable sending events that contain user defined error classes. [#361](https://github.com/bugsnag/bugsnag-unity/pull/361)
+
+* Update bugsnag-android to v5.11.0:
+  * Add Bugsnag listeners for StrictMode violation detection
+    [#1331](https://github.com/bugsnag/bugsnag-android/pull/1331)
+
+  * Address pre-existing StrictMode violations
+    [#1328](https://github.com/bugsnag/bugsnag-android/pull/1328)
+    
+### Deprecated
+
+* `Bugsnag.SetContext(string context)` has been deprecated in favour of the new `Bugsnag.Context` property and will be removed in the next major release.
+
+* `Configuration.Endpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.
+
+* `Configuration.SessionEndpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.   
+
+* `Configuration.NotifyReleaseStages` has been deprecated in favour of `Configuration.EnabledReleaseStages` and will be removed in the next major release. 
+
 ## 5.2.0 (2021-08-04)
 
 ### Enhancements

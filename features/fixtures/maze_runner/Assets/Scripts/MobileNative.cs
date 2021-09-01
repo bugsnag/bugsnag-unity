@@ -40,7 +40,7 @@ public class MobileNative : MonoBehaviour {
 #endif
     }
 
-    public static void ClearPersistantData()
+    public static void ClearIOSData()
     {
 #if UNITY_IOS
         ClearPersistentData();
@@ -53,6 +53,15 @@ public class MobileNative : MonoBehaviour {
         {
             AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
             crashClass.CallStatic("triggerJvmException");
+        }
+    }
+
+    public static void TriggerBackgroundJavaCrash()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("triggerBackgroundJvmException");
         }
     }
 

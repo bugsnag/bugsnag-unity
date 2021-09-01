@@ -25,32 +25,32 @@ This will generate the following files:
 
 To build the Android test fixture:
 ```
-UNITY_VERSION=2018.4.34f1 rake test:android:build
+UNITY_VERSION=2018.4.36f1 rake test:android:build
 ```
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
-/Applications/Unity/Hub/Editor/2018.4.34f1/Unity.app/Contents/MacOS/Unity
+/Applications/Unity/Hub/Editor/2018.4.36f1/Unity.app/Contents/MacOS/Unity
 ```
 
 This will generate a test fixture APK named according to the `UNITY_VERSION`, e.g:
 ```
-./features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk
+./features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk
 ```
 
 #### iOS
 
 To build the iOS test fixture:
 ```
-UNITY_VERSION=2018.4.34f1 rake test:ios:build
+UNITY_VERSION=2018.4.36f1 rake test:ios:build
 ```
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
-/Applications/Unity/Hub/Editor/2018.4.34f1/Unity.app/Contents/MacOS/Unity
+/Applications/Unity/Hub/Editor/2018.4.36f1/Unity.app/Contents/MacOS/Unity
 ```
 
 This will generate a test fixture IPA named according to the `UNITY_VERSION`, e.g:
 ```
-./features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa
+./features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa
 ```
 
 ### Running an end-to-end test
@@ -72,7 +72,7 @@ the following environment variables:
 1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
 1. To run the tests:
     ```shell script
-    bundle exec maze-runner --app=./features/fixtures/maze_runner/mazerunner_2018.4.34f1.apk \
+    bundle exec maze-runner --app=./features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk \
                             --farm=bs                                                        \
                             --device=ANDROID_9_0
     ```
@@ -84,7 +84,7 @@ the following environment variables:
 1. Check the contents of `Gemfile` to select the version of `maze-runner` to use
 1. To run the tests:
     ```shell script
-    bundle exec maze-runner --app=./features/fixtures/maze_runner/mazerunner_2018.4.34f1.ipa \
+    bundle exec maze-runner --app=./features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa \
                             --farm=bs                                                        \
                             --device=IOS_14
     ```
@@ -103,11 +103,11 @@ This will generate the following files:
 
 #### MacOS
 
-1. `UNITY_VERSION=2018.4.34f1 ./features/scripts/build_maze_runner.sh macos`
+1. `UNITY_VERSION=2018.4.36f1 ./features/scripts/build_maze_runner.sh macos`
 
 Where `UNITY_VERSION` corresponds to the Unity installation path, e.g:
 ```
-/Applications/Unity/Hub/Editor/2018.4.34f1/Unity.app/Contents/MacOS/Unity
+/Applications/Unity/Hub/Editor/2018.4.36f1/Unity.app/Contents/MacOS/Unity
 ```
 
 This will generate the test fixture app:

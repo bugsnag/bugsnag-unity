@@ -71,6 +71,10 @@ namespace BugsnagUnity
 
         private string GetAppType()
         {
+            if (!string.IsNullOrEmpty(Configuration.AppType))
+            {
+                return Configuration.AppType;
+            }
             switch (Application.platform)
             {
                 case RuntimePlatform.OSXEditor:

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -11,30 +12,44 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public Text Dialled, ScenarioName;
 
-    private Dictionary<String, String> SCENARIOS = new Dictionary<String, String>
-        {
-            {"01", "throw Exception" },
-            {"02", "Log error" },
-            {"03", "Native exception" },
-            {"04", "Log caught exception" },
-            {"05", "NDK signal" },
-            {"06", "Notify caught exception" },
-            {"07", "Notify with callback" },
-            {"08", "Change scene" },
-            {"09", "Disable Breadcrumbs" },
-            {"10", "Start SDK" },
-            {"11", "Max Breadcrumbs" },
-            {"12", "Disable Native Errors" },
-            {"13", "throw Exception with breadcrumbs" },
-            {"14", "Start SDK no errors" },
-            {"15", "Clear iOS Data" }
-
-
-        };
-
-    private string GetScenarioNameFromDialCode(string code)
+    private Dictionary<String, String> LOOKUP = new Dictionary<String, String>
     {
-        var scenarioName = SCENARIOS[code];
+        // Scenarios
+        {"01", "throw Exception" },
+        {"02", "Log error" },
+        {"03", "Native exception" },
+        {"04", "Log caught exception" },
+        {"05", "NDK signal" },
+        {"06", "Notify caught exception" },
+        {"07", "Notify with callback" },
+        {"08", "Change scene" },
+        {"09", "Disable Breadcrumbs" },
+        {"10", "Start SDK" },
+        {"11", "Max Breadcrumbs" },
+        {"12", "Disable Native Errors" },
+        {"13", "throw Exception with breadcrumbs" },
+        {"14", "Start SDK no errors" },
+        {"15", "Discard Error Class" },
+        {"16", "Java Background Crash" },
+        {"17", "Custom App Type" },
+        {"18", "Android Persistence Directory" },
+        {"19", "Disabled Release Stage" },
+        {"20", "Enabled Release Stage" },
+        {"21", "Java Background Crash No Threads" },
+        {"22", "iOS Native Error" },
+        {"23", "iOS Native Error No Threads" },
+
+
+
+
+
+        // Commands
+        {"90", "Clear iOS Data" },
+    };
+
+    private string GetNameFromDialCode(string code)
+    {
+        var scenarioName = LOOKUP[code];
         if (string.IsNullOrEmpty(scenarioName))
         {
             throw new System.Exception("Unable to find Scenario name for code: " + code);
@@ -49,26 +64,52 @@ public class MobileScenarioRunner : MonoBehaviour {
         config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
         config.Context = "My context";
         config.AppVersion = "1.2.3";
+        config.BundleVersion = "1.2.3";
+        config.RedactedKeys = new string[] { "test", "password" };
+        config.VersionCode = 123;
         return config;
-    }   
+    }
 
     public void Dial(string number)
     {
         Dialled.text += number;
     }
 
-    public void RunScenario()
+    // Issues a command to the test fixture
+    public void RunCommand()
     {
         // 1: Get the dial code
         var code = Dialled.text;
+        Debug.Log("RunCommand called, code is " + code);
         if (string.IsNullOrEmpty(code) || code.Length != 2)
         {
             throw new System.Exception("Code is empty or not correctly formatted: " + code);
         }
 
-        // 2: Get the scenario name
-        var scenarioName = GetScenarioNameFromDialCode(code);
+        // 2: Get the command name and clear the number
+        var scenarioName = GetNameFromDialCode(code);
         ScenarioName.text = scenarioName;
+        Dialled.text = string.Empty;
+
+        // 3: Issue the command
+        DoTestAction(scenarioName);
+    }
+
+    // Tells the test fixture to run a particular test scenario
+    public void RunScenario()
+    {
+        // 1: Get the dial code
+        var code = Dialled.text;
+        Debug.Log("RunScenario called, code is " + code);
+        if (string.IsNullOrEmpty(code) || code.Length != 2)
+        {
+            throw new System.Exception("Code is empty or not correctly formatted: " + code);
+        }
+
+        // 2: Get the scenario name and clear the number
+        var scenarioName = GetNameFromDialCode(code);
+        ScenarioName.text = scenarioName;
+        Dialled.text = string.Empty;
 
         // 3: Get the config for that scenario
         var config = PreapareConfigForScenario(scenarioName);
@@ -76,9 +117,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         // 4: Start the Bugsnag SDK
         StartTheSdk(config);
 
-        //5: Trigger the actions for the test
+        // 5: Trigger the actions for the test
         DoTestAction(scenarioName);
-
     }
 
     private Configuration PreapareConfigForScenario(string scenarioName)
@@ -87,9 +127,29 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Android Persistence Directory":
+                config.PersistenceDirectory = Application.persistentDataPath + "/myBugsnagCache";
+                break;
+            case "Disabled Release Stage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage = "somevalue";
+                break;
+            case "Enabled Release Stage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage = "test";
+                break;
+            case "Java Background Crash":
+            case "Native exception":
+                config.ProjectPackages = new string[] { "test.test.test" };
+                break;
+            case "iOS Native Error No Threads":
+            case "Java Background Crash No Threads":
+                config.SendThreads = ThreadSendPolicy.NEVER;
+                break;
             case "Start SDK no errors":
             case "Disable Native Errors":
                 config.EnabledErrorTypes = new ErrorTypes[0];
+                config.DiscardClasses = new string[] { "St13runtime_error" };
                 break;
             case "Log error":
                 config.NotifyLevel = LogType.Error;
@@ -99,6 +159,19 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "Max Breadcrumbs":
                 config.MaximumBreadcrumbs = 5;
+                break;
+            case "NDK signal":
+                break;
+            case "Custom App Type":
+                config.AppType = "test";
+                break;
+            case "Discard Error Class":
+#if UNITY_IOS
+                config.DiscardClasses = new string[] { "St13runtime_error" };
+
+#elif UNITY_ANDROID
+                config.DiscardClasses = new string[] { "java.lang.ArrayIndexOutOfBoundsException" };
+#endif
                 break;
         }
         return config;
@@ -113,9 +186,26 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Android Persistence Directory":
+                CheckForCustomAndroidDir();
+                break;
+            case "Disabled Release Stage":
+            case "Enabled Release Stage":
+#if UNITY_ANDROID
+                MobileNative.TriggerBackgroundJavaCrash();
+#elif UNITY_IOS
+                NativeException();
+#endif  
+                break;
+            case "Custom App Type":
+                ThrowException();
+                break;
             case "Start SDK":
             case "Start SDK no errors":
                 break;
+            case "iOS Native Error":
+            case "iOS Native Error No Threads":
+            case "Discard Error Class":
             case "Disable Native Errors":
                 NativeException();
                 break;
@@ -123,6 +213,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 ThrowException();
                 break;
             case "throw Exception with breadcrumbs":
+                AddMetadataForRedaction();
                 LeaveBreadcrumbString();
                 LeaveBreadcrumbTuple();
                 ThrowException();
@@ -130,6 +221,11 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Log error":
                 SetUser();
                 LogError();
+                break;
+            case "Java Background Crash No Threads":
+            case "Java Background Crash":
+                AddMetadataForRedaction();
+                MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "Native exception":
                 LeaveBreadcrumbString();
@@ -164,11 +260,26 @@ public class MobileScenarioRunner : MonoBehaviour {
                 ThrowException();
                 break;
             case "Clear iOS Data":
-                MobileNative.ClearPersistantData();
+                MobileNative.ClearIOSData();
                 break;
             default:
                 throw new System.Exception("Unknown scenario: " + scenarioName);
+        }
+    }
 
+    private void AddMetadataForRedaction()
+    {
+        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+                    {"test","test" },
+                    { "password","password" }
+                });
+    }
+
+    private void CheckForCustomAndroidDir()
+    {
+        if (Directory.Exists(Application.persistentDataPath + "/myBugsnagCache"))
+        {
+            throw new System.Exception("Directory Found");
         }
     }
 
@@ -238,7 +349,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         });
     }
 
-   
+
     public void StartSession()
     {
 

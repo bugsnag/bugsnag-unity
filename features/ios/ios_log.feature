@@ -2,6 +2,7 @@ Feature: iOS smoke tests for log entries
 
     Background:
         Given I wait for the mobile game to start
+        And I clear all persistent data
 
     Scenario: Calling Bugsnag.Log() with an error
 

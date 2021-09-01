@@ -135,6 +135,23 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "DisabledReleaseStage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage = "somevalue";
+                break;
+            case "EnabledReleaseStage":
+                config.EnabledReleaseStages = new string[] { "test" };
+                config.ReleaseStage =  "test";
+                break;
+            case "RedactedKeys":
+                config.RedactedKeys = new string[] { "test", "password" };
+                break;
+            case "CustomAppType":
+                config.AppType = "test";
+                break;
+            case "DiscardErrorClass":
+                config.DiscardClasses = new string[] { "ExecutionEngineException" };
+                break;
             case "EnableUnhandledExceptions":
                 config.EnabledErrorTypes = new ErrorTypes[] {ErrorTypes.UnhandledExceptions };
                 config.NotifyLevel = LogType.Log;
@@ -245,6 +262,16 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "DisabledReleaseStage":
+            case "EnabledReleaseStage":
+                DoNotify();
+                break;
+            case "CustomAppType":
+                DoNotify();
+                break;
+            case "DiscardErrorClass":
+                DoUnhandledException(0);
+                break;
             case "EnableUnhandledExceptions":
                 CheckEnabledErrorTypes();
                 break;
@@ -269,6 +296,10 @@ public class Main : MonoBehaviour
                 DoLogUnthrown();
                 break;
             case "NotifyOutsideNotifyReleaseStages":
+                DoNotify();
+                break;
+            case "RedactedKeys":
+                AddKeysForRedaction();
                 DoNotify();
                 break;
             case "NativeCrashOutsideNotifyReleaseStages":
@@ -404,6 +435,14 @@ public class Main : MonoBehaviour
         }
     }
 
+    private void AddKeysForRedaction()
+    {
+        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+                    {"test","test" },
+                    { "password","password" }
+                });
+    }
+
     private void CheckEnabledErrorTypes()
     {
         Debug.Log("LogLog");
@@ -503,7 +542,7 @@ public class Main : MonoBehaviour
 
     IEnumerator SetManualContextReloadSceneAndNotify()
     {
-        Bugsnag.SetContext("Manually-Set");
+        Bugsnag.Context = "Manually-Set";
         SceneManager.LoadScene(0);
         yield return new WaitForSeconds(0.5f);
         Bugsnag.Notify(new System.Exception("ManualContext"));
