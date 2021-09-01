@@ -112,7 +112,7 @@ bundle exec maze-runner features/handled_errors.feature
 
 #### Making the release
 
-1. Checkout the `next` branch. Set the version number in the change log and `build.cake`.
+1. Checkout the `next` branch. Make sure the latest from master is merged in and set the version number in the change log and `build.cake`.
 
 2. Commit the changelog and version updates:
 
