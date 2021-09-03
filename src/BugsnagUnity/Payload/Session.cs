@@ -37,8 +37,8 @@ namespace BugsnagUnity.Payload
 
         internal Session(string providedGuid, DateTime startedAt, int handled, int unhandled)
         {
-            this.AddToPayload("id", providedGuid);
-            this.AddToPayload("startedAt", startedAt);
+            this.AddToPayload("id", Id = new Guid(providedGuid));
+            this.AddToPayload("startedAt", StartedAt = startedAt);
             this.AddToPayload("events", Events = new SessionEvents(handled, unhandled));
         }
 

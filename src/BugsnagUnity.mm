@@ -46,7 +46,7 @@ extern "C" {
 
   void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy);
 
-  void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
+void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL);
 
   void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
   void bugsnag_removeMetadata(const void *configuration, const char *tab);
@@ -79,18 +79,24 @@ extern "C" {
 
   bool bugsnag_resumeSession();
 
-  void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, char *sessionId, long startedAt, int handled, int unhandled));
+  void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled));
 
 
 }
 
-  void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
+void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
  
+    if([Bugsnag client].sessionTracker.runningSession == NULL)
+    {
+      callback(session, NULL, NULL, 0, 0);
+      return;
+    }
+
     NSDictionary * sessionDict = [[Bugsnag client].sessionTracker.runningSession toDictionary];
     
-    const char * sessionId = [[sessionDict objectForKey:@"id"] UTF8String];
+    const char *sessionId = [[sessionDict objectForKey:@"id"] UTF8String];
 
-    const char * timeString = [[sessionDict objectForKey:@"startedAt"] UTF8String];
+    const char *timeString = [[sessionDict objectForKey:@"startedAt"] UTF8String];
 
     int handled = [sessionDict[@"handledCount"] integerValue];
 
@@ -309,13 +315,14 @@ void bugsnag_setAutoNotify(bool autoNotify) {
   Bugsnag.client.autoNotify = autoNotify;
 }
 
-void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
-  if (notifyURL == NULL)
+void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL) {
+  if (notifyURL == NULL || sessionsURL == NULL)
     return;
+
   NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
-  ((__bridge BugsnagConfiguration *)configuration).endpoints.notify = ns_notifyURL;
-  // Workaround for endpoint stale-cache issue: Force-trigger re-processing by reassinging endpoint
-  ((__bridge BugsnagConfiguration *)configuration).endpoints = ((__bridge BugsnagConfiguration *)configuration).endpoints;
+  NSString *ns_sessionsURL = [NSString stringWithUTF8String: sessionsURL];
+
+  ((__bridge BugsnagConfiguration *)configuration).endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:ns_notifyURL sessions:ns_sessionsURL];
 }
 
 void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {

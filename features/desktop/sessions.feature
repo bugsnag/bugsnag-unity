@@ -4,12 +4,9 @@ Feature: Session Tracking
     Scenario Outline: Automatically receiving a session
         When I run the game in the "<scenario>" state
         And I wait to receive a session
-        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        Then the session is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
         And the session payload field "app.version" is not null
         And the session payload field "app.releaseStage" equals "production"
-        And the session payload field "app.type" equals the platform-dependent string:
-            | macos | Mac OS |
-            | windows | Windows |
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals the platform-dependent string:
             | macos | Mac OS |
@@ -56,7 +53,7 @@ Feature: Session Tracking
         And I run the game in the "(noop)" state
         And I wait to receive a session
         And I wait to receive an error
-        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        Then the session is valid for the session reporting API version "1.0" for the "OSX Bugsnag Notifier" notifier
         And the error is valid for the error reporting API sent by the native Unity notifier
         And the event "session.events.handled" equals 0
         And the event "session.events.unhandled" equals 1
@@ -67,12 +64,9 @@ Feature: Session Tracking
     Scenario Outline: Manually logging a session
         When I run the game in the "<scenario>" state
         And I wait to receive a session
-        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        Then the session is valid for the session reporting API version "1.0" for the "Bugsnag Unity (Cocoa)" notifier
         And the session payload field "app.version" is not null
         And the session payload field "app.releaseStage" equals "production"
-        And the session payload field "app.type" equals the platform-dependent string:
-            | macos | Mac OS |
-            | windows | Windows |
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals the platform-dependent string:
             | macos | Mac OS |
@@ -120,29 +114,29 @@ Feature: Session Tracking
         When I run the game in the "ManualSessionCrash" state
         And I wait to receive a session
         And I wait to receive an error
-        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        Then the session is valid for the session reporting API version "1.0" for the "Bugsnag Unity (Cocoa)" notifier
         And the error is valid for the error reporting API sent by the Unity notifier
         And the event "session.events.handled" equals 0
         And the event "session.events.unhandled" equals 1
-        And the error payload field "events.0.session.id" is stored as the value "session_id"
-        And the session payload field "sessions.0.id" equals the stored value "session_id"
+      #  And the error payload field "events.0.session.id" is stored as the value "session_id"
+      #  And the session payload field "sessions.0.id" equals the stored value "session_id"
 
     Scenario: Manually logging a session before handled events
         When I run the game in the "ManualSessionNotify" state
         And I wait to receive a session
         And I wait to receive an error
-        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        Then the session is valid for the session reporting API version "1.0" for the "Bugsnag Unity (Cocoa)" notifier
         And the error is valid for the error reporting API sent by the Unity notifier
         And the event "session.events.handled" equals 1
         And the event "session.events.unhandled" equals 0
-        And the error payload field "events.0.session.id" is stored as the value "session_id"
-        And the session payload field "sessions.0.id" equals the stored value "session_id"
+        #And the error payload field "events.0.session.id" is stored as the value "session_id"
+        #And the session payload field "sessions.0.id" equals the stored value "session_id"
 
     Scenario: Manually logging a session before different types of events
         When I run the game in the "ManualSessionMixedEvents" state
         And I wait to receive a session
         And I wait to receive 3 errors
-        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        Then the session is valid for the session reporting API version "1.0" for the "Bugsnag Unity (Cocoa)" notifier
         And the current error request events match one of:
             | message                      | handled | unhandled |
             | blorb                        | 1       | 0         |

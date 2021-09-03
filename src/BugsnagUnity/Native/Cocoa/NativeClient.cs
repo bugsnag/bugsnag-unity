@@ -11,7 +11,7 @@ namespace BugsnagUnity
         public IConfiguration Configuration { get; }
         public IBreadcrumbs Breadcrumbs { get; }
         public IDelivery Delivery { get; }
-
+        private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
 
         public NativeClient(IConfiguration configuration)
@@ -32,7 +32,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoDetectErrors);
             NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
-            NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoints.Notify.ToString());
+            NativeCode.bugsnag_setEndpoints(obj, config.Endpoints.Notify.ToString(), config.Endpoints.Session.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
             NativeCode.bugsnag_setBundleVersion(obj, config.BundleVersion);
             NativeCode.bugsnag_setAppType(obj, config.AppType);
@@ -302,17 +302,22 @@ namespace BugsnagUnity
             {
                 handle.Free();
             }
-            return session;
+            return _nativeSession;
         }
 
         [MonoPInvokeCallback(typeof(NativeCode.SessionInformation))]
         static void PopulateSession(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled)
         {
             var handle = GCHandle.FromIntPtr(instance);
-            if (handle.Target is Session session)
+            if (handle.Target is Session)
             {
+                if (string.IsNullOrEmpty(sessionId))
+                {
+                    _nativeSession = null;
+                    return;
+                }
                 var startTime = DateTime.Parse(startedAt);
-                session = new Session(sessionId, startTime, handled, unhandled);
+                _nativeSession = new Session(sessionId, startTime, handled, unhandled);
             }
         }
     }

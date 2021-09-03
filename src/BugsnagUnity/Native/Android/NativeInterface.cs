@@ -110,7 +110,7 @@ namespace BugsnagUnity
                 DateClass = AndroidJNI.NewGlobalRef(dateRef);
                 AndroidJNI.DeleteLocalRef(dateRef);
 
-                IntPtr dateUtilsRef = AndroidJNI.FindClass("com/bugsnag/android/DateUtils");
+                IntPtr dateUtilsRef = AndroidJNI.FindClass("com/bugsnag/android/internal/DateUtils");
                 DateUtilsClass = AndroidJNI.NewGlobalRef(dateUtilsRef);
 
                 IntPtr entryRef = AndroidJNI.FindClass("java/util/Map$Entry");
@@ -382,6 +382,11 @@ namespace BugsnagUnity
         public Session GetCurrentSession()
         {
             var javaSession = CallNativeObjectMethodRef("getCurrentSession", "()Lcom/bugsnag/android/Session;", new object[] { });
+
+            if (javaSession == null)
+            {
+                return null;
+            }
 
             var id = AndroidJNI.CallStringMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getId"), new jvalue[] { });
 

@@ -446,7 +446,7 @@ namespace BugsnagUnity
         private IEnumerator<UnityEngine.AsyncOperation> RunInitialSessionCheck()
         {
             yield return null;
-            if (Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
+            if (IsUsingFallback() && Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
             {
                 SessionTracking.StartSession();
             }

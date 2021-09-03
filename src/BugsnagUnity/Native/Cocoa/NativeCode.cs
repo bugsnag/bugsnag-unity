@@ -29,7 +29,7 @@ namespace BugsnagUnity
 
         internal delegate void SessionInformation(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled);
         [DllImport(Import)]
-        internal static extern void bugsnag_retrieveCurrentSession(IntPtr instance, SessionInformation visitor);
+        internal static extern void bugsnag_retrieveCurrentSession(IntPtr instance, SessionInformation callback);
 
 
         internal delegate void MetadataInformation(IntPtr instance, string tab, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] values, int valuesSize);
@@ -97,7 +97,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setAppType(IntPtr configuration, string appType);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setNotifyUrl(IntPtr configuration, string endpoint);
+        internal static extern void bugsnag_setEndpoints(IntPtr configuration, string notifyURL, string sessionsURL);
 
         internal delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] releaseStages, long count);
 
