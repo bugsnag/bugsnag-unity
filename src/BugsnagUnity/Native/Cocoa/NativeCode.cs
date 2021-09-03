@@ -123,5 +123,8 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern bool bugsnag_resumeSession();
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_registerSession(string id, long startedAt, int unhandledCount, int handledCount);
     }
 }

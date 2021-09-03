@@ -57,6 +57,11 @@ namespace BugsnagUnity
         bool ResumeSession();
 
         /// <summary>
+        /// Update the current native session
+        /// </summary>
+        void UpdateSession(Session session);
+
+        /// <summary>
         /// Get the current session info for sending with an error
         /// </summary>
         Session GetCurrentSession();

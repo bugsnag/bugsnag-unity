@@ -81,7 +81,17 @@ void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sess
 
   void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled));
 
+  void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 
+}
+
+void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
+    BugsnagSessionTracker *tracker = Bugsnag.client.sessionTracker;
+    [tracker registerExistingSession:sessionId == NULL ? nil : [NSString stringWithUTF8String:sessionId]
+                           startedAt:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)startedAt]
+                                user:Bugsnag.user
+                        handledCount:(NSUInteger)handledCount
+                      unhandledCount:(NSUInteger)unhandledCount];
 }
 
 void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {

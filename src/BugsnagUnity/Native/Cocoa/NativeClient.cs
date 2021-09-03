@@ -290,6 +290,15 @@ namespace BugsnagUnity
             return NativeCode.bugsnag_resumeSession();
         }
 
+        public void UpdateSession(Session session)
+        {
+            if (session != null)
+            {
+                var startedAt = Convert.ToInt64((session.StartedAt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
+                NativeCode.bugsnag_registerSession(session.Id.ToString(), startedAt, session.UnhandledCount(), session.HandledCount());
+            }
+        }
+
         public Session GetCurrentSession()
         {
             var session = new Session();

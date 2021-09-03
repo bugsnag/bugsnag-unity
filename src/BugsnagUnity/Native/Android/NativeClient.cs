@@ -20,6 +20,10 @@ namespace BugsnagUnity
             Configuration = configuration;
             Delivery = new Delivery();
             Breadcrumbs = new Breadcrumbs(NativeInterface);
+            if (configuration.AutoTrackSessions)
+            {
+                StartSession();
+            }
         }
 
         public void PopulateApp(App app)
@@ -108,7 +112,11 @@ namespace BugsnagUnity
         public bool ResumeSession()
         {
             return NativeInterface.ResumeSession();
+        }
 
+        public void UpdateSession(Session session)
+        {
+            NativeInterface.UpdateSession(session);
         }
 
         public Session GetCurrentSession()

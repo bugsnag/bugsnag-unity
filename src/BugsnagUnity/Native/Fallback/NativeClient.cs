@@ -106,6 +106,10 @@ namespace BugsnagUnity
             return false;
         }
 
+        public void UpdateSession(Session session)
+        {
+        }
+
         public Session GetCurrentSession()
         {
             return null;

@@ -304,8 +304,6 @@ namespace BugsnagUnity
 
             RedactMetadata(metadata);
 
-            var session = IsUsingFallback() ? SessionTracking.CurrentSession : NativeClient.GetCurrentSession();
-
             var @event = new Payload.Event(
               Configuration.Context,
               metadata,
@@ -315,7 +313,7 @@ namespace BugsnagUnity
               exceptions,
               handledState,
               Breadcrumbs.Retrieve(),
-              session);
+              SessionTracking.CurrentSession);
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))

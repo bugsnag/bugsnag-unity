@@ -17,7 +17,7 @@ namespace BugsnagUnity
 
         void AddException(Report report);
 
-        void StartTrackingFallbackSession();
+        void StartManagedSession();
     }
 
     class SessionTracker : ISessionTracker
@@ -30,6 +30,15 @@ namespace BugsnagUnity
         {
             get
             {
+                return GetCurrentSession();
+            }
+            private set => _currentSession = value;
+        }
+
+        private Session GetCurrentSession()
+        {
+            if (ShouldManageSessions())
+            {
                 var session = _currentSession;
 
                 if (session != null && !session.Stopped)
@@ -38,7 +47,11 @@ namespace BugsnagUnity
                 }
                 return null;
             }
-            private set => _currentSession = value;
+            else
+            {
+                return Client.NativeClient.GetCurrentSession();
+            }
+            
         }
 
         internal SessionTracker(Client client)
@@ -51,7 +64,7 @@ namespace BugsnagUnity
         {
             if (ShouldManageSessions())
             {
-                StartTrackingFallbackSession();
+                StartManagedSession();
             }
             else
             {
@@ -59,7 +72,7 @@ namespace BugsnagUnity
             }
         }
 
-        public void StartTrackingFallbackSession()
+        public void StartManagedSession()
         {
             var session = new Session();
 
@@ -86,7 +99,7 @@ namespace BugsnagUnity
         {
             if (ShouldManageSessions())
             {
-                PauseFallbackSession();
+                PauseManagedSession();
             }
             else
             {
@@ -94,7 +107,7 @@ namespace BugsnagUnity
             }
         }
 
-        private void PauseFallbackSession()
+        private void PauseManagedSession()
         {
             var session = _currentSession;
             if (session != null)
@@ -107,7 +120,7 @@ namespace BugsnagUnity
         {
             if (ShouldManageSessions())
             {
-                return ResumeFallbackSession();
+                return ResumeManagedSession();
             }
             else
             {
@@ -116,7 +129,7 @@ namespace BugsnagUnity
              
         }
 
-        private bool ResumeFallbackSession()
+        private bool ResumeManagedSession()
         {
             var session = _currentSession;
             bool resumed;
@@ -135,7 +148,14 @@ namespace BugsnagUnity
 
         public void AddException(Report report)
         {
-            _currentSession?.AddException(report);
+            if (ShouldManageSessions())
+            {
+                _currentSession?.AddException(report);
+            }
+            else
+            {
+                Client.NativeClient.UpdateSession(report.Session);
+            }
         }
 
         private bool ShouldManageSessions()
