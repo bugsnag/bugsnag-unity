@@ -4,4 +4,4 @@ pushd features/fixtures/maze_runner/build
 popd
 
 bundle install
-bundle exec maze-runner --farm=local --browser=chrome features/desktop
+bundle exec maze-runner --farm=local --browser=firefox features/desktop
