@@ -37,30 +37,37 @@ extern "C" {
   void bugsnag_setAppType(const void *configuration, char *appType);
 
   void bugsnag_setContext(const void *configuration, char *context);
+  
   void bugsnag_setContextConfig(const void *configuration, char *context);
 
   void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
+
   void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
 
   void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
 
   void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy);
 
-void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL);
+  void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL);
 
   void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
+
   void bugsnag_removeMetadata(const void *configuration, const char *tab);
+
   void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab, const char *keys[], int keys_size, const char *values[], int values_size));
 
   void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
   void bugsnag_addBreadcrumb(char *name, char *type, char *metadata[], int metadataCount);
+
   void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size));
 
   void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
+
   void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
 
   void bugsnag_populateUser(bugsnag_user *user);
+
   void bugsnag_setUser(char *userId, char *userName, char *userEmail);
 
   void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
@@ -101,19 +108,12 @@ void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const 
       callback(session, NULL, NULL, 0, 0);
       return;
     }
-
     NSDictionary * sessionDict = [[Bugsnag client].sessionTracker.runningSession toDictionary];
-    
     const char *sessionId = [[sessionDict objectForKey:@"id"] UTF8String];
-
     const char *timeString = [[sessionDict objectForKey:@"startedAt"] UTF8String];
-
     int handled = [sessionDict[@"handledCount"] integerValue];
-
     int unhandled = [sessionDict[@"unhandledCount"] integerValue];
-
     callback(session, sessionId, timeString, handled, unhandled);
-
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {

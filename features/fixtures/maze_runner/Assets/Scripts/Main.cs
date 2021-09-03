@@ -386,21 +386,9 @@ public class Main : MonoBehaviour
                 UncaughtExceptionAsUnhandled();
                 break;
             case "StoppedSession":
-
-                Debug.Log("MAZE StartSession");
-
                 Bugsnag.StartSession();
-
-                Debug.Log("MAZE StopSession");
-
                 Bugsnag.StopSession();
-
-                Debug.Log("MAZE DoNotify");
-
                 DoNotify();
-
-                Debug.Log("MAZE DONE");
-
                 break;
             case "ResumedSession":
                 RunResumedSession();
