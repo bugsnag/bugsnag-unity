@@ -685,11 +685,11 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2019.4.28f1"
+      UNITY_VERSION: "2019.4.30f1"
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2019.4.28f1.zip
+      - features/fixtures/maze_runner/build/Windows-2019.4.30f1.zip
 
   - label: Build Unity 2021 Windows test fixture
     key: 'windows-2021-fixture'
@@ -698,11 +698,11 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2021.1.16f1"
+      UNITY_VERSION: "2021.1.19f1"
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2021.1.16f1.zip
+      - features/fixtures/maze_runner/build/Windows-2021.1.19f1.zip
 
   #
   # Run Windows e2e tests
@@ -733,7 +733,7 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2019.4.28f1"
+      UNITY_VERSION: "2019.4.30f1"
     command:
       - scripts/ci-run-windows-tests.bat
 
@@ -743,6 +743,6 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2021.1.16f1"
+      UNITY_VERSION: "2021.1.19f1"
     command:
       - scripts/ci-run-windows-tests.bat

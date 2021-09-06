@@ -207,11 +207,11 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.12f1"
+      UNITY_VERSION: "2020.3.17f1"
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2020.3.12f1.zip
+      - features/fixtures/maze_runner/build/Windows-2020.3.17f1.zip
 
   #
   # Run Windows e2e tests
@@ -222,6 +222,6 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.12f1"
+      UNITY_VERSION: "2020.3.17f1"
     command:
       - scripts/ci-run-windows-tests.bat
