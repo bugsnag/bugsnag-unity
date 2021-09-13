@@ -112,6 +112,10 @@ namespace BugsnagUnity
             return null;
         }
 
+        public void MarkLaunchCompleted()
+        {
+        }
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private class MEMORYSTATUSEX
         {
@@ -128,6 +132,11 @@ namespace BugsnagUnity
             {
                 dwLength = (uint)Marshal.SizeOf(this);
             }
+        }
+
+        public LastRunInfo GetLastRunInfo()
+        {
+            return null;
         }
     }
 }

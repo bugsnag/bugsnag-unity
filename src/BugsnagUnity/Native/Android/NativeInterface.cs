@@ -13,6 +13,7 @@ namespace BugsnagUnity
         private IntPtr BugsnagNativeInterface;
         private IntPtr BugsnagUnityClass;
         // Cache of classes used:
+        private IntPtr LastRunInfoClass;
         private IntPtr BreadcrumbClass;
         private IntPtr BreadcrumbTypeClass;
         private IntPtr CollectionClass;
@@ -85,6 +86,10 @@ namespace BugsnagUnity
                 IntPtr crumbRef = AndroidJNI.FindClass("com/bugsnag/android/Breadcrumb");
                 BreadcrumbClass = AndroidJNI.NewGlobalRef(crumbRef);
                 AndroidJNI.DeleteLocalRef(crumbRef);
+
+                IntPtr lastRunInfoRef = AndroidJNI.FindClass("com/bugsnag/android/LastRunInfo");
+                LastRunInfoClass = AndroidJNI.NewGlobalRef(lastRunInfoRef);
+                AndroidJNI.DeleteLocalRef(lastRunInfoRef);
 
                 IntPtr crumbTypeRef = AndroidJNI.FindClass("com/bugsnag/android/BreadcrumbType");
                 BreadcrumbTypeClass = AndroidJNI.NewGlobalRef(crumbTypeRef);
@@ -196,6 +201,8 @@ namespace BugsnagUnity
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
             obj.Call("setMaxPersistedEvents", config.MaxPersistedEvents);
             obj.Call("setPersistUser", config.PersistUser);
+            obj.Call("setLaunchDurationMillis", config.LaunchDurationMillis);
+            obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
 
             // set endpoints
             var notify = config.Endpoints.Notify.ToString();
@@ -415,6 +422,11 @@ namespace BugsnagUnity
 
             return new Session(id, unityDateTime, unhandledCount, handledCount);
 
+        }
+
+        public void MarkLaunchCompleted()
+        {
+            CallNativeVoidMethod("markLaunchCompleted", "()V", new object[] {});
         }
 
         public Dictionary<string, object> GetApp()
@@ -879,5 +891,21 @@ namespace BugsnagUnity
 
             return dict;
         }
+
+        public LastRunInfo GetlastRunInfo()
+        {
+            var javaLastRunInfo = CallNativeObjectMethodRef("getLastRunInfo", "()Lcom/bugsnag/android/LastRunInfo;", new object[] { });
+            var crashed = AndroidJNI.GetBooleanField(javaLastRunInfo , AndroidJNIHelper.GetFieldID(LastRunInfoClass,"crashed"));
+            var consecutiveLaunchCrashes = AndroidJNI.GetIntField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "consecutiveLaunchCrashes"));
+            var crashedDuringLaunch = AndroidJNI.GetBooleanField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "crashedDuringLaunch"));
+            var lastRunInfo = new LastRunInfo
+            {
+                ConsecutiveLaunchCrashes = consecutiveLaunchCrashes,
+                Crashed = crashed,
+                CrashedDuringLaunch = crashedDuringLaunch
+            };
+            return lastRunInfo;
+        }
+
     }
 }

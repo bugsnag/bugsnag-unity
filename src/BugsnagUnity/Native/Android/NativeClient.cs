@@ -123,6 +123,16 @@ namespace BugsnagUnity
         {
             return NativeInterface.GetCurrentSession();
         }
+
+        public void MarkLaunchCompleted()
+        {
+            NativeInterface.MarkLaunchCompleted();
+        }
+
+        public LastRunInfo GetLastRunInfo()
+        {
+            return NativeInterface.GetlastRunInfo();
+        }
     }
 
 }

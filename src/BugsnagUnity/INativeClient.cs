@@ -101,5 +101,15 @@ namespace BugsnagUnity
         /// <param name="autoDetectAnrs"></param>
         void SetAutoDetectAnrs(bool autoDetectAnrs);
 
+        /// <summary>
+        /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
+        /// </summary>
+        void MarkLaunchCompleted();
+
+        /// <summary>
+        /// Get the last run information from Android and cocoa platforms
+        /// </summary>
+        LastRunInfo GetLastRunInfo();
+
     }
 }

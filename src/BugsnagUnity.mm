@@ -1,5 +1,5 @@
 #import "Bugsnag.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagUser.h"
 #import "BugsnagNotifier.h"
@@ -27,6 +27,8 @@ extern "C" {
   void bugsnag_setAppVersion(const void *configuration, char *appVersion);
 
   void bugsnag_setPersistUser(const void *configuration, bool persistUser);
+
+  void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously);
 
   void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
@@ -56,6 +58,8 @@ extern "C" {
 
   void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab, const char *keys[], int keys_size, const char *values[], int values_size));
 
+  void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes));
+
   void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
   void bugsnag_addBreadcrumb(char *name, char *type, char *metadata[], int metadataCount);
@@ -79,6 +83,10 @@ extern "C" {
   void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions);
 
   void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
+
+  void bugsnag_markLaunchCompleted();
+
+  void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis);
 
   void bugsnag_startSession();
 
@@ -114,6 +122,11 @@ void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const 
     int handled = [sessionDict[@"handledCount"] integerValue];
     int unhandled = [sessionDict[@"unhandledCount"] integerValue];
     callback(session, sessionId, timeString, handled, unhandled);
+
+}
+
+void bugsnag_markLaunchCompleted() {
+  [Bugsnag markLaunchCompleted];
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
@@ -147,6 +160,10 @@ void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
 
 void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis) {
   ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
+}
+
+void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis) {
+  ((__bridge BugsnagConfiguration *)configuration).launchDurationMillis = launchDurationMillis;
 }
 
 void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion) {
@@ -321,6 +338,10 @@ void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
   ((__bridge BugsnagConfiguration *)configuration).persistUser = persistUser;
 }
 
+void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously) {
+  ((__bridge BugsnagConfiguration *)configuration).sendLaunchCrashesSynchronously = sendLaunchCrashesSynchronously;
+}
+
 void bugsnag_setAutoNotify(bool autoNotify) {
   Bugsnag.client.autoNotify = autoNotify;
 }
@@ -390,16 +411,16 @@ void bugsnag_removeMetadata(const void *configuration, const char *tab) {
 }
 
 void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
+  if (notifierVersion) {
+    ((__bridge BugsnagConfiguration *)configuration).notifier =
+      [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
+                                    version:@(notifierVersion)
+                                        url:@"https://github.com/bugsnag/bugsnag-unity"
+                               dependencies:@[[[BugsnagNotifier alloc] init]]];
+  }
   [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
   // Memory introspection is unused in a C/C++ context
   [BSG_KSCrash sharedInstance].introspectMemory = NO;
-  if (notifierVersion != NULL) {
-    NSString *ns_version = [NSString stringWithUTF8String:notifierVersion];
-    BugsnagNotifier *notifier = Bugsnag.client.notifier;
-    notifier.version = ns_version;
-    notifier.name = @"Bugsnag Unity (Cocoa)";
-    notifier.url = @"https://github.com/bugsnag/bugsnag-unity";
-  }
 }
 
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadata[], int metadataCount) {
@@ -471,7 +492,23 @@ void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *i
 
   NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
   callback(appData, "version", [version UTF8String]);
+
+  BugsnagAppWithState *app = [[Bugsnag client] generateAppWithState:sysInfo];
+  NSString *isLaunching = app.isLaunching ? @"true" : @"false";
+  callback(appData, "isLaunching", [isLaunching UTF8String]);
+
 }
+
+void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)) {
+
+  int consecutiveLaunchCrashes = Bugsnag.lastRunInfo.consecutiveLaunchCrashes;
+  bool crashed = Bugsnag.lastRunInfo.crashed;
+  bool crashedDuringLaunch = Bugsnag.lastRunInfo.crashedDuringLaunch;
+
+  callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
+
+}
+
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];

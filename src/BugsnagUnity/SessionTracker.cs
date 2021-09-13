@@ -9,7 +9,7 @@ namespace BugsnagUnity
     {
         void StartSession();
 
-        void StopSession();
+        void PauseSession();
 
         bool ResumeSession();
 
@@ -95,7 +95,7 @@ namespace BugsnagUnity
             }
         }
 
-        public void StopSession()
+        public void PauseSession()
         {
             if (ShouldManageSessions())
             {

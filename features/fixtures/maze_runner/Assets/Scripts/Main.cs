@@ -20,6 +20,10 @@ public class Main : MonoBehaviour
 
     private Dictionary<string, string> _webGlArguments;
 
+
+    private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
+
+
     public void Start()
     {
 
@@ -261,6 +265,12 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "NotifyWithStrings":
+                NotifyWithStrings();
+                break;
+            case "CustomStacktrace":
+                CustomStacktrace();
+                break;
             case "DisabledReleaseStage":
             case "EnabledReleaseStage":
                 DoNotify();
@@ -440,6 +450,16 @@ public class Main : MonoBehaviour
                     {"test","test" },
                     { "password","password" }
                 });
+    }
+
+    private void NotifyWithStrings()
+    {
+        Bugsnag.Notify("CUSTOM","CUSTOM", _fakeTrace);
+    }
+
+    private void CustomStacktrace()
+    {
+        Bugsnag.Notify(new System.Exception("CUSTOM"), _fakeTrace);
     }
 
     private void CheckEnabledErrorTypes()

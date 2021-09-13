@@ -40,6 +40,9 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
             NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
             NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
+            NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);
+            NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
+
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
                 NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
@@ -275,6 +278,11 @@ namespace BugsnagUnity
         {
         }
 
+        public void MarkLaunchCompleted()
+        {
+            NativeCode.bugsnag_markLaunchCompleted();
+        }
+
         public void StartSession()
         {
             NativeCode.bugsnag_startSession();
@@ -305,7 +313,7 @@ namespace BugsnagUnity
             var handle = GCHandle.Alloc(session);
             try
             {
-                NativeCode.bugsnag_retrieveCurrentSession(GCHandle.ToIntPtr(handle),PopulateSession);
+                NativeCode.bugsnag_retrieveCurrentSession(GCHandle.ToIntPtr(handle), PopulateSession);
             }
             finally
             {
@@ -329,5 +337,33 @@ namespace BugsnagUnity
                 _nativeSession = new Session(sessionId, startTime, handled, unhandled);
             }
         }
+
+        public LastRunInfo GetLastRunInfo()
+        {
+            var lastRunInfo = new LastRunInfo();
+            var handle = GCHandle.Alloc(lastRunInfo);
+            try
+            {
+                NativeCode.bugsnag_retrieveLastRunInfo(GCHandle.ToIntPtr(handle), PopulateLastRunInfo);
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return lastRunInfo;
+        }
+
+        [MonoPInvokeCallback(typeof(Action<IntPtr, bool, bool, int>))]
+        static void PopulateLastRunInfo(IntPtr instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)
+        {
+            var handle = GCHandle.FromIntPtr(instance);
+            if (handle.Target is LastRunInfo info)
+            {
+                info.Crashed = crashed;
+                info.CrashedDuringLaunch = crashedDuringLaunch;
+                info.ConsecutiveLaunchCrashes = consecutiveLaunchCrashes;
+            }
+        }
+
     }
 }

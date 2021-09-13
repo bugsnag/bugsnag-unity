@@ -131,4 +131,14 @@ Feature: Android manual smoke tests
         Then I wait to receive an error
         And the error payload field "events.0.threads.0" is null
 
+    Scenario: Last Run Info
+        When I run the "Java Background Crash" mobile scenario
+        And I wait for 8 seconds
+        And I relaunch the Unity mobile app
+        When I run the "Check Last Run Info" mobile scenario
+        Then I wait to receive 2 errors
+        And I discard the oldest error
+        And the exception "message" equals "Last Run Info Correct"
+        
+
  

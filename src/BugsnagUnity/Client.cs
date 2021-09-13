@@ -17,6 +17,8 @@ namespace BugsnagUnity
 
         public ISessionTracker SessionTracking { get; }
 
+        public LastRunInfo LastRunInfo => NativeClient.GetLastRunInfo();
+
         public User User { get; }
 
         public Metadata Metadata { get; }
@@ -225,6 +227,18 @@ namespace BugsnagUnity
             {
                 Middleware.Add(middleware);
             }
+        }
+
+        public void Notify(string name, string message, string stackTrace, Middleware callback)
+        {
+            var exceptions = new Exception[] { Exception.FromStringInfo(name, message, stackTrace) };
+            Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
+        }
+
+        public void Notify(System.Exception exception, string stacktrace, Middleware callback)
+        {
+            var exceptions = new Exceptions(exception, stacktrace).ToArray();
+            Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
         public void Notify(System.Exception exception)
@@ -480,6 +494,11 @@ namespace BugsnagUnity
         {
             // Set the native property
             NativeClient.SetAutoDetectAnrs(autoDetectAnrs);
+        }
+
+        public void MarkLaunchCompleted()
+        {
+            NativeClient.MarkLaunchCompleted();
         }
     }
 }

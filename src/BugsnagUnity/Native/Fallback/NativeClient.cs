@@ -93,6 +93,7 @@ namespace BugsnagUnity
             }
         }
 
+
         public void StartSession()
         {
         }
@@ -111,6 +112,15 @@ namespace BugsnagUnity
         }
 
         public Session GetCurrentSession()
+        {
+            return null;
+        }
+
+        public void MarkLaunchCompleted()
+        {
+        }
+
+        public LastRunInfo GetLastRunInfo()
         {
             return null;
         }

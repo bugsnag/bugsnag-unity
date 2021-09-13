@@ -24,6 +24,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_retrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_retrieveLastRunInfo(IntPtr instance, Action<IntPtr, bool, bool, int> populate);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_retrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
 
@@ -33,6 +36,7 @@ namespace BugsnagUnity
 
 
         internal delegate void MetadataInformation(IntPtr instance, string tab, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] values, int valuesSize);
+
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveMetaData(IntPtr instance, MetadataInformation visitor);
 
@@ -58,10 +62,19 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setPersistUser(IntPtr configuration, bool persistUser);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setSendLaunchCrashesSynchronously(IntPtr configuration, bool sendLaunchCrashesSynchronously);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setContext(IntPtr configuration, string context);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setLaunchDurationMillis(IntPtr configuration, ulong launchDurationMillis);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_markLaunchCompleted();
 
         [DllImport(Import)]
         internal static extern void bugsnag_setMaxPersistedEvents(IntPtr configuration, int maxPersistedEvents);

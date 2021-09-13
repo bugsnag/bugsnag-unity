@@ -2,6 +2,36 @@
 
 ## TBD
 
+### Deprecated
+
+* `Bugsnag.StopSession` has been deprecated in favour of `Bugsnag.PauseSession` and will be removed in the next major release.
+
+### Enhancements
+
+* Update bugsnag-cocoa to v6.12.0
+
+  * Events now include a `thermalState` property in the `device` tab, and unexpected app terminations that occur
+    when the thermal state is critical will now be reported as a "Thermal Kill" rather than Out Of Memory error.
+    [bugsnag-cocoa#1171](https://github.com/bugsnag/bugsnag-cocoa/pull/1171)
+
+  * Fatal app hangs will no longer be reported if the `willTerminateNotification` is received.
+    [bugsnag-cocoa#1176](https://github.com/bugsnag/bugsnag-cocoa/pull/1176)
+    
+* Update bugsnag-android to v5.12.0
+  * The `app.lowMemory` value always report the most recent `onTrimMemory`/`onLowMemory` status [bugsnag-android#1342](https://github.com/bugsnag/bugsnag-android/pull/1342)
+  * Added the `app.memoryTrimLevel` metadata to report a description of the latest `onTrimMemory` status [bugsnag-android#1344](https://github.com/bugsnag/bugsnag-android/pull/1344)
+  * Added `STATE` Breadcrumbs for `onTrimMemory` events [bugsnag-android#1345](https://github.com/bugsnag/bugsnag-android/)
+
+* Add new Bugsnag.Notify overloads: `Notify(exception, stacktrace)`  `Notify(exception, stacktrace, callback)` `Notify(name, message, stacktrace)` `Notify(name, message, stacktrace, callback)` [#380](https://github.com/bugsnag/bugsnag-unity/pull/380)
+
+* Add `Bugsnag.GetLastRunInfo()` To get relevant crash information regarding the last run of the application [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
+
+* Add `Configuration.SendLaunchCrashesSynchronously` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#launchdurationmillis) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#launchdurationmillis) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
+
+* Add `Configuration.LaunchDurationMillis` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendlaunchcrashessynchronously) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendlaunchcrashessynchronously) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
+
+## 5.3.0 (2021-09-01)
+
 ### Enhancements
 
 * Add `Configuration.VersionCode` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#versioncode) [#373](https://github.com/bugsnag/bugsnag-unity/pull/373)
