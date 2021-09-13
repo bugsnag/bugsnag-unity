@@ -1,5 +1,5 @@
 #import "Bugsnag.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagUser.h"
 #import "BugsnagNotifier.h"
@@ -364,16 +364,16 @@ void bugsnag_removeMetadata(const void *configuration, const char *tab) {
 }
 
 void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
+  if (notifierVersion) {
+    ((__bridge BugsnagConfiguration *)configuration).notifier =
+      [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
+                                    version:@(notifierVersion)
+                                        url:@"https://github.com/bugsnag/bugsnag-unity"
+                               dependencies:@[[[BugsnagNotifier alloc] init]]];
+  }
   [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
   // Memory introspection is unused in a C/C++ context
   [BSG_KSCrash sharedInstance].introspectMemory = NO;
-  if (notifierVersion != NULL) {
-    NSString *ns_version = [NSString stringWithUTF8String:notifierVersion];
-    BugsnagNotifier *notifier = Bugsnag.client.notifier;
-    notifier.version = ns_version;
-    notifier.name = @"Bugsnag Unity (Cocoa)";
-    notifier.url = @"https://github.com/bugsnag/bugsnag-unity";
-  }
 }
 
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadata[], int metadataCount) {
