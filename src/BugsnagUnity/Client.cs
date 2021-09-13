@@ -427,10 +427,19 @@ namespace BugsnagUnity
                 lock (autoSessionLock)
                 {
                     if (Configuration.AutoTrackSessions
-                     && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds
-                     && IsUsingFallback())
+                     && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
                     {
-                        SessionTracking.StartSession();
+                        if (IsUsingFallback())
+                        {
+                            SessionTracking.StartSession();
+                        }
+                        else
+                        {
+                            if (Application.platform.Equals(RuntimePlatform.Android))
+                            {
+                                SessionTracking.ResumeSession();
+                            }
+                        }
                     }
                     BackgroundStopwatch.Reset();
                 }

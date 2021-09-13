@@ -328,7 +328,7 @@ namespace BugsnagUnity
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is Session)
             {
-                if (string.IsNullOrEmpty(sessionId))
+                if (string.IsNullOrEmpty(sessionId) || sessionId == Guid.Empty.ToString())
                 {
                     _nativeSession = null;
                     return;

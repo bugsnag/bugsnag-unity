@@ -403,21 +403,17 @@ namespace BugsnagUnity
         {
             var javaSession = CallNativeObjectMethodRef("getCurrentSession", "()Lcom/bugsnag/android/Session;", new object[] { });
 
-            if (javaSession == null)
+            var id = AndroidJNI.CallStringMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getId"), new jvalue[] { });
+
+            if (id == null)
             {
                 return null;
             }
 
-            var id = AndroidJNI.CallStringMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getId"), new jvalue[] { });
-
             var javaStartedAt = AndroidJNI.CallObjectMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getStartedAt"), new jvalue[] { });
-
             var unhandledCount = AndroidJNI.CallIntMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getUnhandledCount"), new jvalue[] { });
-      
             var handledCount = AndroidJNI.CallIntMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getHandledCount"), new jvalue[] { });
-    
             var timeLong = AndroidJNI.CallLongMethod(javaStartedAt, AndroidJNIHelper.GetMethodID(DateClass, "getTime"), new jvalue[] { });
- 
             var unityDateTime = new DateTime(1970, 1, 1).AddMilliseconds(timeLong);
 
             return new Session(id, unityDateTime, unhandledCount, handledCount);
