@@ -435,6 +435,7 @@ namespace BugsnagUnity
                         }
                         else
                         {
+                            // The android sdk is unable to listen to the unity activity lifecycle
                             if (Application.platform.Equals(RuntimePlatform.Android))
                             {
                                 SessionTracking.ResumeSession();

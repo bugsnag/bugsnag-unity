@@ -378,7 +378,7 @@ namespace BugsnagUnity
 
         public bool ResumeSession()
         {
-            return CallNativeBoolMethod("resumeSession", "()V", new object[] { });
+            return CallNativeBoolMethod("resumeSession", "()Z", new object[] { });
         }
 
         public void PauseSession()
