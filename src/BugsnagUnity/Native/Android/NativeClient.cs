@@ -22,7 +22,7 @@ namespace BugsnagUnity
             Breadcrumbs = new Breadcrumbs(NativeInterface);
             if (configuration.AutoTrackSessions)
             {
-                StartSession();
+                ResumeSession();
             }
         }
 
