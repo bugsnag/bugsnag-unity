@@ -45,6 +45,6 @@ Feature: iOS smoke tests for sessions
         And the error payload field "events.0.user.id" equals the stored value "automated_user_id"
         And the error payload field "events.0.device.id" equals the stored value "automated_user_id"
         And the event "session.id" is not null
-        #And the error payload field "events.0.session.id" equals the stored value "automated_session_id"
+        And the error payload field "events.0.session.id" equals the stored value "automated_session_id" ignoring case
         And the event "session.events.handled" equals 1
         And the event "session.events.unhandled" equals 0

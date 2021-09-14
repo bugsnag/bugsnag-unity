@@ -88,7 +88,7 @@ namespace BugsnagUnity.Payload
         /// Gets the session data that was gathered for this report.
         /// </summary>
         /// <value>The session.</value>
-        public Session Session => Event.Session;
+        internal Session Session => Event.Session;
 
         /// <summary>
         /// Gets the breadcrumbs that have been attached to this report.
