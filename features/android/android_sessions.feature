@@ -8,7 +8,7 @@ Feature: Android smoke tests for sessions
         And I wait to receive a session
 
         # Session payload
-        And the session payload field "notifier.name" equals "Bugsnag Unity (Android)"
+        And the session payload field "notifier.name" equals "Unity Bugsnag Notifier"
         And the session payload field "sessions" is an array with 1 elements
         And the session "user.id" is not null
         And the session payload field "sessions.0.user.id" is stored as the value "automated_user_id"
