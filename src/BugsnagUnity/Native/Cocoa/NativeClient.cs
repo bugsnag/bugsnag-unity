@@ -35,7 +35,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setEndpoints(obj, config.Endpoints.Notify.ToString(), config.Endpoints.Session.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
             NativeCode.bugsnag_setBundleVersion(obj, config.BundleVersion);
-            NativeCode.bugsnag_setAppType(obj, config.AppType);
+            NativeCode.bugsnag_setAppType(obj, GetAppType(config));
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
             NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
@@ -67,6 +67,22 @@ namespace BugsnagUnity
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }
             return obj;
+        }
+
+        private string GetAppType(IConfiguration config)
+        {
+            if (!string.IsNullOrEmpty(config.AppType))
+            {
+                return config.AppType;
+            }
+            switch (UnityEngine.Application.platform)
+            {
+                case UnityEngine.RuntimePlatform.OSXPlayer:
+                    return "Mac OS";
+                case UnityEngine.RuntimePlatform.IPhonePlayer:
+                    return "iOS";
+            }
+            return string.Empty;
         }
 
         private void SetEnabledBreadcrumbTypes(IntPtr obj, IConfiguration config)

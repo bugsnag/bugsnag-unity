@@ -7,6 +7,9 @@ Feature: Session Tracking
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
         And the session payload field "app.version" is not null
         And the session payload field "app.releaseStage" equals "production"
+        And the session payload field "app.type" equals the platform-dependent string:
+        | macos | Mac OS |
+        | windows | Windows |
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals the platform-dependent string:
             | macos | Mac OS |

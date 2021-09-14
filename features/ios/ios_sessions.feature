@@ -23,6 +23,7 @@ Feature: iOS smoke tests for sessions
         And the session payload field "app.releaseStage" equals "production"
         And the session payload field "app.bundleVersion" is not null
         And the session payload field "app.id" equals "com.bugsnag.unity.mazerunner"
+        And the session payload field "app.type" equals "iOS"
 
         # Device data
         And the session payload field "device.locale" is not null
