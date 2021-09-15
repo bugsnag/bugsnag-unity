@@ -11,7 +11,7 @@ namespace BugsnagUnity
         public IConfiguration Configuration { get; }
         public IBreadcrumbs Breadcrumbs { get; }
         public IDelivery Delivery { get; }
-
+        private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
 
         public NativeClient(IConfiguration configuration)
@@ -32,13 +32,14 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoDetectErrors);
             NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
-            NativeCode.bugsnag_setNotifyUrl(obj, config.Endpoints.Notify.ToString());
+            NativeCode.bugsnag_setEndpoints(obj, config.Endpoints.Notify.ToString(), config.Endpoints.Session.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
             NativeCode.bugsnag_setBundleVersion(obj, config.BundleVersion);
-            NativeCode.bugsnag_setAppType(obj, config.AppType);
+            NativeCode.bugsnag_setAppType(obj, GetAppType(config));
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
             NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
+            NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
             NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);
             NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
 
@@ -66,6 +67,22 @@ namespace BugsnagUnity
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }
             return obj;
+        }
+
+        private string GetAppType(IConfiguration config)
+        {
+            if (!string.IsNullOrEmpty(config.AppType))
+            {
+                return config.AppType;
+            }
+            switch (UnityEngine.Application.platform)
+            {
+                case UnityEngine.RuntimePlatform.OSXPlayer:
+                    return "Mac OS";
+                case UnityEngine.RuntimePlatform.IPhonePlayer:
+                    return "iOS";
+            }
+            return string.Empty;
         }
 
         private void SetEnabledBreadcrumbTypes(IntPtr obj, IConfiguration config)
@@ -258,21 +275,6 @@ namespace BugsnagUnity
             }
         }
 
-        public void SetSession(Session session)
-        {
-            if (session == null)
-            {
-                // Clear session
-                NativeCode.bugsnag_registerSession(null, 0, 0, 0);
-            }
-            else
-            {
-                // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
-                var startedAt = Convert.ToInt64((session.StartedAt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
-                NativeCode.bugsnag_registerSession(session.Id.ToString(), startedAt, session.UnhandledCount(), session.HandledCount());
-            }
-        }
-
         public void SetUser(User user)
         {
             NativeCode.bugsnag_setUser(user.Id, user.Name, user.Email);
@@ -297,6 +299,61 @@ namespace BugsnagUnity
             NativeCode.bugsnag_markLaunchCompleted();
         }
 
+        public void StartSession()
+        {
+            NativeCode.bugsnag_startSession();
+        }
+
+        public void PauseSession()
+        {
+            NativeCode.bugsnag_pauseSession();
+        }
+
+        public bool ResumeSession()
+        {
+            return NativeCode.bugsnag_resumeSession();
+        }
+
+        public void UpdateSession(Session session)
+        {
+            if (session != null)
+            {
+                var startedAt = Convert.ToInt64((session.StartedAt.ToUniversalTime() - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
+                NativeCode.bugsnag_registerSession(session.Id.ToString(), startedAt, session.UnhandledCount(), session.HandledCount());
+            }
+        }
+
+        public Session GetCurrentSession()
+        {
+            var session = new Session();
+            var handle = GCHandle.Alloc(session);
+            try
+            {
+                NativeCode.bugsnag_retrieveCurrentSession(GCHandle.ToIntPtr(handle), PopulateSession);
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return _nativeSession;
+        }
+
+        [MonoPInvokeCallback(typeof(NativeCode.SessionInformation))]
+        static void PopulateSession(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled)
+        {
+            var handle = GCHandle.FromIntPtr(instance);
+            if (handle.Target is Session)
+            {
+                if (string.IsNullOrEmpty(sessionId) || sessionId == Guid.Empty.ToString())
+                {
+                    _nativeSession = null;
+                    return;
+                }
+                var startTime = DateTime.Parse(startedAt);
+                _nativeSession = new Session(sessionId, startTime, handled, unhandled);
+            }
+        }
+
         public LastRunInfo GetLastRunInfo()
         {
             var lastRunInfo = new LastRunInfo();
@@ -312,7 +369,7 @@ namespace BugsnagUnity
             return lastRunInfo;
         }
 
-        [MonoPInvokeCallback(typeof(Action<IntPtr,bool, bool, int>))]
+        [MonoPInvokeCallback(typeof(Action<IntPtr, bool, bool, int>))]
         static void PopulateLastRunInfo(IntPtr instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)
         {
             var handle = GCHandle.FromIntPtr(instance);
@@ -323,7 +380,6 @@ namespace BugsnagUnity
                 info.ConsecutiveLaunchCrashes = consecutiveLaunchCrashes;
             }
         }
-
 
     }
 }

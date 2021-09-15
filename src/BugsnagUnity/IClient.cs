@@ -50,6 +50,8 @@ namespace BugsnagUnity
 
         void SetAutoDetectAnrs(bool autoDetectAnrs);
 
+        bool IsUsingFallback();
+
         void MarkLaunchCompleted();
     }
 }

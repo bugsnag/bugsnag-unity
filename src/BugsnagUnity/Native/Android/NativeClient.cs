@@ -20,6 +20,10 @@ namespace BugsnagUnity
             Configuration = configuration;
             Delivery = new Delivery();
             Breadcrumbs = new Breadcrumbs(NativeInterface);
+            if (configuration.AutoTrackSessions)
+            {
+                ResumeSession();
+            }
         }
 
         public void PopulateApp(App app)
@@ -74,11 +78,6 @@ namespace BugsnagUnity
             }
         }
 
-        public void SetSession(Session session)
-        {
-            NativeInterface.SetSession(session);
-        }
-
         public void SetUser(User user)
         {
             NativeInterface.SetUser(user);
@@ -98,6 +97,31 @@ namespace BugsnagUnity
         public void SetAutoDetectAnrs(bool autoDetectAnrs)
         {
             NativeInterface.SetAutoDetectAnrs(autoDetectAnrs);
+        }
+
+        public void StartSession()
+        {
+            NativeInterface.StartSession();
+        }
+
+        public void PauseSession()
+        {
+            NativeInterface.PauseSession();
+        }
+
+        public bool ResumeSession()
+        {
+            return NativeInterface.ResumeSession();
+        }
+
+        public void UpdateSession(Session session)
+        {
+            NativeInterface.UpdateSession(session);
+        }
+
+        public Session GetCurrentSession()
+        {
+            return NativeInterface.GetCurrentSession();
         }
 
         public void MarkLaunchCompleted()

@@ -126,7 +126,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool IsUsingFallback()
+        public bool IsUsingFallback()
         {
             switch (Application.platform)
             {
@@ -429,7 +429,18 @@ namespace BugsnagUnity
                     if (Configuration.AutoTrackSessions
                      && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
                     {
-                        SessionTracking.StartSession();
+                        if (IsUsingFallback())
+                        {
+                            SessionTracking.StartSession();
+                        }
+                        else
+                        {
+                            // The android sdk is unable to listen to the unity activity lifecycle
+                            if (Application.platform.Equals(RuntimePlatform.Android))
+                            {
+                                SessionTracking.ResumeSession();
+                            }
+                        }
                     }
                     BackgroundStopwatch.Reset();
                 }
@@ -457,7 +468,7 @@ namespace BugsnagUnity
         private IEnumerator<UnityEngine.AsyncOperation> RunInitialSessionCheck()
         {
             yield return null;
-            if (Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
+            if (IsUsingFallback() && Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
             {
                 SessionTracking.StartSession();
             }

@@ -40,10 +40,10 @@ Scenario: When a new session is started the error uses different session informa
     # Error 1
     And the error is valid for the error reporting API sent by the Unity notifier
     And the event "session.events.handled" equals 1
-    And the error payload field "events.0.session.id" equals the stored value "session_id_1"
+    And the error payload field "events.0.session.id" equals the stored value "session_id_1" ignoring case
     And I discard the oldest error
     # Error 2
     And the error is valid for the error reporting API sent by the Unity notifier
     And the event "session.events.handled" equals 1
-    And the error payload field "events.0.session.id" equals the stored value "session_id_2"
+    And the error payload field "events.0.session.id" equals the stored value "session_id_2" ignoring case
     And the error payload field "events.0.session.id" does not equal the stored value "session_id_1"

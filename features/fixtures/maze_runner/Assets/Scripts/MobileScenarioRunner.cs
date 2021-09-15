@@ -62,8 +62,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     private Configuration GetDefaultConfig()
     {
         Configuration config = new Configuration("12312312312312312312312312312312");
-        config.Endpoint = new Uri("http://bs-local.com:9339/notify");
-        config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
+        config.Endpoints = new EndpointConfiguration("http://bs-local.com:9339/notify", "http://bs-local.com:9339/sessions");
         config.Context = "My context";
         config.AppVersion = "1.2.3";
         config.BundleVersion = "1.2.3";
@@ -102,7 +101,6 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         // 1: Get the dial code
         var code = Dialled.text;
-        Debug.Log("RunScenario called, code is " + code);
         if (string.IsNullOrEmpty(code) || code.Length != 2)
         {
             throw new System.Exception("Code is empty or not correctly formatted: " + code);
@@ -365,13 +363,6 @@ public class MobileScenarioRunner : MonoBehaviour {
                 {"region", "US"}
             });
         });
-    }
-
-
-    public void StartSession()
-    {
-
-        Bugsnag.SessionTracking.StartSession();
     }
 
     public void SetUser()

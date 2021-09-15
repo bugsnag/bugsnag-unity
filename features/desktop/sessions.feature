@@ -8,8 +8,8 @@ Feature: Session Tracking
         And the session payload field "app.version" is not null
         And the session payload field "app.releaseStage" equals "production"
         And the session payload field "app.type" equals the platform-dependent string:
-            | macos | Mac OS |
-            | windows | Windows |
+        | macos | Mac OS |
+        | windows | Windows |
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals the platform-dependent string:
             | macos | Mac OS |
@@ -70,9 +70,6 @@ Feature: Session Tracking
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
         And the session payload field "app.version" is not null
         And the session payload field "app.releaseStage" equals "production"
-        And the session payload field "app.type" equals the platform-dependent string:
-            | macos | Mac OS |
-            | windows | Windows |
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals the platform-dependent string:
             | macos | Mac OS |
@@ -125,7 +122,7 @@ Feature: Session Tracking
         And the event "session.events.handled" equals 0
         And the event "session.events.unhandled" equals 1
         And the error payload field "events.0.session.id" is stored as the value "session_id"
-        And the session payload field "sessions.0.id" equals the stored value "session_id"
+        And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
 
     Scenario: Manually logging a session before handled events
         When I run the game in the "ManualSessionNotify" state
@@ -136,7 +133,7 @@ Feature: Session Tracking
         And the event "session.events.handled" equals 1
         And the event "session.events.unhandled" equals 0
         And the error payload field "events.0.session.id" is stored as the value "session_id"
-        And the session payload field "sessions.0.id" equals the stored value "session_id"
+        And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
 
     Scenario: Manually logging a session before different types of events
         When I run the game in the "ManualSessionMixedEvents" state

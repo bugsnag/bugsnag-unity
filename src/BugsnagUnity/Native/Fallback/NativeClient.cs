@@ -93,6 +93,29 @@ namespace BugsnagUnity
             }
         }
 
+
+        public void StartSession()
+        {
+        }
+
+        public void PauseSession()
+        {
+        }
+
+        public bool ResumeSession()
+        {
+            return false;
+        }
+
+        public void UpdateSession(Session session)
+        {
+        }
+
+        public Session GetCurrentSession()
+        {
+            return null;
+        }
+
         public void MarkLaunchCompleted()
         {
         }
