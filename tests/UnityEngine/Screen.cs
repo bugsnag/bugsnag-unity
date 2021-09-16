@@ -5,6 +5,9 @@ namespace UnityEngine
     {
         public static float dpi { get; }
 
-        public static Resolution currentResolution { get; } = new Resolution();
+        public static Resolution currentResolution
+        {
+            get;
+        }
     }
 }
