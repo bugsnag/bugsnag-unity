@@ -1,4 +1,5 @@
 ﻿using BugsnagUnity.Payload;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,18 +13,42 @@ namespace BugsnagUnity
 
         public IDelivery Delivery { get; }
 
-        private Dictionary<string, object> _editorMetadata = new Dictionary<string, object>();
+        private Dictionary<string, object> _fallbackMetadata = new Dictionary<string, object>();
+
+        private bool _launchMarkedAsCompleted = false;
+
+        private bool _hasRecivedLowMemoryWarning = false;
 
         public NativeClient(IConfiguration configuration)
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
             Delivery = new Delivery();
+            Application.lowMemory += () => { _hasRecivedLowMemoryWarning = true; };
         }
 
         public void PopulateApp(App app)
         {
-            app.AddToPayload("type",GetAppType());
+            AddIsLaunching(app);
+            app.AddToPayload("lowMemory",_hasRecivedLowMemoryWarning);
+        }
+
+        private void AddIsLaunching(App app)
+        {
+            if (!app.ContainsKey("durationInForeground"))
+            {
+                return;
+            }
+            bool isLaunching;
+            if (Configuration.LaunchDurationMillis == 0)
+            {
+                isLaunching = _launchMarkedAsCompleted;
+            }
+            else
+            {
+                isLaunching = app.DurationInForeground.Milliseconds < Configuration.LaunchDurationMillis;
+            }
+            app.AddToPayload("isLaunching",isLaunching);
         }
 
         public void PopulateDevice(Device device)
@@ -32,7 +57,7 @@ namespace BugsnagUnity
 
         public void PopulateMetadata(Metadata metadata)
         {
-            MergeDictionaries(metadata, _editorMetadata);
+            MergeDictionaries(metadata, _fallbackMetadata);
         }
         private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)
         {
@@ -48,7 +73,7 @@ namespace BugsnagUnity
 
         public void SetMetadata(string tab, Dictionary<string, string> metadata)
         {
-            _editorMetadata[tab] = metadata;
+            _fallbackMetadata[tab] = metadata;
         }
 
         public void SetSession(Session session)
@@ -68,31 +93,6 @@ namespace BugsnagUnity
         public void SetAutoDetectAnrs(bool autoDetectAnrs)
         {
         }
-
-        private string GetAppType()
-        {
-            if (!string.IsNullOrEmpty(Configuration.AppType))
-            {
-                return Configuration.AppType;
-            }
-            switch (Application.platform)
-            {
-                case RuntimePlatform.OSXEditor:
-                case RuntimePlatform.OSXPlayer:
-                    return "MacOS";
-                case RuntimePlatform.WindowsPlayer:      
-                case RuntimePlatform.WindowsEditor:
-                    return "Windows";               
-                case RuntimePlatform.LinuxPlayer:
-                case RuntimePlatform.LinuxEditor:
-                    return "Linux";
-                case RuntimePlatform.WebGLPlayer:
-                    return "WebGL";
-                default:
-                    return string.Empty;
-            }
-        }
-
 
         public void StartSession()
         {
@@ -118,6 +118,7 @@ namespace BugsnagUnity
 
         public void MarkLaunchCompleted()
         {
+            _launchMarkedAsCompleted = true;
         }
 
         public LastRunInfo GetLastRunInfo()
