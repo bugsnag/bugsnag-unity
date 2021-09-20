@@ -14,6 +14,10 @@ Before('@macos_only') do |_scenario|
   skip_this_scenario("Skipping scenario") unless Maze.config.os == 'macos'
 end
 
+Before('@windows_only') do |_scenario|
+  skip_this_scenario("Skipping scenario") unless Maze.config.os == 'windows'
+end
+
 AfterConfiguration do |_config|
   Maze.config.enforce_bugsnag_integrity = false
 
