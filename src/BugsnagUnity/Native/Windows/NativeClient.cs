@@ -16,19 +16,20 @@ namespace BugsnagUnity
 
         private bool _launchMarkedAsCompleted = false;
 
-        private bool _hasRecivedLowMemoryWarning = false;
+        private bool _hasReceivedLowMemoryWarning = false;
 
         public NativeClient(IConfiguration configuration)
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
             Delivery = new Delivery();
+            Application.lowMemory += () => { _hasReceivedLowMemoryWarning = true; };
         }
 
         public void PopulateApp(App app)
         {
             AddIsLaunching(app);
-            app.AddToPayload("lowMemory", _hasRecivedLowMemoryWarning);
+            app.AddToPayload("lowMemory", _hasReceivedLowMemoryWarning);
         }
 
         private void AddIsLaunching(App app)

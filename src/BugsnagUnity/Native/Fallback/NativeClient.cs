@@ -24,13 +24,13 @@ namespace BugsnagUnity
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
             Delivery = new Delivery();
-            Application.lowMemory += () => { _hasRecivedLowMemoryWarning = true; };
+            Application.lowMemory += () => { _hasReceivedLowMemoryWarning = true; };
         }
 
         public void PopulateApp(App app)
         {
             AddIsLaunching(app);
-            app.AddToPayload("lowMemory",_hasRecivedLowMemoryWarning);
+            app.AddToPayload("lowMemory", _hasReceivedLowMemoryWarning);
         }
 
         private void AddIsLaunching(App app)
