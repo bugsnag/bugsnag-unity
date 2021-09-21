@@ -17,7 +17,7 @@ namespace BugsnagUnity
 
         private bool _launchMarkedAsCompleted = false;
 
-        private bool _hasRecivedLowMemoryWarning = false;
+        private bool _hasReceivedLowMemoryWarning = false;
 
         public NativeClient(IConfiguration configuration)
         {
