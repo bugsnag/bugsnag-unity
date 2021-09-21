@@ -29,9 +29,9 @@ Feature: Reporting unhandled events
         
         #device metadata
         And the event "device.charging" is not null
-        And the event "device.batteryLevel" is not null
-        And the event "device.freeDisk" is not null
-        And the event "device.freeMemory" is not null
+        And the event "device.batteryLevel" is greater than -1
+        And the event "device.freeDisk" is greater than 0
+        And the event "device.freeMemory" is greater than 0
         And the event "device.hostname" is not null
         And the event "device.id" is not null
         And the event "device.locale" is not null
@@ -40,15 +40,15 @@ Feature: Reporting unhandled events
         And the event "device.osName" is not null
         And the event "device.osVersion" is not null
         And the event "device.runtimeVersions" is not null
-        And the event "device.screenDensity" is not null
+        And the event "device.screenDensity" is greater than 0
         And the event "device.screenResolution" is not null
         And the event "device.time" is a timestamp
         And the event "device.timezone" is not null
-        And the event "device.totalMemory" is not null
+        And the event "device.totalMemory" is greater than 0
 
         #app metadata
-        And the event "app.duration" is not null
-        And the event "app.durationInForeground" is not null
+        And the event "app.duration" is greater than 0
+        And the event "app.durationInForeground" is greater than 0
         And the event "app.inForeground" is not null
         And the event "app.isLaunching" is not null
         And the event "app.lowMemory" is not null
