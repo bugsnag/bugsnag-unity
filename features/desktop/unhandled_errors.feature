@@ -42,7 +42,7 @@ Feature: Reporting unhandled events
         And the event "device.runtimeVersions" is not null
         And the event "device.screenDensity" is not null
         And the event "device.screenResolution" is not null
-        And the event "device.time" is not null
+        And the event "device.time" is a timestamp
         And the event "device.timezone" is not null
         And the event "device.totalMemory" is not null
 
