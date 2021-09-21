@@ -18,6 +18,7 @@ Feature: Native Errors
         When I run the "Start SDK" mobile scenario
         Then I wait to receive an error
         And the error payload field "events.0.threads" is a non-empty array
+        And the error payload field "events.0.threads.0" is null
 
     Scenario: Native Error Without Threads
         When I run the "iOS Native Error No Threads" mobile scenario
@@ -25,7 +26,7 @@ Feature: Native Errors
         And I relaunch the Unity mobile app
         When I run the "Start SDK" mobile scenario
         Then I wait to receive an error
-        And the error payload field "events.0.threads.0" is null
+        And the error payload field "notifier.dependencies.0.name" equals "iOS Bugsnag Notifier"
 
     Scenario: Last Run Info
         When I run the "iOS Native Error" mobile scenario

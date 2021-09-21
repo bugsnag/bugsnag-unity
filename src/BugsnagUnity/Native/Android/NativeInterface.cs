@@ -307,6 +307,9 @@ namespace BugsnagUnity
         {
             using (AndroidJavaObject notifier = client.Get<AndroidJavaObject>("notifier"))
             {
+                AndroidJavaObject list = new AndroidJavaObject("java.util.ArrayList");
+                list.Call<Boolean>("add", notifier);
+                notifier.Call("setDependencies", list);
                 notifier.Call("setUrl", NotifierInfo.NotifierUrl);
                 notifier.Call("setName", "Unity Bugsnag Notifier");
                 notifier.Call("setVersion", NotifierInfo.NotifierVersion);
