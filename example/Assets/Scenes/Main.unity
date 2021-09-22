@@ -2056,10 +2056,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44886f35604eb42e1bb0b18af83eb216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  APIKey: 228bd26426aa4ee1efd8a489876300e1
+  APIKey: 
   AutoDetectErrors: 1
   AutoDetectAnrs: 1
-  AutoTrackSessions: 0
+  AutoTrackSessions: 1
   NotifyLogLevel: 4
   SecondsPerUniqueLog: 5
   MaximumBreadcrumbs: 25

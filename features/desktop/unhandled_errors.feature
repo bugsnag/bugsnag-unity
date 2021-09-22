@@ -13,6 +13,50 @@ Feature: Reporting unhandled events
             | Main.RunScenario(System.String scenario)         | |
             | Main.Start()               | |
 
+    @windows_only
+    Scenario: Windows device and app data
+        When I run the game in the "UncaughtException" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "ExecutionEngineException"
+        And the exception "message" equals "Promise Rejection"
+        And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the first significant stack frame methods and files should match:
+            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
+            | Main.RunScenario(System.String scenario)         | |
+            | Main.Start()               | |
+        
+        #device metadata
+        And the event "device.charging" is not null
+        And the event "device.batteryLevel" is greater than -1
+        And the event "device.freeDisk" is greater than 0
+        And the event "device.freeMemory" is greater than 0
+        And the event "device.hostname" is not null
+        And the event "device.id" is not null
+        And the event "device.locale" is not null
+        And the event "device.manufacturer" is not null
+        And the event "device.model" is not null
+        And the event "device.osName" is not null
+        And the event "device.osVersion" is not null
+        And the event "device.runtimeVersions" is not null
+        And the event "device.screenDensity" is greater than 0
+        And the event "device.screenResolution" is not null
+        And the event "device.time" is a timestamp
+        And the event "device.timezone" is not null
+        And the event "device.totalMemory" is greater than 0
+
+        #app metadata
+        And the event "app.duration" is greater than 0
+        And the event "app.durationInForeground" is greater than 0
+        And the event "app.inForeground" is not null
+        And the event "app.isLaunching" is not null
+        And the event "app.lowMemory" is not null
+        And the event "app.releaseStage" is not null
+        And the event "app.type" equals "Windows"
+        And the event "app.version" is not null
+
+
     @skip_webgl
     Scenario: Forcing uncaught exceptions to be unhandled
         When I run the game in the "UncaughtExceptionAsUnhandled" state
