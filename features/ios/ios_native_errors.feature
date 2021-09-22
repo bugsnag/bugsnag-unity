@@ -26,6 +26,7 @@ Feature: Native Errors
         When I run the "Start SDK" mobile scenario
         Then I wait to receive an error
         And the error payload field "events.0.threads.0" is null
+        And the error payload field "notifier.dependencies.0.name" equals "iOS Bugsnag Notifier"
 
     Scenario: Last Run Info
         When I run the "iOS Native Error" mobile scenario

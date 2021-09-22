@@ -15,6 +15,7 @@ Feature: Android smoke tests for sessions
         And the session "id" is not null
         And the session payload field "sessions.0.id" is stored as the value "automated_session_id"
         And the session "startedAt" is not null
+        And the session payload field "notifier.dependencies.0.name" equals "Android Bugsnag Notifier"
 
         # App data
         And the session payload field "app.version" equals "1.2.3"
