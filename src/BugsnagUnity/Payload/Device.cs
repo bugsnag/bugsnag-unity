@@ -12,6 +12,9 @@ namespace BugsnagUnity.Payload
     /// </summary>
     public class Device : Dictionary<string, object>, IFilterable
     {
+
+        private const string DEVICE_ID_KEY = "BUGSNAG_DEVICE_ID_KEY";
+
         private static string UnityVersion;
         internal static void InitUnityVersion()
         {
@@ -33,7 +36,7 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("time", DateTime.UtcNow);
             AddBatteryLevel();
             this.AddToPayload("charging", SystemInfo.batteryStatus.Equals(BatteryStatus.Charging));
-            this.AddToPayload("id", SystemInfo.deviceUniqueIdentifier);
+            this.AddToPayload("id", GetDeviceID());
             this.AddToPayload("screenDensity", Screen.dpi);
             var res = Screen.currentResolution;
             this.AddToPayload("screenResolution", string.Format("{0}x{1}", res.width, res.height));
@@ -89,6 +92,20 @@ namespace BugsnagUnity.Payload
             get
             {
                 return Environment.OSVersion.VersionString;
+            }
+        }
+
+        private string GetDeviceID()
+        {
+            if (!PlayerPrefs.HasKey(DEVICE_ID_KEY))
+            {
+                var newDeviceId = Guid.NewGuid().ToString();
+                PlayerPrefs.SetString(DEVICE_ID_KEY, newDeviceId);
+                return newDeviceId;
+            }
+            else
+            {
+                return PlayerPrefs.GetString(DEVICE_ID_KEY,string.Empty);
             }
         }
     }
