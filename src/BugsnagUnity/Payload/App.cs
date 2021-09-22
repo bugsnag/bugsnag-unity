@@ -15,23 +15,36 @@ namespace BugsnagUnity.Payload
         internal App(IConfiguration configuration)
         {
             _configuration = configuration;
+
+            Duration = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
+
+            Id = Application.identifier;
+
             Version = configuration.AppVersion;
+
             ReleaseStage = configuration.ReleaseStage;
-            this.AddToPayload("id", Application.identifier);
-            this.AddToPayload("type", GetAppType());
-            AddDuration();
+
+            Type = GetAppType();
         }
 
-        public string Version
+        
+
+        public TimeSpan Duration
         {
-            get => this.Get("version") as string;
-            set => this.AddToPayload("version", value);
+            get => TimeSpan.FromMilliseconds((double)this.Get("duration"));
+            set => this.AddToPayload("duration", value.TotalMilliseconds);
         }
 
-        public string ReleaseStage
+        public TimeSpan DurationInForeground
         {
-            get => this.Get("releaseStage") as string;
-            set => this.AddToPayload("releaseStage", value);
+            get => TimeSpan.FromMilliseconds((double)this.Get("durationInForeground"));
+            set => this.AddToPayload("durationInForeground", value.TotalMilliseconds);
+        }
+
+        public string Id
+        {
+            get => this.Get("id") as string;
+            set => this.AddToPayload("id",value);
         }
 
         public bool InForeground
@@ -40,10 +53,28 @@ namespace BugsnagUnity.Payload
             set => this.AddToPayload("inForeground", value);
         }
 
-        public TimeSpan DurationInForeground
+        public bool IsLaunching
         {
-            get => TimeSpan.FromMilliseconds((double)this.Get("durationInForeground"));
-            set => this.AddToPayload("durationInForeground", value.TotalMilliseconds);
+            get => (bool)this.Get("isLaunching");
+            set => this.AddToPayload("isLaunching", value);
+        }
+
+        public string ReleaseStage
+        {
+            get => this.Get("releaseStage") as string;
+            set => this.AddToPayload("releaseStage", value);
+        }
+
+        public string Type
+        {
+            get => this.Get("type") as string;
+            set => this.AddToPayload("type", value);
+        }
+
+        public string Version
+        {
+            get => this.Get("version") as string;
+            set => this.AddToPayload("version", value);
         }
 
         private string GetAppType()
@@ -68,12 +99,6 @@ namespace BugsnagUnity.Payload
                 default:
                     return string.Empty;
             }
-        }
-
-        private void AddDuration()
-        {
-            var timeSinceStartup = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
-            this.AddToPayload("duration", timeSinceStartup.TotalMilliseconds);
         }
 
     }

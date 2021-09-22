@@ -48,7 +48,7 @@ namespace BugsnagUnity
             {
                 isLaunching = app.DurationInForeground.Milliseconds < Configuration.LaunchDurationMillis;
             }
-            app.AddToPayload("isLaunching",isLaunching);
+            app.IsLaunching = isLaunching;
         }
 
         public void PopulateDevice(Device device)
