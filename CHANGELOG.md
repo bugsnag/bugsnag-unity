@@ -8,7 +8,13 @@
 
 ### Enhancements
 
-* Update bugsnag-cocoa to v6.12.1
+* Update bugsnag-cocoa to v6.12.2
+
+  * Stop dropping breadcrumbs when provided invalid metadata (that is not JSON convertible.)
+    [bugsnag-cocoa#1187](https://github.com/bugsnag/bugsnag-cocoa/pull/1187)
+
+  * Fix Swift fatal error parsing for messages with no filename.
+    [bugsnag-cocoa#1186](https://github.com/bugsnag/bugsnag-cocoa/pull/1186)
 
   * Events now include a `thermalState` property in the `device` tab, and unexpected app terminations that occur
     when the thermal state is critical will now be reported as a "Thermal Kill" rather than Out Of Memory error.
