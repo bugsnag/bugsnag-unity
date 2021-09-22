@@ -185,22 +185,21 @@ namespace BugsnagUnity
                         switch (value)
                         {
                             case "0":
-                                device.AddToPayload(key, false);
+                                device.Add(key, false);
                                 break;
                             case "1":
-                                device.AddToPayload(key, true);
+                                device.Add(key, true);
                                 break;
                             default:
-                                device.AddToPayload(key, value);
+                                device.Add(key, value);
                                 break;
                         }
                         break;
                     case "osBuild": // add to nested runtimeVersions dictionary
-                        Dictionary<string, object> runtimeVersions = (Dictionary<string, object>)device.Get("runtimeVersions");
-                        runtimeVersions.AddToPayload(key, value);
+                        device.RuntimeVersions.AddToPayload(key, value);
                         break;
                     default:
-                        device.AddToPayload(key, value);
+                        device.Add(key, value);
                         break;
                 }
             }

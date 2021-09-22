@@ -52,12 +52,12 @@ namespace BugsnagUnity
 
         public void PopulateDevice(Device device)
         {
-            device.AddToPayload("manufacturer", "PC");
-            device.AddToPayload("model", SystemInfo.deviceModel);
+            device.Manufacturer = "PC";
+            device.Model =  SystemInfo.deviceModel;
             MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
             if (GlobalMemoryStatusEx(memStatus))
             {
-                device.AddToPayload("freeMemory", memStatus.ullAvailPhys);
+                device.FreeMemory = memStatus.ullAvailPhys;
             }
 
             // This is generally the main drive on a Windows machine
@@ -68,7 +68,7 @@ namespace BugsnagUnity
                                               out ulong totalNumberOfBytes,
                                               out ulong totalNumberOfFreeBytes))
             {
-                device.AddToPayload("freeDisk", freeBytesAvailable);
+                device.FreeDisk = freeBytesAvailable;
             }
         }
 

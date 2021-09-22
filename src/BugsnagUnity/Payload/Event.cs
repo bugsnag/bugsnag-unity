@@ -19,7 +19,7 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("payloadVersion", 4);
             this.AddToPayload("exceptions", exceptions);
             this.AddToPayload("app", app);
-            this.AddToPayload("device", device);
+            this.AddToPayload("device", device.Payload);
             this.AddToPayload("metaData", Metadata);
             this.AddToPayload("breadcrumbs", breadcrumbs);
             if (session != null)

@@ -80,9 +80,8 @@ namespace BugsnagUnity
 
             var app = new App(Client.Configuration);
             Client.NativeClient.PopulateApp(app);
-            var device = new Device();
+            var device = new Device(Client.Configuration);
             Client.NativeClient.PopulateDevice(device);
-            device.AddRuntimeVersions(Client.Configuration);
 
             if (Client.Configuration.Endpoints.IsValid)
             {

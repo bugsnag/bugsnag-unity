@@ -72,7 +72,6 @@ namespace BugsnagUnity
             NativeClient.SetMetadata(AppMetadataKey, UnityMetadata.DefaultAppMetadata);
             NativeClient.SetMetadata(DeviceMetadataKey, UnityMetadata.DefaultDeviceMetadata);
 
-            Device.InitUnityVersion();
             NativeClient.PopulateUser(User);
             if (!string.IsNullOrEmpty(nativeClient.Configuration.Context))
             {
@@ -304,9 +303,9 @@ namespace BugsnagUnity
                 DurationInForeground = ForegroundStopwatch.Elapsed,
             };
             NativeClient.PopulateApp(app);
-            var device = new Device();
+
+            var device = new Device(Configuration);
             NativeClient.PopulateDevice(device);
-            device.AddRuntimeVersions(Configuration);
 
             var metadata = new Metadata();
             NativeClient.PopulateMetadata(metadata);
