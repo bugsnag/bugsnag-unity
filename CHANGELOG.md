@@ -27,10 +27,25 @@
   * Fatal app hangs will no longer be reported if the `willTerminateNotification` is received.
     [bugsnag-cocoa#1176](https://github.com/bugsnag/bugsnag-cocoa/pull/1176)
     
-* Update bugsnag-android to v5.12.0
+* Update bugsnag-android to v5.13.0
   * The `app.lowMemory` value always report the most recent `onTrimMemory`/`onLowMemory` status [bugsnag-android#1342](https://github.com/bugsnag/bugsnag-android/pull/1342)
   * Added the `app.memoryTrimLevel` metadata to report a description of the latest `onTrimMemory` status [bugsnag-android#1344](https://github.com/bugsnag/bugsnag-android/pull/1344)
   * Added `STATE` Breadcrumbs for `onTrimMemory` events [bugsnag-android#1345](https://github.com/bugsnag/bugsnag-android/)
+  * Capture breadcrumbs for OkHttp network requests
+    [bugsnag-android#1358](https://github.com/bugsnag/bugsnag-android/pull/1358)
+    [bugsnag-android#1361](https://github.com/bugsnag/bugsnag-android/pull/1361)
+    [bugsnag-android#1363](https://github.com/bugsnag/bugsnag-android/pull/1363)
+    [bugsnag-android#1379](https://github.com/bugsnag/bugsnag-android/pull/1379)
+  * Update project to build using Gradle/AGP 7
+    [bugsnag-android#1354](https://github.com/bugsnag/bugsnag-android/pull/1354)
+  * Increased default breadcrumb collection limit to 50
+    [bugsnag-android#1366](https://github.com/bugsnag/bugsnag-android/pull/1366)
+  * Support integer values in buildUuid
+    [bugsnag-android#1375](https://github.com/bugsnag/bugsnag-android/pull/1375)
+  * Use SystemClock.elapsedRealtime to track `app.durationInForeground`
+    [bugsnag-android#1375](https://github.com/bugsnag/bugsnag-android/pull/1375)
+
+
 
 * Add new automatically collected Device data to Windows, WebGL and Unity Editor events: `batteryLevel, charging, id, model, screenDensity, screenResolution, totalMemory` [#390](https://github.com/bugsnag/bugsnag-unity/pull/390)
 
