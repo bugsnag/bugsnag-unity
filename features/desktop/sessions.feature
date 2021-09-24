@@ -8,11 +8,11 @@ Feature: Session Tracking
         And the session payload field "app.version" is not null
         And the session payload field "app.releaseStage" equals "production"
         And the session payload field "app.type" equals the platform-dependent string:
-        | macos | Mac OS |
+        | macos | MacOS |
         | windows | Windows |
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals the platform-dependent string:
-            | macos | Mac OS |
+            | macos | MacOS |
             | windows | Microsoft Windows NT |
         And the session payload field "device.model" is not null
         And the session payload field "device.manufacturer" equals the platform-dependent string:
@@ -72,7 +72,7 @@ Feature: Session Tracking
         And the session payload field "app.releaseStage" equals "production"
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals the platform-dependent string:
-            | macos | Mac OS |
+            | macos | MacOS |
             | windows | Microsoft Windows NT |
         And the session payload field "device.model" is not null
         And the session payload field "device.manufacturer" equals the platform-dependent string:
