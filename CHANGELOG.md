@@ -59,6 +59,12 @@
 
 * Add `Configuration.LaunchDurationMillis` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendlaunchcrashessynchronously) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendlaunchcrashessynchronously) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
 
+### Bug fixes
+
+* Fixed an issue where app.type was not sent in native Cocoa crash reports
+  [#395](https://github.com/bugsnag/bugsnag-unity/pull/395)
+
+
 ## 5.3.0 (2021-09-01)
 
 ### Enhancements
