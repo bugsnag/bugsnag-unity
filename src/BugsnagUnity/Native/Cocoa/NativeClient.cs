@@ -78,9 +78,11 @@ namespace BugsnagUnity
             switch (UnityEngine.Application.platform)
             {
                 case UnityEngine.RuntimePlatform.OSXPlayer:
-                    return "Mac OS";
+                    return "MacOS";
                 case UnityEngine.RuntimePlatform.IPhonePlayer:
                     return "iOS";
+                case UnityEngine.RuntimePlatform.tvOS:
+                    return "tvOS";
             }
             return string.Empty;
         }
