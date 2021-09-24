@@ -15,6 +15,10 @@ namespace BugsnagUnity
 
         bool SendLaunchCrashesSynchronously { get; set; }
 
+        bool GenerateAnonymousId { get; set; }
+
+        string HostName { get; set; }
+
         string[] DiscardClasses { get; set; }
 
         string[] ProjectPackages { get; set; }

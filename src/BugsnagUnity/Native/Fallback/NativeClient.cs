@@ -29,16 +29,16 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            AddIsLaunching(app);
-            app.AddToPayload("lowMemory", _hasReceivedLowMemoryWarning);
         }
 
-        private void AddIsLaunching(App app)
+        public void PopulateAppWithState(AppWithState app)
         {
-            if (!app.ContainsKey("durationInForeground"))
-            {
-                return;
-            }
+            AddIsLaunching(app);
+            app.Add("lowMemory", _hasReceivedLowMemoryWarning);
+        }
+
+        private void AddIsLaunching(AppWithState app)
+        {
             bool isLaunching;
             if (Configuration.LaunchDurationMillis == 0)
             {
@@ -46,12 +46,16 @@ namespace BugsnagUnity
             }
             else
             {
-                isLaunching = app.DurationInForeground.Milliseconds < Configuration.LaunchDurationMillis;
+                isLaunching = app.DurationInForeground?.Milliseconds < Configuration.LaunchDurationMillis;
             }
             app.IsLaunching = isLaunching;
         }
 
         public void PopulateDevice(Device device)
+        {
+        }
+
+        public void PopulateDeviceWithState(DeviceWithState device)
         {
         }
 
@@ -125,5 +129,6 @@ namespace BugsnagUnity
         {
             return null;
         }
+
     }
 }

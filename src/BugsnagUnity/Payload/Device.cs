@@ -7,257 +7,299 @@ using UnityEngine;
 namespace BugsnagUnity.Payload
 {
     
-    public class Device : PayloadHolder
+    public class Device : PayloadContainer
     {
 
-        private IConfiguration _configuration;
-        
-        public ulong? FreeDisk
-        {
-            get {
-                if (HasKey("freeDisk"))
-                {
-                    return (ulong)Payload.Get("freeDisk");
-                }
-                else
-                {
-                    return null;
-                }                
-            }
-            set => Add("freeDisk", value);
-        }
+        private const string BROWSER_NAME_KEY = "browserName";
+        private const string BROWSER_VERSION_KEY = "browserVersion";
+        private const string CPU_ABI_KEY = "cpuAbi";
+        private const string HOSTNAME_KEY = "hostName";
+        private const string ID_KEY = "id";
+        private const string JAILBROKEN_KEY = "jailbroken";
+        private const string LOCALE_KEY = "locale";
+        private const string MANUFACTURER_KEY = "manufacturer";
+        private const string MODEL_KEY = "model";
+        private const string MODEL_NUMBER_KEY = "modelNumber";
+        private const string OS_NAME_KEY = "osName";
+        private const string OS_VERSION_KEY = "osVersion";
+        private const string RUNTIME_VERSIONS_KEY = "runtimeVersions";
+        private const string TOTAL_MEMORY_KEY = "totalMemory";
+        private const string USER_AGENT_KEY = "userAgent";
+        private const string SCREEN_DENSITY_KEY = "screenDensity";
+        private const string SCREEN_RESOLUTION_KEY = "screenResolution";
 
-        public ulong? FreeMemory
+        //Player prefs id for Bugsnag generated device id
+        private const string GENERATED_ID_KEY = "GENERATED_ID_KEY";
+
+        //public mutable values exposed in callbacks
+        public string BrowserName
         {
             get
             {
-                if (HasKey("freeMemory"))
+                if (HasKey(BROWSER_NAME_KEY))
                 {
-                    return (ulong)Payload.Get("freeMemory");
+                    return (string)Payload.Get(BROWSER_NAME_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("freeMemory", value);
+            set => Add(BROWSER_NAME_KEY, value);
+        }
+
+        public string BrowserVersion
+        {
+            get
+            {
+                if (HasKey(BROWSER_VERSION_KEY))
+                {
+                    return (string)Payload.Get(BROWSER_VERSION_KEY);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set => Add(BROWSER_VERSION_KEY, value);
+        }
+
+        public string[] CpuAbi
+        {
+            get
+            {
+                if (HasKey(CPU_ABI_KEY))
+                {
+                    return (string[])Payload.Get(CPU_ABI_KEY);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set => Add(CPU_ABI_KEY, value);
+        }
+
+        public string HostName
+        {
+            get
+            {
+                if (HasKey(HOSTNAME_KEY))
+                {
+                    return Payload.Get(HOSTNAME_KEY) as string;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set => Add(HOSTNAME_KEY, value);
         }
 
         public string Id
         {
             get
             {
-                if (HasKey("id"))
+                if (HasKey(ID_KEY))
                 {
-                    return Payload.Get("id") as string;
+                    return (string)Payload.Get(ID_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("id", value);
+            set => Add(ID_KEY, value);
         }
 
         public bool? JailBroken
         {
             get
             {
-                if (HasKey("jailBroken"))
+                if (HasKey(JAILBROKEN_KEY))
                 {
-                    return (bool)Payload.Get("jailBroken");
+                    return (bool)Payload.Get(JAILBROKEN_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("jailBroken", value);
+            set => Add(JAILBROKEN_KEY, value);
         }
 
         public string Locale
         {
             get
             {
-                if (HasKey("locale"))
+                if (HasKey(LOCALE_KEY))
                 {
-                    return Payload.Get("locale") as string;
+                    return (string)Payload.Get(LOCALE_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("locale", value);
+            set => Add(LOCALE_KEY, value);
         }
 
         public string Manufacturer
         {
             get
             {
-                if (HasKey("manufacturer"))
+                if (HasKey(MANUFACTURER_KEY))
                 {
-                    return Payload.Get("manufacturer") as string;
+                    return (string)Payload.Get(MANUFACTURER_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("manufacturer", value);
+            set => Add(MANUFACTURER_KEY, value);
         }
 
         public string Model
         {
             get
             {
-                if (HasKey("model"))
+                if (HasKey(MODEL_KEY))
                 {
-                    return Payload.Get("model") as string;
+                    return (string)Payload.Get(MODEL_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("model", value);
+            set => Add(MODEL_KEY, value);
         }
 
         public string ModelNumber
         {
             get
             {
-                if (HasKey("modelNumber"))
+                if (HasKey(MODEL_NUMBER_KEY))
                 {
-                    return Payload.Get("modelNumber") as string;
+                    return (string)Payload.Get(MODEL_NUMBER_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("modelNumber", value);
-        }
-
-        public string Orientation
-        {
-            get
-            {
-                if (HasKey("orientation"))
-                {
-                    return Payload.Get("orientation") as string;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            set => Add("orientation", value);
+            set => Add(MODEL_NUMBER_KEY, value);
         }
 
         public string OsName
         {
             get
             {
-                if (HasKey("osName"))
+                if (HasKey(OS_NAME_KEY))
                 {
-                    return Payload.Get("osName") as string;
+                    return (string)Payload.Get(OS_NAME_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("osName", value);
+            set => Add(OS_NAME_KEY, value);
         }
 
         public string OsVersion
         {
             get
             {
-                if (HasKey("osVersion"))
+                if (HasKey(OS_VERSION_KEY))
                 {
-                    return Payload.Get("osVersion") as string;
+                    return (string)Payload.Get(OS_VERSION_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("osVersion", value);
+            set => Add(OS_VERSION_KEY, value);
         }
 
         public Dictionary<string, object> RuntimeVersions
         {
             get
             {
-                if (HasKey("runtimeVersions"))
+                if (HasKey(RUNTIME_VERSIONS_KEY))
                 {
-                    return (Dictionary<string,object>)Payload.Get("runtimeVersions");
+                    return (Dictionary<string,object>)Payload.Get(RUNTIME_VERSIONS_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("runtimeVersions", value);
-        }
-
-        public DateTime? Time
-        {
-            get
-            {
-                if (HasKey("time"))
-                {
-                    return (DateTime)Payload.Get("time");
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            set => Add("time", value);
+            set => Add(RUNTIME_VERSIONS_KEY, value);
         }
 
         public int? TotalMemory
         {
             get
             {
-                if (HasKey("totalMemory"))
+                if (HasKey(TOTAL_MEMORY_KEY))
                 {
-                    return (int)Payload.Get("totalMemory");
+                    return (int)Payload.Get(TOTAL_MEMORY_KEY);
                 }
                 else
                 {
                     return null;
                 }
             }
-            set => Add("TotalMemory", value);
+            set => Add(TOTAL_MEMORY_KEY, value);
         }
+
+        public string UserAgent
+        {
+            get
+            {
+                if (HasKey(USER_AGENT_KEY))
+                {
+                    return (string)Payload.Get(USER_AGENT_KEY);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set => Add(USER_AGENT_KEY, value);
+        }
+
 
         internal Device(IConfiguration configuration)
         {
-
-            _configuration = configuration;
-
+            //callback mutable values
+            HostName = configuration.HostName;
             TotalMemory = SystemInfo.systemMemorySize;
-
             Locale = CultureInfo.CurrentCulture.ToString();
-
-            Time = DateTime.UtcNow;
-
-            AddBatteryLevel();
-
             AddOsInfo();
+            AddRuntimeVersions(configuration);
+            if (configuration.GenerateAnonymousId)
+            {
+                Id = GetGeneratedDeviceId();
+            }
+            Model = SystemInfo.deviceModel;
 
-            AddRuntimeVersions();
-
-            Add("charging", SystemInfo.batteryStatus.Equals(BatteryStatus.Charging));
-            Add("screenDensity", Screen.dpi);
+            //hidden non-mutable values
+            Add(SCREEN_DENSITY_KEY, Screen.dpi);
             var res = Screen.currentResolution;
-            Add("screenResolution", string.Format("{0}x{1}", res.width, res.height));
+            Add(SCREEN_RESOLUTION_KEY, string.Format("{0}x{1}", res.width, res.height));
+        }
 
-            
+        private string GetGeneratedDeviceId()
+        {
+            if (!PlayerPrefs.HasKey(GENERATED_ID_KEY))
+            {
+                PlayerPrefs.SetString(GENERATED_ID_KEY, Guid.NewGuid().ToString());
+            }
+            return PlayerPrefs.GetString(GENERATED_ID_KEY);
         }
 
         private void AddOsInfo()
@@ -279,23 +321,14 @@ namespace BugsnagUnity.Payload
 
         }
 
-        private void AddBatteryLevel()
-        {
-            if (SystemInfo.batteryLevel > -1)
-            {
-                Add("batteryLevel",SystemInfo.batteryLevel);
-            }
-        }
-
-        private void AddRuntimeVersions()
+        private void AddRuntimeVersions(IConfiguration configuration)
         {
             RuntimeVersions = new Dictionary<string, object>();
-            RuntimeVersions.AddToPayload("unityScriptingBackend", _configuration.ScriptingBackend);
-            RuntimeVersions.AddToPayload("dotnetScriptingRuntime", _configuration.DotnetScriptingRuntime);
-            RuntimeVersions.AddToPayload("dotnetApiCompatibility", _configuration.DotnetApiCompatibility);
+            RuntimeVersions.AddToPayload("unityScriptingBackend", configuration.ScriptingBackend);
+            RuntimeVersions.AddToPayload("dotnetScriptingRuntime", configuration.DotnetScriptingRuntime);
+            RuntimeVersions.AddToPayload("dotnetApiCompatibility", configuration.DotnetApiCompatibility);
             RuntimeVersions.AddToPayload("unity", Application.unityVersion);
         }
-
 
     }
 }

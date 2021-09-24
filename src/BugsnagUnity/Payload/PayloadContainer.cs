@@ -3,7 +3,10 @@ using System.Collections.Generic;
 
 namespace BugsnagUnity.Payload
 {
-    public class PayloadHolder
+
+    // When unity is able to use newer versions of C# we should add a generic Get method here that can return T?, unfortunatly that's not possible right now
+
+    public class PayloadContainer
     {
         internal Dictionary<string, object> Payload = new Dictionary<string, object>();
 

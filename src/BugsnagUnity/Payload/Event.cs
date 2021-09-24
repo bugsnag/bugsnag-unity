@@ -9,7 +9,7 @@ namespace BugsnagUnity.Payload
 
         internal HandledState OriginalSeverity { get; }
 
-        internal Event(string context, Metadata metadata, App app, Device device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session, LogType? logType = null)
+        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session, LogType? logType = null)
         {
             OriginalSeverity = handledState;
             Metadata = metadata;
@@ -18,7 +18,7 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("context", context);
             this.AddToPayload("payloadVersion", 4);
             this.AddToPayload("exceptions", exceptions);
-            this.AddToPayload("app", app);
+            this.AddToPayload("app", app.Payload);
             this.AddToPayload("device", device.Payload);
             this.AddToPayload("metaData", Metadata);
             this.AddToPayload("breadcrumbs", breadcrumbs);
@@ -63,7 +63,7 @@ namespace BugsnagUnity.Payload
 
         internal App App
         {
-            get { return this.Get("app") as App; }
+            get { return this.Get("app") as AppWithState; }
         }
 
         internal IEnumerable<Breadcrumb> Breadcrumbs
@@ -77,7 +77,7 @@ namespace BugsnagUnity.Payload
             set => this.AddToPayload("context", value);
         }
 
-        internal Device Device => this.Get("device") as Device;
+        internal Device Device => this.Get("device") as DeviceWithState;
 
         internal Exception[] Exceptions => this.Get("exceptions") as Exception[];
 

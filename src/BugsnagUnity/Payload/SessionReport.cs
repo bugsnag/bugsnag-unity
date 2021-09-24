@@ -19,8 +19,8 @@ namespace BugsnagUnity.Payload
         new KeyValuePair<string, string>("Bugsnag-Payload-Version", Configuration.SessionPayloadVersion),
       };
             this.AddToPayload("notifier", NotifierInfo.Instance);
-            this.AddToPayload("app", app);
-            this.AddToPayload("device", device);
+            this.AddToPayload("app", app.Payload);
+            this.AddToPayload("device", device.Payload);
             this.AddToPayload("sessions", new Session[] { new Session(user, session) });
         }
 

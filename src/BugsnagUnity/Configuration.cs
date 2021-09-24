@@ -23,7 +23,11 @@ namespace BugsnagUnity
 
         public bool SendLaunchCrashesSynchronously { get; set; } = true;
 
+        public bool GenerateAnonymousId { get; set; } = true;
+
         public bool PersistUser { get; set; }
+
+        public string HostName { get; set; }
 
         public bool KeyIsRedacted(string key)
         {

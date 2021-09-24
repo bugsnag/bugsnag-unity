@@ -30,10 +30,22 @@ namespace BugsnagUnity
         void PopulateApp(App app);
 
         /// <summary>
+        /// Populates the native app information
+        /// </summary>
+        /// <returns></returns>
+        void PopulateAppWithState(AppWithState app);
+
+        /// <summary>
         /// Populates the native device information
         /// </summary>
         /// <returns></returns>
         void PopulateDevice(Device device);
+
+        /// <summary>
+        /// Populates the native device information
+        /// </summary>
+        /// <returns></returns>
+        void PopulateDeviceWithState(DeviceWithState device);
 
         /// <summary>
         /// Adds the metadata to the native clients metadata

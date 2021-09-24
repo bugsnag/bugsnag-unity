@@ -149,13 +149,18 @@ namespace BugsnagUnity
             }
         }
 
+        public void PopulateAppWithState(AppWithState app)
+        {
+            PopulateApp(app);
+        }
+
         [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
         static void PopulateAppData(IntPtr instance, string key, string value)
         {
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is App app)
             {
-                app.AddToPayload(key, value);
+                app.Add(key, value);
             }
         }
 
@@ -171,6 +176,11 @@ namespace BugsnagUnity
             {
                 handle.Free();
             }
+        }
+
+        public void PopulateDeviceWithState(DeviceWithState device)
+        {
+            PopulateDevice(device);
         }
 
         [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]

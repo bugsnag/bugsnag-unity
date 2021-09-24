@@ -297,15 +297,15 @@ namespace BugsnagUnity
             }
 
             var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
-            var app = new App(Configuration)
+            var app = new AppWithState(Configuration)
             {
                 InForeground = InForeground,
                 DurationInForeground = ForegroundStopwatch.Elapsed,
             };
-            NativeClient.PopulateApp(app);
+            NativeClient.PopulateAppWithState(app);
 
-            var device = new Device(Configuration);
-            NativeClient.PopulateDevice(device);
+            var device = new DeviceWithState(Configuration);
+            NativeClient.PopulateDeviceWithState(device);
 
             var metadata = new Metadata();
             NativeClient.PopulateMetadata(metadata);
