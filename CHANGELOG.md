@@ -1,10 +1,6 @@
 # Changelog
 
-## TBD
-
-### Deprecated
-
-* `Bugsnag.StopSession` has been deprecated in favour of `Bugsnag.PauseSession` and will be removed in the next major release.
+## 5.4.0 (2021-09-27)
 
 ### Enhancements
 
@@ -46,7 +42,6 @@
     [bugsnag-android#1375](https://github.com/bugsnag/bugsnag-android/pull/1375)
 
 
-
 * Add new automatically collected Device data to Windows, WebGL and Unity Editor events: `batteryLevel, charging, id, model, screenDensity, screenResolution, totalMemory` [#390](https://github.com/bugsnag/bugsnag-unity/pull/390)
 
 * Add new automatically collected App data to Windows, WebGL and Unity Editor events: `duration, id, isLaunching, lowMemory` [#390](https://github.com/bugsnag/bugsnag-unity/pull/390)
@@ -58,6 +53,10 @@
 * Add `Configuration.SendLaunchCrashesSynchronously` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#launchdurationmillis) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#launchdurationmillis) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
 
 * Add `Configuration.LaunchDurationMillis` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendlaunchcrashessynchronously) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendlaunchcrashessynchronously) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
+
+### Deprecated
+
+* `Bugsnag.StopSession` has been deprecated in favour of `Bugsnag.PauseSession` and will be removed in the next major release.
 
 ### Bug fixes
 
