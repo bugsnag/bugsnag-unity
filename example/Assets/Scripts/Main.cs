@@ -60,10 +60,7 @@ public class Main : MonoBehaviour
 		JvmException,
 		ApplicationNotResponding,
 		OutOfMemory,
-		AppHang,
-		StartSession,
-		PauseSession,
-		ResumeSession;
+		AppHang;
 
 	void Start()
 	{
@@ -80,13 +77,7 @@ public class Main : MonoBehaviour
 		ApplicationNotResponding.GetComponent<Button>().onClick.AddListener(OnApplicationNotRespondingClick);
 		OutOfMemory.GetComponent<Button>().onClick.AddListener(OnOutOfMemoryClick);
 		AppHang.GetComponent<Button>().onClick.AddListener(OnAppHangClick);
-		StartSession.GetComponent<Button>().onClick.AddListener(Bugsnag.StartSession);
-		PauseSession.GetComponent<Button>().onClick.AddListener(Bugsnag.PauseSession);
-		ResumeSession.GetComponent<Button>().onClick.AddListener(()=> { Bugsnag.ResumeSession(); });
-
 	}
-
-	
 
 	private void OnManagedCrashClick()
 	{
