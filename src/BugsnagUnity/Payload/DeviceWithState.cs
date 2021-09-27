@@ -10,8 +10,7 @@ namespace BugsnagUnity.Payload
         private const string FREE_MEMORY_KEY = "freeMemory";
         private const string ORIENTATION_KEY = "orientation";
         private const string TIME_KEY = "time";
-        private const string CHARGING_KEY = "charging";
-        private const string BATTERY_LEVEL_KEY = "batteryLevel";
+    
 
 
         public ulong? FreeDisk
@@ -40,21 +39,10 @@ namespace BugsnagUnity.Payload
 
         public DeviceWithState(IConfiguration configuration) : base(configuration)
         {
-            //callback mutable values
             Orientation = Input.deviceOrientation.ToString();
             Time = DateTime.UtcNow;
-
-            //hidden non-mutable values
-            AddBatteryLevel();
-            Add(CHARGING_KEY, SystemInfo.batteryStatus.Equals(BatteryStatus.Charging));
         }
 
-        private void AddBatteryLevel()
-        {
-            if (SystemInfo.batteryLevel > -1)
-            {
-                Add(BATTERY_LEVEL_KEY, SystemInfo.batteryLevel);
-            }
-        }
+       
     }
 }

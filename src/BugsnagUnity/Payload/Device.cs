@@ -25,8 +25,6 @@ namespace BugsnagUnity.Payload
         private const string RUNTIME_VERSIONS_KEY = "runtimeVersions";
         private const string TOTAL_MEMORY_KEY = "totalMemory";
         private const string USER_AGENT_KEY = "userAgent";
-        private const string SCREEN_DENSITY_KEY = "screenDensity";
-        private const string SCREEN_RESOLUTION_KEY = "screenResolution";
 
         //Player prefs id for Bugsnag generated device id
         private const string GENERATED_ID_KEY = "GENERATED_ID_KEY";
@@ -124,7 +122,6 @@ namespace BugsnagUnity.Payload
 
         internal Device(IConfiguration configuration)
         {
-            //callback mutable values
             HostName = configuration.HostName;
             TotalMemory = SystemInfo.systemMemorySize;
             Locale = CultureInfo.CurrentCulture.ToString();
@@ -135,11 +132,6 @@ namespace BugsnagUnity.Payload
                 Id = GetGeneratedDeviceId();
             }
             Model = SystemInfo.deviceModel;
-
-            //hidden non-mutable values
-            Add(SCREEN_DENSITY_KEY, Screen.dpi);
-            var res = Screen.currentResolution;
-            Add(SCREEN_RESOLUTION_KEY, string.Format("{0}x{1}", res.width, res.height));
         }
 
         private string GetGeneratedDeviceId()
