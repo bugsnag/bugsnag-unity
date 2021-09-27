@@ -10,7 +10,7 @@ Feature: iOS smoke tests for sessions
         And I wait to receive a session
 
         # Session payload
-        And the session payload field "notifier.name" equals "Unity Bugsnag Notifier"
+        And the session payload field "notifier.name" is not null
         And the session payload field "sessions" is an array with 1 elements
         And the session "user.id" is not null
         And the session payload field "sessions.0.user.id" is stored as the value "automated_user_id"
@@ -27,14 +27,9 @@ Feature: iOS smoke tests for sessions
 
         # Device data
         And the session payload field "device.locale" is not null
-        And the session payload field "device.timezone" is not null
         And the session payload field "device.osName" equals "iOS"
-        And the session payload field "device.time" is not null
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.runtimeVersions" is not null
-        And the session payload field "device.osVersion" is not null
-        And the session payload field "device.freeDisk" is not null
-        And the session payload field "device.freeMemory" is not null
         And the session payload field "device.id" is not null
         And the session payload field "device.jailbroken" is not null
         And the session payload field "device.manufacturer" equals "Apple"
@@ -51,6 +46,6 @@ Feature: iOS smoke tests for sessions
         And the error payload field "events.0.user.id" equals the stored value "automated_user_id"
         And the error payload field "events.0.device.id" equals the stored value "automated_user_id"
         And the event "session.id" is not null
-        And the error payload field "events.0.session.id" equals the stored value "automated_session_id"
+        And the error payload field "events.0.session.id" equals the stored value "automated_session_id" ignoring case
         And the event "session.events.handled" equals 1
         And the event "session.events.unhandled" equals 0

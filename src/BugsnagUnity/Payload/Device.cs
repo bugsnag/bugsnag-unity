@@ -12,6 +12,9 @@ namespace BugsnagUnity.Payload
     /// </summary>
     public class Device : Dictionary<string, object>, IFilterable
     {
+
+        private const string DEVICE_ID_KEY = "BUGSNAG_DEVICE_ID_KEY";
+
         private static string UnityVersion;
         internal static void InitUnityVersion()
         {
@@ -31,6 +34,13 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("timezone", TimeZone.CurrentTimeZone.StandardName);
             this.AddToPayload("osName", OsName);
             this.AddToPayload("time", DateTime.UtcNow);
+            AddBatteryLevel();
+            this.AddToPayload("charging", SystemInfo.batteryStatus.Equals(BatteryStatus.Charging));
+            this.AddToPayload("id", GetDeviceID());
+            this.AddToPayload("screenDensity", Screen.dpi);
+            var res = Screen.currentResolution;
+            this.AddToPayload("screenResolution", string.Format("{0}x{1}", res.width, res.height));
+            this.AddToPayload("totalMemory", SystemInfo.systemMemorySize);
 
             // we expect that windows version strings look like:
             // "Microsoft Windows NT 10.0.17134.0"
@@ -47,6 +57,16 @@ namespace BugsnagUnity.Payload
       };
             this.AddToPayload("runtimeVersions", versions);
         }
+
+        private void AddBatteryLevel()
+        {
+            if (SystemInfo.batteryLevel > -1)
+            {
+                this.AddToPayload("batteryLevel",SystemInfo.batteryLevel);
+            }
+        }
+
+       
 
         internal void AddRuntimeVersions(IConfiguration config)
         {
@@ -72,6 +92,20 @@ namespace BugsnagUnity.Payload
             get
             {
                 return Environment.OSVersion.VersionString;
+            }
+        }
+
+        private string GetDeviceID()
+        {
+            if (!PlayerPrefs.HasKey(DEVICE_ID_KEY))
+            {
+                var newDeviceId = Guid.NewGuid().ToString();
+                PlayerPrefs.SetString(DEVICE_ID_KEY, newDeviceId);
+                return newDeviceId;
+            }
+            else
+            {
+                return PlayerPrefs.GetString(DEVICE_ID_KEY,string.Empty);
             }
         }
     }

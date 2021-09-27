@@ -13,6 +13,28 @@ Feature: Handled Errors and Exceptions
             | Main.RunScenario(string scenario)  |
             | Main.Start()        |
 
+    Scenario: Calling notify with a custom stacktrace
+        When I run the game in the "CustomStacktrace" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "Exception"
+        And the exception "message" equals "CUSTOM"
+        And the event "unhandled" is false
+        And the first significant stack frame methods and files should match:
+            | Main.CUSTOM()      |
+            | Main.CUSTOM()  |
+
+    Scenario: Calling notify with only strings
+        When I run the game in the "NotifyWithStrings" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "CUSTOM"
+        And the exception "message" equals "CUSTOM"
+        And the event "unhandled" is false
+        And the first significant stack frame methods and files should match:
+            | Main.CUSTOM()      |
+            | Main.CUSTOM()  |
+
     @skip_webgl
     Scenario: Reporting a handled exception from a background thread
         When I run the game in the "NotifyBackground" state
@@ -27,7 +49,7 @@ Feature: Handled Errors and Exceptions
         And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
         And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
         And the event "app.type" equals the platform-dependent string:
-            | macos | Mac OS |
+            | macos | MacOS |
             | windows | Windows |
         And the first significant stack frame methods and files should match:
             | Main.DoNotify()           |

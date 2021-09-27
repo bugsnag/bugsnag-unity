@@ -9,7 +9,11 @@ namespace BugsnagUnity
     {
         string ApiKey { get; }
 
+        long LaunchDurationMillis { get; set; }
+
         bool ReportUncaughtExceptionsAsHandled { get; set; }
+
+        bool SendLaunchCrashesSynchronously { get; set; }
 
         string[] DiscardClasses { get; set; }
 

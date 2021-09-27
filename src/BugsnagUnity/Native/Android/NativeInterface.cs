@@ -13,6 +13,7 @@ namespace BugsnagUnity
         private IntPtr BugsnagNativeInterface;
         private IntPtr BugsnagUnityClass;
         // Cache of classes used:
+        private IntPtr LastRunInfoClass;
         private IntPtr BreadcrumbClass;
         private IntPtr BreadcrumbTypeClass;
         private IntPtr CollectionClass;
@@ -24,6 +25,7 @@ namespace BugsnagUnity
         private IntPtr MapEntryClass;
         private IntPtr SetClass;
         private IntPtr StringClass;
+        private IntPtr SessionClass;
         // Cache of methods used:
         private IntPtr BreadcrumbGetMessage;
         private IntPtr BreadcrumbGetMetadata;
@@ -39,6 +41,7 @@ namespace BugsnagUnity
         private IntPtr ObjectGetClass;
         private IntPtr ObjectToString;
         private IntPtr ToIso8601;
+
 
 
         private bool CanRunOnBackgroundThread;
@@ -84,6 +87,10 @@ namespace BugsnagUnity
                 BreadcrumbClass = AndroidJNI.NewGlobalRef(crumbRef);
                 AndroidJNI.DeleteLocalRef(crumbRef);
 
+                IntPtr lastRunInfoRef = AndroidJNI.FindClass("com/bugsnag/android/LastRunInfo");
+                LastRunInfoClass = AndroidJNI.NewGlobalRef(lastRunInfoRef);
+                AndroidJNI.DeleteLocalRef(lastRunInfoRef);
+
                 IntPtr crumbTypeRef = AndroidJNI.FindClass("com/bugsnag/android/BreadcrumbType");
                 BreadcrumbTypeClass = AndroidJNI.NewGlobalRef(crumbTypeRef);
                 AndroidJNI.DeleteLocalRef(crumbTypeRef);
@@ -108,7 +115,7 @@ namespace BugsnagUnity
                 DateClass = AndroidJNI.NewGlobalRef(dateRef);
                 AndroidJNI.DeleteLocalRef(dateRef);
 
-                IntPtr dateUtilsRef = AndroidJNI.FindClass("com/bugsnag/android/DateUtils");
+                IntPtr dateUtilsRef = AndroidJNI.FindClass("com/bugsnag/android/internal/DateUtils");
                 DateUtilsClass = AndroidJNI.NewGlobalRef(dateUtilsRef);
 
                 IntPtr entryRef = AndroidJNI.FindClass("java/util/Map$Entry");
@@ -122,6 +129,10 @@ namespace BugsnagUnity
                 IntPtr stringRef = AndroidJNI.FindClass("java/lang/String");
                 StringClass = AndroidJNI.NewGlobalRef(stringRef);
                 AndroidJNI.DeleteLocalRef(stringRef);
+
+                IntPtr sessionRef = AndroidJNI.FindClass("com/bugsnag/android/Session");
+                SessionClass = AndroidJNI.NewGlobalRef(sessionRef);
+                AndroidJNI.DeleteLocalRef(sessionRef);
 
                 BreadcrumbGetMetadata = AndroidJNI.GetMethodID(BreadcrumbClass, "getMetadata", "()Ljava/util/Map;");
                 BreadcrumbGetType = AndroidJNI.GetMethodID(BreadcrumbClass, "getType", "()Lcom/bugsnag/android/BreadcrumbType;");
@@ -183,13 +194,15 @@ namespace BugsnagUnity
                 obj.Call("setEnabledErrorTypes", errorTypes);
             }
 
-            obj.Call("setAutoTrackSessions", false);
+            obj.Call("setAutoTrackSessions", config.AutoTrackSessions);
             obj.Call("setAutoDetectErrors", config.AutoDetectErrors);
             obj.Call("setAppVersion", config.AppVersion);
             obj.Call("setContext", config.Context);
             obj.Call("setMaxBreadcrumbs", config.MaximumBreadcrumbs);
             obj.Call("setMaxPersistedEvents", config.MaxPersistedEvents);
             obj.Call("setPersistUser", config.PersistUser);
+            obj.Call("setLaunchDurationMillis", config.LaunchDurationMillis);
+            obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
 
             // set endpoints
             var notify = config.Endpoints.Notify.ToString();
@@ -294,8 +307,17 @@ namespace BugsnagUnity
         {
             using (AndroidJavaObject notifier = client.Get<AndroidJavaObject>("notifier"))
             {
+
+                AndroidJavaObject androidNotifier = new AndroidJavaObject("com.bugsnag.android.Notifier");
+                androidNotifier.Call("setUrl", androidNotifier.Get<string>("url"));
+                androidNotifier.Call("setName", androidNotifier.Get<string>("name"));
+                androidNotifier.Call("setVersion", androidNotifier.Get<string>("version"));
+                AndroidJavaObject list = new AndroidJavaObject("java.util.ArrayList");
+                list.Call<Boolean>("add", androidNotifier);
+                notifier.Call("setDependencies", list);
+
                 notifier.Call("setUrl", NotifierInfo.NotifierUrl);
-                notifier.Call("setName", "Bugsnag Unity (Android)");
+                notifier.Call("setName", "Unity Bugsnag Notifier");
                 notifier.Call("setVersion", NotifierInfo.NotifierVersion);
             }
         }
@@ -358,24 +380,58 @@ namespace BugsnagUnity
             }
         }
 
-        public void SetSession(Session session)
+        public void StartSession()
         {
-            if (session == null)
-            {
-                // Clear session
-                CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
-          IntPtr.Zero, IntPtr.Zero, 0, 0
-        });
-            }
-            else
+            CallNativeVoidMethod("startSession", "()V", new object[] {  });
+        }
+
+        public bool ResumeSession()
+        {
+            return CallNativeBoolMethod("resumeSession", "()Z", new object[] { });
+        }
+
+        public void PauseSession()
+        {
+            CallNativeVoidMethod("pauseSession", "()V", new object[] { });
+        }
+
+        public void UpdateSession(Session session)
+        {
+            if (session != null)
             {
                 // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
                 var startedAt = (long)(session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalMilliseconds;
                 CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
-          startedAt, session.Id.ToString(), session.UnhandledCount(),
-          session.HandledCount()
-        });
+                    startedAt, session.Id.ToString(), session.UnhandledCount(),
+                    session.HandledCount()
+                });
             }
+        }
+
+        public Session GetCurrentSession()
+        {
+            var javaSession = CallNativeObjectMethodRef("getCurrentSession", "()Lcom/bugsnag/android/Session;", new object[] { });
+
+            var id = AndroidJNI.CallStringMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getId"), new jvalue[] { });
+
+            if (id == null)
+            {
+                return null;
+            }
+
+            var javaStartedAt = AndroidJNI.CallObjectMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getStartedAt"), new jvalue[] { });
+            var unhandledCount = AndroidJNI.CallIntMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getUnhandledCount"), new jvalue[] { });
+            var handledCount = AndroidJNI.CallIntMethod(javaSession, AndroidJNIHelper.GetMethodID(SessionClass, "getHandledCount"), new jvalue[] { });
+            var timeLong = AndroidJNI.CallLongMethod(javaStartedAt, AndroidJNIHelper.GetMethodID(DateClass, "getTime"), new jvalue[] { });
+            var unityDateTime = new DateTime(1970, 1, 1).AddMilliseconds(timeLong);
+
+            return new Session(id, unityDateTime, unhandledCount, handledCount);
+
+        }
+
+        public void MarkLaunchCompleted()
+        {
+            CallNativeVoidMethod("markLaunchCompleted", "()V", new object[] {});
         }
 
         public Dictionary<string, object> GetApp()
@@ -646,6 +702,31 @@ namespace BugsnagUnity
             return value;
         }
 
+        private bool CallNativeBoolMethod(string methodName, string methodSig, object[] args)
+        {
+            if (!CanRunJNI())
+            {
+                return false;
+            }
+            bool isAttached = bsg_unity_isJNIAttached();
+            if (!isAttached)
+            {
+                AndroidJNI.AttachCurrentThread();
+            }
+
+            object[] convertedArgs = ConvertStringArgsToNative(args);
+            jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(convertedArgs);
+            IntPtr methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
+            bool nativeValue = AndroidJNI.CallStaticBooleanMethod(BugsnagNativeInterface, methodID, jargs);
+            AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+            ReleaseConvertedStringArgs(args, convertedArgs);
+            if (!isAttached)
+            {
+                AndroidJNI.DetachCurrentThread();
+            }
+            return nativeValue;
+        }
+
         [DllImport("bugsnag-unity")]
         private static extern bool bsg_unity_isJNIAttached();
 
@@ -815,5 +896,21 @@ namespace BugsnagUnity
 
             return dict;
         }
+
+        public LastRunInfo GetlastRunInfo()
+        {
+            var javaLastRunInfo = CallNativeObjectMethodRef("getLastRunInfo", "()Lcom/bugsnag/android/LastRunInfo;", new object[] { });
+            var crashed = AndroidJNI.GetBooleanField(javaLastRunInfo , AndroidJNIHelper.GetFieldID(LastRunInfoClass,"crashed"));
+            var consecutiveLaunchCrashes = AndroidJNI.GetIntField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "consecutiveLaunchCrashes"));
+            var crashedDuringLaunch = AndroidJNI.GetBooleanField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "crashedDuringLaunch"));
+            var lastRunInfo = new LastRunInfo
+            {
+                ConsecutiveLaunchCrashes = consecutiveLaunchCrashes,
+                Crashed = crashed,
+                CrashedDuringLaunch = crashedDuringLaunch
+            };
+            return lastRunInfo;
+        }
+
     }
 }

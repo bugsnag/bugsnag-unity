@@ -1,5 +1,5 @@
 #import "Bugsnag.h"
-#import "BugsnagConfiguration.h"
+#import "BugsnagConfiguration+Private.h"
 #import "BugsnagLogger.h"
 #import "BugsnagUser.h"
 #import "BugsnagNotifier.h"
@@ -11,6 +11,7 @@
 #import "BSG_KSCrash.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagBreadcrumb+Private.h"
+#import "BugsnagSession+Private.h"
 
 extern "C" {
   struct bugsnag_user {
@@ -27,6 +28,8 @@ extern "C" {
 
   void bugsnag_setPersistUser(const void *configuration, bool persistUser);
 
+  void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously);
+
   void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
   void bugsnag_setAutoNotify(bool autoNotify);
@@ -36,32 +39,40 @@ extern "C" {
   void bugsnag_setAppType(const void *configuration, char *appType);
 
   void bugsnag_setContext(const void *configuration, char *context);
+  
   void bugsnag_setContextConfig(const void *configuration, char *context);
 
   void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
+
   void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
 
   void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
 
   void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy);
 
-  void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL);
+  void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL);
 
   void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
+
   void bugsnag_removeMetadata(const void *configuration, const char *tab);
+
   void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab, const char *keys[], int keys_size, const char *values[], int values_size));
+
+  void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes));
 
   void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
   void bugsnag_addBreadcrumb(char *name, char *type, char *metadata[], int metadataCount);
+
   void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size));
 
   void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
+
   void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
 
   void bugsnag_populateUser(bugsnag_user *user);
+
   void bugsnag_setUser(char *userId, char *userName, char *userEmail);
-  void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 
   void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
 
@@ -69,17 +80,59 @@ extern "C" {
 
   void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count);
 
+  void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions);
 
   void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
 
+  void bugsnag_markLaunchCompleted();
 
+  void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis);
+
+  void bugsnag_startSession();
+
+  void bugsnag_pauseSession();
+
+  bool bugsnag_resumeSession();
+
+  void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled));
+
+  void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
+
+}
+
+void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
+    BugsnagSessionTracker *tracker = Bugsnag.client.sessionTracker;
+    [tracker registerExistingSession:sessionId == NULL ? nil : [NSString stringWithUTF8String:sessionId]
+                           startedAt:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)startedAt]
+                                user:Bugsnag.user
+                        handledCount:(NSUInteger)handledCount
+                      unhandledCount:(NSUInteger)unhandledCount];
+}
+
+void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
+ 
+    if([Bugsnag client].sessionTracker.runningSession == NULL)
+    {
+      callback(session, NULL, NULL, 0, 0);
+      return;
+    }
+    NSDictionary * sessionDict = [[Bugsnag client].sessionTracker.runningSession toDictionary];
+    const char *sessionId = [[sessionDict objectForKey:@"id"] UTF8String];
+    const char *timeString = [[sessionDict objectForKey:@"startedAt"] UTF8String];
+    int handled = [sessionDict[@"handledCount"] integerValue];
+    int unhandled = [sessionDict[@"unhandledCount"] integerValue];
+    callback(session, sessionId, timeString, handled, unhandled);
+
+}
+
+void bugsnag_markLaunchCompleted() {
+  [Bugsnag markLaunchCompleted];
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
   NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
   BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:ns_apiKey];
   config.apiKey = ns_apiKey;
-  config.autoTrackSessions = NO;
   return (void*)CFBridgingRetain(config);
 }
 
@@ -107,6 +160,10 @@ void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
 
 void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis) {
   ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
+}
+
+void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis) {
+  ((__bridge BugsnagConfiguration *)configuration).launchDurationMillis = launchDurationMillis;
 }
 
 void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion) {
@@ -273,21 +330,30 @@ void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
   ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
 }
 
+void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions) {
+  ((__bridge BugsnagConfiguration *)configuration).autoTrackSessions  = autoTrackSessions;
+}
+
 void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
   ((__bridge BugsnagConfiguration *)configuration).persistUser = persistUser;
+}
+
+void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously) {
+  ((__bridge BugsnagConfiguration *)configuration).sendLaunchCrashesSynchronously = sendLaunchCrashesSynchronously;
 }
 
 void bugsnag_setAutoNotify(bool autoNotify) {
   Bugsnag.client.autoNotify = autoNotify;
 }
 
-void bugsnag_setNotifyUrl(const void *configuration, char *notifyURL) {
-  if (notifyURL == NULL)
+void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL) {
+  if (notifyURL == NULL || sessionsURL == NULL)
     return;
+
   NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
-  ((__bridge BugsnagConfiguration *)configuration).endpoints.notify = ns_notifyURL;
-  // Workaround for endpoint stale-cache issue: Force-trigger re-processing by reassinging endpoint
-  ((__bridge BugsnagConfiguration *)configuration).endpoints = ((__bridge BugsnagConfiguration *)configuration).endpoints;
+  NSString *ns_sessionsURL = [NSString stringWithUTF8String: sessionsURL];
+
+  ((__bridge BugsnagConfiguration *)configuration).endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:ns_notifyURL sessions:ns_sessionsURL];
 }
 
 void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
@@ -345,16 +411,16 @@ void bugsnag_removeMetadata(const void *configuration, const char *tab) {
 }
 
 void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
+  if (notifierVersion) {
+    ((__bridge BugsnagConfiguration *)configuration).notifier =
+      [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
+                                    version:@(notifierVersion)
+                                        url:@"https://github.com/bugsnag/bugsnag-unity"
+                               dependencies:@[[[BugsnagNotifier alloc] init]]];
+  }
   [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
   // Memory introspection is unused in a C/C++ context
   [BSG_KSCrash sharedInstance].introspectMemory = NO;
-  if (notifierVersion != NULL) {
-    NSString *ns_version = [NSString stringWithUTF8String:notifierVersion];
-    BugsnagNotifier *notifier = Bugsnag.client.notifier;
-    notifier.version = ns_version;
-    notifier.name = @"Bugsnag Unity (Cocoa)";
-    notifier.url = @"https://github.com/bugsnag/bugsnag-unity";
-  }
 }
 
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadata[], int metadataCount) {
@@ -426,7 +492,23 @@ void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *i
 
   NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
   callback(appData, "version", [version UTF8String]);
+
+  BugsnagAppWithState *app = [[Bugsnag client] generateAppWithState:sysInfo];
+  NSString *isLaunching = app.isLaunching ? @"true" : @"false";
+  callback(appData, "isLaunching", [isLaunching UTF8String]);
+
 }
+
+void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)) {
+
+  int consecutiveLaunchCrashes = Bugsnag.lastRunInfo.consecutiveLaunchCrashes;
+  bool crashed = Bugsnag.lastRunInfo.crashed;
+  bool crashedDuringLaunch = Bugsnag.lastRunInfo.crashedDuringLaunch;
+
+  callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
+
+}
+
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
@@ -474,11 +556,14 @@ void bugsnag_setUser(char *userId, char *userName, char *userEmail) {
 + (BugsnagNotifier *)notifier;
 @end
 
-void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
-    BugsnagSessionTracker *tracker = Bugsnag.client.sessionTracker;
-    [tracker registerExistingSession:sessionId == NULL ? nil : [NSString stringWithUTF8String:sessionId]
-                           startedAt:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)startedAt]
-                                user:Bugsnag.user
-                        handledCount:(NSUInteger)handledCount
-                      unhandledCount:(NSUInteger)unhandledCount];
+void bugsnag_startSession() {
+    [Bugsnag startSession];
+}
+
+void bugsnag_pauseSession() {
+    [Bugsnag pauseSession];
+}
+
+bool bugsnag_resumeSession() {
+    return [Bugsnag resumeSession];
 }

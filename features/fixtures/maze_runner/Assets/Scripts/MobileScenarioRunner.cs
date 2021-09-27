@@ -38,6 +38,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"21", "Java Background Crash No Threads" },
         {"22", "iOS Native Error" },
         {"23", "iOS Native Error No Threads" },
+        {"24", "Mark Launch Complete" },
+        {"25", "Check Last Run Info" },
 
 
 
@@ -60,8 +62,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     private Configuration GetDefaultConfig()
     {
         Configuration config = new Configuration("12312312312312312312312312312312");
-        config.Endpoint = new Uri("http://bs-local.com:9339/notify");
-        config.SessionEndpoint = new Uri("http://bs-local.com:9339/sessions");
+        config.Endpoints = new EndpointConfiguration("http://bs-local.com:9339/notify", "http://bs-local.com:9339/sessions");
         config.Context = "My context";
         config.AppVersion = "1.2.3";
         config.BundleVersion = "1.2.3";
@@ -100,7 +101,6 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         // 1: Get the dial code
         var code = Dialled.text;
-        Debug.Log("RunScenario called, code is " + code);
         if (string.IsNullOrEmpty(code) || code.Length != 2)
         {
             throw new System.Exception("Code is empty or not correctly formatted: " + code);
@@ -186,6 +186,13 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Check Last Run Info":
+                CheckLastRunInfo();
+                break;
+            case "Mark Launch Complete":
+                Bugsnag.MarkLaunchCompleted();
+                ThrowException();
+                break;
             case "Android Persistence Directory":
                 CheckForCustomAndroidDir();
                 break;
@@ -264,6 +271,15 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             default:
                 throw new System.Exception("Unknown scenario: " + scenarioName);
+        }
+    }
+
+    private void CheckLastRunInfo()
+    {
+        var info = Bugsnag.GetLastRunInfo();
+        if (info.Crashed && info.CrashedDuringLaunch && info.ConsecutiveLaunchCrashes > 0)
+        {
+            Bugsnag.Notify(new System.Exception("Last Run Info Correct"));
         }
     }
 
@@ -347,13 +363,6 @@ public class MobileScenarioRunner : MonoBehaviour {
                 {"region", "US"}
             });
         });
-    }
-
-
-    public void StartSession()
-    {
-
-        Bugsnag.SessionTracking.StartSession();
     }
 
     public void SetUser()

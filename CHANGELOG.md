@@ -1,5 +1,69 @@
 # Changelog
 
+## 5.4.0 (2021-09-27)
+
+### Enhancements
+
+* Update bugsnag-cocoa to v6.12.2
+
+  * Stop dropping breadcrumbs when provided invalid metadata (that is not JSON convertible.)
+    [bugsnag-cocoa#1187](https://github.com/bugsnag/bugsnag-cocoa/pull/1187)
+
+  * Fix Swift fatal error parsing for messages with no filename.
+    [bugsnag-cocoa#1186](https://github.com/bugsnag/bugsnag-cocoa/pull/1186)
+
+  * Events now include a `thermalState` property in the `device` tab, and unexpected app terminations that occur
+    when the thermal state is critical will now be reported as a "Thermal Kill" rather than Out Of Memory error.
+    [bugsnag-cocoa#1171](https://github.com/bugsnag/bugsnag-cocoa/pull/1171)
+
+  * Fix a regression where the session was not captured at launch if Bugsnag was started before
+    `willFinishLaunchingWithOptions` in iOS apps that do not adopt the UIScene life-cycle.
+    [bugsnag-cocoa#1180](https://github.com/bugsnag/bugsnag-cocoa/pull/1180)
+
+  * Fatal app hangs will no longer be reported if the `willTerminateNotification` is received.
+    [bugsnag-cocoa#1176](https://github.com/bugsnag/bugsnag-cocoa/pull/1176)
+    
+* Update bugsnag-android to v5.13.0
+  * The `app.lowMemory` value always report the most recent `onTrimMemory`/`onLowMemory` status [bugsnag-android#1342](https://github.com/bugsnag/bugsnag-android/pull/1342)
+  * Added the `app.memoryTrimLevel` metadata to report a description of the latest `onTrimMemory` status [bugsnag-android#1344](https://github.com/bugsnag/bugsnag-android/pull/1344)
+  * Added `STATE` Breadcrumbs for `onTrimMemory` events [bugsnag-android#1345](https://github.com/bugsnag/bugsnag-android/)
+  * Capture breadcrumbs for OkHttp network requests
+    [bugsnag-android#1358](https://github.com/bugsnag/bugsnag-android/pull/1358)
+    [bugsnag-android#1361](https://github.com/bugsnag/bugsnag-android/pull/1361)
+    [bugsnag-android#1363](https://github.com/bugsnag/bugsnag-android/pull/1363)
+    [bugsnag-android#1379](https://github.com/bugsnag/bugsnag-android/pull/1379)
+  * Update project to build using Gradle/AGP 7
+    [bugsnag-android#1354](https://github.com/bugsnag/bugsnag-android/pull/1354)
+  * Increased default breadcrumb collection limit to 50
+    [bugsnag-android#1366](https://github.com/bugsnag/bugsnag-android/pull/1366)
+  * Support integer values in buildUuid
+    [bugsnag-android#1375](https://github.com/bugsnag/bugsnag-android/pull/1375)
+  * Use SystemClock.elapsedRealtime to track `app.durationInForeground`
+    [bugsnag-android#1375](https://github.com/bugsnag/bugsnag-android/pull/1375)
+
+
+* Add new automatically collected Device data to Windows, WebGL and Unity Editor events: `batteryLevel, charging, id, model, screenDensity, screenResolution, totalMemory` [#390](https://github.com/bugsnag/bugsnag-unity/pull/390)
+
+* Add new automatically collected App data to Windows, WebGL and Unity Editor events: `duration, id, isLaunching, lowMemory` [#390](https://github.com/bugsnag/bugsnag-unity/pull/390)
+
+* Add new Bugsnag.Notify overloads: `Notify(exception, stacktrace)`  `Notify(exception, stacktrace, callback)` `Notify(name, message, stacktrace)` `Notify(name, message, stacktrace, callback)` [#380](https://github.com/bugsnag/bugsnag-unity/pull/380)
+
+* Add `Bugsnag.GetLastRunInfo()` To get relevant crash information regarding the last run of the application [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
+
+* Add `Configuration.SendLaunchCrashesSynchronously` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#launchdurationmillis) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#launchdurationmillis) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
+
+* Add `Configuration.LaunchDurationMillis` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendlaunchcrashessynchronously) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendlaunchcrashessynchronously) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
+
+### Deprecated
+
+* `Bugsnag.StopSession` has been deprecated in favour of `Bugsnag.PauseSession` and will be removed in the next major release.
+
+### Bug fixes
+
+* Fixed an issue where app.type was not sent in native Cocoa crash reports
+  [#395](https://github.com/bugsnag/bugsnag-unity/pull/395)
+
+
 ## 5.3.0 (2021-09-01)
 
 ### Enhancements

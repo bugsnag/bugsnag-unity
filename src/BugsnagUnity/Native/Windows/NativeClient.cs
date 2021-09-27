@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
+using UnityEngine;
 
 namespace BugsnagUnity
 {
@@ -12,25 +14,46 @@ namespace BugsnagUnity
 
         public IDelivery Delivery { get; }
 
+        private bool _launchMarkedAsCompleted = false;
+
+        private bool _hasReceivedLowMemoryWarning = false;
+
         public NativeClient(IConfiguration configuration)
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
             Delivery = new Delivery();
+            Application.lowMemory += () => { _hasReceivedLowMemoryWarning = true; };
         }
 
         public void PopulateApp(App app)
         {
-            app.AddToPayload("type", string.IsNullOrEmpty(Configuration.AppType) ? "Windows" : Configuration.AppType);
+            AddIsLaunching(app);
+            app.AddToPayload("lowMemory", _hasReceivedLowMemoryWarning);
+        }
+
+        private void AddIsLaunching(App app)
+        {
+            if (!app.ContainsKey("durationInForeground"))
+            {
+                return;
+            }
+            bool isLaunching;
+            if (Configuration.LaunchDurationMillis == 0)
+            {
+                isLaunching = _launchMarkedAsCompleted;
+            }
+            else
+            {
+                isLaunching = app.DurationInForeground.Milliseconds < Configuration.LaunchDurationMillis;
+            }
+            app.AddToPayload("isLaunching", isLaunching);
         }
 
         public void PopulateDevice(Device device)
         {
-            device.AddToPayload("jailbroken", false);
-
             device.AddToPayload("manufacturer", "PC");
-            device.AddToPayload("model", UnityEngine.SystemInfo.deviceModel);
-
+            device.AddToPayload("model", SystemInfo.deviceModel);
             MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
             if (GlobalMemoryStatusEx(memStatus))
             {
@@ -90,7 +113,32 @@ namespace BugsnagUnity
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         static extern bool GlobalMemoryStatusEx([In, Out] MEMORYSTATUSEX lpBuffer);
 
+        public void StartSession()
+        {
+        }
 
+        public void PauseSession()
+        {
+        }
+
+        public bool ResumeSession()
+        {
+            return false;
+        }
+
+        public void UpdateSession(Session session)
+        {
+        }
+
+        public Session GetCurrentSession()
+        {
+            return null;
+        }
+
+        public void MarkLaunchCompleted()
+        {
+            _launchMarkedAsCompleted = true;
+        }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private class MEMORYSTATUSEX
@@ -108,6 +156,11 @@ namespace BugsnagUnity
             {
                 dwLength = (uint)Marshal.SizeOf(this);
             }
+        }
+
+        public LastRunInfo GetLastRunInfo()
+        {
+            return null;
         }
     }
 }

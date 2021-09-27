@@ -24,9 +24,19 @@ namespace BugsnagUnity
         internal static extern void bugsnag_retrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_retrieveLastRunInfo(IntPtr instance, Action<IntPtr, bool, bool, int> populate);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_retrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
+
+        internal delegate void SessionInformation(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled);
+        [DllImport(Import)]
+        internal static extern void bugsnag_retrieveCurrentSession(IntPtr instance, SessionInformation callback);
+
+
         internal delegate void MetadataInformation(IntPtr instance, string tab, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] values, int valuesSize);
+
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveMetaData(IntPtr instance, MetadataInformation visitor);
 
@@ -46,13 +56,25 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setAutoTrackSessions(IntPtr configuration, bool autoTrackSessions);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setPersistUser(IntPtr configuration, bool persistUser);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setSendLaunchCrashesSynchronously(IntPtr configuration, bool sendLaunchCrashesSynchronously);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setContext(IntPtr configuration, string context);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setLaunchDurationMillis(IntPtr configuration, ulong launchDurationMillis);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_markLaunchCompleted();
 
         [DllImport(Import)]
         internal static extern void bugsnag_setMaxPersistedEvents(IntPtr configuration, int maxPersistedEvents);
@@ -88,7 +110,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setAppType(IntPtr configuration, string appType);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setNotifyUrl(IntPtr configuration, string endpoint);
+        internal static extern void bugsnag_setEndpoints(IntPtr configuration, string notifyURL, string sessionsURL);
 
         internal delegate void NotifyReleaseStageCallback(IntPtr instance, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] releaseStages, long count);
 
@@ -105,6 +127,15 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_setUser(string id, string name, string email);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_startSession();
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_pauseSession();
+
+        [DllImport(Import)]
+        internal static extern bool bugsnag_resumeSession();
 
         [DllImport(Import)]
         internal static extern void bugsnag_registerSession(string id, long startedAt, int unhandledCount, int handledCount);

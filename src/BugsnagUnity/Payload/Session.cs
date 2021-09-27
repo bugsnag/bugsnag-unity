@@ -35,6 +35,13 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("events", Events = new SessionEvents(handled, unhandled));
         }
 
+        internal Session(string providedGuid, DateTime startedAt, int handled, int unhandled)
+        {
+            this.AddToPayload("id", Id = new Guid(providedGuid));
+            this.AddToPayload("startedAt", StartedAt = startedAt);
+            this.AddToPayload("events", Events = new SessionEvents(handled, unhandled));
+        }
+
         internal void AddException(Report report)
         {
             if (report.IsHandled)

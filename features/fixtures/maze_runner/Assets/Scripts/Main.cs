@@ -20,6 +20,10 @@ public class Main : MonoBehaviour
 
     private Dictionary<string, string> _webGlArguments;
 
+
+    private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
+
+
     public void Start()
     {
 
@@ -105,9 +109,8 @@ public class Main : MonoBehaviour
 
         // setup default endpoints etc
         var endpoint = GetEvnVar("MAZE_ENDPOINT");
-        config.Endpoint = new System.Uri(endpoint + "/notify");
-        config.SessionEndpoint = new System.Uri(endpoint + "/sessions");
-        config.AutoCaptureSessions = scenario.Contains("AutoSession");
+        config.Endpoints = new EndpointConfiguration(endpoint + "/notify", endpoint + "/sessions");
+        config.AutoTrackSessions = scenario.Contains("AutoSession");
 
         // replacement for BugsnagBehaviour as not practical to load script in fixture
         config.ScriptingBackend = FindScriptingBackend();
@@ -262,6 +265,12 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "NotifyWithStrings":
+                NotifyWithStrings();
+                break;
+            case "CustomStacktrace":
+                CustomStacktrace();
+                break;
             case "DisabledReleaseStage":
             case "EnabledReleaseStage":
                 DoNotify();
@@ -441,6 +450,16 @@ public class Main : MonoBehaviour
                     {"test","test" },
                     { "password","password" }
                 });
+    }
+
+    private void NotifyWithStrings()
+    {
+        Bugsnag.Notify("CUSTOM","CUSTOM", _fakeTrace);
+    }
+
+    private void CustomStacktrace()
+    {
+        Bugsnag.Notify(new System.Exception("CUSTOM"), _fakeTrace);
     }
 
     private void CheckEnabledErrorTypes()

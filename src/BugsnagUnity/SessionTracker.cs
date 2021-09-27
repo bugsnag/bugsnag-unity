@@ -9,13 +9,15 @@ namespace BugsnagUnity
     {
         void StartSession();
 
-        void StopSession();
+        void PauseSession();
 
         bool ResumeSession();
 
         Session CurrentSession { get; }
 
         void AddException(Report report);
+
+        void StartManagedSession();
     }
 
     class SessionTracker : ISessionTracker
@@ -28,6 +30,15 @@ namespace BugsnagUnity
         {
             get
             {
+                return GetCurrentSession();
+            }
+            private set => _currentSession = value;
+        }
+
+        private Session GetCurrentSession()
+        {
+            if (ShouldManageSessions())
+            {
                 var session = _currentSession;
 
                 if (session != null && !session.Stopped)
@@ -36,7 +47,11 @@ namespace BugsnagUnity
                 }
                 return null;
             }
-            private set => _currentSession = value;
+            else
+            {
+                return Client.NativeClient.GetCurrentSession();
+            }
+            
         }
 
         internal SessionTracker(Client client)
@@ -44,12 +59,24 @@ namespace BugsnagUnity
             Client = client;
         }
 
+
         public void StartSession()
+        {
+            if (ShouldManageSessions())
+            {
+                StartManagedSession();
+            }
+            else
+            {
+                Client.NativeClient.StartSession();
+            }
+        }
+
+        public void StartManagedSession()
         {
             var session = new Session();
 
             CurrentSession = session;
-            Client.NativeClient.SetSession(session);
 
             var app = new App(Client.Configuration);
             Client.NativeClient.PopulateApp(app);
@@ -68,22 +95,44 @@ namespace BugsnagUnity
             }
         }
 
-        public void StopSession()
+        public void PauseSession()
+        {
+            if (ShouldManageSessions())
+            {
+                PauseManagedSession();
+            }
+            else
+            {
+                Client.NativeClient.PauseSession();
+            }
+        }
+
+        private void PauseManagedSession()
         {
             var session = _currentSession;
-
             if (session != null)
             {
                 session.Stopped = true;
-                Client.NativeClient.SetSession(null);
             }
         }
 
         public bool ResumeSession()
         {
-            var session = _currentSession;
-            var resumed = false;
+            if (ShouldManageSessions())
+            {
+                return ResumeManagedSession();
+            }
+            else
+            {
+                return Client.NativeClient.ResumeSession();
+            }
+             
+        }
 
+        private bool ResumeManagedSession()
+        {
+            var session = _currentSession;
+            bool resumed;
             if (session == null)
             {
                 StartSession();
@@ -93,14 +142,25 @@ namespace BugsnagUnity
             {
                 resumed = session.Stopped;
                 session.Stopped = false;
-                Client.NativeClient.SetSession(session);
             }
             return resumed;
         }
 
         public void AddException(Report report)
         {
-            _currentSession?.AddException(report);
+            if (ShouldManageSessions())
+            {
+                _currentSession?.AddException(report);
+            }
+            else
+            {
+                Client.NativeClient.UpdateSession(report.Session);
+            }
+        }
+
+        private bool ShouldManageSessions()
+        {
+            return Client.IsUsingFallback();
         }
     }
 }

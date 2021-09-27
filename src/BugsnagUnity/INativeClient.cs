@@ -42,9 +42,29 @@ namespace BugsnagUnity
         void SetMetadata(string tab, Dictionary<string, string> metadata);
 
         /// <summary>
-        /// Adds session data to native client reports
+        /// Send the start session message to a native notifier
         /// </summary>
-        void SetSession(Session session);
+        void StartSession();
+
+        /// <summary>
+        /// Send the stop session message to a native notifier
+        /// </summary>
+        void PauseSession();
+
+        /// <summary>
+        /// Send the resume session message to a native notifier
+        /// </summary>
+        bool ResumeSession();
+
+        /// <summary>
+        /// Update the current native session
+        /// </summary>
+        void UpdateSession(Session session);
+
+        /// <summary>
+        /// Get the current session info for sending with an error
+        /// </summary>
+        Session GetCurrentSession();
 
         /// <summary>
         /// Adds user data to native client reports
@@ -80,6 +100,16 @@ namespace BugsnagUnity
         /// </summary>
         /// <param name="autoDetectAnrs"></param>
         void SetAutoDetectAnrs(bool autoDetectAnrs);
+
+        /// <summary>
+        /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
+        /// </summary>
+        void MarkLaunchCompleted();
+
+        /// <summary>
+        /// Get the last run information from Android and cocoa platforms
+        /// </summary>
+        LastRunInfo GetLastRunInfo();
 
     }
 }

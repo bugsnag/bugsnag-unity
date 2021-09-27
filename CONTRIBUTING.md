@@ -91,19 +91,6 @@ bundle exec maze-runner features/handled_errors.feature
 
 #### Pre-release
 
-- [ ] Has all new functionality been manually tested on a release build? Disable development mode in the Unity Build dialog when testing release builds.
-  - [ ] Test that a log message formatted as `SomeTitle: rest of message` generates an error titled `SomeTitle` with message `rest of message`
-  - [ ] Test that a log message formatted without a colon generates an error titled `LogError<level>` with message `rest of message`
-  - [ ] Ensure the example app sends the correct error for each type on iOS
-  - [ ] Ensure OOM reports are sent on iOS when the app is unexpectedly terminated
-  - [ ] Ensure the example app sends the correct error for each type on tvOS
-  - [ ] Ensure the example app sends the correct error for each type on macOS
-  - [ ] Ensure the example app sends the correct error for each type on Android
-  - [ ] Ensure the example app sends the correct error for each type on WebGL
-  - [ ] Ensure the example app sends the correct error for each type on Windows
-  - [ ] Archive the iOS app and validate the bundle type
-  - [ ] Archive the Mac app and validate the bundle type
-  - [ ] Generate a signed APK for Android
 - [ ] Do the installation instructions work when creating an example app from scratch?
 - [ ] Are PRs open on the docs site for any new feature changes or version numbers?
 - [ ] Have the installation instructions been updated on the [dashboard](https://github.com/bugsnag/bugsnag-website/tree/master/app/views/dashboard/projects/install)
@@ -112,26 +99,28 @@ bundle exec maze-runner features/handled_errors.feature
 
 #### Making the release
 
-1. Checkout the `next` branch. Make sure the latest from master is merged in and set the version number in the change log and `build.cake`.
+1. Make sure any changes made since last release in `master` are merged into `next`.
 
-2. Commit the changelog and version updates:
+2. Checkout the `next` branch. Set the version number in the change log and `build.cake`.
+
+3. Commit the changelog and version updates:
 
     ```
     git add CHANGELOG.md build.cake
     git commit -m "Release v5.x.x"
     ```
-3. Make a pull request to merge the changes into `master`
+4. Make a pull request to merge the changes into `master`
 
-4. Once merged, tag the new release version, pushing the tag to GitHub:
+5. Once merged, tag the new release version, pushing the tag to GitHub:
 
    ```
    git tag v5.x.x
    git push origin v5.x.x
    ```
 
-5. Wait. The CI build will build the new package and create a draft release.
+6. Wait. The CI build will build the new package and create a draft release.
 
-6. Verify that the release looks good, upload the unity packages to the release, copy in the changelog entry into the release notes and publish the draft.
+7. Verify that the release looks good, upload the unity packages to the release, copy in the changelog entry into the release notes and publish the draft.
 
 #### Post-release
 

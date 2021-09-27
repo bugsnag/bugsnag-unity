@@ -52,5 +52,10 @@ namespace UnityEngine
         public static void add_logMessageReceived(LogCallback cb) { }
 
         public delegate void LogCallback(string condition, string stackTrace, LogType type);
+
+        public delegate void LowMemoryCallback();
+
+        public static event LowMemoryCallback lowMemory;       
+
     }
 }
