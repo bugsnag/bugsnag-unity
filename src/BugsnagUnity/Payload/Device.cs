@@ -31,7 +31,6 @@ namespace BugsnagUnity.Payload
         //Player prefs id for Bugsnag generated device id
         private const string GENERATED_ID_KEY = "GENERATED_ID_KEY";
 
-        //public mutable values exposed in callbacks
         public string BrowserName
         {
             get => (string) Get(BROWSER_NAME_KEY);
@@ -40,225 +39,85 @@ namespace BugsnagUnity.Payload
 
         public string BrowserVersion
         {
-            get
-            {
-                if (HasKey(BROWSER_VERSION_KEY))
-                {
-                    return (string)Payload.Get(BROWSER_VERSION_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string) Get(BROWSER_VERSION_KEY);
             set => Add(BROWSER_VERSION_KEY, value);
         }
 
         public string[] CpuAbi
         {
-            get
-            {
-                if (HasKey(CPU_ABI_KEY))
-                {
-                    return (string[])Payload.Get(CPU_ABI_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string[])Get(CPU_ABI_KEY);
             set => Add(CPU_ABI_KEY, value);
         }
 
         public string HostName
         {
-            get
-            {
-                if (HasKey(HOSTNAME_KEY))
-                {
-                    return Payload.Get(HOSTNAME_KEY) as string;
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(HOSTNAME_KEY);
             set => Add(HOSTNAME_KEY, value);
         }
 
         public string Id
         {
-            get
-            {
-                if (HasKey(ID_KEY))
-                {
-                    return (string)Payload.Get(ID_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(ID_KEY);
             set => Add(ID_KEY, value);
         }
 
         public bool? JailBroken
         {
-            get
-            {
-                if (HasKey(JAILBROKEN_KEY))
-                {
-                    return (bool)Payload.Get(JAILBROKEN_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (bool?)Get(JAILBROKEN_KEY);
             set => Add(JAILBROKEN_KEY, value);
         }
 
         public string Locale
         {
-            get
-            {
-                if (HasKey(LOCALE_KEY))
-                {
-                    return (string)Payload.Get(LOCALE_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(LOCALE_KEY);
             set => Add(LOCALE_KEY, value);
         }
 
         public string Manufacturer
         {
-            get
-            {
-                if (HasKey(MANUFACTURER_KEY))
-                {
-                    return (string)Payload.Get(MANUFACTURER_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(MANUFACTURER_KEY);
             set => Add(MANUFACTURER_KEY, value);
         }
 
         public string Model
         {
-            get
-            {
-                if (HasKey(MODEL_KEY))
-                {
-                    return (string)Payload.Get(MODEL_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(MODEL_KEY);
             set => Add(MODEL_KEY, value);
         }
 
         public string ModelNumber
         {
-            get
-            {
-                if (HasKey(MODEL_NUMBER_KEY))
-                {
-                    return (string)Payload.Get(MODEL_NUMBER_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(MODEL_NUMBER_KEY);
             set => Add(MODEL_NUMBER_KEY, value);
         }
 
         public string OsName
         {
-            get
-            {
-                if (HasKey(OS_NAME_KEY))
-                {
-                    return (string)Payload.Get(OS_NAME_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(OS_NAME_KEY);
             set => Add(OS_NAME_KEY, value);
         }
 
         public string OsVersion
         {
-            get
-            {
-                if (HasKey(OS_VERSION_KEY))
-                {
-                    return (string)Payload.Get(OS_VERSION_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(OS_VERSION_KEY);
             set => Add(OS_VERSION_KEY, value);
         }
 
         public Dictionary<string, object> RuntimeVersions
         {
-            get
-            {
-                if (HasKey(RUNTIME_VERSIONS_KEY))
-                {
-                    return (Dictionary<string,object>)Payload.Get(RUNTIME_VERSIONS_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (Dictionary<string, object>)Get(RUNTIME_VERSIONS_KEY);
             set => Add(RUNTIME_VERSIONS_KEY, value);
         }
 
         public int? TotalMemory
         {
-            get
-            {
-                if (HasKey(TOTAL_MEMORY_KEY))
-                {
-                    return (int)Payload.Get(TOTAL_MEMORY_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (int?)Get(TOTAL_MEMORY_KEY);
             set => Add(TOTAL_MEMORY_KEY, value);
         }
 
         public string UserAgent
         {
-            get
-            {
-                if (HasKey(USER_AGENT_KEY))
-                {
-                    return (string)Payload.Get(USER_AGENT_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(USER_AGENT_KEY);
             set => Add(USER_AGENT_KEY, value);
         }
 
