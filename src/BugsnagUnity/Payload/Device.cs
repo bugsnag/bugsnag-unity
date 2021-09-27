@@ -34,17 +34,7 @@ namespace BugsnagUnity.Payload
         //public mutable values exposed in callbacks
         public string BrowserName
         {
-            get
-            {
-                if (HasKey(BROWSER_NAME_KEY))
-                {
-                    return (string)Payload.Get(BROWSER_NAME_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string) Get(BROWSER_NAME_KEY);
             set => Add(BROWSER_NAME_KEY, value);
         }
 

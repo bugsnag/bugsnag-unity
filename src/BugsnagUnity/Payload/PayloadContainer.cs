@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+#nullable enable
 
 namespace BugsnagUnity.Payload
 {
-
-    // When unity is able to use newer versions of C# we should add a generic Get method here that can return T?, unfortunatly that's not possible right now
 
     public class PayloadContainer
     {
@@ -23,9 +22,21 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        internal bool HasKey(string key)
+        public bool HasKey(string key)
         {
             return Payload.ContainsKey(key);
+        }
+
+        internal object? Get(string key)
+        {
+            if (HasKey(key))
+            {
+                return Payload[key];
+            }
+            else
+            {
+                return null;
+            }
         }
        
     }
