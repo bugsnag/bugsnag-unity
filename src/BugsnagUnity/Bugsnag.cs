@@ -41,23 +41,21 @@ namespace BugsnagUnity
 
         public static Metadata Metadata => Client.Metadata;
 
-        public static void BeforeNotify(Middleware middleware) => Client.BeforeNotify(middleware);
-
         public static void Notify(string name, string message, string stackTrace) => InternalClient.Notify(name, message, stackTrace, null);
 
-        public static void Notify(string name, string message, string stackTrace, Middleware callback) => InternalClient.Notify(name, message, stackTrace, callback);
+        public static void Notify(string name, string message, string stackTrace, BugsnagCallback callback) => InternalClient.Notify(name, message, stackTrace, callback);
 
         public static void Notify(System.Exception exception) => InternalClient.Notify(exception, 3);
 
         public static void Notify(System.Exception exception, string stacktrace) => InternalClient.Notify(exception, stacktrace, null);
 
-        public static void Notify(System.Exception exception, string stacktrace, Middleware callback) => InternalClient.Notify(exception, stacktrace, callback);
+        public static void Notify(System.Exception exception, string stacktrace, BugsnagCallback callback) => InternalClient.Notify(exception, stacktrace, callback);
 
-        public static void Notify(System.Exception exception, Middleware callback) => InternalClient.Notify(exception, callback, 3);
+        public static void Notify(System.Exception exception, BugsnagCallback callback) => InternalClient.Notify(exception, callback, 3);
 
         public static void Notify(System.Exception exception, Severity severity) => InternalClient.Notify(exception, severity, 3);
 
-        public static void Notify(System.Exception exception, Severity severity, Middleware callback) => InternalClient.Notify(exception, severity, callback, 3);
+        public static void Notify(System.Exception exception, Severity severity, BugsnagCallback callback) => InternalClient.Notify(exception, severity, callback, 3);
 
         public static void LeaveBreadcrumb(string message) => InternalClient.Breadcrumbs.Leave(message);
 

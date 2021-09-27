@@ -29,9 +29,7 @@ namespace BugsnagUnity
 
         protected IDelivery Delivery => NativeClient.Delivery;
 
-        List<Middleware> Middleware { get; }
-
-        object MiddlewareLock { get; } = new object();
+        object CallbackLock { get; } = new object();
 
         internal INativeClient NativeClient { get; }
 
@@ -62,7 +60,6 @@ namespace BugsnagUnity
             BackgroundStopwatch = new Stopwatch();
             NativeClient = nativeClient;
             User = new User { Id = SystemInfo.deviceUniqueIdentifier };
-            Middleware = new List<Middleware>();
             Metadata = new Metadata(nativeClient);
             UniqueCounter = new UniqueLogThrottle(Configuration);
             LogTypeCounter = new MaximumLogTypeCounter(Configuration);
@@ -214,23 +211,13 @@ namespace BugsnagUnity
             }
         }
 
-
-
-        public void BeforeNotify(Middleware middleware)
-        {
-            lock (MiddlewareLock)
-            {
-                Middleware.Add(middleware);
-            }
-        }
-
-        public void Notify(string name, string message, string stackTrace, Middleware callback)
+        public void Notify(string name, string message, string stackTrace, BugsnagCallback callback)
         {
             var exceptions = new Exception[] { Exception.FromStringInfo(name, message, stackTrace) };
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
-        public void Notify(System.Exception exception, string stacktrace, Middleware callback)
+        public void Notify(System.Exception exception, string stacktrace, BugsnagCallback callback)
         {
             var exceptions = new Exceptions(exception, stacktrace).ToArray();
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
@@ -246,12 +233,12 @@ namespace BugsnagUnity
             Notify(exception, HandledState.ForHandledException(), null, level);
         }
 
-        public void Notify(System.Exception exception, Middleware callback)
+        public void Notify(System.Exception exception, BugsnagCallback callback)
         {
             Notify(exception, callback, 3);
         }
 
-        internal void Notify(System.Exception exception, Middleware callback, int level)
+        internal void Notify(System.Exception exception, BugsnagCallback callback, int level)
         {
             Notify(exception, HandledState.ForHandledException(), callback, level);
         }
@@ -266,17 +253,17 @@ namespace BugsnagUnity
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, level);
         }
 
-        public void Notify(System.Exception exception, Severity severity, Middleware callback)
+        public void Notify(System.Exception exception, Severity severity, BugsnagCallback callback)
         {
             Notify(exception, severity, callback, 3);
         }
 
-        internal void Notify(System.Exception exception, Severity severity, Middleware callback, int level)
+        internal void Notify(System.Exception exception, Severity severity, BugsnagCallback callback, int level)
         {
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, level);
         }
 
-        void Notify(System.Exception exception, HandledState handledState, Middleware callback, int level)
+        void Notify(System.Exception exception, HandledState handledState, BugsnagCallback callback, int level)
         {
             // we need to generate a substitute stacktrace here as if we are not able
             // to generate one from the exception that we are given then we are not able
@@ -285,7 +272,7 @@ namespace BugsnagUnity
             Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback, null);
         }
 
-        void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
+        void Notify(Exception[] exceptions, HandledState handledState, BugsnagCallback callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -293,6 +280,7 @@ namespace BugsnagUnity
             }
 
             var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
+
             var app = new AppWithState(Configuration)
             {
                 InForeground = InForeground,
@@ -331,15 +319,19 @@ namespace BugsnagUnity
                 @event.AddAndroidProjectPackagesToEvent(Configuration.ProjectPackages);
             }
 
-            var report = new Report(Configuration, @event);
 
-            lock (MiddlewareLock)
+
+
+            lock (CallbackLock)
             {
-                foreach (var middleware in Middleware)
+                foreach (var onErrorCallback in Configuration.GetOnErrorCallbacks())
                 {
                     try
                     {
-                        middleware(report);
+                        if (!onErrorCallback.Invoke(@event))
+                        {
+                            return;
+                        }
                     }
                     catch (System.Exception)
                     {
@@ -349,11 +341,30 @@ namespace BugsnagUnity
 
             try
             {
-                callback?.Invoke(report);
+                if (callback != null)
+                {
+                    if (!callback.Invoke(@event))
+                    {
+                        return;
+                    }
+                }
             }
             catch (System.Exception)
             {
             }
+
+
+
+
+
+
+
+
+            var report = new Report(Configuration, @event);
+
+            
+
+
 
             if (!report.Ignored)
             {

@@ -95,5 +95,10 @@ namespace BugsnagUnity
         string BundleVersion { get; set; }
 
         string AppType { get; set; }
+
+        void AddOnError(BugsnagCallback callback);
+
+        List<BugsnagCallback> GetOnErrorCallbacks();
+    
     }
 }

@@ -314,6 +314,21 @@ namespace BugsnagUnity
                 || Application.platform == RuntimePlatform.WindowsEditor
                 || Application.platform == RuntimePlatform.LinuxEditor;
         }
+
+
+        private List<BugsnagCallback> _onErrorCallbacks = new List<BugsnagCallback>();
+
+        public void AddOnError(BugsnagCallback callback)
+        {
+            _onErrorCallbacks.Add(callback);
+        }
+
+        public List<BugsnagCallback> GetOnErrorCallbacks()
+        {
+            return _onErrorCallbacks;
+        }
+
+       
     }
 }
 

@@ -2,7 +2,7 @@
 
 namespace BugsnagUnity
 {
-    public delegate void Middleware(Report report);
+    public delegate bool BugsnagCallback(Event bugsnagEvent);
 
     public interface IClient
     {
@@ -20,19 +20,17 @@ namespace BugsnagUnity
 
         Metadata Metadata { get; }
 
-        void BeforeNotify(Middleware middleware);
-
         void Notify(System.Exception exception);
 
-        void Notify(System.Exception exception, Middleware callback);
+        void Notify(System.Exception exception, BugsnagCallback callback);
 
         void Notify(System.Exception exception, Severity severity);
 
-        void Notify(System.Exception exception, Severity severity, Middleware callback);
+        void Notify(System.Exception exception, Severity severity, BugsnagCallback callback);
 
-        void Notify(System.Exception exception, string stacktrace, Middleware callback);
+        void Notify(System.Exception exception, string stacktrace, BugsnagCallback callback);
 
-        void Notify(string name, string message, string stackTrace, Middleware callback);
+        void Notify(string name, string message, string stackTrace, BugsnagCallback callback);
 
         /// <summary>
         /// Used to signal to the Bugsnag client that the focused state of the

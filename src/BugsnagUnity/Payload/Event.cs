@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-    class Event : Dictionary<string, object>
+    public class Event : Dictionary<string, object>
     {
         HandledState _handledState;
 
@@ -61,7 +61,7 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        internal App App
+        public AppWithState App
         {
             get { return this.Get("app") as AppWithState; }
         }
@@ -77,7 +77,7 @@ namespace BugsnagUnity.Payload
             set => this.AddToPayload("context", value);
         }
 
-        internal Device Device => this.Get("device") as DeviceWithState;
+        public DeviceWithState Device => this.Get("device") as DeviceWithState;
 
         internal Exception[] Exceptions => this.Get("exceptions") as Exception[];
 
