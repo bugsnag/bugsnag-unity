@@ -22,14 +22,9 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public bool HasKey(string key)
-        {
-            return Payload.ContainsKey(key);
-        }
-
         internal object? Get(string key)
         {
-            if (HasKey(key))
+            if (Payload.ContainsKey(key))
             {
                 return Payload[key];
             }

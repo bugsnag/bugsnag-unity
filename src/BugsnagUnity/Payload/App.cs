@@ -24,173 +24,70 @@ namespace BugsnagUnity.Payload
 
         public string BinaryArch
         {
-            get
-            {
-                if (HasKey(BINARY_ARCH_KEY))
-                {
-                    return (string)Payload.Get(BINARY_ARCH_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(BINARY_ARCH_KEY);
             set => Add(BINARY_ARCH_KEY, value);
         }
 
         public string BuildUuid
         {
-            get
-            {
-                if (HasKey(BUILD_UUID_KEY))
-                {
-                    return (string)Payload.Get(BUILD_UUID_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(BUILD_UUID_KEY);
             set => Add(BUILD_UUID_KEY, value);
         }
 
         public string BundleVersion
         {
-            get
-            {
-                if (HasKey(BUNDLE_VERSION_KEY))
-                {
-                    return (string)Payload.Get(BUNDLE_VERSION_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(BUNDLE_VERSION_KEY);
             set => Add(BUNDLE_VERSION_KEY, value);
         }
 
         public string CodeBundleId
         {
-            get
-            {
-                if (HasKey(CODE_BUNDLE_ID))
-                {
-                    return (string)Payload.Get(CODE_BUNDLE_ID);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(CODE_BUNDLE_ID);
             set => Add(CODE_BUNDLE_ID, value);
         }
 
         public string DsymUuid
         {
-            get
-            {
-                if (HasKey(DSYM_UUID_KEY))
-                {
-                    return (string)Payload.Get(DSYM_UUID_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(DSYM_UUID_KEY);
             set => Add(DSYM_UUID_KEY, value);
         }
 
         public string Id
         {
-            get
-            {
-                if (HasKey(ID_KEY))
-                {
-                    return (string)Payload.Get(ID_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(ID_KEY);
             set => Add(ID_KEY, value);
         }
 
         public string ReleaseStage
         {
-            get
-            {
-                if (HasKey(RELEASESTAGE_KEY))
-                {
-                    return (string)Payload.Get(RELEASESTAGE_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(RELEASESTAGE_KEY);
             set => Add(RELEASESTAGE_KEY, value);
         }
 
         public string Type
         {
-            get
-            {
-                if (HasKey(TYPE_KEY))
-                {
-                    return (string)Payload.Get(TYPE_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(TYPE_KEY);
             set => Add(TYPE_KEY, value);
         }
 
         public string Version
         {
-            get
-            {
-                if (HasKey(VERSION_KEY))
-                {
-                    return (string)Payload.Get(VERSION_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(VERSION_KEY);
             set => Add(VERSION_KEY, value);
         }
 
         public int? VersionCode
         {
-            get
-            {
-                if (HasKey(VERSION_CODE_KEY))
-                {
-                    return (int)Payload.Get(VERSION_CODE_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (int?)Get(VERSION_CODE_KEY);
             set => Add(VERSION_CODE_KEY, value);
         }
 
-
         internal App(IConfiguration configuration)
         {
-
             Id = Application.identifier;
             ReleaseStage = configuration.ReleaseStage;
             Type = GetAppType(configuration);
             Version = configuration.AppVersion;
-
         }
 
         private string GetAppType(IConfiguration configuration)

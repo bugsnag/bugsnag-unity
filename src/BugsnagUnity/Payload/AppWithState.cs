@@ -12,65 +12,25 @@ namespace BugsnagUnity.Payload
 
         public TimeSpan? Duration
         {
-            get
-            {
-                if (HasKey(DURATION_KEY))
-                {
-                    return TimeSpan.FromMilliseconds((double)Payload.Get(DURATION_KEY));
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (TimeSpan?)Get(DURATION_KEY);
             set => Add(DURATION_KEY, value?.TotalMilliseconds);
         }
 
         public TimeSpan? DurationInForeground
         {
-            get
-            {
-                if (HasKey(DURATION_IN_FOREGROUND_KEY))
-                {
-                    return TimeSpan.FromMilliseconds((double)Payload.Get(DURATION_IN_FOREGROUND_KEY));
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (TimeSpan?)Get(DURATION_IN_FOREGROUND_KEY);
             set => Add(DURATION_IN_FOREGROUND_KEY, value?.TotalMilliseconds);
         }
 
         public bool? InForeground
         {
-            get
-            {
-                if (HasKey(IN_FOREGROUND_KEY))
-                {
-                    return (bool)Payload.Get(IN_FOREGROUND_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (bool?)Get(IN_FOREGROUND_KEY);
             set => Add(IN_FOREGROUND_KEY, value);
         }
 
         public bool? IsLaunching
         {
-            get
-            {
-                if (HasKey(IS_LAUNCHING_KEY))
-                {
-                    return (bool)Payload.Get(IS_LAUNCHING_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (bool?)Get(IS_LAUNCHING_KEY);
             set => Add(IS_LAUNCHING_KEY, value);
         }
 

@@ -16,65 +16,25 @@ namespace BugsnagUnity.Payload
 
         public ulong? FreeDisk
         {
-            get
-            {
-                if (HasKey(FREE_DISK_KEY))
-                {
-                    return (ulong)Payload.Get(FREE_DISK_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (ulong?)Get(FREE_DISK_KEY);
             set => Add(FREE_DISK_KEY, value);
         }
 
         public ulong? FreeMemory
         {
-            get
-            {
-                if (HasKey(FREE_MEMORY_KEY))
-                {
-                    return (ulong)Payload.Get(FREE_MEMORY_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (ulong?)Get(FREE_MEMORY_KEY);
             set => Add(FREE_MEMORY_KEY, value);
         }
 
         public string Orientation
         {
-            get
-            {
-                if (HasKey(ORIENTATION_KEY))
-                {
-                    return Payload.Get(ORIENTATION_KEY) as string;
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (string)Get(ORIENTATION_KEY);
             set => Add(ORIENTATION_KEY, value);
         }
 
         public DateTime? Time
         {
-            get
-            {
-                if (HasKey(TIME_KEY))
-                {
-                    return (DateTime)Payload.Get(TIME_KEY);
-                }
-                else
-                {
-                    return null;
-                }
-            }
+            get => (DateTime?)Get(TIME_KEY);
             set => Add(TIME_KEY, value);
         }
 
