@@ -316,19 +316,24 @@ namespace BugsnagUnity
         }
 
 
-        private List<BugsnagCallback> _onErrorCallbacks = new List<BugsnagCallback>();
+        private List<OnErrorCallback> _onErrorCallbacks = new List<OnErrorCallback>();
 
-        public void AddOnError(BugsnagCallback callback)
+        public void AddOnError(OnErrorCallback callback)
         {
             _onErrorCallbacks.Add(callback);
         }
 
-        public List<BugsnagCallback> GetOnErrorCallbacks()
+        public List<OnErrorCallback> GetOnErrorCallbacks()
         {
             return _onErrorCallbacks;
         }
 
-       
+        public void RemoveOnError(OnErrorCallback callback)
+        {
+            _onErrorCallbacks.Remove(callback);
+        }
+
+
     }
 }
 

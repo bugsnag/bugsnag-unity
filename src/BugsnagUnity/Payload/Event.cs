@@ -15,13 +15,11 @@ namespace BugsnagUnity.Payload
             Metadata = metadata;
             HandledState = handledState;
             LogType = logType;
-            this.AddToPayload("context", context);
-            this.AddToPayload("payloadVersion", 4);
-            this.AddToPayload("exceptions", exceptions);
-            this.AddToPayload("app", app.Payload);
-            this.AddToPayload("device", device.Payload);
-            this.AddToPayload("metaData", Metadata);
-            this.AddToPayload("breadcrumbs", breadcrumbs);
+            App = app;
+            Device = device;
+            Context = context;
+            Exceptions = exceptions;
+            Breadcrumbs = breadcrumbs;
             if (session != null)
             {
                 if (handledState.Handled)
@@ -33,16 +31,17 @@ namespace BugsnagUnity.Payload
                     session.Events.IncrementUnhandledCount();
                 }
             }
-            this.AddToPayload("session", session);
             Session = session;
-            this.AddToPayload("user", user);
+            User = user;
         }
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
         {
             this.AddToPayload("projectPackages", packages);
         }
 
-        internal Metadata Metadata { get; }
+        public Metadata Metadata { get; }
+
+        public Breadcrumb[] Breadcrumbs { get; }
 
         internal Session Session { get; }
 
@@ -61,25 +60,13 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public AppWithState App
-        {
-            get { return this.Get("app") as AppWithState; }
-        }
+        public AppWithState App { get; }
 
-        internal IEnumerable<Breadcrumb> Breadcrumbs
-        {
-            get { return this.Get("breadcrumbs") as IEnumerable<Breadcrumb>; }
-        }
+        public string Context;
 
-        internal string Context
-        {
-            get => this.Get("context") as string;
-            set => this.AddToPayload("context", value);
-        }
+        public DeviceWithState Device { get; }
 
-        public DeviceWithState Device => this.Get("device") as DeviceWithState;
-
-        internal Exception[] Exceptions => this.Get("exceptions") as Exception[];
+        public Exception[] Exceptions { get; }
 
         internal string GroupingHash
         {
@@ -93,11 +80,8 @@ namespace BugsnagUnity.Payload
             get => _handledState.Severity;
         }
 
-        internal User User
-        {
-            get { return this.Get("user") as User; }
-            set { this.AddToPayload("user", value); }
-        }
+        public User User;
+   
 
         internal bool IsAndroidJavaError()
         {
@@ -121,6 +105,19 @@ namespace BugsnagUnity.Payload
                     this[item.Key] = item.Value;
                 }
             }
+        }
+
+        internal void PreparePayload()
+        {
+            this.AddToPayload("app", App.Payload);
+            this.AddToPayload("device", Device.Payload);
+            this.AddToPayload("context", Context);
+            this.AddToPayload("payloadVersion", 4);
+            this.AddToPayload("user", User);
+            this.AddToPayload("exceptions", Exceptions);
+            this.AddToPayload("metaData", Metadata);
+            this.AddToPayload("breadcrumbs", Breadcrumbs);
+            this.AddToPayload("session", Session);
         }
     }
 }

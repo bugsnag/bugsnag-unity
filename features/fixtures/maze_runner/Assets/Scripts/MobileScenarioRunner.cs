@@ -355,13 +355,14 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void NotifyWithCallback()
     {
-        Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), report =>
+        Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), @event =>
         {
-            report.Context = "Callback Context";
-            report.Metadata.Add("Callback", new Dictionary<string, string>()
+            @event.Context = "Callback Context";
+            @event.Metadata.Add("Callback", new Dictionary<string, string>()
             {
                 {"region", "US"}
             });
+            return true;
         });
     }
 
@@ -386,45 +387,32 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void AddCallbackMetadata()
     {
-        Bugsnag.BeforeNotify(report =>
+        Bugsnag.AddOnError(@event =>
         {
-            report.Metadata.Add("CallbackMetadata", new Dictionary<string, string>(){
+            @event.Metadata.Add("CallbackMetadata", new Dictionary<string, string>(){
                 { "subsystem", "Player Mechanics" }
             });
+            return true;
         });
     }
 
     public void AddCallbackContext()
     {
-        Bugsnag.BeforeNotify(report =>
+        Bugsnag.AddOnError(@event =>
         {
-            report.Context = "BeforeNotify Context";
+            @event.Context = "BeforeNotify Context";
+            return true;
         });
     }
 
     public void AddCallbackUser()
     {
-        Bugsnag.BeforeNotify(report =>
+        Bugsnag.AddOnError(@event =>
         {
-            report.User.Id = "lunchfrey";
-            report.User.Name = "Lunchfrey Jones";
-            report.User.Email = "beforenotifyuser@example.com";
-        });
-    }
-
-    public void AddCallbackSeverity()
-    {
-        Bugsnag.BeforeNotify(report =>
-        {
-            report.Severity = Severity.Info;
-        });
-    }
-
-    public void AddCallbackCancellation()
-    {
-        Bugsnag.BeforeNotify(report =>
-        {
-            report.Ignore();
+            @event.User.Id = "lunchfrey";
+            @event.User.Name = "Lunchfrey Jones";
+            @event.User.Email = "beforenotifyuser@example.com";
+            return true;
         });
     }
 

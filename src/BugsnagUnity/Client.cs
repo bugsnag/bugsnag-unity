@@ -211,13 +211,13 @@ namespace BugsnagUnity
             }
         }
 
-        public void Notify(string name, string message, string stackTrace, BugsnagCallback callback)
+        public void Notify(string name, string message, string stackTrace, OnErrorCallback callback)
         {
             var exceptions = new Exception[] { Exception.FromStringInfo(name, message, stackTrace) };
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
-        public void Notify(System.Exception exception, string stacktrace, BugsnagCallback callback)
+        public void Notify(System.Exception exception, string stacktrace, OnErrorCallback callback)
         {
             var exceptions = new Exceptions(exception, stacktrace).ToArray();
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
@@ -233,12 +233,12 @@ namespace BugsnagUnity
             Notify(exception, HandledState.ForHandledException(), null, level);
         }
 
-        public void Notify(System.Exception exception, BugsnagCallback callback)
+        public void Notify(System.Exception exception, OnErrorCallback callback)
         {
             Notify(exception, callback, 3);
         }
 
-        internal void Notify(System.Exception exception, BugsnagCallback callback, int level)
+        internal void Notify(System.Exception exception, OnErrorCallback callback, int level)
         {
             Notify(exception, HandledState.ForHandledException(), callback, level);
         }
@@ -253,17 +253,17 @@ namespace BugsnagUnity
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, level);
         }
 
-        public void Notify(System.Exception exception, Severity severity, BugsnagCallback callback)
+        public void Notify(System.Exception exception, Severity severity, OnErrorCallback callback)
         {
             Notify(exception, severity, callback, 3);
         }
 
-        internal void Notify(System.Exception exception, Severity severity, BugsnagCallback callback, int level)
+        internal void Notify(System.Exception exception, Severity severity, OnErrorCallback callback, int level)
         {
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, level);
         }
 
-        void Notify(System.Exception exception, HandledState handledState, BugsnagCallback callback, int level)
+        void Notify(System.Exception exception, HandledState handledState, OnErrorCallback callback, int level)
         {
             // we need to generate a substitute stacktrace here as if we are not able
             // to generate one from the exception that we are given then we are not able
@@ -272,7 +272,7 @@ namespace BugsnagUnity
             Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback, null);
         }
 
-        void Notify(Exception[] exceptions, HandledState handledState, BugsnagCallback callback, LogType? logType)
+        void Notify(Exception[] exceptions, HandledState handledState, OnErrorCallback callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -358,7 +358,7 @@ namespace BugsnagUnity
 
 
 
-
+            @event.PreparePayload();
 
             var report = new Report(Configuration, @event);
 
@@ -516,6 +516,16 @@ namespace BugsnagUnity
         public void MarkLaunchCompleted()
         {
             NativeClient.MarkLaunchCompleted();
+        }
+
+        public void AddOnError(OnErrorCallback bugsnagCallback)
+        {
+            Configuration.AddOnError(bugsnagCallback);
+        }
+
+        public void RemoveOnError(OnErrorCallback bugsnagCallback)
+        {
+            Configuration.RemoveOnError(bugsnagCallback);
         }
     }
 }

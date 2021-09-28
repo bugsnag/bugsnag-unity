@@ -43,19 +43,19 @@ namespace BugsnagUnity
 
         public static void Notify(string name, string message, string stackTrace) => InternalClient.Notify(name, message, stackTrace, null);
 
-        public static void Notify(string name, string message, string stackTrace, BugsnagCallback callback) => InternalClient.Notify(name, message, stackTrace, callback);
+        public static void Notify(string name, string message, string stackTrace, OnErrorCallback callback) => InternalClient.Notify(name, message, stackTrace, callback);
 
         public static void Notify(System.Exception exception) => InternalClient.Notify(exception, 3);
 
         public static void Notify(System.Exception exception, string stacktrace) => InternalClient.Notify(exception, stacktrace, null);
 
-        public static void Notify(System.Exception exception, string stacktrace, BugsnagCallback callback) => InternalClient.Notify(exception, stacktrace, callback);
+        public static void Notify(System.Exception exception, string stacktrace, OnErrorCallback callback) => InternalClient.Notify(exception, stacktrace, callback);
 
-        public static void Notify(System.Exception exception, BugsnagCallback callback) => InternalClient.Notify(exception, callback, 3);
+        public static void Notify(System.Exception exception, OnErrorCallback callback) => InternalClient.Notify(exception, callback, 3);
 
         public static void Notify(System.Exception exception, Severity severity) => InternalClient.Notify(exception, severity, 3);
 
-        public static void Notify(System.Exception exception, Severity severity, BugsnagCallback callback) => InternalClient.Notify(exception, severity, callback, 3);
+        public static void Notify(System.Exception exception, Severity severity, OnErrorCallback callback) => InternalClient.Notify(exception, severity, callback, 3);
 
         public static void LeaveBreadcrumb(string message) => InternalClient.Breadcrumbs.Leave(message);
 
@@ -162,6 +162,22 @@ namespace BugsnagUnity
         public static LastRunInfo GetLastRunInfo()
         {
             return Client.LastRunInfo;
+        }
+
+        /// <summary>
+        /// Add an OnError callback to run when an error occurs
+        /// </summary>
+        public static void AddOnError(OnErrorCallback bugsnagCallback)
+        {
+            Client.AddOnError(bugsnagCallback);
+        }
+
+        /// <summary>
+        /// Remove an OnError callback
+        /// </summary>
+        public static void RemoveOnError(OnErrorCallback bugsnagCallback)
+        {
+            Client.RemoveOnError(bugsnagCallback);
         }
 
     }

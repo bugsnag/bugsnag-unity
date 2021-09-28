@@ -96,9 +96,11 @@ namespace BugsnagUnity
 
         string AppType { get; set; }
 
-        void AddOnError(BugsnagCallback callback);
+        void AddOnError(OnErrorCallback callback);
 
-        List<BugsnagCallback> GetOnErrorCallbacks();
+        void RemoveOnError(OnErrorCallback callback);
+
+        List<OnErrorCallback> GetOnErrorCallbacks();
     
     }
 }

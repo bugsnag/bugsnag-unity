@@ -2,7 +2,7 @@
 
 namespace BugsnagUnity
 {
-    public delegate bool BugsnagCallback(Event bugsnagEvent);
+    public delegate bool OnErrorCallback(Event bugsnagEvent);
 
     public interface IClient
     {
@@ -22,15 +22,15 @@ namespace BugsnagUnity
 
         void Notify(System.Exception exception);
 
-        void Notify(System.Exception exception, BugsnagCallback callback);
+        void Notify(System.Exception exception, OnErrorCallback callback);
 
         void Notify(System.Exception exception, Severity severity);
 
-        void Notify(System.Exception exception, Severity severity, BugsnagCallback callback);
+        void Notify(System.Exception exception, Severity severity, OnErrorCallback callback);
 
-        void Notify(System.Exception exception, string stacktrace, BugsnagCallback callback);
+        void Notify(System.Exception exception, string stacktrace, OnErrorCallback callback);
 
-        void Notify(string name, string message, string stackTrace, BugsnagCallback callback);
+        void Notify(string name, string message, string stackTrace, OnErrorCallback callback);
 
         /// <summary>
         /// Used to signal to the Bugsnag client that the focused state of the
@@ -51,5 +51,10 @@ namespace BugsnagUnity
         bool IsUsingFallback();
 
         void MarkLaunchCompleted();
+
+        void AddOnError(OnErrorCallback bugsnagCallback);
+
+        void RemoveOnError(OnErrorCallback bugsnagCallback);
+
     }
 }
