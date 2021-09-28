@@ -10,8 +10,6 @@ namespace BugsnagUnity.Payload
         private const string IN_FOREGROUND_KEY = "inForeground";
         private const string IS_LAUNCHING_KEY = "isLaunching";
 
-       
-
         public TimeSpan? Duration
         {
             get {

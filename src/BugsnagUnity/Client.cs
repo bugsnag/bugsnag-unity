@@ -319,9 +319,6 @@ namespace BugsnagUnity
                 @event.AddAndroidProjectPackagesToEvent(Configuration.ProjectPackages);
             }
 
-
-
-
             lock (CallbackLock)
             {
                 foreach (var onErrorCallback in Configuration.GetOnErrorCallbacks())
@@ -353,18 +350,9 @@ namespace BugsnagUnity
             {
             }
 
-
-
-
-
-
             @event.PreparePayload();
 
             var report = new Report(Configuration, @event);
-
-            
-
-
 
             if (!report.Ignored)
             {
