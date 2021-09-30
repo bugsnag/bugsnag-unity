@@ -8,22 +8,20 @@ namespace BugsnagUnity
     internal class AutomaticDataCollector
     {
 
-        internal static void AddAutomaticData(Metadata metadata)
+        internal static void SetDefaultData(INativeClient nativeClient)
         {
             // data added to metadata.app
-            var appMetadata = new Dictionary<string, object>();
+            var appMetadata = new Dictionary<string, string>();
             appMetadata.Add("companyName", Application.companyName);
             appMetadata.Add("name", Application.productName);
-            metadata.Add("app",appMetadata);
+            nativeClient.SetMetadata("app",appMetadata);
+
 
             //data added to metadata.device
-            var deviceMetadata = new Dictionary<string, object>();
-            if (SystemInfo.batteryLevel > -1)
-            {
-                deviceMetadata.Add("batteryLevel", SystemInfo.batteryLevel);
-            }
-            deviceMetadata.Add("charging", SystemInfo.batteryStatus.Equals(BatteryStatus.Charging));
-            deviceMetadata.Add("screenDensity", Screen.dpi);
+            var deviceMetadata = new Dictionary<string, string>();
+           
+            deviceMetadata.Add("screenDensity", Screen.dpi.ToString());
+
             var res = Screen.currentResolution;
             deviceMetadata.Add("screenResolution", string.Format("{0}x{1}", res.width, res.height));
             deviceMetadata.Add("graphicsDeviceVersion", SystemInfo.graphicsDeviceVersion);
@@ -35,7 +33,33 @@ namespace BugsnagUnity
                 deviceMetadata.Add("processorType", processorType);
             }
             deviceMetadata.Add("osLanguage", Application.systemLanguage.ToString());
-            metadata.Add("device", deviceMetadata);
+            nativeClient.SetMetadata("device", deviceMetadata);
+
+        }
+
+        internal static void AddStatefulDeviceData(Metadata metadata)
+        {           
+            //data added to metadata.device
+            var deviceMetadata = new Dictionary<string, object>();
+            if (SystemInfo.batteryLevel > -1)
+            {
+                deviceMetadata.Add("batteryLevel", SystemInfo.batteryLevel);
+            }
+            deviceMetadata.Add("charging", SystemInfo.batteryStatus.Equals(BatteryStatus.Charging));
+
+            // This is temporary code to make existing tests pass, this will be changed before v6 release when the Metadata class is rewritten
+            if (metadata.ContainsKey("device"))
+            {
+                var existingMetadata = (Dictionary<string, object>)metadata.Get("device");
+                foreach (var item in deviceMetadata)
+                {
+                    existingMetadata.Add(item.Key, item.Value);
+                }
+            }
+            else
+            {
+                metadata.Add("device", deviceMetadata);
+            }
         }
 
     }

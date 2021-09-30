@@ -39,10 +39,6 @@ namespace BugsnagUnity
 
         bool InForeground => ForegroundStopwatch.IsRunning;
 
-        const string AppMetadataKey = "app";
-
-        const string DeviceMetadataKey = "device";
-
         private Thread MainThread;
 
         private static double AutoCaptureSessionThresholdSeconds = 30;
@@ -72,7 +68,7 @@ namespace BugsnagUnity
             }
 
             SetupSceneLoadedBreadcrumbTracking();
-
+            AutomaticDataCollector.SetDefaultData(nativeClient);
             Application.logMessageReceivedThreaded += MultiThreadedNotify;
             Application.logMessageReceived += Notify;
             User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
@@ -292,8 +288,8 @@ namespace BugsnagUnity
             NativeClient.PopulateDeviceWithState(device);
 
             var metadata = new Metadata();
-            AutomaticDataCollector.AddAutomaticData(metadata);
             NativeClient.PopulateMetadata(metadata);
+            AutomaticDataCollector.AddStatefulDeviceData(metadata);
 
             foreach (var item in Metadata)
             {
