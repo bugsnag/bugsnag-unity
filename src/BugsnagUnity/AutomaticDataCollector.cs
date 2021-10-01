@@ -50,11 +50,26 @@ namespace BugsnagUnity
             // This is temporary code to make existing tests pass, this will be changed before v6 release when the Metadata class is rewritten
             if (metadata.ContainsKey("device"))
             {
-                var existingMetadata = (Dictionary<string, object>)metadata.Get("device");
-                foreach (var item in deviceMetadata)
+                var existingMetadata = metadata.Get("device");
+
+                if (existingMetadata is Dictionary<string, object>)
                 {
-                    existingMetadata.Add(item.Key, item.Value);
+                    var castExistingMetadata = (Dictionary<string, object>)existingMetadata;
+                    foreach (var item in deviceMetadata)
+                    {
+                        castExistingMetadata.Add(item.Key, item.Value);
+                    }
                 }
+                else if(existingMetadata is Dictionary<string, string>)
+                {
+                    var castExistingMetadata = (Dictionary<string, string>)existingMetadata;
+                    foreach (var item in deviceMetadata)
+                    {
+                        castExistingMetadata.Add(item.Key, item.Value.ToString());
+                    }
+                }
+
+                
             }
             else
             {
