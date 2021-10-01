@@ -1,5 +1,14 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Update bugsnag-android to v5.14.0
+  * Capture and report thread state (running, sleeping, etc.) for Android Runtime and Native threads
+    [bugsnag-android#1367](https://github.com/bugsnag/bugsnag-android/pull/1367)
+    [bugsnag-android#1390](https://github.com/bugsnag/bugsnag-android/pull/1390)
+
 ## 5.4.0 (2021-09-27)
 
 ### Enhancements
