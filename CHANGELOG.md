@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Removed the limit on the length of a breadcrumbs name [#399](https://github.com/bugsnag/bugsnag-unity/pull/399)
+
 ## 5.4.0 (2021-09-27)
 
 ### Enhancements
