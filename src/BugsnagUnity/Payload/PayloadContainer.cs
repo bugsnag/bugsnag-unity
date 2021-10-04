@@ -9,6 +9,10 @@ namespace BugsnagUnity.Payload
     {
         internal Dictionary<string, object> Payload = new Dictionary<string, object>();
 
+        internal PayloadContainer()
+        {
+        }
+
         internal void Add(string key, object value)
         {
             Payload.AddToPayload(key, value);
