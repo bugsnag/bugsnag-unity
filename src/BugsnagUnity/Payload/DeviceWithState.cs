@@ -11,8 +11,6 @@ namespace BugsnagUnity.Payload
         private const string ORIENTATION_KEY = "orientation";
         private const string TIME_KEY = "time";
     
-
-
         public ulong? FreeDisk
         {
             get => (ulong?)Get(FREE_DISK_KEY);
@@ -37,7 +35,7 @@ namespace BugsnagUnity.Payload
             set => Add(TIME_KEY, value);
         }
 
-        public DeviceWithState(IConfiguration configuration) : base(configuration)
+        internal DeviceWithState(IConfiguration configuration) : base(configuration)
         {
             Orientation = Input.deviceOrientation.ToString();
             Time = DateTime.UtcNow;

@@ -306,7 +306,7 @@ namespace BugsnagUnity
               user,
               exceptions,
               handledState,
-              Breadcrumbs.Retrieve(),
+              Breadcrumbs.Retrieve().ToList(),
               SessionTracking.CurrentSession);
 
             //Check for adding project packages to an android java error event

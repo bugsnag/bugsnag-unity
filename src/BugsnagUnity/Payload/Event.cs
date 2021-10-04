@@ -9,7 +9,7 @@ namespace BugsnagUnity.Payload
 
         internal HandledState OriginalSeverity { get; }
 
-        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Exception[] exceptions, HandledState handledState, Breadcrumb[] breadcrumbs, Session session, LogType? logType = null)
+        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Exception[] exceptions, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, LogType? logType = null)
         {
             OriginalSeverity = handledState;
             Metadata = metadata;
@@ -41,7 +41,7 @@ namespace BugsnagUnity.Payload
 
         public Metadata Metadata { get; }
 
-        public Breadcrumb[] Breadcrumbs { get; }
+        public List<Breadcrumb> Breadcrumbs { get; }
 
         internal Session Session { get; }
 
