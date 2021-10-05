@@ -15,6 +15,10 @@ namespace BugsnagUnity
 
         bool SendLaunchCrashesSynchronously { get; set; }
 
+        bool GenerateAnonymousId { get; set; }
+
+        string HostName { get; set; }
+
         string[] DiscardClasses { get; set; }
 
         string[] ProjectPackages { get; set; }
@@ -91,5 +95,12 @@ namespace BugsnagUnity
         string BundleVersion { get; set; }
 
         string AppType { get; set; }
+
+        void AddOnError(OnErrorCallback callback);
+
+        void RemoveOnError(OnErrorCallback callback);
+
+        List<OnErrorCallback> GetOnErrorCallbacks();
+    
     }
 }

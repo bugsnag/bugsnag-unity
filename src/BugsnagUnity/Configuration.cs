@@ -23,7 +23,11 @@ namespace BugsnagUnity
 
         public bool SendLaunchCrashesSynchronously { get; set; } = true;
 
+        public bool GenerateAnonymousId { get; set; } = true;
+
         public bool PersistUser { get; set; }
+
+        public string HostName { get; set; }
 
         public bool KeyIsRedacted(string key)
         {
@@ -310,6 +314,26 @@ namespace BugsnagUnity
                 || Application.platform == RuntimePlatform.WindowsEditor
                 || Application.platform == RuntimePlatform.LinuxEditor;
         }
+
+
+        private List<OnErrorCallback> _onErrorCallbacks = new List<OnErrorCallback>();
+
+        public void AddOnError(OnErrorCallback callback)
+        {
+            _onErrorCallbacks.Add(callback);
+        }
+
+        public List<OnErrorCallback> GetOnErrorCallbacks()
+        {
+            return _onErrorCallbacks;
+        }
+
+        public void RemoveOnError(OnErrorCallback callback)
+        {
+            _onErrorCallbacks.Remove(callback);
+        }
+
+
     }
 }
 

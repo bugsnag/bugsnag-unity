@@ -581,13 +581,16 @@ public class Main : MonoBehaviour
 
     void DoNotifyWithCallback()
     {
-        Bugsnag.Notify(new System.Exception("blorb"), report =>
+        Bugsnag.Notify(new System.Exception("blorb"), @event =>
         {
-            report.Exceptions[0].ErrorClass = "FunnyBusiness";
-            report.Exceptions[0].ErrorMessage = "cake";
-            report.Metadata.Add("shape", new Dictionary<string, string>() {
+            @event.Exceptions[0].ErrorClass = "FunnyBusiness";
+            @event.Exceptions[0].ErrorMessage = "cake";
+            @event.Metadata.Add("shape", new Dictionary<string, string>() {
         { "arc", "yes" },
+        
       });
+
+            return true;
         });
     }
 

@@ -38,7 +38,7 @@ Feature: Session Tracking
         And the session payload field "app.type" equals "WebGL"
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals "Unix"
-        And the session payload field "device.model" is null
+        And the session payload field "device.model" is not null
         And the session payload field "device.manufacturer" is null
         And the session "id" is not null
         And the session "startedAt" is not null
@@ -100,7 +100,7 @@ Feature: Session Tracking
         And the session payload field "app.type" equals "WebGL"
         And the session payload field "device.osVersion" is not null
         And the session payload field "device.osName" equals "Unix"
-        And the session payload field "device.model" is null
+        And the session payload field "device.model" is not null
         And the session payload field "device.manufacturer" is null
         And the session "id" is not null
         And the session "startedAt" is not null

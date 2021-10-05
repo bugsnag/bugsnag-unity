@@ -151,13 +151,18 @@ namespace BugsnagUnity
             }
         }
 
+        public void PopulateAppWithState(AppWithState app)
+        {
+            PopulateApp(app);
+        }
+
         [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
         static void PopulateAppData(IntPtr instance, string key, string value)
         {
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is App app)
             {
-                app.AddToPayload(key, value);
+                app.Add(key, value);
             }
         }
 
@@ -175,6 +180,11 @@ namespace BugsnagUnity
             }
         }
 
+        public void PopulateDeviceWithState(DeviceWithState device)
+        {
+            PopulateDevice(device);
+        }
+
         [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
         static void PopulateDeviceData(IntPtr instance, string key, string value)
         {
@@ -187,22 +197,21 @@ namespace BugsnagUnity
                         switch (value)
                         {
                             case "0":
-                                device.AddToPayload(key, false);
+                                device.Add(key, false);
                                 break;
                             case "1":
-                                device.AddToPayload(key, true);
+                                device.Add(key, true);
                                 break;
                             default:
-                                device.AddToPayload(key, value);
+                                device.Add(key, value);
                                 break;
                         }
                         break;
                     case "osBuild": // add to nested runtimeVersions dictionary
-                        Dictionary<string, object> runtimeVersions = (Dictionary<string, object>)device.Get("runtimeVersions");
-                        runtimeVersions.AddToPayload(key, value);
+                        device.RuntimeVersions.AddToPayload(key, value);
                         break;
                     default:
-                        device.AddToPayload(key, value);
+                        device.Add(key, value);
                         break;
                 }
             }

@@ -28,18 +28,27 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            MergeDictionaries(app, NativeInterface.GetApp());
+            app.Add(NativeInterface.GetApp());
+        }
+
+        public void PopulateAppWithState(AppWithState app)
+        {
+            PopulateApp(app);
         }
 
         public void PopulateDevice(Device device)
         {
-            Dictionary<string, object> runtimeVersions = (Dictionary<string, object>)device.Get("runtimeVersions");
-            Dictionary<string, object> deviceData = NativeInterface.GetDevice();
-            Dictionary<string, object> nativeVersions = (Dictionary<string, object>)deviceData.Get("runtimeVersions");
+            Dictionary<string, object> nativeDeviceData = NativeInterface.GetDevice();
+            Dictionary<string, object> nativeVersions = (Dictionary<string, object>)nativeDeviceData.Get("runtimeVersions");
 
-            deviceData.Remove("runtimeVersions"); // don't overwrite the unity version values
-            MergeDictionaries(device, deviceData);
-            MergeDictionaries(runtimeVersions, nativeVersions); // merge the native version values
+            nativeDeviceData.Remove("runtimeVersions"); // don't overwrite the unity version values
+            device.Add(nativeDeviceData);
+            MergeDictionaries(device.RuntimeVersions, nativeVersions); // merge the native version values
+        }
+
+        public void PopulateDeviceWithState(DeviceWithState device)
+        {
+            PopulateDevice(device);
         }
 
         public void PopulateUser(User user)
@@ -133,6 +142,7 @@ namespace BugsnagUnity
         {
             return NativeInterface.GetlastRunInfo();
         }
+
     }
 
 }

@@ -28,16 +28,16 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            AddIsLaunching(app);
-            app.AddToPayload("lowMemory", _hasReceivedLowMemoryWarning);
         }
 
-        private void AddIsLaunching(App app)
+        public void PopulateAppWithState(AppWithState app)
         {
-            if (!app.ContainsKey("durationInForeground"))
-            {
-                return;
-            }
+            AddIsLaunching(app);
+            app.Add("lowMemory", _hasReceivedLowMemoryWarning);
+        }
+
+        private void AddIsLaunching(AppWithState app)
+        {
             bool isLaunching;
             if (Configuration.LaunchDurationMillis == 0)
             {
@@ -45,19 +45,24 @@ namespace BugsnagUnity
             }
             else
             {
-                isLaunching = app.DurationInForeground.Milliseconds < Configuration.LaunchDurationMillis;
+                isLaunching = app.DurationInForeground?.Milliseconds < Configuration.LaunchDurationMillis;
             }
-            app.AddToPayload("isLaunching", isLaunching);
+            app.IsLaunching = isLaunching;
         }
 
         public void PopulateDevice(Device device)
         {
-            device.AddToPayload("manufacturer", "PC");
-            device.AddToPayload("model", SystemInfo.deviceModel);
+            device.Manufacturer = "PC";
+            device.Model =  SystemInfo.deviceModel;
+        }
+
+        public void PopulateDeviceWithState(DeviceWithState device)
+        {
+            PopulateDevice(device);
             MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
             if (GlobalMemoryStatusEx(memStatus))
             {
-                device.AddToPayload("freeMemory", memStatus.ullAvailPhys);
+                device.FreeMemory = memStatus.ullAvailPhys;
             }
 
             // This is generally the main drive on a Windows machine
@@ -68,7 +73,7 @@ namespace BugsnagUnity
                                               out ulong totalNumberOfBytes,
                                               out ulong totalNumberOfFreeBytes))
             {
-                device.AddToPayload("freeDisk", freeBytesAvailable);
+                device.FreeDisk = freeBytesAvailable;
             }
         }
 
