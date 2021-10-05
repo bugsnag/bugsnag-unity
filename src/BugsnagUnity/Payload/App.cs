@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+#nullable enable
 
 namespace BugsnagUnity.Payload
 {
@@ -22,57 +23,57 @@ namespace BugsnagUnity.Payload
         private const string VERSION_CODE_KEY = "versionCode";
 
 
-        public string BinaryArch
+        public string? BinaryArch
         {
-            get => (string)Get(BINARY_ARCH_KEY);
+            get => (string?)Get(BINARY_ARCH_KEY);
             set => Add(BINARY_ARCH_KEY, value);
         }
 
-        public string BuildUuid
+        public string? BuildUuid
         {
-            get => (string)Get(BUILD_UUID_KEY);
+            get => (string?)Get(BUILD_UUID_KEY);
             set => Add(BUILD_UUID_KEY, value);
         }
 
-        public string BundleVersion
+        public string? BundleVersion
         {
-            get => (string)Get(BUNDLE_VERSION_KEY);
+            get => (string?)Get(BUNDLE_VERSION_KEY);
             set => Add(BUNDLE_VERSION_KEY, value);
         }
 
-        public string CodeBundleId
+        public string? CodeBundleId
         {
-            get => (string)Get(CODE_BUNDLE_ID);
+            get => (string?)Get(CODE_BUNDLE_ID);
             set => Add(CODE_BUNDLE_ID, value);
         }
 
-        public string DsymUuid
+        public string? DsymUuid
         {
-            get => (string)Get(DSYM_UUID_KEY);
+            get => (string?)Get(DSYM_UUID_KEY);
             set => Add(DSYM_UUID_KEY, value);
         }
 
-        public string Id
+        public string? Id
         {
-            get => (string)Get(ID_KEY);
+            get => (string?)Get(ID_KEY);
             set => Add(ID_KEY, value);
         }
 
-        public string ReleaseStage
+        public string? ReleaseStage
         {
-            get => (string)Get(RELEASESTAGE_KEY);
+            get => (string?)Get(RELEASESTAGE_KEY);
             set => Add(RELEASESTAGE_KEY, value);
         }
 
-        public string Type
+        public string? Type
         {
-            get => (string)Get(TYPE_KEY);
+            get => (string?)Get(TYPE_KEY);
             set => Add(TYPE_KEY, value);
         }
 
-        public string Version
+        public string? Version
         {
-            get => (string)Get(VERSION_KEY);
+            get => (string?)Get(VERSION_KEY);
             set => Add(VERSION_KEY, value);
         }
 

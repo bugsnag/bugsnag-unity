@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using UnityEngine;
+#nullable enable
+
 
 namespace BugsnagUnity.Payload
 {
@@ -29,33 +31,34 @@ namespace BugsnagUnity.Payload
         //Player prefs id for Bugsnag generated device id
         private const string GENERATED_ID_KEY = "GENERATED_ID_KEY";
 
-        public string BrowserName
+
+        public string? BrowserName
         {
-            get => (string) Get(BROWSER_NAME_KEY);
+            get => (string?) Get(BROWSER_NAME_KEY);
             set => Add(BROWSER_NAME_KEY, value);
         }
 
-        public string BrowserVersion
+        public string? BrowserVersion
         {
-            get => (string) Get(BROWSER_VERSION_KEY);
+            get => (string?) Get(BROWSER_VERSION_KEY);
             set => Add(BROWSER_VERSION_KEY, value);
         }
 
-        public string[] CpuAbi
+        public string[]? CpuAbi
         {
-            get => (string[])Get(CPU_ABI_KEY);
+            get => (string[]?)Get(CPU_ABI_KEY);
             set => Add(CPU_ABI_KEY, value);
         }
 
-        public string HostName
+        public string? HostName
         {
-            get => (string)Get(HOSTNAME_KEY);
+            get => (string?)Get(HOSTNAME_KEY);
             set => Add(HOSTNAME_KEY, value);
         }
 
-        public string Id
+        public string? Id
         {
-            get => (string)Get(ID_KEY);
+            get => (string?)Get(ID_KEY);
             set => Add(ID_KEY, value);
         }
 
@@ -65,45 +68,45 @@ namespace BugsnagUnity.Payload
             set => Add(JAILBROKEN_KEY, value);
         }
 
-        public string Locale
+        public string? Locale
         {
-            get => (string)Get(LOCALE_KEY);
+            get => (string?)Get(LOCALE_KEY);
             set => Add(LOCALE_KEY, value);
         }
 
-        public string Manufacturer
+        public string? Manufacturer
         {
-            get => (string)Get(MANUFACTURER_KEY);
+            get => (string?)Get(MANUFACTURER_KEY);
             set => Add(MANUFACTURER_KEY, value);
         }
 
-        public string Model
+        public string? Model
         {
-            get => (string)Get(MODEL_KEY);
+            get => (string?)Get(MODEL_KEY);
             set => Add(MODEL_KEY, value);
         }
 
-        public string ModelNumber
+        public string? ModelNumber
         {
-            get => (string)Get(MODEL_NUMBER_KEY);
+            get => (string?)Get(MODEL_NUMBER_KEY);
             set => Add(MODEL_NUMBER_KEY, value);
         }
 
-        public string OsName
+        public string? OsName
         {
-            get => (string)Get(OS_NAME_KEY);
+            get => (string?)Get(OS_NAME_KEY);
             set => Add(OS_NAME_KEY, value);
         }
 
-        public string OsVersion
+        public string? OsVersion
         {
-            get => (string)Get(OS_VERSION_KEY);
+            get => (string?)Get(OS_VERSION_KEY);
             set => Add(OS_VERSION_KEY, value);
         }
 
-        public Dictionary<string, object> RuntimeVersions
+        public Dictionary<string, object>? RuntimeVersions
         {
-            get => (Dictionary<string, object>)Get(RUNTIME_VERSIONS_KEY);
+            get => (Dictionary<string, object>?)Get(RUNTIME_VERSIONS_KEY);
             set => Add(RUNTIME_VERSIONS_KEY, value);
         }
 
@@ -113,9 +116,9 @@ namespace BugsnagUnity.Payload
             set => Add(TOTAL_MEMORY_KEY, value);
         }
 
-        public string UserAgent
+        public string? UserAgent
         {
-            get => (string)Get(USER_AGENT_KEY);
+            get => (string?)Get(USER_AGENT_KEY);
             set => Add(USER_AGENT_KEY, value);
         }
 
@@ -145,6 +148,7 @@ namespace BugsnagUnity.Payload
 
         private void AddOsInfo()
         {
+
             // we expect that windows version strings look like:
             // "Microsoft Windows NT 10.0.17134.0"
             // if it does then we can parse out the version number into a separate field

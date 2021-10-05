@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+#nullable enable
 
 namespace BugsnagUnity.Payload
 {
@@ -23,9 +24,9 @@ namespace BugsnagUnity.Payload
             set => Add(FREE_MEMORY_KEY, value);
         }
 
-        public string Orientation
+        public string? Orientation
         {
-            get => (string)Get(ORIENTATION_KEY);
+            get => (string?)Get(ORIENTATION_KEY);
             set => Add(ORIENTATION_KEY, value);
         }
 

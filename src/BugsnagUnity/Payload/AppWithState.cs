@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+#nullable enable
 
 namespace BugsnagUnity.Payload
 {

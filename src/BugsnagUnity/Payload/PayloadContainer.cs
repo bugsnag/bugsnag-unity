@@ -13,7 +13,7 @@ namespace BugsnagUnity.Payload
         {
         }
 
-        internal void Add(string key, object value)
+        internal void Add(string key, object? value)
         {
             Payload.AddToPayload(key, value);
         }
