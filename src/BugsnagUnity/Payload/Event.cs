@@ -81,7 +81,6 @@ namespace BugsnagUnity.Payload
         }
 
         public User User;
-   
 
         internal bool IsAndroidJavaError()
         {
@@ -113,7 +112,7 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("device", Device.Payload);
             this.AddToPayload("context", Context);
             this.AddToPayload("payloadVersion", 4);
-            this.AddToPayload("user", User);
+            this.AddToPayload("user", User.Payload);
             this.AddToPayload("exceptions", Exceptions);
             this.AddToPayload("metaData", Metadata);
             this.AddToPayload("breadcrumbs", Breadcrumbs);

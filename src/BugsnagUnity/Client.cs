@@ -71,7 +71,9 @@ namespace BugsnagUnity
             AutomaticDataCollector.SetDefaultData(nativeClient);
             Application.logMessageReceivedThreaded += MultiThreadedNotify;
             Application.logMessageReceived += Notify;
-            User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
+
+            User.PropertyChanged.AddListener(() => { NativeClient.SetUser(User); });
+
             TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
             TimingTrackerObject.AddComponent<TimingTrackerBehaviour>();
             // Run initial session check in next frame to allow potential configuration

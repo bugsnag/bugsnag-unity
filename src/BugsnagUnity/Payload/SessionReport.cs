@@ -30,7 +30,7 @@ namespace BugsnagUnity.Payload
             {
                 this.AddToPayload("id", session.Id);
                 this.AddToPayload("startedAt", session.StartedAt);
-                this.AddToPayload("user", user);
+                this.AddToPayload("user", user.Payload);
             }
         }
     }

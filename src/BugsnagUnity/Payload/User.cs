@@ -1,61 +1,52 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using UnityEngine.Events;
+#nullable enable
 
 namespace BugsnagUnity.Payload
 {
-    public class User : Dictionary<string, string>, IFilterable, INotifyPropertyChanged
+    public class User : PayloadContainer
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        internal UnityEvent PropertyChanged = new UnityEvent();
+
+        private const string ID_KEY = "id";
+        private const string NAME_KEY = "name";
+        private const string EMAIL_KEY = "email";
+
 
         internal User()
         {
 
         }
 
-        public string Id
+        public string? Id
         {
-            get
-            {
-                return this.Get("id");
-            }
+            get => (string?)Get(ID_KEY);
             set
             {
-                this.AddToPayload("id", value);
-                OnPropertyChanged("Id");
+                Add(ID_KEY, value);
+                PropertyChanged.Invoke();
+            }  
+        }
+
+        public string? Name
+        {
+            get => (string?)Get(NAME_KEY);
+            set
+            {
+                Add(NAME_KEY, value);
+                PropertyChanged.Invoke();
             }
         }
 
-        public string Name
+        public string? Email
         {
-            get
-            {
-                return this.Get("name");
-            }
+            get => (string?)Get(EMAIL_KEY);
             set
             {
-                this.AddToPayload("name", value);
-                OnPropertyChanged("Name");
+                Add(EMAIL_KEY, value);
+                PropertyChanged.Invoke();
             }
-        }
-
-        public string Email
-        {
-            get
-            {
-                return this.Get("email");
-            }
-            set
-            {
-                this.AddToPayload("email", value);
-                OnPropertyChanged("Email");
-            }
-        }
-
-        public void OnPropertyChanged(string propertyName)
-        {
-            // Inform the Client when its user changes a property as it will need to be
-            // synchronized with the native layer
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
