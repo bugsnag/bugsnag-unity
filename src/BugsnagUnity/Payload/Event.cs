@@ -32,10 +32,7 @@ namespace BugsnagUnity.Payload
                 }
                 Session = session;
             }
-<<<<<<< HEAD
-=======
-            Session = session;
->>>>>>> integration/unity-v6
+
             User = user;
         }
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
@@ -65,19 +62,11 @@ namespace BugsnagUnity.Payload
         }
 
         public AppWithState App { get; }
-<<<<<<< HEAD
 
         public string Context;
 
         public DeviceWithState Device { get; }
 
-=======
-
-        public string Context;
-
-        public DeviceWithState Device { get; }
-
->>>>>>> integration/unity-v6
         public Exception[] Exceptions { get; }
 
         internal string GroupingHash
@@ -93,10 +82,6 @@ namespace BugsnagUnity.Payload
         }
 
         public User User;
-<<<<<<< HEAD
-=======
-   
->>>>>>> integration/unity-v6
 
         internal bool IsAndroidJavaError()
         {
@@ -128,7 +113,6 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("device", Device.Payload);
             this.AddToPayload("context", Context);
             this.AddToPayload("payloadVersion", 4);
-<<<<<<< HEAD
             this.AddToPayload("user", User.Payload);
             this.AddToPayload("exceptions", Exceptions);
             this.AddToPayload("metaData", Metadata);
@@ -137,13 +121,6 @@ namespace BugsnagUnity.Payload
             {
                 this.AddToPayload("session", Session.Payload);
             }
-=======
-            this.AddToPayload("user", User);
-            this.AddToPayload("exceptions", Exceptions);
-            this.AddToPayload("metaData", Metadata);
-            this.AddToPayload("breadcrumbs", Breadcrumbs);
-            this.AddToPayload("session", Session);
->>>>>>> integration/unity-v6
         }
     }
 }

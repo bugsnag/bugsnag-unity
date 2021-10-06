@@ -31,8 +31,6 @@ namespace BugsnagUnity.Payload
         public User? User { get; set; }
 
 
-
-
         internal int HandledCount()
         {
             return this.Events.Handled;
