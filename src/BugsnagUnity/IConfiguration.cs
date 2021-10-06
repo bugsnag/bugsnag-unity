@@ -101,6 +101,12 @@ namespace BugsnagUnity
         void RemoveOnError(OnErrorCallback callback);
 
         List<OnErrorCallback> GetOnErrorCallbacks();
-    
+
+        void AddOnSession(OnSessionCallback callback);
+
+        void RemoveOnSession(OnSessionCallback callback);
+
+        List<OnSessionCallback> GetOnSessionCallbacks();
+
     }
 }

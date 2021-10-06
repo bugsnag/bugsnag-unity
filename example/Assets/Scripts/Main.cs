@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using BugsnagUnity;
 using System.Collections.Generic;
+using BugsnagUnity.Payload;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -83,28 +84,29 @@ public class Main : MonoBehaviour
 	{
 		Debug.Log("OnManagedCrashClicked");
 
-		throw new Exception("Triggered an uncaught C# exception");
+		throw new System.Exception("Triggered an uncaught C# exception");
 	}
 
 	private void OnBugsnagNotifyClick()
 	{
 		Debug.Log("OnBugsnagNotifyClicked");
 
-		Bugsnag.Notify(new Exception ("Sending a caught C# exception to Bugsnag"), report =>
+		Bugsnag.Notify(new System.Exception ("Sending a caught C# exception to Bugsnag"), report =>
 		{
 		 	report.Context = "NotifyClicked";
+			return true;
 		});
 	}
 
 	private void OnLogExceptionClick()
 	{
-		Debug.LogException(new Exception("Sent an exception to Debug.LogException"));
+		Debug.LogException(new System.Exception("Sent an exception to Debug.LogException"));
 	}
 	
 
 	private void OnLogErrorClick()
 	{
-		Debug.LogError(new Exception("Logged an error message in Debug.LogError"));
+		Debug.LogError(new System.Exception("Logged an error message in Debug.LogError"));
 	}
 
 	private void OnLogWarningClick()

@@ -1,25 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+#nullable enable
 
 namespace BugsnagUnity.Payload
 {
-    public class Session : Dictionary<string, object>
+    public class Session : PayloadContainer
     {
-        public Guid Id { get; }
 
-        public DateTime StartedAt { get; }
+        private const string ID_KEY = "id";
+        private const string STARTED_AT_KEY = "startedAt";
+        private const string EVENTS_KEY = "events";
 
-        public int HandledCount()
+
+        public string? Id
+        {
+            get => (string?)Get(ID_KEY);
+            set => Add(ID_KEY, value);
+        }
+
+        public DateTime? StartedAt
+        {
+            get => (DateTime?)Get(STARTED_AT_KEY);
+            set => Add(STARTED_AT_KEY, value);
+        }
+
+        public App? App { get; set; }
+
+        public Device? Device { get; set; }
+
+        public User? User { get; set; }
+
+
+        internal int HandledCount()
         {
             return this.Events.Handled;
         }
 
-        public int UnhandledCount()
+        internal int UnhandledCount()
         {
             return this.Events.Unhandled;
         }
 
-        internal SessionEvents Events { get; }
+        internal SessionEvents Events
+        {
+            get => (SessionEvents)Get(EVENTS_KEY);
+            set => Add(EVENTS_KEY, value);
+        }
 
         internal bool Stopped { get; set; }
 
@@ -28,18 +54,18 @@ namespace BugsnagUnity.Payload
 
         }
 
-        internal Session(DateTime startedAt, int handled, int unhandled)
+        internal Session(DateTime? startedAt, int handled, int unhandled)
         {
-            this.AddToPayload("id", Id = Guid.NewGuid());
-            this.AddToPayload("startedAt", StartedAt = startedAt);
-            this.AddToPayload("events", Events = new SessionEvents(handled, unhandled));
+            Id = Guid.NewGuid().ToString();
+            StartedAt = startedAt;
+            Events = new SessionEvents(handled, unhandled);
         }
 
         internal Session(string providedGuid, DateTime startedAt, int handled, int unhandled)
         {
-            this.AddToPayload("id", Id = new Guid(providedGuid));
-            this.AddToPayload("startedAt", StartedAt = startedAt);
-            this.AddToPayload("events", Events = new SessionEvents(handled, unhandled));
+            Id = providedGuid;
+            StartedAt = startedAt;
+            Events = new SessionEvents(handled, unhandled);
         }
 
         internal void AddException(Report report)
@@ -58,7 +84,7 @@ namespace BugsnagUnity.Payload
         {
             var copy = new Session(StartedAt, Events.Handled, Events.Unhandled)
             {
-                ["id"] = Id
+                Id = Id
             };
             return copy;
         }

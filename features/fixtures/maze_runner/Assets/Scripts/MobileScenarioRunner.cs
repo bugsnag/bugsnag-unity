@@ -373,11 +373,6 @@ public class MobileScenarioRunner : MonoBehaviour {
         Bugsnag.User.Email = "configureduser@example.com";
     }
 
-    public void ClearUser()
-    {
-        Bugsnag.User.Clear();
-    }
-
     public void AddMetadata()
     {
         Bugsnag.Metadata.Add("ConfigMetadata", new Dictionary<string, string>(){

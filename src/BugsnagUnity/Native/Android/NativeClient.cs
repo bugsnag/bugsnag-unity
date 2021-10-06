@@ -55,7 +55,7 @@ namespace BugsnagUnity
         {
             foreach (var entry in NativeInterface.GetUser())
             {
-                user.AddToPayload(entry.Key, entry.Value.ToString());
+                user.Payload.AddToPayload(entry.Key, entry.Value.ToString());
             }
         }
 
