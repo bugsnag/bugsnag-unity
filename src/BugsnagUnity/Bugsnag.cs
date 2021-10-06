@@ -180,5 +180,21 @@ namespace BugsnagUnity
             Client.RemoveOnError(bugsnagCallback);
         }
 
+        /// <summary>
+        /// Add an OnSession callback to run when an session is created
+        /// </summary>
+        public static void AddOnSession(OnSessionCallback callback)
+        {
+            Client.AddOnSession(callback);
+        }
+
+        /// <summary>
+        /// Remove an OnSession callback
+        /// </summary>
+        public static void RemoveOnSession(OnSessionCallback callback)
+        {
+            Client.RemoveOnSession(callback);
+        }
+
     }
 }

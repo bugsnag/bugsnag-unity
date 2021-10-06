@@ -4,6 +4,8 @@ namespace BugsnagUnity
 {
     public delegate bool OnErrorCallback(Event bugsnagEvent);
 
+    public delegate bool OnSessionCallback(Session session);
+
     public interface IClient
     {
         IConfiguration Configuration { get; }
@@ -55,6 +57,10 @@ namespace BugsnagUnity
         void AddOnError(OnErrorCallback bugsnagCallback);
 
         void RemoveOnError(OnErrorCallback bugsnagCallback);
+
+        void AddOnSession(OnSessionCallback callback);
+
+        void RemoveOnSession(OnSessionCallback callback);
 
     }
 }

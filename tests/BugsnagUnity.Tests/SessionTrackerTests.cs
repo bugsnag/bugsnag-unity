@@ -99,9 +99,7 @@ namespace BugsnagUnity.Payload.Tests
         private bool SessionsAreTheSame(Session original, Session other)
         {
             return original.Id == other.Id
-                && original.StartedAt == other.StartedAt
-                && original.Events == other.Events;
-           
+                && original.StartedAt == other.StartedAt;
         }
     }
 }

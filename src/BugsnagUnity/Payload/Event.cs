@@ -30,8 +30,8 @@ namespace BugsnagUnity.Payload
                 {
                     session.Events.IncrementUnhandledCount();
                 }
+                Session = session;
             }
-            Session = session;
             User = user;
         }
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
@@ -116,7 +116,10 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("exceptions", Exceptions);
             this.AddToPayload("metaData", Metadata);
             this.AddToPayload("breadcrumbs", Breadcrumbs);
-            this.AddToPayload("session", Session);
+            if (Session != null)
+            {
+                this.AddToPayload("session", Session.Payload);
+            }
         }
     }
 }

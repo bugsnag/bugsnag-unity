@@ -333,7 +333,23 @@ namespace BugsnagUnity
             _onErrorCallbacks.Remove(callback);
         }
 
+        private List<OnSessionCallback> _onSessionCallbacks = new List<OnSessionCallback>();
 
+
+        public void AddOnSession(OnSessionCallback callback)
+        {
+            _onSessionCallbacks.Add(callback);
+        }
+
+        public void RemoveOnSession(OnSessionCallback callback)
+        {
+            _onSessionCallbacks.Remove(callback);
+        }
+
+        public List<OnSessionCallback> GetOnSessionCallbacks()
+        {
+            return _onSessionCallbacks;
+        }
     }
 }
 

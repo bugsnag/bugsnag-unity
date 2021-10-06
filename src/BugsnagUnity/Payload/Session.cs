@@ -24,9 +24,14 @@ namespace BugsnagUnity.Payload
             set => Add(STARTED_AT_KEY, value);
         }
 
-        public App? App { get; }
+        public App? App { get; set; }
 
-        public Device? Device { get; }
+        public Device? Device { get; set; }
+
+        public User? User { get; set; }
+
+
+
 
         internal int HandledCount()
         {

@@ -513,5 +513,15 @@ namespace BugsnagUnity
         {
             Configuration.RemoveOnError(bugsnagCallback);
         }
+
+        public void AddOnSession(OnSessionCallback callback)
+        {
+            Configuration.AddOnSession(callback);
+        }
+
+        public void RemoveOnSession(OnSessionCallback callback)
+        {
+            Configuration.RemoveOnSession(callback);
+        }
     }
 }

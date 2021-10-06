@@ -76,12 +76,23 @@ namespace BugsnagUnity
         {
             var session = new Session();
 
-            CurrentSession = session;
-
             var app = new App(Client.Configuration);
             Client.NativeClient.PopulateApp(app);
+            session.App = app;
+
             var device = new Device(Client.Configuration);
             Client.NativeClient.PopulateDevice(device);
+            session.Device = device;
+
+            session.User = Client.User;
+
+            foreach (var sessionCallback in Client.Configuration.GetOnSessionCallbacks())
+            {
+                if (!sessionCallback.Invoke(session))
+                {
+                    return;
+                }
+            }
 
             if (Client.Configuration.Endpoints.IsValid)
             {
@@ -92,6 +103,8 @@ namespace BugsnagUnity
             {
                 UnityEngine.Debug.LogWarning("Invalid configuration. Configuration.Endpoints is not correctly configured, no sessions will be sent.");
             }
+
+            CurrentSession = session;
         }
 
         public void PauseSession()
