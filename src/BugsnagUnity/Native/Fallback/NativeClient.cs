@@ -61,16 +61,9 @@ namespace BugsnagUnity
 
         public void PopulateMetadata(Metadata metadata)
         {
-            MergeDictionaries(metadata, _fallbackMetadata);
+            metadata.MergeMetadata(_fallbackMetadata);
         }
-        private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)
-        {
-            foreach (var entry in another)
-            {
-                dest.AddToPayload(entry.Key, entry.Value);
-            }
-        }
-
+       
         public void PopulateUser(User user)
         {
         }

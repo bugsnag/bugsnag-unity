@@ -39,9 +39,6 @@ namespace BugsnagUnity
 
         internal static void AddStatefulDeviceData(Metadata metadata)
         {
-
-            // This is temporary code to make existing tests pass, this will be changed before v6 release when the Metadata class is rewritten
-
             //data added to metadata.device
             var deviceMetadata = new Dictionary<string, object>();
             if (SystemInfo.batteryLevel > -1)
@@ -49,40 +46,7 @@ namespace BugsnagUnity
                 deviceMetadata.Add("batteryLevel", SystemInfo.batteryLevel);
             }
             deviceMetadata.Add("charging", SystemInfo.batteryStatus.Equals(BatteryStatus.Charging));
-
-            if (metadata.ContainsKey("device"))
-            {
-                var existingMetadata = metadata.Get("device");
-
-                if (existingMetadata is Dictionary<string, object>)
-                {
-                    var castExistingMetadata = (Dictionary<string, object>)existingMetadata;
-                    foreach (var item in deviceMetadata)
-                    {
-                        if (!castExistingMetadata.ContainsKey(item.Key))
-                        {
-                            castExistingMetadata.Add(item.Key, item.Value);
-                        }
-                    }
-                }
-                else if(existingMetadata is Dictionary<string, string>)
-                {
-                    var castExistingMetadata = (Dictionary<string, string>)existingMetadata;
-                    foreach (var item in deviceMetadata)
-                    {
-                        if (!castExistingMetadata.ContainsKey(item.Key))
-                        {
-                            castExistingMetadata.Add(item.Key, item.Value.ToString());
-                        }
-                    }
-                }
-
-                
-            }
-            else
-            {
-                metadata.Add("device", deviceMetadata);
-            }
+            metadata.AddMetadata("device", deviceMetadata);            
         }
 
     }

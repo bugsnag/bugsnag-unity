@@ -271,7 +271,7 @@ namespace BugsnagUnity
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is Metadata metadata)
             {
-                var metadataObject = new Dictionary<string, string>();
+                var metadataObject = new Dictionary<string, object>();
                 for (int i = 0; i < keys.Length; i++)
                 {
                     var key = keys[i];
@@ -282,7 +282,7 @@ namespace BugsnagUnity
                     }
                     metadataObject.Add(key, value);
                 }
-                metadata.AddToPayload(tab, metadataObject);
+                metadata.AddMetadata(tab, metadataObject);
             }
         }
 

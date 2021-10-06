@@ -292,12 +292,8 @@ namespace BugsnagUnity
             var metadata = new Metadata();
             NativeClient.PopulateMetadata(metadata);
             AutomaticDataCollector.AddStatefulDeviceData(metadata);
-
-            foreach (var item in Metadata)
-            {
-                metadata.AddToPayload(item.Key, item.Value);
-            }
-
+            metadata.MergeMetadata(Metadata.Payload);
+            
             RedactMetadata(metadata);
 
             var @event = new Payload.Event(
@@ -364,29 +360,14 @@ namespace BugsnagUnity
 
         private void RedactMetadata(Metadata metadata)
         {
-            foreach (var section in metadata)
+            foreach (var section in metadata.Payload)
             {
-                var sectionDictionaryType = section.Value.GetType();
-                if (sectionDictionaryType == typeof(Dictionary<string, object>))
+                var theSection = (Dictionary<string, object>)section.Value;
+                foreach (var key in theSection.Keys.ToList())
                 {
-                    var theSection = (Dictionary<string, object>)section.Value;
-                    foreach (var key in theSection.Keys.ToList())
+                    if (Configuration.KeyIsRedacted(key))
                     {
-                        if (Configuration.KeyIsRedacted(key))
-                        {
-                            theSection[key] = "[REDACTED]";
-                        }
-                    }
-                }
-                if (sectionDictionaryType == typeof(Dictionary<string, string>))
-                {
-                    var theSection = (Dictionary<string, string>)section.Value;
-                    foreach (var key in theSection.Keys.ToList())
-                    {
-                        if (Configuration.KeyIsRedacted(key))
-                        {
-                            theSection[key] = "[REDACTED]";
-                        }
+                        theSection[key] = "[REDACTED]";
                     }
                 }
             }

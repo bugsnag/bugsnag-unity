@@ -76,7 +76,7 @@ namespace BugsnagUnity
 
         public void PopulateMetadata(Metadata metadata)
         {
-            MergeDictionaries(metadata, NativeInterface.GetMetadata());
+            metadata.MergeMetadata(NativeInterface.GetMetadata());
         }
 
         private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)
