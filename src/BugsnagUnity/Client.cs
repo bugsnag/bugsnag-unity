@@ -523,5 +523,6 @@ namespace BugsnagUnity
         {
             Configuration.RemoveOnSession(callback);
         }
+
     }
 }

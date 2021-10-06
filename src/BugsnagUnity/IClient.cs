@@ -6,6 +6,7 @@ namespace BugsnagUnity
 
     public delegate bool OnSessionCallback(Session session);
 
+
     public interface IClient
     {
         IConfiguration Configuration { get; }

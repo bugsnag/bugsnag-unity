@@ -335,7 +335,6 @@ namespace BugsnagUnity
 
         private List<OnSessionCallback> _onSessionCallbacks = new List<OnSessionCallback>();
 
-
         public void AddOnSession(OnSessionCallback callback)
         {
             _onSessionCallbacks.Add(callback);
@@ -350,6 +349,7 @@ namespace BugsnagUnity
         {
             return _onSessionCallbacks;
         }
+
     }
 }
 
