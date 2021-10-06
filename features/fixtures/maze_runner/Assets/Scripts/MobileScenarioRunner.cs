@@ -285,7 +285,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     private void AddMetadataForRedaction()
     {
-        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+        Bugsnag.Metadata.AddMetadata("User", new Dictionary<string, object>() {
                     {"test","test" },
                     { "password","password" }
                 });
@@ -358,7 +358,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), @event =>
         {
             @event.Context = "Callback Context";
-            @event.Metadata.Add("Callback", new Dictionary<string, string>()
+            @event.Metadata.AddMetadata("Callback", new Dictionary<string, object>()
             {
                 {"region", "US"}
             });
@@ -375,7 +375,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void AddMetadata()
     {
-        Bugsnag.Metadata.Add("ConfigMetadata", new Dictionary<string, string>(){
+        Bugsnag.Metadata.AddMetadata("ConfigMetadata", new Dictionary<string, object>(){
           { "subsystem", "Player Mechanics" }
         });
     }
@@ -384,7 +384,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         Bugsnag.AddOnError(@event =>
         {
-            @event.Metadata.Add("CallbackMetadata", new Dictionary<string, string>(){
+            @event.Metadata.AddMetadata("CallbackMetadata", new Dictionary<string, object>(){
                 { "subsystem", "Player Mechanics" }
             });
             return true;
