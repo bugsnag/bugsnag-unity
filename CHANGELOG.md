@@ -11,6 +11,11 @@
     [bugsnag-android#1367](https://github.com/bugsnag/bugsnag-android/pull/1367)
     [bugsnag-android#1390](https://github.com/bugsnag/bugsnag-android/pull/1390)
 
+* Update bugsnag-cocoa to v6.14.0
+  * Capture and report thread states (running, stopped, waiting, etc.) 
+    [bugsnag-cocoa#1200](https://github.com/bugsnag/bugsnag-cocoa/pull/1200)
+  * Disable app hang detection for app extensions.
+    [bugsnag-cocoa#1198](https://github.com/bugsnag/bugsnag-cocoa/pull/1198)
 
 ## 5.4.0 (2021-09-27)
 
