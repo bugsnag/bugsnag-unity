@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BugsnagUnity;
+using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
@@ -26,7 +27,7 @@ namespace BugsnagUnity.Payload
         {
             if (SectionExists(section))
             {
-                var existingSection = (Dictionary<string, object>)Payload[section];
+                var existingSection = (Dictionary<string, object>)Get(section);
                 foreach (var entry in metadataSection)
                 {
                     if (entry.Value == null)
@@ -44,20 +45,29 @@ namespace BugsnagUnity.Payload
             }
             else
             {
-                Payload.Add(section,metadataSection);
+                Add(section,metadataSection);
             }
+
             UpdateNativeMetadata(section);
         }
 
         private void UpdateNativeMetadata(string section)
         {
-            var existingSection = (Dictionary<string, object>)Payload[section];
 
-            var stringDict = new Dictionary<string, string>();
+            if (_nativeClient == null)
+            {
+                return;
+            }
+            var existingSection = (Dictionary<string, object>)Get(section);
+            var stringDict = new Dictionary<string, object>();
             foreach (var pair in existingSection)
             {
-                stringDict.Add(pair.Key, pair.Value.ToString());
+                if (pair.Value != null)
+                {
+                    stringDict.Add(pair.Key, pair.Value);
+                }
             }
+
             _nativeClient.SetMetadata(section, stringDict);
         }
 
@@ -66,7 +76,10 @@ namespace BugsnagUnity.Payload
             if (SectionExists(section))
             {
                 Payload.Remove(section);
-                _nativeClient.SetMetadata(section, null);
+                if (_nativeClient != null)
+                { 
+                    _nativeClient.SetMetadata(section, null);
+                }
             }
         }
 
@@ -107,8 +120,9 @@ namespace BugsnagUnity.Payload
         {
             foreach (var section in newMetadata)
             {
-                var existingSection = (Dictionary<string,object>)newMetadata[section.Key];
-                AddMetadata(section.Key, existingSection);
+                var sectionkey = section.Key;
+                var sectionToMergeIn = (Dictionary<string, object>)section.Value;
+                AddMetadata(sectionkey, sectionToMergeIn);
             }
         }
 

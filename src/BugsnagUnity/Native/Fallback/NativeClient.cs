@@ -13,7 +13,7 @@ namespace BugsnagUnity
 
         public IDelivery Delivery { get; }
 
-        private Dictionary<string, object> _fallbackMetadata = new Dictionary<string, object>();
+        private Metadata _fallbackMetadata = new Metadata();
 
         private bool _launchMarkedAsCompleted = false;
 
@@ -61,16 +61,16 @@ namespace BugsnagUnity
 
         public void PopulateMetadata(Metadata metadata)
         {
-            metadata.MergeMetadata(_fallbackMetadata);
+            metadata.MergeMetadata(_fallbackMetadata.Payload);
         }
        
         public void PopulateUser(User user)
         {
         }
 
-        public void SetMetadata(string tab, Dictionary<string, string> metadata)
+        public void SetMetadata(string section, Dictionary<string, object> metadata)
         {
-            _fallbackMetadata[tab] = metadata;
+            _fallbackMetadata.AddMetadata(section,metadata);
         }
 
         public void SetSession(Session session)

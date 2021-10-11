@@ -51,7 +51,7 @@ namespace BugsnagUnity
         /// Adds the metadata to the native clients metadata
         /// </summary>
         /// <param name="metadata"></param>
-        void SetMetadata(string tab, Dictionary<string, string> metadata);
+        void SetMetadata(string section, Dictionary<string, object> metadata);
 
         /// <summary>
         /// Send the start session message to a native notifier

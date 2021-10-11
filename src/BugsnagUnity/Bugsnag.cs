@@ -39,8 +39,6 @@ namespace BugsnagUnity
 
         public static void Send(IPayload payload) => Client.Send(payload);
 
-        public static Metadata Metadata => Client.Metadata;
-
         public static void Notify(string name, string message, string stackTrace) => InternalClient.Notify(name, message, stackTrace, null);
 
         public static void Notify(string name, string message, string stackTrace, OnErrorCallback callback) => InternalClient.Notify(name, message, stackTrace, callback);
@@ -134,67 +132,56 @@ namespace BugsnagUnity
         /// is recommended that you set this value by Configuration at init rather than this method.
         /// </summary>
         /// <param name="autoDetectErrors"></param>
-        public static void SetAutoDetectErrors(bool autoDetectErrors)
-        {
-            Client.SetAutoDetectErrors(autoDetectErrors);
-        }
+        public static void SetAutoDetectErrors(bool autoDetectErrors) => Client.SetAutoDetectErrors(autoDetectErrors);
 
         /// <summary>
         /// Enable or disable Bugsnag reporting any Android not responding errors (ANRs) in your game.
         /// </summary>
         /// <param name="autoDetectAnrs"></param>
-        public static void SetAutoDetectAnrs(bool autoDetectAnrs)
-        {
-            Client.SetAutoDetectAnrs(autoDetectAnrs);
-        }
+        public static void SetAutoDetectAnrs(bool autoDetectAnrs) => Client.SetAutoDetectAnrs(autoDetectAnrs);
 
         /// <summary>
         /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
         /// </summary>
-        public static void MarkLaunchCompleted()
-        {
-            Client.MarkLaunchCompleted();
-        }
-
+        public static void MarkLaunchCompleted() => Client.MarkLaunchCompleted();
+      
         /// <summary>
         /// Get information regarding the last application run. This will be null on non mobile platforms.
         /// </summary>
-        public static LastRunInfo GetLastRunInfo()
-        {
-            return Client.LastRunInfo;
-        }
+        public static LastRunInfo GetLastRunInfo() => Client.LastRunInfo;
+       
 
         /// <summary>
         /// Add an OnError callback to run when an error occurs
         /// </summary>
-        public static void AddOnError(OnErrorCallback bugsnagCallback)
-        {
-            Client.AddOnError(bugsnagCallback);
-        }
+        public static void AddOnError(OnErrorCallback bugsnagCallback) => Client.AddOnError(bugsnagCallback);
 
         /// <summary>
         /// Remove an OnError callback
         /// </summary>
-        public static void RemoveOnError(OnErrorCallback bugsnagCallback)
-        {
-            Client.RemoveOnError(bugsnagCallback);
-        }
-
+        public static void RemoveOnError(OnErrorCallback bugsnagCallback) => Client.RemoveOnError(bugsnagCallback);
+       
         /// <summary>
         /// Add an OnSession callback to run when an session is created
         /// </summary>
-        public static void AddOnSession(OnSessionCallback callback)
-        {
-            Client.AddOnSession(callback);
-        }
-
+        public static void AddOnSession(OnSessionCallback callback) => Client.AddOnSession(callback);
+       
         /// <summary>
         /// Remove an OnSession callback
         /// </summary>
-        public static void RemoveOnSession(OnSessionCallback callback)
-        {
-            Client.RemoveOnSession(callback);
-        }
+        public static void RemoveOnSession(OnSessionCallback callback) => Client.RemoveOnSession(callback);
+      
+        public static void AddMetadata(string section, string key, object value) => Client.AddMetadata(section, key, value);
+
+        public static void AddMetadata(string section, Dictionary<string, object> metadata) => Client.AddMetadata(section, metadata);
+
+        public static void ClearMetadata(string section) => Client.ClearMetadata(section);
+
+        public static void ClearMetadata(string section, string key) => Client.ClearMetadata(section, key);
+
+        public static object GetMetadata(string section) => Client.GetMetadata(section);
+
+        public static object GetMetadata(string section, string key) => Client.GetMetadata(section, key);
 
     }
 }

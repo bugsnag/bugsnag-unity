@@ -11,14 +11,14 @@ namespace BugsnagUnity
         internal static void SetDefaultData(INativeClient nativeClient)
         {
             // data added to metadata.app
-            var appMetadata = new Dictionary<string, string>();
+            var appMetadata = new Dictionary<string, object>();
             appMetadata.Add("companyName", Application.companyName);
             appMetadata.Add("name", Application.productName);
             nativeClient.SetMetadata("app",appMetadata);
 
 
             //data added to metadata.device
-            var deviceMetadata = new Dictionary<string, string>();
+            var deviceMetadata = new Dictionary<string, object>();
            
             deviceMetadata.Add("screenDensity", Screen.dpi.ToString());
 

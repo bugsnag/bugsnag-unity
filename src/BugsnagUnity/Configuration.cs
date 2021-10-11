@@ -350,6 +350,19 @@ namespace BugsnagUnity
             return _onSessionCallbacks;
         }
 
+        public Metadata Metadata { get; set; } = new Metadata();
+
+        public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
+
+        public void AddMetadata(string section, Dictionary<string, object> metadata) => Metadata.AddMetadata(section, metadata);
+
+        public void ClearMetadata(string section) => Metadata.ClearMetadata(section);
+
+        public void ClearMetadata(string section, string key) => Metadata.ClearMetadata(section, key);
+
+        public object GetMetadata(string section) => Metadata.GetMetadata(section);
+
+        public object GetMetadata(string section, string key) => Metadata.GetMetadata(section, key);
     }
 }
 

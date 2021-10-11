@@ -59,18 +59,18 @@ namespace BugsnagUnity
             }
         }
 
-        public void SetMetadata(string tab, Dictionary<string, string> metadata)
+        public void SetMetadata(string section, Dictionary<string, object> metadata)
         {
             if (metadata != null)
             {
                 foreach (var item in metadata)
                 {
-                    NativeInterface.AddToTab(tab, item.Key, item.Value);
+                    NativeInterface.AddToTab(section, item.Key, item.Value.ToString());
                 }
             }
             else
             {
-                NativeInterface.RemoveMetadata(tab);
+                NativeInterface.RemoveMetadata(section);
             }
         }
 

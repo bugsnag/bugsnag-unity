@@ -1,4 +1,5 @@
-﻿using BugsnagUnity.Payload;
+﻿using System.Collections.Generic;
+using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
@@ -20,8 +21,6 @@ namespace BugsnagUnity
         User User { get; }
 
         void Send(IPayload payload);
-
-        Metadata Metadata { get; }
 
         void Notify(System.Exception exception);
 
@@ -62,6 +61,18 @@ namespace BugsnagUnity
         void AddOnSession(OnSessionCallback callback);
 
         void RemoveOnSession(OnSessionCallback callback);
+
+        void AddMetadata(string section, string key, object value);
+
+        void AddMetadata(string section, Dictionary<string, object> metadata);
+
+        void ClearMetadata(string section);
+
+        void ClearMetadata(string section, string key);
+
+        object GetMetadata(string section);
+
+        object GetMetadata(string section, string key);
 
     }
 }

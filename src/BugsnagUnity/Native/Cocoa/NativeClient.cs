@@ -226,29 +226,33 @@ namespace BugsnagUnity
             user.Id = Marshal.PtrToStringAuto(nativeUser.Id);
         }
 
-        public void SetMetadata(string tab, Dictionary<string, string> unityMetadata)
+        public void SetMetadata(string section, Dictionary<string, object> metadataSection)
         {
+
             var index = 0;
             var count = 0;
-            if (unityMetadata != null)
+            if (metadataSection != null)
             {
-                var metadata = new string[unityMetadata.Count * 2];
+                var metadata = new string[metadataSection.Count * 2];
 
-                foreach (var data in unityMetadata)
+                foreach (var data in metadataSection)
                 {
+
+
+
                     if (data.Key != null)
                     {
                         metadata[index] = data.Key;
-                        metadata[index + 1] = data.Value;
+                        metadata[index + 1] = data.Value.ToString();
                         count += 2;
                     }
                     index += 2;
                 }
-                NativeCode.bugsnag_setMetadata(NativeConfiguration, tab, metadata, count);
+                NativeCode.bugsnag_setMetadata(NativeConfiguration, section, metadata, count);
             }
             else
             {
-                NativeCode.bugsnag_removeMetadata(NativeConfiguration, tab);
+                NativeCode.bugsnag_removeMetadata(NativeConfiguration, section);
             }
         }
 

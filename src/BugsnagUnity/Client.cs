@@ -57,6 +57,7 @@ namespace BugsnagUnity
             NativeClient = nativeClient;
             User = new User { Id = SystemInfo.deviceUniqueIdentifier };
             Metadata = new Metadata(nativeClient);
+            Metadata.MergeMetadata(Configuration.Metadata.Payload);
             UniqueCounter = new UniqueLogThrottle(Configuration);
             LogTypeCounter = new MaximumLogTypeCounter(Configuration);
             SessionTracking = new SessionTracker(this);
@@ -291,9 +292,20 @@ namespace BugsnagUnity
 
             var metadata = new Metadata();
             NativeClient.PopulateMetadata(metadata);
+
+            //UnityEngine.Debug.Log(string.Format("Metadata after native population"));
+            //metadata.PrintMe();
+
             AutomaticDataCollector.AddStatefulDeviceData(metadata);
+
+            //UnityEngine.Debug.Log(string.Format("Metadata after statefull device data"));
+            //metadata.PrintMe();
+
             metadata.MergeMetadata(Metadata.Payload);
-            
+
+            //UnityEngine.Debug.Log(string.Format("Metadata after Persistent merge"));
+            //metadata.PrintMe();
+
             RedactMetadata(metadata);
 
             var @event = new Payload.Event(
@@ -480,30 +492,27 @@ namespace BugsnagUnity
             NativeClient.SetAutoDetectAnrs(autoDetectAnrs);
         }
 
-        public void MarkLaunchCompleted()
-        {
-            NativeClient.MarkLaunchCompleted();
-        }
+        public void MarkLaunchCompleted() => NativeClient.MarkLaunchCompleted();
+        
+        public void AddOnError(OnErrorCallback bugsnagCallback) => Configuration.AddOnError(bugsnagCallback);
 
-        public void AddOnError(OnErrorCallback bugsnagCallback)
-        {
-            Configuration.AddOnError(bugsnagCallback);
-        }
+        public void RemoveOnError(OnErrorCallback bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);     
 
-        public void RemoveOnError(OnErrorCallback bugsnagCallback)
-        {
-            Configuration.RemoveOnError(bugsnagCallback);
-        }
+        public void AddOnSession(OnSessionCallback callback) => Configuration.AddOnSession(callback);
 
-        public void AddOnSession(OnSessionCallback callback)
-        {
-            Configuration.AddOnSession(callback);
-        }
+        public void RemoveOnSession(OnSessionCallback callback) => Configuration.RemoveOnSession(callback);
 
-        public void RemoveOnSession(OnSessionCallback callback)
-        {
-            Configuration.RemoveOnSession(callback);
-        }
+        public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
 
+        public void AddMetadata(string section, Dictionary<string, object> metadata) => Metadata.AddMetadata(section,metadata);
+
+        public void ClearMetadata(string section) => Metadata.ClearMetadata(section);
+
+        public void ClearMetadata(string section, string key) => Metadata.ClearMetadata(section, key);
+
+        public object GetMetadata(string section) => Metadata.GetMetadata(section);
+
+        public object GetMetadata(string section, string key) => Metadata.GetMetadata(section, key);
+        
     }
 }
