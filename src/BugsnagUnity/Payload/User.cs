@@ -55,5 +55,10 @@ namespace BugsnagUnity.Payload
                 PropertyChanged.Invoke();
             }
         }
+
+        internal User Copy()
+        {
+            return new User(Id,Name,Email);
+        }
     }
 }

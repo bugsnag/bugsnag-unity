@@ -40,15 +40,39 @@ namespace BugsnagUnity.Payload
         new KeyValuePair<string, string>("Bugsnag-Api-Key", Configuration.ApiKey),
         new KeyValuePair<string, string>("Bugsnag-Payload-Version", Configuration.PayloadVersion),
       };
-            Event = @event;
+            _event = @event;
             this.AddToPayload("apiKey", configuration.ApiKey);
             this.AddToPayload("notifier", NotifierInfo.Instance);
-            this.AddToPayload("events", new[] { Event });
+            this.AddToPayload("events", new[] { _event });
         }
 
-        Event Event { get; }
+        private Event _event;
 
-        internal HandledState OriginalSeverity => Event.OriginalSeverity;
+        /// <summary>
+        /// Gets the session data that was gathered for this report.
+        /// </summary>
+        /// <value>The session.</value>
+        internal Session Session => _event.Session;
+
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="T:BugsnagUnity.Payload.Report"/>
+        /// is a handled error or not.
+        /// </summary>
+        /// <value><c>true</c> if is handled; otherwise, <c>false</c>.</value>
+        public bool IsHandled => _event.IsHandled;
+
+
+        public string Context => _event.Context;
+
+        /// <summary>
+        /// Gets the exceptions that generated this report. There may be multiple of
+        /// these if the exception had inner exceptions.
+        /// </summary>
+        /// <value>The exceptions.</value>
+        public Exception[] Exceptions => _event.Exceptions;
+
+
+        internal HandledState OriginalSeverity => _event.OriginalSeverity;
 
         /// <summary>
         /// Ignore this report and do not send it to Bugsnag.
@@ -58,96 +82,5 @@ namespace BugsnagUnity.Payload
             Ignored = true;
         }
 
-        /// <summary>
-        /// Gets the metadata associated with this report.
-        /// </summary>
-        /// <value>The metadata.</value>
-        public Metadata Metadata => Event.Metadata;
-
-        /// <summary>
-        /// Gets the Unity LogType that this event was generated with. Will be null
-        /// if the report was not generated from a Unity log message.
-        /// </summary>
-        /// <value>The type of the log.</value>
-        public LogType? LogType => Event.LogType;
-
-        /// <summary>
-        /// Gets a value indicating whether this <see cref="T:BugsnagUnity.Payload.Report"/>
-        /// is a handled error or not.
-        /// </summary>
-        /// <value><c>true</c> if is handled; otherwise, <c>false</c>.</value>
-        public bool IsHandled => Event.IsHandled;
-
-        /// <summary>
-        /// Gets the app data that was gathered for this report.
-        /// </summary>
-        /// <value>The app.</value>
-        public App App => Event.App;
-
-        /// <summary>
-        /// Gets the session data that was gathered for this report.
-        /// </summary>
-        /// <value>The session.</value>
-        internal Session Session => Event.Session;
-
-        /// <summary>
-        /// Gets the breadcrumbs that have been attached to this report.
-        /// </summary>
-        /// <value>The breadcrumbs.</value>
-        public IEnumerable<Breadcrumb> Breadcrumbs => Event.Breadcrumbs;
-
-        /// <summary>
-        /// Gets or sets the context for this report.
-        /// </summary>
-        /// <value>The context.</value>
-        public string Context
-        {
-            get => Event.Context;
-            set => Event.Context = value;
-        }
-
-        /// <summary>
-        /// Gets the device data that was gathered for this report.
-        /// </summary>
-        /// <value>The device.</value>
-        public Device Device => Event.Device;
-
-        /// <summary>
-        /// Gets the exceptions that generated this report. There may be multiple of
-        /// these if the exception had inner exceptions.
-        /// </summary>
-        /// <value>The exceptions.</value>
-        public Exception[] Exceptions => Event.Exceptions;
-
-        /// <summary>
-        /// Gets or sets the grouping hash for this report. Can be used to provide
-        /// your own grouping logic.
-        /// </summary>
-        /// <value>The grouping hash.</value>
-        public string GroupingHash
-        {
-            get => Event.GroupingHash;
-            set => Event.GroupingHash = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the severity of this report.
-        /// </summary>
-        /// <value>The severity.</value>
-        public Severity Severity
-        {
-            get => Event.Severity;
-            set => Event.Severity = value;
-        }
-
-        /// <summary>
-        /// Gets or sets the user information associated with this report.
-        /// </summary>
-        /// <value>The user.</value>
-        public User User
-        {
-            get => Event.User;
-            set => Event.User = value;
-        }
     }
 }

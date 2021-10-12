@@ -397,7 +397,7 @@ public class Main : MonoBehaviour
                 break;
             case "StoppedSession":
                 Bugsnag.StartSession();
-                Bugsnag.StopSession();
+                Bugsnag.PauseSession();
                 DoNotify();
                 break;
             case "ResumedSession":
@@ -494,7 +494,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("First Error"));
 
         // send 2nd exception after resuming a session
-        Bugsnag.StopSession();
+        Bugsnag.PauseSession();
         Bugsnag.ResumeSession();
         Bugsnag.Notify(new System.Exception("Second Error"));
     }
@@ -511,7 +511,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("First Error"));
 
         // stop tracking the existing session
-        Bugsnag.StopSession();
+        Bugsnag.PauseSession();
         yield return new WaitForSeconds(1);
         Bugsnag.StartSession();
 
@@ -585,7 +585,7 @@ public class Main : MonoBehaviour
         {
             @event.Exceptions[0].ErrorClass = "FunnyBusiness";
             @event.Exceptions[0].ErrorMessage = "cake";
-            @event.Metadata.AddMetadata("shape", new Dictionary<string, object>() {
+            @event.AddMetadata("shape", new Dictionary<string, object>() {
         { "arc", "yes" },
         
       });

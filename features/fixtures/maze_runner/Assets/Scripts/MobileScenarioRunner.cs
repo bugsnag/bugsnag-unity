@@ -358,7 +358,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), @event =>
         {
             @event.Context = "Callback Context";
-            @event.Metadata.AddMetadata("Callback", new Dictionary<string, object>()
+            @event.AddMetadata("Callback", new Dictionary<string, object>()
             {
                 {"region", "US"}
             });
@@ -368,9 +368,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void SetUser()
     {
-        Bugsnag.User.Id = "mcpacman";
-        Bugsnag.User.Name = "Geordi McPacman";
-        Bugsnag.User.Email = "configureduser@example.com";
+        Bugsnag.SetUser("mcpacman", "configureduser@example.com", "Geordi McPacman");
     }
 
     public void AddMetadata()
@@ -384,7 +382,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         Bugsnag.AddOnError(@event =>
         {
-            @event.Metadata.AddMetadata("CallbackMetadata", new Dictionary<string, object>(){
+            @event.AddMetadata("CallbackMetadata", new Dictionary<string, object>(){
                 { "subsystem", "Player Mechanics" }
             });
             return true;
@@ -404,9 +402,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         Bugsnag.AddOnError(@event =>
         {
-            @event.User.Id = "lunchfrey";
-            @event.User.Name = "Lunchfrey Jones";
-            @event.User.Email = "beforenotifyuser@example.com";
+            @event.SetUser("lunchfrey", "Lunchfrey Jones", "beforenotifyuser@example.com");
             return true;
         });
     }

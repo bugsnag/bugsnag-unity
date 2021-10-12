@@ -19,7 +19,7 @@ namespace BugsnagUnity
 
         public LastRunInfo LastRunInfo => NativeClient.GetLastRunInfo();
 
-        private User _storedUser;
+        private User _cachedUser;
 
         private Metadata _storedMetadata;
 
@@ -114,14 +114,14 @@ namespace BugsnagUnity
         {
             if (Configuration.GetUser() != null)
             {
-                _storedUser = Configuration.GetUser();
+                _cachedUser = Configuration.GetUser();
             }
             else
             {
-                _storedUser = new User { Id = SystemInfo.deviceUniqueIdentifier };
+                _cachedUser = new User { Id = SystemInfo.deviceUniqueIdentifier };
             }
-            NativeClient.PopulateUser(_storedUser);
-            _storedUser.PropertyChanged.AddListener(() => { NativeClient.SetUser(_storedUser); });
+            NativeClient.PopulateUser(_cachedUser);
+            _cachedUser.PropertyChanged.AddListener(() => { NativeClient.SetUser(_cachedUser); });
         }
 
         private void CheckForMisconfiguredEndpointsWarning()
@@ -312,42 +312,36 @@ namespace BugsnagUnity
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
-                return; // Skip overhead of computing payload to to ultimately not be sent
+                return;
             }
 
-            var user = new User { Id = _storedUser.Id, Email = _storedUser.Email, Name = _storedUser.Name };
+            var user = _cachedUser.Copy();
 
             var app = new AppWithState(Configuration)
             {
                 InForeground = InForeground,
                 DurationInForeground = _foregroundStopwatch.Elapsed,
             };
+
             NativeClient.PopulateAppWithState(app);
 
             var device = new DeviceWithState(Configuration);
+
             NativeClient.PopulateDeviceWithState(device);
 
-            var metadata = new Metadata();
-            NativeClient.PopulateMetadata(metadata);
+            var eventMetadata = new Metadata();
 
-            //UnityEngine.Debug.Log(string.Format("Metadata after native population"));
-            //metadata.PrintMe();
+            NativeClient.PopulateMetadata(eventMetadata);
 
-            AutomaticDataCollector.AddStatefulDeviceData(metadata);
+            AutomaticDataCollector.AddStatefulDeviceData(eventMetadata);
 
-            //UnityEngine.Debug.Log(string.Format("Metadata after statefull device data"));
-            //metadata.PrintMe();
+            eventMetadata.MergeMetadata(_storedMetadata.Payload);
 
-            metadata.MergeMetadata(_storedMetadata.Payload);
-
-            //UnityEngine.Debug.Log(string.Format("Metadata after Persistent merge"));
-            //metadata.PrintMe();
-
-            RedactMetadata(metadata);
+            RedactMetadata(eventMetadata);
 
             var @event = new Payload.Event(
               Configuration.Context,
-              metadata,
+              eventMetadata,
               app,
               device,
               user,
@@ -537,12 +531,12 @@ namespace BugsnagUnity
 
         public User GetUser()
         {
-            return _storedUser;
+            return _cachedUser;
         }
 
         public void SetUser(string id, string email, string name)
         {
-            _storedUser = new User(id, name, email);
+            _cachedUser = new User(id, name, email);
         }
     }
 }

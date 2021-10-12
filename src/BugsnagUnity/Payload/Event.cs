@@ -12,7 +12,7 @@ namespace BugsnagUnity.Payload
         internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Exception[] exceptions, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, LogType? logType = null)
         {
             OriginalSeverity = handledState;
-            Metadata = metadata;
+            _metadata = metadata;
             HandledState = handledState;
             LogType = logType;
             App = app;
@@ -20,6 +20,7 @@ namespace BugsnagUnity.Payload
             Context = context;
             Exceptions = exceptions;
             Breadcrumbs = breadcrumbs;
+            _user = user;
             if (session != null)
             {
                 if (handledState.Handled)
@@ -32,15 +33,21 @@ namespace BugsnagUnity.Payload
                 }
                 Session = session;
             }
-
-            User = user;
         }
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
         {
             this.AddToPayload("projectPackages", packages);
         }
 
-        public Metadata Metadata { get; }
+        private Metadata _metadata { get; }
+
+        public void AddMetadata(string section, string key, object value) => _metadata.AddMetadata(section,key,value);
+
+        public void AddMetadata(string section, Dictionary<string, object> metadata) => _metadata.AddMetadata(section, metadata);
+
+        public Dictionary<string, object> GetMetadata(string section) => _metadata.GetMetadata(section);
+
+        public object GetMetadata(string section, string key) => _metadata.GetMetadata(section,key);
 
         public List<Breadcrumb> Breadcrumbs { get; }
 
@@ -81,7 +88,14 @@ namespace BugsnagUnity.Payload
             get => _handledState.Severity;
         }
 
-        public User User;
+        private User _user;
+
+        public User GetUser() => _user;
+
+        public void SetUser(string id, string name, string email)
+        {
+            _user = new User(id, name, email );
+        }
 
         internal bool IsAndroidJavaError()
         {
@@ -111,11 +125,11 @@ namespace BugsnagUnity.Payload
         {
             this.AddToPayload("app", App.Payload);
             this.AddToPayload("device", Device.Payload);
+            this.AddToPayload("metaData", _metadata.Payload);
+            this.AddToPayload("user", _user.Payload);
             this.AddToPayload("context", Context);
             this.AddToPayload("payloadVersion", 4);
-            this.AddToPayload("user", User.Payload);
             this.AddToPayload("exceptions", Exceptions);
-            this.AddToPayload("metaData", Metadata);
             this.AddToPayload("breadcrumbs", Breadcrumbs);
             if (Session != null)
             {
