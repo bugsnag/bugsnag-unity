@@ -309,6 +309,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -332,6 +334,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -352,6 +356,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2019.4.29f1.apk"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -372,6 +378,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2021.1.16f1.apk"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -562,6 +570,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -582,6 +592,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -602,6 +614,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2019.4.29f1.ipa"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -622,6 +636,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2021.1.16f1.ipa"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
