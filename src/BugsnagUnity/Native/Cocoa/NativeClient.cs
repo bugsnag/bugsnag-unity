@@ -8,13 +8,13 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
         public IBreadcrumbs Breadcrumbs { get; }
         public IDelivery Delivery { get; }
         private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
 
-        public NativeClient(IConfiguration configuration)
+        public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
             NativeConfiguration = CreateNativeConfig(configuration);
@@ -26,7 +26,7 @@ namespace BugsnagUnity
         /**
          * Transforms an IConfiguration C# object into a Cocoa Configuration object.
          */
-        IntPtr CreateNativeConfig(IConfiguration config)
+        IntPtr CreateNativeConfig(Configuration config)
         {
             IntPtr obj = NativeCode.bugsnag_createConfiguration(config.ApiKey);
             NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoDetectErrors);
@@ -69,7 +69,7 @@ namespace BugsnagUnity
             return obj;
         }
 
-        private string GetAppType(IConfiguration config)
+        private string GetAppType(Configuration config)
         {
             if (!string.IsNullOrEmpty(config.AppType))
             {
@@ -87,7 +87,7 @@ namespace BugsnagUnity
             return string.Empty;
         }
 
-        private void SetEnabledBreadcrumbTypes(IntPtr obj, IConfiguration config)
+        private void SetEnabledBreadcrumbTypes(IntPtr obj, Configuration config)
         {
             if (config.EnabledBreadcrumbTypes == null)
             {
@@ -103,7 +103,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setEnabledBreadcrumbTypes(obj, enabledTypes.ToArray(),enabledTypes.Count);
         }
 
-        private void SetEnabledErrorTypes(IntPtr obj, IConfiguration config)
+        private void SetEnabledErrorTypes(IntPtr obj, Configuration config)
         {
             var enabledTypes = new List<string>();
             if (config.IsErrorTypeEnabled(ErrorTypes.AppHangs))

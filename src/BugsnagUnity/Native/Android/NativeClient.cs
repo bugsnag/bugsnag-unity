@@ -6,7 +6,7 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
 
         public IBreadcrumbs Breadcrumbs { get; }
 
@@ -14,7 +14,7 @@ namespace BugsnagUnity
 
         private NativeInterface NativeInterface;
 
-        public NativeClient(IConfiguration configuration)
+        public NativeClient(Configuration configuration)
         {
             NativeInterface = new NativeInterface(configuration);
             Configuration = configuration;

@@ -84,7 +84,7 @@ namespace BugsnagUnity
             Client.NativeClient.PopulateDevice(device);
             session.Device = device;
 
-            session.User = Client.User;
+            session.User = Client.GetUser();
 
             foreach (var sessionCallback in Client.Configuration.GetOnSessionCallbacks())
             {
@@ -96,7 +96,7 @@ namespace BugsnagUnity
 
             if (Client.Configuration.Endpoints.IsValid)
             {
-                var payload = new SessionReport(Client.Configuration, app, device, Client.User, session);
+                var payload = new SessionReport(Client.Configuration, app, device, Client.GetUser(), session);
                 Client.Send(payload);
             }
             else

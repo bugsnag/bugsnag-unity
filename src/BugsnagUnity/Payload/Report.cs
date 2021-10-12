@@ -10,7 +10,7 @@ namespace BugsnagUnity.Payload
         /// Gets the configuration used to construct this report.
         /// </summary>
         /// <value>The configuration.</value>
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
 
         /// <summary>
         /// Gets the endpoint that will be used to send the report to.
@@ -32,7 +32,7 @@ namespace BugsnagUnity.Payload
         /// <value><c>true</c> if ignored; otherwise, <c>false</c>.</value>
         public bool Ignored { get; private set; }
 
-        internal Report(IConfiguration configuration, Event @event)
+        internal Report(Configuration configuration, Event @event)
         {
             Ignored = false;
             Configuration = configuration;

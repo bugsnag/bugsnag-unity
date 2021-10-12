@@ -11,7 +11,7 @@ namespace BugsnagUnity
 {
     internal class Client : IClient
     {
-        public IConfiguration Configuration => NativeClient.Configuration;
+        public Configuration Configuration => NativeClient.Configuration;
 
         public IBreadcrumbs Breadcrumbs => NativeClient.Breadcrumbs;
 
@@ -19,13 +19,13 @@ namespace BugsnagUnity
 
         public LastRunInfo LastRunInfo => NativeClient.GetLastRunInfo();
 
-        public User User { get; }
+        private User _storedUser;
 
-        public Metadata Metadata { get; }
+        private Metadata _storedMetadata;
 
-        UniqueLogThrottle UniqueCounter { get; }
+        private UniqueLogThrottle _uniqueCounter;
 
-        MaximumLogTypeCounter LogTypeCounter { get; }
+        private MaximumLogTypeCounter _logTypeCounter;
 
         protected IDelivery Delivery => NativeClient.Delivery;
 
@@ -33,17 +33,15 @@ namespace BugsnagUnity
 
         internal INativeClient NativeClient { get; }
 
-        Stopwatch ForegroundStopwatch { get; }
+        private Stopwatch _foregroundStopwatch;
 
-        Stopwatch BackgroundStopwatch { get; }
+        private Stopwatch _backgroundStopwatch;
 
-        bool InForeground => ForegroundStopwatch.IsRunning;
+        bool InForeground => _foregroundStopwatch.IsRunning;
 
         private Thread MainThread;
 
         private static double AutoCaptureSessionThresholdSeconds = 30;
-
-        private GameObject TimingTrackerObject { get; }
 
         private static object autoSessionLock = new object();
 
@@ -51,32 +49,23 @@ namespace BugsnagUnity
 
         public Client(INativeClient nativeClient)
         {
-            MainThread = Thread.CurrentThread;
-            ForegroundStopwatch = new Stopwatch();
-            BackgroundStopwatch = new Stopwatch();
             NativeClient = nativeClient;
-            User = new User { Id = SystemInfo.deviceUniqueIdentifier };
-            Metadata = new Metadata(nativeClient);
-            Metadata.MergeMetadata(Configuration.Metadata.Payload);
-            UniqueCounter = new UniqueLogThrottle(Configuration);
-            LogTypeCounter = new MaximumLogTypeCounter(Configuration);
             SessionTracking = new SessionTracker(this);
-
-            NativeClient.PopulateUser(User);
-            if (!string.IsNullOrEmpty(nativeClient.Configuration.Context))
-            {
-                _contextSetManually = true;
-            }
-
+            MainThread = Thread.CurrentThread;
+            InitStopwatches();
+            InitUserObject();
+            InitMetadata();
+            InitCounters();
             SetupSceneLoadedBreadcrumbTracking();
-            AutomaticDataCollector.SetDefaultData(nativeClient);
-            Application.logMessageReceivedThreaded += MultiThreadedNotify;
-            Application.logMessageReceived += Notify;
+            InitLogHandlers();       
+            InitTimingTracker();
+            InitInitialSessionCheck();          
+            CheckForMisconfiguredEndpointsWarning();
+            AddBugsnagLoadedBreadcrumb();
+        }
 
-            User.PropertyChanged.AddListener(() => { NativeClient.SetUser(User); });
-
-            TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
-            TimingTrackerObject.AddComponent<TimingTrackerBehaviour>();
+        private void InitInitialSessionCheck()
+        {
             // Run initial session check in next frame to allow potential configuration
             // changes to be completed first.
             try
@@ -88,16 +77,60 @@ namespace BugsnagUnity
             {
                 // Async behavior is not available in a test environment
             }
-            if (!Configuration.Endpoints.IsValid)
+        }
+
+        private void InitTimingTracker()
+        {
+            var timingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
+            timingTrackerObject.AddComponent<TimingTrackerBehaviour>();
+        }
+
+        private void InitLogHandlers()
+        {
+            Application.logMessageReceivedThreaded += MultiThreadedNotify;
+            Application.logMessageReceived += Notify;
+        }
+
+        private void InitCounters()
+        {
+            _uniqueCounter = new UniqueLogThrottle(Configuration);
+            _logTypeCounter = new MaximumLogTypeCounter(Configuration);
+        }
+
+        private void InitMetadata()
+        {
+            _storedMetadata = new Metadata(NativeClient);
+            _storedMetadata.MergeMetadata(Configuration.Metadata.Payload);
+            AutomaticDataCollector.SetDefaultData(NativeClient);
+        }
+
+        private void InitStopwatches()
+        {
+            _foregroundStopwatch = new Stopwatch();
+            _backgroundStopwatch = new Stopwatch();
+        }
+
+        private void InitUserObject()
+        {
+            if (Configuration.GetUser() != null)
             {
-                CheckForMisconfiguredEndpointsWarning();
+                _storedUser = Configuration.GetUser();
             }
-            AddBugsnagLoadedBreadcrumb();
+            else
+            {
+                _storedUser = new User { Id = SystemInfo.deviceUniqueIdentifier };
+            }
+            NativeClient.PopulateUser(_storedUser);
+            _storedUser.PropertyChanged.AddListener(() => { NativeClient.SetUser(_storedUser); });
         }
 
         private void CheckForMisconfiguredEndpointsWarning()
         {
             var endpoints = Configuration.Endpoints;
+            if (endpoints.IsValid)
+            {
+                return;
+            }
             if (endpoints.NotifyIsCustom && !endpoints.SessionIsCustom)
             {
                 UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Notify cannot be set without also setting endpoints.Session. Events will not be sent to Bugsnag.");
@@ -134,6 +167,10 @@ namespace BugsnagUnity
 
         private void SetupSceneLoadedBreadcrumbTracking()
         {
+            if (!string.IsNullOrEmpty(NativeClient.Configuration.Context))
+            {
+                _contextSetManually = true;
+            }
             if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Navigation))
             {
                 SceneManager.sceneLoaded += SceneLoaded;
@@ -191,8 +228,8 @@ namespace BugsnagUnity
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
                 var shouldSend = Exception.ShouldSend(logMessage)
-                  && UniqueCounter.ShouldSend(logMessage)
-                  && LogTypeCounter.ShouldSend(logMessage);
+                  && _uniqueCounter.ShouldSend(logMessage)
+                  && _logTypeCounter.ShouldSend(logMessage);
                 if (shouldSend)
                 {
                     var severity = Configuration.LogTypeSeverityMapping.Map(logType);
@@ -278,12 +315,12 @@ namespace BugsnagUnity
                 return; // Skip overhead of computing payload to to ultimately not be sent
             }
 
-            var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
+            var user = new User { Id = _storedUser.Id, Email = _storedUser.Email, Name = _storedUser.Name };
 
             var app = new AppWithState(Configuration)
             {
                 InForeground = InForeground,
-                DurationInForeground = ForegroundStopwatch.Elapsed,
+                DurationInForeground = _foregroundStopwatch.Elapsed,
             };
             NativeClient.PopulateAppWithState(app);
 
@@ -301,7 +338,7 @@ namespace BugsnagUnity
             //UnityEngine.Debug.Log(string.Format("Metadata after statefull device data"));
             //metadata.PrintMe();
 
-            metadata.MergeMetadata(Metadata.Payload);
+            metadata.MergeMetadata(_storedMetadata.Payload);
 
             //UnityEngine.Debug.Log(string.Format("Metadata after Persistent merge"));
             //metadata.PrintMe();
@@ -409,11 +446,11 @@ namespace BugsnagUnity
         {
             if (inFocus)
             {
-                ForegroundStopwatch.Start();
+                _foregroundStopwatch.Start();
                 lock (autoSessionLock)
                 {
                     if (Configuration.AutoTrackSessions
-                     && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
+                     && _backgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
                     {
                         if (IsUsingFallback())
                         {
@@ -428,13 +465,13 @@ namespace BugsnagUnity
                             }
                         }
                     }
-                    BackgroundStopwatch.Reset();
+                    _backgroundStopwatch.Reset();
                 }
             }
             else
             {
-                ForegroundStopwatch.Stop();
-                BackgroundStopwatch.Start();
+                _foregroundStopwatch.Stop();
+                _backgroundStopwatch.Start();
             }
         }
 
@@ -462,7 +499,6 @@ namespace BugsnagUnity
 
         public void SetContext(string context)
         {
-
             _contextSetManually = true;
 
             // set the context property on Configuration, as it currently holds the global state
@@ -475,22 +511,7 @@ namespace BugsnagUnity
         public string GetContext()
         {
             return Configuration.Context;
-        }
-
-        public void SetAutoDetectErrors(bool autoDetectErrors)
-        {
-            // set the property on Configuration, as it currently controls whether C# errors are reported
-            Configuration.AutoDetectErrors = autoDetectErrors;
-
-            // propagate the change to the native property also
-            NativeClient.SetAutoDetectErrors(autoDetectErrors);
-        }
-
-        public void SetAutoDetectAnrs(bool autoDetectAnrs)
-        {
-            // Set the native property
-            NativeClient.SetAutoDetectAnrs(autoDetectAnrs);
-        }
+        }      
 
         public void MarkLaunchCompleted() => NativeClient.MarkLaunchCompleted();
         
@@ -502,17 +523,26 @@ namespace BugsnagUnity
 
         public void RemoveOnSession(OnSessionCallback callback) => Configuration.RemoveOnSession(callback);
 
-        public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
+        public void AddMetadata(string section, string key, object value) => _storedMetadata.AddMetadata(section, key, value);
 
-        public void AddMetadata(string section, Dictionary<string, object> metadata) => Metadata.AddMetadata(section,metadata);
+        public void AddMetadata(string section, Dictionary<string, object> metadata) => _storedMetadata.AddMetadata(section,metadata);
 
-        public void ClearMetadata(string section) => Metadata.ClearMetadata(section);
+        public void ClearMetadata(string section) => _storedMetadata.ClearMetadata(section);
 
-        public void ClearMetadata(string section, string key) => Metadata.ClearMetadata(section, key);
+        public void ClearMetadata(string section, string key) => _storedMetadata.ClearMetadata(section, key);
 
-        public object GetMetadata(string section) => Metadata.GetMetadata(section);
+        public object GetMetadata(string section) => _storedMetadata.GetMetadata(section);
 
-        public object GetMetadata(string section, string key) => Metadata.GetMetadata(section, key);
-        
+        public object GetMetadata(string section, string key) => _storedMetadata.GetMetadata(section, key);
+
+        public User GetUser()
+        {
+            return _storedUser;
+        }
+
+        public void SetUser(string id, string email, string name)
+        {
+            _storedUser = new User(id, name, email);
+        }
     }
 }

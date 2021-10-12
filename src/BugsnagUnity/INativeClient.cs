@@ -11,7 +11,7 @@ namespace BugsnagUnity
         /// <summary>
         /// The native configuration
         /// </summary>
-        IConfiguration Configuration { get; }
+        Configuration Configuration { get; }
 
         /// <summary>
         /// The native breadcrumbs

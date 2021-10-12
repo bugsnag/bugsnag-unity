@@ -123,7 +123,7 @@ namespace BugsnagUnity.Payload
         }
 
 
-        internal Device(IConfiguration configuration)
+        internal Device(Configuration configuration)
         {
             HostName = configuration.HostName;
             TotalMemory = SystemInfo.systemMemorySize;
@@ -166,7 +166,7 @@ namespace BugsnagUnity.Payload
 
         }
 
-        private void AddRuntimeVersions(IConfiguration configuration)
+        private void AddRuntimeVersions(Configuration configuration)
         {
             RuntimeVersions = new Dictionary<string, object>();
             RuntimeVersions.AddToPayload("unityScriptingBackend", configuration.ScriptingBackend);

@@ -10,7 +10,7 @@ namespace BugsnagUnity
 
     public interface IClient
     {
-        IConfiguration Configuration { get; }
+        Configuration Configuration { get; }
 
         IBreadcrumbs Breadcrumbs { get; }
 
@@ -18,7 +18,9 @@ namespace BugsnagUnity
 
         LastRunInfo LastRunInfo { get; }
 
-        User User { get; }
+        User GetUser();
+
+        void SetUser(string id, string email, string name);
 
         void Send(IPayload payload);
 
@@ -42,13 +44,9 @@ namespace BugsnagUnity
         /// <param name="inFocus"></param>
         void SetApplicationState(bool inFocus);
 
-        void SetContext(string context);
-
         string GetContext();
 
-        void SetAutoDetectErrors(bool AutoDetectErrors);
-
-        void SetAutoDetectAnrs(bool autoDetectAnrs);
+        void SetContext(string context);
 
         bool IsUsingFallback();
 

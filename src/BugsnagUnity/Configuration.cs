@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class Configuration : IConfiguration
+    public class Configuration
     {
 
         public string BundleVersion { get; set; }
@@ -28,6 +28,10 @@ namespace BugsnagUnity
         public bool PersistUser { get; set; }
 
         public string HostName { get; set; }
+
+        private User _user = null;
+
+        public Metadata Metadata { get; set; } = new Metadata();
 
         public bool KeyIsRedacted(string key)
         {
@@ -323,7 +327,7 @@ namespace BugsnagUnity
             _onErrorCallbacks.Add(callback);
         }
 
-        public List<OnErrorCallback> GetOnErrorCallbacks()
+        internal List<OnErrorCallback> GetOnErrorCallbacks()
         {
             return _onErrorCallbacks;
         }
@@ -345,12 +349,10 @@ namespace BugsnagUnity
             _onSessionCallbacks.Remove(callback);
         }
 
-        public List<OnSessionCallback> GetOnSessionCallbacks()
+        internal List<OnSessionCallback> GetOnSessionCallbacks()
         {
             return _onSessionCallbacks;
         }
-
-        public Metadata Metadata { get; set; } = new Metadata();
 
         public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
 
@@ -363,6 +365,13 @@ namespace BugsnagUnity
         public object GetMetadata(string section) => Metadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => Metadata.GetMetadata(section, key);
+
+        public User GetUser() => _user;
+
+        public void SetUser(string id, string email, string name)
+        {
+            _user = new User(id,email,name);
+        }
     }
 }
 

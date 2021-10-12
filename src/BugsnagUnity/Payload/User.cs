@@ -19,6 +19,13 @@ namespace BugsnagUnity.Payload
 
         }
 
+        public User(string? id, string? name, string? email)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+        }
+
         public string? Id
         {
             get => (string?)Get(ID_KEY);

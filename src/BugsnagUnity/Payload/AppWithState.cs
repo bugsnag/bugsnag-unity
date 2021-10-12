@@ -50,7 +50,7 @@ namespace BugsnagUnity.Payload
             set => Add(IS_LAUNCHING_KEY, value);
         }
 
-        internal AppWithState(IConfiguration configuration) : base(configuration)
+        internal AppWithState(Configuration configuration) : base(configuration)
         {
             Duration = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
         }

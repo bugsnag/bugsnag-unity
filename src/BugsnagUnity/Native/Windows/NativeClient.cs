@@ -8,7 +8,7 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
 
         public IBreadcrumbs Breadcrumbs { get; }
 
@@ -21,7 +21,7 @@ namespace BugsnagUnity
         private Metadata _fallbackMetadata = new Metadata();
 
 
-        public NativeClient(IConfiguration configuration)
+        public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
