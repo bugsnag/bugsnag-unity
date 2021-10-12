@@ -114,6 +114,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.15f2.apk"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -182,6 +184,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.15f2.ipa"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
