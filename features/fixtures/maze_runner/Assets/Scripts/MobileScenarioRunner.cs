@@ -285,7 +285,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     private void AddMetadataForRedaction()
     {
-        Bugsnag.Metadata.AddMetadata("User", new Dictionary<string, object>() {
+        Bugsnag.AddMetadata("User", new Dictionary<string, object>() {
                     {"test","test" },
                     { "password","password" }
                 });
@@ -375,7 +375,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void AddMetadata()
     {
-        Bugsnag.Metadata.AddMetadata("ConfigMetadata", new Dictionary<string, object>(){
+        Bugsnag.AddMetadata("ConfigMetadata", new Dictionary<string, object>(){
           { "subsystem", "Player Mechanics" }
         });
     }

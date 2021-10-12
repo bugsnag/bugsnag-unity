@@ -42,20 +42,20 @@ public class Main : MonoBehaviour
         Bugsnag.Start(config);
 
         // Add different varieties of custom metadata
-        Bugsnag.Metadata.AddMetadata("init", new Dictionary<string, object>(){
+        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
       {"foo", "bar" },
     });
-        Bugsnag.Metadata.AddMetadata("custom", new Dictionary<string, object>(){
+        Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
       {"letter", "QX" },
       {"better", 400 },
       {"setter", new OtherMetadata() },
     });
-        Bugsnag.Metadata.AddMetadata("app", new Dictionary<string, object>(){
+        Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
       {"buildno", "0.1" },
       {"cache", null },
     });
         // Remove a tab
-        Bugsnag.Metadata.ClearMetadata("init");
+        Bugsnag.ClearMetadata("init");
 
         // trigger the crash
         RunScenario(scenario);
@@ -446,7 +446,7 @@ public class Main : MonoBehaviour
 
     private void AddKeysForRedaction()
     {
-        Bugsnag.Metadata.AddMetadata("User", new Dictionary<string, object>() {
+        Bugsnag.AddMetadata("User", new Dictionary<string, object>() {
                     {"test","test" },
                     { "password","password" }
                 });
