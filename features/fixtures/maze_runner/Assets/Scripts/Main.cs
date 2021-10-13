@@ -562,7 +562,7 @@ public class Main : MonoBehaviour
     IEnumerator SetManualContextReloadSceneAndNotify()
     {
         Bugsnag.Context = "Manually-Set";
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1,LoadSceneMode.Additive);
         yield return new WaitForSeconds(0.5f);
         Bugsnag.Notify(new System.Exception("ManualContext"));
     }
