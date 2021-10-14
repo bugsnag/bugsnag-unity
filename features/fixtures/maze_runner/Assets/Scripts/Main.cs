@@ -43,17 +43,19 @@ public class Main : MonoBehaviour
 
         // Add different varieties of custom metadata
         Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
-      {"foo", "bar" },
-    });
+            {"foo", "bar" },
+        });
         Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
-      {"letter", "QX" },
-      {"better", 400 },
-      {"setter", new OtherMetadata() },
-    });
+            {"letter", "QX" },
+            {"better", 400 },
+            {"string-array", new string []{"1","2","3"} },
+            {"int-array", new int []{1,2,3} },
+            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }  
+        });
         Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
-      {"buildno", "0.1" },
-      {"cache", null },
-    });
+            {"buildno", "0.1" },
+            {"cache", null },
+        });
         // Remove a tab
         Bugsnag.ClearMetadata("init");
 
@@ -660,11 +662,5 @@ public class Main : MonoBehaviour
     }
 }
 
-class OtherMetadata
-{
-    public override string ToString()
-    {
-        return "more stuff";
-    }
-}
+
 
