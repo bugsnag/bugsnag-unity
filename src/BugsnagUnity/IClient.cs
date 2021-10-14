@@ -68,7 +68,7 @@ namespace BugsnagUnity
 
         void ClearMetadata(string section, string key);
 
-        object GetMetadata(string section);
+        Dictionary<string, object> GetMetadata(string section);
 
         object GetMetadata(string section, string key);
 

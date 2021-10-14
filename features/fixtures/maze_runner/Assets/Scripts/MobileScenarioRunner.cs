@@ -152,7 +152,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 config.DiscardClasses = new string[] { "St13runtime_error" };
                 break;
             case "Log error":
-                config.NotifyLevel = LogType.Error;
+                config.NotifyLogLevel = LogType.Error;
                 break;
             case "Disable Breadcrumbs":
                 config.EnabledBreadcrumbTypes = new BreadcrumbType[0];

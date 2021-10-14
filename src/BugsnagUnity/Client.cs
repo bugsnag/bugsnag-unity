@@ -139,7 +139,6 @@ namespace BugsnagUnity
             {
                 UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Session cannot be set without also setting endpoints.Notify. Sessions will not be sent to Bugsnag.");
             }
-
         }
 
         private void AddBugsnagLoadedBreadcrumb()
@@ -186,19 +185,11 @@ namespace BugsnagUnity
             Delivery.Send(payload);
         }
 
-        /// <summary>
-        /// Sets the current context to the scene name and leaves a breadcrumb with
-        /// the current scene information.
-        /// </summary>
-        /// <param name="scene"></param>
-        /// <param name="loadSceneMode"></param>
         void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
         {
             if (!_contextSetManually)
             {
                 Configuration.Context = scene.name;
-
-                // propagate the change to the native property also
                 NativeClient.SetContext(scene.name);
             }
             Breadcrumbs.Leave("Scene Loaded", BreadcrumbType.State, new Dictionary<string, string> { { "sceneName", scene.name } });
@@ -525,7 +516,7 @@ namespace BugsnagUnity
 
         public void ClearMetadata(string section, string key) => _storedMetadata.ClearMetadata(section, key);
 
-        public object GetMetadata(string section) => _storedMetadata.GetMetadata(section);
+        public Dictionary<string,object> GetMetadata(string section) => _storedMetadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => _storedMetadata.GetMetadata(section, key);
 

@@ -159,18 +159,18 @@ public class Main : MonoBehaviour
                 break;
             case "EnableUnhandledExceptions":
                 config.EnabledErrorTypes = new ErrorTypes[] {ErrorTypes.UnhandledExceptions };
-                config.NotifyLevel = LogType.Log;
+                config.NotifyLogLevel = LogType.Log;
                 break;
             case "EnableLogLogs":
                 config.EnabledErrorTypes = new ErrorTypes[] { ErrorTypes.UnityLogLogs };
-                config.NotifyLevel = LogType.Log;
+                config.NotifyLogLevel = LogType.Log;
                 break;
             case "DisableAllErrorTypes":
                 config.EnabledErrorTypes = new ErrorTypes[0];
-                config.NotifyLevel = LogType.Log;
+                config.NotifyLogLevel = LogType.Log;
                 break;
             case "NewSession":
-                config.AutoCaptureSessions = false;
+                config.AutoTrackSessions = false;
                 break;
             case "MaxBreadcrumbs":
                 config.MaximumBreadcrumbs = 5;
@@ -184,19 +184,19 @@ public class Main : MonoBehaviour
                 break;
             case "LogExceptionOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "NotifyOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "NativeCrashOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "UncaughtExceptionOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "UncaughtExceptionAsUnhandled":
                 config.ReportUncaughtExceptionsAsHandled = false;
@@ -205,55 +205,55 @@ public class Main : MonoBehaviour
                 config.ReportUncaughtExceptionsAsHandled = false;
                 break;
             case "ReportLoggedWarning":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "ReportLoggedError":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "ReportLoggedWarningWithHandledConfig":
                 config.ReportUncaughtExceptionsAsHandled = false;
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "ManualSessionCrash":
                 config.ReportUncaughtExceptionsAsHandled = false;
                 break;
             case "AutoSessionInNotifyReleaseStages":
                 config.ReleaseStage = "production";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "ManualSessionInNotifyReleaseStages":
                 config.ReleaseStage = "production";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "AutoSessionNotInNotifyReleaseStages":
-                config.NotifyReleaseStages = new[] { "no-op" };
+                config.EnabledReleaseStages = new[] { "no-op" };
                 break;
             case "ManualSessionNotInNotifyReleaseStages":
-                config.NotifyReleaseStages = new[] { "no-op" };
+                config.EnabledReleaseStages = new[] { "no-op" };
                 break;
             case "ManualSessionMixedEvents":
                 config.ReportUncaughtExceptionsAsHandled = false;
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "UncaughtExceptionWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "NotifyWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "LoggedExceptionWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 config.ReportUncaughtExceptionsAsHandled = false;
                 break;
             case "NativeCrashWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "NativeCrashReEnableAutoNotify":
-                config.AutoNotify = false;
-                config.AutoNotify = true;
+                config.AutoDetectErrors = false;
+                config.AutoDetectErrors = true;
                 break;
             case "ReportLoggedWarningThreaded":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             default: // no special config required
                 break;

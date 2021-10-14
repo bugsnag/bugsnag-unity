@@ -124,17 +124,35 @@ namespace BugsnagUnity
         /// Remove an OnSession callback
         /// </summary>
         public static void RemoveOnSession(OnSessionCallback callback) => Client.RemoveOnSession(callback);
-      
+
+        /// <summary>
+        /// AddMetadata that will appear in every reported event
+        /// </summary>
         public static void AddMetadata(string section, string key, object value) => Client.AddMetadata(section, key, value);
 
+        /// <summary>
+        /// AddMetadata that will appear in every reported event
+        /// </summary>
         public static void AddMetadata(string section, Dictionary<string, object> metadata) => Client.AddMetadata(section, metadata);
 
+        /// <summary>
+        /// Clear the metadata stored in the specified section
+        /// </summary>
         public static void ClearMetadata(string section) => Client.ClearMetadata(section);
 
+        /// <summary>
+        /// Clear the metadata stored with the specified section and key
+        /// </summary>
         public static void ClearMetadata(string section, string key) => Client.ClearMetadata(section, key);
 
-        public static object GetMetadata(string section) => Client.GetMetadata(section);
+        /// <summary>
+        /// Get the metadata stored in the specified section 
+        /// </summary>
+        public static Dictionary<string, object> GetMetadata(string section) => Client.GetMetadata(section);
 
+        /// <summary>
+        /// Get the metadata stored with the specified section and key
+        /// </summary>
         public static object GetMetadata(string section, string key) => Client.GetMetadata(section, key);
 
     }

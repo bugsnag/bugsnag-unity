@@ -10,18 +10,15 @@ namespace BugsnagUnity
 
         internal static void SetDefaultData(INativeClient nativeClient)
         {
-            // data added to metadata.app
+            //data added to metadata.app
             var appMetadata = new Dictionary<string, object>();
             appMetadata.Add("companyName", Application.companyName);
             appMetadata.Add("name", Application.productName);
             nativeClient.SetMetadata("app",appMetadata);
 
-
             //data added to metadata.device
             var deviceMetadata = new Dictionary<string, object>();
-           
             deviceMetadata.Add("screenDensity", Screen.dpi.ToString());
-
             var res = Screen.currentResolution;
             deviceMetadata.Add("screenResolution", string.Format("{0}x{1}", res.width, res.height));
             deviceMetadata.Add("graphicsDeviceVersion", SystemInfo.graphicsDeviceVersion);
@@ -34,7 +31,6 @@ namespace BugsnagUnity
             }
             deviceMetadata.Add("osLanguage", Application.systemLanguage.ToString());
             nativeClient.SetMetadata("device", deviceMetadata);
-
         }
 
         internal static void AddStatefulDeviceData(Metadata metadata)
