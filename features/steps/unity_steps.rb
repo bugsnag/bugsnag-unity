@@ -239,7 +239,7 @@ Then("custom metadata is included in the event") do
     And the event "metaData.app.cache" is null
     And the event "metaData.init" is null
     And the event "metaData.custom.letter" equals "QX"
-    And the event "metaData.custom.better" equals "400"
+    And the event "metaData.custom.better" equals 400
     And the event "metaData.custom.setter" equals "more stuff"
   }
 end

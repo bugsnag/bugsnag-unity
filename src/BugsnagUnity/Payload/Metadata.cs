@@ -25,9 +25,16 @@ namespace BugsnagUnity.Payload
 
         public void AddMetadata(string section, Dictionary<string, object> metadataSection)
         {
+            if (metadataSection == null)
+            {
+                ClearMetadata(section);
+                return;
+            }
             if (SectionExists(section))
             {
+
                 var existingSection = (Dictionary<string, object>)Get(section);
+
                 foreach (var entry in metadataSection)
                 {
                     if (entry.Value == null)
