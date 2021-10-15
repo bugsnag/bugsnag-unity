@@ -7,7 +7,7 @@ namespace BugsnagUnity.Payload
 
     public class PayloadContainer
     {
-        internal Dictionary<string, object> Payload = new Dictionary<string, object>();
+        internal PayloadDictionary Payload = new PayloadDictionary();
 
         internal PayloadContainer()
         {
@@ -38,5 +38,10 @@ namespace BugsnagUnity.Payload
             }
         }
        
+    }
+
+    internal class PayloadDictionary : Dictionary<string,object>, IFilterable
+    {
+
     }
 }

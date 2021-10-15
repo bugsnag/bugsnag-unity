@@ -42,20 +42,22 @@ public class Main : MonoBehaviour
         Bugsnag.Start(config);
 
         // Add different varieties of custom metadata
-        Bugsnag.Metadata.Add("init", new Dictionary<string, string>(){
-      {"foo", "bar" },
-    });
-        Bugsnag.Metadata.Add("custom", new Dictionary<string, object>(){
-      {"letter", "QX" },
-      {"better", 400 },
-      {"setter", new OtherMetadata() },
-    });
-        Bugsnag.Metadata.Add("app", new Dictionary<string, string>(){
-      {"buildno", "0.1" },
-      {"cache", null },
-    });
+        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
+            {"foo", "bar" },
+        });
+        Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
+            {"letter", "QX" },
+            {"better", 400 },
+            {"string-array", new string []{"1","2","3"} },
+            {"int-array", new int []{1,2,3} },
+            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }  
+        });
+        Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
+            {"buildno", "0.1" },
+            {"cache", null },
+        });
         // Remove a tab
-        Bugsnag.Metadata.Remove("init");
+        Bugsnag.ClearMetadata("init");
 
         // trigger the crash
         RunScenario(scenario);
@@ -157,18 +159,18 @@ public class Main : MonoBehaviour
                 break;
             case "EnableUnhandledExceptions":
                 config.EnabledErrorTypes = new ErrorTypes[] {ErrorTypes.UnhandledExceptions };
-                config.NotifyLevel = LogType.Log;
+                config.NotifyLogLevel = LogType.Log;
                 break;
             case "EnableLogLogs":
                 config.EnabledErrorTypes = new ErrorTypes[] { ErrorTypes.UnityLogLogs };
-                config.NotifyLevel = LogType.Log;
+                config.NotifyLogLevel = LogType.Log;
                 break;
             case "DisableAllErrorTypes":
                 config.EnabledErrorTypes = new ErrorTypes[0];
-                config.NotifyLevel = LogType.Log;
+                config.NotifyLogLevel = LogType.Log;
                 break;
             case "NewSession":
-                config.AutoCaptureSessions = false;
+                config.AutoTrackSessions = false;
                 break;
             case "MaxBreadcrumbs":
                 config.MaximumBreadcrumbs = 5;
@@ -182,19 +184,19 @@ public class Main : MonoBehaviour
                 break;
             case "LogExceptionOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "NotifyOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "NativeCrashOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "UncaughtExceptionOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "UncaughtExceptionAsUnhandled":
                 config.ReportUncaughtExceptionsAsHandled = false;
@@ -203,55 +205,55 @@ public class Main : MonoBehaviour
                 config.ReportUncaughtExceptionsAsHandled = false;
                 break;
             case "ReportLoggedWarning":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "ReportLoggedError":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "ReportLoggedWarningWithHandledConfig":
                 config.ReportUncaughtExceptionsAsHandled = false;
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "ManualSessionCrash":
                 config.ReportUncaughtExceptionsAsHandled = false;
                 break;
             case "AutoSessionInNotifyReleaseStages":
                 config.ReleaseStage = "production";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "ManualSessionInNotifyReleaseStages":
                 config.ReleaseStage = "production";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "AutoSessionNotInNotifyReleaseStages":
-                config.NotifyReleaseStages = new[] { "no-op" };
+                config.EnabledReleaseStages = new[] { "no-op" };
                 break;
             case "ManualSessionNotInNotifyReleaseStages":
-                config.NotifyReleaseStages = new[] { "no-op" };
+                config.EnabledReleaseStages = new[] { "no-op" };
                 break;
             case "ManualSessionMixedEvents":
                 config.ReportUncaughtExceptionsAsHandled = false;
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "UncaughtExceptionWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "NotifyWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "LoggedExceptionWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 config.ReportUncaughtExceptionsAsHandled = false;
                 break;
             case "NativeCrashWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "NativeCrashReEnableAutoNotify":
-                config.AutoNotify = false;
-                config.AutoNotify = true;
+                config.AutoDetectErrors = false;
+                config.AutoDetectErrors = true;
                 break;
             case "ReportLoggedWarningThreaded":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             default: // no special config required
                 break;
@@ -397,7 +399,7 @@ public class Main : MonoBehaviour
                 break;
             case "StoppedSession":
                 Bugsnag.StartSession();
-                Bugsnag.StopSession();
+                Bugsnag.PauseSession();
                 DoNotify();
                 break;
             case "ResumedSession":
@@ -446,7 +448,7 @@ public class Main : MonoBehaviour
 
     private void AddKeysForRedaction()
     {
-        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+        Bugsnag.AddMetadata("User", new Dictionary<string, object>() {
                     {"test","test" },
                     { "password","password" }
                 });
@@ -494,7 +496,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("First Error"));
 
         // send 2nd exception after resuming a session
-        Bugsnag.StopSession();
+        Bugsnag.PauseSession();
         Bugsnag.ResumeSession();
         Bugsnag.Notify(new System.Exception("Second Error"));
     }
@@ -511,7 +513,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("First Error"));
 
         // stop tracking the existing session
-        Bugsnag.StopSession();
+        Bugsnag.PauseSession();
         yield return new WaitForSeconds(1);
         Bugsnag.StartSession();
 
@@ -562,7 +564,7 @@ public class Main : MonoBehaviour
     IEnumerator SetManualContextReloadSceneAndNotify()
     {
         Bugsnag.Context = "Manually-Set";
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1,LoadSceneMode.Additive);
         yield return new WaitForSeconds(0.5f);
         Bugsnag.Notify(new System.Exception("ManualContext"));
     }
@@ -585,7 +587,7 @@ public class Main : MonoBehaviour
         {
             @event.Exceptions[0].ErrorClass = "FunnyBusiness";
             @event.Exceptions[0].ErrorMessage = "cake";
-            @event.Metadata.Add("shape", new Dictionary<string, string>() {
+            @event.AddMetadata("shape", new Dictionary<string, object>() {
         { "arc", "yes" },
         
       });
@@ -660,11 +662,5 @@ public class Main : MonoBehaviour
     }
 }
 
-class OtherMetadata
-{
-    public override string ToString()
-    {
-        return "more stuff";
-    }
-}
+
 

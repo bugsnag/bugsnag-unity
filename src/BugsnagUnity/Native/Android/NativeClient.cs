@@ -6,7 +6,7 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
 
         public IBreadcrumbs Breadcrumbs { get; }
 
@@ -14,7 +14,7 @@ namespace BugsnagUnity
 
         private NativeInterface NativeInterface;
 
-        public NativeClient(IConfiguration configuration)
+        public NativeClient(Configuration configuration)
         {
             NativeInterface = new NativeInterface(configuration);
             Configuration = configuration;
@@ -59,24 +59,24 @@ namespace BugsnagUnity
             }
         }
 
-        public void SetMetadata(string tab, Dictionary<string, string> metadata)
+        public void SetMetadata(string section, Dictionary<string, object> metadata)
         {
             if (metadata != null)
             {
                 foreach (var item in metadata)
                 {
-                    NativeInterface.AddToTab(tab, item.Key, item.Value);
+                    NativeInterface.AddToTab(section, item.Key, item.Value.ToString());
                 }
             }
             else
             {
-                NativeInterface.RemoveMetadata(tab);
+                NativeInterface.RemoveMetadata(section);
             }
         }
 
         public void PopulateMetadata(Metadata metadata)
         {
-            MergeDictionaries(metadata, NativeInterface.GetMetadata());
+            metadata.MergeMetadata(NativeInterface.GetMetadata());
         }
 
         private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)

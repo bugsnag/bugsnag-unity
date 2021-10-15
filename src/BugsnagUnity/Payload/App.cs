@@ -83,7 +83,7 @@ namespace BugsnagUnity.Payload
             set => Add(VERSION_CODE_KEY, value);
         }
 
-        internal App(IConfiguration configuration)
+        internal App(Configuration configuration)
         {
             Id = Application.identifier;
             ReleaseStage = configuration.ReleaseStage;
@@ -91,7 +91,7 @@ namespace BugsnagUnity.Payload
             Version = configuration.AppVersion;
         }
 
-        private string GetAppType(IConfiguration configuration)
+        private string GetAppType(Configuration configuration)
         {
             if (!string.IsNullOrEmpty(configuration.AppType))
             {

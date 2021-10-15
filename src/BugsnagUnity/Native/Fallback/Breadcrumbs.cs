@@ -6,14 +6,14 @@ namespace BugsnagUnity
     class Breadcrumbs : IBreadcrumbs
     {
         readonly object _lock = new object();
-        IConfiguration Configuration { get; }
+        Configuration Configuration { get; }
         List<Breadcrumb> _breadcrumbs;
 
         /// <summary>
         /// Constructs a collection of breadcrumbs
         /// </summary>
         /// <param name="configuration"></param>
-        internal Breadcrumbs(IConfiguration configuration)
+        internal Breadcrumbs(Configuration configuration)
         {
             Configuration = configuration;
             _breadcrumbs = new List<Breadcrumb>();

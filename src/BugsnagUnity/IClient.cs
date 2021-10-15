@@ -1,4 +1,5 @@
-﻿using BugsnagUnity.Payload;
+﻿using System.Collections.Generic;
+using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
@@ -7,9 +8,9 @@ namespace BugsnagUnity
     public delegate bool OnSessionCallback(Session session);
 
 
-    public interface IClient
+    internal interface IClient : IMetadataEditor, IUserEditor
     {
-        IConfiguration Configuration { get; }
+        Configuration Configuration { get; }
 
         IBreadcrumbs Breadcrumbs { get; }
 
@@ -17,11 +18,7 @@ namespace BugsnagUnity
 
         LastRunInfo LastRunInfo { get; }
 
-        User User { get; }
-
         void Send(IPayload payload);
-
-        Metadata Metadata { get; }
 
         void Notify(System.Exception exception);
 
@@ -43,13 +40,9 @@ namespace BugsnagUnity
         /// <param name="inFocus"></param>
         void SetApplicationState(bool inFocus);
 
-        void SetContext(string context);
-
         string GetContext();
 
-        void SetAutoDetectErrors(bool AutoDetectErrors);
-
-        void SetAutoDetectAnrs(bool autoDetectAnrs);
+        void SetContext(string context);
 
         bool IsUsingFallback();
 

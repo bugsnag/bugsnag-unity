@@ -41,15 +41,15 @@ namespace BugsnagUnity.Payload.Tests
 
             Assert.IsTrue(config.Endpoints.IsValid);
 
-            config.Endpoint = new System.Uri("https://www.richIsCool.com/");
+            config.Endpoints.Notify = new System.Uri("https://www.richIsCool.com/");
 
             Assert.IsFalse(config.Endpoints.IsValid);
 
-            config.SessionEndpoint = new System.Uri("https://www.richIsSuperCool.com/");
+            config.Endpoints.Session = new System.Uri("https://www.richIsSuperCool.com/");
 
             Assert.IsTrue(config.Endpoints.IsValid);
 
-            config.Endpoint = null;
+            config.Endpoints.Notify = null;
 
             Assert.IsFalse(config.Endpoints.IsValid);
         }

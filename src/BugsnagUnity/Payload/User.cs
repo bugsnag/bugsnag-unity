@@ -19,6 +19,13 @@ namespace BugsnagUnity.Payload
 
         }
 
+        public User(string? id, string? name, string? email)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+        }
+
         public string? Id
         {
             get => (string?)Get(ID_KEY);
@@ -47,6 +54,11 @@ namespace BugsnagUnity.Payload
                 Add(EMAIL_KEY, value);
                 PropertyChanged.Invoke();
             }
+        }
+
+        internal User Copy()
+        {
+            return new User(Id,Name,Email);
         }
     }
 }

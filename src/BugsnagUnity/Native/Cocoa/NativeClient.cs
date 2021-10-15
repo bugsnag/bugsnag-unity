@@ -8,13 +8,13 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
         public IBreadcrumbs Breadcrumbs { get; }
         public IDelivery Delivery { get; }
         private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
 
-        public NativeClient(IConfiguration configuration)
+        public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
             NativeConfiguration = CreateNativeConfig(configuration);
@@ -26,7 +26,7 @@ namespace BugsnagUnity
         /**
          * Transforms an IConfiguration C# object into a Cocoa Configuration object.
          */
-        IntPtr CreateNativeConfig(IConfiguration config)
+        IntPtr CreateNativeConfig(Configuration config)
         {
             IntPtr obj = NativeCode.bugsnag_createConfiguration(config.ApiKey);
             NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoDetectErrors);
@@ -69,7 +69,7 @@ namespace BugsnagUnity
             return obj;
         }
 
-        private string GetAppType(IConfiguration config)
+        private string GetAppType(Configuration config)
         {
             if (!string.IsNullOrEmpty(config.AppType))
             {
@@ -87,7 +87,7 @@ namespace BugsnagUnity
             return string.Empty;
         }
 
-        private void SetEnabledBreadcrumbTypes(IntPtr obj, IConfiguration config)
+        private void SetEnabledBreadcrumbTypes(IntPtr obj, Configuration config)
         {
             if (config.EnabledBreadcrumbTypes == null)
             {
@@ -103,7 +103,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setEnabledBreadcrumbTypes(obj, enabledTypes.ToArray(),enabledTypes.Count);
         }
 
-        private void SetEnabledErrorTypes(IntPtr obj, IConfiguration config)
+        private void SetEnabledErrorTypes(IntPtr obj, Configuration config)
         {
             var enabledTypes = new List<string>();
             if (config.IsErrorTypeEnabled(ErrorTypes.AppHangs))
@@ -226,29 +226,33 @@ namespace BugsnagUnity
             user.Id = Marshal.PtrToStringAuto(nativeUser.Id);
         }
 
-        public void SetMetadata(string tab, Dictionary<string, string> unityMetadata)
+        public void SetMetadata(string section, Dictionary<string, object> metadataSection)
         {
+
             var index = 0;
             var count = 0;
-            if (unityMetadata != null)
+            if (metadataSection != null)
             {
-                var metadata = new string[unityMetadata.Count * 2];
+                var metadata = new string[metadataSection.Count * 2];
 
-                foreach (var data in unityMetadata)
+                foreach (var data in metadataSection)
                 {
+
+
+
                     if (data.Key != null)
                     {
                         metadata[index] = data.Key;
-                        metadata[index + 1] = data.Value;
+                        metadata[index + 1] = data.Value.ToString();
                         count += 2;
                     }
                     index += 2;
                 }
-                NativeCode.bugsnag_setMetadata(NativeConfiguration, tab, metadata, count);
+                NativeCode.bugsnag_setMetadata(NativeConfiguration, section, metadata, count);
             }
             else
             {
-                NativeCode.bugsnag_removeMetadata(NativeConfiguration, tab);
+                NativeCode.bugsnag_removeMetadata(NativeConfiguration, section);
             }
         }
 
@@ -271,7 +275,7 @@ namespace BugsnagUnity
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is Metadata metadata)
             {
-                var metadataObject = new Dictionary<string, string>();
+                var metadataObject = new Dictionary<string, object>();
                 for (int i = 0; i < keys.Length; i++)
                 {
                     var key = keys[i];
@@ -282,7 +286,7 @@ namespace BugsnagUnity
                     }
                     metadataObject.Add(key, value);
                 }
-                metadata.AddToPayload(tab, metadataObject);
+                metadata.AddMetadata(tab, metadataObject);
             }
         }
 

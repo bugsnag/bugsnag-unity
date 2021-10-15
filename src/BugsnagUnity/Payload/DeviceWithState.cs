@@ -36,7 +36,7 @@ namespace BugsnagUnity.Payload
             set => Add(TIME_KEY, value);
         }
 
-        internal DeviceWithState(IConfiguration configuration) : base(configuration)
+        internal DeviceWithState(Configuration configuration) : base(configuration)
         {
             Orientation = Input.deviceOrientation.ToString();
             Time = DateTime.UtcNow;

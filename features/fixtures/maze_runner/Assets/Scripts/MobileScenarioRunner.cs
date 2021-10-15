@@ -152,7 +152,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 config.DiscardClasses = new string[] { "St13runtime_error" };
                 break;
             case "Log error":
-                config.NotifyLevel = LogType.Error;
+                config.NotifyLogLevel = LogType.Error;
                 break;
             case "Disable Breadcrumbs":
                 config.EnabledBreadcrumbTypes = new BreadcrumbType[0];
@@ -285,7 +285,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     private void AddMetadataForRedaction()
     {
-        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+        Bugsnag.AddMetadata("User", new Dictionary<string, object>() {
                     {"test","test" },
                     { "password","password" }
                 });
@@ -358,7 +358,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), @event =>
         {
             @event.Context = "Callback Context";
-            @event.Metadata.Add("Callback", new Dictionary<string, string>()
+            @event.AddMetadata("Callback", new Dictionary<string, object>()
             {
                 {"region", "US"}
             });
@@ -368,14 +368,12 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void SetUser()
     {
-        Bugsnag.User.Id = "mcpacman";
-        Bugsnag.User.Name = "Geordi McPacman";
-        Bugsnag.User.Email = "configureduser@example.com";
+        Bugsnag.SetUser("mcpacman", "configureduser@example.com", "Geordi McPacman");
     }
 
     public void AddMetadata()
     {
-        Bugsnag.Metadata.Add("ConfigMetadata", new Dictionary<string, string>(){
+        Bugsnag.AddMetadata("ConfigMetadata", new Dictionary<string, object>(){
           { "subsystem", "Player Mechanics" }
         });
     }
@@ -384,7 +382,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         Bugsnag.AddOnError(@event =>
         {
-            @event.Metadata.Add("CallbackMetadata", new Dictionary<string, string>(){
+            @event.AddMetadata("CallbackMetadata", new Dictionary<string, object>(){
                 { "subsystem", "Player Mechanics" }
             });
             return true;
@@ -404,9 +402,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         Bugsnag.AddOnError(@event =>
         {
-            @event.User.Id = "lunchfrey";
-            @event.User.Name = "Lunchfrey Jones";
-            @event.User.Email = "beforenotifyuser@example.com";
+            @event.SetUser("lunchfrey", "Lunchfrey Jones", "beforenotifyuser@example.com");
             return true;
         });
     }

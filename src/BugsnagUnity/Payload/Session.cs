@@ -28,8 +28,14 @@ namespace BugsnagUnity.Payload
 
         public Device? Device { get; set; }
 
-        public User? User { get; set; }
+        internal User? User { get; set; }
 
+        public User GetUser() => User;
+
+        public void SetUser(string id, string email, string name)
+        {
+            User = new User(id,name,email);
+        }
 
         internal int HandledCount()
         {

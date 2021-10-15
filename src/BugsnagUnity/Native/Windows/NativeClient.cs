@@ -8,7 +8,7 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
 
         public IBreadcrumbs Breadcrumbs { get; }
 
@@ -18,7 +18,10 @@ namespace BugsnagUnity
 
         private bool _hasReceivedLowMemoryWarning = false;
 
-        public NativeClient(IConfiguration configuration)
+        private Metadata _fallbackMetadata = new Metadata();
+
+
+        public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
@@ -79,14 +82,16 @@ namespace BugsnagUnity
 
         public void PopulateMetadata(Metadata metadata)
         {
+            metadata.MergeMetadata(_fallbackMetadata.Payload);
         }
 
         public void PopulateUser(User user)
         {
         }
 
-        public void SetMetadata(string tab, Dictionary<string, string> metadata)
+        public void SetMetadata(string section, Dictionary<string, object> metadata)
         {
+            _fallbackMetadata.AddMetadata(section, metadata);
         }
 
         public void SetSession(Session session)

@@ -49,7 +49,7 @@ namespace BugsnagUnity
         private bool Unity2019OrNewer;
         private Thread MainThread;
 
-        public NativeInterface(IConfiguration cfg)
+        public NativeInterface(Configuration cfg)
         {
             AndroidJavaObject config = CreateNativeConfig(cfg);
             Unity2019OrNewer = IsUnity2019OrNewer();
@@ -182,7 +182,7 @@ namespace BugsnagUnity
         /**
          * Transforms an IConfiguration C# object into a Java Configuration object.
          */
-        AndroidJavaObject CreateNativeConfig(IConfiguration config)
+        AndroidJavaObject CreateNativeConfig(Configuration config)
         {
             var obj = new AndroidJavaObject("com.bugsnag.android.Configuration", config.ApiKey);
             // configure automatic tracking of errors/sessions
