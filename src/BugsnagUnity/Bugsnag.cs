@@ -8,12 +8,12 @@ namespace BugsnagUnity
     {
         static object _clientLock = new object();
 
-        public static IClient Start(string apiKey)
+        public static void Start(string apiKey)
         {
-            return Start(new Configuration(apiKey));
+            Start(new Configuration(apiKey));
         }
 
-        public static IClient Start(Configuration configuration)
+        public static void Start(Configuration configuration)
         {
             lock (_clientLock)
             {
@@ -23,8 +23,6 @@ namespace BugsnagUnity
                     InternalClient = new Client(nativeClient);
                 }
             }
-
-            return Client;
         }
 
         static Client InternalClient { get; set; }

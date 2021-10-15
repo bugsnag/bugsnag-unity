@@ -8,7 +8,7 @@ namespace BugsnagUnity
     public delegate bool OnSessionCallback(Session session);
 
 
-    public interface IClient
+    internal interface IClient : IMetadataEditor, IUserEditor
     {
         Configuration Configuration { get; }
 
@@ -17,10 +17,6 @@ namespace BugsnagUnity
         ISessionTracker SessionTracking { get; }
 
         LastRunInfo LastRunInfo { get; }
-
-        User GetUser();
-
-        void SetUser(string id, string email, string name);
 
         void Send(IPayload payload);
 
@@ -59,18 +55,6 @@ namespace BugsnagUnity
         void AddOnSession(OnSessionCallback callback);
 
         void RemoveOnSession(OnSessionCallback callback);
-
-        void AddMetadata(string section, string key, object value);
-
-        void AddMetadata(string section, Dictionary<string, object> metadata);
-
-        void ClearMetadata(string section);
-
-        void ClearMetadata(string section, string key);
-
-        Dictionary<string, object> GetMetadata(string section);
-
-        object GetMetadata(string section, string key);
 
     }
 }

@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-    public class Event : Dictionary<string, object>
+    public class Event : Dictionary<string, object>, IMetadataEditor, IUserEditor
     {
         HandledState _handledState;
 
@@ -18,7 +19,7 @@ namespace BugsnagUnity.Payload
             App = app;
             Device = device;
             Context = context;
-            Exceptions = exceptions;
+            Exceptions = exceptions.ToList();
             Breadcrumbs = breadcrumbs;
             _user = user;
             if (session != null)
@@ -49,6 +50,10 @@ namespace BugsnagUnity.Payload
 
         public object GetMetadata(string section, string key) => _metadata.GetMetadata(section,key);
 
+        public void ClearMetadata(string section) => _metadata.ClearMetadata(section);
+
+        public void ClearMetadata(string section, string key) => _metadata.ClearMetadata(section, key);
+
         public List<Breadcrumb> Breadcrumbs { get; }
 
         internal Session Session { get; }
@@ -74,14 +79,10 @@ namespace BugsnagUnity.Payload
 
         public DeviceWithState Device { get; }
 
-        public Exception[] Exceptions { get; }
+        public List<Exception> Exceptions { get; }
 
-        internal string GroupingHash
-        {
-            get => this.Get("groupingHash") as string;
-            set => this.AddToPayload("groupingHash", value);
-        }
-
+        public string GroupingHash;
+        
         internal Severity Severity
         {
             set => HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
@@ -128,6 +129,7 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("metaData", _metadata.Payload);
             this.AddToPayload("user", _user.Payload);
             this.AddToPayload("context", Context);
+            this.AddToPayload("groupingHash", GroupingHash);
             this.AddToPayload("payloadVersion", 4);
             this.AddToPayload("exceptions", Exceptions);
             this.AddToPayload("breadcrumbs", Breadcrumbs);
@@ -136,5 +138,6 @@ namespace BugsnagUnity.Payload
                 this.AddToPayload("session", Session.Payload);
             }
         }
+
     }
 }

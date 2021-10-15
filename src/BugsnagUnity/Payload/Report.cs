@@ -30,7 +30,7 @@ namespace BugsnagUnity.Payload
         /// is ignored. If ignored the report will not be sent to Bugsnag.
         /// </summary>
         /// <value><c>true</c> if ignored; otherwise, <c>false</c>.</value>
-        public bool Ignored { get; private set; }
+        internal bool Ignored { get; private set; }
 
         internal Report(Configuration configuration, Event @event)
         {
@@ -59,18 +59,17 @@ namespace BugsnagUnity.Payload
         /// is a handled error or not.
         /// </summary>
         /// <value><c>true</c> if is handled; otherwise, <c>false</c>.</value>
-        public bool IsHandled => _event.IsHandled;
+        internal bool IsHandled => _event.IsHandled;
 
 
-        public string Context => _event.Context;
+        internal string Context => _event.Context;
 
         /// <summary>
         /// Gets the exceptions that generated this report. There may be multiple of
         /// these if the exception had inner exceptions.
         /// </summary>
         /// <value>The exceptions.</value>
-        public Exception[] Exceptions => _event.Exceptions;
-
+        internal List<Exception> Exceptions => _event.Exceptions;
 
         internal HandledState OriginalSeverity => _event.OriginalSeverity;
 

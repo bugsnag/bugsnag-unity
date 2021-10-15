@@ -6,13 +6,12 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class Configuration
+    public class Configuration : IMetadataEditor, IUserEditor
     {
 
         public string AppType;
 
         public string BundleVersion;
-
 
         public string[] RedactedKeys = new string[] { "password" };
 
@@ -122,9 +121,9 @@ namespace BugsnagUnity
 
         public EndpointConfiguration Endpoints = new EndpointConfiguration();
 
-        public string PayloadVersion { get; } = "4.0";
+        internal string PayloadVersion { get; } = "4.0";
 
-        public string SessionPayloadVersion { get; } = "1.0";
+        internal string SessionPayloadVersion { get; } = "1.0";
 
         public string Context;
        
@@ -172,17 +171,17 @@ namespace BugsnagUnity
 
         public int MaxPersistedEvents = 32;
 
-        public bool ErrorClassIsDiscarded(string className)
+        internal bool ErrorClassIsDiscarded(string className)
         {
             return DiscardClasses != null && DiscardClasses.Contains(className);
         }
 
-        public bool IsErrorTypeEnabled(ErrorTypes errorType)
+        internal bool IsErrorTypeEnabled(ErrorTypes errorType)
         {
             return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);
         }
 
-        public bool IsUnityLogErrorTypeEnabled(LogType logType)
+        internal bool IsUnityLogErrorTypeEnabled(LogType logType)
         {
             if (EnabledErrorTypes == null)
             {
@@ -255,7 +254,7 @@ namespace BugsnagUnity
 
         public void ClearMetadata(string section, string key) => Metadata.ClearMetadata(section, key);
 
-        public object GetMetadata(string section) => Metadata.GetMetadata(section);
+        public Dictionary<string,object> GetMetadata(string section) => Metadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => Metadata.GetMetadata(section, key);
 
