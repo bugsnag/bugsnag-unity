@@ -114,6 +114,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.15f2.apk"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -182,6 +184,8 @@ steps:
       artifacts#v1.3.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.15f2.ipa"
+        upload:
+          - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
@@ -194,133 +198,37 @@ steps:
     concurrency_group: browserstack-app
 
   #
-  # Conditionally trigger full pipeline
+  # Build Windows test fixture
   #
-  - label: 'Conditionally trigger full set of tests'
-    command: sh -c .buildkite/pipeline_trigger.sh
-
-  - block: "Build Windows fixtures"
-    depends_on: 'build-artifacts'
-    key: 'block-windows'
-    prompt: "Build Windows fixtures - Is a suitable agent running?"
-
-  #
-  # TODO Once Windows infrastructure is fully in place, refactor the following steps into the basic and full pipelines.
-  #
-  - label: Build Unity 2021 Windows test fixture
-    key: 'windows-2021-fixture'
-    depends_on: 'block-windows'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2021.1.16f1"
-    commands:
-      - scripts/ci-build-windows-package.bat
-    artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2021.1.16f1.zip
-
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
-    depends_on: 'block-windows'
+    depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.12f1"
+      UNITY_VERSION: "2020.3.17f1"
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2020.3.12f1.zip
-
-  - label: Build Unity 2019 Windows test fixture
-    key: 'windows-2019-fixture'
-    depends_on: 'block-windows'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2019.4.28f1"
-    command:
-      - scripts/ci-build-windows-package.bat
-    artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2019.4.28f1.zip
-
-  - label: Build Unity 2018 Windows test fixture
-    key: 'windows-2018-fixture'
-    depends_on: 'block-windows'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2018.4.36f1"
-    command:
-      - scripts/ci-build-windows-package.bat
-    artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
-
-  - label: Build Unity 2017 Windows test fixture
-    key: 'windows-2017-fixture'
-    depends_on: 'block-windows'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2017.4.40f1"
-    command:
-      - scripts/ci-build-windows-package.bat
-    artifact_paths:
-      - features/fixtures/maze_runner/build/Windows-2017.4.40f1.zip
+      - features/fixtures/maze_runner/build/Windows-2020.3.17f1.zip
 
   #
   # Run Windows e2e tests
   #
-  - label: Run Windows e2e tests for Unity 2021
-    depends_on: 'windows-2021-fixture'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2021.1.16f1"
-    command:
-      - scripts/ci-run-windows-tests.bat
-
   - label: Run Windows e2e tests for Unity 2020
     depends_on: 'windows-2020-fixture'
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.12f1"
+      UNITY_VERSION: "2020.3.17f1"
     command:
       - scripts/ci-run-windows-tests.bat
 
-  - label: Run Windows e2e tests for Unity 2019
-    depends_on: 'windows-2019-fixture'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2019.4.28f1"
-    command:
-      - scripts/ci-run-windows-tests.bat
-
-  - label: Run Windows e2e tests for Unity 2018
-    depends_on: 'windows-2018-fixture'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2018.4.36f1"
-    command:
-      - scripts/ci-run-windows-tests.bat
-
-  - label: Run Windows e2e tests for Unity 2017
-    depends_on: 'windows-2017-fixture'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2017.4.40f1"
-    command:
-      - scripts/ci-run-windows-tests.bat
+  #
+  # Conditionally trigger full pipeline
+  #
+  - label: 'Conditionally trigger full set of tests'
+    command: sh -c .buildkite/pipeline_trigger.sh
+    

@@ -26,10 +26,9 @@ Feature: Reporting unhandled events
             | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
             | Main.RunScenario(System.String scenario)         | |
             | Main.Start()               | |
-        
+
         #device metadata
         And the event "device.charging" is not null
-        And the event "device.batteryLevel" is greater than -1
         And the event "device.freeDisk" is greater than 0
         And the event "device.freeMemory" is greater than 0
         And the event "device.hostname" is not null
@@ -48,7 +47,8 @@ Feature: Reporting unhandled events
 
         #app metadata
         And the event "app.duration" is greater than 0
-        And the event "app.durationInForeground" is greater than 0
+        # TODO Pending PLAT-7433
+        # And the event "app.durationInForeground" is greater than 0
         And the event "app.inForeground" is not null
         And the event "app.isLaunching" is not null
         And the event "app.lowMemory" is not null
