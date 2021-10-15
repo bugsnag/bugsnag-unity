@@ -29,9 +29,6 @@ Feature: Reporting unhandled events
 
         #device metadata
         And the event "device.charging" is not null
-
-        # TODO Pending PLAT-7433
-        # And the event "device.batteryLevel" is greater than -1
         And the event "device.freeDisk" is greater than 0
         And the event "device.freeMemory" is greater than 0
         And the event "device.hostname" is not null
