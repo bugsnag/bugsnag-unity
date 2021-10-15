@@ -50,6 +50,11 @@ namespace BugsnagUnity
 
             }
         }
+
+        internal EndpointConfiguration Copy()
+        {
+            return new EndpointConfiguration(Notify.ToString(),Session.ToString());
+        }
        
     }
 }

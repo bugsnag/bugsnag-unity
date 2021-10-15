@@ -254,7 +254,7 @@ namespace BugsnagUnity
 
         public void ClearMetadata(string section, string key) => Metadata.ClearMetadata(section, key);
 
-        public Dictionary<string,object> GetMetadata(string section) => Metadata.GetMetadata(section);
+        public Dictionary<string, object> GetMetadata(string section) => Metadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => Metadata.GetMetadata(section, key);
 
@@ -262,8 +262,24 @@ namespace BugsnagUnity
 
         public void SetUser(string id, string email, string name)
         {
-            _user = new User(id,email,name);
+            _user = new User(id, email, name);
         }
+
+        internal Configuration Clone()
+        {
+            var clone = (Configuration)MemberwiseClone();
+            if (_user != null)
+            {
+                clone._user = _user.Copy();
+            }
+            if (Endpoints.IsValid)
+            {
+                clone.Endpoints = Endpoints.Copy();
+            }
+            return clone;
+        }
+
+
     }
 }
 
