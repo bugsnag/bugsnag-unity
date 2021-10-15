@@ -31,7 +31,7 @@ namespace BugsnagUnity
 
         private User _user = null;
 
-        public Metadata Metadata = new Metadata();
+        internal Metadata Metadata = new Metadata();
 
         public bool KeyIsRedacted(string key)
         {
