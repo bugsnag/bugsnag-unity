@@ -716,6 +716,8 @@ steps:
       UNITY_VERSION: "2017.4.40f1"
     command:
       - scripts/ci-run-windows-tests.bat
+    artifact_paths:
+      - maze_output/failed/**/*
 
   - label: Run Windows e2e tests for Unity 2018
     depends_on: 'windows-2018-fixture'
@@ -726,6 +728,8 @@ steps:
       UNITY_VERSION: "2018.4.36f1"
     command:
       - scripts/ci-run-windows-tests.bat
+    artifact_paths:
+      - maze_output/failed/**/*
 
   - label: Run Windows e2e tests for Unity 2019
     depends_on: 'windows-2019-fixture'
@@ -736,6 +740,8 @@ steps:
       UNITY_VERSION: "2019.4.30f1"
     command:
       - scripts/ci-run-windows-tests.bat
+    artifact_paths:
+      - maze_output/failed/**/*
 
   - label: Run Windows e2e tests for Unity 2021
     depends_on: 'windows-2021-fixture'
@@ -746,3 +752,5 @@ steps:
       UNITY_VERSION: "2021.1.19f1"
     command:
       - scripts/ci-run-windows-tests.bat
+    artifact_paths:
+      - maze_output/failed/**/*

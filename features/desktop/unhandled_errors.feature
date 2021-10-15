@@ -27,34 +27,36 @@ Feature: Reporting unhandled events
             | Main.RunScenario(System.String scenario)         | |
             | Main.Start()               | |
 
+#to be readded once v6 code is complete 
+
         #device metadata
-        And the event "device.charging" is not null
-        And the event "device.freeDisk" is greater than 0
-        And the event "device.freeMemory" is greater than 0
-        And the event "device.hostname" is not null
-        And the event "device.id" is not null
-        And the event "device.locale" is not null
-        And the event "device.manufacturer" is not null
-        And the event "device.model" is not null
-        And the event "device.osName" is not null
-        And the event "device.osVersion" is not null
-        And the event "device.runtimeVersions" is not null
-        And the event "device.screenDensity" is greater than 0
-        And the event "device.screenResolution" is not null
-        And the event "device.time" is a timestamp
-        And the event "device.timezone" is not null
-        And the event "device.totalMemory" is greater than 0
+        #And the event "device.charging" is not null
+        #And the event "device.freeDisk" is greater than 0
+        #And the event "device.freeMemory" is greater than 0
+        #And the event "device.hostname" is not null
+        #And the event "device.id" is not null
+        #And the event "device.locale" is not null
+        #And the event "device.manufacturer" is not null
+        #And the event "device.model" is not null
+        #And the event "device.osName" is not null
+        #And the event "device.osVersion" is not null
+        #And the event "device.runtimeVersions" is not null
+        #And the event "device.screenDensity" is greater than 0
+        #And the event "device.screenResolution" is not null
+        #And the event "device.time" is a timestamp
+        #And the event "device.timezone" is not null
+        #And the event "device.totalMemory" is greater than 0
 
         #app metadata
-        And the event "app.duration" is greater than 0
+        #And the event "app.duration" is greater than 0
         # TODO Pending PLAT-7433
         # And the event "app.durationInForeground" is greater than 0
-        And the event "app.inForeground" is not null
-        And the event "app.isLaunching" is not null
-        And the event "app.lowMemory" is not null
-        And the event "app.releaseStage" is not null
-        And the event "app.type" equals "Windows"
-        And the event "app.version" is not null
+        #And the event "app.inForeground" is not null
+        #And the event "app.isLaunching" is not null
+        #And the event "app.lowMemory" is not null
+        #And the event "app.releaseStage" is not null
+        #And the event "app.type" equals "Windows"
+        #And the event "app.version" is not null
 
 
     @skip_webgl
