@@ -225,10 +225,12 @@ steps:
       UNITY_VERSION: "2020.3.17f1"
     command:
       - scripts/ci-run-windows-tests.bat
+    artifact_paths:
+      - maze_output/failed/**/*
 
   #
   # Conditionally trigger full pipeline
   #
   - label: 'Conditionally trigger full set of tests'
     command: sh -c .buildkite/pipeline_trigger.sh
-    
+
