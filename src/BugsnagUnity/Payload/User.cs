@@ -56,9 +56,9 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        internal User Copy()
+        internal User Clone()
         {
-            return new User(Id,Name,Email);
+            return (User)MemberwiseClone();
         }
     }
 }

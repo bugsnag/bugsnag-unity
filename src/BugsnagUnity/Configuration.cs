@@ -270,11 +270,11 @@ namespace BugsnagUnity
             var clone = (Configuration)MemberwiseClone();
             if (_user != null)
             {
-                clone._user = _user.Copy();
+                clone._user = _user.Clone();
             }
             if (Endpoints.IsValid)
             {
-                clone.Endpoints = Endpoints.Copy();
+                clone.Endpoints = Endpoints.Clone();
             }
             return clone;
         }

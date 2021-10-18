@@ -51,9 +51,9 @@ namespace BugsnagUnity
             }
         }
 
-        internal EndpointConfiguration Copy()
+        internal EndpointConfiguration Clone()
         {
-            return new EndpointConfiguration(Notify.ToString(),Session.ToString());
+            return (EndpointConfiguration)MemberwiseClone();
         }
        
     }
