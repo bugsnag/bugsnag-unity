@@ -70,6 +70,8 @@ extern "C" {
 
   void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
 
+  void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test));
+
   void bugsnag_populateUser(bugsnag_user *user);
 
   void bugsnag_setUser(char *userId, char *userName, char *userEmail);
@@ -508,6 +510,12 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
   callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
 
 }
+
+  void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test)){
+    [((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {       
+        return callback([@"hello" UTF8String]);
+    }];
+  }
 
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {

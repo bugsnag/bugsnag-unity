@@ -42,7 +42,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
             NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);
             NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
-
+            NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
                 NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
@@ -67,6 +67,12 @@ namespace BugsnagUnity
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }
             return obj;
+        }
+
+        [MonoPInvokeCallback(typeof(Func<string, bool>))]
+        static bool HandleOnSendCallbacks(string test)
+        {
+            return true;
         }
 
         private string GetAppType(Configuration config)

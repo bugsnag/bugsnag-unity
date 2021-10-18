@@ -29,11 +29,12 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
+        [DllImport(Import)]
+        internal static extern void bugsnag_registerForOnSendCallbacks(IntPtr configuration, Func<string,bool> callback);
 
         internal delegate void SessionInformation(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled);
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveCurrentSession(IntPtr instance, SessionInformation callback);
-
 
         internal delegate void MetadataInformation(IntPtr instance, string tab, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] values, int valuesSize);
 
