@@ -106,21 +106,22 @@ extern "C" {
 
 }
 
-    const char * bugsnag_getIdFromSession(const void *session)
-    {
-        return [((__bridge_retained BugsnagSession *)session).id UTF8String];
-    }
+const char * bugsnag_getIdFromSession(const void *session)
+{
+    // Duplicate the string as it seems to be freed after being converted into
+    // a C# string (?)
+    // Fall back to empty string if nil, as strdup(NULL) will crash, and C#
+    // strings should never be null either. Should never happen but we live in
+    // strange times ¯\_(ツ)_/¯
+    return strdup([[(__bridge BugsnagSession *)session id] UTF8String] ?: "");
+}
 
 
-  void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
-
-
+void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
     [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    
         return callback((void*)CFBridgingRetain(session));
     }];
-
-
-  }
+}
 
 void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
     BugsnagSessionTracker *tracker = Bugsnag.client.sessionTracker;
