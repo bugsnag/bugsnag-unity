@@ -43,6 +43,8 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);
             NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
             NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
+            NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
+
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
                 NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
@@ -72,6 +74,14 @@ namespace BugsnagUnity
         [MonoPInvokeCallback(typeof(Func<string, bool>))]
         static bool HandleOnSendCallbacks(string test)
         {
+            return true;
+        }
+
+        [MonoPInvokeCallback(typeof(Func<IntPtr, bool>))]
+        static bool HandleSessionCallbacks(IntPtr nativeSession)
+        {
+            var wrapper = new NativeSession(nativeSession);
+            UnityEngine.Debug.Log("RICH Session ID: " + wrapper.GetId());
             return true;
         }
 

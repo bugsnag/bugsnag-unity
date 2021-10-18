@@ -70,8 +70,6 @@ extern "C" {
 
   void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
 
-  void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test));
-
   void bugsnag_populateUser(bugsnag_user *user);
 
   void bugsnag_setUser(char *userId, char *userName, char *userEmail);
@@ -100,7 +98,29 @@ extern "C" {
 
   void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 
+  void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test));
+
+  void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session));
+
+  const char * bugsnag_getIdFromSession(const void *session);
+
 }
+
+    const char * bugsnag_getIdFromSession(const void *session)
+    {
+        return [((__bridge_retained BugsnagSession *)session).id UTF8String];
+    }
+
+
+  void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
+
+
+    [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    
+        return callback((void*)CFBridgingRetain(session));
+    }];
+
+
+  }
 
 void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
     BugsnagSessionTracker *tracker = Bugsnag.client.sessionTracker;
@@ -516,6 +536,7 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
         return callback([@"hello" UTF8String]);
     }];
   }
+
 
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {

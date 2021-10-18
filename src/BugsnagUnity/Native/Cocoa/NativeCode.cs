@@ -8,7 +8,7 @@ namespace BugsnagUnity
     {
         public IntPtr Id;
     }
-
+  
     partial class NativeCode
     {
         [DllImport(Import)]
@@ -31,6 +31,9 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_registerForOnSendCallbacks(IntPtr configuration, Func<string,bool> callback);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_registerForSessionCallbacks(IntPtr configuration, Func<IntPtr, bool> callback);
 
         internal delegate void SessionInformation(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled);
         [DllImport(Import)]
@@ -140,5 +143,9 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_registerSession(string id, long startedAt, int unhandledCount, int handledCount);
+
+        //Callback Getters and setters
+        [DllImport(Import)]
+        internal static extern string bugsnag_getIdFromSession(IntPtr session);
     }
 }
