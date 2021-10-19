@@ -147,5 +147,8 @@ namespace BugsnagUnity
         //Callback Getters and setters
         [DllImport(Import)]
         internal static extern string bugsnag_getIdFromSession(IntPtr session);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setSessionId(IntPtr session, string newId);
     }
 }

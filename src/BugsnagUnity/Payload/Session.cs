@@ -4,13 +4,12 @@ using System.Collections.Generic;
 
 namespace BugsnagUnity.Payload
 {
-    public class Session : PayloadContainer
+    public class Session : PayloadContainer, ISession
     {
 
         private const string ID_KEY = "id";
         private const string STARTED_AT_KEY = "startedAt";
         private const string EVENTS_KEY = "events";
-
 
         public string? Id
         {

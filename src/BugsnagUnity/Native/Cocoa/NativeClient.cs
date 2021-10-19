@@ -13,9 +13,11 @@ namespace BugsnagUnity
         public IDelivery Delivery { get; }
         private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
+        private static NativeClient _instance;
 
         public NativeClient(Configuration configuration)
         {
+            _instance = this;
             Configuration = configuration;
             NativeConfiguration = CreateNativeConfig(configuration);
             NativeCode.bugsnag_startBugsnagWithConfiguration(NativeConfiguration, NotifierInfo.NotifierVersion);
@@ -80,8 +82,19 @@ namespace BugsnagUnity
         [MonoPInvokeCallback(typeof(Func<IntPtr, bool>))]
         static bool HandleSessionCallbacks(IntPtr nativeSession)
         {
-            var wrapper = new NativeSession(nativeSession);
-            UnityEngine.Debug.Log("RICH Session ID: " + wrapper.GetId());
+            var callbacks = _instance.Configuration.GetOnSessionCallbacks();
+            if (callbacks.Count > 0)
+            {
+                var nativeSessionWrapper = new NativeSession(nativeSession);
+
+                foreach (var callback in callbacks)
+                {
+                    if (!callback.Invoke(nativeSessionWrapper))
+                    {
+                        return false;
+                    }
+                }
+            }
             return true;
         }
 

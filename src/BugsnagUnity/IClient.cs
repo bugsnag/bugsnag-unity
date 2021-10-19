@@ -5,7 +5,7 @@ namespace BugsnagUnity
 {
     public delegate bool OnErrorCallback(Event bugsnagEvent);
 
-    public delegate bool OnSessionCallback(Session session);
+    public delegate bool OnSessionCallback(ISession session);
 
 
     internal interface IClient : IMetadataEditor, IUserEditor
