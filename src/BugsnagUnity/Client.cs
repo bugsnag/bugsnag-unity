@@ -306,7 +306,7 @@ namespace BugsnagUnity
                 return;
             }
 
-            var user = _cachedUser.Copy();
+            var user = _cachedUser.Clone();
 
             var app = new AppWithState(Configuration)
             {

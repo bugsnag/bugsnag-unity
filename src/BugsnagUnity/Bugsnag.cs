@@ -15,11 +15,13 @@ namespace BugsnagUnity
 
         public static void Start(Configuration configuration)
         {
+
             lock (_clientLock)
             {
                 if (InternalClient == null)
                 {
-                    var nativeClient = new NativeClient(configuration);
+                    var configClone = configuration.Clone();
+                    var nativeClient = new NativeClient(configClone);
                     InternalClient = new Client(nativeClient);
                 }
             }
