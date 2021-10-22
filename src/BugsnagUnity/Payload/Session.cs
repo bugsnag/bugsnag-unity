@@ -23,7 +23,7 @@ namespace BugsnagUnity.Payload
             set => Add(STARTED_AT_KEY, value);
         }
 
-        public App? App { get; set; }
+        public IApp? App { get; set; }
 
         public Device? Device { get; set; }
 

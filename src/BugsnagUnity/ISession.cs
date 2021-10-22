@@ -7,7 +7,7 @@ namespace BugsnagUnity
     {
         string Id { get; set; }
         Device Device { get; set; }
-        App App { get; set; }
+        IApp App { get; set; }
         DateTime? StartedAt { get; set; }
         User GetUser();
         void SetUser(string id, string email, string name);

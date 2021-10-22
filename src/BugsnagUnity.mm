@@ -111,20 +111,28 @@ extern "C" {
 
     void bugsnag_populateUserFromSession(const void *session,bugsnag_user *user);
 
+    void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail);
+
+    BugsnagApp * bugsnag_getAppFromSession(const void *session);
 
 }
 
+BugsnagApp * bugsnag_getAppFromSession(const void *session){
+    return ((__bridge BugsnagSession *)session).app;
+}
+
+
 void bugsnag_populateUserFromSession(const void *session, bugsnag_user *user) {
-
     BugsnagUser *theUser = ((__bridge BugsnagSession *)session).user;
+    user->user_id = theUser.id.UTF8String;
+    user->user_name = theUser.name.UTF8String;
+    user->user_email = theUser.email.UTF8String;
+}
 
-    NSString *session_user_id = theUser.id ?: @"";
-    NSString *session_user_name = theUser.name ?: @"";
-    NSString *session_user_email = theUser.email ?: @"";
-
-    user->user_id = [session_user_id UTF8String];
-    user->user_name = [session_user_name UTF8String];
-    user->user_email = [session_user_email UTF8String];
+void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail) {
+    [(__bridge BugsnagSession *)session setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
+            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
 }
 
 

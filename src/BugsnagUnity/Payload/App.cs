@@ -8,7 +8,7 @@ namespace BugsnagUnity.Payload
     /// <summary>
     /// Represents the "app" key in the error report payload.
     /// </summary>
-    public class App : PayloadContainer
+    public class App : PayloadContainer, IApp
     {
 
         private const string BINARY_ARCH_KEY = "binaryArch";

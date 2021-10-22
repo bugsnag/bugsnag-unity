@@ -155,5 +155,35 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_populateUserFromSession(IntPtr session, ref NativeUser user);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setUserFromSession(IntPtr session, string id, string name, string email);
+
+        [DllImport(Import)]
+        internal static extern IntPtr bugsnag_getAppFromSession(IntPtr session);
+
+        //APP
+        [DllImport(Import)]
+        internal static extern string bugsnag_getBundleVersionFromApp(IntPtr app);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getCodeBundleIdFromApp(IntPtr app);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getDsymUuidFromApp(IntPtr app);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getIdFromApp(IntPtr app);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getReleaseStageFromApp(IntPtr app);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getTypeFromApp(IntPtr app);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getVersionFromApp(IntPtr app);
     }
 }
+
+

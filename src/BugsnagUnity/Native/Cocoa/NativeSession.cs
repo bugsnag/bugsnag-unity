@@ -12,6 +12,7 @@ namespace BugsnagUnity
         public NativeSession(IntPtr nativeSession)
         {
             _nativeSession = nativeSession;
+            App = new NativeApp(NativeCode.bugsnag_getAppFromSession(_nativeSession));
         }
 
         public string Id {
@@ -20,7 +21,7 @@ namespace BugsnagUnity
         }
 
         public Device Device { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public App App { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IApp App { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public DateTime? StartedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         private string GetId()
@@ -46,11 +47,9 @@ namespace BugsnagUnity
             return user;
         }
 
-       
-
         public void SetUser(string id, string email, string name)
-        {
-            throw new NotImplementedException();
+        {            
+            NativeCode.bugsnag_setUserFromSession(_nativeSession,id,name,email);
         }
     }
 }
