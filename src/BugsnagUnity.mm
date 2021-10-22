@@ -17,6 +17,8 @@ extern "C" {
     
     struct bugsnag_user {
         const char *user_id;
+        const char *user_name;
+        const char *user_email;
     };
 
     void *bugsnag_createConfiguration(char *apiKey);
@@ -107,7 +109,25 @@ extern "C" {
 
     void bugsnag_setSessionId(const void *session, const char *newId);
 
+    void bugsnag_populateUserFromSession(const void *session,bugsnag_user *user);
+
+
 }
+
+void bugsnag_populateUserFromSession(const void *session, bugsnag_user *user) {
+
+    BugsnagUser *theUser = ((__bridge BugsnagSession *)session).user;
+
+    NSString *session_user_id = theUser.id ?: @"";
+    NSString *session_user_name = theUser.name ?: @"";
+    NSString *session_user_email = theUser.email ?: @"";
+
+    user->user_id = [session_user_id UTF8String];
+    user->user_name = [session_user_name UTF8String];
+    user->user_email = [session_user_email UTF8String];
+}
+
+
 
 const char * bugsnag_getIdFromSession(const void *session)
 {

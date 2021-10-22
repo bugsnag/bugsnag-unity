@@ -7,8 +7,10 @@ namespace BugsnagUnity
     struct NativeUser
     {
         public IntPtr Id;
+        public IntPtr Name;
+        public IntPtr Email;
     }
-  
+
     partial class NativeCode
     {
         [DllImport(Import)]
@@ -150,5 +152,8 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_setSessionId(IntPtr session, string newId);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_populateUserFromSession(IntPtr session, ref NativeUser user);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
@@ -34,8 +35,18 @@ namespace BugsnagUnity
 
         public User GetUser()
         {
-            throw new NotImplementedException();
+            var nativeUser = new NativeUser();
+            NativeCode.bugsnag_populateUserFromSession(_nativeSession, ref nativeUser);
+            var user = new User()
+            {
+                Id = Marshal.PtrToStringAuto(nativeUser.Id),
+                Name = Marshal.PtrToStringAuto(nativeUser.Name),
+                Email = Marshal.PtrToStringAuto(nativeUser.Email)
+            };
+            return user;
         }
+
+       
 
         public void SetUser(string id, string email, string name)
         {
