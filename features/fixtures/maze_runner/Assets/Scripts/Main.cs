@@ -265,6 +265,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "BackgroundThreadCrash":
+                BackgroundThreadCrash();
+                break;
             case "NotifyWithStrings":
                 NotifyWithStrings();
                 break;
@@ -443,6 +446,17 @@ public class Main : MonoBehaviour
                 break;
         }
     }
+
+    private void BackgroundThreadCrash()
+    {
+        var bgThread = new Thread(()=> { throw new System.Exception("Background Thread Crash"); })
+        {
+            IsBackground = true
+        };
+        bgThread.Start();
+    }
+
+   
 
     private void AddKeysForRedaction()
     {
