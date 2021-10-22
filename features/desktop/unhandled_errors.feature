@@ -154,3 +154,11 @@ Feature: Reporting unhandled events
         # awaiting fix in PLAT-6495
         # And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
         # And custom metadata is included in the event
+
+    @skip_webgl
+    Scenario: Report exception from background thread
+        When I run the game in the "BackgroundThreadCrash" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Background Thread Crash"
+
