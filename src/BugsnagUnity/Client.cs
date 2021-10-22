@@ -316,6 +316,7 @@ namespace BugsnagUnity
            
         }
 
+        // This method should only be called on the main thread as it uses environment data that can only be accessed from the main thread
         private void NotifyOnMainThread(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
         {
             var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
