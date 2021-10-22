@@ -325,22 +325,18 @@ namespace BugsnagUnity
                 InForeground = InForeground,
                 DurationInForeground = ForegroundStopwatch.Elapsed,
             };
-
             NativeClient.PopulateApp(app);
 
             var device = new Device();
-
             NativeClient.PopulateDevice(device);
             device.AddRuntimeVersions(Configuration);
 
             var metadata = new Metadata();
             NativeClient.PopulateMetadata(metadata);
-
             foreach (var item in Metadata)
             {
                 metadata.AddToPayload(item.Key, item.Value);
             }
-
             RedactMetadata(metadata);
 
             var @event = new Payload.Event(

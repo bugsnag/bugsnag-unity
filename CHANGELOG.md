@@ -17,6 +17,11 @@
   * Disable app hang detection for app extensions.
     [bugsnag-cocoa#1198](https://github.com/bugsnag/bugsnag-cocoa/pull/1198)
 
+### Bug fixes
+
+* Fixed an issue where csharp exceptions originating from background threads caused errors in the App and Device class constructors
+  [#413](https://github.com/bugsnag/bugsnag-unity/pull/413)
+
 ## 5.4.0 (2021-09-27)
 
 ### Enhancements
