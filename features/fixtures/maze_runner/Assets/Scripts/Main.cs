@@ -449,7 +449,7 @@ public class Main : MonoBehaviour
 
     private void BackgroundThreadCrash()
     {
-        var bgThread = new Thread(()=> { throw new System.Exception("Background Thread Crash"); })
+        var bgThread = new Thread(()=> { Debug.LogException(new System.Exception("Background Thread Crash"));})
         {
             IsBackground = true
         };
