@@ -297,25 +297,47 @@ namespace BugsnagUnity
                 return; // Skip overhead of computing payload to to ultimately not be sent
             }
 
+            if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
+            {
+                try
+                {
+                    var asyncHandler = MainThreadDispatchBehaviour.Instance();
+                    asyncHandler.Enqueue(() => { NotifyOnMainThread(exceptions, handledState, callback, logType); });
+                }
+                catch
+                {
+                    // Async behavior is not available in a test environment
+                }
+            }
+            else
+            {
+                NotifyOnMainThread(exceptions, handledState, callback, logType);
+            }            
+           
+        }
+
+        // This method should only be called on the main thread as it uses environment data that can only be accessed from the main thread
+        private void NotifyOnMainThread(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
+        {
             var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
+
             var app = new App(Configuration)
             {
                 InForeground = InForeground,
                 DurationInForeground = ForegroundStopwatch.Elapsed,
             };
             NativeClient.PopulateApp(app);
+
             var device = new Device();
             NativeClient.PopulateDevice(device);
             device.AddRuntimeVersions(Configuration);
 
             var metadata = new Metadata();
             NativeClient.PopulateMetadata(metadata);
-
             foreach (var item in Metadata)
             {
                 metadata.AddToPayload(item.Key, item.Value);
             }
-
             RedactMetadata(metadata);
 
             var @event = new Payload.Event(

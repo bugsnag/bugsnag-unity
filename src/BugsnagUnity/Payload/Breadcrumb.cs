@@ -9,9 +9,7 @@ namespace BugsnagUnity.Payload
     /// </summary>
     public class Breadcrumb : Dictionary<string, object>
     {
-        private const int MaximumNameLength = 30;
         private const string UndefinedName = "Breadcrumb";
-        private const int MaximumMetadataCharacterCount = 1024;
 
         internal static Breadcrumb FromReport(Report report)
         {
@@ -56,7 +54,6 @@ namespace BugsnagUnity.Payload
         public Breadcrumb(string name, BreadcrumbType type, IDictionary<string, string> metadata)
         {
             if (name == null) name = UndefinedName;
-            if (name.Length > MaximumNameLength) name = name.Substring(0, MaximumNameLength);
 
             this.AddToPayload("name", name);
             this.AddToPayload("timestamp", DateTime.UtcNow);
