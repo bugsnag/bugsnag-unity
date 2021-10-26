@@ -25,7 +25,7 @@ namespace BugsnagUnity.Payload
 
         public IApp? App { get; set; }
 
-        public Device? Device { get; set; }
+        public IDevice? Device { get; set; }
 
         internal User? User { get; set; }
 

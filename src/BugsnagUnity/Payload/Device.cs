@@ -8,8 +8,8 @@ using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-    
-    public class Device : PayloadContainer
+
+    public class Device : PayloadContainer, IDevice
     {
 
         private const string BROWSER_NAME_KEY = "browserName";
@@ -34,13 +34,13 @@ namespace BugsnagUnity.Payload
 
         public string? BrowserName
         {
-            get => (string?) Get(BROWSER_NAME_KEY);
+            get => (string?)Get(BROWSER_NAME_KEY);
             set => Add(BROWSER_NAME_KEY, value);
         }
 
         public string? BrowserVersion
         {
-            get => (string?) Get(BROWSER_VERSION_KEY);
+            get => (string?)Get(BROWSER_VERSION_KEY);
             set => Add(BROWSER_VERSION_KEY, value);
         }
 

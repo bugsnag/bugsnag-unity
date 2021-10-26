@@ -105,20 +105,136 @@ extern "C" {
 
     void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session));
 
-    const char * bugsnag_getIdFromSession(const void *session);
-
-    void bugsnag_setSessionId(const void *session, const char *newId);
-
     void bugsnag_populateUserFromSession(const void *session,bugsnag_user *user);
 
     void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail);
 
     BugsnagApp * bugsnag_getAppFromSession(const void *session);
 
+    void bugsnag_setStringValue(const void *object, char * key, char * value);
+
+    const char * bugsnag_getStringValue(const void *object, char * key);
+
+    void bugsnag_setBoolValue(const void *object, char * key, char * value);
+
+    const char * bugsnag_getBoolValue(const void *object, char * key);
+
+    BugsnagDevice * bugsnag_getDeviceFromSession(const void *session);
+
+    const char * bugsnag_getRuntimeVersionsFromDevice(const void *device);
+
+    void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count);
+
+    double bugsnag_getTimestampFromDateInObject(const void *object, char * key);
+
+    void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp);
+
+
 }
+    
+    double bugsnag_getTimestampFromDateInObject(const void *object, char * key)
+    {
+        NSDate *value = (NSDate *)[(__bridge id)object valueForKey:@(key)];
+        if(value != NULL && [value isKindOfClass:[NSDate class]])
+        {
+            return [value timeIntervalSince1970];
+        }
+        return -1;
+    }
+
+    void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp)
+    {       
+        if(timeStamp < 0)
+        {
+            [(__bridge id)object setValue:NULL forKey:@(key)];
+        }
+        else
+        {
+            [(__bridge id)object setValue:[NSDate dateWithTimeIntervalSince1970:timeStamp] forKey:@(key)];
+        }
+    }
+    
+
+
+    void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count){
+        
+        NSMutableDictionary *versionsDict =  [[NSMutableDictionary alloc] init];       
+        for (int i = 0; i < count; i+=2) {
+
+            NSString *key = @(versions[i]);
+            NSString *value = @(versions[i+1]);
+
+            versionsDict[key] = value;
+        }
+
+        ((__bridge BugsnagDevice *)device).runtimeVersions = versionsDict;
+
+    }
+
+    const char * bugsnag_getRuntimeVersionsFromDevice(const void *device){
+        NSDictionary * versions = ((__bridge BugsnagDevice *)device).runtimeVersions;
+        
+        NSMutableString *returnString = [[NSMutableString alloc] initWithString:@""];
+        
+        for(id key in versions) {
+            NSString *keyString = @([key UTF8String]);
+            [returnString appendString:keyString];
+            [returnString appendString:@"|"];
+
+            NSString *valueString = @([[versions objectForKey:key] UTF8String]);
+            [returnString appendString:valueString];
+            [returnString appendString:@"|"];
+        }
+
+        return strdup([returnString UTF8String]);
+
+    }
+
+
+void bugsnag_setBoolValue(const void *object, char * key, char * value)
+{
+    NSString *nsValue = [[NSString alloc] initWithUTF8String:value];
+    if([nsValue isEqualToString:@"null"])
+    {
+        [(__bridge id)object setValue:NULL forKey:@(key)];
+    }
+    else
+    {
+
+        [(__bridge id)object setValue:[NSNumber numberWithBool:[nsValue isEqualToString:@"True"]] forKey:@(key)];
+    }
+}
+
+const char * bugsnag_getBoolValue(const void *object, char * key)
+{
+    id value = [(__bridge id)object valueForKey:@(key)];
+    if ([value isKindOfClass:[NSNumber class]])
+    {
+        const char * boolValue = [value boolValue] ? "true" : "false";
+        return strdup(boolValue);
+    }
+    return strdup("null");
+}
+
+void bugsnag_setStringValue(const void *object, char * key, char * value)
+{
+    [(__bridge id)object setValue:value ? @(value) : nil forKey:@(key)];
+}
+
+const char * bugsnag_getStringValue(const void *object, char * key)
+{
+    id value = [(__bridge id)object valueForKey:@(key)];
+    return strdup([value isKindOfClass:[NSString class]] ? [value UTF8String] : "");
+}
+
+
 
 BugsnagApp * bugsnag_getAppFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).app;
+}
+
+BugsnagDevice * bugsnag_getDeviceFromSession(const void *session){
+    return ((__bridge BugsnagSession *)session).device;
 }
 
 
@@ -134,25 +250,6 @@ void bugsnag_setUserFromSession(const void *session, char *userId, char *userNam
             withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
              andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
 }
-
-
-
-const char * bugsnag_getIdFromSession(const void *session)
-{
-    // Duplicate the string as it seems to be freed after being converted into
-    // a C# string (?)
-    // Fall back to empty string if nil, as strdup(NULL) will crash, and C#
-    // strings should never be null either. Should never happen but we live in
-    // strange times ¯\_(ツ)_/¯
-    return strdup([[(__bridge BugsnagSession *)session id] UTF8String] ?: "");
-}
-
-void bugsnag_setSessionId(const void *session, const char *newId){
-
-    ((__bridge BugsnagSession *)session).id = [NSString stringWithUTF8String:newId];
-
-}
-
 
 void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
     [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    

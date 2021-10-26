@@ -6,7 +6,7 @@ namespace BugsnagUnity
     public interface ISession
     {
         string Id { get; set; }
-        Device Device { get; set; }
+        IDevice Device { get; set; }
         IApp App { get; set; }
         DateTime? StartedAt { get; set; }
         User GetUser();

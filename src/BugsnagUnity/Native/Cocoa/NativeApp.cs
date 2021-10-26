@@ -3,26 +3,40 @@ using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-    public class NativeApp: IApp
+    public class NativeApp : NativePayloadClassWrapper, IApp
     {
 
-        private IntPtr _nativeApp;
+        private const string BUNDLE_VERSION_KEY = "bundleVersion";
+        private const string CODE_BUNDLE_ID_KEY = "codeBundleId";
+        private const string DSYM_UUID_KEY = "dsymUuid";
+        private const string ID_KEY = "id";
+        private const string RELEASE_STAGE_KEY = "releaseStage";
+        private const string TYPE_KEY = "type";
+        private const string VERSION_KEY = "version";
 
-
-        public NativeApp(IntPtr nativeApp)
+        internal NativeApp(IntPtr nativeApp) : base(nativeApp)
         {
-            _nativeApp = nativeApp;
         }
 
         public string BinaryArch { get; set; }
         public string BuildUuid { get; set; }
-        public string BundleVersion { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string CodeBundleId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string DsymUuid { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string ReleaseStage { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Type { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string Version { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public int? VersionCode { get; set; }
+
+
+        public string BundleVersion { get => GetNativeString(BUNDLE_VERSION_KEY); set => SetNativeString(BUNDLE_VERSION_KEY,value); }
+
+        public string CodeBundleId { get => GetNativeString(CODE_BUNDLE_ID_KEY); set => SetNativeString(CODE_BUNDLE_ID_KEY, value); }
+
+        public string DsymUuid { get => GetNativeString(DSYM_UUID_KEY); set => SetNativeString(DSYM_UUID_KEY, value); }
+
+        public string Id { get => GetNativeString(ID_KEY); set => SetNativeString(ID_KEY, value); }
+
+        public string ReleaseStage { get => GetNativeString(RELEASE_STAGE_KEY); set => SetNativeString(RELEASE_STAGE_KEY, value); }
+
+        public string Type { get => GetNativeString(TYPE_KEY); set => SetNativeString(TYPE_KEY, value); }
+
+        public string Version { get => GetNativeString(VERSION_KEY); set => SetNativeString(VERSION_KEY, value); }
+
+       
     }
 }
