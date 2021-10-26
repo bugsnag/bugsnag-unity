@@ -5,7 +5,7 @@ gem "xcpretty"
 gem "xcodeproj"
 
 # Use official Maze Runner release
-gem "bugsnag-maze-runner", git: "https://github.com/bugsnag/maze-runner", tag: "v6.0.1"
+gem "bugsnag-maze-runner", git: "https://github.com/bugsnag/maze-runner", tag: "v6.2.1"
 
 # Use a specific Maze Runner branch
 #gem "bugsnag-maze-runner", git: "https://github.com/bugsnag/maze-runner", branch: "tms/update-cucumber"
