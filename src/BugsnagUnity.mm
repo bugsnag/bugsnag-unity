@@ -132,63 +132,61 @@ extern "C" {
 
 }
     
-    double bugsnag_getTimestampFromDateInObject(const void *object, char * key)
+double bugsnag_getTimestampFromDateInObject(const void *object, char * key)
+{
+    NSDate *value = (NSDate *)[(__bridge id)object valueForKey:@(key)];
+    if(value != NULL && [value isKindOfClass:[NSDate class]])
     {
-        NSDate *value = (NSDate *)[(__bridge id)object valueForKey:@(key)];
-        if(value != NULL && [value isKindOfClass:[NSDate class]])
-        {
-            return [value timeIntervalSince1970];
-        }
-        return -1;
+        return [value timeIntervalSince1970];
     }
+    return -1;
+}
 
-    void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp)
-    {       
-        if(timeStamp < 0)
-        {
-            [(__bridge id)object setValue:NULL forKey:@(key)];
-        }
-        else
-        {
-            [(__bridge id)object setValue:[NSDate dateWithTimeIntervalSince1970:timeStamp] forKey:@(key)];
-        }
+void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp)
+{       
+    if(timeStamp < 0)
+    {
+        [(__bridge id)object setValue:NULL forKey:@(key)];
     }
+    else
+    {
+        [(__bridge id)object setValue:[NSDate dateWithTimeIntervalSince1970:timeStamp] forKey:@(key)];
+    }
+}
+
+void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count){
     
+    NSMutableDictionary *versionsDict =  [[NSMutableDictionary alloc] init];       
+    for (int i = 0; i < count; i+=2) {
 
+        NSString *key = @(versions[i]);
+        NSString *value = @(versions[i+1]);
 
-    void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count){
-        
-        NSMutableDictionary *versionsDict =  [[NSMutableDictionary alloc] init];       
-        for (int i = 0; i < count; i+=2) {
-
-            NSString *key = @(versions[i]);
-            NSString *value = @(versions[i+1]);
-
-            versionsDict[key] = value;
-        }
-
-        ((__bridge BugsnagDevice *)device).runtimeVersions = versionsDict;
-
+        versionsDict[key] = value;
     }
 
-    const char * bugsnag_getRuntimeVersionsFromDevice(const void *device){
-        NSDictionary * versions = ((__bridge BugsnagDevice *)device).runtimeVersions;
-        
-        NSMutableString *returnString = [[NSMutableString alloc] initWithString:@""];
-        
-        for(id key in versions) {
-            NSString *keyString = @([key UTF8String]);
-            [returnString appendString:keyString];
-            [returnString appendString:@"|"];
+    ((__bridge BugsnagDevice *)device).runtimeVersions = versionsDict;
 
-            NSString *valueString = @([[versions objectForKey:key] UTF8String]);
-            [returnString appendString:valueString];
-            [returnString appendString:@"|"];
-        }
+}
 
-        return strdup([returnString UTF8String]);
+const char * bugsnag_getRuntimeVersionsFromDevice(const void *device){
+    NSDictionary * versions = ((__bridge BugsnagDevice *)device).runtimeVersions;
+    
+    NSMutableString *returnString = [[NSMutableString alloc] initWithString:@""];
+    
+    for(id key in versions) {
+        NSString *keyString = @([key UTF8String]);
+        [returnString appendString:keyString];
+        [returnString appendString:@"|"];
 
+        NSString *valueString = @([[versions objectForKey:key] UTF8String]);
+        [returnString appendString:valueString];
+        [returnString appendString:@"|"];
     }
+
+    return strdup([returnString UTF8String]);
+
+}
 
 
 void bugsnag_setBoolValue(const void *object, char * key, char * value)
@@ -227,8 +225,6 @@ const char * bugsnag_getStringValue(const void *object, char * key)
     return strdup([value isKindOfClass:[NSString class]] ? [value UTF8String] : "");
 }
 
-
-
 BugsnagApp * bugsnag_getAppFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).app;
 }
@@ -236,7 +232,6 @@ BugsnagApp * bugsnag_getAppFromSession(const void *session){
 BugsnagDevice * bugsnag_getDeviceFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).device;
 }
-
 
 void bugsnag_populateUserFromSession(const void *session, bugsnag_user *user) {
     BugsnagUser *theUser = ((__bridge BugsnagSession *)session).user;
@@ -539,23 +534,23 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
 void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab,const char *keys[], int keys_size, const char *values[], int values_size)) {
 
     for (NSString* sectionKey in [Bugsnag.client metadata].dictionary.allKeys) {
-                 NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
-                 NSArray *keys = [sectionDictionary allKeys];
-                 NSArray *values = [sectionDictionary allValues];
-                 int count = 0;
-                 if ([keys count] <= INT_MAX) {
-                   count = (int)[keys count];
-                 }
-                 const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-                 const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-                 for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
-                   c_keys[i] = [[keys objectAtIndex: i] UTF8String];
-                   c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
-                 }
-                callback(metadata, [sectionKey UTF8String],c_keys,count,c_values,count);
-                free(c_keys);
-                free(c_values);
-           }
+         NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
+         NSArray *keys = [sectionDictionary allKeys];
+         NSArray *values = [sectionDictionary allValues];
+         int count = 0;
+         if ([keys count] <= INT_MAX) {
+           count = (int)[keys count];
+         }
+         const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+         const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+         for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
+           c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+           c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
+         }
+        callback(metadata, [sectionKey UTF8String],c_keys,count,c_values,count);
+        free(c_keys);
+        free(c_values);
+   }
 
 }
 
