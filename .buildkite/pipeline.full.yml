@@ -311,7 +311,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
@@ -336,7 +337,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
@@ -358,7 +360,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2019.4.29f1.apk"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.29f1.apk"
@@ -380,7 +383,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2021.1.16f1.apk"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.1.16f1.apk"
@@ -572,7 +576,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.ipa"
@@ -594,7 +599,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa"
@@ -616,7 +622,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2019.4.29f1.ipa"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.29f1.ipa"
@@ -638,7 +645,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2021.1.16f1.ipa"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.1.16f1.ipa"

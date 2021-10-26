@@ -1,7 +1,5 @@
 require 'fileutils'
 
-$api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
-
 Before('@skip_webgl') do |_scenario|
   skip_this_scenario("Skipping scenario") unless Maze.config.browser.nil?
 end
@@ -18,7 +16,8 @@ Before('@windows_only') do |_scenario|
   skip_this_scenario("Skipping scenario") unless Maze.config.os == 'windows'
 end
 
-AfterConfiguration do |_config|
+BeforeAll do
+  $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
   Maze.config.enforce_bugsnag_integrity = false
 
   if Maze.config.os&.downcase == 'macos'
@@ -43,7 +42,7 @@ Maze.hooks.before do
   end
 end
 
-at_exit do
+AfterAll do
   if Maze.config.os == 'macos'
     app_name = Maze.config.app.gsub /\.app$/, ''
     Maze::Runner.run_command("log show --predicate '(process == \"#{app_name}\")' --style syslog --start '#{Maze.start_time}' > #{app_name}.log")
