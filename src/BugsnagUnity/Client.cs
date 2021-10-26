@@ -306,7 +306,34 @@ namespace BugsnagUnity
                 return;
             }
 
-            var user = _cachedUser.Copy();
+
+            if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
+            {
+                try
+                {
+                    var asyncHandler = MainThreadDispatchBehaviour.Instance();
+                    asyncHandler.Enqueue(() => { NotifyOnMainThread(exceptions, handledState, callback, logType); });
+                }
+                catch
+                {
+                    // Async behavior is not available in a test environment
+                }
+            }
+            else
+            {
+                NotifyOnMainThread(exceptions, handledState, callback, logType);
+            }            
+           
+        }
+
+        private void NotifyOnMainThread(Exception[] exceptions, HandledState handledState, OnErrorCallback callback, LogType? logType)
+        {
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
+            {
+                return;
+            }
+
+            var user = _cachedUser.Clone();
 
             var app = new AppWithState(Configuration)
             {
