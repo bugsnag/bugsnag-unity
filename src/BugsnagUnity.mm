@@ -191,15 +191,15 @@ const char * bugsnag_getRuntimeVersionsFromDevice(const void *device){
 
 void bugsnag_setBoolValue(const void *object, char * key, char * value)
 {
-    NSString *nsValue = [[NSString alloc] initWithUTF8String:value];
+    NSString *nsValue = @(value);
     if([nsValue isEqualToString:@"null"])
     {
         [(__bridge id)object setValue:NULL forKey:@(key)];
     }
     else
     {
+        [(__bridge id)object setValue:@([nsValue boolValue]) forKey:@(key)];
 
-        [(__bridge id)object setValue:[NSNumber numberWithBool:[nsValue isEqualToString:@"True"]] forKey:@(key)];
     }
 }
 
