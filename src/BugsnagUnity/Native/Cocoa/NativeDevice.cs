@@ -22,7 +22,6 @@ namespace BugsnagUnity
         public string BrowserName { get; set; }
         public string BrowserVersion { get; set; }
         public string[] CpuAbi { get; set; }
-        public string HostName { get; set; }
         public int? TotalMemory { get; set; }
         public string UserAgent { get; set; }
         public string ModelNumber { get; set; }
@@ -31,7 +30,7 @@ namespace BugsnagUnity
 
         public string Id { get => GetNativeString(ID_KEY); set => SetNativeString(ID_KEY,value); }
 
-        public bool? JailBroken { get => GetNativeBool(JAIL_BROKEN_KEY); set => SetNativeBool(JAIL_BROKEN_KEY, value); }
+        public bool? Jailbroken { get => GetNativeBool(JAIL_BROKEN_KEY); set => SetNativeBool(JAIL_BROKEN_KEY, value); }
 
         public string Locale { get => GetNativeString(LOCALE_KEY); set => SetNativeString(LOCALE_KEY, value); }
 

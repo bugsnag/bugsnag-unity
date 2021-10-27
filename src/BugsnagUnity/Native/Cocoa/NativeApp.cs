@@ -6,6 +6,7 @@ namespace BugsnagUnity
     public class NativeApp : NativePayloadClassWrapper, IApp
     {
 
+        private const string BINARY_ARCH_KEY = "binaryArch";
         private const string BUNDLE_VERSION_KEY = "bundleVersion";
         private const string CODE_BUNDLE_ID_KEY = "codeBundleId";
         private const string DSYM_UUID_KEY = "dsymUuid";
@@ -18,10 +19,10 @@ namespace BugsnagUnity
         {
         }
 
-        public string BinaryArch { get; set; }
         public string BuildUuid { get; set; }
         public int? VersionCode { get; set; }
 
+        public string BinaryArch { get => GetNativeString(BINARY_ARCH_KEY); set => SetNativeString(BINARY_ARCH_KEY, value); }
 
         public string BundleVersion { get => GetNativeString(BUNDLE_VERSION_KEY); set => SetNativeString(BUNDLE_VERSION_KEY,value); }
 

@@ -7,9 +7,8 @@ namespace BugsnagUnity
         string BrowserName { get; set; }
         string BrowserVersion { get; set; }
         string[] CpuAbi { get; set; }
-        string HostName { get; set; }
         string Id { get; set; }
-        bool? JailBroken { get; set; }
+        bool? Jailbroken { get; set; }
         string Locale { get; set; }
         string Manufacturer { get; set; }
         string Model { get; set; }

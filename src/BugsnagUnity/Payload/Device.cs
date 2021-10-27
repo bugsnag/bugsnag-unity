@@ -15,7 +15,6 @@ namespace BugsnagUnity.Payload
         private const string BROWSER_NAME_KEY = "browserName";
         private const string BROWSER_VERSION_KEY = "browserVersion";
         private const string CPU_ABI_KEY = "cpuAbi";
-        private const string HOSTNAME_KEY = "hostName";
         private const string ID_KEY = "id";
         private const string JAILBROKEN_KEY = "jailbroken";
         private const string LOCALE_KEY = "locale";
@@ -50,19 +49,13 @@ namespace BugsnagUnity.Payload
             set => Add(CPU_ABI_KEY, value);
         }
 
-        public string? HostName
-        {
-            get => (string?)Get(HOSTNAME_KEY);
-            set => Add(HOSTNAME_KEY, value);
-        }
-
         public string? Id
         {
             get => (string?)Get(ID_KEY);
             set => Add(ID_KEY, value);
         }
 
-        public bool? JailBroken
+        public bool? Jailbroken
         {
             get => (bool?)Get(JAILBROKEN_KEY);
             set => Add(JAILBROKEN_KEY, value);
@@ -125,7 +118,6 @@ namespace BugsnagUnity.Payload
 
         internal Device(Configuration configuration)
         {
-            HostName = configuration.HostName;
             TotalMemory = SystemInfo.systemMemorySize;
             Locale = CultureInfo.CurrentCulture.ToString();
             AddOsInfo();
