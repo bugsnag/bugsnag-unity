@@ -1,5 +1,13 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Update bugsnag-cocoa to v6.14.2
+  * Fix missing `configuration.user` and manually resumed `session` info in unhandled errors.
+    [bugsnag-cocoa#1215](https://github.com/bugsnag/bugsnag-cocoa/pull/1215)
+
 ## 5.4.1 (2021-10-25)
 
 ### Enhancements
