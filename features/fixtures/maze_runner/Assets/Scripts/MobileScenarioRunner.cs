@@ -414,16 +414,15 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void LeaveBreadcrumbString()
     {
-        Bugsnag.Breadcrumbs.Leave("String breadcrumb clicked");
+        Bugsnag.LeaveBreadcrumb("String breadcrumb clicked");
     }
 
     public void LeaveBreadcrumbTuple()
     {
-        Bugsnag.Breadcrumbs.Leave(
+        Bugsnag.LeaveBreadcrumb(
           "Tuple breadcrumb clicked",
-          BreadcrumbType.Navigation,
-          new Dictionary<string, string>() { { "scene", "SomeVeryRealScene" } }
-        );
+          new Dictionary<string, object>() { { "scene", "SomeVeryRealScene" } },
+          BreadcrumbType.Navigation);
     }
 
     public void ChangeScene()

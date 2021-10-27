@@ -132,7 +132,12 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("groupingHash", GroupingHash);
             this.AddToPayload("payloadVersion", 4);
             this.AddToPayload("exceptions", Exceptions);
-            this.AddToPayload("breadcrumbs", Breadcrumbs);
+            var breadcrumbPayloads = new List<Dictionary<string, object>>();
+            foreach (var crumb in Breadcrumbs)
+            {
+                breadcrumbPayloads.Add(crumb.Payload);
+            }
+            this.AddToPayload("breadcrumbs", breadcrumbPayloads);
             if (Session != null)
             {
                 this.AddToPayload("session", Session.Payload);

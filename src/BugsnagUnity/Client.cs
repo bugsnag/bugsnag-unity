@@ -145,7 +145,7 @@ namespace BugsnagUnity
         {
             if (IsUsingFallback() && Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.State))
             {
-                Breadcrumbs.Leave("Bugsnag loaded", BreadcrumbType.State, null);
+                Breadcrumbs.Leave("Bugsnag loaded", null, BreadcrumbType.State);
             }
         }
 
@@ -192,7 +192,7 @@ namespace BugsnagUnity
                 Configuration.Context = scene.name;
                 NativeClient.SetContext(scene.name);
             }
-            Breadcrumbs.Leave("Scene Loaded", BreadcrumbType.State, new Dictionary<string, string> { { "sceneName", scene.name } });
+            Breadcrumbs.Leave("Scene Loaded", new Dictionary<string, object> { { "sceneName", scene.name } }, BreadcrumbType.State );
         }
 
         void MultiThreadedNotify(string condition, string stackTrace, LogType logType)
@@ -232,9 +232,9 @@ namespace BugsnagUnity
             }
             else if (Configuration.ShouldLeaveLogBreadcrumb(logType))
             {
-                Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
+                Breadcrumbs.Leave(logType.ToString(), new Dictionary<string, object> {
                     { "message", condition },
-                });
+                }, BreadcrumbType.Log );
             }
         }
 
@@ -365,7 +365,7 @@ namespace BugsnagUnity
               user,
               exceptions,
               handledState,
-              Breadcrumbs.Retrieve().ToList(),
+              Breadcrumbs.Retrieve(),
               SessionTracking.CurrentSession);
 
             //Check for adding project packages to an android java error event

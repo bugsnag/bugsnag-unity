@@ -473,7 +473,7 @@ namespace BugsnagUnity
                 new object[] { tab, key, value });
         }
 
-        public void LeaveBreadcrumb(string name, string type, IDictionary<string, string> metadata)
+        public void LeaveBreadcrumb(string name, string type, Dictionary<string, object> metadata)
         {
             if (!CanRunJNI())
             {
@@ -732,7 +732,7 @@ namespace BugsnagUnity
 
         private Breadcrumb ConvertToBreadcrumb(IntPtr javaBreadcrumb)
         {
-            var metadata = new Dictionary<string, string>();
+            var metadata = new Dictionary<string, object>();
 
             IntPtr javaMetadata = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetMetadata, new jvalue[] { });
             IntPtr entries = AndroidJNI.CallObjectMethod(javaMetadata, MapEntrySet, new jvalue[] { });
@@ -774,7 +774,7 @@ namespace BugsnagUnity
             return new Breadcrumb(message, timestamp, typeName, metadata);
         }
 
-        private AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, string> src)
+        private AndroidJavaObject BuildJavaMapDisposable(Dictionary<string, object> src)
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
             if (src != null)
@@ -782,7 +782,7 @@ namespace BugsnagUnity
                 foreach (var entry in src)
                 {
                     using (AndroidJavaObject key = BuildJavaStringDisposable(entry.Key))
-                    using (AndroidJavaObject value = BuildJavaStringDisposable(entry.Value))
+                    using (AndroidJavaObject value = BuildJavaStringDisposable(entry.Value.ToString()))
                     {
                         map.Call<AndroidJavaObject>("put", key, value);
                     }
