@@ -49,7 +49,10 @@ namespace BugsnagUnity.Payload
 
         internal Breadcrumb(string name, Dictionary<string, object> metadata, BreadcrumbType type)
         {
-            if (name == null) name = UNDEFINED_NAME;
+            if (name == null)
+            {
+                name = UNDEFINED_NAME;
+            }
             Name = name;
             Timestamp = DateTime.UtcNow;
             Metadata = metadata;
