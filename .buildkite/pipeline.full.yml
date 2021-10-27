@@ -318,13 +318,9 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
-    # TODO Soft fail pending PLAT-7058
-    soft_fail:
-      - exit_status: "*"
 
   - label: ':android: Run Android e2e tests for Unity 2018'
     depends_on: 'build-android-fixture-2018'
@@ -344,7 +340,6 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -367,7 +362,6 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.29f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
@@ -390,7 +384,6 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.1.16f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
