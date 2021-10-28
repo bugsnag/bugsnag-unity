@@ -246,11 +246,13 @@ end
 
 # TODO See PLAT-7058
 Then("the event {string} is present from Unity 2018") do |field|
-  unity_version = ENV['UNITY_VERSION'][0..4].to_i
-  if unity_version < 2018
-    $logger.warn "Not checking #{field} on Unity #{unity_version} due to PLAT-7058"
-    next
+  if ENV['UNITY_VERSION']
+    unity_version = ENV['UNITY_VERSION'][0..4].to_i
+    if unity_version < 2018
+      $logger.warn "Not checking #{field} on Unity #{unity_version} due to PLAT-7058"
+      next
+    end
   end
 
-  step 'And the event "metaData.app.cache" is null'
+  step("the event \"#{field}\" is not null")
 end

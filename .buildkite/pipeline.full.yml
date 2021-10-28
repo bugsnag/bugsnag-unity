@@ -319,6 +319,9 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/android"
+    # Note: This is only needed for Unity 2017 in order to skip specific steps/scenarios
+    env:
+      UNITY_VERSION: "2017"
     concurrency: 9
     concurrency_group: browserstack-app
 
