@@ -243,3 +243,16 @@ Then("custom metadata is included in the event") do
     And the event "metaData.custom.setter" equals "more stuff"
   }
 end
+
+# TODO See PLAT-7058
+Then("the event {string} is present from Unity 2018") do |field|
+  if ENV['UNITY_VERSION']
+    unity_version = ENV['UNITY_VERSION'][0..4].to_i
+    if unity_version < 2018
+      $logger.warn "Not checking #{field} on Unity #{unity_version} due to PLAT-7058"
+      next
+    end
+  end
+
+  step("the event \"#{field}\" is not null")
+end

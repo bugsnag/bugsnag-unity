@@ -122,7 +122,6 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.15f2.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
