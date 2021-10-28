@@ -7,6 +7,8 @@ namespace BugsnagUnity
     struct NativeUser
     {
         public IntPtr Id;
+        public IntPtr Name;
+        public IntPtr Email;
     }
 
     partial class NativeCode
@@ -29,11 +31,15 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
+        [DllImport(Import)]
+        internal static extern void bugsnag_registerForOnSendCallbacks(IntPtr configuration, Func<string,bool> callback);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_registerForSessionCallbacks(IntPtr configuration, Func<IntPtr, bool> callback);
 
         internal delegate void SessionInformation(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled);
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveCurrentSession(IntPtr instance, SessionInformation callback);
-
 
         internal delegate void MetadataInformation(IntPtr instance, string tab, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] values, int valuesSize);
 
@@ -139,5 +145,47 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_registerSession(string id, long startedAt, int unhandledCount, int handledCount);
+
+        //Callback Getters and setters
+        [DllImport(Import)]
+        internal static extern void bugsnag_populateUserFromSession(IntPtr session, ref NativeUser user);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setUserFromSession(IntPtr session, string id, string name, string email);
+
+        [DllImport(Import)]
+        internal static extern IntPtr bugsnag_getAppFromSession(IntPtr session);
+
+        [DllImport(Import)]
+        internal static extern IntPtr bugsnag_getDeviceFromSession(IntPtr session);
+
+        //APP
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getStringValue(IntPtr @object,string key);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setStringValue(IntPtr @object, string key, string value);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getBoolValue(IntPtr @object, string key);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setBoolValue(IntPtr @object, string key, string value);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getRuntimeVersionsFromDevice(IntPtr nativeDevice);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setRuntimeVersionsFromDevice(IntPtr nativeDevice, string[] versions, int count);
+
+        [DllImport(Import)]
+        internal static extern double bugsnag_getTimestampFromDateInObject(IntPtr @object, string key);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setTimestampFromDateInObject(IntPtr @object, string key, double timeStamp);
+
     }
 }
+
+

@@ -4,13 +4,12 @@ using System.Collections.Generic;
 
 namespace BugsnagUnity.Payload
 {
-    public class Session : PayloadContainer
+    public class Session : PayloadContainer, ISession
     {
 
         private const string ID_KEY = "id";
         private const string STARTED_AT_KEY = "startedAt";
         private const string EVENTS_KEY = "events";
-
 
         public string? Id
         {
@@ -24,9 +23,9 @@ namespace BugsnagUnity.Payload
             set => Add(STARTED_AT_KEY, value);
         }
 
-        public App? App { get; set; }
+        public IApp? App { get; set; }
 
-        public Device? Device { get; set; }
+        public IDevice? Device { get; set; }
 
         internal User? User { get; set; }
 

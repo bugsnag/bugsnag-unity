@@ -13,9 +13,11 @@ namespace BugsnagUnity
         public IDelivery Delivery { get; }
         private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
+        private static NativeClient _instance;
 
         public NativeClient(Configuration configuration)
         {
+            _instance = this;
             Configuration = configuration;
             NativeConfiguration = CreateNativeConfig(configuration);
             NativeCode.bugsnag_startBugsnagWithConfiguration(NativeConfiguration, NotifierInfo.NotifierVersion);
@@ -42,6 +44,8 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
             NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);
             NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
+            NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
+            NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
 
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
@@ -67,6 +71,31 @@ namespace BugsnagUnity
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }
             return obj;
+        }
+
+        [MonoPInvokeCallback(typeof(Func<string, bool>))]
+        static bool HandleOnSendCallbacks(string test)
+        {
+            return true;
+        }
+
+        [MonoPInvokeCallback(typeof(Func<IntPtr, bool>))]
+        static bool HandleSessionCallbacks(IntPtr nativeSession)
+        {
+            var callbacks = _instance.Configuration.GetOnSessionCallbacks();
+            if (callbacks.Count > 0)
+            {
+                var nativeSessionWrapper = new NativeSession(nativeSession);
+
+                foreach (var callback in callbacks)
+                {
+                    if (!callback.Invoke(nativeSessionWrapper))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         private string GetAppType(Configuration config)

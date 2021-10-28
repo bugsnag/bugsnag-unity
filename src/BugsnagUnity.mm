@@ -14,90 +14,242 @@
 #import "BugsnagSession+Private.h"
 
 extern "C" {
-  struct bugsnag_user {
-    const char *user_id;
-  };
+    
+    struct bugsnag_user {
+        const char *user_id;
+        const char *user_name;
+        const char *user_email;
+    };
 
-  void *bugsnag_createConfiguration(char *apiKey);
+    void *bugsnag_createConfiguration(char *apiKey);
 
-  void bugsnag_setReleaseStage(const void *configuration, char *releaseStage);
+    void bugsnag_setReleaseStage(const void *configuration, char *releaseStage);
 
-  void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount);
+    void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount);
 
-  void bugsnag_setAppVersion(const void *configuration, char *appVersion);
+    void bugsnag_setAppVersion(const void *configuration, char *appVersion);
 
-  void bugsnag_setPersistUser(const void *configuration, bool persistUser);
+    void bugsnag_setPersistUser(const void *configuration, bool persistUser);
 
-  void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously);
+    void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously);
 
-  void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
+    void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
-  void bugsnag_setAutoNotify(bool autoNotify);
+    void bugsnag_setAutoNotify(bool autoNotify);
 
-  void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion);
+    void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion);
 
-  void bugsnag_setAppType(const void *configuration, char *appType);
+    void bugsnag_setAppType(const void *configuration, char *appType);
 
-  void bugsnag_setContext(const void *configuration, char *context);
-  
-  void bugsnag_setContextConfig(const void *configuration, char *context);
+    void bugsnag_setContext(const void *configuration, char *context);
+      
+    void bugsnag_setContextConfig(const void *configuration, char *context);
 
-  void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
+    void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs);
 
-  void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
+    void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count);
 
-  void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
+    void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents);
 
-  void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy);
+    void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy);
 
-  void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL);
+    void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL);
 
-  void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
+    void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
 
-  void bugsnag_removeMetadata(const void *configuration, const char *tab);
+    void bugsnag_removeMetadata(const void *configuration, const char *tab);
 
-  void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab, const char *keys[], int keys_size, const char *values[], int values_size));
+    void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab, const char *keys[], int keys_size, const char *values[], int values_size));
+ 
+    void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes));
 
-  void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes));
+    void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
-  void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
+    void bugsnag_addBreadcrumb(char *name, char *type, char *metadata[], int metadataCount);
 
-  void bugsnag_addBreadcrumb(char *name, char *type, char *metadata[], int metadataCount);
+    void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size));
 
-  void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size));
+    void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
 
-  void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
+    void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
 
-  void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value));
+    void bugsnag_populateUser(bugsnag_user *user);
 
-  void bugsnag_populateUser(bugsnag_user *user);
+    void bugsnag_setUser(char *userId, char *userName, char *userEmail);
 
-  void bugsnag_setUser(char *userId, char *userName, char *userEmail);
+    void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
 
-  void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[], int count);
+    void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count);
 
-  void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count);
+    void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count);
 
-  void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count);
+    void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions);
 
-  void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions);
+    void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
 
-  void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis);
+    void bugsnag_markLaunchCompleted();
 
-  void bugsnag_markLaunchCompleted();
+    void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis);
 
-  void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis);
+    void bugsnag_startSession();
 
-  void bugsnag_startSession();
+    void bugsnag_pauseSession();
 
-  void bugsnag_pauseSession();
+    bool bugsnag_resumeSession();
 
-  bool bugsnag_resumeSession();
+    void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled));
 
-  void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled));
+    void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 
-  void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
+    void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test));
 
+    void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session));
+
+    void bugsnag_populateUserFromSession(const void *session,bugsnag_user *user);
+
+    void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail);
+
+    BugsnagApp * bugsnag_getAppFromSession(const void *session);
+
+    void bugsnag_setStringValue(const void *object, char * key, char * value);
+
+    const char * bugsnag_getStringValue(const void *object, char * key);
+
+    void bugsnag_setBoolValue(const void *object, char * key, char * value);
+
+    const char * bugsnag_getBoolValue(const void *object, char * key);
+
+    BugsnagDevice * bugsnag_getDeviceFromSession(const void *session);
+
+    const char * bugsnag_getRuntimeVersionsFromDevice(const void *device);
+
+    void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count);
+
+    double bugsnag_getTimestampFromDateInObject(const void *object, char * key);
+
+    void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp);
+
+
+}
+    
+double bugsnag_getTimestampFromDateInObject(const void *object, char * key)
+{
+    NSDate *value = (NSDate *)[(__bridge id)object valueForKey:@(key)];
+    if(value != NULL && [value isKindOfClass:[NSDate class]])
+    {
+        return [value timeIntervalSince1970];
+    }
+    return -1;
+}
+
+void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp)
+{       
+    if(timeStamp < 0)
+    {
+        [(__bridge id)object setValue:NULL forKey:@(key)];
+    }
+    else
+    {
+        [(__bridge id)object setValue:[NSDate dateWithTimeIntervalSince1970:timeStamp] forKey:@(key)];
+    }
+}
+
+void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count){
+    
+    NSMutableDictionary *versionsDict =  [[NSMutableDictionary alloc] init];       
+    for (int i = 0; i < count; i+=2) {
+
+        NSString *key = @(versions[i]);
+        NSString *value = @(versions[i+1]);
+
+        versionsDict[key] = value;
+    }
+
+    ((__bridge BugsnagDevice *)device).runtimeVersions = versionsDict;
+
+}
+
+const char * bugsnag_getRuntimeVersionsFromDevice(const void *device){
+    NSDictionary * versions = ((__bridge BugsnagDevice *)device).runtimeVersions;
+    
+    NSMutableString *returnString = [[NSMutableString alloc] initWithString:@""];
+    
+    for(id key in versions) {
+        NSString *keyString = @([key UTF8String]);
+        [returnString appendString:keyString];
+        [returnString appendString:@"|"];
+
+        NSString *valueString = @([[versions objectForKey:key] UTF8String]);
+        [returnString appendString:valueString];
+        [returnString appendString:@"|"];
+    }
+
+    return strdup([returnString UTF8String]);
+
+}
+
+
+void bugsnag_setBoolValue(const void *object, char * key, char * value)
+{
+    NSString *nsValue = @(value);
+    if([nsValue isEqualToString:@"null"])
+    {
+        [(__bridge id)object setValue:NULL forKey:@(key)];
+    }
+    else
+    {
+        [(__bridge id)object setValue:@([nsValue boolValue]) forKey:@(key)];
+
+    }
+}
+
+const char * bugsnag_getBoolValue(const void *object, char * key)
+{
+    id value = [(__bridge id)object valueForKey:@(key)];
+    if ([value isKindOfClass:[NSNumber class]])
+    {
+        const char * boolValue = [value boolValue] ? "true" : "false";
+        return strdup(boolValue);
+    }
+    return strdup("null");
+}
+
+void bugsnag_setStringValue(const void *object, char * key, char * value)
+{
+    [(__bridge id)object setValue:value ? @(value) : nil forKey:@(key)];
+}
+
+const char * bugsnag_getStringValue(const void *object, char * key)
+{
+    id value = [(__bridge id)object valueForKey:@(key)];
+    return strdup([value isKindOfClass:[NSString class]] ? [value UTF8String] : "");
+}
+
+BugsnagApp * bugsnag_getAppFromSession(const void *session){
+    return ((__bridge BugsnagSession *)session).app;
+}
+
+BugsnagDevice * bugsnag_getDeviceFromSession(const void *session){
+    return ((__bridge BugsnagSession *)session).device;
+}
+
+void bugsnag_populateUserFromSession(const void *session, bugsnag_user *user) {
+    BugsnagUser *theUser = ((__bridge BugsnagSession *)session).user;
+    user->user_id = theUser.id.UTF8String;
+    user->user_name = theUser.name.UTF8String;
+    user->user_email = theUser.email.UTF8String;
+}
+
+void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail) {
+    [(__bridge BugsnagSession *)session setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
+            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
+}
+
+void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
+    [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    
+        return callback((void*)CFBridgingRetain(session));
+    }];
 }
 
 void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
@@ -382,23 +534,23 @@ void bugsnag_setMetadata(const void *configuration, const char *tab, const char 
 void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab,const char *keys[], int keys_size, const char *values[], int values_size)) {
 
     for (NSString* sectionKey in [Bugsnag.client metadata].dictionary.allKeys) {
-                 NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
-                 NSArray *keys = [sectionDictionary allKeys];
-                 NSArray *values = [sectionDictionary allValues];
-                 int count = 0;
-                 if ([keys count] <= INT_MAX) {
-                   count = (int)[keys count];
-                 }
-                 const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-                 const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-                 for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
-                   c_keys[i] = [[keys objectAtIndex: i] UTF8String];
-                   c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
-                 }
-                callback(metadata, [sectionKey UTF8String],c_keys,count,c_values,count);
-                free(c_keys);
-                free(c_values);
-           }
+         NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
+         NSArray *keys = [sectionDictionary allKeys];
+         NSArray *values = [sectionDictionary allValues];
+         int count = 0;
+         if ([keys count] <= INT_MAX) {
+           count = (int)[keys count];
+         }
+         const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+         const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+         for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
+           c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+           c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
+         }
+        callback(metadata, [sectionKey UTF8String],c_keys,count,c_values,count);
+        free(c_keys);
+        free(c_values);
+   }
 
 }
 
@@ -508,6 +660,13 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
   callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
 
 }
+
+  void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test)){
+    [((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {       
+        return callback([@"hello" UTF8String]);
+    }];
+  }
+
 
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
