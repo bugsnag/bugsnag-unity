@@ -557,9 +557,9 @@ public class Main : MonoBehaviour
 
     void LeaveComplexBreadcrumbAndNotify()
     {
-        Bugsnag.LeaveBreadcrumb("Reload", BreadcrumbType.Navigation, new Dictionary<string, string>() {
+        Bugsnag.LeaveBreadcrumb("Reload",  new Dictionary<string, object>() {
       { "preload", "launch" }
-    });
+    }, BreadcrumbType.Navigation);
         Bugsnag.Notify(new System.Exception("Collective failure"));
     }
 

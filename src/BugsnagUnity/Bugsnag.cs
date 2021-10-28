@@ -31,8 +31,6 @@ namespace BugsnagUnity
 
         private static IClient Client => InternalClient;
 
-        public static IBreadcrumbs Breadcrumbs => Client.Breadcrumbs;
-
         public static ISessionTracker SessionTracking => Client.SessionTracking;
 
         public static void Send(IPayload payload) => Client.Send(payload);
@@ -53,11 +51,9 @@ namespace BugsnagUnity
 
         public static void Notify(System.Exception exception, Severity severity, OnErrorCallback callback) => InternalClient.Notify(exception, severity, callback, 3);
 
-        public static void LeaveBreadcrumb(string message) => InternalClient.Breadcrumbs.Leave(message);
+        public static List<Breadcrumb> Breadcrumbs => Client.Breadcrumbs.Retrieve();
 
-        public static void LeaveBreadcrumb(string message, BreadcrumbType type, IDictionary<string, string> metadata) => InternalClient.Breadcrumbs.Leave(message, type, metadata);
-
-        public static void LeaveBreadcrumb(Breadcrumb breadcrumb) => InternalClient.Breadcrumbs.Leave(breadcrumb);
+        public static void LeaveBreadcrumb(string message, Dictionary<string, object> metadata = null, BreadcrumbType type = BreadcrumbType.Manual ) => InternalClient.Breadcrumbs.Leave(message, metadata, type);
 
         public static User GetUser() => Client.GetUser();
 

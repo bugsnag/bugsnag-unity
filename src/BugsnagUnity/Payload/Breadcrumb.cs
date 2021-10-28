@@ -7,14 +7,19 @@ namespace BugsnagUnity.Payload
     /// <summary>
     /// Represents an individual breadcrumb in the error report payload.
     /// </summary>
-    public class Breadcrumb : Dictionary<string, object>
+    public class Breadcrumb : PayloadContainer
     {
-        private const string UndefinedName = "Breadcrumb";
+        private const string UNDEFINED_NAME = "Breadcrumb";
+        private const string NAME_KEY = "name";
+        private const string MESSAGE_KEY = "message";
+        private const string TIMESTAMP_KEY = "timestamp";
+        private const string METADATA_KEY = "metaData";
+        private const string TYPE_KEY = "type";
 
         internal static Breadcrumb FromReport(Report report)
         {
             var name = "Error";
-            var metadata = new Dictionary<string, string> { };
+            var metadata = new Dictionary<string, object> { };
             if (report.Context != null)
             {
                 metadata["context"] = report.Context;
@@ -27,52 +32,72 @@ namespace BugsnagUnity.Payload
                 metadata.Add("message", exception.ErrorMessage);
             }
 
-            return new Breadcrumb(name, BreadcrumbType.Error, metadata);
+            return new Breadcrumb(name, metadata, BreadcrumbType.Error);
         }
 
         /// <summary>
         /// Used to construct a breadcrumb from the native data obtained from a
         /// native notifier if present.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="timestamp"></param>
-        /// <param name="type"></param>
-        /// <param name="metadata"></param>
-        internal Breadcrumb(string name, string timestamp, string type, IDictionary<string, string> metadata)
+        internal Breadcrumb(string name, string timestamp, string type, Dictionary<string, object> metadata)
         {
-            this.AddToPayload("name", name);
-            this.AddToPayload("timestamp", timestamp);
-            this.AddToPayload("metaData", metadata);
-            this.AddToPayload("type", type);
+            Name = name;
+            Timestamp = DateTime.Parse( timestamp );
+            Metadata = metadata;
+            Type = type;
         }
 
-        public Breadcrumb(string name, BreadcrumbType type) : this(name, type, null)
+        internal Breadcrumb(string name, Dictionary<string, object> metadata, BreadcrumbType type)
         {
-
-        }
-
-        public Breadcrumb(string name, BreadcrumbType type, IDictionary<string, string> metadata)
-        {
-            if (name == null) name = UndefinedName;
-
-            this.AddToPayload("name", name);
-            this.AddToPayload("timestamp", DateTime.UtcNow);
-            this.AddToPayload("metaData", metadata);
+            if (name == null)
+            {
+                name = UNDEFINED_NAME;
+            }
+            Name = name;
+            Timestamp = DateTime.UtcNow;
+            Metadata = metadata;
 
             string breadcrumbType = Enum.GetName(typeof(BreadcrumbType), type).ToLower();
-
             if (string.IsNullOrEmpty(breadcrumbType))
             {
                 breadcrumbType = "manual";
             }
 
-            this.AddToPayload("type", breadcrumbType);
+            Type = breadcrumbType;
         }
 
-        public string Name { get { return this.Get("name") as string; } }
+        public Dictionary<string, object> Metadata
+        {
+            get
+            {
+                return Get(METADATA_KEY) as Dictionary<string, object>;
+            }
+            set
+            {
+                Add(METADATA_KEY, value);
+            }
+        }
 
-        public string Type { get { return this.Get("type") as string; } }
+        public string Name {
+            get { return Get(NAME_KEY) as string; }
+            set { Add(NAME_KEY,value); }
+        }
 
-        public IDictionary<string, string> Metadata { get { return this.Get("metaData") as IDictionary<string, string>; } }
+        public string Message
+        {
+            get { return Get(MESSAGE_KEY) as string; }
+            set { Add(MESSAGE_KEY, value); }
+        }
+
+        public string Type {
+            get { return Get(TYPE_KEY) as string; }
+            set { Add(TYPE_KEY, value); }
+        }
+
+        public DateTime Timestamp {
+            get { return (DateTime)Get(TIMESTAMP_KEY); }
+            set { Add(TIMESTAMP_KEY,value); }
+        }
+
     }
 }

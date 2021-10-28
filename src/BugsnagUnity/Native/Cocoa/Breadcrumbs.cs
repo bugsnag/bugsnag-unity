@@ -13,23 +13,14 @@ namespace BugsnagUnity
         }
 
         /// <summary>
-        /// Add a breadcrumb to the collection using Manual type and no metadata.
-        /// </summary>
-        /// <param name="message"></param>
-        public void Leave(string message)
-        {
-            Leave(message, BreadcrumbType.Manual, null);
-        }
-
-        /// <summary>
         /// Add a breadcrumb to the collection with the specified type and metadata
         /// </summary>
         /// <param name="message"></param>
         /// <param name="type"></param>
         /// <param name="metadata"></param>
-        public void Leave(string message, BreadcrumbType type, IDictionary<string, string> metadata)
+        public void Leave(string message, Dictionary<string, object> metadata, BreadcrumbType type)
         {
-            Leave(new Breadcrumb(message, type, metadata));
+            Leave(new Breadcrumb(message, metadata, type));
         }
 
         public void Leave(Breadcrumb breadcrumb)
@@ -44,7 +35,7 @@ namespace BugsnagUnity
                     foreach (var data in breadcrumb.Metadata)
                     {
                         metadata[index] = data.Key;
-                        metadata[index + 1] = data.Value;
+                        metadata[index + 1] = data.Value.ToString();
                         index += 2;
                     }
 
@@ -57,7 +48,7 @@ namespace BugsnagUnity
             }
         }
 
-        public Breadcrumb[] Retrieve()
+        public List<Breadcrumb> Retrieve()
         {
             var breadcrumbs = new List<Breadcrumb>();
 
@@ -72,7 +63,7 @@ namespace BugsnagUnity
                 handle.Free();
             }
 
-            return breadcrumbs.ToArray();
+            return breadcrumbs;
         }
 
         [MonoPInvokeCallback(typeof(NativeCode.BreadcrumbInformation))]
@@ -81,7 +72,7 @@ namespace BugsnagUnity
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is List<Breadcrumb> breadcrumbs)
             {
-                var metadata = new Dictionary<string, string>();
+                var metadata = new Dictionary<string, object>();
 
                 for (var i = 0; i < keys.Length; i++)
                 {
