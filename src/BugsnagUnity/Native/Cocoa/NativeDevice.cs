@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace BugsnagUnity
 {
-    public class NativeDevice : NativePayloadClassWrapper , IDevice
+    public class NativeDevice : IDevice
     {
 
         private const string ID_KEY = "id";
@@ -15,8 +15,11 @@ namespace BugsnagUnity
         private const string OS_NAME_KEY = "osName";
         private const string OS_VERSION_KEY = "osVersion";
 
-        public NativeDevice(IntPtr nativeDevice) : base(nativeDevice)
+        internal NativePayloadClassWrapper NativeWrapper;
+
+        public NativeDevice(IntPtr nativeDevice)
         {
+            NativeWrapper = new NativePayloadClassWrapper(nativeDevice);
         }
 
         public string BrowserName { get; set; }
@@ -28,26 +31,26 @@ namespace BugsnagUnity
 
 
 
-        public string Id { get => GetNativeString(ID_KEY); set => SetNativeString(ID_KEY,value); }
+        public string Id { get => NativeWrapper.GetNativeString(ID_KEY); set => NativeWrapper.SetNativeString(ID_KEY,value); }
 
-        public bool? Jailbroken { get => GetNativeBool(JAIL_BROKEN_KEY); set => SetNativeBool(JAIL_BROKEN_KEY, value); }
+        public bool? Jailbroken { get => NativeWrapper.GetNativeBool(JAIL_BROKEN_KEY); set => NativeWrapper.SetNativeBool(JAIL_BROKEN_KEY, value); }
 
-        public string Locale { get => GetNativeString(LOCALE_KEY); set => SetNativeString(LOCALE_KEY, value); }
+        public string Locale { get => NativeWrapper.GetNativeString(LOCALE_KEY); set => NativeWrapper.SetNativeString(LOCALE_KEY, value); }
 
-        public string Manufacturer { get => GetNativeString(MANUFACTURER_KEY); set => SetNativeString(MANUFACTURER_KEY, value); }
+        public string Manufacturer { get => NativeWrapper.GetNativeString(MANUFACTURER_KEY); set => NativeWrapper.SetNativeString(MANUFACTURER_KEY, value); }
 
-        public string Model { get => GetNativeString(MODEL_KEY); set => SetNativeString(MODEL_KEY, value); }
+        public string Model { get => NativeWrapper.GetNativeString(MODEL_KEY); set => NativeWrapper.SetNativeString(MODEL_KEY, value); }
 
-        public string OsName { get => GetNativeString(OS_NAME_KEY); set => SetNativeString(OS_NAME_KEY, value); }
+        public string OsName { get => NativeWrapper.GetNativeString(OS_NAME_KEY); set => NativeWrapper.SetNativeString(OS_NAME_KEY, value); }
 
-        public string OsVersion { get => GetNativeString(OS_VERSION_KEY); set => SetNativeString(OS_VERSION_KEY, value); }
+        public string OsVersion { get => NativeWrapper.GetNativeString(OS_VERSION_KEY); set => NativeWrapper.SetNativeString(OS_VERSION_KEY, value); }
 
         public Dictionary<string, object> RuntimeVersions { get => GetRuntimeVersions(); set => SetRuntimeVersions(value); }
 
 
         private Dictionary<string, object> GetRuntimeVersions()
         {
-            var versionsString = NativeCode.bugsnag_getRuntimeVersionsFromDevice(NativePointer);
+            var versionsString = NativeCode.bugsnag_getRuntimeVersionsFromDevice(NativeWrapper.NativePointer);
             var split = versionsString.Split('|').ToList();
             split.RemoveAt(split.Count - 1);
             foreach (var str in split)
@@ -70,7 +73,7 @@ namespace BugsnagUnity
                 stringVersions.Add(item.Key);
                 stringVersions.Add(item.Value.ToString());
             }
-            NativeCode.bugsnag_setRuntimeVersionsFromDevice(NativePointer, stringVersions.ToArray(), stringVersions.Count);
+            NativeCode.bugsnag_setRuntimeVersionsFromDevice(NativeWrapper.NativePointer, stringVersions.ToArray(), stringVersions.Count);
         }
 
     }

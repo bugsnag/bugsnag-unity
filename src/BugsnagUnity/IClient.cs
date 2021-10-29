@@ -3,7 +3,9 @@ using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-    public delegate bool OnErrorCallback(Event bugsnagEvent);
+    public delegate bool OnErrorCallback(IEvent bugsnagEvent);
+
+    public delegate bool OnSendErrorCallback(IEvent bugsnagEvent);
 
     public delegate bool OnSessionCallback(ISession session);
 
@@ -51,6 +53,10 @@ namespace BugsnagUnity
         void AddOnError(OnErrorCallback bugsnagCallback);
 
         void RemoveOnError(OnErrorCallback bugsnagCallback);
+
+        void AddOnSendError(OnSendErrorCallback bugsnagCallback);
+
+        void RemoveOnSendError(OnSendErrorCallback bugsnagCallback);
 
         void AddOnSession(OnSessionCallback callback);
 

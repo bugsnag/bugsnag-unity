@@ -1,7 +1,7 @@
 ﻿using System;
 namespace BugsnagUnity
 {
-    internal interface IUserEditor
+    public interface IUserEditor
     {
         Payload.User GetUser();
 

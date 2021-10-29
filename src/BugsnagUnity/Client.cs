@@ -405,7 +405,23 @@ namespace BugsnagUnity
             {
             }
 
-            @event.PreparePayload();
+
+            lock (CallbackLock)
+            {
+                foreach (var onSendErrorCallback in Configuration.GetOnSendErrorCallbacks())
+                {
+                    try
+                    {
+                        if (!onSendErrorCallback.Invoke(@event))
+                        {
+                            return;
+                        }
+                    }
+                    catch (System.Exception)
+                    {
+                    }
+                }
+            }
 
             var report = new Report(Configuration, @event);
 
@@ -529,7 +545,11 @@ namespace BugsnagUnity
         
         public void AddOnError(OnErrorCallback bugsnagCallback) => Configuration.AddOnError(bugsnagCallback);
 
-        public void RemoveOnError(OnErrorCallback bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);     
+        public void RemoveOnError(OnErrorCallback bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
+
+        public void AddOnSendError(OnSendErrorCallback bugsnagCallback) => Configuration.AddOnSendError(bugsnagCallback);
+
+        public void RemoveOnSendError(OnSendErrorCallback bugsnagCallback) => Configuration.RemoveOnSendError(bugsnagCallback);
 
         public void AddOnSession(OnSessionCallback callback) => Configuration.AddOnSession(callback);
 
@@ -556,5 +576,7 @@ namespace BugsnagUnity
         {
             _cachedUser = new User(id, name, email);
         }
+
+       
     }
 }

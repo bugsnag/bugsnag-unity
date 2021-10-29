@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BugsnagUnity
 {
-    internal interface IMetadataEditor
+    public interface IMetadataEditor
     {
         void AddMetadata(string section, string key, object value);
 

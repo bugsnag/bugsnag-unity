@@ -73,9 +73,22 @@ namespace BugsnagUnity
             return obj;
         }
 
-        [MonoPInvokeCallback(typeof(Func<string, bool>))]
-        static bool HandleOnSendCallbacks(string test)
+        [MonoPInvokeCallback(typeof(Func<IntPtr, bool>))]
+        static bool HandleOnSendCallbacks(IntPtr nativeEvent)
         {
+            var callbacks = _instance.Configuration.GetOnSendErrorCallbacks();
+            if (callbacks.Count > 0)
+            {
+                var nativeEventWrapper = new NativeEvent(nativeEvent);
+
+                foreach (var callback in callbacks)
+                {
+                    if (!callback.Invoke(nativeEventWrapper))
+                    {
+                        return false;
+                    }
+                }
+            }
             return true;
         }
 

@@ -43,7 +43,7 @@ namespace BugsnagUnity.Payload
             _event = @event;
             this.AddToPayload("apiKey", configuration.ApiKey);
             this.AddToPayload("notifier", NotifierInfo.Instance);
-            this.AddToPayload("events", new[] { _event });
+            this.AddToPayload("events", new[] { _event.GetEventPayload() });
         }
 
         private Event _event;

@@ -32,7 +32,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_retrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_registerForOnSendCallbacks(IntPtr configuration, Func<string,bool> callback);
+        internal static extern void bugsnag_registerForOnSendCallbacks(IntPtr configuration, Func<IntPtr, bool> callback);
 
         [DllImport(Import)]
         internal static extern void bugsnag_registerForSessionCallbacks(IntPtr configuration, Func<IntPtr, bool> callback);
@@ -157,9 +157,13 @@ namespace BugsnagUnity
         internal static extern IntPtr bugsnag_getAppFromSession(IntPtr session);
 
         [DllImport(Import)]
+        internal static extern IntPtr bugsnag_getAppFromEvent(IntPtr @event);
+
+        [DllImport(Import)]
         internal static extern IntPtr bugsnag_getDeviceFromSession(IntPtr session);
 
-        //APP
+        [DllImport(Import)]
+        internal static extern IntPtr bugsnag_getDeviceFromEvent(IntPtr @event);
 
         [DllImport(Import)]
         internal static extern string bugsnag_getStringValue(IntPtr @object,string key);
@@ -184,6 +188,18 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_setTimestampFromDateInObject(IntPtr @object, string key, double timeStamp);
+
+        [DllImport(Import)]
+        internal static extern double bugsnag_getDoubleValue(IntPtr @object, string key);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setDoubleValue(IntPtr @object, string key, double value);
+
+        [DllImport(Import)]
+        internal static extern long bugsnag_getLongValue(IntPtr @object, string key);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setLongValue(IntPtr @object, string key, long value);
 
     }
 }

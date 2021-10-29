@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-    public class AppWithState : App
+    public class AppWithState : App, IAppWithState
     {
         private const string DURATION_KEY = "duration";
         private const string DURATION_IN_FOREGROUND_KEY = "durationInForeground";
@@ -13,14 +13,15 @@ namespace BugsnagUnity.Payload
 
         public TimeSpan? Duration
         {
-            get {
+            get
+            {
                 var millis = (double?)Get(DURATION_KEY);
                 if (millis != null)
                 {
                     return TimeSpan.FromMilliseconds((double)millis);
                 }
                 return null;
-            } 
+            }
             set => Add(DURATION_KEY, value?.TotalMilliseconds);
         }
 
@@ -54,6 +55,6 @@ namespace BugsnagUnity.Payload
         {
             Duration = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
         }
-      
+
     }
 }

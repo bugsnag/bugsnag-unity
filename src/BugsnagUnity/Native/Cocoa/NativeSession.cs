@@ -7,16 +7,13 @@ namespace BugsnagUnity
     internal class NativeSession : NativePayloadClassWrapper, ISession
     {
 
-        private IntPtr _nativeSession;
-
         private const string ID_KEY = "id";
         private const string STARTED_AT_KEY = "startedAt";
 
         public NativeSession(IntPtr nativeSession) : base(nativeSession)
         {
-            _nativeSession = nativeSession;
-            App = new NativeApp(NativeCode.bugsnag_getAppFromSession(_nativeSession));
-            Device = new NativeDevice(NativeCode.bugsnag_getDeviceFromSession(_nativeSession));
+            App = new NativeApp(NativeCode.bugsnag_getAppFromSession(NativePointer));
+            Device = new NativeDevice(NativeCode.bugsnag_getDeviceFromSession(NativePointer));
         }
 
         public string Id {
@@ -28,12 +25,12 @@ namespace BugsnagUnity
 
         public IDevice Device { get; set; }
 
-        public DateTime? StartedAt { get => GetNativeTimestamp(STARTED_AT_KEY); set => SetNativeTimeStamp(value, STARTED_AT_KEY); }
+        public DateTime? StartedAt { get => GetNativeDate(STARTED_AT_KEY); set => SetNativeDate(value, STARTED_AT_KEY); }
 
         public User GetUser()
         {
             var nativeUser = new NativeUser();
-            NativeCode.bugsnag_populateUserFromSession(_nativeSession, ref nativeUser);
+            NativeCode.bugsnag_populateUserFromSession(NativePointer, ref nativeUser);
             var user = new User()
             {
                 Id = Marshal.PtrToStringAuto(nativeUser.Id),
@@ -45,7 +42,7 @@ namespace BugsnagUnity
 
         public void SetUser(string id, string email, string name)
         {            
-            NativeCode.bugsnag_setUserFromSession(_nativeSession,id,name,email);
+            NativeCode.bugsnag_setUserFromSession(NativePointer, id,name,email);
         }
     }
 }

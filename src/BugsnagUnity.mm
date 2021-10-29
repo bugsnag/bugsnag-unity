@@ -101,7 +101,7 @@ extern "C" {
 
     void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 
-    void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test));
+    void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(void *event));
 
     void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session));
 
@@ -110,6 +110,8 @@ extern "C" {
     void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail);
 
     BugsnagApp * bugsnag_getAppFromSession(const void *session);
+
+    BugsnagAppWithState * bugsnag_getAppFromEvent(const void *event);
 
     void bugsnag_setStringValue(const void *object, char * key, char * value);
 
@@ -121,6 +123,8 @@ extern "C" {
 
     BugsnagDevice * bugsnag_getDeviceFromSession(const void *session);
 
+    BugsnagDeviceWithState * bugsnag_getDeviceFromEvent(const void *event);
+
     const char * bugsnag_getRuntimeVersionsFromDevice(const void *device);
 
     void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count);
@@ -129,8 +133,83 @@ extern "C" {
 
     void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp);
 
+    double bugsnag_getDoubleValue(const void *object, char * key);
+
+    void bugsnag_setDoubleValue(const void *object, char * key, double value);
+
+    long bugsnag_getLongValue(const void *object, char * key);
+
+    void bugsnag_setLongValue(const void *object, char * key, long value);
 
 }
+
+long bugsnag_getLongValue(const void *object, char * key)
+{
+    id value = [(__bridge id)object valueForKey:@(key)];
+
+    if(value != NULL)
+    {
+        if ([value isKindOfClass:[NSNumber class]])
+        {
+            return [value longValue];
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+void bugsnag_setLongValue(const void *object, char * key, long value)
+{       
+    if(value < 0)
+    {
+        [(__bridge id)object setValue:NULL forKey:@(key)];
+    }
+    else
+    {
+        [(__bridge id)object setValue:[NSNumber numberWithLong:value] forKey:@(key)];
+    }
+}
+
+double bugsnag_getDoubleValue(const void *object, char * key)
+{
+    id value = [(__bridge id)object valueForKey:@(key)];
+
+    if(value != NULL)
+    {
+        if ([value isKindOfClass:[NSNumber class]])
+        {
+            return [value doubleValue];
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+void bugsnag_setDoubleValue(const void *object, char * key, double value)
+{       
+    if(value < 0)
+    {
+        [(__bridge id)object setValue:NULL forKey:@(key)];
+    }
+    else
+    {
+        [(__bridge id)object setValue:[NSNumber numberWithDouble:value] forKey:@(key)];
+    }
+}
+
+
     
 double bugsnag_getTimestampFromDateInObject(const void *object, char * key)
 {
@@ -229,8 +308,16 @@ BugsnagApp * bugsnag_getAppFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).app;
 }
 
+BugsnagAppWithState * bugsnag_getAppFromEvent(const void *event){
+    return ((__bridge BugsnagEvent *)event).app;
+}
+
 BugsnagDevice * bugsnag_getDeviceFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).device;
+}
+
+BugsnagDeviceWithState * bugsnag_getDeviceFromEvent(const void *event){
+    return ((__bridge BugsnagEvent *)event).device;
 }
 
 void bugsnag_populateUserFromSession(const void *session, bugsnag_user *user) {
@@ -250,6 +337,12 @@ void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callb
     [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    
         return callback((void*)CFBridgingRetain(session));
     }];
+}
+
+void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(void *event)){
+[((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {       
+    return callback((void*)CFBridgingRetain(event));
+}];
 }
 
 void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
@@ -660,14 +753,6 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
   callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
 
 }
-
-  void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test)){
-    [((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {       
-        return callback([@"hello" UTF8String]);
-    }];
-  }
-
-
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];

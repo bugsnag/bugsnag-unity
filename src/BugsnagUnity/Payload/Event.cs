@@ -4,11 +4,15 @@ using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-    public class Event : Dictionary<string, object>, IMetadataEditor, IUserEditor
+    public class Event : PayloadContainer, IEvent
     {
         HandledState _handledState;
 
         internal HandledState OriginalSeverity { get; }
+
+        private Dictionary<string,PayloadContainer> _payloadContainers = new Dictionary<string, PayloadContainer>();
+
+        private string[] _androidProjectPackages;
 
         internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Exception[] exceptions, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, LogType? logType = null)
         {
@@ -17,7 +21,9 @@ namespace BugsnagUnity.Payload
             HandledState = handledState;
             LogType = logType;
             App = app;
+            _payloadContainers.Add("app", app);
             Device = device;
+            _payloadContainers.Add("device", device);
             Context = context;
             Exceptions = exceptions.ToList();
             Breadcrumbs = breadcrumbs;
@@ -37,7 +43,7 @@ namespace BugsnagUnity.Payload
         }
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
         {
-            this.AddToPayload("projectPackages", packages);
+            _androidProjectPackages = packages;
         }
 
         private Metadata _metadata { get; }
@@ -64,7 +70,7 @@ namespace BugsnagUnity.Payload
         {
             get
             {
-                if (this.Get("unhandled") is bool unhandled)
+                if (Get("unhandled") is bool unhandled)
                 {
                     return !unhandled;
                 }
@@ -73,11 +79,11 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public AppWithState App { get; }
+        public string Context { get; set; }
 
-        public string Context;
+        public IAppWithState App { get; }
 
-        public DeviceWithState Device { get; }
+        public IDeviceWithState Device { get; }
 
         public List<Exception> Exceptions { get; }
 
@@ -117,31 +123,38 @@ namespace BugsnagUnity.Payload
                 _handledState = value;
                 foreach (var item in value)
                 {
-                    this[item.Key] = item.Value;
+                    Payload[item.Key] = item.Value;
                 }
             }
         }
 
-        internal void PreparePayload()
+        internal Dictionary<string, object> GetEventPayload()
         {
-            this.AddToPayload("app", App.Payload);
-            this.AddToPayload("device", Device.Payload);
-            this.AddToPayload("metaData", _metadata.Payload);
-            this.AddToPayload("user", _user.Payload);
-            this.AddToPayload("context", Context);
-            this.AddToPayload("groupingHash", GroupingHash);
-            this.AddToPayload("payloadVersion", 4);
-            this.AddToPayload("exceptions", Exceptions);
+
+            Add("app", _payloadContainers["app"].Payload);
+            Add("device", _payloadContainers["device"].Payload);
+            Add("metaData", _metadata.Payload);
+            Add("user", _user.Payload);
+            Add("context", Context);
+            Add("groupingHash", GroupingHash);
+            Add("payloadVersion", 4);
+            Add("exceptions", Exceptions);
+            if (_androidProjectPackages != null)
+            {
+                Add("projectPackages", _androidProjectPackages);
+            }
             var breadcrumbPayloads = new List<Dictionary<string, object>>();
             foreach (var crumb in Breadcrumbs)
             {
                 breadcrumbPayloads.Add(crumb.Payload);
             }
-            this.AddToPayload("breadcrumbs", breadcrumbPayloads);
+            Add("breadcrumbs", breadcrumbPayloads);
             if (Session != null)
             {
-                this.AddToPayload("session", Session.Payload);
+                Add("session", Session.Payload);
             }
+
+            return Payload;
         }
 
     }

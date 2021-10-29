@@ -32,7 +32,35 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setBoolValue(NativePointer, name, stringValue);
         }
 
-        internal DateTime? GetNativeTimestamp(string key)
+        internal double GetNativeDouble(string key)
+        {
+            return NativeCode.bugsnag_getDoubleValue(NativePointer, key);
+        }
+
+        internal void SetNativeDouble(string key, double value)
+        {
+            NativeCode.bugsnag_setDoubleValue(NativePointer,key,value);
+        }
+
+        internal long? GetNativeLong(string key)
+        {
+            long value = NativeCode.bugsnag_getLongValue(NativePointer, key);
+            if (value < 0)
+            {
+                return null;
+            }
+            else
+            {
+                return value;
+            }
+        }
+
+        internal void SetNativeLong(string key, long value)
+        {
+            NativeCode.bugsnag_setLongValue(NativePointer, key, value);
+        }
+
+        internal DateTime? GetNativeDate(string key)
         {
             var timeStamp = NativeCode.bugsnag_getTimestampFromDateInObject(NativePointer, key);
             if (timeStamp < 0)
@@ -47,7 +75,7 @@ namespace BugsnagUnity
             }
         }
 
-        internal void SetNativeTimeStamp(DateTime? startedAt,string key)
+        internal void SetNativeDate(DateTime? startedAt,string key)
         {
             if (startedAt == null)
             {
