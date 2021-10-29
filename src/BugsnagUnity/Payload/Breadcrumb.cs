@@ -7,7 +7,7 @@ namespace BugsnagUnity.Payload
     /// <summary>
     /// Represents an individual breadcrumb in the error report payload.
     /// </summary>
-    public class Breadcrumb : PayloadContainer
+    public class Breadcrumb : PayloadContainer, IBreadcrumb
     {
         private const string UNDEFINED_NAME = "Breadcrumb";
         private const string NAME_KEY = "name";
@@ -94,7 +94,7 @@ namespace BugsnagUnity.Payload
             set { Add(TYPE_KEY, value); }
         }
 
-        public DateTime Timestamp {
+        public DateTime? Timestamp {
             get { return (DateTime)Get(TIMESTAMP_KEY); }
             set { Add(TIMESTAMP_KEY,value); }
         }

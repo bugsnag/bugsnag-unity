@@ -14,7 +14,7 @@ namespace BugsnagUnity.Payload
 
         private string[] _androidProjectPackages;
 
-        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Exception[] exceptions, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, LogType? logType = null)
+        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Exception[] exceptions, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey ,LogType? logType = null)
         {
             OriginalSeverity = handledState;
             _metadata = metadata;
@@ -27,6 +27,7 @@ namespace BugsnagUnity.Payload
             Context = context;
             Exceptions = exceptions.ToList();
             Breadcrumbs = breadcrumbs;
+            ApiKey = apiKey;
             _user = user;
             if (session != null)
             {
@@ -60,7 +61,11 @@ namespace BugsnagUnity.Payload
 
         public void ClearMetadata(string section, string key) => _metadata.ClearMetadata(section, key);
 
-        public List<Breadcrumb> Breadcrumbs { get; }
+        internal int PayloadVersion = 4;
+
+        public string ApiKey { get; set; }
+
+        public List<IBreadcrumb> Breadcrumbs { get; }
 
         internal Session Session { get; }
 
@@ -137,7 +142,7 @@ namespace BugsnagUnity.Payload
             Add("user", _user.Payload);
             Add("context", Context);
             Add("groupingHash", GroupingHash);
-            Add("payloadVersion", 4);
+            Add("payloadVersion", PayloadVersion);
             Add("exceptions", Exceptions);
             if (_androidProjectPackages != null)
             {
