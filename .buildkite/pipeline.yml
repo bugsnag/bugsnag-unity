@@ -125,6 +125,7 @@ steps:
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   #
   # Build iOS test fixtures
@@ -196,6 +197,7 @@ steps:
           - "features/ios"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   #
   # Build Windows test fixture
