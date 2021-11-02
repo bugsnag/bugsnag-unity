@@ -1,9 +1,9 @@
 steps:
 
   #
-  # Build MacOS and WebGL test fixtures
+  # Build macOS and WebGL test fixtures
   #
-  - label: Build Unity 2018 MacOS and WebGL test fixtures
+  - label: Build Unity 2018 macOS and WebGL test fixtures
     key: 'cocoa-webgl-2018-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -22,7 +22,7 @@ steps:
       - features/fixtures/maze_runner/build/MacOS-2018.4.36f1.zip
       - features/fixtures/maze_runner/build/WebGL-2018.4.36f1.zip
 
-  - label: Build Unity 2019 MacOS and WebGL test fixtures
+  - label: Build Unity 2019 macOS and WebGL test fixtures
     key: 'cocoa-webgl-2019-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -41,7 +41,7 @@ steps:
       - features/fixtures/maze_runner/build/MacOS-2019.4.29f1.zip
       - features/fixtures/maze_runner/build/WebGL-2019.4.29f1.zip
 
-  - label: Build Unity 2021 MacOS and WebGL test fixtures
+  - label: Build Unity 2021 macOS and WebGL test fixtures
     key: 'cocoa-webgl-2021-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -63,7 +63,7 @@ steps:
   #
   # Run macOS desktop tests
   #
-  - label: Run MacOS e2e tests for Unity 2018
+  - label: Run macOS e2e tests for Unity 2018
     depends_on: 'cocoa-webgl-2018-fixtures'
     timeout_in_minutes: 30
     agents:
@@ -80,7 +80,7 @@ steps:
     commands:
       - scripts/ci-run-macos-tests.sh
 
-  - label: Run MacOS e2e tests for Unity 2019
+  - label: Run macOS e2e tests for Unity 2019
     depends_on: 'cocoa-webgl-2019-fixtures'
     timeout_in_minutes: 30
     agents:
@@ -97,7 +97,7 @@ steps:
     commands:
       - scripts/ci-run-macos-tests.sh
 
-  - label: Run MacOS e2e tests for Unity 2021
+  - label: Run macOS e2e tests for Unity 2021
     depends_on: 'cocoa-webgl-2021-fixtures'
     timeout_in_minutes: 30
     agents:

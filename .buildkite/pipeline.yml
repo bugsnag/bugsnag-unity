@@ -18,9 +18,9 @@ steps:
       - Bugsnag-with-android-64bit.unitypackage
 
   #
-  # Build MacOS and WebGL test fixtures
+  # Build macOS and WebGL test fixtures
   #
-  - label: Build Unity 2020 MacOS and WebGL test fixtures
+  - label: Build Unity 2020 macOS and WebGL test fixtures
     key: 'cocoa-webgl-2020-fixtures'
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
@@ -42,7 +42,7 @@ steps:
   #
   # Run desktop tests
   #
-  - label: Run MacOS e2e tests for Unity 2020
+  - label: Run macOS e2e tests for Unity 2020
     depends_on: 'cocoa-webgl-2020-fixtures'
     timeout_in_minutes: 30
     agents:
