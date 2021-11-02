@@ -1,7 +1,7 @@
 steps:
 
   #
-  # Build notifier.  We run tests for all Unity versions with the 2017 artifacts, as that is what we ship.
+  # Build notifier.  We run tests for all Unity versions with the 2018 artifacts, as that is what we ship.
   #
   - label: Build notifier artifacts
     key: 'build-artifacts'
@@ -9,7 +9,7 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2017.4.40f1"
+      UNITY_VERSION: "2018.4.36f1"
     commands:
       - bundle install
       - bundle exec rake plugin:export
