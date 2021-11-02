@@ -11,6 +11,6 @@ namespace BugsnagUnity.Payload
 
         DateTime? Timestamp { get; }
 
-        string Type { get; set; }
+        BreadcrumbType Type { get; set; }
     }
 }

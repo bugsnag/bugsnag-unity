@@ -4,6 +4,10 @@ using System.Collections.Generic;
 
 namespace BugsnagUnity.Payload
 {
+    internal interface IPayloadProvider
+    {
+        PayloadDictionary GetPayload();
+    }
 
     public class PayloadContainer
     {

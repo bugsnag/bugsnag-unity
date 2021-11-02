@@ -599,8 +599,8 @@ public class Main : MonoBehaviour
     {
         Bugsnag.Notify(new System.Exception("blorb"), @event =>
         {
-            @event.Exceptions[0].ErrorClass = "FunnyBusiness";
-            @event.Exceptions[0].ErrorMessage = "cake";
+            @event.Errors[0].ErrorClass = "FunnyBusiness";
+            @event.Errors[0].ErrorMessage = "cake";
             @event.AddMetadata("shape", new Dictionary<string, object>() {
         { "arc", "yes" },
         

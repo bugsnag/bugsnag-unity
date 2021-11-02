@@ -35,7 +35,7 @@ namespace BugsnagUnity.Payload
 
         internal string Context => _event.Context;
 
-        internal List<Exception> Exceptions => _event.Exceptions;
+        internal List<IError> Exceptions => _event.Errors;
 
         internal HandledState OriginalSeverity => _event.OriginalSeverity;
 

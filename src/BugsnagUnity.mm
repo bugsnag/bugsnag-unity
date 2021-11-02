@@ -141,6 +141,83 @@ extern "C" {
 
     void bugsnag_setLongValue(const void *object, char * key, long value);
 
+    const char * bugsnag_getBreadcrumbType(const void *object);
+
+    void bugsnag_setBreadcrumbType(char * breadcrumb);
+
+    void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *metadata[], int metadataCount);
+
+    void bugsnag_getBreadcrumbMetadata(const void *breadcrumb,const void *instance, void (*callback)(const void *instance, const char *keys[], int keys_size, const char *values[], int values_size));
+
+    void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance,void *breadcrumbs[], int breadcrumbs_size));
+
+
+}
+
+
+void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *breadcrumbs[], int breadcrumbs_size)) {
+
+        NSArray * theBreadcrumbs = ((__bridge BugsnagEvent *)event).breadcrumbs;
+
+        void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theBreadcrumbs.count));
+
+        for (NSUInteger i = 0; i < (NSUInteger)theBreadcrumbs.count; i++) {
+           c_array[i] = (__bridge void *)theBreadcrumbs[i];
+        }
+
+        callback(instance, c_array, [theBreadcrumbs count]);
+        free(c_array);
+}
+
+void bugsnag_getBreadcrumbMetadata(const void *breadcrumb,const void *instance, void (*callback)(const void *instance,const char *keys[], int keys_size, const char *values[], int values_size)) {
+
+     NSDictionary* sectionDictionary = ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata;
+     NSArray *keys = [sectionDictionary allKeys];
+     NSArray *values = [sectionDictionary allValues];
+     int count = 0;
+     if ([keys count] <= INT_MAX) {
+       count = (int)[keys count];
+     }
+     const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+     const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+     for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
+       c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+       c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
+     }
+    callback(instance,c_keys, count, c_values, count);
+    free(c_keys);
+    free(c_values);
+
+}
+
+void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *metadata[], int metadataCount) {
+
+  NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
+
+  for (int i = 0; i < metadataCount; i += 2) {
+    NSString *key = metadata[i] != NULL
+        ? [NSString stringWithUTF8String:metadata[i]]
+        : nil;
+    if (key == nil) {
+      continue;
+    }
+    NSString *value = metadata[i+1] != NULL
+        ? [NSString stringWithUTF8String:metadata[i+1]]
+        : nil;
+    ns_metadata[key] = value;
+
+  }
+  ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = ns_metadata;
+}
+
+const char * bugsnag_getBreadcrumbType(const void *breadcrumb)
+{
+    return strdup([BSGBreadcrumbTypeValue(((__bridge BugsnagBreadcrumb *)breadcrumb).type) UTF8String]);    
+}
+
+void bugsnag_setBreadcrumbType(const void *breadcrumb, char * type)
+{
+    ((__bridge BugsnagBreadcrumb *)breadcrumb).type = BSGBreadcrumbTypeFromString(@(type));
 }
 
 long bugsnag_getLongValue(const void *object, char * key)
@@ -671,9 +748,10 @@ void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *noti
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadata[], int metadataCount) {
   NSString *ns_message = [NSString stringWithUTF8String: message == NULL ? "<empty>" : message];
   [Bugsnag.client addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-
+        NSLog(@"REPORT CRUMB TYPE %s",type);
       crumb.message = ns_message;
       crumb.type = BSGBreadcrumbTypeFromString([NSString stringWithUTF8String:type]);
+        NSLog(@"CONVERTED CRUMB TYPE %@",@(crumb.type));
 
       if (metadataCount > 0) {
         NSMutableDictionary *ns_metadata = [NSMutableDictionary new];

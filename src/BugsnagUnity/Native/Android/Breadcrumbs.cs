@@ -31,7 +31,7 @@ namespace BugsnagUnity
         /// <param name="breadcrumb"></param>
         public void Leave(Breadcrumb breadcrumb)
         {
-            NativeInterface.LeaveBreadcrumb(breadcrumb.Name, breadcrumb.Type, breadcrumb.Metadata);
+            NativeInterface.LeaveBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString(), breadcrumb.Metadata);
         }
 
         /// <summary>

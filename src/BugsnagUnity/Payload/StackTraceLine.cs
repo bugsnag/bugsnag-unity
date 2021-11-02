@@ -68,7 +68,7 @@ namespace BugsnagUnity.Payload
     /// <summary>
     /// Represents an individual stack trace line in the Bugsnag payload.
     /// </summary>
-    public class StackTraceLine : Dictionary<string, object>
+    public class StackTraceLine : Dictionary<string, object>, IStackframe
     {
         private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
         private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
@@ -166,5 +166,16 @@ namespace BugsnagUnity.Payload
                 this.AddToPayload("method", value);
             }
         }
+
+        public string FrameAddress { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public string IsLr { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public string IsPc { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public string MachoFile { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public string MachoLoadAddress { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public string MachoUuid { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public string MachoVmAddress { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public string SymbolAddress { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public bool InProject { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        int IStackframe.LineNumber { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
     }
 }

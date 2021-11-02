@@ -44,7 +44,14 @@ namespace BugsnagUnity.Payload
             Name = name;
             Timestamp = DateTime.Parse( timestamp );
             Metadata = metadata;
-            Type = type;
+            if (string.IsNullOrEmpty(type))
+            {
+                Type = BreadcrumbType.Manual;
+            }
+            else
+            {
+                Type = ParseBreadcrumbType(type);
+            }
         }
 
         internal Breadcrumb(string name, Dictionary<string, object> metadata, BreadcrumbType type)
@@ -56,14 +63,7 @@ namespace BugsnagUnity.Payload
             Name = name;
             Timestamp = DateTime.UtcNow;
             Metadata = metadata;
-
-            string breadcrumbType = Enum.GetName(typeof(BreadcrumbType), type).ToLower();
-            if (string.IsNullOrEmpty(breadcrumbType))
-            {
-                breadcrumbType = "manual";
-            }
-
-            Type = breadcrumbType;
+            Type = type;
         }
 
         public Dictionary<string, object> Metadata
@@ -89,14 +89,55 @@ namespace BugsnagUnity.Payload
             set { Add(MESSAGE_KEY, value); }
         }
 
-        public string Type {
-            get { return Get(TYPE_KEY) as string; }
-            set { Add(TYPE_KEY, value); }
+        public BreadcrumbType Type {
+            get {
+
+                var stringValue = (string)Get(TYPE_KEY);
+                return ParseBreadcrumbType(stringValue);
+            }
+            set { Add(TYPE_KEY, value.ToString().ToLower()); }
         }
 
         public DateTime? Timestamp {
             get { return (DateTime)Get(TIMESTAMP_KEY); }
             set { Add(TIMESTAMP_KEY,value); }
+        }
+
+        internal static BreadcrumbType ParseBreadcrumbType(string name)
+        {
+            if (name.Contains("error"))
+            {
+                return BreadcrumbType.Error;
+            }
+            if (name.Contains("log"))
+            {
+                return BreadcrumbType.Log;
+            }
+            if (name.Contains("navigation"))
+            {
+                return BreadcrumbType.Navigation;
+            }
+            if (name.Contains("process"))
+            {
+                return BreadcrumbType.Process;
+            }
+            if (name.Contains("request"))
+            {
+                return BreadcrumbType.Request;
+            }
+            if (name.Contains("state"))
+            {
+                return BreadcrumbType.State;
+            }
+            if (name.Contains("user"))
+            {
+                return BreadcrumbType.User;
+            }
+            if (name.Contains("manual"))
+            {
+                return BreadcrumbType.Manual;
+            }
+            return BreadcrumbType.Manual;            
         }
 
     }

@@ -201,6 +201,23 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_setLongValue(IntPtr @object, string key, long value);
 
+        [DllImport(Import)]
+        internal static extern string bugsnag_getBreadcrumbType(IntPtr nativeBreadcrumb);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setBreadcrumbType(IntPtr nativeBreadcrumb, string type);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setBreadcrumbMetadata(IntPtr nativeBreadcrumb, string[] metadata, int metadataCount);
+
+        internal delegate void BreadcrumbMetadata(IntPtr metadata, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] string[] values, int valuesSize);
+        [DllImport(Import)]
+        internal static extern void bugsnag_getBreadcrumbMetadata(IntPtr nativeBreadcrumb, IntPtr metadata, BreadcrumbMetadata visitor);
+
+        internal delegate void EventBreadcrumbs(IntPtr breadcrumbList,[MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] breadcrumbs, int breadcrumbsSize);
+        [DllImport(Import)]
+        internal static extern void bugsnag_getBreadcrumbsFromEvent(IntPtr @event, IntPtr breadcrumbList, EventBreadcrumbs visitor);
+
     }
 }
 

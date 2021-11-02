@@ -20,5 +20,11 @@ namespace BugsnagUnity.Payload
         string Method { get; set; }
 
         string SymbolAddress { get; set; }
+
+        string File { get; set; }
+
+        bool InProject { get; set; }
+
+        int LineNumber { get; set; }
     }
 }
