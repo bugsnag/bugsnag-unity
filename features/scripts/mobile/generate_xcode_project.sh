@@ -2,7 +2,7 @@
 
 if [ -z "$UNITY_PATH" ]
 then
-  echo "UNITY_PATH must be set, to e.g. /Applications/Unity/Hub/Editor/2017.4.40f1/Unity.app/Contents/MacOS"
+  echo "UNITY_PATH must be set, to e.g. /Applications/Unity/Hub/Editor/2018.4.36f1/Unity.app/Contents/MacOS"
   exit 1
 fi
 
