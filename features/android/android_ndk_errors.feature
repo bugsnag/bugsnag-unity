@@ -74,7 +74,7 @@ Feature: Android manual smoke tests
         And the event "metaData.device.networkAccess" is not null
         And the event "metaData.device.screenDensity" is not null
         And the event "metaData.device.screenResolution" is not null
-        And the event "metaData.device.osLanguage" is not null
+        And the event "metaData.device.osLanguage" is present from Unity 2018
         And the event "app.type" equals "android"
         And the event "metaData.app.companyName" equals "bugsnag"
         And the event "metaData.app.name" equals "Mazerunner"
