@@ -318,13 +318,13 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
+    # Note: This is only needed for Unity 2017 in order to skip specific steps/scenarios
+    env:
+      UNITY_VERSION: "2017"
     concurrency: 9
     concurrency_group: browserstack-app
-    # TODO Soft fail pending PLAT-7058
-    soft_fail:
-      - exit_status: "*"
+    concurrency_method: eager
 
   - label: ':android: Run Android e2e tests for Unity 2018'
     depends_on: 'build-android-fixture-2018'
@@ -344,10 +344,10 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   - label: ':android: Run Android e2e tests for Unity 2019'
     depends_on: 'build-android-fixture-2019'
@@ -367,10 +367,10 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.29f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   - label: ':android: Run Android e2e tests for Unity 2021'
     depends_on: 'build-android-fixture-2021'
@@ -390,10 +390,10 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.1.16f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   #
   # Build iOS test fixtures
@@ -587,6 +587,7 @@ steps:
           - "features/ios"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   - label: ':ios: Run iOS e2e tests for Unity 2018'
     depends_on: 'build-ios-fixture-2018'
@@ -610,6 +611,7 @@ steps:
           - "features/ios"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   - label: ':ios: Run iOS e2e tests for Unity 2019'
     depends_on: 'build-ios-fixture-2019'
@@ -633,6 +635,7 @@ steps:
           - "features/ios"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   - label: ':ios: Run iOS e2e tests for Unity 2021'
     depends_on: 'build-ios-fixture-2021'
@@ -656,6 +659,7 @@ steps:
           - "features/ios"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   #
   # Build Windows test fixtures
