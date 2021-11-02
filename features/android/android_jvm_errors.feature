@@ -78,7 +78,7 @@ Feature: Android manual smoke tests
         And the event "context" equals "My context"
 
         # MetaData
-        And the event "metaData.device.osLanguage" is present from Unity 2018
+        And the event "metaData.device.osLanguage" is not null
         And the event "app.type" equals "android"
         And the event "metaData.app.companyName" equals "bugsnag"
         And the event "metaData.app.name" equals "Mazerunner"
@@ -131,8 +131,6 @@ Feature: Android manual smoke tests
         Then I wait to receive an error
         And the error payload field "events.0.threads.0" is null
 
-    # Skip Unity 2017 as an extra SIGSEGV is sometimes sent
-    @skip_unity_2017
     Scenario: Last Run Info
         When I run the "Java Background Crash" mobile scenario
         And I wait for 8 seconds
