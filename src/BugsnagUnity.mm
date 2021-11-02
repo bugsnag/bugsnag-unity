@@ -151,9 +151,40 @@ extern "C" {
 
     void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance,void *breadcrumbs[], int breadcrumbs_size));
 
+    void bugsnag_getErrorsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *errors[], int errors_size));
+
+    void bugsnag_getStackframesFromError(const void *error,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size));
+
 
 }
 
+void bugsnag_getStackframesFromError(const void *error,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size)) {
+
+        NSArray * theStackframes = ((__bridge BugsnagError *)error).stacktrace;
+        NSLog(@"GOT STACK FRAMES: %@", @([theStackframes count]));
+        void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theStackframes.count));
+
+        for (NSUInteger i = 0; i < (NSUInteger)theStackframes.count; i++) {
+           c_array[i] = (__bridge void *)theStackframes[i];
+        }
+
+        callback(instance, c_array, [theStackframes count]);
+        free(c_array);
+}
+
+void bugsnag_getErrorsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *errors[], int errors_size)) {
+
+        NSArray * theErrors = ((__bridge BugsnagEvent *)event).errors;
+
+        void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theErrors.count));
+
+        for (NSUInteger i = 0; i < (NSUInteger)theErrors.count; i++) {
+           c_array[i] = (__bridge void *)theErrors[i];
+        }
+
+        callback(instance, c_array, [theErrors count]);
+        free(c_array);
+}
 
 void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *breadcrumbs[], int breadcrumbs_size)) {
 

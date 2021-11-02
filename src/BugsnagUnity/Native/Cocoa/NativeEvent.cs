@@ -19,9 +19,11 @@ namespace BugsnagUnity
             App = new NativeAppWithState(NativeCode.bugsnag_getAppFromEvent(nativeEvent));
             Device = new NativeDeviceWithState(NativeCode.bugsnag_getDeviceFromEvent(nativeEvent));
 
-            var handle = GCHandle.Alloc(_breadcrumbs);
+            var breadcrumbHandle = GCHandle.Alloc(_breadcrumbs);
+            NativeCode.bugsnag_getBreadcrumbsFromEvent(nativeEvent, GCHandle.ToIntPtr(breadcrumbHandle), GetBreadcrumbs);
 
-            NativeCode.bugsnag_getBreadcrumbsFromEvent(NativePointer, GCHandle.ToIntPtr(handle), GetBreadcrumbs);
+            var errorsHandle = GCHandle.Alloc(_errors);
+            NativeCode.bugsnag_getErrorsFromEvent(nativeEvent, GCHandle.ToIntPtr(errorsHandle), GetErrors);
         }
 
         [MonoPInvokeCallback(typeof(NativeCode.EventBreadcrumbs))]
@@ -35,7 +37,20 @@ namespace BugsnagUnity
                     breadcrumbs.Add(new NativeBreadcrumb(pointer));
                 }
             }
-            
+        }
+
+        [MonoPInvokeCallback(typeof(NativeCode.EventErrors))]
+        private static void GetErrors(IntPtr instance, IntPtr[] errorPointers, int count)
+        {
+            var handle = GCHandle.FromIntPtr(instance);
+            if (handle.Target is List<IError> errors)
+            {
+                foreach (var pointer in errorPointers)
+                {
+                    errors.Add(new NativeError(pointer));
+                }
+            }
+
         }
 
         public string Context { get => GetNativeString(CONTEXT_KEY); set => SetNativeString(CONTEXT_KEY,value); }
@@ -54,7 +69,18 @@ namespace BugsnagUnity
 
         public List<IBreadcrumb> Breadcrumbs => _breadcrumbs;
 
-        public List<IError> Errors => throw new NotImplementedException();
+        private List<IError> _errors = new List<IError>();
+
+        public List<IError> Errors => _errors;
+
+
+
+
+
+
+
+
+
 
         public Severity Severity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

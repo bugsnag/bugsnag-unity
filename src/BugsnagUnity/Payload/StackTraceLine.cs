@@ -167,15 +167,14 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public string FrameAddress { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string IsLr { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string IsPc { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string MachoFile { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string MachoLoadAddress { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string MachoUuid { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string MachoVmAddress { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public string SymbolAddress { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        public bool InProject { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        int IStackframe.LineNumber { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public string FrameAddress { get; set; }
+        public string IsLr { get; set; }
+        public string IsPc { get; set; }
+        public string MachoFile { get; set; }
+        public string MachoLoadAddress { get; set; }
+        public string MachoUuid { get; set; }
+        public string MachoVmAddress { get; set; }
+        public string SymbolAddress { get; set; }
+        public bool InProject { get; set; }
     }
 }

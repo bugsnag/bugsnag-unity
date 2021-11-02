@@ -25,6 +25,6 @@ namespace BugsnagUnity.Payload
 
         bool InProject { get; set; }
 
-        int LineNumber { get; set; }
+        int? LineNumber { get; set; }
     }
 }

@@ -218,6 +218,14 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_getBreadcrumbsFromEvent(IntPtr @event, IntPtr breadcrumbList, EventBreadcrumbs visitor);
 
+        internal delegate void EventErrors(IntPtr errorList, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] errors, int errorsSize);
+        [DllImport(Import)]
+        internal static extern void bugsnag_getErrorsFromEvent(IntPtr @event, IntPtr errorList, EventErrors visitor);
+
+        internal delegate void ErrorStackframes(IntPtr stackframeList, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] stackframes, int stackframesSize);
+        [DllImport(Import)]
+        internal static extern void bugsnag_getStackframesFromError(IntPtr error, IntPtr stackframeList, ErrorStackframes visitor);
+
     }
 }
 
