@@ -24,7 +24,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.True(Error.ShouldSend(log));
 
             var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Info);
-            var stack = exception.StackTrace.ToList();
+            var stack = exception.Stacktrace.ToList();
             Assert.AreEqual(7, stack.Count);
             Assert.AreEqual("IndexOutOfRangeException", exception.ErrorClass);
             Assert.AreEqual("Array index is out of range.", exception.ErrorMessage);
@@ -75,7 +75,7 @@ com.unity3d.player.UnityPlayer.nativeRender(Native Method)";
             var log = new UnityLogMessage(condition, stacktrace, logType);
             Assert.True(Error.ShouldSend(log));
             var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
-            var stack = exception.StackTrace.ToList();
+            var stack = exception.Stacktrace.ToList();
             Assert.AreEqual("java.lang.IllegalArgumentException", exception.ErrorClass);
             Assert.True(System.String.IsNullOrEmpty(exception.ErrorMessage));
             Assert.AreEqual(2, stack.Count);
@@ -110,7 +110,7 @@ UnityEngine.EventSystems.EventSystem:Update()";
             Assert.True(Error.ShouldSend(log));
 
             var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
-            var stack = exception.StackTrace.ToList();
+            var stack = exception.Stacktrace.ToList();
             Assert.AreEqual(13, stack.Count);
             Assert.AreEqual("java.lang.ArrayIndexOutOfBoundsException", exception.ErrorClass);
             Assert.AreEqual("length=2; index=2", exception.ErrorMessage);

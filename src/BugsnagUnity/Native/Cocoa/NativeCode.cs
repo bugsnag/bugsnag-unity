@@ -226,6 +226,12 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_getStackframesFromError(IntPtr error, IntPtr stackframeList, ErrorStackframes visitor);
 
+        [DllImport(Import)]
+        internal static extern string bugsnag_getSeverityFromEvent(IntPtr nativeEvent);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setEventSeverity(IntPtr nativeEvent, string severity);
+
     }
 }
 

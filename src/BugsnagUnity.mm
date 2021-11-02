@@ -155,8 +155,46 @@ extern "C" {
 
     void bugsnag_getStackframesFromError(const void *error,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size));
 
+    const char * bugsnag_getSeverityFromEvent(const void *event);
+
+    void bugsnag_setEventSeverity(const void *event, const char *severity);
+
+
 
 }
+
+
+void bugsnag_setEventSeverity(const void *event, const char *severity)
+{   
+    if(@(severity) == @"error")
+    {
+        ((__bridge BugsnagEvent *)event).severity = BSGSeverityError;
+    }
+    else if(@(severity) == @"warning")
+    {
+        ((__bridge BugsnagEvent *)event).severity = BSGSeverityWarning;
+    }
+    else
+    {
+        ((__bridge BugsnagEvent *)event).severity = BSGSeverityInfo;
+    }     
+}
+
+const char * bugsnag_getSeverityFromEvent(const void *event)
+{   
+    BSGSeverity theSeverity = ((__bridge BugsnagEvent *)event).severity;
+    if(theSeverity == BSGSeverityError)
+    {
+        return strdup("error");
+    }
+    if(theSeverity == BSGSeverityWarning)
+    {
+        return strdup("warning");
+    }
+    return strdup("info");
+        
+}
+
 
 void bugsnag_getStackframesFromError(const void *error,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size)) {
 
@@ -779,11 +817,8 @@ void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *noti
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadata[], int metadataCount) {
   NSString *ns_message = [NSString stringWithUTF8String: message == NULL ? "<empty>" : message];
   [Bugsnag.client addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-        NSLog(@"REPORT CRUMB TYPE %s",type);
       crumb.message = ns_message;
       crumb.type = BSGBreadcrumbTypeFromString([NSString stringWithUTF8String:type]);
-        NSLog(@"CONVERTED CRUMB TYPE %@",@(crumb.type));
-
       if (metadataCount > 0) {
         NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
 

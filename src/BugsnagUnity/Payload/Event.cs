@@ -149,7 +149,7 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public List<IThread> Threads => throw new System.NotImplementedException();
+        public List<IThread> Threads => null;
 
 
         internal Dictionary<string, object> GetEventPayload()

@@ -76,32 +76,39 @@ namespace BugsnagUnity.Payload
         private const string NATIVE_ANDROID_ERROR_CLASS = "java.lang.Error";
         private const string NATIVE_ANDROID_MESSAGE_PATTERN = @"signal \d+ \(SIG\w+\)";
 
+        private const string ERROR_CLASS_KEY = "errorClass";
+        private const string MESSAGE_KEY = "message";
+        private const string STACKTRACE_KEY = "stacktrace";
+
+
+
         internal Error(string errorClass, string message, StackTraceLine[] stackTrace)
           : this(errorClass, message, stackTrace, HandledState.ForHandledException(),false) { }
 
-        internal Error(string errorClass, string message, StackTraceLine[] stackTrace, HandledState handledState,bool isAndroidJavaException)
+        internal Error(string errorClass, string message, IStackframe[] stackTrace, HandledState handledState,bool isAndroidJavaException)
         {
-            this.AddToPayload("errorClass", errorClass);
-            this.AddToPayload("message", message);
-            this.AddToPayload("stacktrace", stackTrace);
+            ErrorClass = errorClass;
+            ErrorMessage = message;
+            _stacktrace = stackTrace.ToList();
             HandledState = handledState;
             IsAndroidJavaException = isAndroidJavaException;
         }
 
-        public IEnumerable<StackTraceLine> StackTrace { get { return this.Get("stacktrace") as IEnumerable<StackTraceLine>; } }
 
-        public List<IStackframe> Stacktrace => throw new NotImplementedException();
+        private List<IStackframe> _stacktrace { get => this.Get(STACKTRACE_KEY) as List<IStackframe>; set => this.AddToPayload(STACKTRACE_KEY, value); }
+
+        public List<IStackframe> Stacktrace => _stacktrace;
 
         public string ErrorClass
         {
-            get => this.Get("errorClass") as string;
-            set => this.AddToPayload("errorClass", value);
+            get => this.Get(ERROR_CLASS_KEY) as string;
+            set => this.AddToPayload(ERROR_CLASS_KEY, value);
         }
 
         public string ErrorMessage
         {
-            get => this.Get("message") as string;
-            set => this.AddToPayload("message", value);
+            get => this.Get(MESSAGE_KEY) as string;
+            set => this.AddToPayload(MESSAGE_KEY, value);
         }
 
 

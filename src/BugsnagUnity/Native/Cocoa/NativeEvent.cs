@@ -73,16 +73,22 @@ namespace BugsnagUnity
 
         public List<IError> Errors => _errors;
 
+        public Severity Severity { get => GetSeverityFromEvent(); set => NativeCode.bugsnag_setEventSeverity(NativePointer,value.ToString().ToLower()); }
 
+        private Severity GetSeverityFromEvent()
+        {
+            var stringValue = NativeCode.bugsnag_getSeverityFromEvent(NativePointer);
+            if (stringValue == "error")
+            {
+                return Severity.Error;
+            }
+            if (stringValue == "warning")
+            {
+                return Severity.Warning;
+            }
+            return Severity.Info;
+        }
 
-
-
-
-
-
-
-
-        public Severity Severity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public List<IThread> Threads => throw new NotImplementedException();
 
