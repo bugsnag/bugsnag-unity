@@ -17,6 +17,10 @@ namespace BugsnagUnity
 
         internal void SetNativeString(string key, string value)
         {
+            if (value == null)
+            {
+                value = string.Empty;
+            }
             NativeCode.bugsnag_setStringValue(NativePointer, key, value);
         }
 

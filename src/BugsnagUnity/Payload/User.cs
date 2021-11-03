@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 namespace BugsnagUnity.Payload
 {
-    public class User : PayloadContainer
+    public class User : PayloadContainer, IUser
     {
         internal UnityEvent PropertyChanged = new UnityEvent();
 
@@ -19,16 +19,23 @@ namespace BugsnagUnity.Payload
 
         }
 
-        public User(string? id, string? name, string? email)
+        public User(string id, string name, string email)
         {
             Id = id;
             Name = name;
             Email = email;
         }
 
-        public string? Id
+        public string Id
         {
-            get => (string?)Get(ID_KEY);
+            get {
+                var @object = Get(ID_KEY);
+                if (@object == null)
+                {
+                    return string.Empty;
+                }
+                return (string)@object;
+            } 
             set
             {
                 Add(ID_KEY, value);
@@ -36,9 +43,17 @@ namespace BugsnagUnity.Payload
             }  
         }
 
-        public string? Name
+        public string Name
         {
-            get => (string?)Get(NAME_KEY);
+            get
+            {
+                var @object = Get(NAME_KEY);
+                if (@object == null)
+                {
+                    return string.Empty;
+                }
+                return (string)@object;
+            }
             set
             {
                 Add(NAME_KEY, value);
@@ -46,9 +61,17 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public string? Email
+        public string Email
         {
-            get => (string?)Get(EMAIL_KEY);
+            get
+            {
+                var @object = Get(EMAIL_KEY);
+                if (@object == null)
+                {
+                    return string.Empty;
+                }
+                return (string)@object;
+            }
             set
             {
                 Add(EMAIL_KEY, value);

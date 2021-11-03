@@ -105,10 +105,6 @@ extern "C" {
 
     void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session));
 
-    void bugsnag_populateUserFromSession(const void *session,bugsnag_user *user);
-
-    void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail);
-
     BugsnagApp * bugsnag_getAppFromSession(const void *session);
 
     BugsnagAppWithState * bugsnag_getAppFromEvent(const void *event);
@@ -161,8 +157,87 @@ extern "C" {
 
     void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size));
 
+    BugsnagUser * bugsnag_getUserFromEvent(const void *event);
+
+    BugsnagUser * bugsnag_getUserFromSession(const void *session);
+
+    void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadata[], int metadataCount);
+
+    void bugsnag_clearEventMetadataSection(const void *event, const char *section);
+
+    void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key);
+
+    void bugsnag_getEventMetaData(const void *event, const void *instance, const char *tab, void (*callback)(const void *instance,const char *keys[], int keys_size, const char *values[], int values_size));
 
 
+}
+
+void bugsnag_getEventMetaData(const void *event,const void *instance, const char *tab, void (*callback)(const void *instance, const char *keys[], int keys_size, const char *values[], int values_size)) {
+    NSLog(@"GETTING METADATA SECTION %@",@(tab));
+
+         NSDictionary* sectionDictionary = [((__bridge BugsnagEvent *)event) getMetadataFromSection:@(tab)];
+         NSArray *keys = [sectionDictionary allKeys];
+         NSArray *values = [sectionDictionary allValues];
+         int count = 0;
+         if ([keys count] <= INT_MAX) {
+           count = (int)[keys count];
+         }
+             NSLog(@"KEYS COUNT %@",@([keys count]));
+
+         const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+         const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+         for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
+           c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+           c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
+         }
+        callback(instance,c_keys,count,c_values,count);
+        free(c_keys);
+        free(c_values);
+   
+}
+
+void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key){
+
+   [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section) withKey:@(key)];
+
+}
+
+void bugsnag_clearEventMetadataSection(const void *event, const char *section){
+
+   [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section)];
+
+}
+
+void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadata[], int metadataCount) {
+  if (tab == NULL)
+    return;
+
+  NSString *tabName = [NSString stringWithUTF8String: tab];
+  NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
+
+  for (int i = 0; i < metadataCount; i += 2) {
+    NSString *key = metadata[i] != NULL
+        ? [NSString stringWithUTF8String:metadata[i]]
+        : nil;
+    if (key == nil) {
+      continue;
+    }
+    NSString *value = metadata[i+1] != NULL
+        ? [NSString stringWithUTF8String:metadata[i+1]]
+        : nil;
+    ns_metadata[key] = value;
+
+  }
+  [((__bridge BugsnagEvent *)event) addMetadata:ns_metadata toSection:tabName];
+}
+
+
+BugsnagUser * bugsnag_getUserFromSession(const void *session){
+    return ((__bridge BugsnagSession *)session).user;
+}
+
+BugsnagUser * bugsnag_getUserFromEvent(const void *event){
+    return ((__bridge BugsnagEvent *)event).user;
 }
 
 void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size)) {
@@ -481,18 +556,7 @@ BugsnagDeviceWithState * bugsnag_getDeviceFromEvent(const void *event){
     return ((__bridge BugsnagEvent *)event).device;
 }
 
-void bugsnag_populateUserFromSession(const void *session, bugsnag_user *user) {
-    BugsnagUser *theUser = ((__bridge BugsnagSession *)session).user;
-    user->user_id = theUser.id.UTF8String;
-    user->user_name = theUser.name.UTF8String;
-    user->user_email = theUser.email.UTF8String;
-}
 
-void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail) {
-    [(__bridge BugsnagSession *)session setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
-            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
-             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
-}
 
 void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
     [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    

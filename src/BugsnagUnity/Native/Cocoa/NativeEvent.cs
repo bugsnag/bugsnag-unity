@@ -40,6 +40,7 @@ namespace BugsnagUnity
 
         public List<IThread> Threads => _threads;
 
+        private IUser _user;
 
         public NativeEvent(IntPtr nativeEvent) : base(nativeEvent)
         {
@@ -54,6 +55,8 @@ namespace BugsnagUnity
 
             var threadsHandle = GCHandle.Alloc(_threads);
             NativeCode.bugsnag_getThreadsFromEvent(nativeEvent, GCHandle.ToIntPtr(threadsHandle), GetThreads);
+
+            _user = new NativeUser(NativeCode.bugsnag_getUserFromEvent(nativeEvent));
         }
 
         private Severity GetSeverityFromEvent()
@@ -110,44 +113,103 @@ namespace BugsnagUnity
             }
         }
 
-        public void AddMetadata(string section, string key, object value)
+        public IUser GetUser()
         {
-            throw new NotImplementedException();
-        }
-
-        public void AddMetadata(string section, Dictionary<string, object> metadata)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ClearMetadata(string section)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ClearMetadata(string section, string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Dictionary<string, object> GetMetadata(string section)
-        {
-            throw new NotImplementedException();
-        }
-
-        public object GetMetadata(string section, string key)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User GetUser()
-        {
-            throw new NotImplementedException();
+            return _user;
         }
 
         public void SetUser(string id, string email, string name)
         {
-            throw new NotImplementedException();
+            _user.Id = id;
+            _user.Email = email;
+            _user.Name = name;
         }
+
+        public void AddMetadata(string section, string key, object value)
+        {
+            var metadataSection = new Dictionary<string, object>() {
+                { key, value }
+            };
+            AddMetadata(section, metadataSection);
+        }
+
+        public void AddMetadata(string section, Dictionary<string, object> metadata)
+        {
+            var index = 0;
+            var count = 0;
+            if (metadata != null)
+            {
+                var metadataArray = new string[metadata.Count * 2];
+
+                foreach (var data in metadata)
+                {
+                    if (data.Key != null)
+                    {
+                        metadataArray[index] = data.Key;
+                        metadataArray[index + 1] = data.Value.ToString();
+                        count += 2;
+                    }
+                    index += 2;
+                }
+                NativeCode.bugsnag_setEventMetadata(NativePointer, section, metadataArray, count);
+            }
+            else
+            {
+                NativeCode.bugsnag_clearEventMetadataSection(NativePointer, section);
+            }
+        }
+
+        public void ClearMetadata(string section) => NativeCode.bugsnag_clearEventMetadataSection(NativePointer, section);
+
+        public void ClearMetadata(string section, string key) => NativeCode.bugsnag_clearEventMetadataWithKey(NativePointer, section, key);
+
+        public object GetMetadata(string section, string key)
+        {
+            var metadata = GetMetadata(section);
+            foreach (var item in metadata)
+            {
+                if (item.Key == key)
+                {
+                    return item.Value;
+                }
+            }
+            return null;
+        }
+
+        public Dictionary<string, object> GetMetadata(string section)
+        {
+            var metadata = new Dictionary<string, object>();
+            var handle = GCHandle.Alloc(metadata);
+            try
+            {
+                NativeCode.bugsnag_getEventMetaData(NativePointer, GCHandle.ToIntPtr(handle), section, PopulateMetaDataSection);
+            }
+            finally
+            {
+                handle.Free();
+            }
+            return metadata;
+        }
+
+        [MonoPInvokeCallback(typeof(NativeCode.EventMetadata))]
+        static void PopulateMetaDataSection(IntPtr instance, string[] keys, int keysSize, string[] values, int valuesSize)
+        {
+            var handle = GCHandle.FromIntPtr(instance);
+            if (handle.Target is Dictionary<string,object> metadata)
+            {
+                for (int i = 0; i < keys.Length; i++)
+                {
+                    var key = keys[i];
+                    var value = values[i];
+                    if (key.Equals("simulator"))
+                    {
+                        value = value.Equals("0") || value.Equals("false") ? "false" : "true";
+                    }
+                    metadata.Add(key, value);
+                }
+            }
+        }
+
+
     }
 }

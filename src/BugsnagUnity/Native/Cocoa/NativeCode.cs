@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace BugsnagUnity
 {
     [StructLayout(LayoutKind.Sequential)]
-    struct NativeUser
+    struct NativeUserVisitor
     {
         public IntPtr Id;
         public IntPtr Name;
@@ -47,7 +47,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_retrieveMetaData(IntPtr instance, MetadataInformation visitor);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_populateUser(ref NativeUser user);
+        internal static extern void bugsnag_populateUser(ref NativeUserVisitor user);
 
         [DllImport(Import)]
         internal static extern IntPtr bugsnag_createConfiguration(string apiKey);
@@ -147,12 +147,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_registerSession(string id, long startedAt, int unhandledCount, int handledCount);
 
         //Callback Getters and setters
-        [DllImport(Import)]
-        internal static extern void bugsnag_populateUserFromSession(IntPtr session, ref NativeUser user);
-
-        [DllImport(Import)]
-        internal static extern void bugsnag_setUserFromSession(IntPtr session, string id, string name, string email);
-
+               
         [DllImport(Import)]
         internal static extern IntPtr bugsnag_getAppFromSession(IntPtr session);
 
@@ -236,6 +231,24 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_getThreadsFromEvent(IntPtr @event, IntPtr threadsList, EventThreads visitor);
 
+        [DllImport(Import)]
+        internal static extern IntPtr bugsnag_getUserFromEvent(IntPtr @event);
+
+        [DllImport(Import)]
+        internal static extern IntPtr bugsnag_getUserFromSession(IntPtr session);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setEventMetadata(IntPtr @event, string tab, string[] metadata, int metadataCount);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearEventMetadataSection(IntPtr @event, string section);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearEventMetadataWithKey(IntPtr @event, string section, string key);
+
+        internal delegate void EventMetadata(IntPtr metadataDictionary, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] string[] values, int valuesSize);
+        [DllImport(Import)]
+        internal static extern void bugsnag_getEventMetaData(IntPtr @event, IntPtr metadataDictionary, string section, EventMetadata visitor);
     }
 }
 

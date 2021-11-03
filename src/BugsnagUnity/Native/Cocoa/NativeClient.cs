@@ -261,7 +261,7 @@ namespace BugsnagUnity
 
         public void PopulateUser(User user)
         {
-            var nativeUser = new NativeUser();
+            var nativeUser = new NativeUserVisitor();
 
             NativeCode.bugsnag_populateUser(ref nativeUser);
 
@@ -270,7 +270,6 @@ namespace BugsnagUnity
 
         public void SetMetadata(string section, Dictionary<string, object> metadataSection)
         {
-
             var index = 0;
             var count = 0;
             if (metadataSection != null)
@@ -279,9 +278,6 @@ namespace BugsnagUnity
 
                 foreach (var data in metadataSection)
                 {
-
-
-
                     if (data.Key != null)
                     {
                         metadata[index] = data.Key;

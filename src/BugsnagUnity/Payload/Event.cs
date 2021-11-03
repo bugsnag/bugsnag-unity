@@ -116,9 +116,11 @@ namespace BugsnagUnity.Payload
             get => _handledState.Severity;
         }
 
+
+
         private User _user;
 
-        public User GetUser() => _user;
+        public IUser GetUser() => _user;
 
         public void SetUser(string id, string name, string email)
         {
