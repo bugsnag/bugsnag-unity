@@ -721,7 +721,7 @@ steps:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/Windows-2021.1.19f1.zip
+      - features/fixtures/maze_runner/build/Windows-2021.1.27f1.zip
 
   #
   # Run Windows e2e tests
@@ -768,7 +768,7 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2021.1.19f1"
+      UNITY_VERSION: "2021.1.27f1"
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
