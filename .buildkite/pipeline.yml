@@ -36,6 +36,7 @@ steps:
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/MacOS-2020.3.15f2.zip
       - features/fixtures/maze_runner/build/WebGL-2020.3.15f2.zip
 
@@ -211,6 +212,7 @@ steps:
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/Windows-2020.3.17f1.zip
 
   #
