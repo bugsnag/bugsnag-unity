@@ -38,6 +38,7 @@ steps:
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/MacOS-2018.4.36f1.zip
       - features/fixtures/maze_runner/build/WebGL-2018.4.36f1.zip
 
@@ -57,6 +58,7 @@ steps:
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/MacOS-2019.4.29f1.zip
       - features/fixtures/maze_runner/build/WebGL-2019.4.29f1.zip
 
@@ -76,6 +78,7 @@ steps:
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/MacOS-2021.1.27f1.zip
       - features/fixtures/maze_runner/build/WebGL-2021.1.27f1.zip
 
@@ -675,6 +678,7 @@ steps:
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/Windows-2017.4.40f1.zip
 
   - label: Build Unity 2018 Windows test fixture
@@ -688,6 +692,7 @@ steps:
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
 
   - label: Build Unity 2019 Windows test fixture
@@ -701,6 +706,7 @@ steps:
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/Windows-2019.4.30f1.zip
 
   - label: Build Unity 2021 Windows test fixture
@@ -714,6 +720,7 @@ steps:
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/Windows-2021.1.19f1.zip
 
   #
