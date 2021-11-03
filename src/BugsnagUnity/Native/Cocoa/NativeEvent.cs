@@ -14,6 +14,33 @@ namespace BugsnagUnity
         private const string GROUPING_HASH_KEY = "groupingHash";
         private const string UNHANDLED_KEY = "unhandled";
 
+        public string Context { get => GetNativeString(CONTEXT_KEY); set => SetNativeString(CONTEXT_KEY, value); }
+
+        public IAppWithState App { get; set; }
+
+        public IDeviceWithState Device { get; set; }
+
+        public string ApiKey { get => GetNativeString(API_KEY_KEY); set => SetNativeString(API_KEY_KEY, value); }
+
+        public string GroupingHash { get => GetNativeString(GROUPING_HASH_KEY); set => SetNativeString(GROUPING_HASH_KEY, value); }
+
+        public bool? Unhandled { get => GetNativeBool(UNHANDLED_KEY); set => SetNativeBool(UNHANDLED_KEY, value); }
+
+        private List<IBreadcrumb> _breadcrumbs = new List<IBreadcrumb>();
+
+        public List<IBreadcrumb> Breadcrumbs => _breadcrumbs;
+
+        private List<IError> _errors = new List<IError>();
+
+        public List<IError> Errors => _errors;
+
+        public Severity Severity { get => GetSeverityFromEvent(); set => NativeCode.bugsnag_setEventSeverity(NativePointer, value.ToString().ToLower()); }
+
+        private List<IThread> _threads = new List<IThread>();
+
+        public List<IThread> Threads => _threads;
+
+
         public NativeEvent(IntPtr nativeEvent) : base(nativeEvent)
         {
             App = new NativeAppWithState(NativeCode.bugsnag_getAppFromEvent(nativeEvent));
@@ -24,6 +51,23 @@ namespace BugsnagUnity
 
             var errorsHandle = GCHandle.Alloc(_errors);
             NativeCode.bugsnag_getErrorsFromEvent(nativeEvent, GCHandle.ToIntPtr(errorsHandle), GetErrors);
+
+            var threadsHandle = GCHandle.Alloc(_threads);
+            NativeCode.bugsnag_getThreadsFromEvent(nativeEvent, GCHandle.ToIntPtr(threadsHandle), GetThreads);
+        }
+
+        private Severity GetSeverityFromEvent()
+        {
+            var stringValue = NativeCode.bugsnag_getSeverityFromEvent(NativePointer);
+            if (stringValue == "error")
+            {
+                return Severity.Error;
+            }
+            if (stringValue == "warning")
+            {
+                return Severity.Warning;
+            }
+            return Severity.Info;
         }
 
         [MonoPInvokeCallback(typeof(NativeCode.EventBreadcrumbs))]
@@ -53,44 +97,18 @@ namespace BugsnagUnity
 
         }
 
-        public string Context { get => GetNativeString(CONTEXT_KEY); set => SetNativeString(CONTEXT_KEY,value); }
-
-        public IAppWithState App { get; set; }
-
-        public IDeviceWithState Device { get; set; }
-
-        public string ApiKey { get => GetNativeString(API_KEY_KEY); set => SetNativeString(API_KEY_KEY,value); }
-
-        public string GroupingHash { get => GetNativeString(GROUPING_HASH_KEY); set => SetNativeString(GROUPING_HASH_KEY, value); }
-
-        public bool? Unhandled { get => GetNativeBool(UNHANDLED_KEY); set => SetNativeBool(UNHANDLED_KEY,value); }
-
-        private List<IBreadcrumb> _breadcrumbs = new List<IBreadcrumb>();
-
-        public List<IBreadcrumb> Breadcrumbs => _breadcrumbs;
-
-        private List<IError> _errors = new List<IError>();
-
-        public List<IError> Errors => _errors;
-
-        public Severity Severity { get => GetSeverityFromEvent(); set => NativeCode.bugsnag_setEventSeverity(NativePointer,value.ToString().ToLower()); }
-
-        private Severity GetSeverityFromEvent()
+        [MonoPInvokeCallback(typeof(NativeCode.EventThreads))]
+        private static void GetThreads(IntPtr instance, IntPtr[] threadPointers, int count)
         {
-            var stringValue = NativeCode.bugsnag_getSeverityFromEvent(NativePointer);
-            if (stringValue == "error")
+            var handle = GCHandle.FromIntPtr(instance);
+            if (handle.Target is List<IThread> threads)
             {
-                return Severity.Error;
+                foreach (var pointer in threadPointers)
+                {
+                    threads.Add(new NativeThread(pointer));
+                }
             }
-            if (stringValue == "warning")
-            {
-                return Severity.Warning;
-            }
-            return Severity.Info;
         }
-
-
-        public List<IThread> Threads => throw new NotImplementedException();
 
         public void AddMetadata(string section, string key, object value)
         {

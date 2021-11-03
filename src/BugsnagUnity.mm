@@ -159,8 +159,24 @@ extern "C" {
 
     void bugsnag_setEventSeverity(const void *event, const char *severity);
 
+    void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size));
 
 
+
+}
+
+void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size)) {
+
+        NSArray * theThreads = ((__bridge BugsnagEvent *)event).threads;
+
+        void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theThreads.count));
+
+        for (NSUInteger i = 0; i < (NSUInteger)theThreads.count; i++) {
+           c_array[i] = (__bridge void *)theThreads[i];
+        }
+
+        callback(instance, c_array, [theThreads count]);
+        free(c_array);
 }
 
 
@@ -199,7 +215,6 @@ const char * bugsnag_getSeverityFromEvent(const void *event)
 void bugsnag_getStackframesFromError(const void *error,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size)) {
 
         NSArray * theStackframes = ((__bridge BugsnagError *)error).stacktrace;
-        NSLog(@"GOT STACK FRAMES: %@", @([theStackframes count]));
         void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theStackframes.count));
 
         for (NSUInteger i = 0; i < (NSUInteger)theStackframes.count; i++) {

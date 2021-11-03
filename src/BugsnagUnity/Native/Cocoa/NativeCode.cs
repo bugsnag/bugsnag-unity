@@ -232,6 +232,10 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_setEventSeverity(IntPtr nativeEvent, string severity);
 
+        internal delegate void EventThreads(IntPtr threadsList, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] nativeThreads, int nativeThreadsSize);
+        [DllImport(Import)]
+        internal static extern void bugsnag_getThreadsFromEvent(IntPtr @event, IntPtr threadsList, EventThreads visitor);
+
     }
 }
 

@@ -55,9 +55,18 @@ namespace BugsnagUnity
             }
         }
 
-        internal void SetNativeLong(string key, long value)
+        internal void SetNativeLong(string key, long? value)
         {
-            NativeCode.bugsnag_setLongValue(NativePointer, key, value);
+
+            if (value == null)
+            {
+                NativeCode.bugsnag_setLongValue(NativePointer, key, -1);
+            }
+            else
+            {
+                NativeCode.bugsnag_setLongValue(NativePointer,key, (long)value);
+            }
+            
         }
 
         internal DateTime? GetNativeDate(string key)
