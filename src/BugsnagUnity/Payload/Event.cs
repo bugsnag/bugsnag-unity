@@ -6,11 +6,6 @@ namespace BugsnagUnity.Payload
 {
     public class Event : PayloadContainer, IEvent
     {
-        HandledState _handledState;
-
-        internal HandledState OriginalSeverity { get; }
-
-        private string[] _androidProjectPackages;
 
         internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey ,LogType? logType = null)
         {
@@ -48,10 +43,17 @@ namespace BugsnagUnity.Payload
                 Session = session;
             }
         }
+
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
         {
             _androidProjectPackages = packages;
         }
+
+        HandledState _handledState;
+
+        internal HandledState OriginalSeverity { get; }
+
+        private string[] _androidProjectPackages;
 
         private Metadata _metadata { get; }
 
@@ -152,7 +154,6 @@ namespace BugsnagUnity.Payload
         }
 
         public List<IThread> Threads => null;
-
 
         internal Dictionary<string, object> GetEventPayload()
         {
