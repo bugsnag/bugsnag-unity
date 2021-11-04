@@ -17,8 +17,11 @@ namespace BugsnagUnity
         }
 
         public ulong? FreeDisk { get => (ulong?)NativeWrapper.GetNativeLong(FREE_DISK_KEY); set => NativeWrapper.SetNativeLong(FREE_DISK_KEY, (long)value); }
+
         public ulong? FreeMemory { get => (ulong?)NativeWrapper.GetNativeLong(FREE_MEMORY_KEY); set => NativeWrapper.SetNativeLong(FREE_MEMORY_KEY, (long)value); }
+
         public string Orientation { get => NativeWrapper.GetNativeString(ORIENTATION_KEY); set => NativeWrapper.SetNativeString(ORIENTATION_KEY,value); }
+
         public DateTime? Time { get => DateTime.Parse(NativeWrapper.GetNativeString(TIME_KEY)); set => NativeWrapper.SetNativeString(TIME_KEY, value?.ToLongTimeString()); }
     }
 }

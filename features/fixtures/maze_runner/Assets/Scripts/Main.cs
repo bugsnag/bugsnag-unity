@@ -255,6 +255,38 @@ public class Main : MonoBehaviour
             case "ReportLoggedWarningThreaded":
                 config.NotifyLogLevel = LogType.Warning;
                 break;
+            case "EventCallbacks":
+                config.AddOnError((@event)=> {
+
+                    @event.App.BinaryArch = "test";
+                    @event.App.BundleVersion = "test";
+                    @event.App.CodeBundleId = "test";
+                    @event.App.DsymUuid = "test";
+                    @event.App.Id = "test";
+                    @event.App.ReleaseStage = "test";
+                    @event.App.Type = "test";
+                    @event.App.Version = "test";
+                    @event.App.InForeground = false;
+                    @event.App.IsLaunching = false;
+
+                    @event.Device.Id = "test";
+                    @event.Device.Jailbroken = true;
+                    @event.Device.Locale = "test";
+                    @event.Device.Manufacturer = "test";
+                    @event.Device.Model = "test";
+                    @event.Device.OsName = "test";
+                    @event.Device.OsVersion = "test";
+                    @event.Device.FreeDisk = 123;
+                    @event.Device.FreeMemory = 123;
+                    @event.Device.Orientation = "test";
+
+                    @event.Errors[0].ErrorClass = "test";
+
+                    @event.Errors[0].Stacktrace[0].Method = "test";
+
+                    return true;
+                });
+                break;
             default: // no special config required
                 break;
         }
@@ -267,6 +299,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "EventCallbacks":
+                DoNotify();
+                break;
             case "BackgroundThreadCrash":
                 BackgroundThreadCrash();
                 break;

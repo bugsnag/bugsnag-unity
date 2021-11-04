@@ -30,7 +30,6 @@ namespace BugsnagUnity
         public string ModelNumber { get; set; }
 
 
-
         public string Id { get => NativeWrapper.GetNativeString(ID_KEY); set => NativeWrapper.SetNativeString(ID_KEY,value); }
 
         public bool? Jailbroken { get => NativeWrapper.GetNativeBool(JAIL_BROKEN_KEY); set => NativeWrapper.SetNativeBool(JAIL_BROKEN_KEY, value); }

@@ -40,6 +40,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"23", "iOS Native Error No Threads" },
         {"24", "Mark Launch Complete" },
         {"25", "Check Last Run Info" },
+        {"26", "Native Event Callback" },
+        {"27", "Ios Signal" },
 
 
 
@@ -165,6 +167,38 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Custom App Type":
                 config.AppType = "test";
                 break;
+            case "Native Event Callback":
+                config.AddOnSendError((@event) => {
+
+                    @event.App.BinaryArch = "test";
+                    @event.App.BundleVersion = "test";
+                    @event.App.CodeBundleId = "test";
+                    @event.App.DsymUuid = "test";
+                    @event.App.Id = "test";
+                    @event.App.ReleaseStage = "test";
+                    @event.App.Type = "test";
+                    @event.App.Version = "test";
+                    @event.App.InForeground = false;
+                    @event.App.IsLaunching = false;
+
+                    @event.Device.Id = "test";
+                    @event.Device.Jailbroken = true;
+                    @event.Device.Locale = "test";
+                    @event.Device.Manufacturer = "test";
+                    @event.Device.Model = "test";
+                    @event.Device.OsName = "test";
+                    @event.Device.OsVersion = "test";
+                    @event.Device.FreeDisk = 123;
+                    @event.Device.FreeMemory = 123;
+                    @event.Device.Orientation = "test";
+
+                    @event.Errors[0].ErrorClass = "test";
+
+                    @event.Errors[0].Stacktrace[0].Method = "test";
+
+                    return true;
+                });
+                break;
             case "Discard Error Class":
 #if UNITY_IOS
                 config.DiscardClasses = new string[] { "St13runtime_error" };
@@ -186,6 +220,9 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Ios Signal":
+                MobileNative.DoIosSignal();
+                break;
             case "Check Last Run Info":
                 CheckLastRunInfo();
                 break;
@@ -209,6 +246,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "Start SDK":
             case "Start SDK no errors":
+            case "Native Event Callback":
                 break;
             case "iOS Native Error":
             case "iOS Native Error No Threads":

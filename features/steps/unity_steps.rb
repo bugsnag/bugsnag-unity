@@ -48,6 +48,8 @@ def dial_number_for(name)
       "iOS Native Error No Threads" => 23,
       "Mark Launch Complete" => 24,
       "Check Last Run Info" => 25,
+      "Native Event Callback" => 26,
+      "Ios Signal" => 27,
 
 
 
