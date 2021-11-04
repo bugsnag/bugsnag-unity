@@ -9,6 +9,7 @@ namespace BugsnagUnity.Payload
 
         internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey ,LogType? logType = null)
         {
+            ApiKey = apiKey;
             OriginalSeverity = handledState;
             _metadata = metadata;
             HandledState = handledState;
@@ -16,20 +17,22 @@ namespace BugsnagUnity.Payload
             _appWithState = app;
             _deviceWithState = device;
             Context = context;
+            _user = user;
+
             _errors = errors.ToList();
             Errors = new List<IError>();
             foreach (var error in _errors)
             {
                 Errors.Add(error);
             }
+
             _breadcrumbs = breadcrumbs;
             Breadcrumbs = new List<IBreadcrumb>();
             foreach (var crumb in _breadcrumbs)
             {
                 Breadcrumbs.Add(crumb);
             }
-            ApiKey = apiKey;
-            _user = user;
+
             if (session != null)
             {
                 if (handledState.Handled)
