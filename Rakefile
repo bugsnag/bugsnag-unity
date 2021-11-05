@@ -328,16 +328,16 @@ namespace :plugin do
 
   desc "Generate release artifacts"
   task export: ["plugin:build:clean"] do
-    Rake::Task["plugin:build:all"].invoke
-    export_package("Bugsnag.unitypackage")
+    #Rake::Task["plugin:build:all"].invoke
+    #export_package("Bugsnag.unitypackage")
     Rake::Task["plugin:build:all_android64"].invoke
-    export_package("Bugsnag-with-android-64bit.unitypackage")
+    export_package("Bugsnag.unitypackage")
   end
 
   desc "Generate release artifacts from cache (using Android 64-bit)"
   task :quick_export do
     Rake::Task["plugin:build:all_android64"].invoke
-    export_package("Bugsnag-with-android-64bit.unitypackage")
+    export_package("Bugsnag.unitypackage")
   end
 end
 
