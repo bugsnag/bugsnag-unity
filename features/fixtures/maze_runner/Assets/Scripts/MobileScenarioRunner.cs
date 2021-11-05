@@ -148,7 +148,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "Start SDK no errors":
             case "Disable Native Errors":
-                config.EnabledErrorTypes = new ErrorTypes[0];
+                config.EnabledErrorTypes.NativeCrashes = false;
                 config.DiscardClasses = new string[] { "St13runtime_error" };
                 break;
             case "Log error":

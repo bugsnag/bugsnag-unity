@@ -158,15 +158,36 @@ public class Main : MonoBehaviour
                 config.DiscardClasses = new string[] { "ExecutionEngineException" };
                 break;
             case "EnableUnhandledExceptions":
-                config.EnabledErrorTypes = new ErrorTypes[] {ErrorTypes.UnhandledExceptions };
+                config.EnabledErrorTypes = new EnabledErrorTypes()
+                {
+                    ANRs = false,
+                    AppHangs = false,
+                    OOMs = false,
+                    NativeCrashes = false,
+                    UnhandledExceptions = true,
+                    UnityLogLogs = false,
+                    UnityWarningLogs = false,
+                    UnityAssertLogs = false,
+                    UnityErrorLogs = false
+                };
                 config.NotifyLogLevel = LogType.Log;
                 break;
             case "EnableLogLogs":
-                config.EnabledErrorTypes = new ErrorTypes[] { ErrorTypes.UnityLogLogs };
+                config.EnabledErrorTypes = new EnabledErrorTypes() {
+                    ANRs = false,
+                    AppHangs = false,
+                    OOMs = false,
+                    NativeCrashes = false,
+                    UnhandledExceptions = false,
+                    UnityLogLogs = true,
+                    UnityWarningLogs = false,
+                    UnityAssertLogs = false,
+                    UnityErrorLogs = false
+                };
                 config.NotifyLogLevel = LogType.Log;
                 break;
             case "DisableAllErrorTypes":
-                config.EnabledErrorTypes = new ErrorTypes[0];
+                config.AutoDetectErrors = false;
                 config.NotifyLogLevel = LogType.Log;
                 break;
             case "NewSession":

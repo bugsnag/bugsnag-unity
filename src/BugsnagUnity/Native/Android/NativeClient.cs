@@ -97,17 +97,6 @@ namespace BugsnagUnity
             NativeInterface.SetContext(context);
         }
 
-        public void SetAutoDetectErrors(bool autoDetectErrors)
-        {
-            NativeInterface.SetAutoDetectErrors(autoDetectErrors);
-            NativeInterface.SetAutoDetectAnrs(autoDetectErrors && Configuration.AutoDetectAnrs);
-        }
-
-        public void SetAutoDetectAnrs(bool autoDetectAnrs)
-        {
-            NativeInterface.SetAutoDetectAnrs(autoDetectAnrs);
-        }
-
         public void StartSession()
         {
             NativeInterface.StartSession();
