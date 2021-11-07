@@ -15,7 +15,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
@@ -35,7 +34,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
@@ -55,7 +53,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
@@ -183,7 +180,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
         upload:
           - features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk
           - features/fixtures/unity.log
@@ -202,7 +198,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
         upload:
           - features/fixtures/maze_runner/mazerunner_2019.4.29f1.apk
           - features/fixtures/unity.log
@@ -221,7 +216,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
         upload:
           - features/fixtures/maze_runner/mazerunner_2021.1.27f1.apk
           - features/fixtures/unity.log
@@ -315,7 +309,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
         upload:
           - features/fixtures/unity.log
           - project_2018.tgz
@@ -335,7 +328,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
           - project_2018.tgz
         upload:
           - features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa
@@ -356,7 +348,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
         upload:
           - features/fixtures/unity.log
           - project_2019.tgz
@@ -376,7 +367,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
           - project_2019.tgz
         upload:
           - features/fixtures/maze_runner/mazerunner_2019.4.29f1.ipa
@@ -397,7 +387,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
         upload:
           - features/fixtures/unity.log
           - project_2021.tgz
@@ -417,7 +406,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
           - project_2021.tgz
         upload:
           - features/fixtures/maze_runner/mazerunner_2021.1.27f1.ipa
