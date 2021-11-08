@@ -40,7 +40,7 @@ namespace BugsnagUnity
                 }
             }
 
-          
+
 #endif
         }
 
@@ -77,13 +77,6 @@ namespace BugsnagUnity
         [FormerlySerializedAs("AutoNotify")]
         public bool AutoDetectErrors = true;
 
-        /// <summary>
-        /// Exposed in the Unity Editor to configure this behaviour
-        /// </summary>
-		[Tooltip("Should Bugsnag automatically detect Android not responding errors.")]
-        [LabelOverride("Auto Detect ANRs")]
-        public bool AutoDetectAnrs = true;
-
         [Tooltip("Should Bugsnag automatically collect data about sessions.")]
         [FormerlySerializedAs("AutoCaptureSessions")]
         public bool AutoTrackSessions = true;
@@ -102,8 +95,24 @@ namespace BugsnagUnity
         [EnumFlags]
         public BreadcrumbType EnabledBreadcrumbTypes = (BreadcrumbType)(-1);
 
-        [EnumFlags]
-        public ErrorTypes EnabledErrorTypes = (ErrorTypes)(-1);
+        [SerializeField]
+        private EditorEnabledErrorTypes EnabledErrorTypes = new EditorEnabledErrorTypes();
+
+        [Serializable]
+        private class EditorEnabledErrorTypes
+        {
+            [LabelOverride("ANRs")]
+            public bool ANRs = true;
+            public bool AppHangs = true;
+            [LabelOverride("OOMs")]
+            public bool OOMs = true;
+            public bool NativeCrashes = true;
+            public bool UnhandledExceptions = true;
+            public bool UnityLogLogs = false;
+            public bool UnityWarningLogs = false;
+            public bool UnityAssertLogs = false;
+            public bool UnityErrorLogs = true;
+        }
 
         /// <summary>
         /// Awake is called when the script instance is being loaded.
@@ -114,7 +123,6 @@ namespace BugsnagUnity
         {
             Configuration config = new Configuration(APIKey);
             config.AutoDetectErrors = AutoDetectErrors;
-            config.AutoDetectAnrs = AutoDetectErrors && AutoDetectAnrs;
             config.AutoTrackSessions = AutoTrackSessions;
             config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             config.NotifyLogLevel = NotifyLogLevel;
@@ -128,24 +136,20 @@ namespace BugsnagUnity
             Bugsnag.Start(config);
         }
 
-
-        private ErrorTypes[] GetEnabledErrorTypes()
+        private EnabledErrorTypes GetEnabledErrorTypes()
         {
-            List<ErrorTypes> selectedElements = new List<ErrorTypes>();
-
-            for (int i = 0; i < Enum.GetValues(typeof(ErrorTypes)).Length; i++)
+            return new EnabledErrorTypes()
             {
-                int layer = 1 << i;
-                if (((int)EnabledErrorTypes & layer) != 0)
-                {
-                    var selectedType = (ErrorTypes)Enum.GetValues(typeof(ErrorTypes)).GetValue(i);
-                    selectedElements.Add(selectedType);
-                }
-            }
-
-            var allSelected = selectedElements.Count == Enum.GetValues(typeof(ErrorTypes)).Length;
-
-            return allSelected ? null : selectedElements.ToArray();
+                ANRs = EnabledErrorTypes.ANRs,
+                AppHangs = EnabledErrorTypes.AppHangs,
+                OOMs = EnabledErrorTypes.OOMs,
+                NativeCrashes = EnabledErrorTypes.NativeCrashes,
+                UnhandledExceptions = EnabledErrorTypes.UnhandledExceptions,
+                UnityLogLogs = EnabledErrorTypes.UnityLogLogs,
+                UnityWarningLogs = EnabledErrorTypes.UnityWarningLogs,
+                UnityAssertLogs = EnabledErrorTypes.UnityAssertLogs,
+                UnityErrorLogs = EnabledErrorTypes.UnityErrorLogs,
+            };
         }
 
         private BreadcrumbType[] GetEnabledBreadcrumbTypes()

@@ -147,8 +147,13 @@ public class MobileScenarioRunner : MonoBehaviour {
                 config.SendThreads = ThreadSendPolicy.NEVER;
                 break;
             case "Start SDK no errors":
+                config.AutoDetectErrors = false;
+                config.EnabledErrorTypes.NativeCrashes = false;
+                config.EnabledErrorTypes.UnhandledExceptions = false;
+                config.DiscardClasses = new string[] { "St13runtime_error" };
+                break;
             case "Disable Native Errors":
-                config.EnabledErrorTypes = new ErrorTypes[0];
+                config.EnabledErrorTypes.NativeCrashes = false;
                 config.DiscardClasses = new string[] { "St13runtime_error" };
                 break;
             case "Log error":
@@ -213,8 +218,10 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "iOS Native Error":
             case "iOS Native Error No Threads":
             case "Discard Error Class":
-            case "Disable Native Errors":
                 NativeException();
+                break;
+            case "Disable Native Errors":
+                MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "throw Exception":
                 ThrowException();

@@ -135,31 +135,23 @@ namespace BugsnagUnity
         private void SetEnabledErrorTypes(IntPtr obj, Configuration config)
         {
             var enabledTypes = new List<string>();
-            if (config.IsErrorTypeEnabled(ErrorTypes.AppHangs))
+           
+            if (config.EnabledErrorTypes.AppHangs)
             {
                 enabledTypes.Add("AppHangs");
             }
-            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
+            if (config.EnabledErrorTypes.NativeCrashes)
             {
                 enabledTypes.Add("UnhandledExceptions");
-            }
-            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
-            {
                 enabledTypes.Add("Signals");
-            }
-            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
-            {
                 enabledTypes.Add("CppExceptions");
-            }
-            if (config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes))
-            {
                 enabledTypes.Add("MachExceptions");
             }
-            if (config.IsErrorTypeEnabled(ErrorTypes.OOMs))
+            if (config.EnabledErrorTypes.OOMs)
             {
                 enabledTypes.Add("OOMs");
             }
-
+            
             NativeCode.bugsnag_setEnabledErrorTypes(obj, enabledTypes.ToArray(), enabledTypes.Count);
         }
 
@@ -327,15 +319,6 @@ namespace BugsnagUnity
         public void SetContext(string context)
         {
             NativeCode.bugsnag_setContext(NativeConfiguration, context);
-        }
-
-        public void SetAutoDetectErrors(bool autoDetectErrors)
-        {
-            NativeCode.bugsnag_setAutoNotify(autoDetectErrors);
-        }
-
-        public void SetAutoDetectAnrs(bool autoDetectAnrs)
-        {
         }
 
         public void MarkLaunchCompleted()

@@ -35,8 +35,6 @@ extern "C" {
 
     void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify);
 
-    void bugsnag_setAutoNotify(bool autoNotify);
-
     void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion);
 
     void bugsnag_setAppType(const void *configuration, char *appType);
@@ -492,10 +490,6 @@ void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
 
 void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously) {
   ((__bridge BugsnagConfiguration *)configuration).sendLaunchCrashesSynchronously = sendLaunchCrashesSynchronously;
-}
-
-void bugsnag_setAutoNotify(bool autoNotify) {
-  Bugsnag.client.autoNotify = autoNotify;
 }
 
 void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL) {

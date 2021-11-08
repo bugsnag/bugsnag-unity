@@ -102,18 +102,6 @@ namespace BugsnagUnity
         void SetContext(string context);
 
         /// <summary>
-        /// Mutates autoNotify.
-        /// </summary>
-        /// <param name="autoNotify"></param>
-        void SetAutoDetectErrors(bool autoDetectErrors);
-
-        /// <summary>
-        /// Enables or disables Anr detection.
-        /// </summary>
-        /// <param name="autoDetectAnrs"></param>
-        void SetAutoDetectAnrs(bool autoDetectAnrs);
-
-        /// <summary>
         /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
         /// </summary>
         void MarkLaunchCompleted();

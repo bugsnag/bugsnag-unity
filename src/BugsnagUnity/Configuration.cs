@@ -126,12 +126,10 @@ namespace BugsnagUnity
         internal string SessionPayloadVersion { get; } = "1.0";
 
         public string Context;
-       
+
         public LogType NotifyLogLevel = LogType.Exception;
 
         public bool AutoDetectErrors = true;
-
-        public bool AutoDetectAnrs = true;
 
         public bool AutoTrackSessions = true;
 
@@ -143,7 +141,7 @@ namespace BugsnagUnity
 
         public string DotnetApiCompatibility;
 
-        public ErrorTypes[] EnabledErrorTypes;
+        public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
 
         private ulong _appHangThresholdMillis = 0;
 
@@ -176,29 +174,24 @@ namespace BugsnagUnity
             return DiscardClasses != null && DiscardClasses.Contains(className);
         }
 
-        internal bool IsErrorTypeEnabled(ErrorTypes errorType)
-        {
-            return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);
-        }
-
         internal bool IsUnityLogErrorTypeEnabled(LogType logType)
         {
-            if (EnabledErrorTypes == null)
+            if (!AutoDetectErrors)
             {
-                return true;
+                return false;
             }
             switch (logType)
             {
                 case LogType.Error:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnityErrorLogs);
+                    return EnabledErrorTypes.UnityErrorLogs;
                 case LogType.Warning:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnityWarningLogs);
+                    return EnabledErrorTypes.UnityWarningLogs;
                 case LogType.Log:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnityLogLogs);
+                    return EnabledErrorTypes.UnityLogLogs;
                 case LogType.Exception:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnhandledExceptions);
+                    return EnabledErrorTypes.UnhandledExceptions;
                 case LogType.Assert:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnityAssertLogs);
+                    return EnabledErrorTypes.UnityAssertLogs;
                 default:
                     return false;
             }
@@ -280,6 +273,23 @@ namespace BugsnagUnity
         }
 
 
+    }
+
+    [Serializable]
+    public class EnabledErrorTypes
+    {
+        public bool ANRs = true;
+        public bool AppHangs = true;
+        public bool OOMs = true;
+        public bool NativeCrashes = true;
+        public bool UnhandledExceptions = true;
+        public bool UnityLogLogs = false;
+        public bool UnityWarningLogs = false;
+        public bool UnityAssertLogs = false;
+        public bool UnityErrorLogs = true;
+
+        public EnabledErrorTypes()
+        { }
     }
 }
 
