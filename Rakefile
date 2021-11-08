@@ -1,7 +1,6 @@
 require "open3"
 require "xcodeproj"
 require "rbconfig"
-require 'fileutils'
 
 HOST_OS = RbConfig::CONFIG['host_os']
 def is_mac?; HOST_OS =~ /darwin/i; end
