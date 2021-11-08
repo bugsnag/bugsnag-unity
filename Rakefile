@@ -109,10 +109,6 @@ def assemble_android filter_abis=true
   abi_filters = filter_abis ? "-PABI_FILTERS=armeabi-v7a,x86" : "-Pnoop_filters=true"
   android_dir = File.join(assets_path, "Android")
 
-  unless File.directory?(android_dir)
-    FileUtils.mkdir_p(android_dir)
-  end
-
   cd "bugsnag-android" do
     sh "./gradlew", "assembleRelease", abi_filters
   end
@@ -258,22 +254,9 @@ namespace :plugin do
 
       osx_dir = File.join(assets_path, "OSX")
 
-      #dirname = File.dirname(some_path)
-      unless File.directory?(osx_dir)
-        FileUtils.mkdir_p(osx_dir)
-      end
-
       ios_dir = File.join(assets_path, "iOS")
 
-      unless File.directory?(ios_dir)
-        FileUtils.mkdir_p(ios_dir)
-      end
-
       tvos_dir = File.join(assets_path, "tvOS")
-
-      unless File.directory?(tvos_dir)
-        FileUtils.mkdir_p(tvos_dir)
-      end
 
       cd cocoa_build_dir do
         cd "build" do
@@ -335,13 +318,7 @@ namespace :plugin do
 
       cd File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
         cp File.realpath("BugsnagUnity.dll"), assets_path
-
-        windows_dir = File.join(assets_path, "Windows")
-
-         unless File.directory?(windows_dir)
-          FileUtils.mkdir_p(windows_dir)
-        end
-        
+        windows_dir = File.join(assets_path, "Windows")        
         cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
         cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
         cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
