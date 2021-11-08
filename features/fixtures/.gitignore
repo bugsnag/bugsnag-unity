@@ -35,6 +35,7 @@ sysinfo.txt
 
 # Imported assets
 Assets/Plugins
+Assets/Bugsnag
 Assets/Plugins.meta
 Assets/Standard\ Assets/Bugsnag/BugsnagBehaviour.cs
 
