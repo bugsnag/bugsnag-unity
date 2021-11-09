@@ -375,16 +375,9 @@ void bugsnag_setLongValue(const void *object, char * key, long value){
 double bugsnag_getDoubleValue(const void *object, char * key){
     id value = [(__bridge id)object valueForKey:@(key)];
 
-    if(value != NULL)
+    if ([value isKindOfClass:[NSNumber class]])
     {
-        if ([value isKindOfClass:[NSNumber class]])
-        {
-            return [value doubleValue];
-        }
-        else
-        {
-            return -1;
-        }
+        return [value doubleValue];
     }
     else
     {
