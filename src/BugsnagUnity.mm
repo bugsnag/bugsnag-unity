@@ -365,16 +365,10 @@ const char * bugsnag_getLongValue(const void *object, char * key){
 }
 
 void bugsnag_setLongValue(const void *object, char * key, const char * value){       
-
-    NSLog(@"Starting SETTING %@", @(value));
-
     NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     f.numberStyle = NSNumberFormatterDecimalStyle;
     NSNumber *myNumber = [f numberFromString:@(value)];
-
     [(__bridge id)object setValue:myNumber forKey:@(key)];
-    NSLog(@"FINISHED SETTING");
-    
 }
 
 double bugsnag_getDoubleValue(const void *object, char * key){
@@ -388,8 +382,6 @@ double bugsnag_getDoubleValue(const void *object, char * key){
     {
         return -1;
     }
-        NSLog(@"FINISHED GETTING");
-
 }
 
 void bugsnag_setDoubleValue(const void *object, char * key, double value){       
