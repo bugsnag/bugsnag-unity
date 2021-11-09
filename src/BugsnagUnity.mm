@@ -246,7 +246,7 @@ void bugsnag_setEventSeverity(const void *event, const char *severity){
     {
         ((__bridge BugsnagEvent *)event).severity = BSGSeverityError;
     }
-    else if(@(severity) == @"warning")
+    else if (strcmp(severity, "warning") == 0)
     {
         ((__bridge BugsnagEvent *)event).severity = BSGSeverityWarning;
     }
