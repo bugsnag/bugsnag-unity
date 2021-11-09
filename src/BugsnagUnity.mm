@@ -351,16 +351,9 @@ void bugsnag_setBreadcrumbType(const void *breadcrumb, char * type){
 long bugsnag_getLongValue(const void *object, char * key){
     id value = [(__bridge id)object valueForKey:@(key)];
 
-    if(value != NULL)
+    if ([value isKindOfClass:[NSNumber class]])
     {
-        if ([value isKindOfClass:[NSNumber class]])
-        {
-            return [value longValue];
-        }
-        else
-        {
-            return -1;
-        }
+        return [value longValue];
     }
     else
     {
