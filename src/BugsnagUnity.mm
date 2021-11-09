@@ -325,16 +325,9 @@ void bugsnag_getBreadcrumbMetadata(const void *breadcrumb,const void *instance, 
 void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *metadata[], int metadataCount) {
   NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
   for (int i = 0; i < metadataCount; i += 2) {
-    NSString *key = metadata[i] != NULL
-        ? [NSString stringWithUTF8String:metadata[i]]
-        : nil;
-    if (key == nil) {
-      continue;
+    if (metadata[i] && metadata[i+1]) {
+        ns_metadata[@(metadata[i])] = @(metadata[i+1]);
     }
-    NSString *value = metadata[i+1] != NULL
-        ? [NSString stringWithUTF8String:metadata[i+1]]
-        : nil;
-    ns_metadata[key] = value;
 
   }
   ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = ns_metadata;
