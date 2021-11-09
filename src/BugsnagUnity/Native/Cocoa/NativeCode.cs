@@ -176,6 +176,12 @@ namespace BugsnagUnity
         internal static extern string bugsnag_getRuntimeVersionsFromDevice(IntPtr nativeDevice);
 
         [DllImport(Import)]
+        internal static extern string bugsnag_getErrorTypeFromError(IntPtr nativeError);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getThreadTypeFromThread(IntPtr nativeThread);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setRuntimeVersionsFromDevice(IntPtr nativeDevice, string[] versions, int count);
 
         [DllImport(Import)]
@@ -191,10 +197,10 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setDoubleValue(IntPtr @object, string key, double value);
 
         [DllImport(Import)]
-        internal static extern long bugsnag_getLongValue(IntPtr @object, string key);
+        internal static extern string bugsnag_getLongValue(IntPtr @object, string key);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setLongValue(IntPtr @object, string key, long value);
+        internal static extern void bugsnag_setLongValue(IntPtr @object, string key, string value);
 
         [DllImport(Import)]
         internal static extern string bugsnag_getBreadcrumbType(IntPtr nativeBreadcrumb);
@@ -220,6 +226,9 @@ namespace BugsnagUnity
         internal delegate void ErrorStackframes(IntPtr stackframeList, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] stackframes, int stackframesSize);
         [DllImport(Import)]
         internal static extern void bugsnag_getStackframesFromError(IntPtr error, IntPtr stackframeList, ErrorStackframes visitor);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_getStackframesFromThread(IntPtr error, IntPtr stackframeList, ErrorStackframes visitor);
 
         [DllImport(Import)]
         internal static extern string bugsnag_getSeverityFromEvent(IntPtr nativeEvent);

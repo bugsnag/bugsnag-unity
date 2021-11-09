@@ -16,9 +16,9 @@ namespace BugsnagUnity
         {
         }
 
-        public ulong? FreeDisk { get => (ulong?)NativeWrapper.GetNativeLong(FREE_DISK_KEY); set => NativeWrapper.SetNativeLong(FREE_DISK_KEY, (long)value); }
+        public long? FreeDisk { get => NativeWrapper.GetNativeLong(FREE_DISK_KEY); set => NativeWrapper.SetNativeLong(FREE_DISK_KEY, value); }
 
-        public ulong? FreeMemory { get => (ulong?)NativeWrapper.GetNativeLong(FREE_MEMORY_KEY); set => NativeWrapper.SetNativeLong(FREE_MEMORY_KEY, (long)value); }
+        public long? FreeMemory { get => NativeWrapper.GetNativeLong(FREE_MEMORY_KEY); set => NativeWrapper.SetNativeLong(FREE_MEMORY_KEY, value); }
 
         public string Orientation { get => NativeWrapper.GetNativeString(ORIENTATION_KEY); set => NativeWrapper.SetNativeString(ORIENTATION_KEY,value); }
 

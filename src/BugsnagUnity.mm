@@ -133,9 +133,9 @@ extern "C" {
 
     void bugsnag_setDoubleValue(const void *object, char * key, double value);
 
-    long bugsnag_getLongValue(const void *object, char * key);
+    const char * bugsnag_getLongValue(const void *object, char * key);
 
-    void bugsnag_setLongValue(const void *object, char * key, long value);
+    void bugsnag_setLongValue(const void *object, char * key, const char * value);
 
     const char * bugsnag_getBreadcrumbType(const void *object);
 
@@ -150,6 +150,8 @@ extern "C" {
     void bugsnag_getErrorsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *errors[], int errors_size));
 
     void bugsnag_getStackframesFromError(const void *error,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size));
+
+    void bugsnag_getStackframesFromThread(const void *thread,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size));
 
     const char * bugsnag_getSeverityFromEvent(const void *event);
 
@@ -168,6 +170,12 @@ extern "C" {
     void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key);
 
     void bugsnag_getEventMetaData(const void *event, const void *instance, const char *tab, void (*callback)(const void *instance,const char *keys[], int keys_size, const char *values[], int values_size));
+
+    const char * bugsnag_getErrorTypeFromError(const void *error);
+
+    const char * bugsnag_getThreadTypeFromThread(const void *thread);
+
+
 
 }
 
@@ -273,6 +281,17 @@ void bugsnag_getStackframesFromError(const void *error,const void *instance, voi
     free(c_array);
 }
 
+void bugsnag_getStackframesFromThread(const void *thread,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size)) {
+
+    NSArray * theStackframes = ((__bridge BugsnagThread *)thread).stacktrace;
+    void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theStackframes.count));
+    for (NSUInteger i = 0; i < (NSUInteger)theStackframes.count; i++) {
+       c_array[i] = (__bridge void *)theStackframes[i];
+    }
+    callback(instance, c_array, [theStackframes count]);
+    free(c_array);
+}
+
 void bugsnag_getErrorsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *errors[], int errors_size)) {
 
     NSArray * theErrors = ((__bridge BugsnagEvent *)event).errors;
@@ -333,28 +352,29 @@ void bugsnag_setBreadcrumbType(const void *breadcrumb, char * type){
     ((__bridge BugsnagBreadcrumb *)breadcrumb).type = BSGBreadcrumbTypeFromString(@(type));
 }
 
-long bugsnag_getLongValue(const void *object, char * key){
+const char * bugsnag_getLongValue(const void *object, char * key){
     id value = [(__bridge id)object valueForKey:@(key)];
-
     if ([value isKindOfClass:[NSNumber class]])
     {
-        return [value longValue];
+        return strdup([[value stringValue] UTF8String]);
     }
     else
     {
-        return -1;
+        return strdup("null");
     }
 }
 
-void bugsnag_setLongValue(const void *object, char * key, long value){       
-    if(value < 0)
-    {
-        [(__bridge id)object setValue:NULL forKey:@(key)];
-    }
-    else
-    {
-        [(__bridge id)object setValue:[NSNumber numberWithLong:value] forKey:@(key)];
-    }
+void bugsnag_setLongValue(const void *object, char * key, const char * value){       
+
+    NSLog(@"Starting SETTING %@", @(value));
+
+    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+    f.numberStyle = NSNumberFormatterDecimalStyle;
+    NSNumber *myNumber = [f numberFromString:@(value)];
+
+    [(__bridge id)object setValue:myNumber forKey:@(key)];
+    NSLog(@"FINISHED SETTING");
+    
 }
 
 double bugsnag_getDoubleValue(const void *object, char * key){
@@ -368,6 +388,8 @@ double bugsnag_getDoubleValue(const void *object, char * key){
     {
         return -1;
     }
+        NSLog(@"FINISHED GETTING");
+
 }
 
 void bugsnag_setDoubleValue(const void *object, char * key, double value){       
@@ -462,6 +484,28 @@ void bugsnag_setStringValue(const void *object, char * key, char * value)
 const char * bugsnag_getStringValue(const void *object, char * key){
     id value = [(__bridge id)object valueForKey:@(key)];
     return strdup([value isKindOfClass:[NSString class]] ? [value UTF8String] : "");
+}
+
+const char * bugsnag_getErrorTypeFromError(const void *error){
+    BSGErrorType theType = ((__bridge BugsnagError *)error).type;
+    if(theType == BSGErrorTypeCocoa)
+    {
+        return strdup("cocoa");
+    }
+    if(theType == BSGErrorTypeC)
+    {
+        return strdup("c");
+    }
+    return strdup("");
+}
+
+const char * bugsnag_getThreadTypeFromThread(const void *thread){
+     BSGThreadType theType = ((__bridge BugsnagThread *)thread).type;
+    if(theType == BSGThreadTypeCocoa)
+    {
+        return strdup("cocoa");
+    }
+    return strdup("");
 }
 
 BugsnagApp * bugsnag_getAppFromSession(const void *session){

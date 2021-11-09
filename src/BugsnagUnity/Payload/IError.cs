@@ -10,5 +10,7 @@ namespace BugsnagUnity.Payload
         string ErrorMessage { get; set; }
 
         List<IStackframe> Stacktrace { get; }
+
+        string Type { get; }
     }
 }

@@ -20,6 +20,8 @@ namespace BugsnagUnity
         public string ErrorClass { get => GetNativeString(ERROR_CLASS_KEY); set => SetNativeString(ERROR_CLASS_KEY,value); }
         public string ErrorMessage { get => GetNativeString(ERROR_MESSAGE_KEY); set => SetNativeString(ERROR_MESSAGE_KEY, value); }
 
+        public string Type { get => NativeCode.bugsnag_getErrorTypeFromError(NativePointer); }
+
         private List<IStackframe> _stacktrace = new List<IStackframe>();
 
         public List<IStackframe> Stacktrace => _stacktrace;

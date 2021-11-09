@@ -48,29 +48,28 @@ namespace BugsnagUnity
 
         internal long? GetNativeLong(string key)
         {
-            long value = NativeCode.bugsnag_getLongValue(NativePointer, key);
-            if (value < 0)
+            var value = NativeCode.bugsnag_getLongValue(NativePointer, key);
+
+            if (value == "null")
             {
                 return null;
             }
             else
             {
-                return value;
+                return long.Parse(value);
             }
         }
 
         internal void SetNativeLong(string key, long? value)
         {
-
             if (value == null)
             {
-                NativeCode.bugsnag_setLongValue(NativePointer, key, -1);
+                NativeCode.bugsnag_setLongValue(NativePointer, key, "null");
             }
             else
             {
-                NativeCode.bugsnag_setLongValue(NativePointer,key, (long)value);
+                NativeCode.bugsnag_setLongValue(NativePointer,key, value.ToString());
             }
-            
         }
 
         internal DateTime? GetNativeDate(string key)

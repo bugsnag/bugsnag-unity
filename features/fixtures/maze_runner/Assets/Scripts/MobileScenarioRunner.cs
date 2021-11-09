@@ -168,7 +168,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 config.AppType = "test";
                 break;
             case "Native Event Callback":
-                config.AddOnError((@event) => {
+                config.AddOnSendError((@event) => {
 
                     @event.App.BinaryArch = "BinaryArch";
                     @event.App.BundleVersion = "BundleVersion";

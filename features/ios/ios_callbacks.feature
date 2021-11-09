@@ -33,7 +33,6 @@ Feature: Callbacks
         And the event "app.bundleVersion" equals "BundleVersion"
         And the event "app.binaryArch" equals "BinaryArch"
         And the event "app.codeBundleId" equals "CodeBundleId"
-        And the event "app.dsymUuid" equals "DsymUuid"
         And the event "app.inForeground" is false
         And the event "app.isLaunching" is false
 

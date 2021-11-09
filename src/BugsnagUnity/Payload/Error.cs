@@ -111,6 +111,7 @@ namespace BugsnagUnity.Payload
             set => this.AddToPayload(MESSAGE_KEY, value);
         }
 
+        public string Type { get => "Unity"; }
 
         internal static Error FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
         {
