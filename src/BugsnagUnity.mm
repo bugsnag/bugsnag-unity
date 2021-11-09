@@ -242,7 +242,7 @@ void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*
 
 
 void bugsnag_setEventSeverity(const void *event, const char *severity){   
-    if(@(severity) == @"error")
+    if (strcmp(severity, "error") == 0)
     {
         ((__bridge BugsnagEvent *)event).severity = BSGSeverityError;
     }
