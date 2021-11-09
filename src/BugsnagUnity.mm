@@ -482,13 +482,13 @@ BugsnagDeviceWithState * bugsnag_getDeviceFromEvent(const void *event){
 
 void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
     [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    
-        return callback((void*)CFBridgingRetain(session));
+        return callback((__bridge void *)session);
     }];
 }
 
 void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(void *event)){
     [((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {       
-        return callback((void*)CFBridgingRetain(event));
+        return callback((__bridge void *)event);
     }];
 }
 
