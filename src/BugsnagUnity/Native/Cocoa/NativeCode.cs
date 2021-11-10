@@ -161,13 +161,13 @@ namespace BugsnagUnity
         internal static extern IntPtr bugsnag_getDeviceFromEvent(IntPtr @event);
 
         [DllImport(Import)]
-        internal static extern string bugsnag_getStringValue(IntPtr @object,string key);
-
-        [DllImport(Import)]
         internal static extern void bugsnag_setStringValue(IntPtr @object, string key, string value);
 
         [DllImport(Import)]
-        internal static extern string bugsnag_getBoolValue(IntPtr @object, string key);
+        internal static extern string bugsnag_getValueAsString(IntPtr @object, string key);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setNumberValue(IntPtr @object, string key, string value);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setBoolValue(IntPtr @object, string key, string value);
@@ -188,19 +188,7 @@ namespace BugsnagUnity
         internal static extern double bugsnag_getTimestampFromDateInObject(IntPtr @object, string key);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setTimestampFromDateInObject(IntPtr @object, string key, double timeStamp);
-
-        [DllImport(Import)]
-        internal static extern double bugsnag_getDoubleValue(IntPtr @object, string key);
-
-        [DllImport(Import)]
-        internal static extern void bugsnag_setDoubleValue(IntPtr @object, string key, double value);
-
-        [DllImport(Import)]
-        internal static extern string bugsnag_getLongValue(IntPtr @object, string key);
-
-        [DllImport(Import)]
-        internal static extern void bugsnag_setLongValue(IntPtr @object, string key, string value);
+        internal static extern void bugsnag_setTimestampFromDateInObject(IntPtr @object, string key, double timeStamp);       
 
         [DllImport(Import)]
         internal static extern string bugsnag_getBreadcrumbType(IntPtr nativeBreadcrumb);
@@ -258,6 +246,8 @@ namespace BugsnagUnity
         internal delegate void EventMetadata(IntPtr metadataDictionary, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] string[] values, int valuesSize);
         [DllImport(Import)]
         internal static extern void bugsnag_getEventMetaData(IntPtr @event, IntPtr metadataDictionary, string section, EventMetadata visitor);
+
+
     }
 }
 

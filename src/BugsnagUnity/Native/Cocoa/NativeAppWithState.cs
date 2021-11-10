@@ -21,13 +21,13 @@ namespace BugsnagUnity
             get
             {
                 var timestamp = NativeWrapper.GetNativeDouble(DURATION_KEY);
-                if (timestamp > -1)
+                if (timestamp == null)
                 {
-                    return TimeSpan.FromMilliseconds(timestamp);
+                    return null;
                 }
                 else
                 {
-                    return null;
+                    return TimeSpan.FromMilliseconds((double)timestamp);
                 }
             }
             set
@@ -48,20 +48,20 @@ namespace BugsnagUnity
             get
             {
                 var timestamp = NativeWrapper.GetNativeDouble(DURATION_IN_FOREGROUND_KEY);
-                if (timestamp > -1)
+                if (timestamp == null)
                 {
-                    return TimeSpan.FromMilliseconds(timestamp);
+                    return null;
                 }
                 else
                 {
-                    return null;
+                    return TimeSpan.FromMilliseconds((double)timestamp);
                 }
             }
             set
             {
                 if (value == null)
                 {
-                    NativeWrapper.SetNativeDouble(DURATION_IN_FOREGROUND_KEY, -1);
+                    NativeWrapper.SetNativeDouble(DURATION_IN_FOREGROUND_KEY, null);
                 }
                 else
                 {

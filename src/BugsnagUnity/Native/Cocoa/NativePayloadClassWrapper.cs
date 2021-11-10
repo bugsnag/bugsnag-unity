@@ -12,7 +12,7 @@ namespace BugsnagUnity
 
         internal string GetNativeString(string key)
         {
-            return NativeCode.bugsnag_getStringValue(NativePointer, key);
+            return NativeCode.bugsnag_getValueAsString(NativePointer, key);
         }
 
         internal void SetNativeString(string key, string value)
@@ -26,8 +26,8 @@ namespace BugsnagUnity
 
         internal bool? GetNativeBool(string key)
         {
-            var result = NativeCode.bugsnag_getBoolValue(NativePointer, key);
-            return result == "null" ? null : (bool?)bool.Parse(result);
+            var result = NativeCode.bugsnag_getValueAsString(NativePointer, key);
+            return result == null ? null : (bool?)bool.Parse(result);
         }
 
         internal void SetNativeBool(string name, bool? value)
@@ -36,21 +36,30 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setBoolValue(NativePointer, name, stringValue);
         }
 
-        internal double GetNativeDouble(string key)
+        internal double? GetNativeDouble(string key)
         {
-            return NativeCode.bugsnag_getDoubleValue(NativePointer, key);
+            var value = NativeCode.bugsnag_getValueAsString(NativePointer, key);
+
+            if (value == null)
+            {
+                return null;
+            }
+            else
+            {
+                return double.Parse(value);
+            }
         }
 
-        internal void SetNativeDouble(string key, double value)
+        internal void SetNativeDouble(string key, double? value)
         {
-            NativeCode.bugsnag_setDoubleValue(NativePointer,key,value);
+            NativeCode.bugsnag_setNumberValue(NativePointer,key,value == null ? "null" : value.ToString());
         }
 
         internal long? GetNativeLong(string key)
         {
-            var value = NativeCode.bugsnag_getLongValue(NativePointer, key);
+            var value = NativeCode.bugsnag_getValueAsString(NativePointer, key);
 
-            if (value == "null")
+            if (value == null)
             {
                 return null;
             }
@@ -62,14 +71,7 @@ namespace BugsnagUnity
 
         internal void SetNativeLong(string key, long? value)
         {
-            if (value == null)
-            {
-                NativeCode.bugsnag_setLongValue(NativePointer, key, "null");
-            }
-            else
-            {
-                NativeCode.bugsnag_setLongValue(NativePointer,key, value.ToString());
-            }
+            NativeCode.bugsnag_setNumberValue(NativePointer, key, value == null ? "null" : value.ToString());
         }
 
         internal DateTime? GetNativeDate(string key)

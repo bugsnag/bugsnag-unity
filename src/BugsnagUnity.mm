@@ -111,11 +111,7 @@ extern "C" {
 
     void bugsnag_setStringValue(const void *object, char * key, char * value);
 
-    const char * bugsnag_getStringValue(const void *object, char * key);
-
     void bugsnag_setBoolValue(const void *object, char * key, char * value);
-
-    const char * bugsnag_getBoolValue(const void *object, char * key);
 
     BugsnagDevice * bugsnag_getDeviceFromSession(const void *session);
 
@@ -128,14 +124,6 @@ extern "C" {
     double bugsnag_getTimestampFromDateInObject(const void *object, char * key);
 
     void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp);
-
-    double bugsnag_getDoubleValue(const void *object, char * key);
-
-    void bugsnag_setDoubleValue(const void *object, char * key, double value);
-
-    const char * bugsnag_getLongValue(const void *object, char * key);
-
-    void bugsnag_setLongValue(const void *object, char * key, const char * value);
 
     const char * bugsnag_getBreadcrumbType(const void *object);
 
@@ -175,6 +163,9 @@ extern "C" {
 
     const char * bugsnag_getThreadTypeFromThread(const void *thread);
 
+    const char * bugsnag_getValueAsString(const void *object, char *key);
+
+    void bugsnag_setNumberValue(const void *object, char * key, const char * value);
 
 
 }
@@ -352,48 +343,25 @@ void bugsnag_setBreadcrumbType(const void *breadcrumb, char * type){
     ((__bridge BugsnagBreadcrumb *)breadcrumb).type = BSGBreadcrumbTypeFromString(@(type));
 }
 
-const char * bugsnag_getLongValue(const void *object, char * key){
+const char * bugsnag_getValueAsString(const void *object, char *key) {
     id value = [(__bridge id)object valueForKey:@(key)];
-    if ([value isKindOfClass:[NSNumber class]])
-    {
+    if ([value isKindOfClass:[NSString class]]) {
+        return strdup([value UTF8String]);
+    } else if ([value respondsToSelector:@selector(stringValue)]) {
         return strdup([[value stringValue] UTF8String]);
-    }
-    else
-    {
-        return strdup("null");
+    } else {
+        return NULL;
     }
 }
 
-void bugsnag_setLongValue(const void *object, char * key, const char * value){       
+void bugsnag_setNumberValue(const void *object, char * key, const char * value){       
     NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     f.numberStyle = NSNumberFormatterDecimalStyle;
     NSNumber *myNumber = [f numberFromString:@(value)];
     [(__bridge id)object setValue:myNumber forKey:@(key)];
 }
 
-double bugsnag_getDoubleValue(const void *object, char * key){
-    id value = [(__bridge id)object valueForKey:@(key)];
 
-    if ([value isKindOfClass:[NSNumber class]])
-    {
-        return [value doubleValue];
-    }
-    else
-    {
-        return -1;
-    }
-}
-
-void bugsnag_setDoubleValue(const void *object, char * key, double value){       
-    if(value < 0)
-    {
-        [(__bridge id)object setValue:NULL forKey:@(key)];
-    }
-    else
-    {
-        [(__bridge id)object setValue:[NSNumber numberWithDouble:value] forKey:@(key)];
-    }
-}
     
 double bugsnag_getTimestampFromDateInObject(const void *object, char * key){
     NSDate *value = (NSDate *)[(__bridge id)object valueForKey:@(key)];
@@ -458,24 +426,9 @@ void bugsnag_setBoolValue(const void *object, char * key, char * value){
     }
 }
 
-const char * bugsnag_getBoolValue(const void *object, char * key){
-    id value = [(__bridge id)object valueForKey:@(key)];
-    if ([value isKindOfClass:[NSNumber class]])
-    {
-        const char * boolValue = [value boolValue] ? "true" : "false";
-        return strdup(boolValue);
-    }
-    return strdup("null");
-}
-
 void bugsnag_setStringValue(const void *object, char * key, char * value)
 {
     [(__bridge id)object setValue:value ? @(value) : nil forKey:@(key)];
-}
-
-const char * bugsnag_getStringValue(const void *object, char * key){
-    id value = [(__bridge id)object valueForKey:@(key)];
-    return strdup([value isKindOfClass:[NSString class]] ? [value UTF8String] : "");
 }
 
 const char * bugsnag_getErrorTypeFromError(const void *error){
