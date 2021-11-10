@@ -34,7 +34,7 @@ namespace BugsnagUnity
             {
                 if (value == null)
                 {
-                    NativeWrapper.SetNativeDouble(DURATION_KEY, -1);
+                    NativeWrapper.SetNativeDouble(DURATION_KEY, null);
                 }
                 else
                 {
