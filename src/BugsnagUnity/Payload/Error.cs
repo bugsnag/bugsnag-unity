@@ -11,21 +11,21 @@ namespace BugsnagUnity.Payload
     /// Represents a set of Bugsnag payload exceptions that are generated from a single exception by resolving
     /// the inner exceptions present.
     /// </summary>
-    class Exceptions : IEnumerable<Exception>
+    class Errors : IEnumerable<Error>
     {
-        private IEnumerable<Exception> UnwoundExceptions { get; }
+        private IEnumerable<Error> UnwoundExceptions { get; }
 
-        internal Exceptions(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
+        internal Errors(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
         {
-            UnwoundExceptions = FlattenAndReverseExceptionTree(exception).Select(e => Exception.FromSystemException(e, alternativeStackTrace));
+            UnwoundExceptions = FlattenAndReverseExceptionTree(exception).Select(e => Error.FromSystemException(e, alternativeStackTrace));
         }
 
-        internal Exceptions(System.Exception exception, string providedStackTrace)
+        internal Errors(System.Exception exception, string providedStackTrace)
         {
-            UnwoundExceptions = FlattenAndReverseExceptionTree(exception).Select(e => Exception.FromSystemException(e, providedStackTrace));
+            UnwoundExceptions = FlattenAndReverseExceptionTree(exception).Select(e => Error.FromSystemException(e, providedStackTrace));
         }
 
-        public IEnumerator<Exception> GetEnumerator()
+        public IEnumerator<Error> GetEnumerator()
         {
             return UnwoundExceptions.GetEnumerator();
         }
@@ -63,45 +63,57 @@ namespace BugsnagUnity.Payload
     }
 
     /// <summary>
-    /// Represents an individual exception in the Bugsnag payload.
+    /// Represents an individual error in the Bugsnag payload.
     /// </summary>
-    public class Exception : Dictionary<string, object>
+    public class Error : Dictionary<string, object>, IError
     {
         internal HandledState HandledState { get; }
-        internal bool IsAndroidJavaException;
-        private static string AndroidJavaErrorClass = "AndroidJavaException";
-        private static string ErrorClassMessagePattern = @"^(?<errorClass>\S+):\s+(?<message>.*)";
-        // Used to detect native Android events
-        private static string NativeAndroidErrorClass = "java.lang.Error";
-        private static string NativeAndroidMessagePattern = @"signal \d+ \(SIG\w+\)";
 
-        internal Exception(string errorClass, string message, StackTraceLine[] stackTrace)
+        internal bool IsAndroidJavaException;
+
+        private const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
+        private const string ERROR_CLASS_MESSAGE_PATTERN = @"^(?<errorClass>\S+):\s+(?<message>.*)";
+        private const string NATIVE_ANDROID_ERROR_CLASS = "java.lang.Error";
+        private const string NATIVE_ANDROID_MESSAGE_PATTERN = @"signal \d+ \(SIG\w+\)";
+
+        private const string ERROR_CLASS_KEY = "errorClass";
+        private const string MESSAGE_KEY = "message";
+        private const string STACKTRACE_KEY = "stacktrace";
+
+
+
+        internal Error(string errorClass, string message, StackTraceLine[] stackTrace)
           : this(errorClass, message, stackTrace, HandledState.ForHandledException(),false) { }
 
-        internal Exception(string errorClass, string message, StackTraceLine[] stackTrace, HandledState handledState,bool isAndroidJavaException)
+        internal Error(string errorClass, string message, IStackframe[] stackTrace, HandledState handledState,bool isAndroidJavaException)
         {
-            this.AddToPayload("errorClass", errorClass);
-            this.AddToPayload("message", message);
-            this.AddToPayload("stacktrace", stackTrace);
+            ErrorClass = errorClass;
+            ErrorMessage = message;
+            _stacktrace = stackTrace.ToList();
             HandledState = handledState;
             IsAndroidJavaException = isAndroidJavaException;
         }
 
-        public IEnumerable<StackTraceLine> StackTrace { get { return this.Get("stacktrace") as IEnumerable<StackTraceLine>; } }
+
+        private List<IStackframe> _stacktrace { get => this.Get(STACKTRACE_KEY) as List<IStackframe>; set => this.AddToPayload(STACKTRACE_KEY, value); }
+
+        public List<IStackframe> Stacktrace => _stacktrace;
 
         public string ErrorClass
         {
-            get => this.Get("errorClass") as string;
-            set => this.AddToPayload("errorClass", value);
+            get => this.Get(ERROR_CLASS_KEY) as string;
+            set => this.AddToPayload(ERROR_CLASS_KEY, value);
         }
 
         public string ErrorMessage
         {
-            get => this.Get("message") as string;
-            set => this.AddToPayload("message", value);
+            get => this.Get(MESSAGE_KEY) as string;
+            set => this.AddToPayload(MESSAGE_KEY, value);
         }
 
-        internal static Exception FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
+        public string Type { get => "Unity"; }
+
+        internal static Error FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
         {
             var errorClass = exception.GetType().Name;
             var stackFrames = new System.Diagnostics.StackTrace(exception, true).GetFrames();
@@ -117,31 +129,31 @@ namespace BugsnagUnity.Payload
                 lines = new StackTrace(alternativeStackTrace).ToArray();
             }
 
-            return new Exception(errorClass, exception.Message, lines);
+            return new Error(errorClass, exception.Message, lines);
         }
 
-        internal static Exception FromStringInfo(string name, string message, string stacktrace)
+        internal static Error FromStringInfo(string name, string message, string stacktrace)
         {
             var stackFrames = new StackTrace(stacktrace).ToArray();
-            return new Exception(name, message, stackFrames);
+            return new Error(name, message, stackFrames);
         }
 
-        internal static Exception FromSystemException(System.Exception exception, string stackTrace)
+        internal static Error FromSystemException(System.Exception exception, string stackTrace)
         {
             var errorClass = exception.GetType().Name;
             var lines = new StackTrace(stackTrace).ToArray();            
 
-            return new Exception(errorClass, exception.Message, lines);
+            return new Error(errorClass, exception.Message, lines);
         }
 
-        public static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] stackFrames, Severity severity)
+        public static Error FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] stackFrames, Severity severity)
         {
             return FromUnityLogMessage(logMessage, stackFrames, severity, false);
         }
 
-        public static Exception FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] fallbackStackFrames, Severity severity, bool forceUnhandled)
+        public static Error FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] fallbackStackFrames, Severity severity, bool forceUnhandled)
         {
-            var match = Regex.Match(logMessage.Condition, ErrorClassMessagePattern, RegexOptions.Singleline);
+            var match = Regex.Match(logMessage.Condition, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
 
             var lines = new StackTrace(logMessage.StackTrace).ToArray();
             if (lines.Length == 0)
@@ -160,10 +172,10 @@ namespace BugsnagUnity.Payload
                 var isAndroidJavaException = false;
                 // Exceptions starting with "AndroidJavaException" are uncaught Java exceptions reported
                 // via the Unity log handler
-                if (errorClass == AndroidJavaErrorClass)
+                if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
                 {
                     isAndroidJavaException = true;
-                    match = Regex.Match(message, ErrorClassMessagePattern, RegexOptions.Singleline);
+                    match = Regex.Match(message, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
 
                     // If the message matches the "class: message" pattern, then the Java class is followed
                     // by a description of the Java exception. These two values will be used as the error
@@ -183,12 +195,12 @@ namespace BugsnagUnity.Payload
                     lines = new StackTrace(logMessage.StackTrace, StackTraceFormat.AndroidJava).ToArray();
                     handledState = HandledState.ForUnhandledException();
                 }
-                return new Exception(errorClass, message, lines, handledState, isAndroidJavaException);
+                return new Error(errorClass, message, lines, handledState, isAndroidJavaException);
             }
             else
             {
                 // include the type somehow in there
-                return new Exception($"UnityLog{logMessage.Type}", logMessage.Condition, lines, handledState, false);
+                return new Error($"UnityLog{logMessage.Type}", logMessage.Condition, lines, handledState, false);
             }
         }
 
@@ -204,27 +216,27 @@ namespace BugsnagUnity.Payload
             // Discard any messages matching native Android events as they are captured (and more
             // accurate) via bugsnag-android. Any Java `Error` generated from a POSIX signal is
             // discarded. For Unity 2017/2018:
-            var match = Regex.Match(logMessage.Condition, ErrorClassMessagePattern, RegexOptions.Singleline);
+            var match = Regex.Match(logMessage.Condition, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
             if (!match.Success)
             {
                 return true;
             }
 
             var errorClass = match.Groups["errorClass"].Value;
-            if (errorClass != AndroidJavaErrorClass)
+            if (errorClass != ANDROID_JAVA_EXCEPTION_CLASS)
             {
                 return true;
             }
 
             var message = match.Groups["message"].Value;
-            match = Regex.Match(message, ErrorClassMessagePattern, RegexOptions.Singleline);
+            match = Regex.Match(message, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
             errorClass = match.Success ? match.Groups["errorClass"].Value : message;
-            if (errorClass != NativeAndroidErrorClass)
+            if (errorClass != NATIVE_ANDROID_ERROR_CLASS)
             {
                 return true;
             }
 
-            match = Regex.Match(logMessage.StackTrace, NativeAndroidMessagePattern, RegexOptions.Singleline);
+            match = Regex.Match(logMessage.StackTrace, NATIVE_ANDROID_MESSAGE_PATTERN, RegexOptions.Singleline);
             return !match.Success;
         }
     }

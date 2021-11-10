@@ -1,9 +1,9 @@
 ﻿using System;
 namespace BugsnagUnity
 {
-    internal interface IUserEditor
+    public interface IUserEditor
     {
-        Payload.User GetUser();
+        IUser GetUser();
 
         void SetUser(string id, string email, string name);
     }

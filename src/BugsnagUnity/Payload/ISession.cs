@@ -9,7 +9,7 @@ namespace BugsnagUnity
         IDevice Device { get; set; }
         IApp App { get; set; }
         DateTime? StartedAt { get; set; }
-        User GetUser();
+        IUser GetUser();
         void SetUser(string id, string email, string name);
     }
 }

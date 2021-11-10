@@ -3,12 +3,14 @@ using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-    public delegate bool OnErrorCallback(Event bugsnagEvent);
+    public delegate bool OnErrorCallback(IEvent bugsnagEvent);
+
+    public delegate bool OnSendErrorCallback(IEvent bugsnagEvent);
 
     public delegate bool OnSessionCallback(ISession session);
 
 
-    internal interface IClient : IMetadataEditor, IUserEditor
+    internal interface IClient : IMetadataEditor
     {
         Configuration Configuration { get; }
 
@@ -52,9 +54,17 @@ namespace BugsnagUnity
 
         void RemoveOnError(OnErrorCallback bugsnagCallback);
 
+        void AddOnSendError(OnSendErrorCallback bugsnagCallback);
+
+        void RemoveOnSendError(OnSendErrorCallback bugsnagCallback);
+
         void AddOnSession(OnSessionCallback callback);
 
         void RemoveOnSession(OnSessionCallback callback);
+
+        User GetUser();
+
+        void SetUser(string id,string email,string name);
 
     }
 }

@@ -73,9 +73,22 @@ namespace BugsnagUnity
             return obj;
         }
 
-        [MonoPInvokeCallback(typeof(Func<string, bool>))]
-        static bool HandleOnSendCallbacks(string test)
+        [MonoPInvokeCallback(typeof(Func<IntPtr, bool>))]
+        static bool HandleOnSendCallbacks(IntPtr nativeEvent)
         {
+            var callbacks = _instance.Configuration.GetOnSendErrorCallbacks();
+            if (callbacks.Count > 0)
+            {
+                var nativeEventWrapper = new NativeEvent(nativeEvent);
+
+                foreach (var callback in callbacks)
+                {
+                    if (!callback.Invoke(nativeEventWrapper))
+                    {
+                        return false;
+                    }
+                }
+            }
             return true;
         }
 
@@ -240,7 +253,7 @@ namespace BugsnagUnity
 
         public void PopulateUser(User user)
         {
-            var nativeUser = new NativeUser();
+            var nativeUser = new NativeUserVisitor();
 
             NativeCode.bugsnag_populateUser(ref nativeUser);
 
@@ -249,7 +262,6 @@ namespace BugsnagUnity
 
         public void SetMetadata(string section, Dictionary<string, object> metadataSection)
         {
-
             var index = 0;
             var count = 0;
             if (metadataSection != null)
@@ -258,9 +270,6 @@ namespace BugsnagUnity
 
                 foreach (var data in metadataSection)
                 {
-
-
-
                     if (data.Key != null)
                     {
                         metadata[index] = data.Key;

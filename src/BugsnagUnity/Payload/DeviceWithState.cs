@@ -4,23 +4,23 @@ using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-    public class DeviceWithState : Device
+    public class DeviceWithState : Device, IDeviceWithState
     {
 
         private const string FREE_DISK_KEY = "freeDisk";
         private const string FREE_MEMORY_KEY = "freeMemory";
         private const string ORIENTATION_KEY = "orientation";
         private const string TIME_KEY = "time";
-    
-        public ulong? FreeDisk
+
+        public long? FreeDisk
         {
-            get => (ulong?)Get(FREE_DISK_KEY);
+            get => (long?)Get(FREE_DISK_KEY);
             set => Add(FREE_DISK_KEY, value);
         }
 
-        public ulong? FreeMemory
+        public long? FreeMemory
         {
-            get => (ulong?)Get(FREE_MEMORY_KEY);
+            get => (long?)Get(FREE_MEMORY_KEY);
             set => Add(FREE_MEMORY_KEY, value);
         }
 
@@ -42,6 +42,6 @@ namespace BugsnagUnity.Payload
             Time = DateTime.UtcNow;
         }
 
-       
+
     }
 }

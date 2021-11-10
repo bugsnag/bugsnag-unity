@@ -281,6 +281,38 @@ public class Main : MonoBehaviour
                 config.NotifyLogLevel = LogType.Warning;
                 config.EnabledErrorTypes.UnityWarningLogs = true;
                 break;
+            case "EventCallbacks":
+                config.AddOnError((@event)=> {
+
+                    @event.App.BinaryArch = "BinaryArch";
+                    @event.App.BundleVersion = "BundleVersion";
+                    @event.App.CodeBundleId = "CodeBundleId";
+                    @event.App.DsymUuid = "DsymUuid";
+                    @event.App.Id = "Id";
+                    @event.App.ReleaseStage = "ReleaseStage";
+                    @event.App.Type = "Type";
+                    @event.App.Version = "Version";
+                    @event.App.InForeground = false;
+                    @event.App.IsLaunching = false;
+
+                    @event.Device.Id = "Id";
+                    @event.Device.Jailbroken = true;
+                    @event.Device.Locale = "Locale";
+                    @event.Device.Manufacturer = "Manufacturer";
+                    @event.Device.Model = "Model";
+                    @event.Device.OsName = "OsName";
+                    @event.Device.OsVersion = "OsVersion";
+                    @event.Device.FreeDisk = 123;
+                    @event.Device.FreeMemory = 123;
+                    @event.Device.Orientation = "Orientation";
+
+                    @event.Errors[0].ErrorClass = "ErrorClass";
+
+                    @event.Errors[0].Stacktrace[0].Method = "Method";
+
+                    return true;
+                });
+                break;
             default: // no special config required
                 break;
         }
@@ -293,6 +325,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "EventCallbacks":
+                DoNotify();
+                break;
             case "BackgroundThreadCrash":
                 BackgroundThreadCrash();
                 break;
@@ -625,8 +660,8 @@ public class Main : MonoBehaviour
     {
         Bugsnag.Notify(new System.Exception("blorb"), @event =>
         {
-            @event.Exceptions[0].ErrorClass = "FunnyBusiness";
-            @event.Exceptions[0].ErrorMessage = "cake";
+            @event.Errors[0].ErrorClass = "FunnyBusiness";
+            @event.Errors[0].ErrorMessage = "cake";
             @event.AddMetadata("shape", new Dictionary<string, object>() {
         { "arc", "yes" },
         

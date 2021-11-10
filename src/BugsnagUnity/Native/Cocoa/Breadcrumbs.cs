@@ -39,11 +39,11 @@ namespace BugsnagUnity
                         index += 2;
                     }
 
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString().ToLower(), metadata, metadata.Length);
                 }
                 else
                 {
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type, null, 0);
+                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString().ToLower(), null, 0);
                 }
             }
         }
@@ -78,7 +78,6 @@ namespace BugsnagUnity
                 {
                     metadata.Add(keys[i], values[i]);
                 }
-
                 breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
             }
         }

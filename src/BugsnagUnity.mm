@@ -99,25 +99,21 @@ extern "C" {
 
     void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount);
 
-    void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test));
+    void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(void *event));
 
     void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session));
 
-    void bugsnag_populateUserFromSession(const void *session,bugsnag_user *user);
-
-    void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail);
-
     BugsnagApp * bugsnag_getAppFromSession(const void *session);
+
+    BugsnagAppWithState * bugsnag_getAppFromEvent(const void *event);
 
     void bugsnag_setStringValue(const void *object, char * key, char * value);
 
-    const char * bugsnag_getStringValue(const void *object, char * key);
-
     void bugsnag_setBoolValue(const void *object, char * key, char * value);
 
-    const char * bugsnag_getBoolValue(const void *object, char * key);
-
     BugsnagDevice * bugsnag_getDeviceFromSession(const void *session);
+
+    BugsnagDeviceWithState * bugsnag_getDeviceFromEvent(const void *event);
 
     const char * bugsnag_getRuntimeVersionsFromDevice(const void *device);
 
@@ -127,11 +123,245 @@ extern "C" {
 
     void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp);
 
+    const char * bugsnag_getBreadcrumbType(const void *object);
+
+    void bugsnag_setBreadcrumbType(char * breadcrumb);
+
+    void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *metadata[], int metadataCount);
+
+    void bugsnag_getBreadcrumbMetadata(const void *breadcrumb,const void *instance, void (*callback)(const void *instance, const char *keys[], int keys_size, const char *values[], int values_size));
+
+    void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance,void *breadcrumbs[], int breadcrumbs_size));
+
+    void bugsnag_getErrorsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *errors[], int errors_size));
+
+    void bugsnag_getStackframesFromError(const void *error,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size));
+
+    void bugsnag_getStackframesFromThread(const void *thread,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size));
+
+    const char * bugsnag_getSeverityFromEvent(const void *event);
+
+    void bugsnag_setEventSeverity(const void *event, const char *severity);
+
+    void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size));
+
+    BugsnagUser * bugsnag_getUserFromEvent(const void *event);
+
+    BugsnagUser * bugsnag_getUserFromSession(const void *session);
+
+    void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadata[], int metadataCount);
+
+    void bugsnag_clearEventMetadataSection(const void *event, const char *section);
+
+    void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key);
+
+    void bugsnag_getEventMetaData(const void *event, const void *instance, const char *tab, void (*callback)(const void *instance,const char *keys[], int keys_size, const char *values[], int values_size));
+
+    const char * bugsnag_getErrorTypeFromError(const void *error);
+
+    const char * bugsnag_getThreadTypeFromThread(const void *thread);
+
+    const char * bugsnag_getValueAsString(const void *object, char *key);
+
+    void bugsnag_setNumberValue(const void *object, char * key, const char * value);
+
 
 }
+
+void bugsnag_getEventMetaData(const void *event,const void *instance, const char *tab, void (*callback)(const void *instance, const char *keys[], int keys_size, const char *values[], int values_size)) {
+     NSDictionary* sectionDictionary = [((__bridge BugsnagEvent *)event) getMetadataFromSection:@(tab)];
+     NSArray *keys = [sectionDictionary allKeys];
+     NSArray *values = [sectionDictionary allValues];
+     int count = 0;
+     if ([keys count] <= INT_MAX) {
+       count = (int)[keys count];
+     }
+     const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+     const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+     for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
+       c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+       c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
+     }
+    callback(instance,c_keys,count,c_values,count);
+    free(c_keys);
+    free(c_values);
+}
+
+void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key){
+   [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section) withKey:@(key)];
+}
+
+void bugsnag_clearEventMetadataSection(const void *event, const char *section){
+   [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section)];
+}
+
+void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadata[], int metadataCount) {
+  if (tab == NULL)
+    return;
+
+  NSString *tabName = [NSString stringWithUTF8String: tab];
+  NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
+
+  for (int i = 0; i < metadataCount; i += 2) {
+    if (metadata[i] && metadata[i+1]) {
+        ns_metadata[@(metadata[i])] = @(metadata[i+1]);
+    }
+  }
+  [((__bridge BugsnagEvent *)event) addMetadata:ns_metadata toSection:tabName];
+}
+
+
+BugsnagUser * bugsnag_getUserFromSession(const void *session){
+    return ((__bridge BugsnagSession *)session).user;
+}
+
+BugsnagUser * bugsnag_getUserFromEvent(const void *event){
+    return ((__bridge BugsnagEvent *)event).user;
+}
+
+void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size)) {
+    NSArray * theThreads = ((__bridge BugsnagEvent *)event).threads;
+    void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theThreads.count));
+    for (NSUInteger i = 0; i < (NSUInteger)theThreads.count; i++) {
+       c_array[i] = (__bridge void *)theThreads[i];
+    }
+    callback(instance, c_array, [theThreads count]);
+    free(c_array);
+}
+
+
+void bugsnag_setEventSeverity(const void *event, const char *severity){   
+    if (strcmp(severity, "error") == 0)
+    {
+        ((__bridge BugsnagEvent *)event).severity = BSGSeverityError;
+    }
+    else if (strcmp(severity, "warning") == 0)
+    {
+        ((__bridge BugsnagEvent *)event).severity = BSGSeverityWarning;
+    }
+    else
+    {
+        ((__bridge BugsnagEvent *)event).severity = BSGSeverityInfo;
+    }     
+}
+
+const char * bugsnag_getSeverityFromEvent(const void *event){   
+    BSGSeverity theSeverity = ((__bridge BugsnagEvent *)event).severity;
+    if(theSeverity == BSGSeverityError)
+    {
+        return strdup("error");
+    }
+    if(theSeverity == BSGSeverityWarning)
+    {
+        return strdup("warning");
+    }
+    return strdup("info"); 
+}
+
+
+void bugsnag_getStackframesFromError(const void *error,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size)) {
+
+    NSArray * theStackframes = ((__bridge BugsnagError *)error).stacktrace;
+    void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theStackframes.count));
+    for (NSUInteger i = 0; i < (NSUInteger)theStackframes.count; i++) {
+       c_array[i] = (__bridge void *)theStackframes[i];
+    }
+    callback(instance, c_array, [theStackframes count]);
+    free(c_array);
+}
+
+void bugsnag_getStackframesFromThread(const void *thread,const void *instance, void (*callback)(const void *instance, void *stackframes[], int stackframes_size)) {
+
+    NSArray * theStackframes = ((__bridge BugsnagThread *)thread).stacktrace;
+    void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theStackframes.count));
+    for (NSUInteger i = 0; i < (NSUInteger)theStackframes.count; i++) {
+       c_array[i] = (__bridge void *)theStackframes[i];
+    }
+    callback(instance, c_array, [theStackframes count]);
+    free(c_array);
+}
+
+void bugsnag_getErrorsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *errors[], int errors_size)) {
+
+    NSArray * theErrors = ((__bridge BugsnagEvent *)event).errors;
+    void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theErrors.count));
+    for (NSUInteger i = 0; i < (NSUInteger)theErrors.count; i++) {
+       c_array[i] = (__bridge void *)theErrors[i];
+    }
+    callback(instance, c_array, [theErrors count]);
+    free(c_array);
+}
+
+void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *breadcrumbs[], int breadcrumbs_size)) {
+
+    NSArray * theBreadcrumbs = ((__bridge BugsnagEvent *)event).breadcrumbs;
+    void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theBreadcrumbs.count));
+    for (NSUInteger i = 0; i < (NSUInteger)theBreadcrumbs.count; i++) {
+       c_array[i] = (__bridge void *)theBreadcrumbs[i];
+    }
+    callback(instance, c_array, [theBreadcrumbs count]);
+    free(c_array);
+}
+
+void bugsnag_getBreadcrumbMetadata(const void *breadcrumb,const void *instance, void (*callback)(const void *instance,const char *keys[], int keys_size, const char *values[], int values_size)) {
+     NSDictionary* sectionDictionary = ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata;
+     NSArray *keys = [sectionDictionary allKeys];
+     NSArray *values = [sectionDictionary allValues];
+     int count = 0;
+     if ([keys count] <= INT_MAX) {
+       count = (int)[keys count];
+     }
+     const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+     const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
+     for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
+       c_keys[i] = [[keys objectAtIndex: i] UTF8String];
+       c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
+     }
+    callback(instance,c_keys, count, c_values, count);
+    free(c_keys);
+    free(c_values);
+}
+
+void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *metadata[], int metadataCount) {
+  NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
+  for (int i = 0; i < metadataCount; i += 2) {
+    if (metadata[i] && metadata[i+1]) {
+        ns_metadata[@(metadata[i])] = @(metadata[i+1]);
+    }
+
+  }
+  ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = ns_metadata;
+}
+
+const char * bugsnag_getBreadcrumbType(const void *breadcrumb){
+    return strdup([BSGBreadcrumbTypeValue(((__bridge BugsnagBreadcrumb *)breadcrumb).type) UTF8String]);    
+}
+
+void bugsnag_setBreadcrumbType(const void *breadcrumb, char * type){
+    ((__bridge BugsnagBreadcrumb *)breadcrumb).type = BSGBreadcrumbTypeFromString(@(type));
+}
+
+const char * bugsnag_getValueAsString(const void *object, char *key) {
+    id value = [(__bridge id)object valueForKey:@(key)];
+    if ([value isKindOfClass:[NSString class]]) {
+        return strdup([value UTF8String]);
+    } else if ([value respondsToSelector:@selector(stringValue)]) {
+        return strdup([[value stringValue] UTF8String]);
+    } else {
+        return NULL;
+    }
+}
+
+void bugsnag_setNumberValue(const void *object, char * key, const char * value){       
+    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+    f.numberStyle = NSNumberFormatterDecimalStyle;
+    NSNumber *myNumber = [f numberFromString:@(value)];
+    [(__bridge id)object setValue:myNumber forKey:@(key)];
+}
+
+
     
-double bugsnag_getTimestampFromDateInObject(const void *object, char * key)
-{
+double bugsnag_getTimestampFromDateInObject(const void *object, char * key){
     NSDate *value = (NSDate *)[(__bridge id)object valueForKey:@(key)];
     if(value != NULL && [value isKindOfClass:[NSDate class]])
     {
@@ -140,8 +370,7 @@ double bugsnag_getTimestampFromDateInObject(const void *object, char * key)
     return -1;
 }
 
-void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp)
-{       
+void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp){       
     if(timeStamp < 0)
     {
         [(__bridge id)object setValue:NULL forKey:@(key)];
@@ -169,9 +398,7 @@ void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versio
 
 const char * bugsnag_getRuntimeVersionsFromDevice(const void *device){
     NSDictionary * versions = ((__bridge BugsnagDevice *)device).runtimeVersions;
-    
     NSMutableString *returnString = [[NSMutableString alloc] initWithString:@""];
-    
     for(id key in versions) {
         NSString *keyString = @([key UTF8String]);
         [returnString appendString:keyString];
@@ -181,14 +408,11 @@ const char * bugsnag_getRuntimeVersionsFromDevice(const void *device){
         [returnString appendString:valueString];
         [returnString appendString:@"|"];
     }
-
     return strdup([returnString UTF8String]);
-
 }
 
 
-void bugsnag_setBoolValue(const void *object, char * key, char * value)
-{
+void bugsnag_setBoolValue(const void *object, char * key, char * value){
     NSString *nsValue = @(value);
     if([nsValue isEqualToString:@"null"])
     {
@@ -197,19 +421,7 @@ void bugsnag_setBoolValue(const void *object, char * key, char * value)
     else
     {
         [(__bridge id)object setValue:@([nsValue boolValue]) forKey:@(key)];
-
     }
-}
-
-const char * bugsnag_getBoolValue(const void *object, char * key)
-{
-    id value = [(__bridge id)object valueForKey:@(key)];
-    if ([value isKindOfClass:[NSNumber class]])
-    {
-        const char * boolValue = [value boolValue] ? "true" : "false";
-        return strdup(boolValue);
-    }
-    return strdup("null");
 }
 
 void bugsnag_setStringValue(const void *object, char * key, char * value)
@@ -217,36 +429,53 @@ void bugsnag_setStringValue(const void *object, char * key, char * value)
     [(__bridge id)object setValue:value ? @(value) : nil forKey:@(key)];
 }
 
-const char * bugsnag_getStringValue(const void *object, char * key)
-{
-    id value = [(__bridge id)object valueForKey:@(key)];
-    return strdup([value isKindOfClass:[NSString class]] ? [value UTF8String] : "");
+const char * bugsnag_getErrorTypeFromError(const void *error){
+    BSGErrorType theType = ((__bridge BugsnagError *)error).type;
+    if(theType == BSGErrorTypeCocoa)
+    {
+        return strdup("cocoa");
+    }
+    if(theType == BSGErrorTypeC)
+    {
+        return strdup("c");
+    }
+    return strdup("");
+}
+
+const char * bugsnag_getThreadTypeFromThread(const void *thread){
+     BSGThreadType theType = ((__bridge BugsnagThread *)thread).type;
+    if(theType == BSGThreadTypeCocoa)
+    {
+        return strdup("cocoa");
+    }
+    return strdup("");
 }
 
 BugsnagApp * bugsnag_getAppFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).app;
 }
 
+BugsnagAppWithState * bugsnag_getAppFromEvent(const void *event){
+    return ((__bridge BugsnagEvent *)event).app;
+}
+
 BugsnagDevice * bugsnag_getDeviceFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).device;
 }
 
-void bugsnag_populateUserFromSession(const void *session, bugsnag_user *user) {
-    BugsnagUser *theUser = ((__bridge BugsnagSession *)session).user;
-    user->user_id = theUser.id.UTF8String;
-    user->user_name = theUser.name.UTF8String;
-    user->user_email = theUser.email.UTF8String;
-}
-
-void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail) {
-    [(__bridge BugsnagSession *)session setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
-            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
-             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
+BugsnagDeviceWithState * bugsnag_getDeviceFromEvent(const void *event){
+    return ((__bridge BugsnagEvent *)event).device;
 }
 
 void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
     [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    
-        return callback((void*)CFBridgingRetain(session));
+        return callback((__bridge void *)session);
+    }];
+}
+
+void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(void *event)){
+    [((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {       
+        return callback((__bridge void *)event);
     }];
 }
 
@@ -260,7 +489,6 @@ void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount
 }
 
 void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
- 
     if([Bugsnag client].sessionTracker.runningSession == NULL)
     {
       callback(session, NULL, NULL, 0, 0);
@@ -272,7 +500,6 @@ void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const 
     int handled = [sessionDict[@"handledCount"] integerValue];
     int unhandled = [sessionDict[@"unhandledCount"] integerValue];
     callback(session, sessionId, timeString, handled, unhandled);
-
 }
 
 void bugsnag_markLaunchCompleted() {
@@ -391,8 +618,7 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
       }
 }
 
-void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy)
-{
+void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy){
     NSString *ns_threadSendPolicy = [[NSString alloc] initWithUTF8String:threadSendPolicy];
     if([ns_threadSendPolicy isEqualToString:@"ALWAYS"])
     {
@@ -572,10 +798,8 @@ void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *noti
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadata[], int metadataCount) {
   NSString *ns_message = [NSString stringWithUTF8String: message == NULL ? "<empty>" : message];
   [Bugsnag.client addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-
       crumb.message = ns_message;
       crumb.type = BSGBreadcrumbTypeFromString([NSString stringWithUTF8String:type]);
-
       if (metadataCount > 0) {
         NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
 
@@ -654,14 +878,6 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
   callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
 
 }
-
-  void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(const char *test)){
-    [((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {       
-        return callback([@"hello" UTF8String]);
-    }];
-  }
-
-
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
   NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];

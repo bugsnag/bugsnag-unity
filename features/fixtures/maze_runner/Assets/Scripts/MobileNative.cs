@@ -8,6 +8,9 @@ public class MobileNative : MonoBehaviour {
 #if UNITY_IOS || UNITY_TVOS || UNITY_OSX
 
     [DllImport("__Internal")]
+    private static extern void RaiseCocoaSignal();
+
+    [DllImport("__Internal")]
     private static extern void TriggerCocoaCppException();
 
     [DllImport("__Internal")]
@@ -33,10 +36,20 @@ public class MobileNative : MonoBehaviour {
         }
     }
 
+
+
+
     private static void IOSCrash()
     {
 #if UNITY_IOS || UNITY_TVOS || UNITY_OSX
         TriggerCocoaCppException();
+#endif
+    }
+
+    public static void DoIosSignal()
+    {
+#if UNITY_IOS
+        RaiseCocoaSignal();
 #endif
     }
 

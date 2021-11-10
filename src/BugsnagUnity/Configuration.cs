@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class Configuration : IMetadataEditor, IUserEditor
+    public class Configuration : IMetadataEditor
     {
 
         public string AppType;
@@ -220,6 +220,23 @@ namespace BugsnagUnity
         public void RemoveOnError(OnErrorCallback callback)
         {
             _onErrorCallbacks.Remove(callback);
+        }
+
+        private List<OnSendErrorCallback> _onSendErrorCallbacks = new List<OnSendErrorCallback>();
+
+        public void AddOnSendError(OnSendErrorCallback callback)
+        {
+            _onSendErrorCallbacks.Add(callback);
+        }
+
+        internal List<OnSendErrorCallback> GetOnSendErrorCallbacks()
+        {
+            return _onSendErrorCallbacks;
+        }
+
+        public void RemoveOnSendError(OnSendErrorCallback callback)
+        {
+            _onSendErrorCallbacks.Remove(callback);
         }
 
         private List<OnSessionCallback> _onSessionCallbacks = new List<OnSessionCallback>();

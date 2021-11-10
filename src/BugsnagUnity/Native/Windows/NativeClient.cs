@@ -65,7 +65,7 @@ namespace BugsnagUnity
             MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
             if (GlobalMemoryStatusEx(memStatus))
             {
-                device.FreeMemory = memStatus.ullAvailPhys;
+                device.FreeMemory = (long)memStatus.ullAvailPhys;
             }
 
             // This is generally the main drive on a Windows machine
@@ -76,7 +76,7 @@ namespace BugsnagUnity
                                               out ulong totalNumberOfBytes,
                                               out ulong totalNumberOfFreeBytes))
             {
-                device.FreeDisk = freeBytesAvailable;
+                device.FreeDisk = (long)freeBytesAvailable;
             }
         }
 

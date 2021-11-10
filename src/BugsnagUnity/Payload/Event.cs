@@ -4,24 +4,35 @@ using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-    public class Event : Dictionary<string, object>, IMetadataEditor, IUserEditor
+    public class Event : PayloadContainer, IEvent
     {
-        HandledState _handledState;
 
-        internal HandledState OriginalSeverity { get; }
-
-        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Exception[] exceptions, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, LogType? logType = null)
+        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey ,LogType? logType = null)
         {
+            ApiKey = apiKey;
             OriginalSeverity = handledState;
             _metadata = metadata;
             HandledState = handledState;
             LogType = logType;
-            App = app;
-            Device = device;
+            _appWithState = app;
+            _deviceWithState = device;
             Context = context;
-            Exceptions = exceptions.ToList();
-            Breadcrumbs = breadcrumbs;
             _user = user;
+
+            _errors = errors.ToList();
+            Errors = new List<IError>();
+            foreach (var error in _errors)
+            {
+                Errors.Add(error);
+            }
+
+            _breadcrumbs = breadcrumbs;
+            Breadcrumbs = new List<IBreadcrumb>();
+            foreach (var crumb in _breadcrumbs)
+            {
+                Breadcrumbs.Add(crumb);
+            }
+
             if (session != null)
             {
                 if (handledState.Handled)
@@ -35,10 +46,17 @@ namespace BugsnagUnity.Payload
                 Session = session;
             }
         }
+
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
         {
-            this.AddToPayload("projectPackages", packages);
+            _androidProjectPackages = packages;
         }
+
+        HandledState _handledState;
+
+        internal HandledState OriginalSeverity { get; }
+
+        private string[] _androidProjectPackages;
 
         private Metadata _metadata { get; }
 
@@ -54,17 +72,25 @@ namespace BugsnagUnity.Payload
 
         public void ClearMetadata(string section, string key) => _metadata.ClearMetadata(section, key);
 
-        public List<Breadcrumb> Breadcrumbs { get; }
+        internal int PayloadVersion = 4;
+
+        public string ApiKey { get; set; }
+
+        private List<Breadcrumb> _breadcrumbs;
+
+        public List<IBreadcrumb> Breadcrumbs { get; }
 
         internal Session Session { get; }
 
         internal LogType? LogType { get; }
 
+        public bool? Unhandled { get => (bool)Get("unhandled"); set => Add("unhandled",value); }
+
         internal bool IsHandled
         {
             get
             {
-                if (this.Get("unhandled") is bool unhandled)
+                if (Get("unhandled") is bool unhandled)
                 {
                     return !unhandled;
                 }
@@ -73,25 +99,33 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public AppWithState App { get; }
+        public string Context { get; set; }
 
-        public string Context;
+        private AppWithState _appWithState;
 
-        public DeviceWithState Device { get; }
+        public IAppWithState App => _appWithState;
 
-        public List<Exception> Exceptions { get; }
+        private DeviceWithState _deviceWithState;
 
-        public string GroupingHash;
+        public IDeviceWithState Device => _deviceWithState;
+
+        private List<Error> _errors;
+
+        public List<IError> Errors { get; }
+
+        public string GroupingHash { get; set; }
         
-        internal Severity Severity
+        public Severity Severity
         {
             set => HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
             get => _handledState.Severity;
         }
 
+
+
         private User _user;
 
-        public User GetUser() => _user;
+        public IUser GetUser() => _user;
 
         public void SetUser(string id, string name, string email)
         {
@@ -100,9 +134,9 @@ namespace BugsnagUnity.Payload
 
         internal bool IsAndroidJavaError()
         {
-            foreach (var exception in Exceptions)
+            foreach (var error in _errors)
             {
-                if (exception.IsAndroidJavaException)
+                if (error.IsAndroidJavaException)
                 {
                     return true;
                 }
@@ -117,31 +151,39 @@ namespace BugsnagUnity.Payload
                 _handledState = value;
                 foreach (var item in value)
                 {
-                    this[item.Key] = item.Value;
+                    Payload[item.Key] = item.Value;
                 }
             }
         }
 
-        internal void PreparePayload()
+        public List<IThread> Threads => null;
+
+        internal Dictionary<string, object> GetEventPayload()
         {
-            this.AddToPayload("app", App.Payload);
-            this.AddToPayload("device", Device.Payload);
-            this.AddToPayload("metaData", _metadata.Payload);
-            this.AddToPayload("user", _user.Payload);
-            this.AddToPayload("context", Context);
-            this.AddToPayload("groupingHash", GroupingHash);
-            this.AddToPayload("payloadVersion", 4);
-            this.AddToPayload("exceptions", Exceptions);
+            Add("app", _appWithState.Payload);
+            Add("device", _deviceWithState.Payload);
+            Add("metaData", _metadata.Payload);
+            Add("user", _user.Payload);
+            Add("context", Context);
+            Add("groupingHash", GroupingHash);
+            Add("payloadVersion", PayloadVersion);
+            Add("exceptions", _errors);
+            if (_androidProjectPackages != null)
+            {
+                Add("projectPackages", _androidProjectPackages);
+            }
             var breadcrumbPayloads = new List<Dictionary<string, object>>();
-            foreach (var crumb in Breadcrumbs)
+            foreach (var crumb in _breadcrumbs)
             {
                 breadcrumbPayloads.Add(crumb.Payload);
             }
-            this.AddToPayload("breadcrumbs", breadcrumbPayloads);
+            Add("breadcrumbs", breadcrumbPayloads.ToArray());
             if (Session != null)
             {
-                this.AddToPayload("session", Session.Payload);
+                Add("session", Session.Payload);
             }
+
+            return Payload;
         }
 
     }

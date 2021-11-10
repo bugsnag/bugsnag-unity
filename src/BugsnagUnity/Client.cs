@@ -218,7 +218,7 @@ namespace BugsnagUnity
             if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel) && Configuration.IsUnityLogErrorTypeEnabled(logType))
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
-                var shouldSend = Exception.ShouldSend(logMessage)
+                var shouldSend = Error.ShouldSend(logMessage)
                   && _uniqueCounter.ShouldSend(logMessage)
                   && _logTypeCounter.ShouldSend(logMessage);
                 if (shouldSend)
@@ -226,8 +226,8 @@ namespace BugsnagUnity
                     var severity = Configuration.LogTypeSeverityMapping.Map(logType);
                     var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
                     var forceUnhandled = logType == LogType.Exception && !Configuration.ReportUncaughtExceptionsAsHandled;
-                    var exception = Exception.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
-                    Notify(new Exception[] { exception }, exception.HandledState, null, logType);
+                    var exception = Error.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
+                    Notify(new Error[] { exception }, exception.HandledState, null, logType);
                 }
             }
             else if (Configuration.ShouldLeaveLogBreadcrumb(logType))
@@ -240,13 +240,13 @@ namespace BugsnagUnity
 
         public void Notify(string name, string message, string stackTrace, OnErrorCallback callback)
         {
-            var exceptions = new Exception[] { Exception.FromStringInfo(name, message, stackTrace) };
+            var exceptions = new Error[] { Error.FromStringInfo(name, message, stackTrace) };
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
         public void Notify(System.Exception exception, string stacktrace, OnErrorCallback callback)
         {
-            var exceptions = new Exceptions(exception, stacktrace).ToArray();
+            var exceptions = new Errors(exception, stacktrace).ToArray();
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
@@ -296,10 +296,10 @@ namespace BugsnagUnity
             // to generate one from the exception that we are given then we are not able
             // to do this inside of the IEnumerator generator code
             var substitute = new System.Diagnostics.StackTrace(level, true).GetFrames();
-            Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback, null);
+            Notify(new Errors(exception, substitute).ToArray(), handledState, callback, null);
         }
 
-        void Notify(Exception[] exceptions, HandledState handledState, OnErrorCallback callback, LogType? logType)
+        void Notify(Error[] exceptions, HandledState handledState, OnErrorCallback callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -326,7 +326,7 @@ namespace BugsnagUnity
            
         }
 
-        private void NotifyOnMainThread(Exception[] exceptions, HandledState handledState, OnErrorCallback callback, LogType? logType)
+        private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, OnErrorCallback callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -366,7 +366,8 @@ namespace BugsnagUnity
               exceptions,
               handledState,
               Breadcrumbs.Retrieve().ToList(),
-              SessionTracking.CurrentSession);
+              SessionTracking.CurrentSession,
+              Configuration.ApiKey);
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))
@@ -405,7 +406,23 @@ namespace BugsnagUnity
             {
             }
 
-            @event.PreparePayload();
+
+            lock (CallbackLock)
+            {
+                foreach (var onSendErrorCallback in Configuration.GetOnSendErrorCallbacks())
+                {
+                    try
+                    {
+                        if (!onSendErrorCallback.Invoke(@event))
+                        {
+                            return;
+                        }
+                    }
+                    catch (System.Exception)
+                    {
+                    }
+                }
+            }
 
             var report = new Report(Configuration, @event);
 
@@ -442,7 +459,7 @@ namespace BugsnagUnity
                && theEvent.IsAndroidJavaError();
         }
 
-        private bool EventContainsDiscardedClass(Exception[] exceptions)
+        private bool EventContainsDiscardedClass(Error[] exceptions)
         {
             foreach (var exception in exceptions)
             {
@@ -529,7 +546,11 @@ namespace BugsnagUnity
         
         public void AddOnError(OnErrorCallback bugsnagCallback) => Configuration.AddOnError(bugsnagCallback);
 
-        public void RemoveOnError(OnErrorCallback bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);     
+        public void RemoveOnError(OnErrorCallback bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
+
+        public void AddOnSendError(OnSendErrorCallback bugsnagCallback) => Configuration.AddOnSendError(bugsnagCallback);
+
+        public void RemoveOnSendError(OnSendErrorCallback bugsnagCallback) => Configuration.RemoveOnSendError(bugsnagCallback);
 
         public void AddOnSession(OnSessionCallback callback) => Configuration.AddOnSession(callback);
 
@@ -556,5 +577,7 @@ namespace BugsnagUnity
         {
             _cachedUser = new User(id, name, email);
         }
+
+       
     }
 }
