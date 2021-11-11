@@ -13,20 +13,20 @@ namespace BugsnagUnity.Editor
         private bool _showEnabledBreadcrumbTypes;
         private bool _showAdvancedSettings;
 
+        private void OnEnable()
+        {
+            titleContent = new GUIContent( "Bugsnag" );
+        }
+
         [MenuItem("Bugsnag/Settings")]
         public static void ShowWindow()
         {
             GetWindow(typeof(BugsnagEditor));
         }
 
-        private static bool ResourcesDirExists()
-        {
-            return Directory.Exists(Application.dataPath + "/Resources");
-        }
-
         private static bool SettingsFileFound()
         {
-            return File.Exists(Application.dataPath + "/Resources/BugsnagSettings.asset");
+            return File.Exists(Application.dataPath + "/Resources/Bugsnag/BugsnagSettings.asset");
         }
 
         void OnGUI()
@@ -43,7 +43,7 @@ namespace BugsnagUnity.Editor
 
         private void DrawSettingsCreationWindow()
         {
-            GUILayout.Label("No Bugsnag Settings File Found", EditorStyles.boldLabel);
+            GUILayout.Label("No Bugsnag Settings File Found.", EditorStyles.largeLabel);
             if (GUILayout.Button("Create New Settings File"))
             {
                 CreateNewSettingsFile();
@@ -133,17 +133,15 @@ namespace BugsnagUnity.Editor
 
         private BugsnagSettingsObject GetSettingsObject()
         {
-            return Resources.Load<BugsnagSettingsObject>("BugsnagSettings");
+            return Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettings");
         }
 
         private void CreateNewSettingsFile()
         {
-            if (!ResourcesDirExists())
-            {
-                Directory.CreateDirectory(Application.dataPath + "/Resources");
-            }
+            var resPath = Application.dataPath + "/Resources/Bugsnag";
+            Directory.CreateDirectory(resPath);
             var asset = CreateInstance<BugsnagSettingsObject>();
-            AssetDatabase.CreateAsset(asset, "Assets/Resources/BugsnagSettings.asset");
+            AssetDatabase.CreateAsset(asset, "Assets/Resources/Bugsnag/BugsnagSettings.asset");
             AssetDatabase.SaveAssets();
         }
 
