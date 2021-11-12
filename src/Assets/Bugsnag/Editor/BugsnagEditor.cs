@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using BugsnagUnity.Payload;
+using UnityEditor.Callbacks;
+using System.Linq;
+
 namespace BugsnagUnity.Editor
 {
     public class BugsnagEditor : EditorWindow
@@ -13,9 +16,13 @@ namespace BugsnagUnity.Editor
         private bool _showEnabledBreadcrumbTypes;
         private bool _showAdvancedSettings;
 
+
+
         private void OnEnable()
         {
-            titleContent = new GUIContent( "Bugsnag" );
+            Texture icon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Bugsnag/Editor/favicon-32.png", typeof(Texture));
+            titleContent.image = icon;
+            titleContent.text = "Bugsnag";
         }
 
         [MenuItem("Bugsnag/Settings")]
@@ -31,6 +38,7 @@ namespace BugsnagUnity.Editor
 
         void OnGUI()
         {
+            DrawLogo();
             if (!SettingsFileFound())
             {
                 DrawSettingsCreationWindow();
@@ -41,9 +49,29 @@ namespace BugsnagUnity.Editor
             }
         }
 
+        private void DrawLogo()
+        {
+            var bgTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            var c = Color.white;
+            c.a = 0.5f;
+            bgTex.SetPixel(0, 0, c);
+            bgTex.Apply();
+            GUI.DrawTexture(new Rect(0, 0, maxSize.x, 58), bgTex, ScaleMode.StretchToFill);
+
+            Texture logo = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Bugsnag/Editor/logo.png", typeof(Texture));
+            GUI.DrawTexture(new Rect(5, 5, 125, 46), logo, ScaleMode.ScaleToFit);
+            GUILayout.Space(70);
+
+        }
+
         private void DrawSettingsCreationWindow()
         {
-            GUILayout.Label("No Bugsnag Settings File Found.", EditorStyles.largeLabel);
+            GUIStyle wordWrap = EditorStyles.largeLabel;
+            wordWrap.wordWrap = true;
+            GUILayout.Label("No Bugsnag Settings File Found.", wordWrap);
+            GUILayout.Label("Please create one if you want Bugsnag to start automatically.", wordWrap);
+            GUILayout.Space(5);
+
             if (GUILayout.Button("Create New Settings File"))
             {
                 CreateNewSettingsFile();
@@ -74,6 +102,7 @@ namespace BugsnagUnity.Editor
             }
 
             EditorGUI.indentLevel--;
+            EditorUtility.SetDirty(settings);
 
         }
 

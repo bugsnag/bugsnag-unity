@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void OnBeforeSceneLoadRuntimeMethod()
         {
-            var settings = Resources.Load<BugsnagSettingsObject>("BugsnagSettings");
+            var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettings");
             if (settings != null)
             {
                 Bugsnag.Start(settings.GetConfig());
