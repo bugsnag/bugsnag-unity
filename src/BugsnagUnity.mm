@@ -168,11 +168,10 @@ extern "C" {
 
 }
 
-const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
-     NSDictionary* sectionDictionary = [((__bridge BugsnagEvent *)event) getMetadataFromSection:@(tab)];
-      @try {
+const char * getMetadataJson(NSDictionary* dictionary){
+    @try {
         NSError *error = nil;
-        NSData *data = [NSJSONSerialization dataWithJSONObject:sectionDictionary options:0 error:&error];
+        NSData *data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
         if (data) {
             return strndup((const char *)data.bytes, data.length);
         } else {
@@ -182,6 +181,32 @@ const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
         NSLog(@"%@", exception);
     }
     return NULL;
+}
+
+NSDictionary * getDictionaryFromMetadataJason(const char * jsonString){
+    @try {
+        NSError *error = nil;
+        NSData *data = [NSData dataWithBytesNoCopy:(void *)jsonString length:strlen(jsonString) freeWhenDone:NO];
+        id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if ([metadata isKindOfClass:[NSDictionary class]]) {
+            return metadata;
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+        return NULL;
+    }
+}
+
+const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
+    NSDictionary* sectionDictionary = [((__bridge BugsnagEvent *)event) getMetadataFromSection:@(tab)];
+    if(sectionDictionary == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        return getMetadataJson(sectionDictionary);
+    }
 }
 
 void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key){
@@ -194,24 +219,14 @@ void bugsnag_clearEventMetadataSection(const void *event, const char *section){
 
 void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadataJson) {
   
-  if (tab == NULL || metadataJson == NULL)
-  {
-    return;
-  }
-
-  NSString *tabName = [NSString stringWithUTF8String: tab];
-
-  @try {
-        NSError *error = nil;
-        NSData *data = [NSData dataWithBytesNoCopy:(void *)metadataJson length:strlen(metadataJson) freeWhenDone:NO];
-        id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        if ([metadata isKindOfClass:[NSDictionary class]]) {
-            [((__bridge BugsnagEvent *)event) addMetadata:metadata toSection:tabName];
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@", exception);
+    if (tab == NULL || metadataJson == NULL)
+    {
+        return;
     }
-  
+
+    NSString *tabName = [NSString stringWithUTF8String: tab];
+
+    [((__bridge BugsnagEvent *)event) addMetadata:getDictionaryFromMetadataJason(metadataJson) toSection:tabName];
 }
 
 
@@ -308,19 +323,15 @@ void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, voi
 }
 
 const char * bugsnag_getBreadcrumbMetadata(const void *breadcrumb) {
-     NSDictionary* sectionDictionary = ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata;
-      @try {
-        NSError *error = nil;
-        NSData *data = [NSJSONSerialization dataWithJSONObject:sectionDictionary options:0 error:&error];
-        if (data) {
-            return strndup((const char *)data.bytes, data.length);
-        } else {
-            NSLog(@"%@", error);
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@", exception);
+    NSDictionary* sectionDictionary = ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata;
+    if(sectionDictionary == NULL)
+    {
+        return NULL;
     }
-    return NULL;
+    else
+    {
+        return getMetadataJson(sectionDictionary);
+    }
 }
 
 void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonString) {
@@ -328,17 +339,7 @@ void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonStrin
   {
     return;
   }
-  @try {
-
-        NSError *error = nil;
-        NSData *data = [NSData dataWithBytesNoCopy:(void *)jsonString length:strlen(jsonString) freeWhenDone:NO];
-        id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        if ([metadata isKindOfClass:[NSDictionary class]]) {
-            ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = metadata;
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
+  ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = getDictionaryFromMetadataJason(jsonString);
   
 }
 
@@ -739,41 +740,27 @@ void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sess
 
 void bugsnag_setMetadata(const char *section, const char *jsonString) {
 
-  if (section == NULL)
+  if (section == NULL || jsonString == NULL)
   {
     return;
   }
 
   NSString *tabName = [NSString stringWithUTF8String: section];
 
-  @try {
+ [Bugsnag.client addMetadata:getDictionaryFromMetadataJason(jsonString) toSection:tabName];
 
-        NSError *error = nil;
-        NSData *data = [NSData dataWithBytesNoCopy:(void *)jsonString length:strlen(jsonString) freeWhenDone:NO];
-        id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        if ([metadata isKindOfClass:[NSDictionary class]]) {
-            [Bugsnag.client addMetadata:metadata toSection:tabName];
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@", exception);
-    }
 }
 
 const char * bugsnag_retrieveMetaData() {
 
-    @try {
-        NSError *error = nil;
-        NSData *data = [NSJSONSerialization dataWithJSONObject:[Bugsnag.client metadata].dictionary options:0 error:&error];
-        if (data) {
-            return strndup((const char *)data.bytes, data.length);
-        } else {
-            NSLog(@"%@", error);
-        }
-    } @catch (NSException *exception) {
-        NSLog(@"%@", exception);
+    if([Bugsnag.client metadata].dictionary == NULL)
+    {
+        return NULL;
     }
-    return NULL;
-
+    else
+    {
+        return getMetadataJson([Bugsnag.client metadata].dictionary);
+    }
 }
 
 void bugsnag_removeMetadata(const void *configuration, const char *tab) {
@@ -803,19 +790,7 @@ void bugsnag_addBreadcrumb(char *message, char *type, char *metadataJson) {
       crumb.message = ns_message;
       crumb.type = BSGBreadcrumbTypeFromString([NSString stringWithUTF8String:type]);
       if (metadataJson != NULL) {
-
-        @try {
-            NSError *error = nil;
-            NSData *data = [NSData dataWithBytesNoCopy:(void *)metadataJson length:strlen(metadataJson) freeWhenDone:NO];
-            id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-            if ([metadata isKindOfClass:[NSDictionary class]]) {
-                crumb.metadata = metadata;
-            }
-        } @catch (NSException *exception) {
-            NSLog(@"%@", exception);
-        }
-
-        
+        crumb.metadata = getDictionaryFromMetadataJason(metadataJson);
       }
   }];
 }
@@ -827,23 +802,9 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
     const char *type = [BSGBreadcrumbTypeValue(crumb.type) UTF8String];
 
     NSDictionary *metadata = crumb.metadata;
-    
     if(metadata != NULL)
     {
-        @try {
-            NSError *error = nil;
-            NSData *data = [NSJSONSerialization dataWithJSONObject:metadata options:0 error:&error];
-            if (data) {
-                const char *metadataString = strndup((const char *)data.bytes, data.length);
-
-                breadcrumb(managedBreadcrumbs, message, timestamp, type, metadataString);
-
-            } else {
-                NSLog(@"%@", error);
-            }
-        } @catch (NSException *exception) {
-            NSLog(@"%@", exception);
-        }
+        breadcrumb(managedBreadcrumbs, message, timestamp, type, getMetadataJson(metadata));
     }
     else
     {
