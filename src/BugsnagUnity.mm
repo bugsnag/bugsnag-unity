@@ -53,19 +53,19 @@ extern "C" {
 
     void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL);
 
-    void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount);
+    void bugsnag_setMetadata(const char *section, const char *jsonString);
 
     void bugsnag_removeMetadata(const void *configuration, const char *tab);
 
-    void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab, const char *keys[], int keys_size, const char *values[], int values_size));
+    const char * bugsnag_retrieveMetaData();
  
     void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes));
 
     void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion);
 
-    void bugsnag_addBreadcrumb(char *name, char *type, char *metadata[], int metadataCount);
+    void bugsnag_addBreadcrumb(char *name, char *type, char *metadataJson);
 
-    void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size));
+    void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *metadataJson));
 
     void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value));
 
@@ -127,9 +127,9 @@ extern "C" {
 
     void bugsnag_setBreadcrumbType(char * breadcrumb);
 
-    void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *metadata[], int metadataCount);
+    void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonString);
 
-    void bugsnag_getBreadcrumbMetadata(const void *breadcrumb,const void *instance, void (*callback)(const void *instance, const char *keys[], int keys_size, const char *values[], int values_size));
+    const char * bugsnag_getBreadcrumbMetadata(const void *breadcrumb);
 
     void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance,void *breadcrumbs[], int breadcrumbs_size));
 
@@ -149,13 +149,13 @@ extern "C" {
 
     BugsnagUser * bugsnag_getUserFromSession(const void *session);
 
-    void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadata[], int metadataCount);
+    void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadataJson);
 
     void bugsnag_clearEventMetadataSection(const void *event, const char *section);
 
     void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key);
 
-    void bugsnag_getEventMetaData(const void *event, const void *instance, const char *tab, void (*callback)(const void *instance,const char *keys[], int keys_size, const char *values[], int values_size));
+    const char * bugsnag_getEventMetaData(const void *event, const char *tab);
 
     const char * bugsnag_getErrorTypeFromError(const void *error);
 
@@ -168,23 +168,20 @@ extern "C" {
 
 }
 
-void bugsnag_getEventMetaData(const void *event,const void *instance, const char *tab, void (*callback)(const void *instance, const char *keys[], int keys_size, const char *values[], int values_size)) {
+const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
      NSDictionary* sectionDictionary = [((__bridge BugsnagEvent *)event) getMetadataFromSection:@(tab)];
-     NSArray *keys = [sectionDictionary allKeys];
-     NSArray *values = [sectionDictionary allValues];
-     int count = 0;
-     if ([keys count] <= INT_MAX) {
-       count = (int)[keys count];
-     }
-     const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-     const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-     for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
-       c_keys[i] = [[keys objectAtIndex: i] UTF8String];
-       c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
-     }
-    callback(instance,c_keys,count,c_values,count);
-    free(c_keys);
-    free(c_values);
+      @try {
+        NSError *error = nil;
+        NSData *data = [NSJSONSerialization dataWithJSONObject:sectionDictionary options:0 error:&error];
+        if (data) {
+            return strndup((const char *)data.bytes, data.length);
+        } else {
+            NSLog(@"%@", error);
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+    return NULL;
 }
 
 void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key){
@@ -195,19 +192,26 @@ void bugsnag_clearEventMetadataSection(const void *event, const char *section){
    [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section)];
 }
 
-void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadata[], int metadataCount) {
-  if (tab == NULL)
+void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadataJson) {
+  
+  if (tab == NULL || metadataJson == NULL)
+  {
     return;
+  }
 
   NSString *tabName = [NSString stringWithUTF8String: tab];
-  NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
 
-  for (int i = 0; i < metadataCount; i += 2) {
-    if (metadata[i] && metadata[i+1]) {
-        ns_metadata[@(metadata[i])] = @(metadata[i+1]);
+  @try {
+        NSError *error = nil;
+        NSData *data = [NSData dataWithBytesNoCopy:(void *)metadataJson length:strlen(metadataJson) freeWhenDone:NO];
+        id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if ([metadata isKindOfClass:[NSDictionary class]]) {
+            [((__bridge BugsnagEvent *)event) addMetadata:metadata toSection:tabName];
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@", exception);
     }
-  }
-  [((__bridge BugsnagEvent *)event) addMetadata:ns_metadata toSection:tabName];
+  
 }
 
 
@@ -303,34 +307,39 @@ void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, voi
     free(c_array);
 }
 
-void bugsnag_getBreadcrumbMetadata(const void *breadcrumb,const void *instance, void (*callback)(const void *instance,const char *keys[], int keys_size, const char *values[], int values_size)) {
+const char * bugsnag_getBreadcrumbMetadata(const void *breadcrumb) {
      NSDictionary* sectionDictionary = ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata;
-     NSArray *keys = [sectionDictionary allKeys];
-     NSArray *values = [sectionDictionary allValues];
-     int count = 0;
-     if ([keys count] <= INT_MAX) {
-       count = (int)[keys count];
-     }
-     const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-     const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-     for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
-       c_keys[i] = [[keys objectAtIndex: i] UTF8String];
-       c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
-     }
-    callback(instance,c_keys, count, c_values, count);
-    free(c_keys);
-    free(c_values);
+      @try {
+        NSError *error = nil;
+        NSData *data = [NSJSONSerialization dataWithJSONObject:sectionDictionary options:0 error:&error];
+        if (data) {
+            return strndup((const char *)data.bytes, data.length);
+        } else {
+            NSLog(@"%@", error);
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+    return NULL;
 }
 
-void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *metadata[], int metadataCount) {
-  NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
-  for (int i = 0; i < metadataCount; i += 2) {
-    if (metadata[i] && metadata[i+1]) {
-        ns_metadata[@(metadata[i])] = @(metadata[i+1]);
-    }
-
+void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonString) {
+  if (jsonString == NULL)
+  {
+    return;
   }
-  ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = ns_metadata;
+  @try {
+
+        NSError *error = nil;
+        NSData *data = [NSData dataWithBytesNoCopy:(void *)jsonString length:strlen(jsonString) freeWhenDone:NO];
+        id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if ([metadata isKindOfClass:[NSDictionary class]]) {
+            ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = metadata;
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+  
 }
 
 const char * bugsnag_getBreadcrumbType(const void *breadcrumb){
@@ -728,49 +737,42 @@ void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sess
   ((__bridge BugsnagConfiguration *)configuration).endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:ns_notifyURL sessions:ns_sessionsURL];
 }
 
-void bugsnag_setMetadata(const void *configuration, const char *tab, const char *metadata[], int metadataCount) {
-  if (tab == NULL)
+void bugsnag_setMetadata(const char *section, const char *jsonString) {
+
+  if (section == NULL)
+  {
     return;
-
-  NSString *tabName = [NSString stringWithUTF8String: tab];
-  NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
-
-  for (int i = 0; i < metadataCount; i += 2) {
-    NSString *key = metadata[i] != NULL
-        ? [NSString stringWithUTF8String:metadata[i]]
-        : nil;
-    if (key == nil) {
-      continue;
-    }
-    NSString *value = metadata[i+1] != NULL
-        ? [NSString stringWithUTF8String:metadata[i+1]]
-        : nil;
-    ns_metadata[key] = value;
-
   }
-  [Bugsnag.client addMetadata:ns_metadata toSection:tabName];
+
+  NSString *tabName = [NSString stringWithUTF8String: section];
+
+  @try {
+
+        NSError *error = nil;
+        NSData *data = [NSData dataWithBytesNoCopy:(void *)jsonString length:strlen(jsonString) freeWhenDone:NO];
+        id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+        if ([metadata isKindOfClass:[NSDictionary class]]) {
+            [Bugsnag.client addMetadata:metadata toSection:tabName];
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
 }
 
-void bugsnag_retrieveMetaData(const void *metadata, void (*callback)(const void *instance, const char *tab,const char *keys[], int keys_size, const char *values[], int values_size)) {
+const char * bugsnag_retrieveMetaData() {
 
-    for (NSString* sectionKey in [Bugsnag.client metadata].dictionary.allKeys) {
-         NSDictionary* sectionDictionary = [[Bugsnag.client metadata].dictionary valueForKey:sectionKey];
-         NSArray *keys = [sectionDictionary allKeys];
-         NSArray *values = [sectionDictionary allValues];
-         int count = 0;
-         if ([keys count] <= INT_MAX) {
-           count = (int)[keys count];
-         }
-         const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-         const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-         for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
-           c_keys[i] = [[keys objectAtIndex: i] UTF8String];
-           c_values[i] = [[[values objectAtIndex: i]description] UTF8String];
-         }
-        callback(metadata, [sectionKey UTF8String],c_keys,count,c_values,count);
-        free(c_keys);
-        free(c_values);
-   }
+    @try {
+        NSError *error = nil;
+        NSData *data = [NSJSONSerialization dataWithJSONObject:[Bugsnag.client metadata].dictionary options:0 error:&error];
+        if (data) {
+            return strndup((const char *)data.bytes, data.length);
+        } else {
+            NSLog(@"%@", error);
+        }
+    } @catch (NSException *exception) {
+        NSLog(@"%@", exception);
+    }
+    return NULL;
 
 }
 
@@ -795,57 +797,59 @@ void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *noti
   [BSG_KSCrash sharedInstance].introspectMemory = NO;
 }
 
-void bugsnag_addBreadcrumb(char *message, char *type, char *metadata[], int metadataCount) {
+void bugsnag_addBreadcrumb(char *message, char *type, char *metadataJson) {
   NSString *ns_message = [NSString stringWithUTF8String: message == NULL ? "<empty>" : message];
   [Bugsnag.client addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
       crumb.message = ns_message;
       crumb.type = BSGBreadcrumbTypeFromString([NSString stringWithUTF8String:type]);
-      if (metadataCount > 0) {
-        NSMutableDictionary *ns_metadata = [NSMutableDictionary new];
+      if (metadataJson != NULL) {
 
-        for (int i = 0; i < metadataCount - 1; i += 2) {
-          char *key = metadata[i];
-          char *value = metadata[i+1];
-          if (key == NULL || value == NULL)
-              continue;
-          NSString *ns_key = [NSString stringWithUTF8String:key];
-          NSString *ns_value = [NSString stringWithUTF8String:value];
-          ns_metadata[ns_key] = ns_value;
+        @try {
+            NSError *error = nil;
+            NSData *data = [NSData dataWithBytesNoCopy:(void *)metadataJson length:strlen(metadataJson) freeWhenDone:NO];
+            id metadata = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+            if ([metadata isKindOfClass:[NSDictionary class]]) {
+                crumb.metadata = metadata;
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"%@", exception);
         }
 
-        crumb.metadata = ns_metadata;
+        
       }
   }];
 }
 
-void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *keys[], int keys_size, const char *values[], int values_size)) {
+void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *metadataJson)) {
   [Bugsnag.breadcrumbs enumerateObjectsUsingBlock:^(BugsnagBreadcrumb *crumb, __unused NSUInteger index, __unused BOOL *stop){
     const char *message = [crumb.message UTF8String];
     const char *timestamp = [[BSG_RFC3339DateTool stringFromDate:crumb.timestamp] UTF8String];
     const char *type = [BSGBreadcrumbTypeValue(crumb.type) UTF8String];
 
     NSDictionary *metadata = crumb.metadata;
+    
+    if(metadata != NULL)
+    {
+        @try {
+            NSError *error = nil;
+            NSData *data = [NSJSONSerialization dataWithJSONObject:metadata options:0 error:&error];
+            if (data) {
+                const char *metadataString = strndup((const char *)data.bytes, data.length);
 
-    NSArray *keys = [metadata allKeys];
-    NSArray *values = [metadata allValues];
+                breadcrumb(managedBreadcrumbs, message, timestamp, type, metadataString);
 
-    int count = 0;
-
-    if ([keys count] <= INT_MAX) {
-      count = (int)[keys count];
+            } else {
+                NSLog(@"%@", error);
+            }
+        } @catch (NSException *exception) {
+            NSLog(@"%@", exception);
+        }
+    }
+    else
+    {
+        breadcrumb(managedBreadcrumbs, message, timestamp, type, NULL);
     }
 
-    const char **c_keys = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-    const char **c_values = (const char **) malloc(sizeof(char *) * ((size_t)count + 1));
-
-    for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
-      c_keys[i] = [[keys objectAtIndex: i] UTF8String];
-      c_values[i] = [[values objectAtIndex: i] UTF8String];
-    }
-
-    breadcrumb(managedBreadcrumbs, message, timestamp, type, c_keys, count, c_values, count);
-    free(c_keys);
-    free(c_values);
   }];
 }
 

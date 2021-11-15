@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using AOT;
 using BugsnagUnity.Payload;
 
@@ -22,35 +24,23 @@ namespace BugsnagUnity
 
         private Dictionary<string, object> GetMetadata()
         {
-            var metadata = new Dictionary<string, object>();
-            var handle = GCHandle.Alloc(metadata);
-            NativeCode.bugsnag_getBreadcrumbMetadata(NativePointer, GCHandle.ToIntPtr(handle),GetMetadata);
-            return metadata;
-        }
-
-        [MonoPInvokeCallback(typeof(NativeCode.BreadcrumbMetadata))]
-        private static void GetMetadata(IntPtr metadata,string[] keys, int keysCount,string[] values, int valuesCount)
-        {
-            var handle = GCHandle.FromIntPtr(metadata);
-            if (handle.Target is Dictionary<string, object> theMetadata)
-            {
-                for (var i = 0; i < keysCount; i++)
-                {
-                    theMetadata.Add(keys[i], values[i]);
-                }
-            }
-
+            var result = NativeCode.bugsnag_getBreadcrumbMetadata(NativePointer);
+            var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
+            return dictionary;
         }
 
         private void SetMetadata(Dictionary<string, object> metadata)
         {
-            var stringValues = new List<string>();
-            foreach (var item in metadata)
+            using (var stream = new MemoryStream())
+            using (var reader = new StreamReader(stream))
+            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
             {
-                stringValues.Add(item.Key);
-                stringValues.Add(item.Value.ToString());
+                SimpleJson.SerializeObject(metadata, writer);
+                writer.Flush();
+                stream.Position = 0;
+                var jsonString = reader.ReadToEnd();
+                NativeCode.bugsnag_setBreadcrumbMetadata(NativePointer, jsonString);
             }
-            NativeCode.bugsnag_setBreadcrumbMetadata(NativePointer, stringValues.ToArray(), stringValues.Count);
         }
 
         public DateTime? Timestamp => GetNativeDate(TIMESTAMP_KEY);

@@ -17,7 +17,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_startBugsnagWithConfiguration(IntPtr configuration, string notifierVersion);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setMetadata(IntPtr configuration, string tab, string[] metadata, int metadataCount);
+        internal static extern void bugsnag_setMetadata(string section, string jsonString);
 
         [DllImport(Import)]
         internal static extern void bugsnag_removeMetadata(IntPtr configuration, string tab);
@@ -41,10 +41,8 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveCurrentSession(IntPtr instance, SessionInformation callback);
 
-        internal delegate void MetadataInformation(IntPtr instance, string tab, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] values, int valuesSize);
-
         [DllImport(Import)]
-        internal static extern void bugsnag_retrieveMetaData(IntPtr instance, MetadataInformation visitor);
+        internal static extern string bugsnag_retrieveMetaData();
 
         [DllImport(Import)]
         internal static extern void bugsnag_populateUser(ref NativeUserVisitor user);
@@ -124,9 +122,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setNotifyReleaseStages(IntPtr configuration, string[] releaseStages, int count);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_addBreadcrumb(string name, string type, string[] metadata, int metadataCount);
+        internal static extern void bugsnag_addBreadcrumb(string name, string type, string metadataJson);
 
-        internal delegate void BreadcrumbInformation(IntPtr instance, string name, string timestamp, string type, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 5)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 7)] string[] values, int valuesSize);
+        internal delegate void BreadcrumbInformation(IntPtr instance, string name, string timestamp, string type, string metadataJson);
 
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveBreadcrumbs(IntPtr instance, BreadcrumbInformation visitor);
@@ -197,11 +195,10 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setBreadcrumbType(IntPtr nativeBreadcrumb, string type);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setBreadcrumbMetadata(IntPtr nativeBreadcrumb, string[] metadata, int metadataCount);
+        internal static extern void bugsnag_setBreadcrumbMetadata(IntPtr nativeBreadcrumb,  string jsonString);
 
-        internal delegate void BreadcrumbMetadata(IntPtr metadata, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] string[] values, int valuesSize);
         [DllImport(Import)]
-        internal static extern void bugsnag_getBreadcrumbMetadata(IntPtr nativeBreadcrumb, IntPtr metadata, BreadcrumbMetadata visitor);
+        internal static extern string bugsnag_getBreadcrumbMetadata(IntPtr nativeBreadcrumb);
 
         internal delegate void EventBreadcrumbs(IntPtr breadcrumbList,[MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] IntPtr[] breadcrumbs, int breadcrumbsSize);
         [DllImport(Import)]
@@ -235,7 +232,7 @@ namespace BugsnagUnity
         internal static extern IntPtr bugsnag_getUserFromSession(IntPtr session);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setEventMetadata(IntPtr @event, string tab, string[] metadata, int metadataCount);
+        internal static extern void bugsnag_setEventMetadata(IntPtr @event, string tab, string metadataJson);
 
         [DllImport(Import)]
         internal static extern void bugsnag_clearEventMetadataSection(IntPtr @event, string section);
@@ -243,9 +240,8 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_clearEventMetadataWithKey(IntPtr @event, string section, string key);
 
-        internal delegate void EventMetadata(IntPtr metadataDictionary, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] string[] keys, int keysSize, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 4)] string[] values, int valuesSize);
         [DllImport(Import)]
-        internal static extern void bugsnag_getEventMetaData(IntPtr @event, IntPtr metadataDictionary, string section, EventMetadata visitor);
+        internal static extern string bugsnag_getEventMetaData(IntPtr @event, string section);
 
 
     }
