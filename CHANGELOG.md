@@ -8,6 +8,11 @@
   * Fix missing `configuration.user` and manually resumed `session` info in unhandled errors.
     [bugsnag-cocoa#1215](https://github.com/bugsnag/bugsnag-cocoa/pull/1215)
 
+### Bug fixes
+
+* Fixed an issue where breadcrumbs from non fatal apphang errors caused a crash on retrieval
+  [#431](https://github.com/bugsnag/bugsnag-unity/pull/431)
+
 ## 5.4.1 (2021-10-25)
 
 ### Enhancements
