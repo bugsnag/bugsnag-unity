@@ -16,12 +16,11 @@ namespace BugsnagUnity.Editor
         private bool _showEnabledBreadcrumbTypes;
         private bool _showAdvancedSettings;
 
-
+        public Texture IconTexture, LogoTexture;
 
         private void OnEnable()
         {
-            Texture icon = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Bugsnag/Editor/favicon-32.png", typeof(Texture));
-            titleContent.image = icon;
+            titleContent.image = IconTexture;
             titleContent.text = "Bugsnag";
         }
 
@@ -58,8 +57,7 @@ namespace BugsnagUnity.Editor
             bgTex.Apply();
             GUI.DrawTexture(new Rect(0, 0, maxSize.x, 58), bgTex, ScaleMode.StretchToFill);
 
-            Texture logo = (Texture)AssetDatabase.LoadAssetAtPath("Assets/Bugsnag/Editor/logo.png", typeof(Texture));
-            GUI.DrawTexture(new Rect(5, 5, 125, 46), logo, ScaleMode.ScaleToFit);
+            GUI.DrawTexture(new Rect(5, 5, 125, 46), LogoTexture, ScaleMode.ScaleToFit);
             GUILayout.Space(70);
 
         }
