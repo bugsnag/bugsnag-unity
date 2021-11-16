@@ -9,15 +9,43 @@ namespace BugsnagUnity.Editor
 {
     public class BugsnagSettingsObject : ScriptableObject
     {
-        public string ApiKey;
+
+
         public bool AutoDetectErrors = true;
         public bool AutoTrackSessions = true;
-        public LogType NotifyLogLevel = LogType.Exception;
-        public int MaximumBreadcrumbs = 25;
-        public double SecondsPerUniqueLog = 5;
-        public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
+        public string ApiKey;
+        public string AppType;
+        public ulong AppHangThresholdMillis;
+        public string AppVersion;
 
+        public string BundleVersion;
+        public LogType BreadcrumbLogLevel = LogType.Log;
+
+        public string Context;
+
+        public string[] DiscardClasses;
+
+        public string[] EnabledReleaseStages;
+        public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
         public EditorBreadcrumbTypes EnabledBreadcrumbTypes = new EditorBreadcrumbTypes();
+
+        public long LaunchDurationMillis = 5000;
+
+        public int MaximumBreadcrumbs = 25;
+
+        public LogType NotifyLogLevel = LogType.Exception;
+        public string NotifyEndpoint;
+        public string SessionEndpoint;
+
+        public string[] RedactedKeys = new string[] { "password" };
+        public string ReleaseStage = "production";
+        public bool ReportUncaughtExceptionsAsHandled = true;
+
+        public bool SendLaunchCrashesSynchronously = true;
+        public double SecondsPerUniqueLog = 5;
+
+
+
 
         //public BreadcrumbType EnabledBreadcrumbTypes ;
         public Configuration GetConfig()
@@ -71,7 +99,7 @@ namespace BugsnagUnity.Editor
             }
             return enabledTypes.ToArray();
         }
-
+        [Serializable]
         public class EditorBreadcrumbTypes
         {
             public bool Navigation = true;
