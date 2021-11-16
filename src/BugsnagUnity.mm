@@ -782,14 +782,7 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
     const char *type = [BSGBreadcrumbTypeValue(crumb.type) UTF8String];
 
     NSDictionary *metadata = crumb.metadata;
-    if(metadata != NULL)
-    {
-        breadcrumb(managedBreadcrumbs, message, timestamp, type, getMetadataJson(metadata));
-    }
-    else
-    {
-        breadcrumb(managedBreadcrumbs, message, timestamp, type, NULL);
-    }
+    breadcrumb(managedBreadcrumbs, message, timestamp, type, getMetadataJson(metadata));
 
   }];
 }
