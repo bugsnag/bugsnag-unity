@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using AOT;
 using BugsnagUnity.Payload;
 
@@ -262,23 +264,18 @@ namespace BugsnagUnity
 
         public void SetMetadata(string section, Dictionary<string, object> metadataSection)
         {
-            var index = 0;
-            var count = 0;
             if (metadataSection != null)
             {
-                var metadata = new string[metadataSection.Count * 2];
-
-                foreach (var data in metadataSection)
+                using (var stream = new MemoryStream())
+                using (var reader = new StreamReader(stream))
+                using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
                 {
-                    if (data.Key != null)
-                    {
-                        metadata[index] = data.Key;
-                        metadata[index + 1] = data.Value.ToString();
-                        count += 2;
-                    }
-                    index += 2;
+                    SimpleJson.SerializeObject(metadataSection, writer);
+                    writer.Flush();
+                    stream.Position = 0;
+                    var jsonString = reader.ReadToEnd();
+                    NativeCode.bugsnag_setMetadata(section, jsonString);
                 }
-                NativeCode.bugsnag_setMetadata(NativeConfiguration, section, metadata, count);
             }
             else
             {
@@ -287,37 +284,10 @@ namespace BugsnagUnity
         }
 
         public void PopulateMetadata(Metadata metadata)
-        {
-            var handle = GCHandle.Alloc(metadata);
-            try
-            {
-                NativeCode.bugsnag_retrieveMetaData(GCHandle.ToIntPtr(handle), PopulateMetaDataData);
-            }
-            finally
-            {
-                handle.Free();
-            }
-        }
-
-        [MonoPInvokeCallback(typeof(NativeCode.MetadataInformation))]
-        static void PopulateMetaDataData(IntPtr instance, string tab, string[] keys, int keysSize, string[] values, int valuesSize)
-        {
-            var handle = GCHandle.FromIntPtr(instance);
-            if (handle.Target is Metadata metadata)
-            {
-                var metadataObject = new Dictionary<string, object>();
-                for (int i = 0; i < keys.Length; i++)
-                {
-                    var key = keys[i];
-                    var value = values[i];
-                    if (key.Equals("simulator"))
-                    {
-                        value = value.Equals("0") || value.Equals("false") ? "false" : "true";
-                    }
-                    metadataObject.Add(key, value);
-                }
-                metadata.AddMetadata(tab, metadataObject);
-            }
+        {           
+            var result =  NativeCode.bugsnag_retrieveMetaData();
+            var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
+            metadata.MergeMetadata(dictionary);
         }
 
         public void SetUser(User user)

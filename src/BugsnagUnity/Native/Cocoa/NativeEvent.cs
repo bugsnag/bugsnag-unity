@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using AOT;
 using BugsnagUnity.Payload;
 
@@ -135,23 +137,19 @@ namespace BugsnagUnity
 
         public void AddMetadata(string section, Dictionary<string, object> metadata)
         {
-            var index = 0;
-            var count = 0;
+           
             if (metadata != null)
             {
-                var metadataArray = new string[metadata.Count * 2];
-
-                foreach (var data in metadata)
+                using (var stream = new MemoryStream())
+                using (var reader = new StreamReader(stream))
+                using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
                 {
-                    if (data.Key != null)
-                    {
-                        metadataArray[index] = data.Key;
-                        metadataArray[index + 1] = data.Value.ToString();
-                        count += 2;
-                    }
-                    index += 2;
+                    SimpleJson.SerializeObject(metadata, writer);
+                    writer.Flush();
+                    stream.Position = 0;
+                    var jsonString = reader.ReadToEnd();
+                    NativeCode.bugsnag_setEventMetadata(NativePointer, section, jsonString);
                 }
-                NativeCode.bugsnag_setEventMetadata(NativePointer, section, metadataArray, count);
             }
             else
             {
@@ -178,37 +176,12 @@ namespace BugsnagUnity
 
         public Dictionary<string, object> GetMetadata(string section)
         {
-            var metadata = new Dictionary<string, object>();
-            var handle = GCHandle.Alloc(metadata);
-            try
-            {
-                NativeCode.bugsnag_getEventMetaData(NativePointer, GCHandle.ToIntPtr(handle), section, PopulateMetaDataSection);
-            }
-            finally
-            {
-                handle.Free();
-            }
-            return metadata;
+            var result = NativeCode.bugsnag_getEventMetaData(NativePointer, section);
+            var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
+            return dictionary;
         }
 
-        [MonoPInvokeCallback(typeof(NativeCode.EventMetadata))]
-        static void PopulateMetaDataSection(IntPtr instance, string[] keys, int keysSize, string[] values, int valuesSize)
-        {
-            var handle = GCHandle.FromIntPtr(instance);
-            if (handle.Target is Dictionary<string,object> metadata)
-            {
-                for (int i = 0; i < keys.Length; i++)
-                {
-                    var key = keys[i];
-                    var value = values[i];
-                    if (key.Equals("simulator"))
-                    {
-                        value = value.Equals("0") || value.Equals("false") ? "false" : "true";
-                    }
-                    metadata.Add(key, value);
-                }
-            }
-        }
+       
 
 
     }

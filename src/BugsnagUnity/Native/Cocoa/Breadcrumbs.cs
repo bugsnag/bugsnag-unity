@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using AOT;
 using BugsnagUnity.Payload;
 
@@ -29,21 +31,20 @@ namespace BugsnagUnity
             {
                 if (breadcrumb.Metadata != null)
                 {
-                    var index = 0;
-                    var metadata = new string[breadcrumb.Metadata.Count * 2];
-
-                    foreach (var data in breadcrumb.Metadata)
+                    using (var stream = new MemoryStream())
+                    using (var reader = new StreamReader(stream))
+                    using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
                     {
-                        metadata[index] = data.Key;
-                        metadata[index + 1] = data.Value.ToString();
-                        index += 2;
-                    }
-
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString().ToLower(), metadata, metadata.Length);
+                        SimpleJson.SerializeObject(breadcrumb.Metadata, writer);
+                        writer.Flush();
+                        stream.Position = 0;
+                        var jsonString = reader.ReadToEnd();
+                        NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString().ToLower(), jsonString);
+                    }                    
                 }
                 else
                 {
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString().ToLower(), null, 0);
+                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString().ToLower(), null);
                 }
             }
         }
@@ -67,18 +68,22 @@ namespace BugsnagUnity
         }
 
         [MonoPInvokeCallback(typeof(NativeCode.BreadcrumbInformation))]
-        static void PopulateBreadcrumb(IntPtr instance, string name, string timestamp, string type, string[] keys, int keysSize, string[] values, int valuesSize)
+        static void PopulateBreadcrumb(IntPtr instance, string name, string timestamp, string type, string metadataJson)
         {
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is List<Breadcrumb> breadcrumbs)
             {
-                var metadata = new Dictionary<string, object>();
-
-                for (var i = 0; i < keys.Length; i++)
+                if (!string.IsNullOrEmpty(metadataJson))
                 {
-                    metadata.Add(keys[i], values[i]);
+                    var metadata = ((JsonObject)SimpleJson.DeserializeObject(metadataJson)).GetDictionary();
+                    breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
                 }
-                breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
+                else
+                {
+                    breadcrumbs.Add(new Breadcrumb(name, timestamp, type, null));
+                }
+
+                
             }
         }
     }
