@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BugsnagUnity.Editor;
 using BugsnagUnity.Payload;
 using UnityEngine;
 
@@ -87,7 +88,7 @@ namespace BugsnagUnity
                EnabledBreadcrumbTypes.Contains(breadcrumbType);
         }
 
-        public string ApiKey { get; protected set; }
+        public string ApiKey { get; set; }
 
         private int _maximumBreadcrumbs = 25;
 
@@ -287,6 +288,26 @@ namespace BugsnagUnity
                 clone.Endpoints = Endpoints.Clone();
             }
             return clone;
+        }
+
+        /// <summary>
+        /// Loads the config values from the Bugsnag settings file found in Resources/Bugsnag
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <returns></returns>
+        public static Configuration Load(string apiKey)
+        {
+            var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettings");
+            if (settings != null)
+            {
+                var config = settings.GetConfig();
+                config.ApiKey = apiKey;
+                return config;
+            }
+            else
+            {
+                throw new Exception("No Bugsnag settings file found, please open the Bugsnag settings window to configure one");
+            }
         }
 
 
