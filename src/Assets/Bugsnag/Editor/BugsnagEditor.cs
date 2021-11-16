@@ -24,7 +24,7 @@ namespace BugsnagUnity.Editor
             titleContent.text = "Bugsnag";
         }
 
-        [MenuItem("Bugsnag/Settings")]
+        [MenuItem("Window/Bugsnag/Settings")]
         public static void ShowWindow()
         {
             GetWindow(typeof(BugsnagEditor));
@@ -40,13 +40,15 @@ namespace BugsnagUnity.Editor
             DrawLogo();
             if (!SettingsFileFound())
             {
-                DrawSettingsCreationWindow();
+                CreateNewSettingsFile();
             }
             else
             {
                 DrawSettingsEditorWindow();
             }
         }
+
+       
 
         private void DrawLogo()
         {
@@ -56,24 +58,9 @@ namespace BugsnagUnity.Editor
             bgTex.SetPixel(0, 0, c);
             bgTex.Apply();
             GUI.DrawTexture(new Rect(0, 0, maxSize.x, 58), bgTex, ScaleMode.StretchToFill);
-
             GUI.DrawTexture(new Rect(5, 5, 125, 46), LogoTexture, ScaleMode.ScaleToFit);
             GUILayout.Space(70);
 
-        }
-
-        private void DrawSettingsCreationWindow()
-        {
-            GUIStyle wordWrap = EditorStyles.largeLabel;
-            wordWrap.wordWrap = true;
-            GUILayout.Label("No Bugsnag Settings File Found.", wordWrap);
-            GUILayout.Label("Please create one if you want Bugsnag to start automatically.", wordWrap);
-            GUILayout.Space(5);
-
-            if (GUILayout.Button("Create New Settings File"))
-            {
-                CreateNewSettingsFile();
-            }
         }
 
         private void DrawSettingsEditorWindow()
