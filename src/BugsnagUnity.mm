@@ -470,7 +470,7 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
 
     for (NSUInteger i = 0; i < (NSUInteger)count; i++) {
       c_keys[i] = [[keys objectAtIndex: i] UTF8String];
-      c_values[i] = [[values objectAtIndex: i] UTF8String];
+      c_values[i] = [[[values objectAtIndex: i] description] UTF8String];
     }
 
     breadcrumb(managedBreadcrumbs, message, timestamp, type, c_keys, count, c_values, count);

@@ -36,6 +36,7 @@ steps:
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/MacOS-2020.3.15f2.zip
       - features/fixtures/maze_runner/build/WebGL-2020.3.15f2.zip
 
@@ -122,10 +123,10 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.15f2.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "--fail-fast"
           - "features/android"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   #
   # Build iOS test fixtures
@@ -186,7 +187,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2020.3.15f2.ipa"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.15f2.ipa"
@@ -196,6 +198,7 @@ steps:
           - "features/ios"
     concurrency: 9
     concurrency_group: browserstack-app
+    concurrency_method: eager
 
   #
   # Build Windows test fixture
@@ -211,6 +214,7 @@ steps:
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
+      - unity.log
       - features/fixtures/maze_runner/build/Windows-2020.3.17f1.zip
 
   #

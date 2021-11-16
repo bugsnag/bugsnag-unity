@@ -74,7 +74,7 @@ Feature: Android smoke tests for C# errors
         And the event "context" equals "Callback Context"
 
         # MetaData
-        And the event "metaData.device.osLanguage" is not null
+        And the event "metaData.device.osLanguage" is present from Unity 2018
         And the event "app.type" equals "android"
         And the event "metaData.app.companyName" equals "bugsnag"
         And the event "metaData.app.name" equals "Mazerunner"
@@ -156,7 +156,7 @@ Feature: Android smoke tests for C# errors
         And the event "context" equals "My context"
 
         # MetaData
-        And the event "metaData.device.osLanguage" is not null
+        And the event "metaData.device.osLanguage" is present from Unity 2018
         And the event "app.type" equals "android"
         And the event "metaData.app.companyName" equals "bugsnag"
         And the event "metaData.app.name" equals "Mazerunner"
@@ -177,4 +177,4 @@ Feature: Android smoke tests for C# errors
         And the event "app.isLaunching" equals "false"
 
 
-    
+

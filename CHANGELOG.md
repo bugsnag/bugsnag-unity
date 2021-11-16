@@ -1,5 +1,18 @@
 # Changelog
 
+## TBD
+
+## 5.4.2 (2021-11-16)
+
+* Update bugsnag-cocoa to v6.14.2
+  * Fix missing `configuration.user` and manually resumed `session` info in unhandled errors.
+    [bugsnag-cocoa#1215](https://github.com/bugsnag/bugsnag-cocoa/pull/1215)
+
+### Bug fixes
+
+* Fixed an issue where breadcrumbs from non fatal apphang errors caused a crash on retrieval
+  [#431](https://github.com/bugsnag/bugsnag-unity/pull/431)
+
 ## 5.4.1 (2021-10-25)
 
 ### Enhancements
@@ -11,7 +24,15 @@
     [bugsnag-android#1367](https://github.com/bugsnag/bugsnag-android/pull/1367)
     [bugsnag-android#1390](https://github.com/bugsnag/bugsnag-android/pull/1390)
 
-* Update bugsnag-cocoa to v6.14.0
+* Update bugsnag-cocoa to v6.14.1
+  * Disable automatic session tracking in app extensions (it was not working as intended.)
+    [bugsnag-cocoa#1211](https://github.com/bugsnag/bugsnag-cocoa/pull/1211)
+  * Stop logging "[ERROR] Failed to install crash handler..." if a debugger is attached.
+    [bugsnag-cocoa#1210](https://github.com/bugsnag/bugsnag-cocoa/pull/1210)
+  * Include the word "request" in network request breadcrumb messages.
+    [bugsnag-cocoa#1209](https://github.com/bugsnag/bugsnag-cocoa/pull/1209)
+  * Apply `redactedKeys` to breadcrumb metadata.
+    [bugsnag-cocoa#1204](https://github.com/bugsnag/bugsnag-cocoa/pull/1204)
   * Capture and report thread states (running, stopped, waiting, etc.) 
     [bugsnag-cocoa#1200](https://github.com/bugsnag/bugsnag-cocoa/pull/1200)
   * Disable app hang detection for app extensions.
