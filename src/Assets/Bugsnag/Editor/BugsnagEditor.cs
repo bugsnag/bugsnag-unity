@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using BugsnagUnity.Payload;
+using BugsnagUnity;
 using UnityEditor.Callbacks;
 using System.Linq;
 
@@ -12,8 +12,6 @@ namespace BugsnagUnity.Editor
     public class BugsnagEditor : EditorWindow
     {
 
-        private bool _showEnabledErrorTypes;
-        private bool _showEnabledBreadcrumbTypes;
         private bool _showAdvancedSettings;
 
         public Texture IconTexture, LogoTexture;
@@ -47,9 +45,7 @@ namespace BugsnagUnity.Editor
                 DrawSettingsEditorWindow();
             }
         }
-
        
-
         private void DrawLogo()
         {
             var bgTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
@@ -60,15 +56,12 @@ namespace BugsnagUnity.Editor
             GUI.DrawTexture(new Rect(0, 0, maxSize.x, 58), bgTex, ScaleMode.StretchToFill);
             GUI.DrawTexture(new Rect(5, 5, 125, 46), LogoTexture, ScaleMode.ScaleToFit);
             GUILayout.Space(70);
-
         }
 
         private void DrawSettingsEditorWindow()
         {
-
             GUILayout.Label("Bugsnag settings", EditorStyles.largeLabel);
             GUILayout.Space(5);
-
             EditorGUI.indentLevel++;
 
             var settings = GetSettingsObject();
@@ -80,7 +73,6 @@ namespace BugsnagUnity.Editor
             GUILayout.Space(5);
 
             _showAdvancedSettings = EditorGUILayout.Foldout(_showAdvancedSettings, "Advanced Settings", true);
-
             if (_showAdvancedSettings)
             {
                 DrawAdvancedSettings(settings);
@@ -88,7 +80,6 @@ namespace BugsnagUnity.Editor
 
             EditorGUI.indentLevel--;
             EditorUtility.SetDirty(settings);
-
         }
 
         private void DrawAdvancedSettings(BugsnagSettingsObject settings)
@@ -115,19 +106,17 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("SessionEndpoint"));
             EditorGUILayout.PropertyField(so.FindProperty("RedactedKeys"));
             EditorGUILayout.PropertyField(so.FindProperty("ReleaseStage"));
-            EditorGUIUtility.labelWidth = 270;
 
+            EditorGUIUtility.labelWidth = 270;
             EditorGUILayout.PropertyField(so.FindProperty("ReportUncaughtExceptionsAsHandled"));
             EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
+
             EditorGUIUtility.labelWidth = 200;
-
             EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
-
             so.ApplyModifiedProperties();
             EditorGUI.indentLevel--;
             EditorGUIUtility.labelWidth = originalWidth;
         }
-      
 
         private BugsnagSettingsObject GetSettingsObject()
         {

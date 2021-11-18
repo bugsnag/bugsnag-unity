@@ -33,13 +33,30 @@ namespace BugsnagUnity.Editor
         public bool SendLaunchCrashesSynchronously = true;
         public double SecondsPerUniqueLog = 5;
 
+        public static Configuration LoadConfiguration()
+        {
+            var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
+            if (settings != null)
+            {
+                var config = settings.GetConfig();
+                return config;
+            }
+            else
+            {
+                throw new Exception("No BugsnagSettingsObject found.");
+            }
+        }
+
         public Configuration GetConfig()
         {
             var config = new Configuration(ApiKey);
             config.AutoDetectErrors = AutoDetectErrors;
             config.AutoTrackSessions = AutoTrackSessions;
             config.AppType = AppType;
-            config.AppHangThresholdMillis = AppHangThresholdMillis;
+            if (AppHangThresholdMillis > 0)
+            {
+                config.AppHangThresholdMillis = AppHangThresholdMillis;
+            }
             if (!string.IsNullOrEmpty(AppVersion))
             {
                 config.AppVersion = AppVersion;
@@ -48,7 +65,10 @@ namespace BugsnagUnity.Editor
             config.BreadcrumbLogLevel = LogType.Log;
             config.Context = Context;
             config.DiscardClasses = DiscardClasses;
-            config.EnabledReleaseStages = EnabledReleaseStages;
+            if (EnabledReleaseStages != null && EnabledReleaseStages.Length > 0)
+            {
+                config.EnabledReleaseStages = EnabledReleaseStages;
+            }
             config.EnabledErrorTypes = EnabledErrorTypes;
             config.EnabledBreadcrumbTypes = GetEnabledBreadcrumbTypes();
             config.LaunchDurationMillis = LaunchDurationMillis;
