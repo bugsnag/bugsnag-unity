@@ -10,55 +10,63 @@ namespace BugsnagUnity.Editor
     public class BugsnagSettingsObject : ScriptableObject
     {
 
-
         public bool AutoDetectErrors = true;
         public bool AutoTrackSessions = true;
         public string ApiKey;
         public string AppType;
         public ulong AppHangThresholdMillis;
         public string AppVersion;
-
         public string BundleVersion;
         public LogType BreadcrumbLogLevel = LogType.Log;
-
         public string Context;
-
         public string[] DiscardClasses;
-
         public string[] EnabledReleaseStages;
         public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
         public EditorBreadcrumbTypes EnabledBreadcrumbTypes = new EditorBreadcrumbTypes();
-
         public long LaunchDurationMillis = 5000;
-
         public int MaximumBreadcrumbs = 25;
-
         public LogType NotifyLogLevel = LogType.Exception;
         public string NotifyEndpoint;
         public string SessionEndpoint;
-
         public string[] RedactedKeys = new string[] { "password" };
         public string ReleaseStage = "production";
         public bool ReportUncaughtExceptionsAsHandled = true;
-
         public bool SendLaunchCrashesSynchronously = true;
         public double SecondsPerUniqueLog = 5;
 
-
-
-
-        //public BreadcrumbType EnabledBreadcrumbTypes ;
         public Configuration GetConfig()
         {
             var config = new Configuration(ApiKey);
             config.AutoDetectErrors = AutoDetectErrors;
             config.AutoTrackSessions = AutoTrackSessions;
-            config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(SecondsPerUniqueLog);
-            config.NotifyLogLevel = NotifyLogLevel;
-            config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
-            config.MaximumBreadcrumbs = MaximumBreadcrumbs;
-            config.EnabledBreadcrumbTypes = GetEnabledBreadcrumbTypes();
+            config.AppType = AppType;
+            config.AppHangThresholdMillis = AppHangThresholdMillis;
+            if (!string.IsNullOrEmpty(AppVersion))
+            {
+                config.AppVersion = AppVersion;
+            }
+            config.BundleVersion = BundleVersion;
+            config.BreadcrumbLogLevel = LogType.Log;
+            config.Context = Context;
+            config.DiscardClasses = DiscardClasses;
+            config.EnabledReleaseStages = EnabledReleaseStages;
             config.EnabledErrorTypes = EnabledErrorTypes;
+            config.EnabledBreadcrumbTypes = GetEnabledBreadcrumbTypes();
+            config.LaunchDurationMillis = LaunchDurationMillis;
+            config.MaximumBreadcrumbs = MaximumBreadcrumbs;
+            config.NotifyLogLevel = NotifyLogLevel;
+            if (!string.IsNullOrEmpty(NotifyEndpoint) && !string.IsNullOrEmpty(SessionEndpoint))
+            {
+                config.Endpoints = new EndpointConfiguration(NotifyEndpoint, SessionEndpoint);
+            }
+            config.RedactedKeys = RedactedKeys;
+            if (string.IsNullOrEmpty(ReleaseStage))
+            {
+                config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
+            }
+            config.ReportUncaughtExceptionsAsHandled = ReportUncaughtExceptionsAsHandled;
+            config.SendLaunchCrashesSynchronously = SendLaunchCrashesSynchronously;
+            config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             return config;
         }
 
