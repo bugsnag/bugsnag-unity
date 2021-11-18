@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using BugsnagUnity;
 using BugsnagUnity.Payload;
 using System;
 
 namespace BugsnagUnity.Editor
 {
+    [Serializable]
     public class BugsnagSettingsObject : ScriptableObject
     {
 

@@ -32,7 +32,7 @@ namespace BugsnagUnity.Editor
 
         private static bool SettingsFileFound()
         {
-            return File.Exists(Application.dataPath + "/Resources/Bugsnag/BugsnagSettings.asset");
+            return File.Exists(Application.dataPath + "/Resources/Bugsnag/BugsnagSettingsObject.asset");
         }
 
         void OnGUI()
@@ -131,7 +131,7 @@ namespace BugsnagUnity.Editor
 
         private BugsnagSettingsObject GetSettingsObject()
         {
-            return Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettings");
+            return Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
         }
 
         private void CreateNewSettingsFile()
@@ -139,7 +139,7 @@ namespace BugsnagUnity.Editor
             var resPath = Application.dataPath + "/Resources/Bugsnag";
             Directory.CreateDirectory(resPath);
             var asset = CreateInstance<BugsnagSettingsObject>();
-            AssetDatabase.CreateAsset(asset, "Assets/Resources/Bugsnag/BugsnagSettings.asset");
+            AssetDatabase.CreateAsset(asset, "Assets/Resources/Bugsnag/BugsnagSettingsObject.asset");
             AssetDatabase.SaveAssets();
         }
 
