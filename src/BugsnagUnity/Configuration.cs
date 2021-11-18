@@ -289,27 +289,6 @@ namespace BugsnagUnity
             return clone;
         }
 
-        ///// <summary>
-        ///// Loads the config values from the Bugsnag settings file found in Resources/Bugsnag
-        ///// </summary>
-        ///// <param name="apiKey"></param>
-        ///// <returns></returns>
-        //public static Configuration Load(string apiKey)
-        //{
-        //    var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
-        //    if (settings != null)
-        //    {
-        //        var config = settings.GetConfig();
-        //        config.ApiKey = apiKey;
-        //        return config;
-        //    }
-        //    else
-        //    {
-        //        throw new Exception("No Bugsnag settings file found, please open the Bugsnag settings window to configure one");
-        //    }
-        //}
-
-
     }
 
     [Serializable]
