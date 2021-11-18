@@ -24,7 +24,7 @@ namespace BugsnagUnity.Editor
             titleContent.text = "Bugsnag";
         }
 
-        [MenuItem("Bugsnag/Settings")]
+        [MenuItem("Window/Bugsnag/Settings")]
         public static void ShowWindow()
         {
             GetWindow(typeof(BugsnagEditor));
@@ -40,13 +40,15 @@ namespace BugsnagUnity.Editor
             DrawLogo();
             if (!SettingsFileFound())
             {
-                DrawSettingsCreationWindow();
+                CreateNewSettingsFile();
             }
             else
             {
                 DrawSettingsEditorWindow();
             }
         }
+
+       
 
         private void DrawLogo()
         {
@@ -56,24 +58,9 @@ namespace BugsnagUnity.Editor
             bgTex.SetPixel(0, 0, c);
             bgTex.Apply();
             GUI.DrawTexture(new Rect(0, 0, maxSize.x, 58), bgTex, ScaleMode.StretchToFill);
-
             GUI.DrawTexture(new Rect(5, 5, 125, 46), LogoTexture, ScaleMode.ScaleToFit);
             GUILayout.Space(70);
 
-        }
-
-        private void DrawSettingsCreationWindow()
-        {
-            GUIStyle wordWrap = EditorStyles.largeLabel;
-            wordWrap.wordWrap = true;
-            GUILayout.Label("No Bugsnag Settings File Found.", wordWrap);
-            GUILayout.Label("Please create one if you want Bugsnag to start automatically.", wordWrap);
-            GUILayout.Space(5);
-
-            if (GUILayout.Button("Create New Settings File"))
-            {
-                CreateNewSettingsFile();
-            }
         }
 
         private void DrawSettingsEditorWindow()
@@ -108,55 +95,39 @@ namespace BugsnagUnity.Editor
         {
             EditorGUI.indentLevel++;
             var originalWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 175;
+            EditorGUIUtility.labelWidth = 200;
 
-            settings.SecondsPerUniqueLog = EditorGUILayout.DoubleField("Seconds Per Unique Log", settings.SecondsPerUniqueLog);
-            settings.MaximumBreadcrumbs = EditorGUILayout.IntSlider("Maximum Breadcrumbs", settings.MaximumBreadcrumbs, 0, 100);
+            SerializedObject so = new SerializedObject(settings);
 
-            DrawEnabledErrorTypesDropdown(settings);
+            EditorGUILayout.PropertyField(so.FindProperty("AppType"));
+            EditorGUILayout.PropertyField(so.FindProperty("AppHangThresholdMillis"));
+            EditorGUILayout.PropertyField(so.FindProperty("AppVersion"));
+            EditorGUILayout.PropertyField(so.FindProperty("BundleVersion"));
+            EditorGUILayout.PropertyField(so.FindProperty("BreadcrumbLogLevel"));
+            EditorGUILayout.PropertyField(so.FindProperty("Context"));
+            EditorGUILayout.PropertyField(so.FindProperty("DiscardClasses"));
+            EditorGUILayout.PropertyField(so.FindProperty("EnabledReleaseStages"));
+            EditorGUILayout.PropertyField(so.FindProperty("EnabledErrorTypes"));
+            EditorGUILayout.PropertyField(so.FindProperty("EnabledBreadcrumbTypes"));
+            EditorGUILayout.PropertyField(so.FindProperty("LaunchDurationMillis"));
+            EditorGUILayout.PropertyField(so.FindProperty("MaximumBreadcrumbs"));
+            EditorGUILayout.PropertyField(so.FindProperty("NotifyEndpoint"));
+            EditorGUILayout.PropertyField(so.FindProperty("SessionEndpoint"));
+            EditorGUILayout.PropertyField(so.FindProperty("RedactedKeys"));
+            EditorGUILayout.PropertyField(so.FindProperty("ReleaseStage"));
+            EditorGUIUtility.labelWidth = 270;
 
-            DrawEnabledBreadcrumbTypesDropdown(settings);
+            EditorGUILayout.PropertyField(so.FindProperty("ReportUncaughtExceptionsAsHandled"));
+            EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
+            EditorGUIUtility.labelWidth = 200;
 
+            EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
+
+            so.ApplyModifiedProperties();
             EditorGUI.indentLevel--;
             EditorGUIUtility.labelWidth = originalWidth;
         }
-
-        private void DrawEnabledErrorTypesDropdown(BugsnagSettingsObject settings)
-        {
-            _showEnabledErrorTypes = EditorGUILayout.Foldout(_showEnabledErrorTypes, "Enabled Error Types", true);
-            if (_showEnabledErrorTypes)
-            {
-                EditorGUI.indentLevel += 2;
-                settings.EnabledErrorTypes.ANRs = EditorGUILayout.Toggle("ANRs", settings.EnabledErrorTypes.ANRs);
-                settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle("AppHangs", settings.EnabledErrorTypes.AppHangs);
-                settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle("OOMs", settings.EnabledErrorTypes.OOMs);
-                settings.EnabledErrorTypes.NativeCrashes = EditorGUILayout.Toggle("Native Crashes", settings.EnabledErrorTypes.NativeCrashes);
-                settings.EnabledErrorTypes.UnhandledExceptions = EditorGUILayout.Toggle("Unhandled Exceptions", settings.EnabledErrorTypes.UnhandledExceptions);
-                settings.EnabledErrorTypes.UnityLogLogs = EditorGUILayout.Toggle("Unity.Log Logs", settings.EnabledErrorTypes.UnityLogLogs);
-                settings.EnabledErrorTypes.UnityAssertLogs = EditorGUILayout.Toggle("Unity.Assert Logs", settings.EnabledErrorTypes.UnityAssertLogs);
-                settings.EnabledErrorTypes.UnityWarningLogs = EditorGUILayout.Toggle("Unity.Warning Logs", settings.EnabledErrorTypes.UnityWarningLogs);
-                settings.EnabledErrorTypes.UnityErrorLogs = EditorGUILayout.Toggle("Unity.Error Logs", settings.EnabledErrorTypes.UnityErrorLogs);
-                EditorGUI.indentLevel -= 2;
-            }
-        }
-
-        private void DrawEnabledBreadcrumbTypesDropdown(BugsnagSettingsObject settings)
-        {
-            _showEnabledBreadcrumbTypes = EditorGUILayout.Foldout(_showEnabledBreadcrumbTypes, "Enabled Breadcrumb Types", true);
-            if (_showEnabledBreadcrumbTypes)
-            {
-                EditorGUI.indentLevel += 2;
-                settings.EnabledBreadcrumbTypes.Navigation = EditorGUILayout.Toggle("Navigation", settings.EnabledBreadcrumbTypes.Navigation);
-                settings.EnabledBreadcrumbTypes.Request = EditorGUILayout.Toggle("Request", settings.EnabledBreadcrumbTypes.Request);
-                settings.EnabledBreadcrumbTypes.Process = EditorGUILayout.Toggle("Process", settings.EnabledBreadcrumbTypes.Process);
-                settings.EnabledBreadcrumbTypes.Log = EditorGUILayout.Toggle("Log", settings.EnabledBreadcrumbTypes.Log);
-                settings.EnabledBreadcrumbTypes.User = EditorGUILayout.Toggle("User", settings.EnabledBreadcrumbTypes.User);
-                settings.EnabledBreadcrumbTypes.State = EditorGUILayout.Toggle("State", settings.EnabledBreadcrumbTypes.State);
-                settings.EnabledBreadcrumbTypes.Error = EditorGUILayout.Toggle("Error", settings.EnabledBreadcrumbTypes.Error);
-                settings.EnabledBreadcrumbTypes.Manual = EditorGUILayout.Toggle("Manual", settings.EnabledBreadcrumbTypes.Manual);
-                EditorGUI.indentLevel -= 2;
-            }
-        }
+      
 
         private BugsnagSettingsObject GetSettingsObject()
         {
