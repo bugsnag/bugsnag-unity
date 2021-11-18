@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
         static void OnBeforeSceneLoadRuntimeMethod()
         {
             var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
-            if (settings != null && !string.IsNullOrWhiteSpace(settings.ApiKey))
+            if (settings != null && !string.IsNullOrEmpty(settings.ApiKey))
             {
                 var config = settings.GetConfig();
                 config.ScriptingBackend = FindScriptingBackend();
