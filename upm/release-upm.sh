@@ -67,7 +67,7 @@ echo "Setting the version $VERSION in the copied manifest"
 sed -i '' "s/VERSION_STRING/$VERSION/g" "PackageBranch/package.json"
 
 # Deploy to github with the release tag
-if [ GIT_DEPLOY ] 
+if [ GIT_DEPLOY = true ] 
 then
 echo "Deploying to github with the tag upm-$VERSION"
 cd PackageBranch
@@ -76,12 +76,12 @@ git commit -m "release v$VERSION"
 git tag "upm-$VERSION"
 git push "upm-$VERSION"
 cd ..
-fi
-
 echo "cleaning up"
 
 #clean out build files
 git clean -fdx $SCRIPT_PATH
 git rm PackageBranch
+fi
+
 
 echo "complete"
