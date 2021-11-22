@@ -65,6 +65,7 @@ namespace BugsnagUnity.Editor
             EditorGUI.indentLevel++;
 
             var settings = GetSettingsObject();
+            settings.AutoStartBugsnag = EditorGUILayout.Toggle("Auto Start Bugsnag",settings.AutoStartBugsnag);
             settings.ApiKey = EditorGUILayout.TextField("API Key", settings.ApiKey);
             settings.AutoDetectErrors = EditorGUILayout.Toggle("Auto Detect Errors", settings.AutoDetectErrors);
             settings.AutoTrackSessions = EditorGUILayout.Toggle("Auto Track Sessions", settings.AutoTrackSessions);

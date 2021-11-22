@@ -8,8 +8,13 @@ namespace BugsnagUnity.Editor
         static void OnBeforeSceneLoadRuntimeMethod()
         {
             var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
-            if (settings != null && !string.IsNullOrEmpty(settings.ApiKey))
+            if (settings != null && settings.AutoStartBugsnag)
             {
+                if(string.IsNullOrEmpty(settings.ApiKey))
+                {
+                    Debug.LogError("Bugsnag not auto started as the API key is not set in the Bugsnag Settings window.");
+                    return;
+                }
                 var config = settings.GetConfig();
                 config.ScriptingBackend = FindScriptingBackend();
                 config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();

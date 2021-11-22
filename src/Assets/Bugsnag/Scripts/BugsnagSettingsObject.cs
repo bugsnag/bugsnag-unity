@@ -9,6 +9,7 @@ namespace BugsnagUnity.Editor
     public class BugsnagSettingsObject : ScriptableObject
     {
 
+        public bool AutoStartBugsnag = true;
         public bool AutoDetectErrors = true;
         public bool AutoTrackSessions = true;
         public string ApiKey;
