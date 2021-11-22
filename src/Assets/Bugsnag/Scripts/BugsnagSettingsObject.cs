@@ -33,7 +33,7 @@ namespace BugsnagUnity.Editor
         public bool ReportUncaughtExceptionsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
         public double SecondsPerUniqueLog = 5;
-
+        public int VersionCode;
         public static Configuration LoadConfiguration()
         {
             var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
@@ -87,6 +87,7 @@ namespace BugsnagUnity.Editor
             config.ReportUncaughtExceptionsAsHandled = ReportUncaughtExceptionsAsHandled;
             config.SendLaunchCrashesSynchronously = SendLaunchCrashesSynchronously;
             config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(SecondsPerUniqueLog);
+            config.VersionCode = VersionCode;
             return config;
         }
 

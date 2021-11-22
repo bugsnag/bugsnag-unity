@@ -12,7 +12,7 @@ namespace BugsnagUnity.Editor
     public class BugsnagEditor : EditorWindow
     {
 
-        private bool _showAdvancedSettings;
+        private bool _showAdvancedSettings, _showAppInformation, _showEndpoints;
 
         public Texture IconTexture, LogoTexture;
 
@@ -63,38 +63,67 @@ namespace BugsnagUnity.Editor
             GUILayout.Label("Bugsnag settings", EditorStyles.largeLabel);
             GUILayout.Space(5);
             EditorGUI.indentLevel++;
-
             var settings = GetSettingsObject();
+            SerializedObject so = new SerializedObject(settings);
             settings.AutoStartBugsnag = EditorGUILayout.Toggle("Auto Start Bugsnag",settings.AutoStartBugsnag);
             settings.ApiKey = EditorGUILayout.TextField("API Key", settings.ApiKey);
-            settings.AutoDetectErrors = EditorGUILayout.Toggle("Auto Detect Errors", settings.AutoDetectErrors);
-            settings.AutoTrackSessions = EditorGUILayout.Toggle("Auto Track Sessions", settings.AutoTrackSessions);
             settings.NotifyLogLevel = (LogType)EditorGUILayout.EnumPopup("Notify Log Level", settings.NotifyLogLevel);
-
             GUILayout.Space(5);
-
+            _showAppInformation = EditorGUILayout.Foldout(_showAppInformation, "App Information", true);
+            if (_showAppInformation)
+            {
+                DrawAppInfo(so);
+            }
+            GUILayout.Space(5);
             _showAdvancedSettings = EditorGUILayout.Foldout(_showAdvancedSettings, "Advanced Settings", true);
             if (_showAdvancedSettings)
             {
-                DrawAdvancedSettings(settings);
+                DrawAdvancedSettings(so);
             }
-
+            GUILayout.Space(5);
+            _showEndpoints = EditorGUILayout.Foldout(_showEndpoints, "Endpoints", true);
+            if (_showEndpoints)
+            {
+                DrawEndpoints(so);
+            }
             EditorGUI.indentLevel--;
             EditorUtility.SetDirty(settings);
         }
 
-        private void DrawAdvancedSettings(BugsnagSettingsObject settings)
+        private void DrawEndpoints(SerializedObject so)
+        {
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(so.FindProperty("NotifyEndpoint"));
+            EditorGUILayout.PropertyField(so.FindProperty("SessionEndpoint"));
+            EditorGUI.indentLevel--;
+        }
+
+        private void DrawAppInfo(SerializedObject so)
+        {
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(so.FindProperty("AppType"));
+            EditorGUILayout.PropertyField(so.FindProperty("AppVersion"));
+            EditorGUILayout.PropertyField(so.FindProperty("ReleaseStage"));
+            EditorGUILayout.LabelField("Android Only");
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(so.FindProperty("BundleVersion"));
+            EditorGUI.indentLevel--;
+            EditorGUILayout.LabelField("Cocoa Only");
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(so.FindProperty("VersionCode"));
+            EditorGUI.indentLevel--;
+            EditorGUI.indentLevel--;
+        }
+
+
+        private void DrawAdvancedSettings(SerializedObject so)
         {
             EditorGUI.indentLevel++;
             var originalWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 200;
-
-            SerializedObject so = new SerializedObject(settings);
-
-            EditorGUILayout.PropertyField(so.FindProperty("AppType"));
+            EditorGUILayout.PropertyField(so.FindProperty("AutoDetectErrors"));
+            EditorGUILayout.PropertyField(so.FindProperty("AutoTrackSessions"));
             EditorGUILayout.PropertyField(so.FindProperty("AppHangThresholdMillis"));
-            EditorGUILayout.PropertyField(so.FindProperty("AppVersion"));
-            EditorGUILayout.PropertyField(so.FindProperty("BundleVersion"));
             EditorGUILayout.PropertyField(so.FindProperty("BreadcrumbLogLevel"));
             EditorGUILayout.PropertyField(so.FindProperty("Context"));
             EditorGUILayout.PropertyField(so.FindProperty("DiscardClasses"));
@@ -103,15 +132,10 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("EnabledBreadcrumbTypes"));
             EditorGUILayout.PropertyField(so.FindProperty("LaunchDurationMillis"));
             EditorGUILayout.PropertyField(so.FindProperty("MaximumBreadcrumbs"));
-            EditorGUILayout.PropertyField(so.FindProperty("NotifyEndpoint"));
-            EditorGUILayout.PropertyField(so.FindProperty("SessionEndpoint"));
             EditorGUILayout.PropertyField(so.FindProperty("RedactedKeys"));
-            EditorGUILayout.PropertyField(so.FindProperty("ReleaseStage"));
-
             EditorGUIUtility.labelWidth = 270;
             EditorGUILayout.PropertyField(so.FindProperty("ReportUncaughtExceptionsAsHandled"));
             EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
-
             EditorGUIUtility.labelWidth = 200;
             EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
             so.ApplyModifiedProperties();
