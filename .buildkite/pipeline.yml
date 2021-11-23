@@ -27,7 +27,7 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.15f2"
+      UNITY_VERSION: "2020.3.23f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -37,8 +37,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2020.3.15f2.zip
-      - features/fixtures/maze_runner/build/WebGL-2020.3.15f2.zip
+      - features/fixtures/maze_runner/build/MacOS-2020.3.23f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2020.3.23f1.zip
 
   #
   # Run desktop tests
@@ -49,11 +49,11 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2020.3.15f2"
+      UNITY_VERSION: "2020.3.23f1"
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2020.3.15f2.zip
+          - features/fixtures/maze_runner/build/MacOS-2020.3.23f1.zip
         upload:
           - maze_output/*
           - Mazerunner.log
@@ -69,11 +69,11 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2020.3.15f2"
+      UNITY_VERSION: "2020.3.23f1"
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2020.3.15f2.zip
+          - features/fixtures/maze_runner/build/WebGL-2020.3.23f1.zip
         upload:
           - maze_output/failed/**/*
     commands:
@@ -89,14 +89,14 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.15f2"
+      UNITY_VERSION: "2020.3.23f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.15f2.apk
+          - features/fixtures/maze_runner/mazerunner_2020.3.23f1.apk
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
@@ -110,17 +110,17 @@ steps:
     agents:
       queue: opensource
     env:
-      UNITY_VERSION: "2020.3.15f2"
+      UNITY_VERSION: "2020.3.23f1"
     plugins:
       artifacts#v1.3.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.15f2.apk"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.23f1.apk"
         upload:
           - "maze_output/failed/**/*"
       docker-compose#v3.3.0:
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.15f2.apk"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.23f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/android"
@@ -138,14 +138,14 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.15f2"
+      UNITY_VERSION: "2020.3.23f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
           - Bugsnag-with-android-64bit.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.15f2.ipa
+          - features/fixtures/maze_runner/mazerunner_2020.3.23f1.ipa
           - features/fixtures/unity.log
           - project_2020.tgz
     commands:
@@ -159,7 +159,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2020.3.15f2"
+      UNITY_VERSION: "2020.3.23f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -167,7 +167,7 @@ steps:
           - Bugsnag-with-android-64bit.unitypackage
           - project_2020.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.15f2.ipa
+          - features/fixtures/maze_runner/mazerunner_2020.3.23f1.ipa
           - features/fixtures/unity.log
     commands:
       - tar -zxf project_2020.tgz features/fixtures/maze_runner
@@ -184,14 +184,14 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.15f2.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.23f1.ipa"
         upload:
           - "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.15f2.ipa"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.23f1.ipa"
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
