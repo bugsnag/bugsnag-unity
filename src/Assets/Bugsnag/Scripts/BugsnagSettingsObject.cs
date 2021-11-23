@@ -25,7 +25,6 @@ namespace BugsnagUnity.Editor
         public EditorBreadcrumbTypes EnabledBreadcrumbTypes = new EditorBreadcrumbTypes();
         public long LaunchDurationMillis = 5000;
         public int MaximumBreadcrumbs = 25;
-        public LogType NotifyLogLevel = LogType.Exception;
         public string NotifyEndpoint;
         public string SessionEndpoint;
         public string[] RedactedKeys = new string[] { "password" };
@@ -74,7 +73,6 @@ namespace BugsnagUnity.Editor
             config.EnabledBreadcrumbTypes = GetEnabledBreadcrumbTypes();
             config.LaunchDurationMillis = LaunchDurationMillis;
             config.MaximumBreadcrumbs = MaximumBreadcrumbs;
-            config.NotifyLogLevel = NotifyLogLevel;
             if (!string.IsNullOrEmpty(NotifyEndpoint) && !string.IsNullOrEmpty(SessionEndpoint))
             {
                 config.Endpoints = new EndpointConfiguration(NotifyEndpoint, SessionEndpoint);
