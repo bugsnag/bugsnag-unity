@@ -198,8 +198,8 @@ NSDictionary * getDictionaryFromMetadataJson(const char * jsonString){
         }
     } @catch (NSException *exception) {
         NSLog(@"%@", exception);
-        return nil;
     }
+    return nil;
 }
 
 const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
@@ -323,12 +323,7 @@ const char * bugsnag_getBreadcrumbMetadata(const void *breadcrumb) {
 }
 
 void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonString) {
-  if (jsonString == NULL)
-  {
-    return;
-  }
-  ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = getDictionaryFromMetadataJson(jsonString);
-  
+  ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = jsonString  ? getDictionaryFromMetadataJson(jsonString) : nil;
 }
 
 const char * bugsnag_getBreadcrumbType(const void *breadcrumb){
@@ -505,10 +500,7 @@ void bugsnag_markLaunchCompleted() {
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
-  NSString *ns_apiKey = [NSString stringWithUTF8String: apiKey];
-  BugsnagConfiguration *config = [[BugsnagConfiguration alloc] initWithApiKey:ns_apiKey];
-  config.apiKey = ns_apiKey;
-  return (void*)CFBridgingRetain(config);
+    return (void *)CFBridgingRetain([[BugsnagConfiguration alloc] initWithApiKey:@(apiKey)]);
 }
 
 void bugsnag_setReleaseStage(const void *configuration, char *releaseStage) {
@@ -516,16 +508,20 @@ void bugsnag_setReleaseStage(const void *configuration, char *releaseStage) {
   ((__bridge BugsnagConfiguration *)configuration).releaseStage = ns_releaseStage;
 }
 
-void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount){
-  NSMutableSet *ns_releaseStages = [NSMutableSet new];
-  for (int i = 0; i < releaseStagesCount; i++) {
-    const char *releaseStage = releaseStages[i];
-    if (releaseStage != nil) {
-      NSString *ns_releaseStage = [NSString stringWithUTF8String: releaseStage];
-      [ns_releaseStages addObject: ns_releaseStage];
+NSMutableSet * getSetFromStringArray(const char *values[], int valuesCount)
+{
+    NSMutableSet *theSet = [NSMutableSet new];
+    for (int i = 0; i < valuesCount; i++) {
+        const char *value = values[i];
+        if (value != nil) {
+            [theSet addObject: @(value)];
+        }
     }
-  }
-  ((__bridge BugsnagConfiguration *)configuration).enabledReleaseStages = ns_releaseStages;
+    return theSet;
+}
+
+void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount){
+  ((__bridge BugsnagConfiguration *)configuration).enabledReleaseStages = getSetFromStringArray(releaseStages,releaseStagesCount);
 }
 
 void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
@@ -677,27 +673,11 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
 }
 
 void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count){
-  NSMutableSet *ns_classNames = [NSMutableSet new];
-  for (int i = 0; i < count; i++) {
-    const char *className = classNames[i];
-    if (className != nil) {
-      NSString *ns_className = [NSString stringWithUTF8String: className];
-      [ns_classNames addObject: ns_className];
-    }
-  }
-  ((__bridge BugsnagConfiguration *)configuration).discardClasses = ns_classNames;
+  ((__bridge BugsnagConfiguration *)configuration).discardClasses = getSetFromStringArray(classNames, count);
 }
 
 void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count){
-  NSMutableSet *ns_redactedKeys = [NSMutableSet new];
-  for (int i = 0; i < count; i++) {
-    const char *key = redactedKeys[i];
-    if (key != nil) {
-      NSString *ns_key = [NSString stringWithUTF8String: key];
-      [ns_redactedKeys addObject: ns_key];
-    }
-  }
-  ((__bridge BugsnagConfiguration *)configuration).redactedKeys = ns_redactedKeys;
+  ((__bridge BugsnagConfiguration *)configuration).redactedKeys = getSetFromStringArray(redactedKeys, count);
 }
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
@@ -761,7 +741,6 @@ void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *noti
   }
   [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
   // Memory introspection is unused in a C/C++ context
-  [BSG_KSCrash sharedInstance].introspectMemory = NO;
 }
 
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadataJson) {
@@ -858,10 +837,6 @@ void bugsnag_setUser(char *userId, char *userName, char *userEmail) {
             withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
              andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
 }
-
-@interface Bugsnag ()
-+ (BugsnagNotifier *)notifier;
-@end
 
 void bugsnag_startSession() {
     [Bugsnag startSession];
