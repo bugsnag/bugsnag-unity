@@ -87,7 +87,7 @@ namespace BugsnagUnity
                EnabledBreadcrumbTypes.Contains(breadcrumbType);
         }
 
-        public string ApiKey { get; protected set; }
+        public string ApiKey { get; set; }
 
         private int _maximumBreadcrumbs = 25;
 
@@ -288,7 +288,6 @@ namespace BugsnagUnity
             }
             return clone;
         }
-
 
     }
 

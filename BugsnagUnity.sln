@@ -8,7 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{330E1C29-F8C0-4FFC-9FE9-9FA71DE400FC}"
 	ProjectSection(SolutionItems) = preProject
 		src\BugsnagUnity.mm = src\BugsnagUnity.mm
-		src\Assets\Bugsnag\Scripts\BugsnagBehaviour.cs = src\Assets\Bugsnag\Scripts\BugsnagBehaviour.cs
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BugsnagUnity", "src\BugsnagUnity\BugsnagUnity.csproj", "{EF862675-0071-4BA7-B76A-A32E9A2BE362}"
