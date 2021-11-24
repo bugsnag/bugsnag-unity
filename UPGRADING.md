@@ -1,6 +1,94 @@
 Upgrading
 =========
 
+## v6.0.0
+
+v6.0.0 contains breaking changes to Bugsnag's API that improve the reliability of the SDK and resolve several painpoints.
+
+### Remove old Bugsnag files from your Unity project
+
+In V6 of the Bugsnag SDK, all files are located in a parent Bugsnag directory. This means that, before installing V6 you must first remove all V5 files.
+
+To assist in this you can download and run the bash script utils/remove-bugsnag-v5.sh, passing the path to your project as a parameter. This will remove all parts of Bugsnag V5.
+
+If you wish to do it manually, please remove the following directories and files:
+
+- File: `Assets/Plugins/Android/BugsnagUnity.Android.dll`
+- File: `Assets/Plugins/Android/bugsnag-android-ndk-release.aar`
+- File: `Assets/Plugins/Android/bugsnag-android-release.aar`
+- File: `Assets/Plugins/Android/bugsnag-android-unity-release.aar`
+- File: `Assets/Plugins/Android/bugsnag-android-anr-release.aar`
+- File: `Assets/Plugins/Android/kotlin-annotations.jar`
+- File: `Assets/Plugins/Android/kotlin-stdlib.jar`
+- File: `Assets/Plugins/Android/kotlin-stdlib-common.jar`
+- File: `Assets/Plugins/iOS/BugsnagUnity.iOS.dll`
+- File: `Assets/Plugins/OSX/BugsnagUnity.MacOS.dll`
+- File: `Assets/Plugins/tvOS/BugsnagUnity.iOS.dll`
+- File: `Assets/Plugins/Windows/BugsnagUnity.Windows.dll`
+- Directory: `Assets/Plugins/iOS/Bugsnag`
+- Directory: `Assets/Plugins/OSX/Bugsnag`
+- Directory: `Assets/Plugins/tvOS/Bugsnag`
+- Directory: `Assets/Standard Assets/Bugsnag`
+
+
+### New recommended way for initializing Bugsnag
+
+#### Automatic initialization before the first scene is loaded
+
+Starting Bugsnag via a GameObject has been removed in favor of Bugsnag starting automatically just before the first scene is loaded. 
+
+To setup your Bugsnag configuration, please open the window by going to Window/Bugsnag/Settings. This will show the Bugsnag settings menu where you can add your API key and other settings.
+
+It is still possible to initialise in code with `Bugsnag.Start(Configuration config)`.
+
+#### Metadata
+
+Global Metadata is now accessed and edited with the following methods
+
+```c#
+void Bugsnag.AddMetadata(string section, string key, object value)
+
+void Bugsnag.AddMetadata(string section, Dictionary<string, object> metadata)
+
+void Bugsnag.ClearMetadata(string section)
+
+void Bugsnag.ClearMetadata(string section, string key)
+
+Dictionary<string, object> Bugsnag.GetMetadata(string section)
+
+object Bugsnag.GetMetadata(string section, string key)
+```
+
+#### Breadcrumbs
+
+Breadcrumbs should now be recorded with the following method
+
+```c#
+void LeaveBreadcrumb(string message, Dictionary<string, object> metadata = null, BreadcrumbType type = BreadcrumbType.Manual )
+```
+
+#### BeforeNotify and Callbacks
+
+`Bugsnag.BeforeNotify` has been removed in favor of more fully featured callbacks:
+
+`OnError` 
+`OnSendError` 
+`OnSession`
+ 
+Callbacks should be added to your configuration object before starting Bugsnag.
+
+```c#
+var config = new Configuration("API-KEY");
+config.AddOnError((@event)=>
+{
+	// do stuff with the event data
+	// return true to send the event, or false to not send
+	return true;
+});
+Bugsnag.Start(config);
+```
+See the callbacks documentation for more information regarding the new callback features.
+
 ## v5.0.0
 
 v5.0.0 contains breaking changes to Bugsnag's API that improve the reliability of the SDK and resolve several painpoints.
