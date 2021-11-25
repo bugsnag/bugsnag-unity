@@ -1,11 +1,23 @@
 Upgrading
 =========
 
-## v6.0.0
+
+## Upgrade from 5.X to 6.X
 
 v6.0.0 contains breaking changes to Bugsnag's API that improve the reliability of the SDK and resolve several painpoints.
 
-### Remove old Bugsnag files from your Unity project
+### Key points
+
+- Bugsnag can now be installed via UPM or directly from the package file provided.
+- The file structure of the plugin has changed and so before installing please follow the instructions below on how to remove the old version.
+- Starting Bugsnag via a GameObject has been removed in favor of Bugsnag starting automatically just before the first scene is loaded. Your Bugsnag settings can now be entered via the Bussnag settings window found at Window>Bugsnag>Settings.
+- Metadata access has changed to make it clearer how to add, clear and get global and event metadata.
+- BeforeNotify callbacks have been replaced with an all new callback system that offers much cleaner data access and data editing.  
+
+More details of these changes can be found below and full documentation is available [online](https://docs.bugsnag.com/platforms/unity).
+
+
+### Removing old Bugsnag files from your Unity project
 
 In V6 of the Bugsnag SDK, all files are located in a parent Bugsnag directory. This means that, before installing V6 you must first remove all V5 files.
 
@@ -41,53 +53,75 @@ To setup your Bugsnag configuration, please open the window by going to Window/B
 
 It is still possible to initialise in code with `Bugsnag.Start(Configuration config)`.
 
-#### Metadata
+### Metadata
 
-Global Metadata is now accessed and edited with the following methods
+#### Additions
 
-```c#
-void Bugsnag.AddMetadata(string section, string key, object value)
+The following methods have been added to the `Bugsnag` class: 
 
-void Bugsnag.AddMetadata(string section, Dictionary<string, object> metadata)
+| Property/Method                                                    | Usage                                                             |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `AddMetadata(string section, string key, object value)`            | Add a specific value by key to a section of metadata LINK_DOCS    | 
+| `AddMetadata(string section, Dictionary<string, object> metadata)` | Add a section by name to the metadata metadata LINK_DOCS          | 
+| `ClearMetadata(string section)`                                    | Clear a section of metadata LINK_DOCS          | 
+| `ClearMetadataClearMetadata(string section, string key)`           | Clear a specific entry in a metadata section by key LINK_DOCS          | 
+| `Dictionary<string, object> Bugsnag.GetMetadata(string section)`           | Get an entire section from the metadata as a Dictionary LINK_DOCS          | 
+| `object Bugsnag.GetMetadata(string section, string key)`           | Get an specific entry from the metadata as an object LINK_DOCS          | 
 
-void Bugsnag.ClearMetadata(string section)
+#### Deprecations
 
-void Bugsnag.ClearMetadata(string section, string key)
+The following property has been removed from the `Bugsnag` client:
 
-Dictionary<string, object> Bugsnag.GetMetadata(string section)
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `Bugsnag.Metadata`                                                 | Deprecated - no longer public API.                                |
 
-object Bugsnag.GetMetadata(string section, string key)
-```
 
-#### Breadcrumbs
+### Breadcrumbs
 
-Breadcrumbs should now be recorded with the following method
+#### Deprecations
 
-```c#
-void LeaveBreadcrumb(string message, Dictionary<string, object> metadata = null, BreadcrumbType type = BreadcrumbType.Manual )
-```
+The following properties/methods have been removed from the `Bugsnag` client:
 
-#### BeforeNotify and Callbacks
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `Bugsnag.LeaveBreadcrumb(message)`                                 | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
+| `Bugsnag.LeaveBreadcrumb(message, type, metadata)`                 | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
+| `Bugsnag.LeaveBreadcrumb(breadcrumb)`                              | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
 
-`Bugsnag.BeforeNotify` has been removed in favor of more fully featured callbacks:
 
-`OnError` 
-`OnSendError` 
-`OnSession`
+### Callbacks
+
+#### Additions
+
+The following methods have been added to the `Bugsnag` class: 
+
+| Property/Method                                                    | Usage                                                             |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `AddOnError` | Add a callback to modify or discard a event before it is recorded.  LINK_DOCS   | 
+|  `AddOnSendError`  | Add a callback to modify or discard a event before it is sent (including native Cocoa and Android events).  LINK_DOCS   | 
+| `AddOnSession` | Add a callbacks to modify or discard sessions before they are recorded and sent.  LINK_DOCS   | 
+
  
-Callbacks should be added to your configuration object before starting Bugsnag.
+#### Deprecations
 
-```c#
-var config = new Configuration("API-KEY");
-config.AddOnError((@event)=>
-{
-	// do stuff with the event data
-	// return true to send the event, or false to not send
-	return true;
-});
-Bugsnag.Start(config);
-```
-See the callbacks documentation for more information regarding the new callback features.
+The following property has been removed from the `Bugsnag` client:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `Bugsnag.BeforeNotify`                                             | Replaced by `Bugsnag.AddOnSendError(callback) or Bugsnag.AddOnError(callback)`|
+
+### Misc
+
+#### Deprecations
+
+The following methods have been removed from the `Bugsnag` client:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `Bugsnag.SetAutoNotify(bool)`                                      | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
+| `Bugsnag.SetAutoDetectAnrs(bool)`                                      | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
+
 
 ## v5.0.0
 
