@@ -120,7 +120,10 @@ The following methods have been removed from the `Bugsnag` client:
 | v5.x API                                                           | v6.x API                                                          |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
 | `Bugsnag.SetAutoNotify(bool)`                                      | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
-| `Bugsnag.SetAutoDetectAnrs(bool)`                                      | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
+| `Bugsnag.SetAutoDetectErrors(bool)`                                      | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
+| `Bugsnag.SetAutoDetectAnrs(bool)`                                  | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
+| `Bugsnag.StopSession()`                                              | Replaced by `Bugsnag.PauseSession()`|
+| `Bugsnag.SetContext()`                                              | Replaced by `Bugsnag.Context {get; set;}`|
 
 
 ## v5.0.0
