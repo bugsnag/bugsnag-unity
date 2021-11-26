@@ -365,7 +365,7 @@ namespace BugsnagUnity
               user,
               exceptions,
               handledState,
-              Breadcrumbs.Retrieve().ToList(),
+              Breadcrumbs.Retrieve(),
               SessionTracking.CurrentSession,
               Configuration.ApiKey);
 
