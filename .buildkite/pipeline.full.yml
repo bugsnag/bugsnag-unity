@@ -321,6 +321,7 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2017.4.40f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
+          - "--retry=2"
           - "features/android"
     # Note: This is only needed for Unity 2017 in order to skip specific steps/scenarios
     env:
