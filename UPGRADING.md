@@ -98,7 +98,7 @@ The following methods have been added to the `Bugsnag` class:
 
 | Property/Method                                                    | Usage                                                             |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| `AddOnError` | Add a callback to modify or discard a event before it is recorded.  LINK_DOCS   | 
+| `AddOnError` | Add a callback to modify or discard an event before it is captured (Android JVM exceptions, ANRs and handled events only).  LINK_DOCS   | 
 |  `AddOnSendError`  | Add a callback to modify or discard a event before it is sent (including native Cocoa and Android events).  LINK_DOCS   | 
 | `AddOnSession` | Add a callbacks to modify or discard sessions before they are recorded and sent.  LINK_DOCS   | 
 
