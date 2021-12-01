@@ -1,6 +1,128 @@
 Upgrading
 =========
 
+
+## Upgrade from 5.X to 6.X
+
+v6.0.0 contains breaking changes to Bugsnag's API that improve the reliability of the SDK and resolve several painpoints.
+
+### Key points
+
+- Bugsnag can now be installed via [Unity Package Manager](https://docs.unity3d.com/Manual/Packages.html) (UPM) as well from the package file published on Github.
+- The file structure of the plugin has changed to keep all Bugsnag files together in a parent directory, so the files from the V5 package must be manually removed.
+- Bugsnag can now start automatically before the first scene is loaded, removing the need for GameObject configuration, which has now been removed.
+- The metadata access API has been improved to make it clearer how to add, remove and obtain event metadata before and after a crash.
+- The `BeforeNotify` callback has been replaced with an all-new callback system that offers access to all event types on all platforms for amending and discarding events before they are sent.
+
+More details of these changes can be found below and full documentation is available [online](https://docs.bugsnag.com/platforms/unity).
+
+
+### Removing old Bugsnag files from your Unity project
+
+All the files in the V6 package are located in a parent Bugsnag directory and so you will need to remove all the V5 files from your project to avoid having mulitiple instances of Bugsnag running.
+
+To remove these files, you can download and run the bash script `utils/remove-bugsnag-v5.sh` in the `bugsnag-unity` repository, passing the path to your project as a parameter.
+
+If you wish to do it manually, please remove the following directories and files:
+
+- File: `Assets/Plugins/Android/BugsnagUnity.Android.dll`
+- File: `Assets/Plugins/Android/bugsnag-android-ndk-release.aar`
+- File: `Assets/Plugins/Android/bugsnag-android-release.aar`
+- File: `Assets/Plugins/Android/bugsnag-android-unity-release.aar`
+- File: `Assets/Plugins/Android/bugsnag-android-anr-release.aar`
+- File: `Assets/Plugins/Android/kotlin-annotations.jar`
+- File: `Assets/Plugins/Android/kotlin-stdlib.jar`
+- File: `Assets/Plugins/Android/kotlin-stdlib-common.jar`
+- File: `Assets/Plugins/iOS/BugsnagUnity.iOS.dll`
+- File: `Assets/Plugins/OSX/BugsnagUnity.MacOS.dll`
+- File: `Assets/Plugins/tvOS/BugsnagUnity.iOS.dll`
+- File: `Assets/Plugins/Windows/BugsnagUnity.Windows.dll`
+- Directory: `Assets/Plugins/iOS/Bugsnag`
+- Directory: `Assets/Plugins/OSX/Bugsnag`
+- Directory: `Assets/Plugins/tvOS/Bugsnag`
+- Directory: `Assets/Standard Assets/Bugsnag`
+
+
+### Automatic initialization and removal of GameObject configuration
+
+Bugsnag can now be started automatically just before the first scene is loaded. You will need to go to Window -> Bugsnag -> Settings and enter your API key and any other configuration options you require.
+
+You can disable this automatic start in the Settings window and initialize Bugsnag either fully or partially in code with `Bugsnag.Start(Configuration config)`. See our [online docs](https://docs.bugsnag.com/platforms/unity/#basic-configuration) for full details.
+
+Starting Bugsnag via a GameObject has been removed. If you previously used this technique to configure Bugsnag then you will need to set the equivalent options in Window -> Bugsnag -> Settings.
+
+### Metadata
+
+#### Additions
+
+The following methods have been added to the `Bugsnag` class: 
+
+| Property/Method                                                    | Usage                                                             |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `AddMetadata(string section, string key, object value)`            | Add a specific value by key to a section of metadata LINK_DOCS    | 
+| `AddMetadata(string section, Dictionary<string, object> metadata)` | Add a section by name to the metadata metadata LINK_DOCS          | 
+| `ClearMetadata(string section)`                                    | Clear a section of metadata LINK_DOCS          | 
+| `ClearMetadataClearMetadata(string section, string key)`           | Clear a specific entry in a metadata section by key LINK_DOCS          | 
+| `Dictionary<string, object> GetMetadata(string section)`           | Get an entire section from the metadata as a Dictionary LINK_DOCS          | 
+| `object Bugsnag.GetMetadata(string section, string key)`           | Get an specific entry from the metadata as an object LINK_DOCS          | 
+
+#### Deprecations
+
+The following property has been removed from the `Bugsnag` client:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `Bugsnag.Metadata`                                                 | Deprecated - no longer public API.                                |
+
+
+### Breadcrumbs
+
+#### Deprecations
+
+The following properties/methods have been removed from the `Bugsnag` client:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `Bugsnag.LeaveBreadcrumb(message, type, metadata)`                 | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
+| `Bugsnag.LeaveBreadcrumb(breadcrumb)`                              | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
+
+
+### Callbacks
+
+#### Additions
+
+The following methods have been added to the `Bugsnag` class: 
+
+| Property/Method                                                    | Usage                                                             |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `AddOnError` | Add a callback to modify or discard an event before it is captured (Android JVM exceptions, ANRs and handled events only).  LINK_DOCS   | 
+| `AddOnSendError`  | Add a callback to modify or discard any event before it is sent (including all iOS/macOS and native Android crashes).  LINK_DOCS   | 
+| `AddOnSession` | Add a callbacks to modify or discard sessions before they are recorded and sent.  LINK_DOCS   | 
+
+ 
+#### Deprecations
+
+The following property has been removed from the `Bugsnag` client:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `Bugsnag.BeforeNotify`                                             | Replaced by `Bugsnag.AddOnSendError(callback) or Bugsnag.AddOnError(callback)`|
+
+### Misc
+
+#### Deprecations
+
+The following methods have been removed from the `Bugsnag` client:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `Bugsnag.SetAutoNotify(bool)`                                      | Replaced by setting the config value `AutoDetectErrors` or `EnabledErrorTypes` before start or using an OnSendError callback|
+| `Bugsnag.SetAutoDetectErrors(bool)`                                | Replaced by setting the config value `AutoDetectErrors` or `EnabledErrorTypes` before start or using an OnSendError callback|
+| `Bugsnag.SetAutoDetectAnrs(bool)`                                  | Replaced by setting the config values `AutoDetectErrors` or `EnabledErrorTypes` before start or using an OnSendError callback|
+| `Bugsnag.StopSession()`                                              | Replaced by `Bugsnag.PauseSession()`|
+| `Bugsnag.SetContext()`                                              | Replaced by `Bugsnag.Context {get; set;}`|
+
+
 ## v5.0.0
 
 v5.0.0 contains breaking changes to Bugsnag's API that improve the reliability of the SDK and resolve several painpoints.
