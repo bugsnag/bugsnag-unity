@@ -11,7 +11,7 @@ v6.0.0 contains breaking changes to Bugsnag's API that improve the reliability o
 - Bugsnag can now be installed via [Unity Package Manager](https://docs.unity3d.com/Manual/Packages.html) (UPM) as well from the package file published on Github.
 - The file structure of the plugin has changed to keep all Bugsnag files together in a parent directory, so the files from the V5 package must be manually removed.
 - Bugsnag can now start automatically before the first scene is loaded, removing the need for GameObject configuration, which has now been removed.
-- Metadata access has changed to make it clearer how to add, clear and get global and event metadata.
+- The metadata access API has been improved to make it clearer how to add, remove and obtain event metadata before and after a crash.
 - BeforeNotify callbacks have been replaced with an all new callback system that offers much cleaner data access and data editing.  
 
 More details of these changes can be found below and full documentation is available [online](https://docs.bugsnag.com/platforms/unity).
