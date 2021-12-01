@@ -43,15 +43,13 @@ If you wish to do it manually, please remove the following directories and files
 - Directory: `Assets/Standard Assets/Bugsnag`
 
 
-### New recommended way for initializing Bugsnag
+### Automatic initialization and removal of GameObject configuration
 
-#### Automatic initialization before the first scene is loaded
+Bugsnag can now be started automatically just before the first scene is loaded. You will need to go to Window -> Bugsnag -> Settings and enter your API key and any other configuration options you require.
 
-Starting Bugsnag via a GameObject has been removed in favor of Bugsnag starting automatically just before the first scene is loaded. 
+You can disable this automatic start in the Settings window and initialize Bugsnag either fully or partially in code with `Bugsnag.Start(Configuration config)`. See our [online docs](https://docs.bugsnag.com/platforms/unity/#basic-configuration) for full details.
 
-To setup your Bugsnag configuration, please open the window by going to Window/Bugsnag/Settings. This will show the Bugsnag settings menu where you can add your API key and other settings.
-
-It is still possible to initialise in code with `Bugsnag.Start(Configuration config)`.
+Starting Bugsnag via a GameObject has been removed. If you previously used this technique to configure Bugsnag then you will need to set the equivalent options in Window -> Bugsnag -> Settings.
 
 ### Metadata
 
