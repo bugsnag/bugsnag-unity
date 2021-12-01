@@ -2,11 +2,23 @@
 
 ## TBD
 
-### Enhancements
+## 5.4.2 (2021-11-16)
 
 * Update bugsnag-cocoa to v6.14.2
   * Fix missing `configuration.user` and manually resumed `session` info in unhandled errors.
     [bugsnag-cocoa#1215](https://github.com/bugsnag/bugsnag-cocoa/pull/1215)
+* Update bugsnag-android to v5.15.0 
+  * Avoid reporting false-positive background ANRs with improved foreground detection
+    [bugsnag-android#1429](https://github.com/bugsnag/bugsnag-android/pull/1429)
+  * Prevent events being attached to phantom sessions when they are blocked by an `OnSessionCallback`
+    [bugsnag-android#1434](https://github.com/bugsnag/bugsnag-android/pull/1434)
+  * Plugins will correctly mirror metadata added using `addMetadata(String, Map)`
+    [bugsnag-android#1454](https://github.com/bugsnag/bugsnag-android/pull/1454)
+
+### Bug fixes
+
+* Fixed an issue where breadcrumbs from non fatal apphang errors caused a crash on retrieval
+  [#431](https://github.com/bugsnag/bugsnag-unity/pull/431)
 
 ## 5.4.1 (2021-10-25)
 
