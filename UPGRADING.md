@@ -118,9 +118,9 @@ The following methods have been removed from the `Bugsnag` client:
 
 | v5.x API                                                           | v6.x API                                                          |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| `Bugsnag.SetAutoNotify(bool)`                                      | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
-| `Bugsnag.SetAutoDetectErrors(bool)`                                      | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
-| `Bugsnag.SetAutoDetectAnrs(bool)`                                  | Deprecated - no longer public API.  Callbacks should now be used to stop sending particular errors at runtime|
+| `Bugsnag.SetAutoNotify(bool)`                                      | Replaced by setting the config value `AutoDetectErrors` or `EnabledErrorTypes` before start or using an OnSendError callback|
+| `Bugsnag.SetAutoDetectErrors(bool)`                                | Replaced by setting the config value `AutoDetectErrors` or `EnabledErrorTypes` before start or using an OnSendError callback|
+| `Bugsnag.SetAutoDetectAnrs(bool)`                                  | Replaced by setting the config values `AutoDetectErrors` or `EnabledErrorTypes` before start or using an OnSendError callback|
 | `Bugsnag.StopSession()`                                              | Replaced by `Bugsnag.PauseSession()`|
 | `Bugsnag.SetContext()`                                              | Replaced by `Bugsnag.Context {get; set;}`|
 
