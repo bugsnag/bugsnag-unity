@@ -65,7 +65,7 @@ The following methods have been added to the `Bugsnag` class:
 | `AddMetadata(string section, Dictionary<string, object> metadata)` | Add a section by name to the metadata metadata LINK_DOCS          | 
 | `ClearMetadata(string section)`                                    | Clear a section of metadata LINK_DOCS          | 
 | `ClearMetadataClearMetadata(string section, string key)`           | Clear a specific entry in a metadata section by key LINK_DOCS          | 
-| `Dictionary<string, object> Bugsnag.GetMetadata(string section)`           | Get an entire section from the metadata as a Dictionary LINK_DOCS          | 
+| `Dictionary<string, object> GetMetadata(string section)`           | Get an entire section from the metadata as a Dictionary LINK_DOCS          | 
 | `object Bugsnag.GetMetadata(string section, string key)`           | Get an specific entry from the metadata as an object LINK_DOCS          | 
 
 #### Deprecations
