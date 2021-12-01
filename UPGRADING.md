@@ -19,9 +19,9 @@ More details of these changes can be found below and full documentation is avail
 
 ### Removing old Bugsnag files from your Unity project
 
-In V6 of the Bugsnag SDK, all files are located in a parent Bugsnag directory. This means that, before installing V6 you must first remove all V5 files.
+All the files in the V6 package are located in a parent Bugsnag directory and so you will need to remove all the V5 files from your project to avoid having mulitiple instances of Bugsnag running.
 
-To assist in this you can download and run the bash script utils/remove-bugsnag-v5.sh, passing the path to your project as a parameter. This will remove all parts of Bugsnag V5.
+To remove these files, you can download and run the bash script `utils/remove-bugsnag-v5.sh` in the `bugsnag-unity` repository, passing the path to your project as a parameter.
 
 If you wish to do it manually, please remove the following directories and files:
 
