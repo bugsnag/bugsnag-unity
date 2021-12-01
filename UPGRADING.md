@@ -85,7 +85,6 @@ The following properties/methods have been removed from the `Bugsnag` client:
 
 | v5.x API                                                           | v6.x API                                                          |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| `Bugsnag.LeaveBreadcrumb(message)`                                 | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
 | `Bugsnag.LeaveBreadcrumb(message, type, metadata)`                 | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
 | `Bugsnag.LeaveBreadcrumb(breadcrumb)`                              | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
 
