@@ -48,8 +48,6 @@ Feature: Reporting unhandled events
         And the event "metaData.device.graphicsDeviceVersion" is not null
         And the event "metaData.device.graphicsMemorySize" is not null
         And the event "metaData.device.processorType" is not null
-        And the event "metaData.device.batteryLevel" is not null
-        And the event "metaData.device.charging" is not null
 
 
         #app metadata
