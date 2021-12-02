@@ -60,14 +60,19 @@ namespace BugsnagUnity
             }
             public bool onSession(AndroidJavaObject session)
             {
-                var wrapper = new NativeSession(session);
-                foreach (var callback in _config.GetOnSessionCallbacks())
+                try
                 {
-                    if (!callback.Invoke(wrapper))
+                    var wrapper = new NativeSession(session);
+                    foreach (var callback in _config.GetOnSessionCallbacks())
                     {
-                        return false;
+                        if (!callback.Invoke(wrapper))
+                        {
+                            return false;
+                        }
                     }
                 }
+                catch { }
+               
                 return true;
             }
         }
