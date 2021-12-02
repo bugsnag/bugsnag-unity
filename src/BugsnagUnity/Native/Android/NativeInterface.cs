@@ -49,6 +49,29 @@ namespace BugsnagUnity
         private bool Unity2019OrNewer;
         private Thread MainThread;
 
+        private class OnSessionCallback : AndroidJavaProxy
+        {
+
+            private Configuration _config;
+
+            public OnSessionCallback(Configuration config) : base("com.bugsnag.android.OnSessionCallback")
+            {
+                _config = config;
+            }
+            public bool onSession(AndroidJavaObject session)
+            {
+                var wrapper = new NativeSession(session);
+                foreach (var callback in _config.GetOnSessionCallbacks())
+                {
+                    if (!callback.Invoke(wrapper))
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
         public NativeInterface(Configuration cfg)
         {
             AndroidJavaObject config = CreateNativeConfig(cfg);
@@ -203,6 +226,9 @@ namespace BugsnagUnity
             obj.Call("setPersistUser", config.PersistUser);
             obj.Call("setLaunchDurationMillis", config.LaunchDurationMillis);
             obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
+
+            //Register for on session callbacks
+            obj.Call("addOnSession", new OnSessionCallback(config));
 
             // set endpoints
             var notify = config.Endpoints.Notify.ToString();

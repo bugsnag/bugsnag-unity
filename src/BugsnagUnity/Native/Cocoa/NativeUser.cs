@@ -13,8 +13,8 @@ namespace BugsnagUnity
         {
         }
 
-        public string Id { get => GetNativeString(ID_KEY); set => SetNativeString(ID_KEY,value); }
-        public string Name { get => GetNativeString(NAME_KEY); set => SetNativeString(NAME_KEY, value); }
-        public string Email { get => GetNativeString(EMAIL_KEY); set => SetNativeString(EMAIL_KEY, value); }
+        public string Id => GetNativeString(ID_KEY);
+        public string Name => GetNativeString(NAME_KEY);
+        public string Email => GetNativeString(EMAIL_KEY);
     }
 }

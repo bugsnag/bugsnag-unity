@@ -229,7 +229,13 @@ namespace BugsnagUnity
         internal static extern IntPtr bugsnag_getUserFromEvent(IntPtr @event);
 
         [DllImport(Import)]
+        internal static extern IntPtr bugsnag_setUserFromEvent(IntPtr @event, string userId, string userName, string userEmail);
+
+        [DllImport(Import)]
         internal static extern IntPtr bugsnag_getUserFromSession(IntPtr session);
+
+        [DllImport(Import)]
+        internal static extern IntPtr bugsnag_setUserFromSession(IntPtr session, string userId, string userName, string userEmail);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setEventMetadata(IntPtr @event, string tab, string metadataJson);
