@@ -548,10 +548,6 @@ namespace BugsnagUnity
 
         public void RemoveOnError(OnErrorCallback bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
 
-        public void AddOnSendError(OnSendErrorCallback bugsnagCallback) => Configuration.AddOnSendError(bugsnagCallback);
-
-        public void RemoveOnSendError(OnSendErrorCallback bugsnagCallback) => Configuration.RemoveOnSendError(bugsnagCallback);
-
         public void AddOnSession(OnSessionCallback callback) => Configuration.AddOnSession(callback);
 
         public void RemoveOnSession(OnSessionCallback callback) => Configuration.RemoveOnSession(callback);

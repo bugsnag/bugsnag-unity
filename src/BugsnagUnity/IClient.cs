@@ -54,10 +54,6 @@ namespace BugsnagUnity
 
         void RemoveOnError(OnErrorCallback bugsnagCallback);
 
-        void AddOnSendError(OnSendErrorCallback bugsnagCallback);
-
-        void RemoveOnSendError(OnSendErrorCallback bugsnagCallback);
-
         void AddOnSession(OnSessionCallback callback);
 
         void RemoveOnSession(OnSessionCallback callback);
