@@ -60,19 +60,21 @@ namespace BugsnagUnity
             }
             public bool onSession(AndroidJavaObject session)
             {
-                try
+
+                var wrapper = new NativeSession(session);
+                foreach (var callback in _config.GetOnSessionCallbacks())
                 {
-                    var wrapper = new NativeSession(session);
-                    foreach (var callback in _config.GetOnSessionCallbacks())
+                    try
                     {
                         if (!callback.Invoke(wrapper))
                         {
                             return false;
                         }
                     }
+                    catch { }
+
                 }
-                catch { }
-               
+
                 return true;
             }
         }
@@ -249,7 +251,7 @@ namespace BugsnagUnity
                 var javaInteger = new AndroidJavaObject("java.lang.Integer", config.VersionCode);
                 obj.Call("setVersionCode", javaInteger);
             }
-            
+
             //Null or empty check necessary because android will set the app.type to empty if that or null is passed as default
             if (!string.IsNullOrEmpty(config.AppType))
             {
@@ -282,7 +284,7 @@ namespace BugsnagUnity
             {
                 obj.Call("setSendThreads", policy);
             }
-                                   
+
 
             // set release stages
             obj.Call("setReleaseStage", config.ReleaseStage);
@@ -317,8 +319,8 @@ namespace BugsnagUnity
             // set persistence directory
             if (!string.IsNullOrEmpty(config.PersistenceDirectory))
             {
-                AndroidJavaObject androidFile = new AndroidJavaObject("java.io.File",config.PersistenceDirectory);
-                obj.Call("setPersistenceDirectory",androidFile);
+                AndroidJavaObject androidFile = new AndroidJavaObject("java.io.File", config.PersistenceDirectory);
+                obj.Call("setPersistenceDirectory", androidFile);
             }
 
             return obj;
@@ -408,7 +410,7 @@ namespace BugsnagUnity
 
         public void StartSession()
         {
-            CallNativeVoidMethod("startSession", "()V", new object[] {  });
+            CallNativeVoidMethod("startSession", "()V", new object[] { });
         }
 
         public bool ResumeSession()
@@ -457,7 +459,7 @@ namespace BugsnagUnity
 
         public void MarkLaunchCompleted()
         {
-            CallNativeVoidMethod("markLaunchCompleted", "()V", new object[] {});
+            CallNativeVoidMethod("markLaunchCompleted", "()V", new object[] { });
         }
 
         public Dictionary<string, object> GetApp()
@@ -926,7 +928,7 @@ namespace BugsnagUnity
         public LastRunInfo GetlastRunInfo()
         {
             var javaLastRunInfo = CallNativeObjectMethodRef("getLastRunInfo", "()Lcom/bugsnag/android/LastRunInfo;", new object[] { });
-            var crashed = AndroidJNI.GetBooleanField(javaLastRunInfo , AndroidJNIHelper.GetFieldID(LastRunInfoClass,"crashed"));
+            var crashed = AndroidJNI.GetBooleanField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "crashed"));
             var consecutiveLaunchCrashes = AndroidJNI.GetIntField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "consecutiveLaunchCrashes"));
             var crashedDuringLaunch = AndroidJNI.GetBooleanField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "crashedDuringLaunch"));
             var lastRunInfo = new LastRunInfo
