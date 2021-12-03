@@ -80,8 +80,20 @@ BugsnagUser * bugsnag_getUserFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).user;
 }
 
+void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail){
+    [((__bridge BugsnagSession *)session) setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
+            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
+}
+
 BugsnagUser * bugsnag_getUserFromEvent(const void *event){
     return ((__bridge BugsnagEvent *)event).user;
+}
+
+void bugsnag_setUserFromEvent(const void *event, char *userId, char *userName, char *userEmail){
+    [((__bridge BugsnagEvent *)event) setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
+            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
 }
 
 void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size)) {
