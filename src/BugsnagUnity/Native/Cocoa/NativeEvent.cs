@@ -122,9 +122,7 @@ namespace BugsnagUnity
 
         public void SetUser(string id, string email, string name)
         {
-            _user.Id = id;
-            _user.Email = email;
-            _user.Name = name;
+            NativeCode.bugsnag_setUserFromEvent(NativePointer,id,name,email);
         }
 
         public void AddMetadata(string section, string key, object value)

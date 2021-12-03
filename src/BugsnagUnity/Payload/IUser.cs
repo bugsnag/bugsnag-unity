@@ -3,10 +3,10 @@ namespace BugsnagUnity
 {
     public interface IUser
     {
-        string Id { get; set; }
+        string Id { get; }
 
-        string Name { get; set; }
+        string Name { get; }
       
-        string Email { get; set; }
+        string Email { get; }
     }
 }
