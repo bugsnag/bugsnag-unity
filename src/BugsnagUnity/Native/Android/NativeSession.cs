@@ -14,7 +14,7 @@ namespace BugsnagUnity
 
         public IApp App { get => new NativeApp(NativePointer.Call<AndroidJavaObject>("getApp")); set { } }
 
-        public DateTime? StartedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime? StartedAt { get => GetNativeDateTime("getStartedAt"); set => SetNativeDateTime("setStartedAt",value); }
 
         public IUser GetUser() => new NativeUser(NativePointer.Call<AndroidJavaObject>("getUser"));
 

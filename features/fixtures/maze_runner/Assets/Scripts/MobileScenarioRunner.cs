@@ -42,7 +42,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"25", "Check Last Run Info" },
         {"26", "Native Event Callback" },
         {"27", "Ios Signal" },
-
+        { "28", "Session Callback" },
 
 
 
@@ -122,13 +122,58 @@ public class MobileScenarioRunner : MonoBehaviour {
         // 5: Trigger the actions for the test
         DoTestAction(scenarioName);
     }
-
+ 
     private Configuration PreapareConfigForScenario(string scenarioName)
     {
         var config = GetDefaultConfig();
 
         switch (scenarioName)
         {
+
+            case "Session Callback":
+                config.AddOnSession((session) => {
+
+                    session.Id = "Custom Id";
+
+                    var newDate = new DateTime(1985, 08, 21, 01, 01, 01);
+                    session.StartedAt = newDate;
+
+                    var device = session.Device;
+                    device.Id = "Custom Device Id";
+                    device.Locale = "Custom Locale";
+                    device.Manufacturer = "Custom Manufacturer";
+                    device.Model = "Custom Model";
+                    device.OsName = "Custom OsName";
+                    device.OsVersion = "Custom OsVersion";
+                    device.TotalMemory = 999;
+                    device.Jailbroken = true;
+
+                    device.CpuAbi = new string[] { "poo", "baar" };
+
+                    var testDict = new Dictionary<string, object>();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var s = i.ToString();
+                        testDict.Add(s, s);
+                    }
+                    session.Device.RuntimeVersions = testDict;
+
+                    var app = session.App;
+                    app.BinaryArch = "Custom BinaryArch";
+                    app.BuildUuid = "Custom BuildUuid";
+                    app.CodeBundleId = "Custom CodeBundleId";
+                    app.Id = "Custom Id";
+                    app.ReleaseStage = "Custom ReleaseStage";
+                    app.Type = "Custom Type";
+                    app.Version = "Custom Version";
+                    app.VersionCode = 999;
+                    session.SetUser("1","2","3");
+
+                    return true;
+                });
+
+
+                break;
             case "Android Persistence Directory":
                 config.PersistenceDirectory = Application.persistentDataPath + "/myBugsnagCache";
                 break;
@@ -249,6 +294,7 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Custom App Type":
                 ThrowException();
                 break;
+            case "Session Callback":
             case "Start SDK":
             case "Start SDK no errors":
             case "Native Event Callback":

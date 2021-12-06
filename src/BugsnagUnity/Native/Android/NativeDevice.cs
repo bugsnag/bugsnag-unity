@@ -20,13 +20,11 @@ namespace BugsnagUnity
         public string Model { get => GetNativeString("getModel"); set => SetNativeString("setModel", value); }
         public string OsName { get => GetNativeString("getOsName"); set => SetNativeString("setOsName", value); }
         public string OsVersion { get => GetNativeString("getOsVersion"); set => SetNativeString("setOsVersion", value); }
-        public int? TotalMemory { get => GetNativeInt("getTotalMemory"); set => SetNativeInt("setTotalMemory", value); }
+        public int? TotalMemory { get => GetNativeInt("getTotalMemory"); set => SetNativeLong("setTotalMemory", value); }
         public bool? Jailbroken { get => GetNativeBool("getJailbroken"); set => SetNativeBool("setJailbroken", value); }
 
+        public string[] CpuAbi { get => GetNativeStringArray("getCpuAbi"); set => SetNativeStringArray("setCpuAbi",value); }
 
-        public string[] CpuAbi { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-
-        public Dictionary<string, object> RuntimeVersions { get => GetNativeDictionary("getRuntimeVersions"); set => throw new NotImplementedException(); }
+        public Dictionary<string, object> RuntimeVersions { get => GetNativeDictionary("getRuntimeVersions"); set => SetNativeDictionary("setRuntimeVersions", value); }
     }
 }
