@@ -14,6 +14,18 @@ namespace BugsnagUnity
 
         public DateTime? Timestamp => GetNativeDateTime("getTimestamp");
 
-        public BreadcrumbType Type { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public BreadcrumbType Type { get => GetBreadcrumbType(); set => SetBreadcrumbType(value); }
+
+        private BreadcrumbType GetBreadcrumbType()
+        {
+            var native = NativePointer.Call<AndroidJavaObject>("getType").Call<string>("toString").ToLower();
+            return Breadcrumb.ParseBreadcrumbType(native);
+        }
+
+        private void SetBreadcrumbType(BreadcrumbType breadcrumbType)
+        {
+            var nativeCrumb = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType").GetStatic<AndroidJavaObject>(breadcrumbType.ToString().ToUpper());
+            NativePointer.Call("setType",nativeCrumb);
+        }
     }
 }

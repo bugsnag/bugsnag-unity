@@ -187,42 +187,52 @@ namespace BugsnagUnity
 
         }
 
+        private Dictionary<string, object> GetDictFromNativeMap(AndroidJavaObject map)
+        {
+            var size = map.Call<int>("size");
+            if (size > 0)
+            {
+                var keys = map.Call<AndroidJavaObject>("keySet");
+                var iterator = keys.Call<AndroidJavaObject>("iterator");
+                var dict = new Dictionary<string, object>();
+                while (iterator.Call<bool>("hasNext"))
+                {
+                    var next = iterator.Call<AndroidJavaObject>("next");
+                    var theKey = next.Call<string>("toString");
+                    var theValue = map.Call<AndroidJavaObject>("get", theKey);
+                    if (theValue != null)
+                    {
+                        var theValueString = theValue.Call<string>("toString");
+                        dict.Add(theKey, theValueString);
+                    }
+                    else
+                    {
+                        dict.Add(theKey, null);
+                    }
+                }
+                return dict;
+            }
+            return null;
+        }
+
         public Dictionary<string, object> GetNativeDictionary(string key)
         {
             var map = NativePointer.Call<AndroidJavaObject>(key);
-
             if (map != null)
             {
-                var size = map.Call<int>("size");
-
-                if (size > 0)
-                {
-                    var keys = map.Call<AndroidJavaObject>("keySet");
-
-                    var iterator = keys.Call<AndroidJavaObject>("iterator");
-
-                    var dict = new Dictionary<string, object>();
-
-                    while (iterator.Call<bool>("hasNext"))
-                    {
-                        var next = iterator.Call<AndroidJavaObject>("next");
-                        var theKey = next.Call<string>("toString");
-                        var theValue = map.Call<AndroidJavaObject>("get",theKey);
-                        if (theValue != null)
-                        {
-                            var theValueString = theValue.Call<string>("toString");
-                            dict.Add(theKey, theValueString);
-                        }
-                        else
-                        {
-                            dict.Add(theKey, null);
-                        }
-                    }
-                    return dict;
-                }
-                return null;
+                return GetDictFromNativeMap(map);
             }
             return null;          
+        }
+
+        public Dictionary<string, object> GetNativeMetadataSection(string key, string section)
+        {
+            var map = NativePointer.Call<AndroidJavaObject>(key,section);
+            if (map != null)
+            {
+                return GetDictFromNativeMap(map);
+            }
+            return null;
         }
 
         public void SetNativeDictionary(string key,Dictionary<string, object> dict)
@@ -230,6 +240,14 @@ namespace BugsnagUnity
             using (var map = NativeInterface.BuildJavaMapDisposable(dict))
             {
                 NativePointer.Call(key,map);
+            }
+        }
+
+        public void SetNativeMetadataSection(string key, string section, Dictionary<string, object> dict)
+        {
+            using (var map = NativeInterface.BuildJavaMapDisposable(dict))
+            {
+                NativePointer.Call(key, section, map);
             }
         }
 

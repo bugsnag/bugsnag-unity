@@ -21,13 +21,13 @@ namespace BugsnagUnity
 
         public List<IError> Errors => GetErrors();
 
-        public string GroupingHash { get => GetNativeString("getGroupingHash"); set => SetNativeString("setGroupingHash", value); }
+        public string GroupingHash { get => GetNativeString("getGroupingHash"); set =>  SetNativeString("setGroupingHash", value); }
 
         public Severity Severity { get => GetSeverity(); set => SetSeverity(value); }
 
         public List<IThread> Threads => GetThreads();
 
-        public bool? Unhandled { get => GetNativeBool("isUnhandled"); set => SetNativeBool("setUnhandled",value); }
+        public bool? Unhandled { get => NativePointer.Call<bool>("isUnhandled"); set => NativePointer.Call("setUnhandled", (bool)value); }
 
         private Severity GetSeverity()
         {
@@ -45,7 +45,7 @@ namespace BugsnagUnity
 
         private void SetSeverity(Severity severity)
         {
-            var nativeSeverity = new AndroidJavaObject("com.bugsnag.android.Severity",severity.ToString().ToLower());
+            var nativeSeverity = new AndroidJavaClass("com.bugsnag.android.Severity").GetStatic<AndroidJavaObject>(severity.ToString().ToUpper());
             NativePointer.Call("setSeverity",nativeSeverity);
         }
 
@@ -102,32 +102,43 @@ namespace BugsnagUnity
 
         public void AddMetadata(string section, string key, object value)
         {
-            throw new NotImplementedException();
+            var existingMetadata = GetNativeMetadataSection("getMetadata",section);
+            if (existingMetadata == null)
+            {
+                existingMetadata = new Dictionary<string, object>();
+            }
+            existingMetadata[key] = value;
+            AddMetadata(section,existingMetadata);
         }
 
         public void AddMetadata(string section, Dictionary<string, object> metadata)
         {
-            throw new NotImplementedException();
+            SetNativeMetadataSection("addMetadata", section, metadata);
         }
 
         public void ClearMetadata(string section)
         {
-            throw new NotImplementedException();
+            NativePointer.Call("clearMetadata",section);
         }
 
         public void ClearMetadata(string section, string key)
         {
-            throw new NotImplementedException();
+            NativePointer.Call("clearMetadata", section, key);
         }
 
         public Dictionary<string, object> GetMetadata(string section)
         {
-            throw new NotImplementedException();
+            return GetNativeMetadataSection("getMetadata", section);
         }
 
         public object GetMetadata(string section, string key)
         {
-            throw new NotImplementedException();
+            var metadata = GetMetadata(section);
+            if (metadata.ContainsKey(key))
+            {
+                return metadata[key];
+            }
+            return null;
         }
 
         public IUser GetUser() => new NativeUser(NativePointer.Call<AndroidJavaObject>("getUser"));

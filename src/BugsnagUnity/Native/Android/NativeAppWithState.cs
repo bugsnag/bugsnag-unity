@@ -11,6 +11,6 @@ namespace BugsnagUnity
         public TimeSpan? Duration { get => GetNativeTimespan("getDuration"); set => SetNativeTimespan("setDuration",value); }
         public TimeSpan? DurationInForeground { get => GetNativeTimespan("getDurationInForeground"); set => SetNativeTimespan("setDurationInForeground", value); }
         public bool? InForeground { get => GetNativeBool("getInForeground"); set => SetNativeBool("setInForeground",value); }
-        public bool? IsLaunching { get => GetNativeBool("getIsLaunching"); set => SetNativeBool("setIsLaunching", value); }
+        public bool? IsLaunching { get => GetNativeBool("isLaunching"); set => SetNativeBool("setLaunching", value); }
     }
 }
