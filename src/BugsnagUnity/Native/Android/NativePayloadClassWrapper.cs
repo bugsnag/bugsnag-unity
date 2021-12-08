@@ -47,7 +47,17 @@ namespace BugsnagUnity
             }            
         }
 
-        public void SetNativeLong(string key, int? value)
+        public long? GetNativeLong(string key)
+        {
+            var number = NativePointer.Call<AndroidJavaObject>(key);
+            if (number == null)
+            {
+                return null;
+            }
+            return number.Call<long>("longValue");
+        }
+
+        public void SetNativeLong(string key, long? value)
         {
             if (value == null)
             {
@@ -57,6 +67,51 @@ namespace BugsnagUnity
             {
                 var javaInteger = new AndroidJavaObject("java.lang.Long", (long)value);
                 NativePointer.Call(key, javaInteger);
+            }
+        }
+
+        public double? GetNativeDouble(string key)
+        {
+            var number = NativePointer.Call<AndroidJavaObject>(key);
+            if (number == null)
+            {
+                return null;
+            }
+            return number.Call<double>("doubleValue");
+        }
+
+        public void SetNativeDouble(string key, double? value)
+        {
+            if (value == null)
+            {
+                NativePointer.Call(key, null);
+            }
+            else
+            {
+                var javaInteger = new AndroidJavaObject("java.lang.Double", (double)value);
+                NativePointer.Call(key, javaInteger);
+            }
+        }
+
+        public TimeSpan? GetNativeTimespan(string key)
+        {
+            var millis = GetNativeDouble(key);
+            if (millis == null)
+            {
+                return null;
+            }
+            return TimeSpan.FromMilliseconds((double)millis);
+        }
+
+        public void SetNativeTimespan(string key, TimeSpan? value)
+        {
+            if (value == null)
+            {
+                NativePointer.Call(key, null);
+            }
+            else
+            {
+                SetNativeDouble(key,value.Value.TotalMilliseconds);
             }
         }
 
