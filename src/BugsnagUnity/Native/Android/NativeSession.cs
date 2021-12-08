@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeSession : NativePayloadClassWrapper, ISession
+    internal class NativeSession : NativePayloadClassWrapper, ISession
     {
         public NativeSession(AndroidJavaObject androidJavaObject) : base(androidJavaObject){}
 

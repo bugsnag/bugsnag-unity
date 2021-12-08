@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativePayloadClassWrapper
+    internal class NativePayloadClassWrapper
     {
 
         public AndroidJavaObject NativePointer;
@@ -153,8 +153,15 @@ namespace BugsnagUnity
                         var next = iterator.Call<AndroidJavaObject>("next");
                         var theKey = next.Call<string>("toString");
                         var theValue = map.Call<AndroidJavaObject>("get",theKey);
-                        var theValueString = theValue.Call<string>("toString");
-                        dict.Add(theKey,theValueString);
+                        if (theValue != null)
+                        {
+                            var theValueString = theValue.Call<string>("toString");
+                            dict.Add(theKey, theValueString);
+                        }
+                        else
+                        {
+                            dict.Add(theKey, null);
+                        }
                     }
                     return dict;
                 }
