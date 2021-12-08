@@ -103,9 +103,9 @@ namespace BugsnagUnity.Payload
             set => Add(RUNTIME_VERSIONS_KEY, value);
         }
 
-        public int? TotalMemory
+        public long? TotalMemory
         {
-            get => (int?)Get(TOTAL_MEMORY_KEY);
+            get => (long?)Get(TOTAL_MEMORY_KEY);
             set => Add(TOTAL_MEMORY_KEY, value);
         }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeError : NativePayloadClassWrapper, IError
+    internal class NativeError : NativePayloadClassWrapper, IError
     {
         public NativeError(AndroidJavaObject androidJavaObject) : base(androidJavaObject){}
 

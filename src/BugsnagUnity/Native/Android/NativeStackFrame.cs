@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeStackFrame : NativePayloadClassWrapper, IStackframe
+    internal class NativeStackFrame : NativePayloadClassWrapper, IStackframe
     {
         public NativeStackFrame(AndroidJavaObject androidJavaObject) : base (androidJavaObject){}
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeThread : NativePayloadClassWrapper, IThread
+    internal class NativeThread : NativePayloadClassWrapper, IThread
     {
         public NativeThread(AndroidJavaObject androidJavaObject) : base(androidJavaObject){}
 

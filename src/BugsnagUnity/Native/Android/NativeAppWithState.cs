@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeAppWithState : NativeApp, IAppWithState
+    internal class NativeAppWithState : NativeApp, IAppWithState
     {
         public NativeAppWithState(AndroidJavaObject androidJavaObject) : base(androidJavaObject){}
 

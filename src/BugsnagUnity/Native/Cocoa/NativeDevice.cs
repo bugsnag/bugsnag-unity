@@ -25,7 +25,7 @@ namespace BugsnagUnity
         public string BrowserName { get; set; }
         public string BrowserVersion { get; set; }
         public string[] CpuAbi { get; set; }
-        public int? TotalMemory { get; set; }
+        public long? TotalMemory { get; set; }
         public string UserAgent { get; set; }
         public string ModelNumber { get; set; }
 

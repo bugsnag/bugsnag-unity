@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeEvent : NativePayloadClassWrapper, IEvent
+    internal class NativeEvent : NativePayloadClassWrapper, IEvent
     {
         public NativeEvent(AndroidJavaObject androidJavaObject) : base (androidJavaObject){}
 

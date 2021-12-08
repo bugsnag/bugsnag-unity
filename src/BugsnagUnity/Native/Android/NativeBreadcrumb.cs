@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeBreadcrumb : NativePayloadClassWrapper, IBreadcrumb
+    internal class NativeBreadcrumb : NativePayloadClassWrapper, IBreadcrumb
     {
         public NativeBreadcrumb(AndroidJavaObject androidJavaObject) : base(androidJavaObject){}
 
