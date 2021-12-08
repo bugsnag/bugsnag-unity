@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeDevice: NativePayloadClassWrapper, IDevice
+    internal class NativeDevice: NativePayloadClassWrapper, IDevice
     {
         public NativeDevice(AndroidJavaObject nativePointer) : base (nativePointer){}
 
@@ -12,7 +12,6 @@ namespace BugsnagUnity
         public string BrowserVersion { get; set; }
         public string ModelNumber { get; set; }
         public string UserAgent { get; set; }
-
 
         public string Id { get => GetNativeString("getId"); set => SetNativeString("setId", value); }
         public string Locale { get => GetNativeString("getLocale"); set => SetNativeString("setLocale", value); }

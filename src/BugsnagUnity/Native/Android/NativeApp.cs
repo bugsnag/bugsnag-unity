@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeApp : NativePayloadClassWrapper, IApp
+    internal class NativeApp : NativePayloadClassWrapper, IApp
     {
-        public NativeApp(AndroidJavaObject nativePointer) : base (nativePointer){}
+        internal NativeApp(AndroidJavaObject nativePointer) : base (nativePointer){}
 
         public string BinaryArch { get => GetNativeString("getBinaryArch"); set => SetNativeString("setBinaryArch", value); }
         public string BuildUuid { get => GetNativeString("getBuildUuid"); set => SetNativeString("setBuildUuid", value); }
@@ -19,7 +19,6 @@ namespace BugsnagUnity
 
         public string BundleVersion { get; set; }
         public string DsymUuid { get; set; }
-
 
     }
 }
