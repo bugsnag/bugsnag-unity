@@ -46,7 +46,7 @@ namespace BugsnagUnity
 
         private bool CanRunOnBackgroundThread;
 
-        private bool Unity2019OrNewer;
+        private static bool Unity2019OrNewer;
         private Thread MainThread;
 
         private class OnSessionCallback : AndroidJavaProxy
@@ -71,7 +71,7 @@ namespace BugsnagUnity
                             return false;
                         }
                     }
-                    catch { }
+                    catch (Exception e){}
 
                 }
 
@@ -802,7 +802,7 @@ namespace BugsnagUnity
             return new Breadcrumb(message, timestamp, typeName, metadata);
         }
 
-        private AndroidJavaObject BuildJavaMapDisposable(Dictionary<string, object> src)
+        internal static AndroidJavaObject BuildJavaMapDisposable(Dictionary<string, object> src)
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
             if (src != null)
@@ -819,7 +819,7 @@ namespace BugsnagUnity
             return map;
         }
 
-        private AndroidJavaObject BuildJavaStringDisposable(string input)
+        internal static AndroidJavaObject BuildJavaStringDisposable(string input)
         {
             if (input == null)
             {
@@ -853,7 +853,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool IsUnity2019OrNewer()
+        internal static bool IsUnity2019OrNewer()
         {
             using (AndroidJavaClass CharsetClass = new AndroidJavaClass("java.nio.charset.Charset"))
             using (AndroidJavaObject Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset"))

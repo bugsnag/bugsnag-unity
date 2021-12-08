@@ -50,7 +50,7 @@ def dial_number_for(name)
       "Check Last Run Info" => 25,
       "Native Event Callback" => 26,
       "Ios Signal" => 27,
-
+      "Session Callback" => 28,
 
 
 

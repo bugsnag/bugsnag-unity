@@ -4,15 +4,17 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeSession : NativePayloadClassWrapper, ISession
+    internal class NativeSession : NativePayloadClassWrapper, ISession
     {
         public NativeSession(AndroidJavaObject androidJavaObject) : base(androidJavaObject){}
 
         public string Id { get => GetNativeString("getId"); set => SetNativeString("setId",value); }
 
-        public IDevice Device { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public IApp App { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DateTime? StartedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IDevice Device { get => new NativeDevice(NativePointer.Call<AndroidJavaObject>("getDevice")); set { } }
+
+        public IApp App { get => new NativeApp(NativePointer.Call<AndroidJavaObject>("getApp")); set { } }
+
+        public DateTime? StartedAt { get => GetNativeDateTime("getStartedAt"); set => SetNativeDateTime("setStartedAt",value); }
 
         public IUser GetUser() => new NativeUser(NativePointer.Call<AndroidJavaObject>("getUser"));
 

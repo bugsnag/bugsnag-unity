@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class NativeUser : NativePayloadClassWrapper, IUser
+    internal class NativeUser : NativePayloadClassWrapper, IUser
     {
         public NativeUser(AndroidJavaObject androidJavaObject) : base (androidJavaObject){}
 
