@@ -145,7 +145,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                     app.Version = "Custom Version";
                     app.VersionCode = 999;
                     app.Duration = TimeSpan.FromMilliseconds(1000);
-                    app.DurationInForeground = TimeSpan.FromMilliseconds(1000);
+                    app.DurationInForeground = TimeSpan.FromMilliseconds(2000);
                     app.InForeground = false;
                     app.IsLaunching = false;
 
@@ -159,11 +159,9 @@ public class MobileScenarioRunner : MonoBehaviour {
                     device.Model = "Custom Model";
                     device.OsName = "Custom OsName";
                     device.OsVersion = "Custom OsVersion";
-                    device.TotalMemory = 999;
+                    device.TotalMemory = 555;
                     device.Jailbroken = true;
                     device.CpuAbi = new string[] { "poo", "baar" };
-                    device.FreeDisk = 999;
-                    device.FreeMemory = 999;
                     device.Orientation = "Custom Orientation";
                     device.Time = new DateTime(1985, 08, 21, 01, 01, 01);
 

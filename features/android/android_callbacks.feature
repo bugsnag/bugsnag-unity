@@ -72,7 +72,7 @@ Feature: Callbacks
         And the event "app.version" equals "Custom Version"
         And the event "app.versionCode" equals 999
         And the event "app.duration" equals 1000
-        And the event "app.durationInForeground" equals 1000
+        And the event "app.durationInForeground" equals 2000
         And the event "app.inForeground" is false
         And the event "app.isLaunching" is false
 
@@ -85,7 +85,8 @@ Feature: Callbacks
         And the event "device.model" equals "Custom Model"
         And the event "device.osName" equals "Custom OsName"
         And the event "device.osVersion" equals "Custom OsVersion"
-        And the event "device.totalMemory" equals 999
+        And the event "device.totalMemory" equals 555
+
         And the event "device.runtimeVersions.scoop" equals "dewoop"
         And the event "device.time" equals "1985-08-21T01:01:01.000Z"
         And the event "device.orientation" equals "Custom Orientation"
