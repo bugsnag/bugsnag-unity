@@ -193,31 +193,26 @@ public class MobileScenarioRunner : MonoBehaviour {
 
                     @event.Severity = Severity.Info;
 
+                    @event.Unhandled = false;
+
                     // Threads
                     foreach (var thread in @event.Threads)
                     {
                         thread.Name = "Custom Name";
-                        thread.Id = "123";
                     }
-
-                    @event.Unhandled = false;
-
 
                     var testDict = new Dictionary<string, object>();
-                    for (int i = 0; i < 10; i++)
-                    {
-                        var s = i.ToString();
-                        testDict.Add(s, s);
-                    }
+                    testDict.Add("scoop","dewoop");
                     @event.Device.RuntimeVersions = testDict;
 
+                    @event.SetUser("1","2","3");
 
                     @event.AddMetadata("test",testDict);
                     @event.AddMetadata("test2", testDict);
 
                     @event.ClearMetadata("test2");
 
-                    @event.AddMetadata("test", "scoop", testDict);
+                    @event.AddMetadata("test", "scoop", "dewoop");
 
 
                     return true;
