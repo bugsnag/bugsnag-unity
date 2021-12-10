@@ -108,11 +108,3 @@ Feature: Callbacks
         And the event "exceptions.0.stacktrace.0.file" equals "Custom File"
         And the event "exceptions.0.stacktrace.0.lineNumber" equals 123123
         And the event "exceptions.0.stacktrace.0.inProject" is false
-
-
-
-
-
-
-
-
