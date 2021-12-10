@@ -168,13 +168,13 @@ namespace BugsnagUnity.Payload
         }
 
         public string FrameAddress { get; set; }
-        public string IsLr { get; set; }
-        public string IsPc { get; set; }
+        public bool? IsLr { get; set; }
+        public bool? IsPc { get; set; }
         public string MachoFile { get; set; }
         public string MachoLoadAddress { get; set; }
         public string MachoUuid { get; set; }
         public string MachoVmAddress { get; set; }
         public string SymbolAddress { get; set; }
-        public bool InProject { get; set; }
+        public bool? InProject { get; set; }
     }
 }
