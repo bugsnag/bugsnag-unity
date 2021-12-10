@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-    public delegate bool OnErrorCallback(IEvent bugsnagEvent);
-
-    public delegate bool OnSendErrorCallback(IEvent bugsnagEvent);
-
-    public delegate bool OnSessionCallback(ISession session);
-
 
     internal interface IClient : IMetadataEditor
     {
@@ -24,15 +19,15 @@ namespace BugsnagUnity
 
         void Notify(System.Exception exception);
 
-        void Notify(System.Exception exception, OnErrorCallback callback);
+        void Notify(System.Exception exception, Func<IEvent, bool> callback);
 
         void Notify(System.Exception exception, Severity severity);
 
-        void Notify(System.Exception exception, Severity severity, OnErrorCallback callback);
+        void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback);
 
-        void Notify(System.Exception exception, string stacktrace, OnErrorCallback callback);
+        void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback);
 
-        void Notify(string name, string message, string stackTrace, OnErrorCallback callback);
+        void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback);
 
         /// <summary>
         /// Used to signal to the Bugsnag client that the focused state of the
@@ -50,13 +45,13 @@ namespace BugsnagUnity
 
         void MarkLaunchCompleted();
 
-        void AddOnError(OnErrorCallback bugsnagCallback);
+        void AddOnError(Func<IEvent, bool> callback);
 
-        void RemoveOnError(OnErrorCallback bugsnagCallback);
+        void RemoveOnError(Func<IEvent, bool> callback);
 
-        void AddOnSession(OnSessionCallback callback);
+        void AddOnSession(Func<ISession, bool> callback);
 
-        void RemoveOnSession(OnSessionCallback callback);
+        void RemoveOnSession(Func<ISession, bool> callback);
 
         User GetUser();
 

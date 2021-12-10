@@ -205,53 +205,53 @@ namespace BugsnagUnity
         }
 
 
-        private List<OnErrorCallback> _onErrorCallbacks = new List<OnErrorCallback>();
+        private List<Func<IEvent, bool>> _onErrorCallbacks = new List<Func<IEvent, bool>>();
 
-        public void AddOnError(OnErrorCallback callback)
+        public void AddOnError(Func<IEvent, bool> callback)
         {
             _onErrorCallbacks.Add(callback);
         }
 
-        internal List<OnErrorCallback> GetOnErrorCallbacks()
+        internal List<Func<IEvent, bool>> GetOnErrorCallbacks()
         {
             return _onErrorCallbacks;
         }
 
-        public void RemoveOnError(OnErrorCallback callback)
+        public void RemoveOnError(Func<IEvent, bool> callback)
         {
             _onErrorCallbacks.Remove(callback);
         }
 
-        private List<OnSendErrorCallback> _onSendErrorCallbacks = new List<OnSendErrorCallback>();
+        private List<Func<IEvent, bool>> _onSendErrorCallbacks = new List<Func<IEvent, bool>>();
 
-        public void AddOnSendError(OnSendErrorCallback callback)
+        public void AddOnSendError(Func<IEvent, bool> callback)
         {
             _onSendErrorCallbacks.Add(callback);
         }
 
-        internal List<OnSendErrorCallback> GetOnSendErrorCallbacks()
+        internal List<Func<IEvent, bool>> GetOnSendErrorCallbacks()
         {
             return _onSendErrorCallbacks;
         }
 
-        public void RemoveOnSendError(OnSendErrorCallback callback)
+        public void RemoveOnSendError(Func<IEvent, bool> callback)
         {
             _onSendErrorCallbacks.Remove(callback);
         }
 
-        private List<OnSessionCallback> _onSessionCallbacks = new List<OnSessionCallback>();
+        private List<Func<ISession, bool>> _onSessionCallbacks = new List<Func<ISession, bool>>();
 
-        public void AddOnSession(OnSessionCallback callback)
+        public void AddOnSession(Func<ISession, bool> callback)
         {
             _onSessionCallbacks.Add(callback);
         }
 
-        public void RemoveOnSession(OnSessionCallback callback)
+        public void RemoveOnSession(Func<ISession, bool> callback)
         {
             _onSessionCallbacks.Remove(callback);
         }
 
-        internal List<OnSessionCallback> GetOnSessionCallbacks()
+        internal List<Func<ISession, bool>> GetOnSessionCallbacks()
         {
             return _onSessionCallbacks;
         }

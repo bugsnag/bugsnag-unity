@@ -37,19 +37,19 @@ namespace BugsnagUnity
 
         public static void Notify(string name, string message, string stackTrace) => InternalClient.Notify(name, message, stackTrace, null);
 
-        public static void Notify(string name, string message, string stackTrace, OnErrorCallback callback) => InternalClient.Notify(name, message, stackTrace, callback);
+        public static void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback) => InternalClient.Notify(name, message, stackTrace, callback);
 
         public static void Notify(System.Exception exception) => InternalClient.Notify(exception, 3);
 
         public static void Notify(System.Exception exception, string stacktrace) => InternalClient.Notify(exception, stacktrace, null);
 
-        public static void Notify(System.Exception exception, string stacktrace, OnErrorCallback callback) => InternalClient.Notify(exception, stacktrace, callback);
+        public static void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback) => InternalClient.Notify(exception, stacktrace, callback);
 
-        public static void Notify(System.Exception exception, OnErrorCallback callback) => InternalClient.Notify(exception, callback, 3);
+        public static void Notify(System.Exception exception, Func<IEvent, bool> callback) => InternalClient.Notify(exception, callback, 3);
 
         public static void Notify(System.Exception exception, Severity severity) => InternalClient.Notify(exception, severity, 3);
 
-        public static void Notify(System.Exception exception, Severity severity, OnErrorCallback callback) => InternalClient.Notify(exception, severity, callback, 3);
+        public static void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback) => InternalClient.Notify(exception, severity, callback, 3);
 
         public static List<Breadcrumb> Breadcrumbs => Client.Breadcrumbs.Retrieve();
 
@@ -104,22 +104,22 @@ namespace BugsnagUnity
         /// <summary>
         /// Add an OnError callback to run when an error occurs
         /// </summary>
-        public static void AddOnError(OnErrorCallback bugsnagCallback) => Client.AddOnError(bugsnagCallback);
+        public static void AddOnError(Func<IEvent, bool> bugsnagCallback) => Client.AddOnError(bugsnagCallback);
 
         /// <summary>
         /// Remove an OnError callback
         /// </summary>
-        public static void RemoveOnError(OnErrorCallback bugsnagCallback) => Client.RemoveOnError(bugsnagCallback);
+        public static void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Client.RemoveOnError(bugsnagCallback);
        
         /// <summary>
         /// Add an OnSession callback to run when an session is created
         /// </summary>
-        public static void AddOnSession(OnSessionCallback callback) => Client.AddOnSession(callback);
+        public static void AddOnSession(Func<ISession, bool> callback) => Client.AddOnSession(callback);
        
         /// <summary>
         /// Remove an OnSession callback
         /// </summary>
-        public static void RemoveOnSession(OnSessionCallback callback) => Client.RemoveOnSession(callback);
+        public static void RemoveOnSession(Func<ISession, bool> callback) => Client.RemoveOnSession(callback);
 
         /// <summary>
         /// AddMetadata that will appear in every reported event

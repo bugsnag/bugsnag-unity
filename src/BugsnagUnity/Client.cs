@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace BugsnagUnity
 {
@@ -238,13 +239,13 @@ namespace BugsnagUnity
             }
         }
 
-        public void Notify(string name, string message, string stackTrace, OnErrorCallback callback)
+        public void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback)
         {
             var exceptions = new Error[] { Error.FromStringInfo(name, message, stackTrace) };
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
-        public void Notify(System.Exception exception, string stacktrace, OnErrorCallback callback)
+        public void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback)
         {
             var exceptions = new Errors(exception, stacktrace).ToArray();
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
@@ -260,12 +261,12 @@ namespace BugsnagUnity
             Notify(exception, HandledState.ForHandledException(), null, level);
         }
 
-        public void Notify(System.Exception exception, OnErrorCallback callback)
+        public void Notify(System.Exception exception, Func<IEvent, bool> callback)
         {
             Notify(exception, callback, 3);
         }
 
-        internal void Notify(System.Exception exception, OnErrorCallback callback, int level)
+        internal void Notify(System.Exception exception, Func<IEvent, bool> callback, int level)
         {
             Notify(exception, HandledState.ForHandledException(), callback, level);
         }
@@ -280,17 +281,17 @@ namespace BugsnagUnity
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, level);
         }
 
-        public void Notify(System.Exception exception, Severity severity, OnErrorCallback callback)
+        public void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback)
         {
             Notify(exception, severity, callback, 3);
         }
 
-        internal void Notify(System.Exception exception, Severity severity, OnErrorCallback callback, int level)
+        internal void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback, int level)
         {
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, level);
         }
 
-        void Notify(System.Exception exception, HandledState handledState, OnErrorCallback callback, int level)
+        void Notify(System.Exception exception, HandledState handledState, Func<IEvent, bool> callback, int level)
         {
             // we need to generate a substitute stacktrace here as if we are not able
             // to generate one from the exception that we are given then we are not able
@@ -299,7 +300,7 @@ namespace BugsnagUnity
             Notify(new Errors(exception, substitute).ToArray(), handledState, callback, null);
         }
 
-        void Notify(Error[] exceptions, HandledState handledState, OnErrorCallback callback, LogType? logType)
+        void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -326,7 +327,7 @@ namespace BugsnagUnity
            
         }
 
-        private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, OnErrorCallback callback, LogType? logType)
+        private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -544,13 +545,13 @@ namespace BugsnagUnity
 
         public void MarkLaunchCompleted() => NativeClient.MarkLaunchCompleted();
         
-        public void AddOnError(OnErrorCallback bugsnagCallback) => Configuration.AddOnError(bugsnagCallback);
+        public void AddOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.AddOnError(bugsnagCallback);
 
-        public void RemoveOnError(OnErrorCallback bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
+        public void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
 
-        public void AddOnSession(OnSessionCallback callback) => Configuration.AddOnSession(callback);
+        public void AddOnSession(Func<ISession, bool> callback) => Configuration.AddOnSession(callback);
 
-        public void RemoveOnSession(OnSessionCallback callback) => Configuration.RemoveOnSession(callback);
+        public void RemoveOnSession(Func<ISession, bool> callback) => Configuration.RemoveOnSession(callback);
 
         public void AddMetadata(string section, string key, object value) => _storedMetadata.AddMetadata(section, key, value);
 
