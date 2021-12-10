@@ -47,7 +47,7 @@ namespace BugsnagUnity
 
         void AddOnError(Func<IEvent, bool> callback);
 
-        void RemoveOnError(Func<IEvent, bool> bugsnagCallback);
+        void RemoveOnError(Func<IEvent, bool> callback);
 
         void AddOnSession(Func<ISession, bool> callback);
 
