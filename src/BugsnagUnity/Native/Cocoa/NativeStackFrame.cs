@@ -22,9 +22,9 @@ namespace BugsnagUnity
 
         public string FrameAddress { get => GetNativeString(FRAME_ADDRESS_KEY); set => SetNativeString(FRAME_ADDRESS_KEY,value); }
 
-        public string IsLr { get => GetNativeString(IS_LR_KEY); set => SetNativeString(IS_LR_KEY, value); }
+        public bool? IsLr { get => GetNativeBool(IS_LR_KEY); set => SetNativeBool(IS_LR_KEY, value); }
 
-        public string IsPc { get => GetNativeString(IS_PC_KEY); set => SetNativeString(IS_PC_KEY, value); }
+        public bool? IsPc { get => GetNativeBool(IS_PC_KEY); set => SetNativeBool(IS_PC_KEY, value); }
 
         public string MachoFile { get => GetNativeString(MACHO_FILE_KEY); set => SetNativeString(MACHO_FILE_KEY, value); }
 
@@ -40,7 +40,7 @@ namespace BugsnagUnity
 
         public string File { get; set; }
 
-        public bool InProject { get; set; }
+        public bool? InProject { get; set; }
 
         public int? LineNumber { get; set; }
 

@@ -5,9 +5,9 @@ namespace BugsnagUnity.Payload
     {
         string FrameAddress { get; set; }
 
-        string IsLr { get; set; }
+        bool? IsLr { get; set; }
 
-        string IsPc { get; set; }
+        bool? IsPc { get; set; }
 
         string MachoFile { get; set; }
 
@@ -23,7 +23,7 @@ namespace BugsnagUnity.Payload
 
         string File { get; set; }
 
-        bool InProject { get; set; }
+        bool? InProject { get; set; }
 
         int? LineNumber { get; set; }
     }

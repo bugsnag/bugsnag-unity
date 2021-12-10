@@ -16,7 +16,7 @@ namespace BugsnagUnity
         string OsName { get; set; }
         string OsVersion { get; set; }
         Dictionary<string, object> RuntimeVersions { get; set; }
-        int? TotalMemory { get; set; }
+        long? TotalMemory { get; set; }
         string UserAgent { get; set; }
     }
 }

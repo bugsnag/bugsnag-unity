@@ -79,6 +79,32 @@ namespace BugsnagUnity
             }
         }
 
+        private class OnSendErrorCallback : AndroidJavaProxy
+        {
+            private Configuration _config;
+
+            public OnSendErrorCallback(Configuration config) : base("com.bugsnag.android.OnSendCallback")
+            {
+                _config = config;
+            }
+            public bool onSend(AndroidJavaObject @event)
+            {
+                var wrapper = new NativeEvent(@event);
+                foreach (var callback in _config.GetOnSendErrorCallbacks())
+                {
+                    try
+                    {
+                        if (!callback.Invoke(wrapper))
+                        {
+                            return false;
+                        }
+                    }
+                    catch (Exception e) { }
+                }
+                return true;
+            }
+        }
+
         public NativeInterface(Configuration cfg)
         {
             AndroidJavaObject config = CreateNativeConfig(cfg);
@@ -234,8 +260,10 @@ namespace BugsnagUnity
             obj.Call("setLaunchDurationMillis", config.LaunchDurationMillis);
             obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
 
-            //Register for on session callbacks
+            //Register for callbacks
             obj.Call("addOnSession", new OnSessionCallback(config));
+            obj.Call("addOnSend", new OnSendErrorCallback(config));
+
 
             // set endpoints
             var notify = config.Endpoints.Notify.ToString();
