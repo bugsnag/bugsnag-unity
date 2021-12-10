@@ -5,8 +5,8 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - m_PersistentViewDataDictionary: {instanceID: 0}
-  - IconTexture: {fileID: 2800000, guid: 0e8e4461f10164f72aae867f5c2f3609, type: 3}
-  - LogoTexture: {fileID: 2800000, guid: 7650e753c14364dae8ebb508ebd53aca, type: 3}
+  - DarkIcon: {fileID: 2800000, guid: 2785e0366c7a34c068497d1bb94c6cb2, type: 3}
+  - LightIcon: {fileID: 2800000, guid: 7ee8345965a96421e8a7b46a262d3567, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

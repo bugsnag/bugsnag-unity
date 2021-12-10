@@ -12,17 +12,21 @@ namespace BugsnagUnity.Editor
     public class BugsnagEditor : EditorWindow
     {
 
+        private bool _showBasicConfig = true;
+
         private bool _showAdvancedSettings, _showAppInformation, _showEndpoints, _showEnabledErrorTypes;
 
-        public Texture IconTexture, LogoTexture;
+        public Texture DarkIcon, LightIcon;
+
+        private Vector2 _scrollPos;
+
 
         private void OnEnable()
         {
-            titleContent.image = IconTexture;
             titleContent.text = "Bugsnag";
         }
 
-        [MenuItem("Window/Bugsnag/Settings")]
+        [MenuItem("Window/Bugsnag/Configuration")]
         public static void ShowWindow()
         {
             GetWindow(typeof(BugsnagEditor));
@@ -33,9 +37,9 @@ namespace BugsnagUnity.Editor
             return File.Exists(Application.dataPath + "/Resources/Bugsnag/BugsnagSettingsObject.asset");
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
-            DrawLogo();
+            DrawIcon();
             if (!SettingsFileFound())
             {
                 CreateNewSettingsFile();
@@ -45,50 +49,68 @@ namespace BugsnagUnity.Editor
                 DrawSettingsEditorWindow();
             }
         }
-       
-        private void DrawLogo()
+
+        private void DrawIcon()
         {
-            var bgTex = new Texture2D(1, 1, TextureFormat.RGBA32, false);
-            var c = Color.white;
-            c.a = 0.5f;
-            bgTex.SetPixel(0, 0, c);
-            bgTex.Apply();
-            GUI.DrawTexture(new Rect(0, 0, maxSize.x, 58), bgTex, ScaleMode.StretchToFill);
-            GUI.DrawTexture(new Rect(5, 5, 125, 46), LogoTexture, ScaleMode.ScaleToFit);
-            GUILayout.Space(70);
+            titleContent.image = EditorGUIUtility.isProSkin ? LightIcon : DarkIcon;
         }
 
         private void DrawSettingsEditorWindow()
         {
-            GUILayout.Label("Bugsnag settings", EditorStyles.largeLabel);
-            GUILayout.Space(5);
-            EditorGUI.indentLevel++;
+            _scrollPos = EditorGUILayout.BeginScrollView(_scrollPos,
+                                                    false,
+                                                    false);
+            GUILayout.BeginVertical();
+
+            GUILayout.Space(10);
             var settings = GetSettingsObject();
             var so = new SerializedObject(settings);
-            settings.AutoStartBugsnag = EditorGUILayout.Toggle("Auto Start Bugsnag",settings.AutoStartBugsnag);
-            settings.ApiKey = EditorGUILayout.TextField("API Key", settings.ApiKey);
+
+
+            _showBasicConfig = EditorGUILayout.Foldout(_showBasicConfig, "Basic Configuration", true);
+            if (_showBasicConfig)
+            {
+                DrawBasicConfiguration(settings);
+            }
+
+            GUILayout.Space(5);
+            _showAdvancedSettings = EditorGUILayout.Foldout(_showAdvancedSettings, "Advanced Configuration", true);
+            if (_showAdvancedSettings)
+            {
+                DrawAdvancedSettings(so, settings);
+            }
+
             GUILayout.Space(5);
             _showAppInformation = EditorGUILayout.Foldout(_showAppInformation, "App Information", true);
             if (_showAppInformation)
             {
                 DrawAppInfo(so);
             }
-            GUILayout.Space(5);
-            _showAdvancedSettings = EditorGUILayout.Foldout(_showAdvancedSettings, "Advanced Settings", true);
-            if (_showAdvancedSettings)
-            {
-                DrawAdvancedSettings(so, settings);
-            }
+
             GUILayout.Space(5);
             _showEndpoints = EditorGUILayout.Foldout(_showEndpoints, "Endpoints", true);
             if (_showEndpoints)
             {
                 DrawEndpoints(so);
             }
-            EditorGUI.indentLevel--;
-            EditorUtility.SetDirty(settings);
-            so.ApplyModifiedProperties();
+            GUILayout.Space(10);
 
+            GUILayout.EndVertical();
+            EditorGUILayout.EndScrollView();
+            so.ApplyModifiedProperties();
+            EditorUtility.SetDirty(settings);
+        }
+
+        private void DrawBasicConfiguration(BugsnagSettingsObject settings)
+        {
+            EditorGUI.indentLevel++;
+            var originalWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = 70;
+            settings.ApiKey = EditorGUILayout.TextField("API Key", settings.ApiKey);
+            EditorGUIUtility.labelWidth = 270;
+            settings.AutoStartBugsnag = EditorGUILayout.Toggle("Start Automatically (requires API key to be set)", settings.AutoStartBugsnag);
+            EditorGUIUtility.labelWidth = originalWidth;
+            EditorGUI.indentLevel--;
         }
 
         private void DrawEndpoints(SerializedObject so)
