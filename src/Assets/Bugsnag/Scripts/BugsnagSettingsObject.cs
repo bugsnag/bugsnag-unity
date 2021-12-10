@@ -29,7 +29,7 @@ namespace BugsnagUnity.Editor
         public string SessionEndpoint;
         public string[] RedactedKeys = new string[] { "password" };
         public string ReleaseStage = "production";
-        public bool ReportUncaughtExceptionsAsHandled = true;
+        public bool ReportExceptionLogsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
         public double SecondsPerUniqueLog = 5;
         public int VersionCode;
@@ -82,7 +82,7 @@ namespace BugsnagUnity.Editor
             {
                 config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
             }
-            config.ReportUncaughtExceptionsAsHandled = ReportUncaughtExceptionsAsHandled;
+            config.ReportExceptionLogsAsHandled = ReportExceptionLogsAsHandled;
             config.SendLaunchCrashesSynchronously = SendLaunchCrashesSynchronously;
             config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             config.VersionCode = VersionCode;

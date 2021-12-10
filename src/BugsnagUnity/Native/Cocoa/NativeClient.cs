@@ -155,7 +155,7 @@ namespace BugsnagUnity
             {
                 enabledTypes.Add("AppHangs");
             }
-            if (config.EnabledErrorTypes.NativeCrashes)
+            if (config.EnabledErrorTypes.Crashes)
             {
                 enabledTypes.Add("UnhandledExceptions");
                 enabledTypes.Add("Signals");

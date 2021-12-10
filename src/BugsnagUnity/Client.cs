@@ -198,7 +198,7 @@ namespace BugsnagUnity
         void MultiThreadedNotify(string condition, string stackTrace, LogType logType)
         {
             // Discard messages from the main thread as they will be reported separately
-            if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
+            if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
                 Notify(condition, stackTrace, logType);
             }
@@ -214,8 +214,11 @@ namespace BugsnagUnity
         /// <param name="logType"></param>
         void Notify(string condition, string stackTrace, LogType logType)
         {
-
-            if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel) && Configuration.IsUnityLogErrorTypeEnabled(logType))
+            if (!Configuration.EnabledErrorTypes.UnityLog)
+            {
+                return;
+            }
+            if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel))
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
                 var shouldSend = Error.ShouldSend(logMessage)
@@ -225,7 +228,7 @@ namespace BugsnagUnity
                 {
                     var severity = Configuration.LogTypeSeverityMapping.Map(logType);
                     var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
-                    var forceUnhandled = logType == LogType.Exception && !Configuration.ReportUncaughtExceptionsAsHandled;
+                    var forceUnhandled = logType == LogType.Exception && !Configuration.ReportExceptionLogsAsHandled;
                     var exception = Error.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
                     Notify(new Error[] { exception }, exception.HandledState, null, logType);
                 }
