@@ -45,7 +45,7 @@ namespace BugsnagUnity
 
         void MarkLaunchCompleted();
 
-        void AddOnError(Func<IEvent, bool> bugsnagCallback);
+        void AddOnError(Func<IEvent, bool> callback);
 
         void RemoveOnError(Func<IEvent, bool> bugsnagCallback);
 
