@@ -7,6 +7,6 @@ namespace BugsnagUnity.Payload
         long? FreeDisk { get; set; }
         long? FreeMemory { get; set; }
         string Orientation { get; set; }
-        DateTime? Time { get; set; }
+        DateTimeOffset? Time { get; set; }
     }
 }

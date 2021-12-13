@@ -43,7 +43,7 @@ namespace BugsnagUnity
             }
         }
 
-        public DateTime? Timestamp => GetNativeDate(TIMESTAMP_KEY);
+        public DateTimeOffset? Timestamp => GetNativeDate(TIMESTAMP_KEY);
 
         public BreadcrumbType Type {
             get => Breadcrumb.ParseBreadcrumbType( NativeCode.bugsnag_getBreadcrumbType(NativePointer) );

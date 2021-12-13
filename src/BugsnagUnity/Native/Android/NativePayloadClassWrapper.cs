@@ -251,7 +251,7 @@ namespace BugsnagUnity
             }
         }
 
-        public DateTime? GetNativeDateTime(string key)
+        public DateTimeOffset? GetNativeDateTime(string key)
         {
             var nativeDate = NativePointer.Call<AndroidJavaObject>(key);
 
@@ -267,7 +267,7 @@ namespace BugsnagUnity
             return date;
         }
 
-        public void SetNativeDateTime(string key, DateTime? dateTime)
+        public void SetNativeDateTime(string key, DateTimeOffset? dateTime)
         {
             if (dateTime == null)
             {

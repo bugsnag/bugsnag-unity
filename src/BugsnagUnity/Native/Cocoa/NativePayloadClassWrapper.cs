@@ -74,7 +74,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setNumberValue(NativePointer, key, value == null ? "null" : value.ToString());
         }
 
-        internal DateTime? GetNativeDate(string key)
+        internal DateTimeOffset? GetNativeDate(string key)
         {
             var timeStamp = NativeCode.bugsnag_getTimestampFromDateInObject(NativePointer, key);
             if (timeStamp < 0)
@@ -83,13 +83,13 @@ namespace BugsnagUnity
             }
             else
             {
-                DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                DateTimeOffset dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                 dateTime = dateTime.AddSeconds(timeStamp);
                 return dateTime;
             }
         }
 
-        internal void SetNativeDate(DateTime? startedAt,string key)
+        internal void SetNativeDate(DateTimeOffset? startedAt,string key)
         {
             if (startedAt == null)
             {

@@ -22,6 +22,6 @@ namespace BugsnagUnity
 
         public string Orientation { get => NativeWrapper.GetNativeString(ORIENTATION_KEY); set => NativeWrapper.SetNativeString(ORIENTATION_KEY,value); }
 
-        public DateTime? Time { get => DateTime.Parse(NativeWrapper.GetNativeString(TIME_KEY)); set => NativeWrapper.SetNativeString(TIME_KEY, value?.ToLongTimeString()); }
+        public DateTimeOffset? Time { get => DateTimeOffset.Parse(NativeWrapper.GetNativeString(TIME_KEY)); set => NativeWrapper.SetNativeString(TIME_KEY, value?.ToString()); }
     }
 }

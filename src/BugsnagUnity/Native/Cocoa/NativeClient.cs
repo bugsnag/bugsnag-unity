@@ -355,7 +355,7 @@ namespace BugsnagUnity
                     _nativeSession = null;
                     return;
                 }
-                var startTime = DateTime.Parse(startedAt);
+                var startTime = DateTimeOffset.Parse(startedAt);
                 _nativeSession = new Session(sessionId, startTime, handled, unhandled);
             }
         }

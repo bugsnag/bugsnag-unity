@@ -17,9 +17,9 @@ namespace BugsnagUnity.Payload
             set => Add(ID_KEY, value);
         }
 
-        public DateTime? StartedAt
+        public DateTimeOffset? StartedAt
         {
-            get => (DateTime?)Get(STARTED_AT_KEY);
+            get => (DateTimeOffset?)Get(STARTED_AT_KEY);
             set => Add(STARTED_AT_KEY, value);
         }
 
@@ -54,19 +54,18 @@ namespace BugsnagUnity.Payload
 
         internal bool Stopped { get; set; }
 
-        internal Session() : this(DateTime.UtcNow, 0, 0)
+        internal Session() : this(DateTimeOffset.Now, 0, 0)
         {
-
         }
 
-        internal Session(DateTime? startedAt, int handled, int unhandled)
+        internal Session(DateTimeOffset? startedAt, int handled, int unhandled)
         {
             Id = Guid.NewGuid().ToString();
             StartedAt = startedAt;
             Events = new SessionEvents(handled, unhandled);
         }
 
-        internal Session(string providedGuid, DateTime startedAt, int handled, int unhandled)
+        internal Session(string providedGuid, DateTimeOffset startedAt, int handled, int unhandled)
         {
             Id = providedGuid;
             StartedAt = startedAt;
