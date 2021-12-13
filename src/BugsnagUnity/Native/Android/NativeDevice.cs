@@ -24,6 +24,6 @@ namespace BugsnagUnity
 
         public string[] CpuAbi { get => GetNativeStringArray("getCpuAbi"); set => SetNativeStringArray("setCpuAbi",value); }
 
-        public Dictionary<string, object> RuntimeVersions { get => GetNativeDictionary("getRuntimeVersions"); set => SetNativeDictionary("setRuntimeVersions", value); }
+        public IDictionary<string, object> RuntimeVersions { get => GetNativeDictionary("getRuntimeVersions"); set => SetNativeDictionary("setRuntimeVersions", value); }
     }
 }

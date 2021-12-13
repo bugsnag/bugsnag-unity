@@ -62,9 +62,9 @@ namespace BugsnagUnity.Payload
 
         public void AddMetadata(string section, string key, object value) => _metadata.AddMetadata(section,key,value);
 
-        public void AddMetadata(string section, Dictionary<string, object> metadata) => _metadata.AddMetadata(section, metadata);
+        public void AddMetadata(string section, IDictionary<string, object> metadata) => _metadata.AddMetadata(section, metadata);
 
-        public Dictionary<string, object> GetMetadata(string section) => _metadata.GetMetadata(section);
+        public IDictionary<string, object> GetMetadata(string section) => _metadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => _metadata.GetMetadata(section,key);
 

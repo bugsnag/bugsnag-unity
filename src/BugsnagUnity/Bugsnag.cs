@@ -129,7 +129,7 @@ namespace BugsnagUnity
         /// <summary>
         /// AddMetadata that will appear in every reported event
         /// </summary>
-        public static void AddMetadata(string section, Dictionary<string, object> metadata) => Client.AddMetadata(section, metadata);
+        public static void AddMetadata(string section, IDictionary<string, object> metadata) => Client.AddMetadata(section, metadata);
 
         /// <summary>
         /// Clear the metadata stored in the specified section
@@ -144,7 +144,7 @@ namespace BugsnagUnity
         /// <summary>
         /// Get the metadata stored in the specified section 
         /// </summary>
-        public static Dictionary<string, object> GetMetadata(string section) => Client.GetMetadata(section);
+        public static IDictionary<string, object> GetMetadata(string section) => Client.GetMetadata(section);
 
         /// <summary>
         /// Get the metadata stored with the specified section and key

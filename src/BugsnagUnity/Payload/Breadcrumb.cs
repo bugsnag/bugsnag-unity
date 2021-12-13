@@ -39,7 +39,7 @@ namespace BugsnagUnity.Payload
         /// Used to construct a breadcrumb from the native data obtained from a
         /// native notifier if present.
         /// </summary>
-        internal Breadcrumb(string name, string timestamp, string type, Dictionary<string, object> metadata)
+        internal Breadcrumb(string name, string timestamp, string type, IDictionary<string, object> metadata)
         {
             Name = name;
             Timestamp = DateTime.Parse( timestamp );
@@ -54,7 +54,7 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        internal Breadcrumb(string name, Dictionary<string, object> metadata, BreadcrumbType type)
+        internal Breadcrumb(string name, IDictionary<string, object> metadata, BreadcrumbType type)
         {
             if (name == null)
             {
@@ -66,11 +66,11 @@ namespace BugsnagUnity.Payload
             Type = type;
         }
 
-        public Dictionary<string, object> Metadata
+        public IDictionary<string, object> Metadata
         {
             get
             {
-                return Get(METADATA_KEY) as Dictionary<string, object>;
+                return Get(METADATA_KEY) as IDictionary<string, object>;
             }
             set
             {

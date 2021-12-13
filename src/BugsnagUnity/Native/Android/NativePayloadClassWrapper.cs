@@ -235,7 +235,7 @@ namespace BugsnagUnity
             return null;
         }
 
-        public void SetNativeDictionary(string key,Dictionary<string, object> dict)
+        public void SetNativeDictionary(string key,IDictionary<string, object> dict)
         {
             using (var map = NativeInterface.BuildJavaMapDisposable(dict))
             {
@@ -243,7 +243,7 @@ namespace BugsnagUnity
             }
         }
 
-        public void SetNativeMetadataSection(string key, string section, Dictionary<string, object> dict)
+        public void SetNativeMetadataSection(string key, string section, IDictionary<string, object> dict)
         {
             using (var map = NativeInterface.BuildJavaMapDisposable(dict))
             {

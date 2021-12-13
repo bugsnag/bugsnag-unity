@@ -44,10 +44,10 @@ namespace BugsnagUnity
 
         public string OsVersion { get => NativeWrapper.GetNativeString(OS_VERSION_KEY); set => NativeWrapper.SetNativeString(OS_VERSION_KEY, value); }
 
-        public Dictionary<string, object> RuntimeVersions { get => GetRuntimeVersions(); set => SetRuntimeVersions(value); }
+        public IDictionary<string, object> RuntimeVersions { get => GetRuntimeVersions(); set => SetRuntimeVersions(value); }
 
 
-        private Dictionary<string, object> GetRuntimeVersions()
+        private IDictionary<string, object> GetRuntimeVersions()
         {
             var versionsString = NativeCode.bugsnag_getRuntimeVersionsFromDevice(NativeWrapper.NativePointer);
             var split = versionsString.Split('|').ToList();
@@ -64,7 +64,7 @@ namespace BugsnagUnity
             return returnDict;
         }
 
-        private void SetRuntimeVersions(Dictionary<string, object> versions)
+        private void SetRuntimeVersions(IDictionary<string, object> versions)
         {
             var stringVersions = new List<string>();
             foreach (var item in versions)

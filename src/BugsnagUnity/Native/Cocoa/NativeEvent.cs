@@ -133,7 +133,7 @@ namespace BugsnagUnity
             AddMetadata(section, metadataSection);
         }
 
-        public void AddMetadata(string section, Dictionary<string, object> metadata)
+        public void AddMetadata(string section, IDictionary<string, object> metadata)
         {
            
             if (metadata != null)
@@ -172,7 +172,7 @@ namespace BugsnagUnity
             return null;
         }
 
-        public Dictionary<string, object> GetMetadata(string section)
+        public IDictionary<string, object> GetMetadata(string section)
         {
             var result = NativeCode.bugsnag_getEventMetaData(NativePointer, section);
             var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
