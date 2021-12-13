@@ -79,7 +79,7 @@ namespace BugsnagUnity
             metadata.MergeMetadata(NativeInterface.GetMetadata());
         }
 
-        private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)
+        private void MergeDictionaries(IDictionary<string, object> dest, IDictionary<string, object> another)
         {
             foreach (var entry in another)
             {

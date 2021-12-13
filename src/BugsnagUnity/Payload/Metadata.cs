@@ -23,7 +23,7 @@ namespace BugsnagUnity.Payload
             AddMetadata(section, new Dictionary<string, object>{{ key, value }});
         }
 
-        public void AddMetadata(string section, Dictionary<string, object> metadataSection)
+        public void AddMetadata(string section, IDictionary<string, object> metadataSection)
         {
             if (metadataSection == null)
             {
@@ -33,7 +33,7 @@ namespace BugsnagUnity.Payload
             if (SectionExists(section))
             {
 
-                var existingSection = (Dictionary<string, object>)Get(section);
+                var existingSection = (IDictionary<string, object>)Get(section);
 
                 foreach (var entry in metadataSection)
                 {
@@ -65,7 +65,7 @@ namespace BugsnagUnity.Payload
             {
                 return;
             }
-            var existingSection = (Dictionary<string, object>)Get(section);
+            var existingSection = (IDictionary<string, object>)Get(section);
             var stringDict = new Dictionary<string, object>();
             foreach (var pair in existingSection)
             {
@@ -94,7 +94,7 @@ namespace BugsnagUnity.Payload
         {
             if (SectionExists(section))
             {
-                var existingSection = (Dictionary<string, object>)Payload[section];
+                var existingSection = (IDictionary<string, object>)Payload[section];
                 if (existingSection.ContainsKey(key))
                 {
                     existingSection.Remove(key);
@@ -108,16 +108,16 @@ namespace BugsnagUnity.Payload
             return Payload.ContainsKey(section);
         }
 
-        public Dictionary<string, object> GetMetadata(string section)
+        public IDictionary<string, object> GetMetadata(string section)
         {
-            return SectionExists(section) ? (Dictionary<string, object>)Payload[section] : null;
+            return SectionExists(section) ? (IDictionary<string, object>)Payload[section] : null;
         }
 
         public object GetMetadata(string section, string key)
         {
             if (SectionExists(section))
             {
-                var existingSection = (Dictionary<string, object>)Payload[section];
+                var existingSection = (IDictionary<string, object>)Payload[section];
                 return existingSection[key];
             }
             return null;
@@ -128,7 +128,7 @@ namespace BugsnagUnity.Payload
             foreach (var section in newMetadata)
             {
                 var sectionkey = section.Key;
-                var sectionToMergeIn = (Dictionary<string, object>)section.Value;
+                var sectionToMergeIn = (IDictionary<string, object>)section.Value;
                 AddMetadata(sectionkey, sectionToMergeIn);
             }
         }
