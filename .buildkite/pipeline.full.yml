@@ -20,6 +20,12 @@ steps:
     artifact_paths:
       - features/fixtures/maze_runner/build/MacOS-2017.4.40f1.zip
       - features/fixtures/maze_runner/build/WebGL-2017.4.40f1.zip
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: Build Unity 2018 MacOS and WebGL test fixtures
     key: 'cocoa-webgl-2018-fixtures'
@@ -39,6 +45,12 @@ steps:
       - unity.log
       - features/fixtures/maze_runner/build/MacOS-2018.4.36f1.zip
       - features/fixtures/maze_runner/build/WebGL-2018.4.36f1.zip
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: Build Unity 2019 MacOS and WebGL test fixtures
     key: 'cocoa-webgl-2019-fixtures'
@@ -58,6 +70,12 @@ steps:
       - unity.log
       - features/fixtures/maze_runner/build/MacOS-2019.4.32f1.zip
       - features/fixtures/maze_runner/build/WebGL-2019.4.32f1.zip
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: Build Unity 2021 MacOS and WebGL test fixtures
     key: 'cocoa-webgl-2021-fixtures'
@@ -77,6 +95,12 @@ steps:
       - unity.log
       - features/fixtures/maze_runner/build/MacOS-2021.2.3f1.zip
       - features/fixtures/maze_runner/build/WebGL-2021.2.3f1.zip
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   #
   # Run macOS desktop tests
@@ -237,6 +261,12 @@ steps:
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':android: Build Android test fixture for Unity 2018'
     key: 'build-android-fixture-2018'
@@ -255,6 +285,12 @@ steps:
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':android: Build Android test fixture for Unity 2019'
     key: 'build-android-fixture-2019'
@@ -273,6 +309,12 @@ steps:
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':android: Build Android test fixture for Unity 2021'
     key: 'build-android-fixture-2021'
@@ -291,6 +333,12 @@ steps:
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   #
   # Run Android tests
@@ -412,6 +460,12 @@ steps:
     commands:
       - rake test:ios:generate_xcode
       - tar -zvcf project_2017.tgz  features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2017'
     key: 'build-ios-fixture-2017'
@@ -432,6 +486,12 @@ steps:
     commands:
       - tar -zxf project_2017.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':ios: Generate Xcode project - Unity 2018'
     key: 'generate-fixture-project-2018'
@@ -451,6 +511,12 @@ steps:
     commands:
       - rake test:ios:generate_xcode
       - tar -zvcf project_2018.tgz  features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2018'
     key: 'build-ios-fixture-2018'
@@ -471,6 +537,12 @@ steps:
     commands:
       - tar -zxf project_2018.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':ios: Generate Xcode project - Unity 2019'
     key: 'generate-fixture-project-2019'
@@ -490,6 +562,12 @@ steps:
     commands:
       - rake test:ios:generate_xcode
       - tar -zvcf project_2019.tgz features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2019'
     key: 'build-ios-fixture-2019'
@@ -510,6 +588,12 @@ steps:
     commands:
       - tar -zxf project_2019.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':ios: Generate Xcode project - Unity 2021'
     key: 'generate-fixture-project-2021'
@@ -529,6 +613,12 @@ steps:
     commands:
       - rake test:ios:generate_xcode
       - tar -zvcf project_2021.tgz features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2021'
     key: 'build-ios-fixture-2021'
@@ -549,6 +639,12 @@ steps:
     commands:
       - tar -zxf project_2021.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   #
   # Run iOS tests
@@ -665,6 +761,12 @@ steps:
     artifact_paths:
       - unity.log
       - features/fixtures/maze_runner/build/Windows-2017.4.40f1.zip
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: Build Unity 2018 Windows test fixture
     key: 'windows-2018-fixture'
@@ -679,6 +781,12 @@ steps:
     artifact_paths:
       - unity.log
       - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: Build Unity 2019 Windows test fixture
     key: 'windows-2019-fixture'
@@ -693,6 +801,12 @@ steps:
     artifact_paths:
       - unity.log
       - features/fixtures/maze_runner/build/Windows-2019.4.30f1.zip
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   - label: Build Unity 2021 Windows test fixture
     key: 'windows-2021-fixture'
@@ -707,6 +821,12 @@ steps:
     artifact_paths:
       - unity.log
       - features/fixtures/maze_runner/build/Windows-2021.2.3f1.zip
+    retry:
+      automatic:
+        - exit_status: -1  # Agent was lost
+          limit: 1
+        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+          limit: 1
 
   #
   # Run Windows e2e tests
