@@ -163,26 +163,18 @@ public class Main : MonoBehaviour
                     ANRs = false,
                     AppHangs = false,
                     OOMs = false,
-                    NativeCrashes = false,
-                    UnhandledExceptions = true,
-                    UnityLogLogs = false,
-                    UnityWarningLogs = false,
-                    UnityAssertLogs = false,
-                    UnityErrorLogs = false
+                    Crashes = false,
+                    UnityLog = true
                 };
-                config.NotifyLogLevel = LogType.Log;
+                config.NotifyLogLevel = LogType.Exception;
                 break;
             case "EnableLogLogs":
                 config.EnabledErrorTypes = new EnabledErrorTypes() {
                     ANRs = false,
                     AppHangs = false,
                     OOMs = false,
-                    NativeCrashes = false,
-                    UnhandledExceptions = false,
-                    UnityLogLogs = true,
-                    UnityWarningLogs = false,
-                    UnityAssertLogs = false,
-                    UnityErrorLogs = false
+                    Crashes = false,
+                    UnityLog = true
                 };
                 config.NotifyLogLevel = LogType.Log;
                 break;
@@ -220,26 +212,26 @@ public class Main : MonoBehaviour
                 config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "UncaughtExceptionAsUnhandled":
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.ReportExceptionLogsAsHandled = false;
                 break;
             case "LogUnthrownAsUnhandled":
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.ReportExceptionLogsAsHandled = false;
                 break;
             case "ReportLoggedWarning":
                 config.NotifyLogLevel = LogType.Warning;
-                config.EnabledErrorTypes.UnityWarningLogs = true;
+                config.EnabledErrorTypes.UnityLog = true;
                 break;
             case "ReportLoggedError":
                 config.NotifyLogLevel = LogType.Warning;
-                config.EnabledErrorTypes.UnityWarningLogs = true;
+                config.EnabledErrorTypes.UnityLog = true;
                 break;
             case "ReportLoggedWarningWithHandledConfig":
-                config.EnabledErrorTypes.UnityWarningLogs = true;
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.EnabledErrorTypes.UnityLog = true;
+                config.ReportExceptionLogsAsHandled = false;
                 config.NotifyLogLevel = LogType.Warning;
                 break;
             case "ManualSessionCrash":
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.ReportExceptionLogsAsHandled = false;
                 break;
             case "AutoSessionInNotifyReleaseStages":
                 config.ReleaseStage = "production";
@@ -256,9 +248,9 @@ public class Main : MonoBehaviour
                 config.EnabledReleaseStages = new[] { "no-op" };
                 break;
             case "ManualSessionMixedEvents":
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.ReportExceptionLogsAsHandled = false;
                 config.NotifyLogLevel = LogType.Warning;
-                config.EnabledErrorTypes.UnityWarningLogs = true;
+                config.EnabledErrorTypes.UnityLog = true;
                 break;
             case "UncaughtExceptionWithoutAutoNotify":
                 config.AutoDetectErrors = false;
@@ -268,7 +260,7 @@ public class Main : MonoBehaviour
                 break;
             case "LoggedExceptionWithoutAutoNotify":
                 config.AutoDetectErrors = false;
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.ReportExceptionLogsAsHandled = false;
                 break;
             case "NativeCrashWithoutAutoNotify":
                 config.AutoDetectErrors = false;
@@ -279,7 +271,7 @@ public class Main : MonoBehaviour
                 break;
             case "ReportLoggedWarningThreaded":
                 config.NotifyLogLevel = LogType.Warning;
-                config.EnabledErrorTypes.UnityWarningLogs = true;
+                config.EnabledErrorTypes.UnityLog = true;
                 break;
             case "EventCallbacks":
                 config.AddOnError((@event)=> {
@@ -348,10 +340,11 @@ public class Main : MonoBehaviour
                 DoUnhandledException(0);
                 break;
             case "EnableUnhandledExceptions":
-                CheckEnabledErrorTypes();
+                Debug.Log("LogLog");
+                Debug.LogException(new Exception("LogException"));
                 break;
             case "EnableLogLogs":
-                CheckEnabledErrorTypes();
+                Debug.Log("EnableLogLogs");
                 break;
             case "DisableAllErrorTypes":
                 CheckDisabledErrorTypes();
