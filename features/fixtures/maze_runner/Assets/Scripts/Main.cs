@@ -410,10 +410,10 @@ public class Main : MonoBehaviour
                 MakeAssertionFailure(4);
                 break;
             case "UncaughtExceptionAsUnhandled":
-                UncaughtExceptionAsUnhandled();
+                ThrowException();
                 break;
             case "LogUnthrownAsUnhandled":
-                DoLogUnthrownAsUnhandled();
+                DebugLogException();
                 break;
             case "ReportLoggedWarningThreaded":
                 new System.Threading.Thread(() => DoLogWarning()).Start();
@@ -432,7 +432,7 @@ public class Main : MonoBehaviour
                 break;
             case "ManualSessionCrash":
                 Bugsnag.StartSession();
-                UncaughtExceptionAsUnhandled();
+                ThrowException();
                 break;
             case "ManualSessionNotify":
                 Bugsnag.StartSession();
@@ -452,7 +452,7 @@ public class Main : MonoBehaviour
                 Bugsnag.StartSession();
                 DoNotify();
                 DoLogWarning();
-                UncaughtExceptionAsUnhandled();
+                ThrowException();
                 break;
             case "StoppedSession":
                 Bugsnag.StartSession();
@@ -475,7 +475,7 @@ public class Main : MonoBehaviour
                 DoNotify();
                 break;
             case "LoggedExceptionWithoutAutoNotify":
-                DoLogUnthrownAsUnhandled();
+                DebugLogException();
                 break;
             case "NativeCrashWithoutAutoNotify":
                 crashy_signal_runner(8);
@@ -589,7 +589,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("Second Error"));
     }
 
-    void UncaughtExceptionAsUnhandled()
+    void ThrowException()
     {
         throw new ExecutionEngineException("Invariant state failure");
     }
@@ -674,7 +674,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("blorb"));
     }
 
-    void DoLogUnthrownAsUnhandled()
+    void DebugLogException()
     {
         Debug.LogException(new System.Exception("WAT"));
     }
