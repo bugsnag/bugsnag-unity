@@ -3,7 +3,7 @@ using UnityEngine;
 using BugsnagUnity.Payload;
 using System;
 
-namespace BugsnagUnity.Editor
+namespace BugsnagUnity
 {
     [Serializable]
     public class BugsnagSettingsObject : ScriptableObject
