@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace BugsnagUnity.Editor
+namespace BugsnagUnity
 {
 
     public class BugsnagAutoInit
