@@ -39,12 +39,12 @@ namespace BugsnagUnity
                         writer.Flush();
                         stream.Position = 0;
                         var jsonString = reader.ReadToEnd();
-                        NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString().ToLower(), jsonString);
+                        NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), jsonString);
                     }                    
                 }
                 else
                 {
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type.ToString().ToLower(), null);
+                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), null);
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace BugsnagUnity
         }
 
         [MonoPInvokeCallback(typeof(NativeCode.BreadcrumbInformation))]
-        static void PopulateBreadcrumb(IntPtr instance, string name, string timestamp, string type, string metadataJson)
+        static void PopulateBreadcrumb(IntPtr instance, string message, string timestamp, string type, string metadataJson)
         {
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is List<Breadcrumb> breadcrumbs)
@@ -76,11 +76,11 @@ namespace BugsnagUnity
                 if (!string.IsNullOrEmpty(metadataJson))
                 {
                     var metadata = ((JsonObject)SimpleJson.DeserializeObject(metadataJson)).GetDictionary();
-                    breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
+                    breadcrumbs.Add(new Breadcrumb(message, timestamp, type, metadata));
                 }
                 else
                 {
-                    breadcrumbs.Add(new Breadcrumb(name, timestamp, type, null));
+                    breadcrumbs.Add(new Breadcrumb(message, timestamp, type, null));
                 }
 
                 

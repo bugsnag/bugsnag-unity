@@ -236,9 +236,11 @@ namespace BugsnagUnity
             }
             else if (Configuration.ShouldLeaveLogBreadcrumb(logType))
             {
-                Breadcrumbs.Leave(logType.ToString(), new Dictionary<string, object> {
-                    { "message", condition },
-                }, BreadcrumbType.Log );
+                var metadata = new Dictionary<string, object>()
+                {
+                    {"logLevel" , logType.ToString() }
+                };
+                Breadcrumbs.Leave(condition, metadata, BreadcrumbType.Log );
             }
         }
 

@@ -302,6 +302,18 @@ public class Main : MonoBehaviour
 
                     @event.Errors[0].Stacktrace[0].Method = "Method";
 
+                    foreach (var crumb in @event.Breadcrumbs)
+                    {
+                        crumb.Message = "Custom Message";
+                        crumb.Type = BreadcrumbType.Request;
+                        crumb.Metadata = new Dictionary<string, object> { {"test", "test" } };
+                    }
+
+                    @event.AddMetadata("test1", new Dictionary<string, object> { { "test", "test" } });
+                    @event.AddMetadata("test2", new Dictionary<string, object> { { "test", "test" } });
+                    @event.ClearMetadata("test2");
+
+
                     return true;
                 });
                 break;

@@ -30,6 +30,20 @@ Feature: Callbacks
         And the event "app.dsymUuid" equals "DsymUuid"
         And the event "app.inForeground" is false
         And the event "app.isLaunching" is false
+        
+        #exception data
+        And the event "exceptions.0.errorClass" equals "ErrorClass"
+        And the event "exceptions.0.stacktrace.0.method" equals "Method"
+        And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
+
+        #breadcrumbs
+        And the event "breadcrumbs.0.type" equals "request"
+        And the event "breadcrumbs.0.name" equals "Custom Message"
+        And the event "breadcrumbs.0.metaData.test" equals "test"
+
+        #metadata
+        And the event "metaData.test1.test" equals "test"
+        And the event "metaData.test2" is null
 
 
         
