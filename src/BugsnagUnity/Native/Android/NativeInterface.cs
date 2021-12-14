@@ -529,7 +529,7 @@ namespace BugsnagUnity
                 new object[] { tab, key, value });
         }
 
-        public void LeaveBreadcrumb(string name, string type, Dictionary<string, object> metadata)
+        public void LeaveBreadcrumb(string name, string type, IDictionary<string, object> metadata)
         {
             if (!CanRunJNI())
             {
@@ -830,7 +830,7 @@ namespace BugsnagUnity
             return new Breadcrumb(message, timestamp, typeName, metadata);
         }
 
-        internal static AndroidJavaObject BuildJavaMapDisposable(Dictionary<string, object> src)
+        internal static AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, object> src)
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
             if (src != null)

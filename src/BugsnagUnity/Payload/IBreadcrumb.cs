@@ -7,7 +7,7 @@ namespace BugsnagUnity.Payload
     {
         string Message { get; set; }
 
-        Dictionary<string, object> Metadata { get; set; }
+        IDictionary<string, object> Metadata { get; set; }
 
         DateTimeOffset? Timestamp { get; }
 

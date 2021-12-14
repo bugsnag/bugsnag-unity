@@ -258,13 +258,13 @@ namespace BugsnagUnity
 
         public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
 
-        public void AddMetadata(string section, Dictionary<string, object> metadata) => Metadata.AddMetadata(section, metadata);
+        public void AddMetadata(string section, IDictionary<string, object> metadata) => Metadata.AddMetadata(section, metadata);
 
         public void ClearMetadata(string section) => Metadata.ClearMetadata(section);
 
         public void ClearMetadata(string section, string key) => Metadata.ClearMetadata(section, key);
 
-        public Dictionary<string, object> GetMetadata(string section) => Metadata.GetMetadata(section);
+        public IDictionary<string, object> GetMetadata(string section) => Metadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => Metadata.GetMetadata(section, key);
 

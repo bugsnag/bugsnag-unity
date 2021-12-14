@@ -441,7 +441,7 @@ namespace BugsnagUnity
         {
             foreach (var section in metadata.Payload)
             {
-                var theSection = (Dictionary<string, object>)section.Value;
+                var theSection = (IDictionary<string, object>)section.Value;
                 foreach (var key in theSection.Keys.ToList())
                 {
                     if (Configuration.KeyIsRedacted(key))
@@ -555,13 +555,13 @@ namespace BugsnagUnity
 
         public void AddMetadata(string section, string key, object value) => _storedMetadata.AddMetadata(section, key, value);
 
-        public void AddMetadata(string section, Dictionary<string, object> metadata) => _storedMetadata.AddMetadata(section,metadata);
+        public void AddMetadata(string section, IDictionary<string, object> metadata) => _storedMetadata.AddMetadata(section,metadata);
 
         public void ClearMetadata(string section) => _storedMetadata.ClearMetadata(section);
 
         public void ClearMetadata(string section, string key) => _storedMetadata.ClearMetadata(section, key);
 
-        public Dictionary<string,object> GetMetadata(string section) => _storedMetadata.GetMetadata(section);
+        public IDictionary<string,object> GetMetadata(string section) => _storedMetadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => _storedMetadata.GetMetadata(section, key);
 

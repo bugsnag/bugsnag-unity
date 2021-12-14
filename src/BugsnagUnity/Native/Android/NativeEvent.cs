@@ -111,7 +111,7 @@ namespace BugsnagUnity
             AddMetadata(section,existingMetadata);
         }
 
-        public void AddMetadata(string section, Dictionary<string, object> metadata)
+        public void AddMetadata(string section, IDictionary<string, object> metadata)
         {
             SetNativeMetadataSection("addMetadata", section, metadata);
         }
@@ -126,7 +126,7 @@ namespace BugsnagUnity
             NativePointer.Call("clearMetadata", section, key);
         }
 
-        public Dictionary<string, object> GetMetadata(string section)
+        public IDictionary<string, object> GetMetadata(string section)
         {
             return GetNativeMetadataSection("getMetadata", section);
         }

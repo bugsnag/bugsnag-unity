@@ -15,7 +15,7 @@ namespace BugsnagUnity
         string ModelNumber { get; set; }
         string OsName { get; set; }
         string OsVersion { get; set; }
-        Dictionary<string, object> RuntimeVersions { get; set; }
+        IDictionary<string, object> RuntimeVersions { get; set; }
         long? TotalMemory { get; set; }
         string UserAgent { get; set; }
     }

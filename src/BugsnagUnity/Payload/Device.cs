@@ -97,9 +97,9 @@ namespace BugsnagUnity.Payload
             set => Add(OS_VERSION_KEY, value);
         }
 
-        public Dictionary<string, object>? RuntimeVersions
+        public IDictionary<string, object>? RuntimeVersions
         {
-            get => (Dictionary<string, object>?)Get(RUNTIME_VERSIONS_KEY);
+            get => (IDictionary<string, object>?)Get(RUNTIME_VERSIONS_KEY);
             set => Add(RUNTIME_VERSIONS_KEY, value);
         }
 

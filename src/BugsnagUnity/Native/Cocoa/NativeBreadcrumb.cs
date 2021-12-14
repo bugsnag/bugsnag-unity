@@ -20,16 +20,16 @@ namespace BugsnagUnity
 
         public string Message { get => GetNativeString(MESSAGE_KEY); set => SetNativeString(MESSAGE_KEY, value); }
 
-        public Dictionary<string, object> Metadata { get => GetMetadata(); set => SetMetadata(value); }
+        public IDictionary<string, object> Metadata { get => GetMetadata(); set => SetMetadata(value); }
 
-        private Dictionary<string, object> GetMetadata()
+        private IDictionary<string, object> GetMetadata()
         {
             var result = NativeCode.bugsnag_getBreadcrumbMetadata(NativePointer);
             var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
             return dictionary;
         }
 
-        private void SetMetadata(Dictionary<string, object> metadata)
+        private void SetMetadata(IDictionary<string, object> metadata)
         {
             using (var stream = new MemoryStream())
             using (var reader = new StreamReader(stream))
