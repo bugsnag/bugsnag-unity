@@ -1,4 +1,4 @@
-#addin nuget:?package=Cake.Git
+#addin nuget:?package=Cake.Git&version=1.1.0
 #tool "nuget:?package=NUnit.ConsoleRunner"
 
 var target = Argument("target", "Default");
