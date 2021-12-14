@@ -89,7 +89,7 @@ Feature: Reporting unhandled events
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
-            | Main.UncaughtExceptionAsUnhandled() |
+            | Main.ThrowException() |
             | Main.RunScenario(System.String scenario) |
             | Main.Start()               |
 
