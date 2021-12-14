@@ -83,7 +83,7 @@ namespace BugsnagUnity
             }
             else
             {
-                DateTimeOffset dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                DateTimeOffset dateTime = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
                 dateTime = dateTime.AddSeconds(timeStamp);
                 return dateTime;
             }
@@ -97,7 +97,7 @@ namespace BugsnagUnity
             }
             else
             {
-                var dateTime = startedAt.Value - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                var dateTime = startedAt.Value - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
                 NativeCode.bugsnag_setTimestampFromDateInObject(NativePointer, key, dateTime.TotalSeconds);
             }
         }

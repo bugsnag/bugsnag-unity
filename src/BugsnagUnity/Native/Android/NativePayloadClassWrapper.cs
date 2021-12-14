@@ -262,7 +262,7 @@ namespace BugsnagUnity
 
             var timeStamp = nativeDate.Call<long>("getTime");
 
-            var date = (new DateTime(1970, 1, 1)).AddMilliseconds(timeStamp);
+            var date = new DateTimeOffset(1970, 1, 1,0,0,0, TimeSpan.Zero).AddMilliseconds(timeStamp);
 
             return date;
         }
@@ -275,7 +275,7 @@ namespace BugsnagUnity
             }
             else
             {
-                var mill = (dateTime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Value.TotalMilliseconds;
+                var mill = (dateTime - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).Value.TotalMilliseconds;
                 var javaDate = new AndroidJavaObject("java.util.Date", (long)mill);
                 NativePointer.Call(key,javaDate);
             }
