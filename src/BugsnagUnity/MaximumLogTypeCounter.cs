@@ -10,7 +10,7 @@ namespace BugsnagUnity
 
         private Dictionary<LogType, int> CurrentCounts { get; }
 
-        private DateTime FlushAt { get; set; }
+        private DateTimeOffset FlushAt { get; set; }
 
         private TimeSpan MaximumLogsTimePeriod => Configuration.MaximumLogsTimePeriod;
 
@@ -22,7 +22,7 @@ namespace BugsnagUnity
         {
             Configuration = configuration;
             CurrentCounts = new Dictionary<LogType, int>();
-            FlushAt = DateTime.UtcNow.Add(Configuration.MaximumLogsTimePeriod);
+            FlushAt = DateTimeOffset.Now.Add(Configuration.MaximumLogsTimePeriod);
         }
 
         public bool ShouldSend(UnityLogMessage unityLogMessage)
@@ -47,7 +47,7 @@ namespace BugsnagUnity
                         if (unityLogMessage.CreatedAt > FlushAt)
                         {
                             CurrentCounts.Clear();
-                            FlushAt = DateTime.UtcNow.Add(MaximumLogsTimePeriod);
+                            FlushAt = DateTimeOffset.Now.Add(MaximumLogsTimePeriod);
                             return true;
                         }
                         return false;

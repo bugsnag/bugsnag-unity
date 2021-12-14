@@ -42,7 +42,7 @@ namespace BugsnagUnity.Payload
         internal Breadcrumb(string name, string timestamp, string type, IDictionary<string, object> metadata)
         {
             Name = name;
-            Timestamp = DateTime.Parse( timestamp );
+            Timestamp = DateTimeOffset.Parse( timestamp );
             Metadata = metadata;
             if (string.IsNullOrEmpty(type))
             {
@@ -98,8 +98,8 @@ namespace BugsnagUnity.Payload
             set { Add(TYPE_KEY, value.ToString().ToLower()); }
         }
 
-        public DateTime? Timestamp {
-            get { return (DateTime)Get(TIMESTAMP_KEY); }
+        public DateTimeOffset? Timestamp {
+            get { return (DateTimeOffset)Get(TIMESTAMP_KEY); }
             set { Add(TIMESTAMP_KEY,value); }
         }
 

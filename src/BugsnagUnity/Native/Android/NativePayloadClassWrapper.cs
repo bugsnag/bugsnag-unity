@@ -251,7 +251,7 @@ namespace BugsnagUnity
             }
         }
 
-        public DateTime? GetNativeDateTime(string key)
+        public DateTimeOffset? GetNativeDateTime(string key)
         {
             var nativeDate = NativePointer.Call<AndroidJavaObject>(key);
 
@@ -262,12 +262,12 @@ namespace BugsnagUnity
 
             var timeStamp = nativeDate.Call<long>("getTime");
 
-            var date = (new DateTime(1970, 1, 1)).AddMilliseconds(timeStamp);
+            var date = new DateTimeOffset(1970, 1, 1,0,0,0, TimeSpan.Zero).AddMilliseconds(timeStamp);
 
             return date;
         }
 
-        public void SetNativeDateTime(string key, DateTime? dateTime)
+        public void SetNativeDateTime(string key, DateTimeOffset? dateTime)
         {
             if (dateTime == null)
             {
@@ -275,7 +275,7 @@ namespace BugsnagUnity
             }
             else
             {
-                var mill = (dateTime - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).Value.TotalMilliseconds;
+                var mill = (dateTime - new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero)).Value.TotalMilliseconds;
                 var javaDate = new AndroidJavaObject("java.util.Date", (long)mill);
                 NativePointer.Call(key,javaDate);
             }

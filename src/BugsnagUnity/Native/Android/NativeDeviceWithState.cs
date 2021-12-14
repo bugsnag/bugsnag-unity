@@ -11,6 +11,6 @@ namespace BugsnagUnity
         public long? FreeDisk { get => GetNativeLong("getFreeDisk"); set => SetNativeLong("setFreeDisk",value); }
         public long? FreeMemory { get => GetNativeLong("getFreeMemory"); set => SetNativeLong("setFreeMemory", value); }
         public string Orientation { get => GetNativeString("getOrientation"); set => SetNativeString("setOrientation", value); }
-        public DateTime? Time { get => GetNativeDateTime("getTime"); set => SetNativeDateTime("setTime",value); }
+        public DateTimeOffset? Time { get => GetNativeDateTime("getTime"); set => SetNativeDateTime("setTime",value); }
     }
 }

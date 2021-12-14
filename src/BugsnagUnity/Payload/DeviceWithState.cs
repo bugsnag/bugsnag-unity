@@ -30,16 +30,16 @@ namespace BugsnagUnity.Payload
             set => Add(ORIENTATION_KEY, value);
         }
 
-        public DateTime? Time
+        public DateTimeOffset? Time
         {
-            get => (DateTime?)Get(TIME_KEY);
+            get => (DateTimeOffset?)Get(TIME_KEY);
             set => Add(TIME_KEY, value);
         }
 
         internal DeviceWithState(Configuration configuration) : base(configuration)
         {
             Orientation = Input.deviceOrientation.ToString();
-            Time = DateTime.UtcNow;
+            Time = DateTimeOffset.Now;
         }
 
 

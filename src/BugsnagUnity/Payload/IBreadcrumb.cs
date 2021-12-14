@@ -9,7 +9,7 @@ namespace BugsnagUnity.Payload
 
         IDictionary<string, object> Metadata { get; set; }
 
-        DateTime? Timestamp { get; }
+        DateTimeOffset? Timestamp { get; }
 
         BreadcrumbType Type { get; set; }
     }

@@ -26,7 +26,7 @@ namespace BugsnagUnity
 
         public IDevice Device { get; set; }
 
-        public DateTime? StartedAt { get => GetNativeDate(STARTED_AT_KEY); set => SetNativeDate(value, STARTED_AT_KEY); }
+        public DateTimeOffset? StartedAt { get => GetNativeDate(STARTED_AT_KEY); set => SetNativeDate(value, STARTED_AT_KEY); }
 
         private NativeUser _nativeUser;
 
