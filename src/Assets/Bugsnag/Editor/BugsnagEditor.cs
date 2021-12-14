@@ -176,12 +176,8 @@ namespace BugsnagUnity.Editor
                 settings.EnabledErrorTypes.ANRs = EditorGUILayout.Toggle("ANRs (Android)", settings.EnabledErrorTypes.ANRs);
                 settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle("AppHangs (Cocoa)", settings.EnabledErrorTypes.AppHangs);
                 settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle("OOMs (Cocoa)", settings.EnabledErrorTypes.OOMs);
-                settings.EnabledErrorTypes.NativeCrashes = EditorGUILayout.Toggle("Native Crashes", settings.EnabledErrorTypes.NativeCrashes);
-                settings.EnabledErrorTypes.UnhandledExceptions = EditorGUILayout.Toggle("Unhandled Exceptions", settings.EnabledErrorTypes.UnhandledExceptions);
-                settings.EnabledErrorTypes.UnityLogLogs = EditorGUILayout.Toggle("Unity.Log Logs", settings.EnabledErrorTypes.UnityLogLogs);
-                settings.EnabledErrorTypes.UnityAssertLogs = EditorGUILayout.Toggle("Unity.Assert Logs", settings.EnabledErrorTypes.UnityAssertLogs);
-                settings.EnabledErrorTypes.UnityWarningLogs = EditorGUILayout.Toggle("Unity.Warning Logs", settings.EnabledErrorTypes.UnityWarningLogs);
-                settings.EnabledErrorTypes.UnityErrorLogs = EditorGUILayout.Toggle("Unity.Error Logs", settings.EnabledErrorTypes.UnityErrorLogs);
+                settings.EnabledErrorTypes.Crashes = EditorGUILayout.Toggle("Crashes", settings.EnabledErrorTypes.Crashes);
+                settings.EnabledErrorTypes.UnityLog = EditorGUILayout.Toggle("Unity Logs", settings.EnabledErrorTypes.UnityLog);
                 EditorGUI.indentLevel -= 2;
             }
         }

@@ -56,7 +56,7 @@ namespace BugsnagUnity
 
         public string PersistenceDirectory;
 
-        public bool ReportUncaughtExceptionsAsHandled = true;
+        public bool ReportExceptionLogsAsHandled = true;
 
         public TimeSpan MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
 
@@ -174,29 +174,6 @@ namespace BugsnagUnity
             return DiscardClasses != null && DiscardClasses.Contains(className);
         }
 
-        internal bool IsUnityLogErrorTypeEnabled(LogType logType)
-        {
-            if (!AutoDetectErrors)
-            {
-                return false;
-            }
-            switch (logType)
-            {
-                case LogType.Error:
-                    return EnabledErrorTypes.UnityErrorLogs;
-                case LogType.Warning:
-                    return EnabledErrorTypes.UnityWarningLogs;
-                case LogType.Log:
-                    return EnabledErrorTypes.UnityLogLogs;
-                case LogType.Exception:
-                    return EnabledErrorTypes.UnhandledExceptions;
-                case LogType.Assert:
-                    return EnabledErrorTypes.UnityAssertLogs;
-                default:
-                    return false;
-            }
-        }
-
         private bool IsRunningInEditor()
         {
             return Application.platform == RuntimePlatform.OSXEditor
@@ -297,12 +274,8 @@ namespace BugsnagUnity
         public bool ANRs = true;
         public bool AppHangs = true;
         public bool OOMs = true;
-        public bool NativeCrashes = true;
-        public bool UnhandledExceptions = true;
-        public bool UnityLogLogs = false;
-        public bool UnityWarningLogs = false;
-        public bool UnityAssertLogs = false;
-        public bool UnityErrorLogs = true;
+        public bool Crashes = true;
+        public bool UnityLog = true;
 
         public EnabledErrorTypes()
         { }

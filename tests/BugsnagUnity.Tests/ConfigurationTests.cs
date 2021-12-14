@@ -12,7 +12,7 @@ namespace BugsnagUnity.Payload.Tests
         public void DefaultConfigurationValues()
         {
             var config = new Configuration("foo");
-            Assert.IsTrue(config.ReportUncaughtExceptionsAsHandled);
+            Assert.IsTrue(config.ReportExceptionLogsAsHandled);
             Assert.IsTrue(config.AutoDetectErrors);
             Assert.IsTrue(config.AutoTrackSessions);
             Assert.AreEqual("production", config.ReleaseStage);

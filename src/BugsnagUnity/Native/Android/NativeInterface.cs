@@ -245,8 +245,8 @@ namespace BugsnagUnity
             using (AndroidJavaObject errorTypes = new AndroidJavaObject("com.bugsnag.android.ErrorTypes"))
             {
                 errorTypes.Call("setAnrs", config.EnabledErrorTypes.ANRs);
-                errorTypes.Call("setNdkCrashes", config.EnabledErrorTypes.NativeCrashes);
-                errorTypes.Call("setUnhandledExceptions", config.EnabledErrorTypes.NativeCrashes);
+                errorTypes.Call("setNdkCrashes", config.EnabledErrorTypes.Crashes);
+                errorTypes.Call("setUnhandledExceptions", config.EnabledErrorTypes.Crashes);
                 obj.Call("setEnabledErrorTypes", errorTypes);
             }
 
