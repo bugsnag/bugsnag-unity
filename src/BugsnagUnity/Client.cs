@@ -390,8 +390,9 @@ namespace BugsnagUnity
                             return;
                         }
                     }
-                    catch (System.Exception)
+                    catch
                     {
+                        // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
             }
@@ -406,8 +407,9 @@ namespace BugsnagUnity
                     }
                 }
             }
-            catch (System.Exception)
+            catch
             {
+                // If the callback causes an exception, ignore it and execute the next one
             }
 
 
@@ -422,8 +424,9 @@ namespace BugsnagUnity
                             return;
                         }
                     }
-                    catch (System.Exception)
+                    catch
                     {
+                        // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
             }

@@ -71,7 +71,9 @@ namespace BugsnagUnity
                             return false;
                         }
                     }
-                    catch (Exception e){}
+                    catch {
+                        // If the callback causes an exception, ignore it and execute the next one
+                    }
 
                 }
 
@@ -99,7 +101,9 @@ namespace BugsnagUnity
                             return false;
                         }
                     }
-                    catch (Exception e) { }
+                    catch {
+                        // If the callback causes an exception, ignore it and execute the next one
+                    }
                 }
                 return true;
             }

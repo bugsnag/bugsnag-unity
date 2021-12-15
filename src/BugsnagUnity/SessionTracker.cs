@@ -88,9 +88,13 @@ namespace BugsnagUnity
 
             foreach (var sessionCallback in Client.Configuration.GetOnSessionCallbacks())
             {
-                if (!sessionCallback.Invoke(session))
-                {
-                    return;
+                try {
+                    if (!sessionCallback.Invoke(session))
+                    {
+                        return;
+                    }
+                } catch {
+                    // If the callback causes an exception, ignore it and execute the next one
                 }
             }
 
