@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace BugsnagUnity.Editor
+namespace BugsnagUnity
 {
 
     public class BugsnagAutoInit
@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
         static void OnBeforeSceneLoadRuntimeMethod()
         {
             var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
-            if (settings != null && settings.AutoStartBugsnag)
+            if (settings != null && settings.StartAutomaticallyAtLaunch)
             {
                 if(string.IsNullOrEmpty(settings.ApiKey))
                 {

@@ -107,8 +107,8 @@ namespace BugsnagUnity.Editor
             var originalWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 70;
             settings.ApiKey = EditorGUILayout.TextField("API Key", settings.ApiKey);
-            EditorGUIUtility.labelWidth = 270;
-            settings.AutoStartBugsnag = EditorGUILayout.Toggle("Start Automatically (requires API key to be set)", settings.AutoStartBugsnag);
+            EditorGUIUtility.labelWidth = 280;
+            settings.StartAutomaticallyAtLaunch = EditorGUILayout.Toggle("Start Automatically (requires API key to be set)", settings.StartAutomaticallyAtLaunch);
             EditorGUIUtility.labelWidth = originalWidth;
             EditorGUI.indentLevel--;
         }
@@ -151,16 +151,21 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("Context"));
             EditorGUILayout.PropertyField(so.FindProperty("LaunchDurationMillis"));
             EditorGUILayout.PropertyField(so.FindProperty("MaximumBreadcrumbs"));
+            EditorGUILayout.PropertyField(so.FindProperty("MaxPersistedEvents"));
+            EditorGUILayout.PropertyField(so.FindProperty("NotifyLogLevel"));
             EditorGUIUtility.labelWidth = 270;
-            EditorGUILayout.PropertyField(so.FindProperty("ReportUncaughtExceptionsAsHandled"));
+            EditorGUILayout.PropertyField(so.FindProperty("ReportExceptionLogsAsHandled"));
             EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
             EditorGUIUtility.labelWidth = 200;
             EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
+            EditorGUILayout.PropertyField(so.FindProperty("PersistUser"));
+            EditorGUILayout.PropertyField(so.FindProperty("SendThreads"));
             DrawEnabledErrorTypesDropdown(settings);
             EditorGUILayout.PropertyField(so.FindProperty("DiscardClasses"));
             EditorGUILayout.PropertyField(so.FindProperty("EnabledReleaseStages"));
             EditorGUILayout.PropertyField(so.FindProperty("EnabledBreadcrumbTypes"));
             EditorGUILayout.PropertyField(so.FindProperty("RedactedKeys"));
+
 
             EditorGUI.indentLevel--;
             EditorGUIUtility.labelWidth = originalWidth;
@@ -176,12 +181,8 @@ namespace BugsnagUnity.Editor
                 settings.EnabledErrorTypes.ANRs = EditorGUILayout.Toggle("ANRs (Android)", settings.EnabledErrorTypes.ANRs);
                 settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle("AppHangs (Cocoa)", settings.EnabledErrorTypes.AppHangs);
                 settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle("OOMs (Cocoa)", settings.EnabledErrorTypes.OOMs);
-                settings.EnabledErrorTypes.NativeCrashes = EditorGUILayout.Toggle("Native Crashes", settings.EnabledErrorTypes.NativeCrashes);
-                settings.EnabledErrorTypes.UnhandledExceptions = EditorGUILayout.Toggle("Unhandled Exceptions", settings.EnabledErrorTypes.UnhandledExceptions);
-                settings.EnabledErrorTypes.UnityLogLogs = EditorGUILayout.Toggle("Unity.Log Logs", settings.EnabledErrorTypes.UnityLogLogs);
-                settings.EnabledErrorTypes.UnityAssertLogs = EditorGUILayout.Toggle("Unity.Assert Logs", settings.EnabledErrorTypes.UnityAssertLogs);
-                settings.EnabledErrorTypes.UnityWarningLogs = EditorGUILayout.Toggle("Unity.Warning Logs", settings.EnabledErrorTypes.UnityWarningLogs);
-                settings.EnabledErrorTypes.UnityErrorLogs = EditorGUILayout.Toggle("Unity.Error Logs", settings.EnabledErrorTypes.UnityErrorLogs);
+                settings.EnabledErrorTypes.Crashes = EditorGUILayout.Toggle("Crashes", settings.EnabledErrorTypes.Crashes);
+                settings.EnabledErrorTypes.UnityLog = EditorGUILayout.Toggle("Unity Logs", settings.EnabledErrorTypes.UnityLog);
                 EditorGUI.indentLevel -= 2;
             }
         }
