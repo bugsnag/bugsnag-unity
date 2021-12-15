@@ -69,7 +69,7 @@ namespace BugsnagUnity
             { LogType.Warning, 5 },
         };
 
-        public TimeSpan UniqueLogsTimePeriod = TimeSpan.FromSeconds(5);
+        public TimeSpan SecondsPerUniqueLog = TimeSpan.FromSeconds(5);
 
         public LogType BreadcrumbLogLevel = LogType.Log;
 

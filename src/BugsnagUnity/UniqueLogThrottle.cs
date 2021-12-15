@@ -25,13 +25,13 @@ namespace BugsnagUnity
         /// </summary>
         private Configuration Configuration { get; }
 
-        private TimeSpan UniqueLogsTimePeriod => Configuration.UniqueLogsTimePeriod;
+        private TimeSpan UniqueLogsTimePeriod => Configuration.SecondsPerUniqueLog;
 
         public UniqueLogThrottle(Configuration configuration)
         {
             Configuration = configuration;
             Counter = new Dictionary<UnityLogMessage, int>(new UnityLogMessageEqualityComparer());
-            FlushAt = DateTime.UtcNow.Add(Configuration.UniqueLogsTimePeriod);
+            FlushAt = DateTime.UtcNow.Add(Configuration.SecondsPerUniqueLog);
         }
 
         /// <summary>

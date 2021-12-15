@@ -107,7 +107,7 @@ namespace BugsnagUnity.Editor
             var originalWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 70;
             settings.ApiKey = EditorGUILayout.TextField("API Key", settings.ApiKey);
-            EditorGUIUtility.labelWidth = 270;
+            EditorGUIUtility.labelWidth = 280;
             settings.StartAutomaticallyAtLaunch = EditorGUILayout.Toggle("Start Automatically (requires API key to be set)", settings.StartAutomaticallyAtLaunch);
             EditorGUIUtility.labelWidth = originalWidth;
             EditorGUI.indentLevel--;
@@ -157,7 +157,7 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("ReportExceptionLogsAsHandled"));
             EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
             EditorGUIUtility.labelWidth = 200;
-            EditorGUILayout.PropertyField(so.FindProperty("UniqueLogsTimePeriod"));
+            EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
             EditorGUILayout.PropertyField(so.FindProperty("PersistUser"));
             EditorGUILayout.PropertyField(so.FindProperty("SendThreads"));
             DrawEnabledErrorTypesDropdown(settings);

@@ -35,7 +35,7 @@ namespace BugsnagUnity.Editor
         public string ReleaseStage = "production";
         public bool ReportExceptionLogsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
-        public double UniqueLogsTimePeriod = 5;
+        public double SecondsPerUniqueLog = 5;
         public int VersionCode;
         public static Configuration LoadConfiguration()
         {
@@ -92,7 +92,7 @@ namespace BugsnagUnity.Editor
             config.PersistUser = PersistUser;
             config.ReportExceptionLogsAsHandled = ReportExceptionLogsAsHandled;
             config.SendLaunchCrashesSynchronously = SendLaunchCrashesSynchronously;
-            config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(UniqueLogsTimePeriod);
+            config.SecondsPerUniqueLog = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             config.VersionCode = VersionCode;
             return config;
         }
