@@ -85,10 +85,14 @@ namespace BugsnagUnity
 
                 foreach (var callback in callbacks)
                 {
-                    if (!callback.Invoke(nativeEventWrapper))
+                    try
                     {
-                        return false;
+                        if (!callback.Invoke(nativeEventWrapper))
+                        {
+                            return false;
+                        }
                     }
+                    catch { }
                 }
             }
             return true;
@@ -104,10 +108,14 @@ namespace BugsnagUnity
 
                 foreach (var callback in callbacks)
                 {
-                    if (!callback.Invoke(nativeSessionWrapper))
+                    try
                     {
-                        return false;
+                        if (!callback.Invoke(nativeSessionWrapper))
+                        {
+                            return false;
+                        }
                     }
+                    catch { }
                 }
             }
             return true;

@@ -361,8 +361,6 @@ namespace BugsnagUnity
 
             eventMetadata.MergeMetadata(_storedMetadata.Payload);
 
-            RedactMetadata(eventMetadata);
-
             var @event = new Payload.Event(
               Configuration.Context,
               eventMetadata,
@@ -430,6 +428,8 @@ namespace BugsnagUnity
                 }
             }
 
+            @event.RedactMetadata(Configuration);
+
             var report = new Report(Configuration, @event);
 
             if (!report.Ignored)
@@ -442,21 +442,7 @@ namespace BugsnagUnity
             }
         }
 
-        private void RedactMetadata(Metadata metadata)
-        {
-            foreach (var section in metadata.Payload)
-            {
-                var theSection = (IDictionary<string, object>)section.Value;
-                foreach (var key in theSection.Keys.ToList())
-                {
-                    if (Configuration.KeyIsRedacted(key))
-                    {
-                        theSection[key] = "[REDACTED]";
-                    }
-                }
-            }
-        }
-
+       
         private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
         {
             return Application.platform.Equals(RuntimePlatform.Android)
