@@ -9,39 +9,38 @@ namespace BugsnagUnity.Payload
     /// </summary>
     public class Breadcrumb : PayloadContainer, IBreadcrumb
     {
-        private const string UNDEFINED_NAME = "Breadcrumb";
-        private const string NAME_KEY = "name";
-        private const string MESSAGE_KEY = "message";
+        // Notifier spec specifies Message, but the pipeline is still expecting the legacy field name
+        private const string MESSAGE_KEY = "name";
         private const string TIMESTAMP_KEY = "timestamp";
         private const string METADATA_KEY = "metaData";
         private const string TYPE_KEY = "type";
 
         internal static Breadcrumb FromReport(Report report)
         {
-            var name = "Error";
+            var message = "Error";
             var metadata = new Dictionary<string, object> { };
             if (report.Context != null)
             {
                 metadata["context"] = report.Context;
             }
-
             if (report.Exceptions != null && report.Exceptions.Any())
             {
                 var exception = report.Exceptions.First();
-                name = exception.ErrorClass;
-                metadata.Add("message", exception.ErrorMessage);
+                metadata["message"] = exception.ErrorMessage;
+                metadata["errorClass"] = exception.ErrorClass;
+                metadata["unhandled"] = !report.IsHandled;
+                metadata["severity"] = report.OriginalSeverity;
+                message = exception.ErrorClass;
             }
-
-            return new Breadcrumb(name, metadata, BreadcrumbType.Error);
+            return new Breadcrumb(message, metadata, BreadcrumbType.Error);
         }
 
         /// <summary>
         /// Used to construct a breadcrumb from the native data obtained from a
         /// native notifier if present.
         /// </summary>
-        internal Breadcrumb(string name, string timestamp, string type, IDictionary<string, object> metadata)
+        internal Breadcrumb(string message, string timestamp, string type, IDictionary<string, object> metadata)
         {
-            Name = name;
             Timestamp = DateTimeOffset.Parse( timestamp );
             Metadata = metadata;
             if (string.IsNullOrEmpty(type))
@@ -52,35 +51,31 @@ namespace BugsnagUnity.Payload
             {
                 Type = ParseBreadcrumbType(type);
             }
+            Message = message;
         }
 
-        internal Breadcrumb(string name, IDictionary<string, object> metadata, BreadcrumbType type)
+        internal Breadcrumb(string message,IDictionary<string, object> metadata, BreadcrumbType type)
         {
-            if (name == null)
-            {
-                name = UNDEFINED_NAME;
-            }
-            Name = name;
             Timestamp = DateTime.UtcNow;
             Metadata = metadata;
             Type = type;
+            Message = message;
         }
 
         public IDictionary<string, object> Metadata
         {
             get
             {
+                if (Get(METADATA_KEY) == null)
+                {
+                    Metadata = new Dictionary<string, object>();
+                }
                 return Get(METADATA_KEY) as IDictionary<string, object>;
             }
             set
             {
                 Add(METADATA_KEY, value);
             }
-        }
-
-        public string Name {
-            get { return Get(NAME_KEY) as string; }
-            set { Add(NAME_KEY,value); }
         }
 
         public string Message
@@ -91,7 +86,6 @@ namespace BugsnagUnity.Payload
 
         public BreadcrumbType Type {
             get {
-
                 var stringValue = (string)Get(TYPE_KEY);
                 return ParseBreadcrumbType(stringValue);
             }
