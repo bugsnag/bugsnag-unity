@@ -9,7 +9,7 @@ namespace BugsnagUnity
     public class BugsnagSettingsObject : ScriptableObject
     {
 
-        public bool AutoStartBugsnag = true;
+        public bool StartAutomaticallyAtLaunch = true;
         public bool AutoDetectErrors = true;
         public bool AutoTrackSessions = true;
         public string ApiKey;
@@ -25,8 +25,12 @@ namespace BugsnagUnity
         public EditorBreadcrumbTypes EnabledBreadcrumbTypes = new EditorBreadcrumbTypes();
         public long LaunchDurationMillis = 5000;
         public int MaximumBreadcrumbs = 25;
+        public int MaxPersistedEvents = 32;
         public string NotifyEndpoint;
+        public LogType NotifyLogLevel = LogType.Exception;
+        public bool PersistUser;
         public string SessionEndpoint;
+        public ThreadSendPolicy SendThreads = ThreadSendPolicy.UNHANDLED_ONLY;
         public string[] RedactedKeys = new string[] { "password" };
         public string ReleaseStage = "production";
         public bool ReportExceptionLogsAsHandled = true;
@@ -73,6 +77,9 @@ namespace BugsnagUnity
             config.EnabledBreadcrumbTypes = GetEnabledBreadcrumbTypes();
             config.LaunchDurationMillis = LaunchDurationMillis;
             config.MaximumBreadcrumbs = MaximumBreadcrumbs;
+            config.MaxPersistedEvents = MaxPersistedEvents;
+            config.NotifyLogLevel = NotifyLogLevel;
+            config.SendThreads = SendThreads;
             if (!string.IsNullOrEmpty(NotifyEndpoint) && !string.IsNullOrEmpty(SessionEndpoint))
             {
                 config.Endpoints = new EndpointConfiguration(NotifyEndpoint, SessionEndpoint);
@@ -82,9 +89,10 @@ namespace BugsnagUnity
             {
                 config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
             }
+            config.PersistUser = PersistUser;
             config.ReportExceptionLogsAsHandled = ReportExceptionLogsAsHandled;
             config.SendLaunchCrashesSynchronously = SendLaunchCrashesSynchronously;
-            config.UniqueLogsTimePeriod = TimeSpan.FromSeconds(SecondsPerUniqueLog);
+            config.SecondsPerUniqueLog = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             config.VersionCode = VersionCode;
             return config;
         }

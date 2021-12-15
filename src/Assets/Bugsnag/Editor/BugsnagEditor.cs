@@ -107,8 +107,8 @@ namespace BugsnagUnity.Editor
             var originalWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 70;
             settings.ApiKey = EditorGUILayout.TextField("API Key", settings.ApiKey);
-            EditorGUIUtility.labelWidth = 270;
-            settings.AutoStartBugsnag = EditorGUILayout.Toggle("Start Automatically (requires API key to be set)", settings.AutoStartBugsnag);
+            EditorGUIUtility.labelWidth = 280;
+            settings.StartAutomaticallyAtLaunch = EditorGUILayout.Toggle("Start Automatically (requires API key to be set)", settings.StartAutomaticallyAtLaunch);
             EditorGUIUtility.labelWidth = originalWidth;
             EditorGUI.indentLevel--;
         }
@@ -151,16 +151,21 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("Context"));
             EditorGUILayout.PropertyField(so.FindProperty("LaunchDurationMillis"));
             EditorGUILayout.PropertyField(so.FindProperty("MaximumBreadcrumbs"));
+            EditorGUILayout.PropertyField(so.FindProperty("MaxPersistedEvents"));
+            EditorGUILayout.PropertyField(so.FindProperty("NotifyLogLevel"));
             EditorGUIUtility.labelWidth = 270;
-            EditorGUILayout.PropertyField(so.FindProperty("ReportUncaughtExceptionsAsHandled"));
+            EditorGUILayout.PropertyField(so.FindProperty("ReportExceptionLogsAsHandled"));
             EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
             EditorGUIUtility.labelWidth = 200;
             EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
+            EditorGUILayout.PropertyField(so.FindProperty("PersistUser"));
+            EditorGUILayout.PropertyField(so.FindProperty("SendThreads"));
             DrawEnabledErrorTypesDropdown(settings);
             EditorGUILayout.PropertyField(so.FindProperty("DiscardClasses"));
             EditorGUILayout.PropertyField(so.FindProperty("EnabledReleaseStages"));
             EditorGUILayout.PropertyField(so.FindProperty("EnabledBreadcrumbTypes"));
             EditorGUILayout.PropertyField(so.FindProperty("RedactedKeys"));
+
 
             EditorGUI.indentLevel--;
             EditorGUIUtility.labelWidth = originalWidth;
