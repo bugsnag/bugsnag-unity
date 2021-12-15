@@ -89,19 +89,32 @@ See our [online docs](https://docs.bugsnag.com/platforms/unity/customizing-bread
 
 #### Deprecation summary
 
-The following methods have been removed from the `Bugsnag` client:
+The following methods have been replaced in the `Bugsnag` client:
 
 | v5.x API                                                           | v6.x API                                                          |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| `Bugsnag.BeforeNotify`                                             | Replaced by `Bugsnag.AddOnError(callback) or Bugsnag.AddOnSendError(callback)`|
+| `Bugsnag.BeforeNotify`                                             | Replaced by `Bugsnag.AddOnError(callback) or Bugsnag.AddOnSendError(callback)` - see our [online docs](https://docs.bugsnag.com/platforms/unity/customizing-error-reports/#updating-events-using-callbacks) |
 | `Bugsnag.LeaveBreadcrumb(message, type, metadata)`                 | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
 | `Bugsnag.LeaveBreadcrumb(breadcrumb)`                              | Replaced by `Bugsnag.LeaveBreadcrumb(message, metadata, type)`    |
 | `Bugsnag.Metadata`                                                 | Replaced by Add/Clear/Get operations – see above.                 |
-| `Bugsnag.SetAutoNotify(bool)`                                      | Replaced by setting the config value `AutoDetectErrors` or `EnabledErrorTypes` in configuration or using an OnSendError callback|
-| `Bugsnag.SetAutoDetectErrors(bool)`                                | Replaced by setting the config value `AutoDetectErrors` or `EnabledErrorTypes` in configuration or using an OnSendError callback|
-| `Bugsnag.SetAutoDetectAnrs(bool)`                                  | Replaced by setting the config values `AutoDetectErrors` or `EnabledErrorTypes` in configuration or using an OnSendError callback|
+| `Bugsnag.SetAutoNotify(bool)`                                      | Replaced by setting the config values [`AutoDetectErrors`](https://docs.bugsnag.com/platforms/unity/configuration-options/#auto-detect-errors) or [`EnabledErrorTypes`](https://docs.bugsnag.com/platforms/unity/configuration-options/#enabled-breadcrumb-types) in configuration or using an OnSendError callback|
+| `Bugsnag.SetAutoDetectErrors(bool)`                                | Replaced by setting the config values [`AutoDetectErrors`](https://docs.bugsnag.com/platforms/unity/configuration-options/#auto-detect-errors) or [`EnabledErrorTypes`](https://docs.bugsnag.com/platforms/unity/configuration-options/#enabled-breadcrumb-types) in configuration or using an OnSendError callback|
+| `Bugsnag.SetAutoDetectAnrs(bool)`                                  | Replaced by setting the config values [`AutoDetectErrors`](https://docs.bugsnag.com/platforms/unity/configuration-options/#auto-detect-errors) or [`EnabledErrorTypes`](https://docs.bugsnag.com/platforms/unity/configuration-options/#enabled-breadcrumb-types) in configuration or using an OnSendError callback|
 | `Bugsnag.SetContext()`                                             | Replaced by `Bugsnag.Context {get; set;}`|
 | `Bugsnag.StopSession()`                                            | Replaced by `Bugsnag.PauseSession()`|
+
+The following methods have been replaced in the `Configuration` class:
+
+| v5.x API                                                           | v6.x API                                                          |
+| ------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `AutoCaptureSessions`                                              | Replaced by [`AutoTrackSessions`](https://docs.bugsnag.com/platforms/unity/configuration-options/#auto-track-sessions) |
+| `AutoDetectAnrs`                                                   | Replaced by [`EnabledErrorTypes`](https://docs.bugsnag.com/platforms/unity/configuration-options/#enabled-breadcrumb-types) |
+| `AutoNotify`                                                       | Replaced by [`AutoDetectErrors`](https://docs.bugsnag.com/platforms/unity/configuration-options/#auto-detect-errors) |
+| `Endpoint` and `SessionEndpoint`                                   | Replaced by [`Endpoints`](https://docs.bugsnag.com/platforms/unity/configuration-options/#endpoints) |
+| `NotifyLevel`                                                      | Replaced by [`NotifyLogLevel`](https://docs.bugsnag.com/platforms/unity/configuration-options/#notify-log-level) |
+| `NotifyReleaseStages`                                              | Replaced by [`EnabledReleaseStages`](https://docs.bugsnag.com/platforms/unity/configuration-options/#enabled-release-stages) |
+| `ReportUncaughtExceptionsAsHandled`                                | Replaced by [`ReportExceptionLogsAsHandled`](https://docs.bugsnag.com/platforms/unity/configuration-options/#report-exception-logs-as-handled) |
+| `UniqueLogsTimePeriod`                                             | Replaced by [`SecondsPerUniqueLog`](https://docs.bugsnag.com/platforms/unity/configuration-options/#seconds-per-unique-log) |
 
 ## 4.x to v5.x
 
