@@ -66,6 +66,7 @@ namespace BugsnagUnity
                 config.AppVersion = AppVersion;
             }
             config.BundleVersion = BundleVersion;
+
             config.BreadcrumbLogLevel = GetLogTypeFromLogLevel( BreadcrumbLogLevel );
             config.Context = Context;
             config.DiscardClasses = DiscardClasses;
@@ -88,6 +89,10 @@ namespace BugsnagUnity
             if (string.IsNullOrEmpty(ReleaseStage))
             {
                 config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
+            }
+            else
+            {
+                config.ReleaseStage = ReleaseStage;
             }
             config.PersistUser = PersistUser;
             config.ReportExceptionLogsAsHandled = ReportExceptionLogsAsHandled;
