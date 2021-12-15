@@ -9,6 +9,7 @@ namespace BugsnagUnity.Payload
     /// </summary>
     public class Breadcrumb : PayloadContainer, IBreadcrumb
     {
+        // Notifier spec specifies Message, but the pipeline is still expecting the legacy field name
         private const string MESSAGE_KEY = "name";
         private const string TIMESTAMP_KEY = "timestamp";
         private const string METADATA_KEY = "metaData";
