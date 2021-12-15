@@ -6,6 +6,9 @@ namespace BugsnagUnity
 {
     public static class Bugsnag
     {
+
+        private const string INIT_WARNING = "Bugsnag is already running and this call to Start() will be ignored. Please check whether Bugsnag is set to start automatically via the settings dialog.";
+
         static object _clientLock = new object();
 
         public static void Start(string apiKey)
@@ -23,6 +26,10 @@ namespace BugsnagUnity
                     var configClone = configuration.Clone();
                     var nativeClient = new NativeClient(configClone);
                     InternalClient = new Client(nativeClient);
+                }
+                else
+                {
+                    UnityEngine.Debug.LogWarning(INIT_WARNING);
                 }
             }
         }
