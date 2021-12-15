@@ -7,7 +7,7 @@ namespace BugsnagUnity
     public static class Bugsnag
     {
 
-        private const string INIT_WARNING = "Bugsnag is already running and this call to Start() will be ignored. Please check whether Bugsnag is set to start automatically via the settings dialog.";
+        private const string INIT_WARNING = "Bugsnag is already running and this call to Start() will be ignored. If this was unexpected please check whether Bugsnag is set to start automatically via the settings dialog.";
 
         static object _clientLock = new object();
 
