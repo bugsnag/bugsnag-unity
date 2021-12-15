@@ -17,7 +17,7 @@ namespace BugsnagUnity
         public ulong AppHangThresholdMillis;
         public string AppVersion;
         public string BundleVersion;
-        public LogType BreadcrumbLogLevel = LogType.Log;
+        public EditorLogLevel BreadcrumbLogLevel = EditorLogLevel.Log;
         public string Context;
         public string[] DiscardClasses;
         public string[] EnabledReleaseStages;
@@ -27,7 +27,7 @@ namespace BugsnagUnity
         public int MaximumBreadcrumbs = 25;
         public int MaxPersistedEvents = 32;
         public string NotifyEndpoint;
-        public LogType NotifyLogLevel = LogType.Exception;
+        public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
         public bool PersistUser;
         public string SessionEndpoint;
         public ThreadSendPolicy SendThreads = ThreadSendPolicy.UNHANDLED_ONLY;
@@ -66,7 +66,8 @@ namespace BugsnagUnity
                 config.AppVersion = AppVersion;
             }
             config.BundleVersion = BundleVersion;
-            config.BreadcrumbLogLevel = BreadcrumbLogLevel;
+
+            config.BreadcrumbLogLevel = GetLogTypeFromLogLevel( BreadcrumbLogLevel );
             config.Context = Context;
             config.DiscardClasses = DiscardClasses;
             if (EnabledReleaseStages != null && EnabledReleaseStages.Length > 0)
@@ -78,7 +79,7 @@ namespace BugsnagUnity
             config.LaunchDurationMillis = LaunchDurationMillis;
             config.MaximumBreadcrumbs = MaximumBreadcrumbs;
             config.MaxPersistedEvents = MaxPersistedEvents;
-            config.NotifyLogLevel = NotifyLogLevel;
+            config.NotifyLogLevel = GetLogTypeFromLogLevel( NotifyLogLevel );
             config.SendThreads = SendThreads;
             if (!string.IsNullOrEmpty(NotifyEndpoint) && !string.IsNullOrEmpty(SessionEndpoint))
             {
@@ -138,6 +139,7 @@ namespace BugsnagUnity
             }
             return enabledTypes.ToArray();
         }
+
         [Serializable]
         public class EditorBreadcrumbTypes
         {
@@ -149,6 +151,34 @@ namespace BugsnagUnity
             public bool State = true;
             public bool Error = true;
             public bool Manual = true;
+        }
+
+        [Serializable]
+        public enum EditorLogLevel
+        {
+           Exception,
+           Error,
+           Assert,
+           Warning,
+           Log
+        }
+
+
+        private LogType GetLogTypeFromLogLevel(EditorLogLevel editorLogLevel)
+        {
+            switch (editorLogLevel)
+            {
+                case EditorLogLevel.Exception:
+                    return LogType.Exception;
+                case EditorLogLevel.Error:
+                    return LogType.Error;
+                case EditorLogLevel.Assert:
+                    return LogType.Assert;
+                case EditorLogLevel.Warning:
+                    return LogType.Warning;
+                default:
+                    return LogType.Log;
+            }
         }
 
     }

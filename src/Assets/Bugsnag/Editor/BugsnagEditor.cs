@@ -129,11 +129,11 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("ReleaseStage"));
             EditorGUILayout.LabelField("Android Only");
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(so.FindProperty("BundleVersion"));
+            EditorGUILayout.PropertyField(so.FindProperty("VersionCode"));
             EditorGUI.indentLevel--;
             EditorGUILayout.LabelField("Cocoa Only");
             EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(so.FindProperty("VersionCode"));
+            EditorGUILayout.PropertyField(so.FindProperty("BundleVersion"));
             EditorGUI.indentLevel--;
             EditorGUI.indentLevel--;
         }
