@@ -156,6 +156,31 @@ namespace BugsnagUnity.Payload
             }
         }
 
+        internal void RedactMetadata(Configuration config)
+        {
+            foreach (var section in _metadata.Payload)
+            {
+                var theSection = (IDictionary<string, object>)section.Value;
+                foreach (var key in theSection.Keys.ToList())
+                {
+                    if (config.KeyIsRedacted(key))
+                    {
+                        theSection[key] = "[REDACTED]";
+                    }
+                }
+            }
+            foreach (var crumb in _breadcrumbs)
+            {
+                foreach (var key in crumb.Metadata.Keys.ToList())
+                {
+                    if (config.KeyIsRedacted(key))
+                    {
+                        crumb.Metadata[key] = "[REDACTED]";
+                    }
+                }
+            }
+        }
+
         public List<IThread> Threads => null;
 
         internal Dictionary<string, object> GetEventPayload()

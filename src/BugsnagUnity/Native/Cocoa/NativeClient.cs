@@ -85,9 +85,15 @@ namespace BugsnagUnity
 
                 foreach (var callback in callbacks)
                 {
-                    if (!callback.Invoke(nativeEventWrapper))
+                    try
                     {
-                        return false;
+                        if (!callback.Invoke(nativeEventWrapper))
+                        {
+                            return false;
+                        }
+                    }
+                    catch {
+                        // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
             }
@@ -104,9 +110,15 @@ namespace BugsnagUnity
 
                 foreach (var callback in callbacks)
                 {
-                    if (!callback.Invoke(nativeSessionWrapper))
+                    try
                     {
-                        return false;
+                        if (!callback.Invoke(nativeSessionWrapper))
+                        {
+                            return false;
+                        }
+                    }
+                    catch {
+                        // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
             }

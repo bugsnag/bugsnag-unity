@@ -361,8 +361,6 @@ namespace BugsnagUnity
 
             eventMetadata.MergeMetadata(_storedMetadata.Payload);
 
-            RedactMetadata(eventMetadata);
-
             var @event = new Payload.Event(
               Configuration.Context,
               eventMetadata,
@@ -392,8 +390,9 @@ namespace BugsnagUnity
                             return;
                         }
                     }
-                    catch (System.Exception)
+                    catch
                     {
+                        // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
             }
@@ -408,8 +407,9 @@ namespace BugsnagUnity
                     }
                 }
             }
-            catch (System.Exception)
+            catch
             {
+                // If the callback causes an exception, ignore it and execute the next one
             }
 
 
@@ -424,11 +424,14 @@ namespace BugsnagUnity
                             return;
                         }
                     }
-                    catch (System.Exception)
+                    catch
                     {
+                        // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
             }
+
+            @event.RedactMetadata(Configuration);
 
             var report = new Report(Configuration, @event);
 
@@ -442,21 +445,7 @@ namespace BugsnagUnity
             }
         }
 
-        private void RedactMetadata(Metadata metadata)
-        {
-            foreach (var section in metadata.Payload)
-            {
-                var theSection = (IDictionary<string, object>)section.Value;
-                foreach (var key in theSection.Keys.ToList())
-                {
-                    if (Configuration.KeyIsRedacted(key))
-                    {
-                        theSection[key] = "[REDACTED]";
-                    }
-                }
-            }
-        }
-
+       
         private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
         {
             return Application.platform.Equals(RuntimePlatform.Android)
