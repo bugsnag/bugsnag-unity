@@ -24,12 +24,28 @@ namespace BugsnagUnity.Editor
         private void OnEnable()
         {
             titleContent.text = "Bugsnag";
+            CheckForSettingsCreation();
         }
 
         [MenuItem("Window/Bugsnag/Configuration")]
         public static void ShowWindow()
         {
+            CheckForSettingsCreation();
             GetWindow(typeof(BugsnagEditor));
+        }
+
+        private void Update()
+        {
+            CheckForSettingsCreation();
+        }
+
+        private void OnGUI()
+        {
+            DrawIcon();
+            if (SettingsFileFound())
+            {
+                DrawSettingsEditorWindow();
+            }
         }
 
         private static bool SettingsFileFound()
@@ -37,16 +53,11 @@ namespace BugsnagUnity.Editor
             return File.Exists(Application.dataPath + "/Resources/Bugsnag/BugsnagSettingsObject.asset");
         }
 
-        private void OnGUI()
+        private static void CheckForSettingsCreation()
         {
-            DrawIcon();
             if (!SettingsFileFound())
             {
                 CreateNewSettingsFile();
-            }
-            else
-            {
-                DrawSettingsEditorWindow();
             }
         }
 
@@ -193,7 +204,7 @@ namespace BugsnagUnity.Editor
             return Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
         }
 
-        private void CreateNewSettingsFile()
+        private static void CreateNewSettingsFile()
         {
             var resPath = Application.dataPath + "/Resources/Bugsnag";
             Directory.CreateDirectory(resPath);
