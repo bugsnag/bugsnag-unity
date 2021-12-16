@@ -167,6 +167,10 @@ namespace BugsnagUnity
             {
                 enabledTypes.Add("AppHangs");
             }
+            if (config.EnabledErrorTypes.ThermalKills)
+            {
+                enabledTypes.Add("ThermalKills");
+            }
             if (config.EnabledErrorTypes.Crashes)
             {
                 enabledTypes.Add("UnhandledExceptions");
