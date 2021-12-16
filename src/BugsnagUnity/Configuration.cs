@@ -25,7 +25,7 @@ namespace BugsnagUnity
 
         public bool GenerateAnonymousId = true;
 
-        public bool PersistUser;
+        public bool PersistUser = true;
 
         public string HostName;
 

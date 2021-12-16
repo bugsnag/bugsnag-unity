@@ -28,7 +28,7 @@ namespace BugsnagUnity
         public int MaxPersistedEvents = 32;
         public string NotifyEndpoint;
         public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
-        public bool PersistUser;
+        public bool PersistUser = true;
         public string SessionEndpoint;
         public ThreadSendPolicy SendThreads = ThreadSendPolicy.UNHANDLED_ONLY;
         public string[] RedactedKeys = new string[] { "password" };
@@ -143,14 +143,14 @@ namespace BugsnagUnity
         [Serializable]
         public class EditorBreadcrumbTypes
         {
-            public bool Navigation = true;
-            public bool Request = true;
-            public bool Process = true;
-            public bool Log = true;
-            public bool User = true;
-            public bool State = true;
             public bool Error = true;
+            public bool Log = true;
             public bool Manual = true;
+            public bool Navigation = true;
+            public bool Process = true;
+            public bool Request = true;
+            public bool State = true;
+            public bool User = true;
         }
 
         [Serializable]
