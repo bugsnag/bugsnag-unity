@@ -192,6 +192,7 @@ namespace BugsnagUnity.Editor
                 settings.EnabledErrorTypes.ANRs = EditorGUILayout.Toggle("ANRs (Android)", settings.EnabledErrorTypes.ANRs);
                 settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle("AppHangs (Cocoa)", settings.EnabledErrorTypes.AppHangs);
                 settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle("OOMs (Cocoa)", settings.EnabledErrorTypes.OOMs);
+                settings.EnabledErrorTypes.ThermalKills = EditorGUILayout.Toggle("ThermalKills (Cocoa)", settings.EnabledErrorTypes.ThermalKills);
                 settings.EnabledErrorTypes.Crashes = EditorGUILayout.Toggle("Crashes", settings.EnabledErrorTypes.Crashes);
                 settings.EnabledErrorTypes.UnityLog = EditorGUILayout.Toggle("Unity Logs", settings.EnabledErrorTypes.UnityLog);
                 EditorGUI.indentLevel -= 2;

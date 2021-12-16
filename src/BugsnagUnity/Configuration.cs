@@ -275,8 +275,9 @@ namespace BugsnagUnity
         public bool AppHangs = true;
         public bool OOMs = true;
         public bool Crashes = true;
+        public bool ThermalKills = true;
         public bool UnityLog = true;
-
+        
         public EnabledErrorTypes()
         { }
     }
