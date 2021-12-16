@@ -500,6 +500,7 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
     ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.cppExceptions = NO;
     ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.machExceptions = NO;
     ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.ooms = NO;
+    ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.thermalKills = NO;
 
     for (int i = 0; i < count; i++) {
         const char *enabledType = types[i];
@@ -530,6 +531,10 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
             if([typeString isEqualToString:@"OOMs"])
             {
                 ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.ooms = YES;
+            }
+            if([typeString isEqualToString:@"ThermalKills"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.thermalKills = YES;
             }
         }
       }

@@ -196,6 +196,7 @@ namespace BugsnagUnity.Editor
                 settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle("App Hangs (iOS/macOS)", settings.EnabledErrorTypes.AppHangs);
                 settings.EnabledErrorTypes.Crashes = EditorGUILayout.Toggle("Crashes", settings.EnabledErrorTypes.Crashes);
                 settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle("OOMs (iOS/macOS)", settings.EnabledErrorTypes.OOMs);
+                settings.EnabledErrorTypes.ThermalKills = EditorGUILayout.Toggle("Thermal Kills (iOS/macOS)", settings.EnabledErrorTypes.ThermalKills);
                 settings.EnabledErrorTypes.UnityLog = EditorGUILayout.Toggle("Unity Logs", settings.EnabledErrorTypes.UnityLog);
                 EditorGUI.indentLevel -= 2;
             }
