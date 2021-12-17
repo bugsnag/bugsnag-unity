@@ -311,12 +311,10 @@ namespace BugsnagUnity
 
             // set sendThreads
             AndroidJavaClass androidThreadSendPolicyClass = new AndroidJavaClass("com.bugsnag.android.ThreadSendPolicy");
-            var threadSendStringValue = Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads);
-            using (AndroidJavaObject policy = androidThreadSendPolicyClass.CallStatic<AndroidJavaObject>("valueOf", threadSendStringValue))
+            using (AndroidJavaObject policy = androidThreadSendPolicyClass.CallStatic<AndroidJavaObject>("valueOf", GetAndroidFormatThreadSendName(config.SendThreads)))
             {
                 obj.Call("setSendThreads", policy);
             }
-
 
             // set release stages
             obj.Call("setReleaseStage", config.ReleaseStage);
@@ -356,6 +354,19 @@ namespace BugsnagUnity
             }
 
             return obj;
+        }
+
+        private string GetAndroidFormatThreadSendName(ThreadSendPolicy threadSendPolicy)
+        {
+            switch (threadSendPolicy)
+            {
+                case ThreadSendPolicy.Always:
+                    return "ALWAYS";
+                case ThreadSendPolicy.UnhandledOnly:
+                    return "UNHANDLED_ONLY";
+                default:
+                    return "NEVER";
+            }
         }
 
         private AndroidJavaObject GetAndroidStringSetFromArray(string[] array)

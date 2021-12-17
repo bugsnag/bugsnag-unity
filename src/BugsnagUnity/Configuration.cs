@@ -19,7 +19,7 @@ namespace BugsnagUnity
 
         public long LaunchDurationMillis = 5000;
 
-        public ThreadSendPolicy SendThreads = ThreadSendPolicy.UNHANDLED_ONLY;
+        public ThreadSendPolicy SendThreads = ThreadSendPolicy.UnhandledOnly;
 
         public bool SendLaunchCrashesSynchronously = true;
 
