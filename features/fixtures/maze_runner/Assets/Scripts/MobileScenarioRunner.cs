@@ -278,7 +278,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "iOS Native Error No Threads":
             case "Java Background Crash No Threads":
-                config.SendThreads = ThreadSendPolicy.NEVER;
+                config.SendThreads = ThreadSendPolicy.Never;
                 break;
             case "Start SDK no errors":
                 config.AutoDetectErrors = false;
