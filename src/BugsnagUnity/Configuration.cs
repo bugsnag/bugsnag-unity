@@ -89,7 +89,7 @@ namespace BugsnagUnity
 
         public string ApiKey { get; set; }
 
-        private int _maximumBreadcrumbs = 25;
+        private int _maximumBreadcrumbs = 50;
 
         public int MaximumBreadcrumbs
         {

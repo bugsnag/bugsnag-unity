@@ -24,7 +24,7 @@ namespace BugsnagUnity
         public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
         public EditorBreadcrumbTypes EnabledBreadcrumbTypes = new EditorBreadcrumbTypes();
         public long LaunchDurationMillis = 5000;
-        public int MaximumBreadcrumbs = 25;
+        public int MaximumBreadcrumbs = 50;
         public int MaxPersistedEvents = 32;
         public string NotifyEndpoint = "https://notify.bugsnag.com";
         public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
