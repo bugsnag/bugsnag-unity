@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using BugsnagUnity.Payload;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ namespace BugsnagUnity
 
         public IDeviceWithState Device => new NativeDeviceWithState(NativePointer.Call<AndroidJavaObject>("getDevice"));
 
-        public List<IBreadcrumb> Breadcrumbs => GetBreadcrumbs();
+        public ReadOnlyCollection<IBreadcrumb> Breadcrumbs => GetBreadcrumbs();
 
         public List<IError> Errors => GetErrors();
 
@@ -49,7 +50,7 @@ namespace BugsnagUnity
             NativePointer.Call("setSeverity",nativeSeverity);
         }
 
-        private List<IBreadcrumb> GetBreadcrumbs()
+        private ReadOnlyCollection<IBreadcrumb> GetBreadcrumbs()
         {
             var nativeList = NativePointer.Call<AndroidJavaObject>("getBreadcrumbs");
             if (nativeList == null)
@@ -63,7 +64,7 @@ namespace BugsnagUnity
                 var next = iterator.Call<AndroidJavaObject>("next");
                 theBreadcrumbs.Add(new NativeBreadcrumb(next));
             }
-            return theBreadcrumbs;
+            return new ReadOnlyCollection<IBreadcrumb>( theBreadcrumbs );
         }
 
         private List<IError> GetErrors()

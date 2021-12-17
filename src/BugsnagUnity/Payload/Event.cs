@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
@@ -27,11 +28,12 @@ namespace BugsnagUnity.Payload
             }
 
             _breadcrumbs = breadcrumbs;
-            Breadcrumbs = new List<IBreadcrumb>();
+            var breadcrumbsList = new List<IBreadcrumb>();
             foreach (var crumb in _breadcrumbs)
             {
-                Breadcrumbs.Add(crumb);
+                breadcrumbsList.Add(crumb);
             }
+            Breadcrumbs = new ReadOnlyCollection<IBreadcrumb>(breadcrumbsList);
 
             if (session != null)
             {
@@ -78,7 +80,7 @@ namespace BugsnagUnity.Payload
 
         private List<Breadcrumb> _breadcrumbs;
 
-        public List<IBreadcrumb> Breadcrumbs { get; }
+        public ReadOnlyCollection<IBreadcrumb> Breadcrumbs { get; }
 
         internal Session Session { get; }
 
