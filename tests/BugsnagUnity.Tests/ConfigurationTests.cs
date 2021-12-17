@@ -27,9 +27,9 @@ namespace BugsnagUnity.Payload.Tests
         {
             var config = new Configuration("foo");
             config.MaximumBreadcrumbs = 101;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 25);
+            Assert.AreEqual(config.MaximumBreadcrumbs, 50);
             config.MaximumBreadcrumbs = -1;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 25);
+            Assert.AreEqual(config.MaximumBreadcrumbs, 50);
             config.MaximumBreadcrumbs = 20;
             Assert.AreEqual(config.MaximumBreadcrumbs, 20);
         }

@@ -19,7 +19,7 @@ namespace BugsnagUnity
 
         public long LaunchDurationMillis = 5000;
 
-        public ThreadSendPolicy SendThreads = ThreadSendPolicy.UNHANDLED_ONLY;
+        public ThreadSendPolicy SendThreads = ThreadSendPolicy.UnhandledOnly;
 
         public bool SendLaunchCrashesSynchronously = true;
 
@@ -89,7 +89,7 @@ namespace BugsnagUnity
 
         public string ApiKey { get; set; }
 
-        private int _maximumBreadcrumbs = 25;
+        private int _maximumBreadcrumbs = 50;
 
         public int MaximumBreadcrumbs
         {

@@ -477,15 +477,15 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
 
 void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy){
     NSString *ns_threadSendPolicy = [[NSString alloc] initWithUTF8String:threadSendPolicy];
-    if([ns_threadSendPolicy isEqualToString:@"ALWAYS"])
+    if([ns_threadSendPolicy isEqualToString:@"Always"])
     {
         ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyAlways;
     }
-    if([ns_threadSendPolicy isEqualToString:@"UNHANDLED_ONLY"])
+    if([ns_threadSendPolicy isEqualToString:@"UnhandledOnly"])
     {
         ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyUnhandledOnly;
     }
-    if([ns_threadSendPolicy isEqualToString:@"NEVER"])
+    if([ns_threadSendPolicy isEqualToString:@"Never"])
     {
         ((__bridge BugsnagConfiguration *)configuration).sendThreads = BSGThreadSendPolicyNever;
     }
