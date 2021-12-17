@@ -24,12 +24,28 @@ namespace BugsnagUnity.Editor
         private void OnEnable()
         {
             titleContent.text = "Bugsnag";
+            CheckForSettingsCreation();
         }
 
         [MenuItem("Window/Bugsnag/Configuration")]
         public static void ShowWindow()
         {
+            CheckForSettingsCreation();
             GetWindow(typeof(BugsnagEditor));
+        }
+
+        private void Update()
+        {
+            CheckForSettingsCreation();
+        }
+
+        private void OnGUI()
+        {
+            DrawIcon();
+            if (SettingsFileFound())
+            {
+                DrawSettingsEditorWindow();
+            }
         }
 
         private static bool SettingsFileFound()
@@ -37,16 +53,11 @@ namespace BugsnagUnity.Editor
             return File.Exists(Application.dataPath + "/Resources/Bugsnag/BugsnagSettingsObject.asset");
         }
 
-        private void OnGUI()
+        private static void CheckForSettingsCreation()
         {
-            DrawIcon();
             if (!SettingsFileFound())
             {
                 CreateNewSettingsFile();
-            }
-            else
-            {
-                DrawSettingsEditorWindow();
             }
         }
 
@@ -143,45 +154,49 @@ namespace BugsnagUnity.Editor
         {
             EditorGUI.indentLevel++;
             var originalWidth = EditorGUIUtility.labelWidth;
-            EditorGUIUtility.labelWidth = 200;
+            EditorGUIUtility.labelWidth = 270;
+            var appHangThresholdMillisValue = EditorGUILayout.LongField("App Hang Threshold Millis (iOS/macOS)", (long)settings.AppHangThresholdMillis);
+            if (appHangThresholdMillisValue >= 0)
+            {
+                settings.AppHangThresholdMillis = (ulong)appHangThresholdMillisValue;
+            }
             EditorGUILayout.PropertyField(so.FindProperty("AutoDetectErrors"));
             EditorGUILayout.PropertyField(so.FindProperty("AutoTrackSessions"));
-            EditorGUILayout.PropertyField(so.FindProperty("AppHangThresholdMillis"));
             EditorGUILayout.PropertyField(so.FindProperty("BreadcrumbLogLevel"));
             EditorGUILayout.PropertyField(so.FindProperty("Context"));
+            EditorGUILayout.PropertyField(so.FindProperty("DiscardClasses"));
+            EditorGUILayout.PropertyField(so.FindProperty("EnabledBreadcrumbTypes"));
+            DrawEnabledErrorTypesDropdown(settings);
+            EditorGUILayout.PropertyField(so.FindProperty("EnabledReleaseStages"));
             EditorGUILayout.PropertyField(so.FindProperty("LaunchDurationMillis"));
-            EditorGUILayout.PropertyField(so.FindProperty("MaximumBreadcrumbs"));
+            settings.MaximumBreadcrumbs = EditorGUILayout.IntField("Max Breadcrumbs", settings.MaximumBreadcrumbs);
             EditorGUILayout.PropertyField(so.FindProperty("MaxPersistedEvents"));
             EditorGUILayout.PropertyField(so.FindProperty("NotifyLogLevel"));
-            EditorGUIUtility.labelWidth = 270;
-            EditorGUILayout.PropertyField(so.FindProperty("ReportExceptionLogsAsHandled"));
-            EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
-            EditorGUIUtility.labelWidth = 200;
-            EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
             EditorGUILayout.PropertyField(so.FindProperty("PersistUser"));
-            EditorGUILayout.PropertyField(so.FindProperty("SendThreads"));
-            DrawEnabledErrorTypesDropdown(settings);
-            EditorGUILayout.PropertyField(so.FindProperty("DiscardClasses"));
-            EditorGUILayout.PropertyField(so.FindProperty("EnabledReleaseStages"));
-            EditorGUILayout.PropertyField(so.FindProperty("EnabledBreadcrumbTypes"));
             EditorGUILayout.PropertyField(so.FindProperty("RedactedKeys"));
-
-
-            EditorGUI.indentLevel--;
+            EditorGUILayout.PropertyField(so.FindProperty("ReportExceptionLogsAsHandled"));
+            EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
+            EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
+            EditorGUILayout.PropertyField(so.FindProperty("SendThreads"));
             EditorGUIUtility.labelWidth = originalWidth;
+            EditorGUI.indentLevel--;
 
         }
 
         private void DrawEnabledErrorTypesDropdown(BugsnagSettingsObject settings)
         {
-            _showEnabledErrorTypes = EditorGUILayout.Foldout(_showEnabledErrorTypes, "Enabled Error Types", true);
+
+            var style = new GUIStyle(GUI.skin.GetStyle("foldout"));
+            style.margin = new RectOffset(2, 0, 0, 0);
+            _showEnabledErrorTypes = EditorGUILayout.Foldout(_showEnabledErrorTypes, "Enabled Error Types", true, style);
             if (_showEnabledErrorTypes)
             {
                 EditorGUI.indentLevel += 2;
                 settings.EnabledErrorTypes.ANRs = EditorGUILayout.Toggle("ANRs (Android)", settings.EnabledErrorTypes.ANRs);
-                settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle("AppHangs (Cocoa)", settings.EnabledErrorTypes.AppHangs);
-                settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle("OOMs (Cocoa)", settings.EnabledErrorTypes.OOMs);
+                settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle("App Hangs (iOS/macOS)", settings.EnabledErrorTypes.AppHangs);
                 settings.EnabledErrorTypes.Crashes = EditorGUILayout.Toggle("Crashes", settings.EnabledErrorTypes.Crashes);
+                settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle("OOMs (iOS/macOS)", settings.EnabledErrorTypes.OOMs);
+                settings.EnabledErrorTypes.ThermalKills = EditorGUILayout.Toggle("Thermal Kills (iOS/macOS)", settings.EnabledErrorTypes.ThermalKills);
                 settings.EnabledErrorTypes.UnityLog = EditorGUILayout.Toggle("Unity Logs", settings.EnabledErrorTypes.UnityLog);
                 EditorGUI.indentLevel -= 2;
             }
@@ -193,7 +208,7 @@ namespace BugsnagUnity.Editor
             return Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
         }
 
-        private void CreateNewSettingsFile()
+        private static void CreateNewSettingsFile()
         {
             var resPath = Application.dataPath + "/Resources/Bugsnag";
             Directory.CreateDirectory(resPath);

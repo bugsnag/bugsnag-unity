@@ -24,15 +24,15 @@ namespace BugsnagUnity
         public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
         public EditorBreadcrumbTypes EnabledBreadcrumbTypes = new EditorBreadcrumbTypes();
         public long LaunchDurationMillis = 5000;
-        public int MaximumBreadcrumbs = 25;
+        public int MaximumBreadcrumbs = 50;
         public int MaxPersistedEvents = 32;
-        public string NotifyEndpoint;
+        public string NotifyEndpoint = "https://notify.bugsnag.com";
         public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
-        public bool PersistUser;
-        public string SessionEndpoint;
-        public ThreadSendPolicy SendThreads = ThreadSendPolicy.UNHANDLED_ONLY;
+        public bool PersistUser = true;
+        public string SessionEndpoint = "https://sessions.bugsnag.com";
+        public ThreadSendPolicy SendThreads = ThreadSendPolicy.UnhandledOnly;
         public string[] RedactedKeys = new string[] { "password" };
-        public string ReleaseStage = "production";
+        public string ReleaseStage;
         public bool ReportExceptionLogsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
         public double SecondsPerUniqueLog = 5;
@@ -143,14 +143,14 @@ namespace BugsnagUnity
         [Serializable]
         public class EditorBreadcrumbTypes
         {
-            public bool Navigation = true;
-            public bool Request = true;
-            public bool Process = true;
-            public bool Log = true;
-            public bool User = true;
-            public bool State = true;
             public bool Error = true;
+            public bool Log = true;
             public bool Manual = true;
+            public bool Navigation = true;
+            public bool Process = true;
+            public bool Request = true;
+            public bool State = true;
+            public bool User = true;
         }
 
         [Serializable]
