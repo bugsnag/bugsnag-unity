@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -30,7 +31,7 @@ namespace BugsnagUnity
 
         private List<IBreadcrumb> _breadcrumbs = new List<IBreadcrumb>();
 
-        public List<IBreadcrumb> Breadcrumbs => _breadcrumbs;
+        public ReadOnlyCollection<IBreadcrumb> Breadcrumbs => new ReadOnlyCollection<IBreadcrumb>(_breadcrumbs);
 
         private List<IError> _errors = new List<IError>();
 

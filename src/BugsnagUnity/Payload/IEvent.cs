@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
@@ -14,7 +15,7 @@ namespace BugsnagUnity
 
         IDeviceWithState Device { get; }
 
-        List<IBreadcrumb> Breadcrumbs { get; }
+        ReadOnlyCollection<IBreadcrumb> Breadcrumbs { get; }
 
         List<IError> Errors { get; }
 
