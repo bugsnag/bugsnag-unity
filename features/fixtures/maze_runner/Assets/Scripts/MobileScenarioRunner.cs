@@ -44,6 +44,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"27", "Ios Signal" },
         { "28", "Session Callback" },
         { "29", "On Send Native Callback" },
+        { "30", "Inf Launch Duration" },
 
         // Commands
         {"90", "Clear iOS Data" },
@@ -127,7 +128,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
-
+            case "Inf Launch Duration":
+                config.LaunchDurationMillis = 0;
+                break;
             case "On Send Native Callback":
                 config.AddOnSendError((@event) => {
 
@@ -357,6 +360,9 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Inf Launch Duration":
+                Invoke("ThrowException",6);
+                break;
             case "Ios Signal":
                 MobileNative.DoIosSignal();
                 break;

@@ -52,6 +52,7 @@ def dial_number_for(name)
       "Ios Signal" => 27,
       "Session Callback" => 28,
       "On Send Native Callback" => 29,
+      "Inf Launch Duration" => 30,
 
 
 

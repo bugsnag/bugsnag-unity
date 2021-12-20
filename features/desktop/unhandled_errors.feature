@@ -171,3 +171,43 @@ Feature: Reporting unhandled events
         Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "message" equals "Background Thread Crash"
 
+    @windows_only
+    Scenario: Fallback Launch Duration set to 0
+        When I run the game in the "InfLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "InfLaunch"
+       
+        #app metadata
+        And the event "app.isLaunching" is true
+
+    @windows_only
+    Scenario: Calling Mark Launch Complete
+        When I run the game in the "InfLaunchDurationMark" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "InfLaunchDurationMark"
+       
+        #app metadata
+        And the event "app.isLaunching" is false
+
+    @macos_only
+    Scenario: Fallback Launch Duration set to 0
+        When I run the game in the "InfLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "InfLaunch"
+       
+        #app metadata
+        And the event "app.isLaunching" equals "true"
+
+    @macos_only
+    Scenario: Calling Mark Launch Complete
+        When I run the game in the "InfLaunchDurationMark" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "InfLaunchDurationMark"
+       
+        #app metadata
+        And the event "app.isLaunching" equals "false"
+

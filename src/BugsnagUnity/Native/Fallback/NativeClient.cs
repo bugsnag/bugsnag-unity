@@ -42,7 +42,7 @@ namespace BugsnagUnity
             bool isLaunching;
             if (Configuration.LaunchDurationMillis == 0)
             {
-                isLaunching = _launchMarkedAsCompleted;
+                isLaunching = !_launchMarkedAsCompleted;
             }
             else
             {

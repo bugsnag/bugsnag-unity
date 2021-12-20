@@ -176,5 +176,15 @@ Feature: Android smoke tests for C# errors
         And the exception "message" equals "You threw an exception!"
         And the event "app.isLaunching" equals "false"
 
+    Scenario: Mark Launch Complete
+        When I run the "Inf Launch Duration" mobile scenario
+        Then I wait to receive an error
+
+        # Exception details
+        And the error payload field "events" is an array with 1 elements
+        And the exception "errorClass" equals "Exception"
+        And the exception "message" equals "You threw an exception!"
+        And the event "app.isLaunching" equals "true"
+
 
 

@@ -23,6 +23,7 @@ public class Main : MonoBehaviour
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
 
+    private float _closeTime = 5;
 
     public void Start()
     {
@@ -33,12 +34,12 @@ public class Main : MonoBehaviour
 
 #if UNITY_WEBGL
         ParseUrlParameters();
-#else
-        //close the desktop fixture automatically
-        Invoke("CloseApplication", 5);
+ 
 #endif
+
         var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);
+        Invoke("CloseApplication", _closeTime);
         Bugsnag.Start(config);
 
         // Add different varieties of custom metadata
@@ -61,6 +62,7 @@ public class Main : MonoBehaviour
 
         // trigger the crash
         RunScenario(scenario);
+
     }
 
     void CloseApplication()
@@ -140,6 +142,11 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "InfLaunchDurationMark":
+            case "InfLaunchDuration":
+                config.LaunchDurationMillis = 0;
+                _closeTime = 8;
+                break;
             case "DisabledReleaseStage":
                 config.EnabledReleaseStages = new string[] { "test" };
                 config.ReleaseStage = "somevalue";
@@ -329,6 +336,13 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "InfLaunchDurationMark":
+                Bugsnag.MarkLaunchCompleted();
+                throw new Exception("InfLaunchDurationMark");
+                break;
+            case "InfLaunchDuration":
+                Invoke("InfLaunchException",6);
+                break;
             case "EventCallbacks":
                 DoNotify();
                 break;
@@ -694,6 +708,11 @@ public class Main : MonoBehaviour
     void DoLogUnthrown()
     {
         Debug.LogException(new System.Exception("auth failed!"));
+    }
+
+    void InfLaunchException()
+    {
+        throw new Exception("InfLaunch");
     }
 
     void DoUnhandledException(long counter)
