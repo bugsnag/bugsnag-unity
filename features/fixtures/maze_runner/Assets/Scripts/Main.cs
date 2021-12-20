@@ -140,6 +140,10 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "InfLaunchDurationMark":
+            case "InfLaunchDuration":
+                config.LaunchDurationMillis = 0;
+                break;
             case "DisabledReleaseStage":
                 config.EnabledReleaseStages = new string[] { "test" };
                 config.ReleaseStage = "somevalue";
@@ -329,6 +333,13 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "InfLaunchDurationMark":
+                Bugsnag.MarkLaunchCompleted();
+                throw new Exception("InfLaunchDurationMark");
+                break;
+            case "InfLaunchDuration":
+                Invoke("InfLaunchException",6);
+                break;
             case "EventCallbacks":
                 DoNotify();
                 break;
@@ -694,6 +705,11 @@ public class Main : MonoBehaviour
     void DoLogUnthrown()
     {
         Debug.LogException(new System.Exception("auth failed!"));
+    }
+
+    void InfLaunchException()
+    {
+        throw new Exception("InfLaunch");
     }
 
     void DoUnhandledException(long counter)
