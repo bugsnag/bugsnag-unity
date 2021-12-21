@@ -355,7 +355,7 @@ namespace BugsnagUnity
 
             var eventMetadata = new Metadata();
 
-            NativeClient.PopulateMetadata(eventMetadata);
+            eventMetadata.MergeMetadata(NativeClient.GetNativeMetadata());
 
             AutomaticDataCollector.AddStatefulDeviceData(eventMetadata);
 

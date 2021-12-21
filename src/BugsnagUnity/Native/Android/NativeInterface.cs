@@ -525,7 +525,7 @@ namespace BugsnagUnity
             return GetJavaMapData("getUser");
         }
 
-        public void RemoveMetadata(string tab)
+        public void ClearMetadata(string tab)
         {
             if (tab == null)
             {
@@ -534,7 +534,16 @@ namespace BugsnagUnity
             CallNativeVoidMethod("clearMetadata", "(Ljava/lang/String;Ljava/lang/String;)V", new object[] { tab, null });
         }
 
-        public void AddToTab(string tab, string key, string value)
+        public void ClearMetadata(string tab, string key)
+        {
+            if (tab == null)
+            {
+                return;
+            }
+            CallNativeVoidMethod("clearMetadata", "(Ljava/lang/String;Ljava/lang/String;)V", new object[] { tab, key });
+        }
+
+        public void AddMetadata(string tab, string key, string value)
         {
             if (tab == null || key == null)
             {
@@ -543,6 +552,8 @@ namespace BugsnagUnity
             CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V",
                 new object[] { tab, key, value });
         }
+
+       
 
         public void LeaveBreadcrumb(string name, string type, IDictionary<string, object> metadata)
         {

@@ -278,34 +278,6 @@ namespace BugsnagUnity
             user.Id = Marshal.PtrToStringAuto(nativeUser.Id);
         }
 
-        public void SetMetadata(string section, Dictionary<string, object> metadataSection)
-        {
-            if (metadataSection != null)
-            {
-                using (var stream = new MemoryStream())
-                using (var reader = new StreamReader(stream))
-                using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
-                {
-                    SimpleJson.SerializeObject(metadataSection, writer);
-                    writer.Flush();
-                    stream.Position = 0;
-                    var jsonString = reader.ReadToEnd();
-                    NativeCode.bugsnag_setMetadata(section, jsonString);
-                }
-            }
-            else
-            {
-                NativeCode.bugsnag_removeMetadata(NativeConfiguration, section);
-            }
-        }
-
-        public void PopulateMetadata(Metadata metadata)
-        {           
-            var result =  NativeCode.bugsnag_retrieveMetaData();
-            var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
-            metadata.MergeMetadata(dictionary);
-        }
-
         public void SetUser(User user)
         {
             NativeCode.bugsnag_setUser(user.Id, user.Name, user.Email);
@@ -403,5 +375,44 @@ namespace BugsnagUnity
             }
         }
 
+        public void ClearNativeMetadata(string section)
+        {
+            NativeCode.bugsnag_clearMetadata(section);
+        }
+
+        public void ClearNativeMetadata(string section, string key)
+        {
+            NativeCode.bugsnag_clearMetadataWithKey(section,key);
+        }
+
+        public void SetNativeMetadata(string section, IDictionary<string, object> data)
+        {
+            if (data != null)
+            {
+                using (var stream = new MemoryStream())
+                using (var reader = new StreamReader(stream))
+                using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+                {
+                    SimpleJson.SerializeObject(data, writer);
+                    writer.Flush();
+                    stream.Position = 0;
+                    var jsonString = reader.ReadToEnd();
+                    NativeCode.bugsnag_setMetadata(section, jsonString);
+                }
+            }
+            else
+            {
+                NativeCode.bugsnag_removeMetadata(NativeConfiguration, section);
+            }
+        }
+
+        public IDictionary<string, object> GetNativeMetadata()
+        {
+            var result = NativeCode.bugsnag_retrieveMetaData();
+            var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
+            return dictionary;
+        }
+
+      
     }
 }

@@ -39,6 +39,22 @@ const char * getMetadataJson(NSDictionary* dictionary){
     return NULL;
 }
 
+void bugsnag_clearMetadata(const char * section){
+    if(section == NULL)
+    {
+        return;   
+    }
+    [Bugsnag clearMetadataFromSection:@(section)];
+}
+
+void bugsnag_clearMetadataWithKey(const char * section, const char * key){
+    if(section == NULL || key == NULL)
+    {
+        return;   
+    }
+    [Bugsnag clearMetadataFromSection:@(section) withKey:@(key)];
+}
+
 NSDictionary * getDictionaryFromMetadataJson(const char * jsonString){
     @try {
         NSError *error = nil;

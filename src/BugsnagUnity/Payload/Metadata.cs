@@ -54,39 +54,23 @@ namespace BugsnagUnity.Payload
             {
                 Add(section,metadataSection);
             }
-
-            UpdateNativeMetadata(section);
+            if (_nativeClient != null)
+            {
+                _nativeClient.SetNativeMetadata(section,metadataSection);
+            }
         }
 
-        private void UpdateNativeMetadata(string section)
-        {
-
-            if (_nativeClient == null)
-            {
-                return;
-            }
-            var existingSection = (IDictionary<string, object>)Get(section);
-            var stringDict = new Dictionary<string, object>();
-            foreach (var pair in existingSection)
-            {
-                if (pair.Value != null)
-                {
-                    stringDict.Add(pair.Key, pair.Value);
-                }
-            }
-
-            _nativeClient.SetMetadata(section, stringDict);
-        }
+       
 
         public void ClearMetadata(string section)
         {
             if (SectionExists(section))
             {
                 Payload.Remove(section);
-                if (_nativeClient != null)
-                { 
-                    _nativeClient.SetMetadata(section, null);
-                }
+            }
+            if (_nativeClient != null)
+            {
+                _nativeClient.ClearNativeMetadata(section);
             }
         }
 
@@ -98,8 +82,11 @@ namespace BugsnagUnity.Payload
                 if (existingSection.ContainsKey(key))
                 {
                     existingSection.Remove(key);
-                    UpdateNativeMetadata(section);
                 }                
+            }
+            if (_nativeClient != null)
+            {
+                _nativeClient.ClearNativeMetadata(section,key);
             }
         }
 
@@ -123,8 +110,12 @@ namespace BugsnagUnity.Payload
             return null;
         }
 
-        internal void MergeMetadata(Dictionary<string, object> newMetadata)
+        internal void MergeMetadata(IDictionary<string, object> newMetadata)
         {
+            if (newMetadata == null)
+            {
+                return;
+            }
             foreach (var section in newMetadata)
             {
                 var sectionkey = section.Key;

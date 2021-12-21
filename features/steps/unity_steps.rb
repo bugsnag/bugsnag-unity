@@ -53,6 +53,7 @@ def dial_number_for(name)
       "Session Callback" => 28,
       "On Send Native Callback" => 29,
       "Inf Launch Duration" => 30,
+      "Clear Metadata" => 31,
 
 
 
@@ -243,6 +244,8 @@ Then("custom metadata is included in the event") do
     And the event "metaData.init" is null
     And the event "metaData.custom.letter" equals "QX"
     And the event "metaData.custom.better" equals 400
+    And the event "metaData.test.test1" equals "test1"
+    And the event "metaData.test.test2" is null
     And the error payload field "events.0.metaData.custom.int-array" is a non-empty array
     And the error payload field "events.0.metaData.custom.string-array" is a non-empty array
     And the error payload field "events.0.metaData.custom.dict" is not null

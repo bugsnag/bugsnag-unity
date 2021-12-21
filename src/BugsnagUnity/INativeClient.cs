@@ -48,12 +48,6 @@ namespace BugsnagUnity
         void PopulateDeviceWithState(DeviceWithState device);
 
         /// <summary>
-        /// Adds the metadata to the native clients metadata
-        /// </summary>
-        /// <param name="metadata"></param>
-        void SetMetadata(string section, Dictionary<string, object> metadata);
-
-        /// <summary>
         /// Send the start session message to a native notifier
         /// </summary>
         void StartSession();
@@ -90,12 +84,6 @@ namespace BugsnagUnity
         void PopulateUser(User user);
 
         /// <summary>
-        /// Populates any native metadata.
-        /// </summary>
-        /// <param name="metadata"></param>
-        void PopulateMetadata(Metadata metadata);
-
-        /// <summary>
         /// Mutates the context.
         /// </summary>
         /// <param name="context"></param>
@@ -110,6 +98,14 @@ namespace BugsnagUnity
         /// Get the last run information from Android and cocoa platforms
         /// </summary>
         LastRunInfo GetLastRunInfo();
+
+        void ClearNativeMetadata(string section);
+
+        void ClearNativeMetadata(string section, string key);
+
+        void SetNativeMetadata(string section, IDictionary<string, object> data);
+
+        IDictionary<string, object> GetNativeMetadata();
 
     }
 }

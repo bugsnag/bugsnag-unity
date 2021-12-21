@@ -45,6 +45,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "28", "Session Callback" },
         { "29", "On Send Native Callback" },
         { "30", "Inf Launch Duration" },
+        { "31", "Clear Metadata" },
+
 
         // Commands
         {"90", "Clear iOS Data" },
@@ -360,6 +362,17 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Clear Metadata":
+
+                Bugsnag.AddMetadata("test","test1","test1");
+                Bugsnag.AddMetadata("test", "test2", "test2");
+                Bugsnag.ClearMetadata("test","test2");
+                Bugsnag.AddMetadata("test3", "test3", "test3");
+                Bugsnag.AddMetadata("test4", "test4", "test4");
+                Bugsnag.ClearMetadata("test4");
+                ThrowException();
+
+                break;
             case "Inf Launch Duration":
                 Invoke("ThrowException",6);
                 break;
