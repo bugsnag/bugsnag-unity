@@ -128,7 +128,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2020.3.23f1.apk"
         upload:
           - "maze_output/failed/**/*"
-      docker-compose#v3.3.0:
+      docker-compose#v3.7.0:
+        pull: maze-runner
         run: maze-runner
         command:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.23f1.apk"
