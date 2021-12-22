@@ -103,7 +103,7 @@ namespace BugsnagUnity
 
         void ClearNativeMetadata(string section, string key);
 
-        void SetNativeMetadata(string section, IDictionary<string, object> data);
+        void AddNativeMetadata(string section, IDictionary<string, object> data);
 
         IDictionary<string, object> GetNativeMetadata();
 

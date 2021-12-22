@@ -385,7 +385,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_clearMetadataWithKey(section,key);
         }
 
-        public void SetNativeMetadata(string section, IDictionary<string, object> data)
+        public void AddNativeMetadata(string section, IDictionary<string, object> data)
         {
             if (data != null)
             {

@@ -123,7 +123,7 @@ namespace BugsnagUnity
             _fallbackMetadata.ClearMetadata(section, key);
         }
 
-        public void SetNativeMetadata(string section, IDictionary<string, object> data)
+        public void AddNativeMetadata(string section, IDictionary<string, object> data)
         {
             _fallbackMetadata.AddMetadata(section, data);
         }

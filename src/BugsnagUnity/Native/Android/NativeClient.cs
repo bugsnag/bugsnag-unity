@@ -127,7 +127,7 @@ namespace BugsnagUnity
             return NativeInterface.GetMetadata();
         }
 
-        public void SetNativeMetadata(string section, IDictionary<string, object> data)
+        public void AddNativeMetadata(string section, IDictionary<string, object> data)
         {
             foreach (var pair in data)
             {

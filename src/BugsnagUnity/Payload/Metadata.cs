@@ -57,7 +57,7 @@ namespace BugsnagUnity.Payload
             }
             if (_nativeClient != null)
             {
-                _nativeClient.SetNativeMetadata(section,metadataSection);
+                _nativeClient.AddNativeMetadata(section,metadataSection);
             }
         }
 
