@@ -4,7 +4,7 @@ require 'cgi'
 # Mobile steps
 #
 
-When("I wait for the mobile game to start") do
+When('I wait for the mobile game to start') do
   # Wait for a fixed time period
   # TODO: PLAT-6655 Remove the Unity splash screen so we don't have to wait so long
   sleep 3
@@ -58,6 +58,7 @@ def dial_number_for(name)
 
       # Commands
       "Clear iOS Data" => 90
+
   }
   number = lookup[name]
   $logger.debug "Command/scenario '#{name}' has dial-in code #{number}"
@@ -68,27 +69,27 @@ def dial_number_for(name)
   sleep 1
 end
 
-When("I run the {string} command") do |command|
+When('I run the {string} command') do |command|
   dial_number_for command
-  step("I press Run Command")
+  step('I press Run Command')
 end
 
-When("I run the {string} mobile scenario") do |scenario|
+When('I run the {string} mobile scenario') do |scenario|
   dial_number_for scenario
-  step("I press Run Scenario")
+  step('I press Run Scenario')
 end
 
-When("I dial {int}") do |number|
+When('I dial {int}') do |number|
   $logger.debug "Dialling #{number}"
   press_at 40 + (number * 80)
   sleep 1
 end
 
-When("I press Run Scenario") do
+When('I press Run Scenario') do
   press_at 840
 end
 
-When("I press Run Command") do
+When('I press Run Command') do
   press_at 920
 end
 
@@ -115,10 +116,11 @@ end
 #
 # Desktop steps
 #
-When("I run the game in the {string} state") do |state|
+When('I run the game in the {string} state') do |state|
   endpoint = "http://localhost:#{Maze.config.port}"
 
-  if Maze.config.os == 'macos'
+  case Maze.config.os
+  when 'macos'
     Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
     Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
     Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
@@ -127,7 +129,7 @@ When("I run the game in the {string} state") do |state|
     command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -batchmode -nographics"
     Maze::Runner.run_command(command)
 
-  elsif Maze.config.os == 'windows'
+  when 'windows'
     command = "#{Maze.config.app} -batchmode -nographics"
     env = {
         'BUGSNAG_SCENARIO' => state,
@@ -167,73 +169,75 @@ def check_error_reporting_api(notifier_name)
   )
 end
 
-Then("the error is valid for the error reporting API sent by the native Unity notifier") do
+Then('the error is valid for the error reporting API sent by the native Unity notifier') do
   # This step currently only applies to native errors on macOS macOS
   check_error_reporting_api 'Unity Bugsnag Notifier'
 end
 
-Then("the error is valid for the error reporting API sent by the Unity notifier") do
+Then('the error is valid for the error reporting API sent by the Unity notifier') do
 
-  if Maze.config.farm == :bs
+  os = if Maze.config.farm == :bs
     # Mobile - could be ios or android
-    os = Maze.config.capabilities['os']
+    Maze.config.capabilities['os']
   else
     # Could be windows or macos
-    os = Maze.config.os
+    Maze.config.os
   end
 
-  if os == 'ios'
-    notifier_name = 'Unity Bugsnag Notifier'
-  elsif os == 'android'
-    notifier_name = 'Android Bugsnag Notifier'
-  else
-    notifier_name = 'Unity Bugsnag Notifier'
-  end
+  notifier_name = case os
+                  when 'ios'
+                    'Unity Bugsnag Notifier'
+                  when 'android'
+                    'Android Bugsnag Notifier'
+                  else
+                    'Unity Bugsnag Notifier'
+                  end
 
   check_error_reporting_api notifier_name
 end
 
-Then("the first significant stack frame methods and files should match:") do |expected_values|
-  stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.stacktrace")
+Then('the first significant stack frame methods and files should match:') do |expected_values|
+  stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
   expected_frame_values = expected_values.raw
   expected_index = 0
 
-  flunk("The stacktrace is empty") if stacktrace.length == 0
-  flunk("The stacktrace is not long enough") if stacktrace.length < expected_frame_values.length
+  flunk('The stacktrace is empty') if stacktrace.length == 0
+  flunk('The stacktrace is not long enough') if stacktrace.length < expected_frame_values.length
 
   stacktrace.each_with_index do |item, index|
     next if expected_index >= expected_frame_values.length
+
     expected_frames = expected_frame_values[expected_index]
 
     method = item['method']
     next if method.start_with? 'UnityEngine' or method.start_with? 'BugsnagUnity'
 
     frame_matches = expected_frames.any? { |frame| frame == method }
-    assert(frame_matches, "None of the given methods match the frame #{method}")
+    Maze.check.true(frame_matches, "None of the given methods match the frame #{method}")
     expected_index += 1
   end
 end
 
-Then("the current error request events match one of:") do |table|
+Then('the current error request events match one of:') do |table|
   events = Maze::Server.errors.all.map do |error|
-    Maze::Helper.read_key_path(error[:body], "events")
+    Maze::Helper.read_key_path(error[:body], 'events')
   end.flatten
   table.hashes.each do |values|
-    assert_not_nil(events.detect do |event|
-      handled_count = Maze::Helper.read_key_path(event, "session.events.handled")
-      unhandled_count = Maze::Helper.read_key_path(event, "session.events.unhandled")
-      message = Maze::Helper.read_key_path(event, "exceptions.0.message")
-      handled_count == values["handled"].to_i &&
-        unhandled_count == values["unhandled"].to_i &&
-        message == values["message"]
+    Maze.check.not_nil(events.detect do |event|
+      handled_count = Maze::Helper.read_key_path(event, 'session.events.handled')
+      unhandled_count = Maze::Helper.read_key_path(event, 'session.events.unhandled')
+      message = Maze::Helper.read_key_path(event, 'exceptions.0.message')
+      handled_count == values['handled'].to_i &&
+        unhandled_count == values['unhandled'].to_i &&
+        message == values['message']
     end, "No event matches the following values: #{values}")
   end
 end
 
-Then("the event {string} matches one of:") do |path, table|
+Then('the event {string} matches one of:') do |path, table|
   payload_value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{path}")
   valid_values = table.raw.flat_map { |e| e }
-  assert(valid_values.any? { |frame| frame == payload_value }, "Value #{payload_value} did not match any of the expected values")
+  Maze.check.true(valid_values.any? { |frame| frame == payload_value }, "Value #{payload_value} did not match any of the expected values")
 end
 
 Then("custom metadata is included in the event") do
@@ -248,3 +252,18 @@ Then("custom metadata is included in the event") do
     And the error payload field "events.0.metaData.custom.dict" is not null
   }
 end
+
+
+# TODO See PLAT-7058
+Then('the event {string} is present from Unity 2018') do |field|
+  if ENV['UNITY_VERSION']
+    unity_version = ENV['UNITY_VERSION'][0..4].to_i
+    if unity_version < 2018
+      $logger.warn "Not checking #{field} on Unity #{unity_version} due to PLAT-7058"
+      next
+    end
+  end
+
+  step("the event \"#{field}\" is not null")
+end
+>>>>>>> next
