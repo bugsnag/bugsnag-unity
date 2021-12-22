@@ -393,7 +393,12 @@ void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
 }
 
 void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis) {
-  ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
+    if(appHangThresholdMillis == 0)
+    {
+        ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = BugsnagAppHangThresholdFatalOnly;
+        return;
+    }
+    ((__bridge BugsnagConfiguration *)configuration).appHangThresholdMillis = appHangThresholdMillis;
 }
 
 void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis) {

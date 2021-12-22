@@ -48,6 +48,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
             NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
             NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
+            NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
 
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
@@ -57,10 +58,7 @@ namespace BugsnagUnity
             {
                 NativeCode.bugsnag_setRedactedKeys(obj, config.RedactedKeys, config.RedactedKeys.Length);
             }
-            if (config.AppHangThresholdMillis > 0)
-            {
-                NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
-            }
+           
             SetEnabledBreadcrumbTypes(obj,config);
             SetEnabledErrorTypes(obj, config);
             if (config.Context != null)
