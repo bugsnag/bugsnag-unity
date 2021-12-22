@@ -553,8 +553,6 @@ namespace BugsnagUnity
                 new object[] { tab, key, value });
         }
 
-       
-
         public void LeaveBreadcrumb(string name, string type, IDictionary<string, object> metadata)
         {
             if (!CanRunJNI())
