@@ -811,12 +811,12 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2019.4.30f1"
+      UNITY_VERSION: "2019.4.32f1"
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/Windows-2019.4.30f1.zip
+      - features/fixtures/maze_runner/build/Windows-2019.4.32f1.zip
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -877,7 +877,7 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2019.4.30f1"
+      UNITY_VERSION: "2019.4.32f1"
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
