@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BugsnagUnity;
 using UnityEngine;
 
@@ -32,21 +33,21 @@ namespace BugsnagUnity.Payload
             }
             if (SectionExists(section))
             {
-
                 var existingSection = (IDictionary<string, object>)Get(section);
 
-                foreach (var entry in metadataSection)
+                foreach (var key in metadataSection.Keys.ToList())
                 {
-                    if (entry.Value == null)
+                    var value = metadataSection[key];
+                    if (value == null)
                     {
-                        if (existingSection.ContainsKey(entry.Key))
+                        if (existingSection.ContainsKey(key))
                         {
-                            existingSection.Remove(entry.Key);
+                            existingSection.Remove(key);
                         }
                     }
                     else
                     {
-                        existingSection[entry.Key] = entry.Value;
+                        existingSection[key] = value;
                     }
                 }
             }

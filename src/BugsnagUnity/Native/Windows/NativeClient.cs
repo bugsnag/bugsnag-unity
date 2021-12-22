@@ -18,6 +18,8 @@ namespace BugsnagUnity
 
         private bool _hasReceivedLowMemoryWarning = false;
 
+        private Metadata _fallbackMetadata = new Metadata();
+
         public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
@@ -170,19 +172,22 @@ namespace BugsnagUnity
 
         public void ClearNativeMetadata(string section)
         {
+            _fallbackMetadata.ClearMetadata(section);
         }
 
         public void ClearNativeMetadata(string section, string key)
         {
+            _fallbackMetadata.ClearMetadata(section, key);
         }
 
         public void SetNativeMetadata(string section, IDictionary<string, object> data)
         {
+            _fallbackMetadata.AddMetadata(section, data);
         }
 
         public IDictionary<string, object> GetNativeMetadata()
         {
-            return null;
+            return _fallbackMetadata.Payload;
         }
     }
 }
