@@ -13,10 +13,3 @@ Feature: Android smoke tests for Metadata
         And the event "metaData.test.test2" is null
         And the event "metaData.test3.test3" equals "test3"
         And the event "metaData.test4" is null
-
-
-
-
-
-
-
