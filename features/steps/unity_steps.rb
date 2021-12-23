@@ -269,4 +269,3 @@ Then('the event {string} is present from Unity 2018') do |field|
 
   step("the event \"#{field}\" is not null")
 end
->>>>>>> next
