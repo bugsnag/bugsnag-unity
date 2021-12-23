@@ -13,11 +13,11 @@ namespace BugsnagUnity
 
         public IDelivery Delivery { get; }
 
-        private Metadata _fallbackMetadata = new Metadata();
-
         private bool _launchMarkedAsCompleted = false;
 
         private bool _hasReceivedLowMemoryWarning = false;
+
+        private Metadata _fallbackMetadata = new Metadata();
 
         public NativeClient(Configuration configuration)
         {
@@ -59,18 +59,8 @@ namespace BugsnagUnity
         {
         }
 
-        public void PopulateMetadata(Metadata metadata)
-        {
-            metadata.MergeMetadata(_fallbackMetadata.Payload);
-        }
-       
         public void PopulateUser(User user)
         {
-        }
-
-        public void SetMetadata(string section, Dictionary<string, object> metadata)
-        {
-            _fallbackMetadata.AddMetadata(section,metadata);
         }
 
         public void SetSession(Session session)
@@ -123,5 +113,24 @@ namespace BugsnagUnity
             return null;
         }
 
+        public void ClearNativeMetadata(string section)
+        {
+            _fallbackMetadata.ClearMetadata(section);
+        }
+
+        public void ClearNativeMetadata(string section, string key)
+        {
+            _fallbackMetadata.ClearMetadata(section, key);
+        }
+
+        public void AddNativeMetadata(string section, IDictionary<string, object> data)
+        {
+            _fallbackMetadata.AddMetadata(section, data);
+        }
+
+        public IDictionary<string, object> GetNativeMetadata()
+        {
+            return _fallbackMetadata.Payload;
+        }
     }
 }

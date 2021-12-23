@@ -57,27 +57,7 @@ namespace BugsnagUnity
             {
                 user.Payload.AddToPayload(entry.Key, entry.Value.ToString());
             }
-        }
-
-        public void SetMetadata(string section, Dictionary<string, object> metadata)
-        {
-            if (metadata != null)
-            {
-                foreach (var item in metadata)
-                {
-                    NativeInterface.AddToTab(section, item.Key, item.Value.ToString());
-                }
-            }
-            else
-            {
-                NativeInterface.RemoveMetadata(section);
-            }
-        }
-
-        public void PopulateMetadata(Metadata metadata)
-        {
-            metadata.MergeMetadata(NativeInterface.GetMetadata());
-        }
+        }       
 
         private void MergeDictionaries(IDictionary<string, object> dest, IDictionary<string, object> another)
         {
@@ -132,6 +112,28 @@ namespace BugsnagUnity
             return NativeInterface.GetlastRunInfo();
         }
 
+        public void ClearNativeMetadata(string section)
+        {
+            NativeInterface.ClearMetadata(section);
+        }
+
+        public void ClearNativeMetadata(string section, string key)
+        {
+            NativeInterface.ClearMetadata(section,key);
+        }
+
+        public IDictionary<string, object> GetNativeMetadata()
+        {
+            return NativeInterface.GetMetadata();
+        }
+
+        public void AddNativeMetadata(string section, IDictionary<string, object> data)
+        {
+            foreach (var pair in data)
+            {
+                NativeInterface.AddMetadata(section,pair.Key,pair.Value.ToString());
+            }
+        }
     }
 
 }

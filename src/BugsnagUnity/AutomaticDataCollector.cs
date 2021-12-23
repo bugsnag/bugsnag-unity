@@ -14,7 +14,7 @@ namespace BugsnagUnity
             var appMetadata = new Dictionary<string, object>();
             appMetadata.Add("companyName", Application.companyName);
             appMetadata.Add("name", Application.productName);
-            nativeClient.SetMetadata("app",appMetadata);
+            nativeClient.AddNativeMetadata("app",appMetadata);
 
             //data added to metadata.device
             var deviceMetadata = new Dictionary<string, object>();
@@ -30,7 +30,7 @@ namespace BugsnagUnity
                 deviceMetadata.Add("processorType", processorType);
             }
             deviceMetadata.Add("osLanguage", Application.systemLanguage.ToString());
-            nativeClient.SetMetadata("device", deviceMetadata);
+            nativeClient.AddNativeMetadata("device", deviceMetadata);
         }
 
         internal static void AddStatefulDeviceData(Metadata metadata)

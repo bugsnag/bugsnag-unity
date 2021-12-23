@@ -20,7 +20,6 @@ namespace BugsnagUnity
 
         private Metadata _fallbackMetadata = new Metadata();
 
-
         public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
@@ -82,7 +81,6 @@ namespace BugsnagUnity
 
         public void PopulateMetadata(Metadata metadata)
         {
-            metadata.MergeMetadata(_fallbackMetadata.Payload);
         }
 
         public void PopulateUser(User user)
@@ -91,7 +89,6 @@ namespace BugsnagUnity
 
         public void SetMetadata(string section, Dictionary<string, object> metadata)
         {
-            _fallbackMetadata.AddMetadata(section, metadata);
         }
 
         public void SetSession(Session session)
@@ -171,6 +168,26 @@ namespace BugsnagUnity
         public LastRunInfo GetLastRunInfo()
         {
             return null;
+        }
+
+        public void ClearNativeMetadata(string section)
+        {
+            _fallbackMetadata.ClearMetadata(section);
+        }
+
+        public void ClearNativeMetadata(string section, string key)
+        {
+            _fallbackMetadata.ClearMetadata(section, key);
+        }
+
+        public void AddNativeMetadata(string section, IDictionary<string, object> data)
+        {
+            _fallbackMetadata.AddMetadata(section, data);
+        }
+
+        public IDictionary<string, object> GetNativeMetadata()
+        {
+            return _fallbackMetadata.Payload;
         }
     }
 }

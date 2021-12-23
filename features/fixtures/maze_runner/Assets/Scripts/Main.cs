@@ -36,7 +36,6 @@ public class Main : MonoBehaviour
         ParseUrlParameters();
  
 #endif
-
         var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);
         Invoke("CloseApplication", _closeTime);
@@ -46,6 +45,11 @@ public class Main : MonoBehaviour
         Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
             {"foo", "bar" },
         });
+
+        Bugsnag.AddMetadata("test","test1","test1");
+
+        Bugsnag.AddMetadata("test", "test2", "test2");
+
         Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
             {"letter", "QX" },
             {"better", 400 },
@@ -53,12 +57,17 @@ public class Main : MonoBehaviour
             {"int-array", new int []{1,2,3} },
             {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }  
         });
+
         Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
             {"buildno", "0.1" },
             {"cache", null },
         });
+
         // Remove a tab
         Bugsnag.ClearMetadata("init");
+
+        // Remove a value
+        Bugsnag.ClearMetadata("test","test2");
 
         // trigger the crash
         RunScenario(scenario);

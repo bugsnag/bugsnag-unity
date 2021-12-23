@@ -249,7 +249,11 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern string bugsnag_getEventMetaData(IntPtr @event, string section);
 
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearMetadata(string section);
 
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearMetadataWithKey(string section, string key);
     }
 }
 
