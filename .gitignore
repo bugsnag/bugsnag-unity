@@ -31,3 +31,7 @@ features/**/*.zip
 **/maze_runner/Mazerunner.log
 **/maze_output
 PackageBranch
+example/Assets/Bugsnag
+example/Logs
+example/UserSettings
+example/Assets/Resources
