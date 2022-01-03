@@ -133,10 +133,7 @@ namespace BugsnagUnity
             {
                 enabledTypes.Add(BreadcrumbType.Error);
             }
-            if (EnabledBreadcrumbTypes.Manual)
-            {
-                enabledTypes.Add(BreadcrumbType.Manual);
-            }
+            enabledTypes.Add(BreadcrumbType.Manual);
             return enabledTypes.ToArray();
         }
 
@@ -145,7 +142,6 @@ namespace BugsnagUnity
         {
             public bool Error = true;
             public bool Log = true;
-            public bool Manual = true;
             public bool Navigation = true;
             public bool Process = true;
             public bool Request = true;

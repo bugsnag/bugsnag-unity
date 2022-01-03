@@ -95,7 +95,7 @@ namespace BugsnagUnity.Editor
             _showAppInformation = EditorGUILayout.Foldout(_showAppInformation, "App Information", true);
             if (_showAppInformation)
             {
-                DrawAppInfo(so);
+                DrawAppInfo(so, settings);
             }
 
             GUILayout.Space(5);
@@ -132,20 +132,14 @@ namespace BugsnagUnity.Editor
             EditorGUI.indentLevel--;
         }
 
-        private void DrawAppInfo(SerializedObject so)
+        private void DrawAppInfo(SerializedObject so, BugsnagSettingsObject settings)
         {
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(so.FindProperty("AppType"));
             EditorGUILayout.PropertyField(so.FindProperty("AppVersion"));
             EditorGUILayout.PropertyField(so.FindProperty("ReleaseStage"));
-            EditorGUILayout.LabelField("Android Only");
-            EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(so.FindProperty("VersionCode"));
-            EditorGUI.indentLevel--;
-            EditorGUILayout.LabelField("Cocoa Only");
-            EditorGUI.indentLevel++;
-            EditorGUILayout.PropertyField(so.FindProperty("BundleVersion"));
-            EditorGUI.indentLevel--;
+            settings.VersionCode = EditorGUILayout.IntField(new GUIContent("Version Code", "Android devices only"), settings.VersionCode);
+            settings.BundleVersion = EditorGUILayout.TextField(new GUIContent("Bundle Version", "Apple devices only"), settings.BundleVersion);
             EditorGUI.indentLevel--;
         }
 
@@ -192,11 +186,11 @@ namespace BugsnagUnity.Editor
             if (_showEnabledErrorTypes)
             {
                 EditorGUI.indentLevel += 2;
-                settings.EnabledErrorTypes.ANRs = EditorGUILayout.Toggle("ANRs (Android)", settings.EnabledErrorTypes.ANRs);
-                settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle("App Hangs (iOS/macOS)", settings.EnabledErrorTypes.AppHangs);
+                settings.EnabledErrorTypes.ANRs = EditorGUILayout.Toggle(new GUIContent("ANRs", "Android devices only"), settings.EnabledErrorTypes.ANRs);
+                settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle(new GUIContent("App Hangs", "Apple devices only"), settings.EnabledErrorTypes.AppHangs);
                 settings.EnabledErrorTypes.Crashes = EditorGUILayout.Toggle("Crashes", settings.EnabledErrorTypes.Crashes);
-                settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle("OOMs (iOS/macOS)", settings.EnabledErrorTypes.OOMs);
-                settings.EnabledErrorTypes.ThermalKills = EditorGUILayout.Toggle("Thermal Kills (iOS/macOS)", settings.EnabledErrorTypes.ThermalKills);
+                settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle(new GUIContent("OOMs", "Apple devices only"), settings.EnabledErrorTypes.OOMs);
+                settings.EnabledErrorTypes.ThermalKills = EditorGUILayout.Toggle(new GUIContent("Thermal Kills", "Apple devices only"), settings.EnabledErrorTypes.ThermalKills);
                 settings.EnabledErrorTypes.UnityLog = EditorGUILayout.Toggle("Unity Logs", settings.EnabledErrorTypes.UnityLog);
                 EditorGUI.indentLevel -= 2;
             }
