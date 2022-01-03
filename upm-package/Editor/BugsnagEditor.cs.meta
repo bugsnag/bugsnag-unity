@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 935253df38ee5445abc731056be30899
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_PersistentViewDataDictionary: {instanceID: 0}
+  - DarkIcon: {fileID: 2800000, guid: 2785e0366c7a34c068497d1bb94c6cb2, type: 3}
+  - LightIcon: {fileID: 2800000, guid: 7ee8345965a96421e8a7b46a262d3567, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
