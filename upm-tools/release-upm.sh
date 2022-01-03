@@ -1,7 +1,7 @@
 #!/bin/bash
 
 GIT_DEPLOY=false
-PACKAGE_FILE=Bugsnag.unitypackage
+PACKAGE_FILE=../Bugsnag.unitypackage
 DEFAULT_CLI_ARGS="-quit -batchmode -nographics -logFile unity.log"
 PROJECT_PATH=`pwd`/UPMImportProject
 SCRIPT_PATH=`pwd`
@@ -25,11 +25,24 @@ else
     echo "Will not deploy to github, pass deploy as the second argument to deploy"
 fi
 
+
+#Build the plugin
+echo "Building the sdk"
+
+cd ..
+
+#rake plugin:export
+
+cd upm-tools
+
+
 # make sure the package of the release is present
 if [ ! -f "$PACKAGE_FILE" ]; then
-    echo "$PACKAGE_FILE not found, please place the package you wish to release in this directory."
+    echo "$PACKAGE_FILE not found, please check for build errors."
     exit 1
 fi
+
+echo "SDK package found"
 
 #check for the unity path
 if [ -z "$UNITY_PATH" ]
@@ -45,7 +58,10 @@ echo "Importing Bugsnag.unitypackage into the import project"
 $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
                   -projectPath $PROJECT_PATH \
                   -ignoreCompilerErrors \
-                  -importPackage $SCRIPT_PATH/Bugsnag.unitypackage
+                  -importPackage $SCRIPT_PATH/../Bugsnag.unitypackage
+
+
+exit 0
 
 # Shallow clone the UPM release branch
 echo "Cloning the UPM release Branch"
