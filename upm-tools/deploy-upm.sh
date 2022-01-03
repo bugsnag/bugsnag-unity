@@ -12,8 +12,8 @@ fi
 VERSION=$1
 
 echo "Deploying to github with the tag upm-$VERSION"
-#git add $PACKAGE_DIR
-#git commit -m "upm release v$VERSION"
-#git push
+git add $PACKAGE_DIR
+git commit -m "upm release v$VERSION"
+git push
 git tag "upm-$VERSION"
 git push origin "upm-$VERSION"
