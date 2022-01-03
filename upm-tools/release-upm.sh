@@ -16,15 +16,6 @@ fi
 
 VERSION=$1
 
-# check if we should deploy to github
-if [  "$2" = "deploy" ] 
-then
-  echo "Will deploy to github"
-  GIT_DEPLOY=true
-else
-    echo "Will not deploy to github, pass deploy as the second argument to deploy"
-fi
-
 #check for the unity path
 if [ -z "$UNITY_PATH" ]
 then
@@ -32,13 +23,12 @@ then
   exit 1
 fi
 
-
 #Build the plugin
 echo "Building the sdk"
 
 cd ..
 
-#rake plugin:export
+rake plugin:export
 
 cd upm-tools
 
