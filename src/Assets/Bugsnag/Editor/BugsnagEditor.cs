@@ -149,7 +149,7 @@ namespace BugsnagUnity.Editor
             EditorGUI.indentLevel++;
             var originalWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 270;
-            var appHangThresholdMillisValue = EditorGUILayout.LongField("App Hang Threshold Millis (iOS/macOS)", (long)settings.AppHangThresholdMillis);
+            var appHangThresholdMillisValue = EditorGUILayout.LongField(new GUIContent("App Hang Threshold Millis", "Apple devices only"), (long)settings.AppHangThresholdMillis);
             if (appHangThresholdMillisValue >= 0)
             {
                 settings.AppHangThresholdMillis = (ulong)appHangThresholdMillisValue;
