@@ -104,7 +104,7 @@ bundle exec maze-runner features/handled_errors.feature
 - [ ] Have the installation instructions been updated on the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
 
 
-#### Making the release
+#### Making the package release
 
 1. Make sure any changes made since last release in `master` are merged into `next`.
 
@@ -114,20 +114,34 @@ bundle exec maze-runner features/handled_errors.feature
 
     ```
     git add CHANGELOG.md build.cake
-    git commit -m "Release v5.x.x"
+    git commit -m "Release v6.x.x"
     ```
 4. Make a pull request to merge the changes into `master`
 
 5. Once merged, tag the new release version, pushing the tag to GitHub:
 
    ```
-   git tag v5.x.x
-   git push origin v5.x.x
+   git tag v6.x.x
+   git push origin v6.x.x
    ```
 
 6. Wait. The CI build will build the new package and create a draft release.
 
 7. Verify that the release looks good, upload the unity packages to the release, copy in the changelog entry into the release notes and publish the draft.
+
+#### Making the UPM release
+
+Once the UnityPackage release is confirmed a UPM release should be deployed
+
+1. checkout the branch `master` and make sure it's up to date locally
+
+2. checkout the branch `upm-latest` and make sure it's up to date locally
+
+3. merge the latest `master` into `upm-latest` 
+
+4. Build the upm package by running the `build-upm-package.sh` script in the upm-tools directory. You should pass the version number of the release like so `./build-upm-package.sh 6.x.x`. You must run the script from within the upm-tools folder.
+5. Test that the built package installs by using the install local package option in unity package manager.
+6. Deploy the package with the `deploy-upm.sh` script passing the release version like so `./deploy-upm.sh 6.x.x`. This will commit the package and tag the upm release
 
 #### Post-release
 
