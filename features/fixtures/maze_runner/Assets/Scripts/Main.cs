@@ -156,6 +156,14 @@ public class Main : MonoBehaviour
                 config.LaunchDurationMillis = 0;
                 _closeTime = 8;
                 break;
+            case "LongLaunchDuration":
+                config.LaunchDurationMillis = 10000;
+                _closeTime = 12;
+                break;
+            case "ShortLaunchDuration":
+                config.LaunchDurationMillis = 1000;
+                _closeTime = 10;
+                break;
             case "DisabledReleaseStage":
                 config.EnabledReleaseStages = new string[] { "test" };
                 config.ReleaseStage = "somevalue";
@@ -345,12 +353,16 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "LongLaunchDuration":
+            case "ShortLaunchDuration":
+                Invoke("LaunchException", 6);
+                break;
             case "InfLaunchDurationMark":
                 Bugsnag.MarkLaunchCompleted();
                 throw new Exception("InfLaunchDurationMark");
                 break;
             case "InfLaunchDuration":
-                Invoke("InfLaunchException",6);
+                Invoke("LaunchException",6);
                 break;
             case "EventCallbacks":
                 DoNotify();
@@ -719,9 +731,9 @@ public class Main : MonoBehaviour
         Debug.LogException(new System.Exception("auth failed!"));
     }
 
-    void InfLaunchException()
+    void LaunchException()
     {
-        throw new Exception("InfLaunch");
+        throw new Exception("Launch");
     }
 
     void DoUnhandledException(long counter)

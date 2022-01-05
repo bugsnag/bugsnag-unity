@@ -176,7 +176,7 @@ Feature: Reporting unhandled events
         When I run the game in the "InfLaunchDuration" state
         And I wait to receive an error
         Then the error is valid for the error reporting API sent by the Unity notifier
-        And the exception "message" equals "InfLaunch"
+        And the exception "message" equals "Launch"
        
         #app metadata
         And the event "app.isLaunching" is true
@@ -196,7 +196,7 @@ Feature: Reporting unhandled events
         When I run the game in the "InfLaunchDuration" state
         And I wait to receive an error
         Then the error is valid for the error reporting API sent by the Unity notifier
-        And the exception "message" equals "InfLaunch"
+        And the exception "message" equals "Launch"
        
         #app metadata
         And the event "app.isLaunching" equals "true"
@@ -210,4 +210,44 @@ Feature: Reporting unhandled events
        
         #app metadata
         And the event "app.isLaunching" equals "false"
+
+    @macos_only
+    Scenario: Setting long launch time
+        When I run the game in the "LongLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" equals "true"
+
+    @macos_only
+    Scenario: Setting long launch time
+        When I run the game in the "ShortLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" equals "false"
+
+    @windows_only
+    Scenario: Setting long launch time
+        When I run the game in the "LongLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" is true
+
+    @windows_only
+    Scenario: Setting long launch time
+        When I run the game in the "ShortLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" is false
 
