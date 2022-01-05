@@ -35,3 +35,7 @@ example/Assets/Bugsnag
 example/Logs
 example/UserSettings
 example/Assets/Resources
+upm-tools/UPMImportProject/Library
+upm-tools/UPMImportProject/Assets/Bugsnag
+Bugsnag.meta
+unity/PackageProject/Assets/Bugsnag
