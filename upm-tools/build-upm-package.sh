@@ -50,17 +50,24 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
                   -ignoreCompilerErrors \
                   -importPackage $SCRIPT_PATH/../Bugsnag.unitypackage
 
+echo "Creating the package directory"
+
+mkdir -p @PACKAGE_DIR
+
 echo "Copying over the unpacked sdk files"
 cp -r UPMImportProject/Assets/Bugsnag/. $PACKAGE_DIR
 
-echo "Copying over the package manifest"
+echo "Copying over the package manifest and readme"
 
 cp package.json $PACKAGE_DIR
 cp package.json.meta $PACKAGE_DIR
-
+cp README.md $PACKAGE_DIR
+cp README.md.meta $PACKAGE_DIR
 # Set the specified version in the manifest
 
-echo "Setting the version $VERSION in the copied manifest"
+echo "Setting the version $VERSION in the copied manifest and readme"
 sed -i '' "s/VERSION_STRING/$VERSION/g" "$PACKAGE_DIR/package.json"
+sed -i '' "s/VERSION_STRING/$VERSION/g" "$PACKAGE_DIR/README.md"
+
 
 echo "complete, ready to deploy"
