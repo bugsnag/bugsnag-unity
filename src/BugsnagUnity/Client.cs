@@ -46,7 +46,6 @@ namespace BugsnagUnity
 
         private static object autoSessionLock = new object();
 
-        private static bool _contextSetManually;
 
         public Client(INativeClient nativeClient)
         {
@@ -57,7 +56,7 @@ namespace BugsnagUnity
             InitUserObject();
             InitMetadata();
             InitCounters();
-            SetupSceneLoadedBreadcrumbTracking();
+            ListenForSceneLoad();
             InitLogHandlers();       
             InitTimingTracker();
             InitInitialSessionCheck();          
@@ -165,17 +164,16 @@ namespace BugsnagUnity
             return false;
         }
 
-        private void SetupSceneLoadedBreadcrumbTracking()
+        private void ListenForSceneLoad()
         {
-            if (!string.IsNullOrEmpty(NativeClient.Configuration.Context))
-            {
-                _contextSetManually = true;
-            }
-            if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Navigation))
-            {
-                SceneManager.sceneLoaded += SceneLoaded;
-            }
-        }
+            SceneManager.sceneLoaded += (Scene scene, LoadSceneMode loadSceneMode) => {
+                if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Navigation))
+                {
+                    Breadcrumbs.Leave("Scene Loaded", new Dictionary<string, object> { { "sceneName", scene.name } }, BreadcrumbType.Navigation);
+                }
+                _storedMetadata.AddMetadata("app", "lastLoadedUnityScene",scene.name);
+            };
+        }       
 
         public void Send(IPayload payload)
         {
@@ -184,16 +182,6 @@ namespace BugsnagUnity
                 return;
             }
             Delivery.Send(payload);
-        }
-
-        void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
-        {
-            if (!_contextSetManually)
-            {
-                Configuration.Context = scene.name;
-                NativeClient.SetContext(scene.name);
-            }
-            Breadcrumbs.Leave("Scene Loaded", new Dictionary<string, object> { { "sceneName", scene.name } }, BreadcrumbType.State );
         }
 
         void MultiThreadedNotify(string condition, string stackTrace, LogType logType)
@@ -523,8 +511,6 @@ namespace BugsnagUnity
 
         public void SetContext(string context)
         {
-            _contextSetManually = true;
-
             // set the context property on Configuration, as it currently holds the global state
             Configuration.Context = context;
 
