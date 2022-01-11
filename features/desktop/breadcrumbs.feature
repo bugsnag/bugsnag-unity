@@ -61,6 +61,18 @@ Feature: Leaving breadcrumbs to attach to reports
         Then the error is valid for the error reporting API sent by the Unity notifier
         And the event "breadcrumbs.0.type" equals "log"
 
+    Scenario: Disable Error Breadcrumbs
+        When I run the game in the "DisableErrorBreadcrumbs" state
+        And I wait to receive 2 errors
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "1"
+        And I discard the oldest error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "2"
+        And the event "breadcrumbs.0.name" equals "1"
+        And the event "breadcrumbs.1.name" equals "2"
+        And the event "breadcrumbs.2" is null
+
     Scenario: Setting max breadcrumbs
         When I run the game in the "MaxBreadcrumbs" state
         And I wait to receive an error
