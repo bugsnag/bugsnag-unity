@@ -142,7 +142,7 @@ Once the UnityPackage release is confirmed a UPM release should be deployed
 4. Clone the `bugsnag-unity-upm` repo and make sure you are in the `main` branch.
 
 5. Replace the contents of the repo with the contents of the `upm-package` directory in the `bugsnag-unity` repo
-6. Commit these changes to main with the message `Bugsnag Unity UPM release V6.x.x`
+6. Commit these changes to main with the message `Release V6.x.x`
 7. Tag the release and push the tag
   ```
    git tag v6.x.x
