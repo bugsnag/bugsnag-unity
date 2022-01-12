@@ -151,6 +151,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "DisableErrorBreadcrumbs":
+                config.EnabledBreadcrumbTypes = new BreadcrumbType[] { BreadcrumbType.Log };
+                break;
             case "InfLaunchDurationMark":
             case "InfLaunchDuration":
                 config.LaunchDurationMillis = 0;
@@ -548,6 +551,9 @@ public class Main : MonoBehaviour
                 break;
             case "AutoSession":
                 break;
+            case "DisableErrorBreadcrumbs":
+                DisableErrorBreadcrumbs();
+                break;
             case "(noop)":
                 break;
             default:
@@ -555,6 +561,16 @@ public class Main : MonoBehaviour
                 break;
         }
     }
+
+
+    private void DisableErrorBreadcrumbs()
+    {
+        Debug.Log("1");
+        Bugsnag.Notify(new Exception("1"));
+        Debug.Log("2");
+        Bugsnag.Notify(new Exception("2"));
+    }
+
 
     private void BackgroundThreadCrash()
     {

@@ -430,9 +430,10 @@ namespace BugsnagUnity
             if (!report.Ignored)
             {
                 Send(report);
-
-                Breadcrumbs.Leave(Breadcrumb.FromReport(report));
-
+                if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
+                {
+                    Breadcrumbs.Leave(Breadcrumb.FromReport(report));
+                }
                 SessionTracking.AddException(report);
             }
         }

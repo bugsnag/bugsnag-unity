@@ -1,8 +1,6 @@
 Bugsnag SDK for Unity
 ===========
 
-# THIS IS AN ALPHA TESTING BRANCH, THIS FEATURE IS NOT READY FOR PRODUCTION!!!
-
 This is the UPM package for the Bugsnag SDK for Unity.
 
 Install it via `UPM`:

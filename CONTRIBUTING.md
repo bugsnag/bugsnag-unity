@@ -133,16 +133,21 @@ bundle exec maze-runner features/handled_errors.feature
 
 Once the UnityPackage release is confirmed a UPM release should be deployed
 
-1. checkout the branch `master` and make sure it's up to date locally
+1. Checkout the release commit on `master`
 
-2. checkout the branch `upm-latest` and make sure it's up to date locally
+2. Build the upm package by running the `build-upm-package.sh` script in the upm-tools directory. You should pass the version number of the release like so `./build-upm-package.sh 6.x.x`. You must run the script from within the upm-tools folder. This will build the upm package in a directory called `upm-package`
 
-3. merge the latest `master` into `upm-latest` 
+3. Test that the built package installs by using the install local package option in unity package manager.
 
-4. Build the upm package by running the `build-upm-package.sh` script in the upm-tools directory. You should pass the version number of the release like so `./build-upm-package.sh 6.x.x`. You must run the script from within the upm-tools folder.
-5. Test that the built package installs by using the install local package option in unity package manager.
-6. Deploy the package with the `deploy-upm.sh` script passing the release version like so `./deploy-upm.sh 6.x.x`. This will commit the package and tag the upm release
+4. Clone the `bugsnag-unity-upm` repo and make sure you are in the `main` branch.
 
+5. Replace the contents of the repo with the contents of the `upm-package` directory in the `bugsnag-unity` repo
+6. Commit these changes to main with the message `Release V6.x.x`
+7. Tag the release and push the tag
+  ```
+   git tag v6.x.x
+   git push origin v6.x.x
+   ```
 #### Post-release
 
 - [ ] Have all Docs PRs been merged?
