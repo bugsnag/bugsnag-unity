@@ -18,7 +18,7 @@ public class Main : MonoBehaviour
 	public static void iOSBuild()
 	{
 			BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
-			buildPlayerOptions.scenes = new[] { "Assets/Main.unity" };
+			buildPlayerOptions.scenes = new[] { "Assets/Scenes/Main.unity" };
 			buildPlayerOptions.locationPathName = "example.ios";
 			buildPlayerOptions.target = BuildTarget.iOS;
 			buildPlayerOptions.options = BuildOptions.None;
@@ -29,7 +29,7 @@ public class Main : MonoBehaviour
 	public static void AndroidBuild()
 	{
 			BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
-			buildPlayerOptions.scenes = new[] { "Assets/Main.unity" };
+			buildPlayerOptions.scenes = new[] { "Assets/Scenes/Main.unity" };
 			buildPlayerOptions.locationPathName = "example.apk";
 			buildPlayerOptions.target = BuildTarget.Android;
 			buildPlayerOptions.options = BuildOptions.None;
