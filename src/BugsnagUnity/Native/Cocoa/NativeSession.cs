@@ -34,7 +34,7 @@ namespace BugsnagUnity
         
         public void SetUser(string id, string email, string name)
         {
-            NativeCode.bugsnag_setUserFromSession(NativePointer, id, name, email);
+            NativeCode.bugsnag_setUserFromSession(NativePointer, id, email, name);
         }
     }
 }

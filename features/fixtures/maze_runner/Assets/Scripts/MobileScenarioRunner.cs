@@ -46,8 +46,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "29", "On Send Native Callback" },
         { "30", "Inf Launch Duration" },
         { "31", "Clear Metadata" },
-
-
+        { "32", "Set User In Config Csharp error" },
+        { "33", "Set User In Config Native Crash" },
         // Commands
         {"90", "Clear iOS Data" },
     };
@@ -130,15 +130,16 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Set User In Config Csharp error":
+            case "Set User In Config Native Crash":
+                config.SetUser("1","2","3");
+                break;
             case "Inf Launch Duration":
                 config.LaunchDurationMillis = 0;
                 break;
             case "On Send Native Callback":
-                config.AddOnSendError((@event) => {
-
-                    
+                config.AddOnSendError((@event) => {                    
                     @event.ApiKey = "Custom ApiKey";
-
                     // AppWithState
                     var app = @event.App;
                     app.BinaryArch = "Custom BinaryArch";
@@ -362,6 +363,7 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+
             case "Clear Metadata":
 
                 Bugsnag.AddMetadata("test","test1","test1");
@@ -397,6 +399,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 NativeException();
 #endif  
                 break;
+            case "Set User In Config Csharp error":
             case "Custom App Type":
                 ThrowException();
                 break;
@@ -426,6 +429,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 SetUser();
                 LogError();
                 break;
+            case "Set User In Config Native Crash":
             case "Java Background Crash No Threads":
             case "Java Background Crash":
                 AddMetadataForRedaction();

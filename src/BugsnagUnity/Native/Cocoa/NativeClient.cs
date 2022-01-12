@@ -49,7 +49,11 @@ namespace BugsnagUnity
             NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
             NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
             NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
-
+            if (config.GetUser() != null)
+            {
+                var user = config.GetUser();
+                NativeCode.bugsnag_setUserInConfig(obj, user.Id, user.Email, user.Name);
+            }
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
                 NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
@@ -278,7 +282,7 @@ namespace BugsnagUnity
 
         public void SetUser(User user)
         {
-            NativeCode.bugsnag_setUser(user.Id, user.Name, user.Email);
+            NativeCode.bugsnag_setUser(user.Id, user.Email, user.Name);
         }
 
         public void SetContext(string context)

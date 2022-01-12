@@ -129,9 +129,9 @@ namespace BugsnagUnity.Payload
 
         public IUser GetUser() => _user;
 
-        public void SetUser(string id, string name, string email)
+        public void SetUser(string id, string email, string name)
         {
-            _user = new User(id, name, email );
+            _user = new User(id, email, name );
         }
 
         internal bool IsAndroidJavaError()
