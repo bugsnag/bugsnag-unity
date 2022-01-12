@@ -93,6 +93,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setDiscardClasses(IntPtr configuration, string[] classNames, int count);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setUserInConfig(IntPtr configuration, string id, string email, string name);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setRedactedKeys(IntPtr configuration, string[] redactedKeys, int count);
 
         [DllImport(Import)]
@@ -127,7 +130,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_retrieveBreadcrumbs(IntPtr instance, BreadcrumbInformation visitor);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setUser(string id, string name, string email);
+        internal static extern void bugsnag_setUser(string id, string email, string name);
 
         [DllImport(Import)]
         internal static extern void bugsnag_startSession();
@@ -226,13 +229,13 @@ namespace BugsnagUnity
         internal static extern IntPtr bugsnag_getUserFromEvent(IntPtr @event);
 
         [DllImport(Import)]
-        internal static extern IntPtr bugsnag_setUserFromEvent(IntPtr @event, string userId, string userName, string userEmail);
+        internal static extern IntPtr bugsnag_setUserFromEvent(IntPtr @event, string userId, string userEmail, string userName);
 
         [DllImport(Import)]
         internal static extern IntPtr bugsnag_getUserFromSession(IntPtr session);
 
         [DllImport(Import)]
-        internal static extern IntPtr bugsnag_setUserFromSession(IntPtr session, string userId, string userName, string userEmail);
+        internal static extern IntPtr bugsnag_setUserFromSession(IntPtr session, string userId, string userEmail, string userName);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setEventMetadata(IntPtr @event, string tab, string metadataJson);

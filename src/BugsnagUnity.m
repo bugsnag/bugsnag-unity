@@ -96,7 +96,7 @@ BugsnagUser * bugsnag_getUserFromSession(const void *session){
     return ((__bridge BugsnagSession *)session).user;
 }
 
-void bugsnag_setUserFromSession(const void *session, char *userId, char *userName, char *userEmail){
+void bugsnag_setUserFromSession(const void *session, char *userId, char *userEmail, char *userName){
     [((__bridge BugsnagSession *)session) setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
             withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
              andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
@@ -106,7 +106,7 @@ BugsnagUser * bugsnag_getUserFromEvent(const void *event){
     return ((__bridge BugsnagEvent *)event).user;
 }
 
-void bugsnag_setUserFromEvent(const void *event, char *userId, char *userName, char *userEmail){
+void bugsnag_setUserFromEvent(const void *event, char *userId, char *userEmail, char *userName){
     [((__bridge BugsnagEvent *)event) setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
             withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
              andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
@@ -565,6 +565,13 @@ void bugsnag_setDiscardClasses(const void *configuration, const char *classNames
   ((__bridge BugsnagConfiguration *)configuration).discardClasses = getSetFromStringArray(classNames, count);
 }
 
+void bugsnag_setUserInConfig(const void *configuration, char *userId, char *userEmail, char *userName)
+{
+    [((__bridge BugsnagConfiguration *)configuration) setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
+            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
+}
+
 void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count){
   ((__bridge BugsnagConfiguration *)configuration).redactedKeys = getSetFromStringArray(redactedKeys, count);
 }
@@ -721,7 +728,7 @@ void bugsnag_populateUser(struct bugsnag_user *user) {
   user->user_id = [sysInfo[@BSG_KSSystemField_DeviceAppHash] UTF8String];
 }
 
-void bugsnag_setUser(char *userId, char *userName, char *userEmail) {
+void bugsnag_setUser(char *userId, char *userEmail, char *userName) {
     [Bugsnag setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
             withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
              andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];

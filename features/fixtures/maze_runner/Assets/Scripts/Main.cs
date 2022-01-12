@@ -241,6 +241,10 @@ public class Main : MonoBehaviour
             case "UncaughtExceptionAsUnhandled":
                 config.ReportExceptionLogsAsHandled = false;
                 break;
+            case "SetUserInConfigNativeCrash":
+            case "SetUserInConfigCsharpError":
+                config.SetUser("1","2","3");
+                break;
             case "LogUnthrownAsUnhandled":
                 config.ReportExceptionLogsAsHandled = false;
                 break;
@@ -356,6 +360,14 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "SetUserAfterInitCsharpError":
+                Bugsnag.SetUser("1","2","3");
+                Bugsnag.Notify(new Exception("SetUserAfterInitCsharpError"));
+                break;
+            case "SetUserAfterInitNativeError":
+                Bugsnag.SetUser("1", "2", "3");
+                crashy_signal_runner(8);
+                break;
             case "LongLaunchDuration":
             case "ShortLaunchDuration":
                 Invoke("LaunchException", 6);
@@ -453,6 +465,7 @@ public class Main : MonoBehaviour
             case "LogUnthrown":
                 DoLogUnthrown();
                 break;
+            case "SetUserInConfigCsharpError":
             case "UncaughtException":
                 DoUnhandledException(0);
                 break;
@@ -515,6 +528,7 @@ public class Main : MonoBehaviour
             case "NewSession":
                 RunNewSession();
                 break;
+            case "SetUserInConfigNativeCrash":
             case "NativeCrash":
                 crashy_signal_runner(8);
                 break;

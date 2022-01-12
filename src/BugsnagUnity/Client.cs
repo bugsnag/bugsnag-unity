@@ -114,13 +114,17 @@ namespace BugsnagUnity
         {
             if (Configuration.GetUser() != null)
             {
+                // if a user is supplied in the config then use that
                 _cachedUser = Configuration.GetUser();
             }
             else
             {
+                // otherwise create one
                 _cachedUser = new User { Id = SystemInfo.deviceUniqueIdentifier };
+                // see if a native user is avaliable
+                NativeClient.PopulateUser(_cachedUser);
             }
-            NativeClient.PopulateUser(_cachedUser);
+            // listen for changes and pass the data to the native layer
             _cachedUser.PropertyChanged.AddListener(() => { NativeClient.SetUser(_cachedUser); });
         }
 
@@ -553,9 +557,9 @@ namespace BugsnagUnity
 
         public void SetUser(string id, string email, string name)
         {
-            _cachedUser = new User(id, name, email);
+            _cachedUser = new User(id, email, name);
+            NativeClient.SetUser(_cachedUser);
         }
-
        
     }
 }

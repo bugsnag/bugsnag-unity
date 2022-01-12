@@ -19,7 +19,7 @@ namespace BugsnagUnity.Payload
 
         }
 
-        public User(string id, string name, string email)
+        public User(string id,  string email, string name)
         {
             Id = id;
             Name = name;

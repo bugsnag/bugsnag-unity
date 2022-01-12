@@ -264,6 +264,12 @@ namespace BugsnagUnity
             obj.Call("setLaunchDurationMillis", config.LaunchDurationMillis);
             obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
 
+            if (config.GetUser() != null)
+            {
+                var user = config.GetUser();
+                obj.Call("setUser", user.Id, user.Email, user.Name);
+            }
+
             //Register for callbacks
             obj.Call("addOnSession", new OnSessionCallback(config));
             obj.Call("addOnSend", new OnSendErrorCallback(config));
