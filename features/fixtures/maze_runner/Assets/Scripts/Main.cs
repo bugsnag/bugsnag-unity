@@ -360,6 +360,14 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "SetUserAfterInitCsharpError":
+                Bugsnag.SetUser("1","2","3");
+                Bugsnag.Notify(new Exception("SetUserAfterInitCsharpError"));
+                break;
+            case "SetUserAfterInitNativeError":
+                Bugsnag.SetUser("1", "2", "3");
+                crashy_signal_runner(8);
+                break;
             case "LongLaunchDuration":
             case "ShortLaunchDuration":
                 Invoke("LaunchException", 6);

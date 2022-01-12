@@ -48,6 +48,11 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "31", "Clear Metadata" },
         { "32", "Set User In Config Csharp error" },
         { "33", "Set User In Config Native Crash" },
+        { "34", "Set User After Init Csharp Error" },
+        { "35", "Set User After Init Native Error" },
+        { "36", "Set User After Init NDK Error" },
+
+
         // Commands
         {"90", "Clear iOS Data" },
     };
@@ -364,6 +369,18 @@ public class MobileScenarioRunner : MonoBehaviour {
         switch (scenarioName)
         {
 
+            case "Set User After Init Csharp Error":
+                Bugsnag.SetUser("1", "2", "3");
+                Bugsnag.Notify(new Exception("SetUserAfterInitCsharpError"));
+                break;
+            case "Set User After Init Native Error":
+                Bugsnag.SetUser("1", "2", "3");
+                MobileNative.TriggerBackgroundJavaCrash();
+                break;
+            case "Set User After Init NDK Error":
+                Bugsnag.SetUser("1", "2", "3");
+                NdkSignal();
+                break;
             case "Clear Metadata":
 
                 Bugsnag.AddMetadata("test","test1","test1");

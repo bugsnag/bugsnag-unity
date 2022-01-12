@@ -558,8 +558,8 @@ namespace BugsnagUnity
         public void SetUser(string id, string email, string name)
         {
             _cachedUser = new User(id, email, name);
+            NativeClient.SetUser(_cachedUser);
         }
-
        
     }
 }

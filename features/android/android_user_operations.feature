@@ -29,3 +29,42 @@ Feature: Android user operations tests
         And the event "user.email" equals "2"
         And the event "user.name" equals "3"
 
+    Scenario: Set User After Init Csharp Error
+        When I run the "Set User After Init Csharp Error" mobile scenario
+        Then I wait to receive an error
+        And the exception "message" equals "SetUserAfterInitCsharpError"
+        # User
+        And the event "user.id" equals "1"
+        And the event "user.email" equals "2"
+        And the event "user.name" equals "3"
+
+    Scenario: Set User After Init Native Error
+        When I run the "Set User After Init Native Error" mobile scenario
+        And I wait for 8 seconds
+        And I relaunch the Unity mobile app
+        When I run the "Start SDK" mobile scenario
+        Then I wait to receive an error
+
+        # Exception details
+        And the exception "errorClass" equals "java.lang.RuntimeException"
+        And the exception "message" equals "Uncaught JVM exception from background thread"
+       
+        # User
+        And the event "user.id" equals "1"
+        And the event "user.email" equals "2"
+        And the event "user.name" equals "3"
+
+    Scenario: Set User After Init NDK Error
+        When I run the "Set User After Init NDK Error" mobile scenario
+        And I wait for 8 seconds
+        And I relaunch the Unity mobile app
+        When I run the "Start SDK" mobile scenario
+        Then I wait to receive an error
+
+        # Exception details
+        And the exception "errorClass" equals "SIGSEGV"
+
+        # User
+        And the event "user.id" equals "1"
+        And the event "user.email" equals "2"
+        And the event "user.name" equals "3"

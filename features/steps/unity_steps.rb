@@ -56,6 +56,11 @@ def dial_number_for(name)
       "Clear Metadata" => 31,
       "Set User In Config Csharp error" => 32,
       "Set User In Config Native Crash" => 33,
+      "Set User After Init Csharp Error" => 34,
+      "Set User After Init Native Error" => 35,
+      "Set User After Init NDK Error" => 36,
+
+
 
 
 
