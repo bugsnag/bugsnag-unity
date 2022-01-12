@@ -2,7 +2,12 @@
 
 ## TBD
 
-* Update bugsnag-android to v5.18.0
+* Update bugsnag-android to v5.19.0
+  * New APIs to support forthcoming feature flag and experiment functionality. For more information, please see https://docs.bugsnag.com/product/features-experiments.
+  * Explicitly define Kotlin api/language versions
+    [bugsnag-android#1564](https://github.com/bugsnag/bugsnag-android/pull/1564)
+  * Build project with Kotlin 1.4, maintain compat with Kotlin 1.3
+    [bugsnag-android#1565](https://github.com/bugsnag/bugsnag-android/pull/1565)
   * Bump compileSdkVersion to apiLevel 31
     [bugsnag-android#1536](https://github.com/bugsnag/bugsnag-android/pull/1536)
   * Flush in-memory sessions first
