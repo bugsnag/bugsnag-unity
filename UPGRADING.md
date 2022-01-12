@@ -62,7 +62,9 @@ An `Bugsnag.AddOnSendError()` allows you to add a C# function that will be execu
 See our [online docs](https://docs.bugsnag.com/platforms/unity/customizing-error-reports/) for further information.
 
 ### Default context
-The `Context` of an event is no longer set by default to the current scene name. If you want to continue having `Context` set to the scene name you should set `Bugsnag.Context = <scene name>;` when it changes. 
+The `Context` of an event is no longer set by default to the last loaded scene name. This will change how errors are displayed on your dashboard and may affect the grouping of errors if you are using the "Group by error context" project setting. If you want to continue having `Context` set to the last loaded scene name you should set `Bugsnag.Context = <scene name>;` on scene loads.
+
+The last loaded scene name is now captured in metadata as `app.lastLoadedUnityScene`. 
 
 ### Bugsnag client API changes
 
