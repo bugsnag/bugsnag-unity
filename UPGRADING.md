@@ -5,17 +5,18 @@ Upgrading
 
 ### Key points
 
-- Bugsnag can now be installed via [Unity Package Manager](https://docs.unity3d.com/Manual/Packages.html) (UPM) as well from the package file published on Github.
+- Bugsnag can now be installed via [Unity Package Manager](https://docs.unity3d.com/Manual/Packages.html) (UPM) as well as from the package file published on GitHub.
 - The file structure of the plugin has changed to keep all Bugsnag files together in a parent directory, so the files from the V5 package must be manually removed.
 - Bugsnag can now start automatically before the first scene is loaded, removing the need for GameObject configuration, which has now been removed.
 - The `BeforeNotify` callback has been replaced with an all-new callback system that offers access to all event types on all platforms for amending and discarding events before they are sent.
-- The client (`Bugsnag`) API have been amended to improve usability and consistency.
+- The client (`Bugsnag`) API has been amended to improve usability and consistency.
+- The `Context` is no longer set to the current scene name by default
 
 More on each of these changes below:
 
 ### Unity Package Manager
 
-You can now install Bugsnag using the [Unity Package Manager](https://docs.unity3d.com/Manual/Packages.html) (UPM) as well from the package file published on Github. See our [online docs](https://docs.bugsnag.com/platforms/unity#installation) for full instructions.
+You can now install Bugsnag using the [Unity Package Manager](https://docs.unity3d.com/Manual/Packages.html) (UPM) as well from the package file published on GitHub. See our [online docs](https://docs.bugsnag.com/platforms/unity#installation) for full instructions.
 
 ### Modified package file structure
 
@@ -59,6 +60,11 @@ An `Bugsnag.AddOnSendError()` allows you to add a C# function that will be execu
 `Bugsnag.AddOnSession()` is also provided to allow modification and discarding of session data. It is triggered soon after the app starts.
 
 See our [online docs](https://docs.bugsnag.com/platforms/unity/customizing-error-reports/) for further information.
+
+### Default context
+The `Context` of an event is no longer set by default to the last loaded scene name. This will change how errors are displayed on your dashboard and may affect the grouping of errors if you are using the "Group by error context" project setting. If you want to continue having `Context` set to the last loaded scene name you should set `Bugsnag.Context = <scene name>;` on scene loads.
+
+The last loaded scene name is now captured in metadata as `app.lastLoadedUnityScene`. 
 
 ### Bugsnag client API changes
 
