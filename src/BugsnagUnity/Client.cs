@@ -351,6 +351,8 @@ namespace BugsnagUnity
 
             AutomaticDataCollector.AddStatefulDeviceData(eventMetadata);
 
+            eventMetadata.AddMetadata("app", "activeUnityScene", SceneManager.GetActiveScene().name);
+
             eventMetadata.MergeMetadata(_storedMetadata.Payload);
 
             var @event = new Payload.Event(
