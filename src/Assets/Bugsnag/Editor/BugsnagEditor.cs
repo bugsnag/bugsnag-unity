@@ -188,7 +188,7 @@ namespace BugsnagUnity.Editor
                 EditorGUI.indentLevel += 2;
                 settings.EnabledErrorTypes.ANRs = EditorGUILayout.Toggle(new GUIContent("ANRs ⓘ", "Android devices only"), settings.EnabledErrorTypes.ANRs);
                 settings.EnabledErrorTypes.AppHangs = EditorGUILayout.Toggle(new GUIContent("App Hangs ⓘ", "Apple devices only"), settings.EnabledErrorTypes.AppHangs);
-                settings.EnabledErrorTypes.Crashes = EditorGUILayout.Toggle("Crashes", settings.EnabledErrorTypes.Crashes);
+                settings.EnabledErrorTypes.Crashes = EditorGUILayout.Toggle(new GUIContent("Crashes ⓘ", "Android and Apple devices only"), settings.EnabledErrorTypes.Crashes);
                 settings.EnabledErrorTypes.OOMs = EditorGUILayout.Toggle(new GUIContent("OOMs ⓘ", "iOS devices only"), settings.EnabledErrorTypes.OOMs);
                 settings.EnabledErrorTypes.ThermalKills = EditorGUILayout.Toggle(new GUIContent("Thermal Kills ⓘ", "iOS devices only"), settings.EnabledErrorTypes.ThermalKills);
                 settings.EnabledErrorTypes.UnityLog = EditorGUILayout.Toggle("Unity Logs", settings.EnabledErrorTypes.UnityLog);
