@@ -11,7 +11,7 @@ namespace BugsnagUnity
         /// <summary>
         /// The native configuration
         /// </summary>
-        IConfiguration Configuration { get; }
+        Configuration Configuration { get; }
 
         /// <summary>
         /// The native breadcrumbs
@@ -30,16 +30,22 @@ namespace BugsnagUnity
         void PopulateApp(App app);
 
         /// <summary>
+        /// Populates the native app information
+        /// </summary>
+        /// <returns></returns>
+        void PopulateAppWithState(AppWithState app);
+
+        /// <summary>
         /// Populates the native device information
         /// </summary>
         /// <returns></returns>
         void PopulateDevice(Device device);
 
         /// <summary>
-        /// Adds the metadata to the native clients metadata
+        /// Populates the native device information
         /// </summary>
-        /// <param name="metadata"></param>
-        void SetMetadata(string tab, Dictionary<string, string> metadata);
+        /// <returns></returns>
+        void PopulateDeviceWithState(DeviceWithState device);
 
         /// <summary>
         /// Send the start session message to a native notifier
@@ -78,28 +84,10 @@ namespace BugsnagUnity
         void PopulateUser(User user);
 
         /// <summary>
-        /// Populates any native metadata.
-        /// </summary>
-        /// <param name="metadata"></param>
-        void PopulateMetadata(Metadata metadata);
-
-        /// <summary>
         /// Mutates the context.
         /// </summary>
         /// <param name="context"></param>
         void SetContext(string context);
-
-        /// <summary>
-        /// Mutates autoNotify.
-        /// </summary>
-        /// <param name="autoNotify"></param>
-        void SetAutoDetectErrors(bool autoDetectErrors);
-
-        /// <summary>
-        /// Enables or disables Anr detection.
-        /// </summary>
-        /// <param name="autoDetectAnrs"></param>
-        void SetAutoDetectAnrs(bool autoDetectAnrs);
 
         /// <summary>
         /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
@@ -110,6 +98,14 @@ namespace BugsnagUnity
         /// Get the last run information from Android and cocoa platforms
         /// </summary>
         LastRunInfo GetLastRunInfo();
+
+        void ClearNativeMetadata(string section);
+
+        void ClearNativeMetadata(string section, string key);
+
+        void AddNativeMetadata(string section, IDictionary<string, object> data);
+
+        IDictionary<string, object> GetNativeMetadata();
 
     }
 }

@@ -1,5 +1,14 @@
 namespace UnityEngine.Events
 {
+
+
+    public class UnityEvent {
+        public void AddListener(UnityAction action) { }
+        public void Invoke() { }
+    }
+
+
+
     public delegate void UnityAction();
     public delegate void UnityAction<T0>(T0 arg0);
     public delegate void UnityAction<T0, T1>(T0 arg0, T1 arg1);

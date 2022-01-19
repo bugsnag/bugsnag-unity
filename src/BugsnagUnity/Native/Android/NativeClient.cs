@@ -6,7 +6,7 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
 
         public IBreadcrumbs Breadcrumbs { get; }
 
@@ -14,7 +14,7 @@ namespace BugsnagUnity
 
         private NativeInterface NativeInterface;
 
-        public NativeClient(IConfiguration configuration)
+        public NativeClient(Configuration configuration)
         {
             NativeInterface = new NativeInterface(configuration);
             Configuration = configuration;
@@ -28,49 +28,38 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            MergeDictionaries(app, NativeInterface.GetApp());
+            app.Add(NativeInterface.GetApp());
+        }
+
+        public void PopulateAppWithState(AppWithState app)
+        {
+            PopulateApp(app);
         }
 
         public void PopulateDevice(Device device)
         {
-            Dictionary<string, object> runtimeVersions = (Dictionary<string, object>)device.Get("runtimeVersions");
-            Dictionary<string, object> deviceData = NativeInterface.GetDevice();
-            Dictionary<string, object> nativeVersions = (Dictionary<string, object>)deviceData.Get("runtimeVersions");
+            Dictionary<string, object> nativeDeviceData = NativeInterface.GetDevice();
+            Dictionary<string, object> nativeVersions = (Dictionary<string, object>)nativeDeviceData.Get("runtimeVersions");
 
-            deviceData.Remove("runtimeVersions"); // don't overwrite the unity version values
-            MergeDictionaries(device, deviceData);
-            MergeDictionaries(runtimeVersions, nativeVersions); // merge the native version values
+            nativeDeviceData.Remove("runtimeVersions"); // don't overwrite the unity version values
+            device.Add(nativeDeviceData);
+            MergeDictionaries(device.RuntimeVersions, nativeVersions); // merge the native version values
+        }
+
+        public void PopulateDeviceWithState(DeviceWithState device)
+        {
+            PopulateDevice(device);
         }
 
         public void PopulateUser(User user)
         {
             foreach (var entry in NativeInterface.GetUser())
             {
-                user.AddToPayload(entry.Key, entry.Value.ToString());
+                user.Payload.AddToPayload(entry.Key, entry.Value.ToString());
             }
-        }
+        }       
 
-        public void SetMetadata(string tab, Dictionary<string, string> metadata)
-        {
-            if (metadata != null)
-            {
-                foreach (var item in metadata)
-                {
-                    NativeInterface.AddToTab(tab, item.Key, item.Value);
-                }
-            }
-            else
-            {
-                NativeInterface.RemoveMetadata(tab);
-            }
-        }
-
-        public void PopulateMetadata(Metadata metadata)
-        {
-            MergeDictionaries(metadata, NativeInterface.GetMetadata());
-        }
-
-        private void MergeDictionaries(Dictionary<string, object> dest, Dictionary<string, object> another)
+        private void MergeDictionaries(IDictionary<string, object> dest, IDictionary<string, object> another)
         {
             foreach (var entry in another)
             {
@@ -86,17 +75,6 @@ namespace BugsnagUnity
         public void SetContext(string context)
         {
             NativeInterface.SetContext(context);
-        }
-
-        public void SetAutoDetectErrors(bool autoDetectErrors)
-        {
-            NativeInterface.SetAutoDetectErrors(autoDetectErrors);
-            NativeInterface.SetAutoDetectAnrs(autoDetectErrors && Configuration.AutoDetectAnrs);
-        }
-
-        public void SetAutoDetectAnrs(bool autoDetectAnrs)
-        {
-            NativeInterface.SetAutoDetectAnrs(autoDetectAnrs);
         }
 
         public void StartSession()
@@ -132,6 +110,29 @@ namespace BugsnagUnity
         public LastRunInfo GetLastRunInfo()
         {
             return NativeInterface.GetlastRunInfo();
+        }
+
+        public void ClearNativeMetadata(string section)
+        {
+            NativeInterface.ClearMetadata(section);
+        }
+
+        public void ClearNativeMetadata(string section, string key)
+        {
+            NativeInterface.ClearMetadata(section,key);
+        }
+
+        public IDictionary<string, object> GetNativeMetadata()
+        {
+            return NativeInterface.GetMetadata();
+        }
+
+        public void AddNativeMetadata(string section, IDictionary<string, object> data)
+        {
+            foreach (var pair in data)
+            {
+                NativeInterface.AddMetadata(section,pair.Key,pair.Value.ToString());
+            }
         }
     }
 

@@ -50,6 +50,11 @@ namespace BugsnagUnity
 
             }
         }
+
+        internal EndpointConfiguration Clone()
+        {
+            return (EndpointConfiguration)MemberwiseClone();
+        }
        
     }
 }

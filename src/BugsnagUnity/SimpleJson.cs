@@ -129,6 +129,26 @@ namespace BugsnagUnity
             _members = new Dictionary<string, object>();
         }
 
+        public Dictionary<string, object> GetDictionary()
+        {
+            var dictionary = new Dictionary<string, object>();
+
+            foreach (var item in _members)
+            {
+                if (item.Value is JsonObject json)
+                {
+                    dictionary.Add(item.Key, json.GetDictionary());
+                }
+                else
+                {
+                    dictionary.Add(item.Key, item.Value);
+                }
+            }
+
+            return dictionary;
+
+        }
+
         /// <summary>
         /// Initializes a new instance of <see cref="JsonObject"/>.
         /// </summary>

@@ -97,9 +97,8 @@ To build any test fixture, from the root of the repository, first build the noti
 ```
 rake plugin:export
 ```
-This will generate the following files:
+This will generate the following file:
 * `Bugsnag.unitypackage`
-* `Bugsnag-with-android-64bit.unitypackage`
 
 #### MacOS
 

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using AOT;
 using BugsnagUnity.Payload;
 
@@ -13,23 +15,14 @@ namespace BugsnagUnity
         }
 
         /// <summary>
-        /// Add a breadcrumb to the collection using Manual type and no metadata.
-        /// </summary>
-        /// <param name="message"></param>
-        public void Leave(string message)
-        {
-            Leave(message, BreadcrumbType.Manual, null);
-        }
-
-        /// <summary>
         /// Add a breadcrumb to the collection with the specified type and metadata
         /// </summary>
         /// <param name="message"></param>
         /// <param name="type"></param>
         /// <param name="metadata"></param>
-        public void Leave(string message, BreadcrumbType type, IDictionary<string, string> metadata)
+        public void Leave(string message, Dictionary<string, object> metadata, BreadcrumbType type)
         {
-            Leave(new Breadcrumb(message, type, metadata));
+            Leave(new Breadcrumb(message, metadata, type));
         }
 
         public void Leave(Breadcrumb breadcrumb)
@@ -38,26 +31,25 @@ namespace BugsnagUnity
             {
                 if (breadcrumb.Metadata != null)
                 {
-                    var index = 0;
-                    var metadata = new string[breadcrumb.Metadata.Count * 2];
-
-                    foreach (var data in breadcrumb.Metadata)
+                    using (var stream = new MemoryStream())
+                    using (var reader = new StreamReader(stream))
+                    using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
                     {
-                        metadata[index] = data.Key;
-                        metadata[index + 1] = data.Value;
-                        index += 2;
-                    }
-
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type, metadata, metadata.Length);
+                        SimpleJson.SerializeObject(breadcrumb.Metadata, writer);
+                        writer.Flush();
+                        stream.Position = 0;
+                        var jsonString = reader.ReadToEnd();
+                        NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), jsonString);
+                    }                    
                 }
                 else
                 {
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Name, breadcrumb.Type, null, 0);
+                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), null);
                 }
             }
         }
 
-        public Breadcrumb[] Retrieve()
+        public List<Breadcrumb> Retrieve()
         {
             var breadcrumbs = new List<Breadcrumb>();
 
@@ -72,23 +64,26 @@ namespace BugsnagUnity
                 handle.Free();
             }
 
-            return breadcrumbs.ToArray();
+            return breadcrumbs;
         }
 
         [MonoPInvokeCallback(typeof(NativeCode.BreadcrumbInformation))]
-        static void PopulateBreadcrumb(IntPtr instance, string name, string timestamp, string type, string[] keys, int keysSize, string[] values, int valuesSize)
+        static void PopulateBreadcrumb(IntPtr instance, string message, string timestamp, string type, string metadataJson)
         {
             var handle = GCHandle.FromIntPtr(instance);
             if (handle.Target is List<Breadcrumb> breadcrumbs)
             {
-                var metadata = new Dictionary<string, string>();
-
-                for (var i = 0; i < keys.Length; i++)
+                if (!string.IsNullOrEmpty(metadataJson))
                 {
-                    metadata.Add(keys[i], values[i]);
+                    var metadata = ((JsonObject)SimpleJson.DeserializeObject(metadataJson)).GetDictionary();
+                    breadcrumbs.Add(new Breadcrumb(message, timestamp, type, metadata));
+                }
+                else
+                {
+                    breadcrumbs.Add(new Breadcrumb(message, timestamp, type, null));
                 }
 
-                breadcrumbs.Add(new Breadcrumb(name, timestamp, type, metadata));
+                
             }
         }
     }

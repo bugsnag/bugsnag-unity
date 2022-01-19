@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
@@ -6,43 +7,28 @@ namespace BugsnagUnity
     class Breadcrumbs : IBreadcrumbs
     {
         readonly object _lock = new object();
-        IConfiguration Configuration { get; }
-        List<Breadcrumb> _breadcrumbs;
+        Configuration Configuration { get; }
+        LinkedList<Breadcrumb> _breadcrumbs;
 
         /// <summary>
         /// Constructs a collection of breadcrumbs
         /// </summary>
         /// <param name="configuration"></param>
-        internal Breadcrumbs(IConfiguration configuration)
+        internal Breadcrumbs(Configuration configuration)
         {
             Configuration = configuration;
-            _breadcrumbs = new List<Breadcrumb>();
-        }
-
-        /// <summary>
-        /// Add a breadcrumb to the collection using Manual type and no metadata.
-        /// </summary>
-        /// <param name="message"></param>
-        public void Leave(string message)
-        {
-            Leave(message, BreadcrumbType.Manual, null);
+            _breadcrumbs = new LinkedList<Breadcrumb>();
         }
 
         /// <summary>
         /// Add a breadcrumb to the collection with the specified type and metadata
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="type"></param>
-        /// <param name="metadata"></param>
-        public void Leave(string message, BreadcrumbType type, IDictionary<string, string> metadata)
+        public void Leave(string message, Dictionary<string, object> metadata,BreadcrumbType type )
         {
-            Leave(new Breadcrumb(message, type, metadata));
+            var breadcrumb = new Breadcrumb(message, metadata, type);
+            Leave(breadcrumb);
         }
 
-        /// <summary>
-        /// Add a pre assembled breadcrumb to the collection.
-        /// </summary>
-        /// <param name="breadcrumb"></param>
         public void Leave(Breadcrumb breadcrumb)
         {
             if (Configuration.MaximumBreadcrumbs == 0)
@@ -54,29 +40,29 @@ namespace BugsnagUnity
             {
                 lock (_lock)
                 {
-                   
-                    if (_breadcrumbs.Count == Configuration.MaximumBreadcrumbs)
+
+                    if (_breadcrumbs.Count >= Configuration.MaximumBreadcrumbs)
                     {
-                        _breadcrumbs.RemoveAt(0);
+                        _breadcrumbs.RemoveFirst();
                     }
 
-                    _breadcrumbs.Add(breadcrumb);
+                    _breadcrumbs.AddLast(breadcrumb);
                 }
             }
         }
-
-       
 
         /// <summary>
         /// Retrieve the collection of breadcrumbs at this point in time.
         /// </summary>
         /// <returns></returns>
-        public Breadcrumb[] Retrieve()
+        public List<Breadcrumb> Retrieve()
         {
             lock (_lock)
             {
-                return _breadcrumbs.ToArray();
+                return _breadcrumbs.ToList();
             }
         }
+
+      
     }
 }

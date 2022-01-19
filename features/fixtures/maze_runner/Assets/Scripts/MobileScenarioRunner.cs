@@ -40,9 +40,17 @@ public class MobileScenarioRunner : MonoBehaviour {
         {"23", "iOS Native Error No Threads" },
         {"24", "Mark Launch Complete" },
         {"25", "Check Last Run Info" },
-
-
-
+        {"26", "Native Event Callback" },
+        {"27", "Ios Signal" },
+        { "28", "Session Callback" },
+        { "29", "On Send Native Callback" },
+        { "30", "Inf Launch Duration" },
+        { "31", "Clear Metadata" },
+        { "32", "Set User In Config Csharp error" },
+        { "33", "Set User In Config Native Crash" },
+        { "34", "Set User After Init Csharp Error" },
+        { "35", "Set User After Init Native Error" },
+        { "36", "Set User After Init NDK Error" },
 
 
         // Commands
@@ -120,13 +128,150 @@ public class MobileScenarioRunner : MonoBehaviour {
         // 5: Trigger the actions for the test
         DoTestAction(scenarioName);
     }
-
+ 
     private Configuration PreapareConfigForScenario(string scenarioName)
     {
         var config = GetDefaultConfig();
 
         switch (scenarioName)
         {
+            case "Set User In Config Csharp error":
+            case "Set User In Config Native Crash":
+                config.SetUser("1","2","3");
+                break;
+            case "Inf Launch Duration":
+                config.LaunchDurationMillis = 0;
+                break;
+            case "On Send Native Callback":
+                config.AddOnSendError((@event) => {                    
+                    @event.ApiKey = "Custom ApiKey";
+                    // AppWithState
+                    var app = @event.App;
+                    app.BinaryArch = "Custom BinaryArch";
+                    app.BuildUuid = "Custom BuildUuid";
+                    app.CodeBundleId = "Custom CodeBundleId";
+                    app.Id = "Custom Id";
+                    app.ReleaseStage = "Custom ReleaseStage";
+                    app.Type = "Custom Type";
+                    app.Version = "Custom Version";
+                    app.VersionCode = 999;
+                    app.Duration = TimeSpan.FromMilliseconds(1000);
+                    app.DurationInForeground = TimeSpan.FromMilliseconds(2000);
+                    app.InForeground = false;
+                    app.IsLaunching = false;
+
+                    @event.Context = "Custom Context";
+
+                    // Device with state
+                    var device = @event.Device;
+                    device.Id = "Custom Device Id";
+                    device.Locale = "Custom Locale";
+                    device.Manufacturer = "Custom Manufacturer";
+                    device.Model = "Custom Model";
+                    device.OsName = "Custom OsName";
+                    device.OsVersion = "Custom OsVersion";
+                    device.TotalMemory = 555;
+                    device.Jailbroken = true;
+                    device.CpuAbi = new string[] { "poo", "baar" };
+                    device.Orientation = "Custom Orientation";
+                    device.Time = new DateTime(1985, 08, 21, 01, 01, 01);
+
+                    // breadcrumbs
+                    foreach (var crumb in @event.Breadcrumbs)
+                    {
+                        crumb.Type = BreadcrumbType.User;
+                        crumb.Message = "Custom Message";
+                        crumb.Metadata = new Dictionary<string, object>() { {"Custom","Metadata"} };
+                    }
+
+                    // Errors
+                    foreach (var error in @event.Errors)
+                    {
+                        error.ErrorClass = "Custom ErrorClass";
+                        error.ErrorMessage = "Custom ErrorMessage";
+                        foreach (var trace in error.Stacktrace)
+                        {
+                            trace.Method = "Custom Method";
+                            trace.File = "Custom File";
+                            trace.InProject = false;
+                            trace.LineNumber = 123123;
+                        }
+                    }
+
+                    @event.GroupingHash = "Custom GroupingHash";
+
+                    @event.Severity = Severity.Info;
+
+                    @event.Unhandled = false;
+
+                    // Threads
+                    foreach (var thread in @event.Threads)
+                    {
+                        thread.Name = "Custom Name";
+                    }
+
+                    var testDict = new Dictionary<string, object>();
+                    testDict.Add("scoop","dewoop");
+                    @event.Device.RuntimeVersions = testDict;
+
+                    @event.SetUser("1","2","3");
+
+                    @event.AddMetadata("test",testDict);
+                    @event.AddMetadata("test2", testDict);
+
+                    @event.ClearMetadata("test2");
+
+                    @event.AddMetadata("test", "scoop", "dewoop");
+
+
+                    return true;
+                });
+                break;
+
+            case "Session Callback":
+                config.AddOnSession((session) => {
+
+                    session.Id = "Custom Id";
+
+                    var newDate = new DateTime(1985, 08, 21, 01, 01, 01);
+                    session.StartedAt = newDate;
+
+                    var device = session.Device;
+                    device.Id = "Custom Device Id";
+                    device.Locale = "Custom Locale";
+                    device.Manufacturer = "Custom Manufacturer";
+                    device.Model = "Custom Model";
+                    device.OsName = "Custom OsName";
+                    device.OsVersion = "Custom OsVersion";
+                    device.TotalMemory = 999;
+                    device.Jailbroken = true;
+
+                    device.CpuAbi = new string[] { "poo", "baar" };
+
+                    var testDict = new Dictionary<string, object>();
+                    for (int i = 0; i < 10; i++)
+                    {
+                        var s = i.ToString();
+                        testDict.Add(s, s);
+                    }
+                    session.Device.RuntimeVersions = testDict;
+
+                    var app = session.App;
+                    app.BinaryArch = "Custom BinaryArch";
+                    app.BuildUuid = "Custom BuildUuid";
+                    app.CodeBundleId = "Custom CodeBundleId";
+                    app.Id = "Custom Id";
+                    app.ReleaseStage = "Custom ReleaseStage";
+                    app.Type = "Custom Type";
+                    app.Version = "Custom Version";
+                    app.VersionCode = 999;
+                    session.SetUser("1","2","3");
+
+                    return true;
+                });
+
+
+                break;
             case "Android Persistence Directory":
                 config.PersistenceDirectory = Application.persistentDataPath + "/myBugsnagCache";
                 break;
@@ -144,15 +289,20 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "iOS Native Error No Threads":
             case "Java Background Crash No Threads":
-                config.SendThreads = ThreadSendPolicy.NEVER;
+                config.SendThreads = ThreadSendPolicy.Never;
                 break;
             case "Start SDK no errors":
+                config.AutoDetectErrors = false;
+                config.EnabledErrorTypes.Crashes = false;
+                config.EnabledErrorTypes.UnityLog = false;
+                config.DiscardClasses = new string[] { "St13runtime_error" };
+                break;
             case "Disable Native Errors":
-                config.EnabledErrorTypes = new ErrorTypes[0];
+                config.EnabledErrorTypes.Crashes = false;
                 config.DiscardClasses = new string[] { "St13runtime_error" };
                 break;
             case "Log error":
-                config.NotifyLevel = LogType.Error;
+                config.NotifyLogLevel = LogType.Error;
                 break;
             case "Disable Breadcrumbs":
                 config.EnabledBreadcrumbTypes = new BreadcrumbType[0];
@@ -164,6 +314,38 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "Custom App Type":
                 config.AppType = "test";
+                break;
+            case "Native Event Callback":
+                config.AddOnSendError((@event) => {
+
+                    @event.App.BinaryArch = "BinaryArch";
+                    @event.App.BundleVersion = "BundleVersion";
+                    @event.App.CodeBundleId = "CodeBundleId";
+                    @event.App.DsymUuid = "DsymUuid";
+                    @event.App.Id = "Id";
+                    @event.App.ReleaseStage = "ReleaseStage";
+                    @event.App.Type = "Type";
+                    @event.App.Version = "Version";
+                    @event.App.InForeground = false;
+                    @event.App.IsLaunching = false;
+
+                    @event.Device.Id = "Id";
+                    @event.Device.Jailbroken = true;
+                    @event.Device.Locale = "Locale";
+                    @event.Device.Manufacturer = "Manufacturer";
+                    @event.Device.Model = "Model";
+                    @event.Device.OsName = "OsName";
+                    @event.Device.OsVersion = "OsVersion";
+                    @event.Device.FreeDisk = 123;
+                    @event.Device.FreeMemory = 123;
+                    @event.Device.Orientation = "Orientation";
+
+                    @event.Errors[0].ErrorClass = "ErrorClass";
+
+                    @event.Errors[0].Stacktrace[0].Method = "Method";
+
+                    return true;
+                });
                 break;
             case "Discard Error Class":
 #if UNITY_IOS
@@ -186,6 +368,36 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+
+            case "Set User After Init Csharp Error":
+                Bugsnag.SetUser("1", "2", "3");
+                Bugsnag.Notify(new Exception("SetUserAfterInitCsharpError"));
+                break;
+            case "Set User After Init Native Error":
+                Bugsnag.SetUser("1", "2", "3");
+                MobileNative.TriggerBackgroundJavaCrash();
+                break;
+            case "Set User After Init NDK Error":
+                Bugsnag.SetUser("1", "2", "3");
+                NdkSignal();
+                break;
+            case "Clear Metadata":
+
+                Bugsnag.AddMetadata("test","test1","test1");
+                Bugsnag.AddMetadata("test", "test2", "test2");
+                Bugsnag.ClearMetadata("test","test2");
+                Bugsnag.AddMetadata("test3", "test3", "test3");
+                Bugsnag.AddMetadata("test4", "test4", "test4");
+                Bugsnag.ClearMetadata("test4");
+                ThrowException();
+
+                break;
+            case "Inf Launch Duration":
+                Invoke("ThrowException",6);
+                break;
+            case "Ios Signal":
+                MobileNative.DoIosSignal();
+                break;
             case "Check Last Run Info":
                 CheckLastRunInfo();
                 break;
@@ -204,17 +416,22 @@ public class MobileScenarioRunner : MonoBehaviour {
                 NativeException();
 #endif  
                 break;
+            case "Set User In Config Csharp error":
             case "Custom App Type":
                 ThrowException();
                 break;
+            case "Session Callback":
             case "Start SDK":
             case "Start SDK no errors":
+            case "Native Event Callback":
                 break;
             case "iOS Native Error":
             case "iOS Native Error No Threads":
             case "Discard Error Class":
-            case "Disable Native Errors":
                 NativeException();
+                break;
+            case "Disable Native Errors":
+                MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "throw Exception":
                 ThrowException();
@@ -229,6 +446,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 SetUser();
                 LogError();
                 break;
+            case "Set User In Config Native Crash":
             case "Java Background Crash No Threads":
             case "Java Background Crash":
                 AddMetadataForRedaction();
@@ -285,7 +503,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     private void AddMetadataForRedaction()
     {
-        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+        Bugsnag.AddMetadata("User", new Dictionary<string, object>() {
                     {"test","test" },
                     { "password","password" }
                 });
@@ -355,76 +573,55 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void NotifyWithCallback()
     {
-        Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), report =>
+        Bugsnag.Notify(new ExecutionEngineException("This one has a callback"), @event =>
         {
-            report.Context = "Callback Context";
-            report.Metadata.Add("Callback", new Dictionary<string, string>()
+            @event.Context = "Callback Context";
+            @event.AddMetadata("Callback", new Dictionary<string, object>()
             {
                 {"region", "US"}
             });
+            return true;
         });
     }
 
     public void SetUser()
     {
-        Bugsnag.User.Id = "mcpacman";
-        Bugsnag.User.Name = "Geordi McPacman";
-        Bugsnag.User.Email = "configureduser@example.com";
-    }
-
-    public void ClearUser()
-    {
-        Bugsnag.User.Clear();
+        Bugsnag.SetUser("mcpacman", "configureduser@example.com", "Geordi McPacman");
     }
 
     public void AddMetadata()
     {
-        Bugsnag.Metadata.Add("ConfigMetadata", new Dictionary<string, string>(){
+        Bugsnag.AddMetadata("ConfigMetadata", new Dictionary<string, object>(){
           { "subsystem", "Player Mechanics" }
         });
     }
 
     public void AddCallbackMetadata()
     {
-        Bugsnag.BeforeNotify(report =>
+        Bugsnag.AddOnError(@event =>
         {
-            report.Metadata.Add("CallbackMetadata", new Dictionary<string, string>(){
+            @event.AddMetadata("CallbackMetadata", new Dictionary<string, object>(){
                 { "subsystem", "Player Mechanics" }
             });
+            return true;
         });
     }
 
     public void AddCallbackContext()
     {
-        Bugsnag.BeforeNotify(report =>
+        Bugsnag.AddOnError(@event =>
         {
-            report.Context = "BeforeNotify Context";
+            @event.Context = "BeforeNotify Context";
+            return true;
         });
     }
 
     public void AddCallbackUser()
     {
-        Bugsnag.BeforeNotify(report =>
+        Bugsnag.AddOnError(@event =>
         {
-            report.User.Id = "lunchfrey";
-            report.User.Name = "Lunchfrey Jones";
-            report.User.Email = "beforenotifyuser@example.com";
-        });
-    }
-
-    public void AddCallbackSeverity()
-    {
-        Bugsnag.BeforeNotify(report =>
-        {
-            report.Severity = Severity.Info;
-        });
-    }
-
-    public void AddCallbackCancellation()
-    {
-        Bugsnag.BeforeNotify(report =>
-        {
-            report.Ignore();
+            @event.SetUser("lunchfrey", "Lunchfrey Jones", "beforenotifyuser@example.com");
+            return true;
         });
     }
 
@@ -435,16 +632,15 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     public void LeaveBreadcrumbString()
     {
-        Bugsnag.Breadcrumbs.Leave("String breadcrumb clicked");
+        Bugsnag.LeaveBreadcrumb("String breadcrumb clicked");
     }
 
     public void LeaveBreadcrumbTuple()
     {
-        Bugsnag.Breadcrumbs.Leave(
+        Bugsnag.LeaveBreadcrumb(
           "Tuple breadcrumb clicked",
-          BreadcrumbType.Navigation,
-          new Dictionary<string, string>() { { "scene", "SomeVeryRealScene" } }
-        );
+          new Dictionary<string, object>() { { "scene", "SomeVeryRealScene" } },
+          BreadcrumbType.Navigation);
     }
 
     public void ChangeScene()

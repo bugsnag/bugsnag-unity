@@ -22,35 +22,51 @@ end
 
 def dial_number_for(name)
   lookup = {
-    # Scenarios
-    'throw Exception' => 1,
-    'Log error' => 2,
-    'Native exception' => 3,
-    'Log caught exception' => 4,
-    'NDK signal' => 5,
-    'Notify caught exception' => 6,
-    'Notify with callback' => 7,
-    'Change scene' => 8,
-    'Disable Breadcrumbs' => 9,
-    'Start SDK' => 10,
-    'Max Breadcrumbs' => 11,
-    'Disable Native Errors' => 12,
-    'throw Exception with breadcrumbs' => 13,
-    'Start SDK no errors' => 14,
-    'Discard Error Class' => 15,
-    'Java Background Crash' => 16,
-    'Custom App Type' => 17,
-    'Android Persistence Directory' => 18,
-    'Disabled Release Stage' => 19,
-    'Enabled Release Stage' => 20,
-    'Java Background Crash No Threads' => 21,
-    'iOS Native Error' => 22,
-    'iOS Native Error No Threads' => 23,
-    'Mark Launch Complete' => 24,
-    'Check Last Run Info' => 25,
+      # Scenarios
+      "throw Exception" => 1,
+      "Log error" => 2,
+      "Native exception" => 3,
+      "Log caught exception" => 4,
+      "NDK signal" => 5,
+      "Notify caught exception" => 6,
+      "Notify with callback" => 7,
+      "Change scene" => 8,
+      "Disable Breadcrumbs" => 9,
+      "Start SDK" => 10,
+      "Max Breadcrumbs" => 11,
+      "Disable Native Errors" => 12,
+      "throw Exception with breadcrumbs" => 13,
+      "Start SDK no errors" => 14,
+      "Discard Error Class" => 15,
+      "Java Background Crash" => 16,
+      "Custom App Type" => 17,
+      "Android Persistence Directory" => 18,
+      "Disabled Release Stage" => 19,
+      "Enabled Release Stage" => 20,
+      "Java Background Crash No Threads" => 21,
+      "iOS Native Error" => 22,
+      "iOS Native Error No Threads" => 23,
+      "Mark Launch Complete" => 24,
+      "Check Last Run Info" => 25,
+      "Native Event Callback" => 26,
+      "Ios Signal" => 27,
+      "Session Callback" => 28,
+      "On Send Native Callback" => 29,
+      "Inf Launch Duration" => 30,
+      "Clear Metadata" => 31,
+      "Set User In Config Csharp error" => 32,
+      "Set User In Config Native Crash" => 33,
+      "Set User After Init Csharp Error" => 34,
+      "Set User After Init Native Error" => 35,
+      "Set User After Init NDK Error" => 36,
 
-    # Commands
-    'Clear iOS Data' => 90
+
+
+
+
+      # Commands
+      "Clear iOS Data" => 90
+
   }
   number = lookup[name]
   $logger.debug "Command/scenario '#{name}' has dial-in code #{number}"
@@ -232,16 +248,21 @@ Then('the event {string} matches one of:') do |path, table|
   Maze.check.true(valid_values.any? { |frame| frame == payload_value }, "Value #{payload_value} did not match any of the expected values")
 end
 
-Then('custom metadata is included in the event') do
-  steps %Q(
+Then("custom metadata is included in the event") do
+  steps %Q{
     Then the event "metaData.app.buildno" equals "0.1"
     And the event "metaData.app.cache" is null
     And the event "metaData.init" is null
     And the event "metaData.custom.letter" equals "QX"
-    And the event "metaData.custom.better" equals "400"
-    And the event "metaData.custom.setter" equals "more stuff"
-  )
+    And the event "metaData.custom.better" equals 400
+    And the event "metaData.test.test1" equals "test1"
+    And the event "metaData.test.test2" is null
+    And the error payload field "events.0.metaData.custom.int-array" is a non-empty array
+    And the error payload field "events.0.metaData.custom.string-array" is a non-empty array
+    And the error payload field "events.0.metaData.custom.dict" is not null
+  }
 end
+
 
 # TODO See PLAT-7058
 Then('the event {string} is present from Unity 2018') do |field|

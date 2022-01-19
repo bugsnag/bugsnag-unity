@@ -1,12 +1,13 @@
-﻿using BugsnagUnity.Payload;
+﻿using System;
+using System.Collections.Generic;
+using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-    public delegate void Middleware(Report report);
 
-    public interface IClient
+    internal interface IClient : IMetadataEditor
     {
-        IConfiguration Configuration { get; }
+        Configuration Configuration { get; }
 
         IBreadcrumbs Breadcrumbs { get; }
 
@@ -14,25 +15,19 @@ namespace BugsnagUnity
 
         LastRunInfo LastRunInfo { get; }
 
-        User User { get; }
-
         void Send(IPayload payload);
-
-        Metadata Metadata { get; }
-
-        void BeforeNotify(Middleware middleware);
 
         void Notify(System.Exception exception);
 
-        void Notify(System.Exception exception, Middleware callback);
+        void Notify(System.Exception exception, Func<IEvent, bool> callback);
 
         void Notify(System.Exception exception, Severity severity);
 
-        void Notify(System.Exception exception, Severity severity, Middleware callback);
+        void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback);
 
-        void Notify(System.Exception exception, string stacktrace, Middleware callback);
+        void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback);
 
-        void Notify(string name, string message, string stackTrace, Middleware callback);
+        void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback);
 
         /// <summary>
         /// Used to signal to the Bugsnag client that the focused state of the
@@ -42,16 +37,25 @@ namespace BugsnagUnity
         /// <param name="inFocus"></param>
         void SetApplicationState(bool inFocus);
 
-        void SetContext(string context);
-
         string GetContext();
 
-        void SetAutoDetectErrors(bool AutoDetectErrors);
-
-        void SetAutoDetectAnrs(bool autoDetectAnrs);
+        void SetContext(string context);
 
         bool IsUsingFallback();
 
         void MarkLaunchCompleted();
+
+        void AddOnError(Func<IEvent, bool> callback);
+
+        void RemoveOnError(Func<IEvent, bool> callback);
+
+        void AddOnSession(Func<ISession, bool> callback);
+
+        void RemoveOnSession(Func<ISession, bool> callback);
+
+        User GetUser();
+
+        void SetUser(string id,string email,string name);
+
     }
 }

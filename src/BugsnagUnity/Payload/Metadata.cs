@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BugsnagUnity;
+using UnityEngine;
 
 namespace BugsnagUnity.Payload
 {
-    public class Metadata : Dictionary<string, object>, IFilterable
+    public class Metadata : PayloadContainer
     {
-        private INativeClient NativeClient = null;
+        private INativeClient _nativeClient = null;
 
         public Metadata()
         {
@@ -13,42 +15,115 @@ namespace BugsnagUnity.Payload
 
         internal Metadata(INativeClient nativeClient)
         {
-            NativeClient = nativeClient;
+            _nativeClient = nativeClient;
         }
 
-        public void Add(string section, object newValue)
+
+        public void AddMetadata(string section, string key, object value)
         {
-            if (NativeClient != null)
+            AddMetadata(section, new Dictionary<string, object>{{ key, value }});
+        }
+
+        public void AddMetadata(string section, IDictionary<string, object> metadataSection)
+        {
+            if (metadataSection == null)
             {
-                if (newValue is Dictionary<string, string> stringValues)
+                ClearMetadata(section);
+                return;
+            }
+            if (SectionExists(section))
+            {
+                var existingSection = (IDictionary<string, object>)Get(section);
+
+                foreach (var key in metadataSection.Keys.ToList())
                 {
-                    base.Add(section, stringValues);
-                    NativeClient.SetMetadata(section, stringValues);
-                }
-                else if (newValue is Dictionary<string, object> objectValues)
-                {
-                    var target = new Dictionary<string, string>();
-                    foreach (var pair in objectValues)
+                    var value = metadataSection[key];
+                    if (value == null)
                     {
-                        target.Add(pair.Key, pair.Value.ToString());
+                        if (existingSection.ContainsKey(key))
+                        {
+                            existingSection.Remove(key);
+                        }
                     }
-                    base.Add(section, target);
-                    NativeClient.SetMetadata(section, target);
+                    else
+                    {
+                        existingSection[key] = value;
+                    }
                 }
             }
             else
             {
-                base.Add(section, newValue);
+                Add(section,metadataSection);
+            }
+            if (_nativeClient != null)
+            {
+                _nativeClient.AddNativeMetadata(section,metadataSection);
             }
         }
 
-        public void Remove(string section)
+       
+
+        public void ClearMetadata(string section)
         {
-            base.Remove(section);
-            if (NativeClient != null)
+            if (SectionExists(section))
             {
-                NativeClient.SetMetadata(section, null);
+                Payload.Remove(section);
+            }
+            if (_nativeClient != null)
+            {
+                _nativeClient.ClearNativeMetadata(section);
             }
         }
+
+        public void ClearMetadata(string section, string key)
+        {
+            if (SectionExists(section))
+            {
+                var existingSection = (IDictionary<string, object>)Payload[section];
+                if (existingSection.ContainsKey(key))
+                {
+                    existingSection.Remove(key);
+                }                
+            }
+            if (_nativeClient != null)
+            {
+                _nativeClient.ClearNativeMetadata(section,key);
+            }
+        }
+
+        private bool SectionExists(string section)
+        {
+            return Payload.ContainsKey(section);
+        }
+
+        public IDictionary<string, object> GetMetadata(string section)
+        {
+            return SectionExists(section) ? (IDictionary<string, object>)Payload[section] : null;
+        }
+
+        public object GetMetadata(string section, string key)
+        {
+            if (SectionExists(section))
+            {
+                var existingSection = (IDictionary<string, object>)Payload[section];
+                return existingSection[key];
+            }
+            return null;
+        }
+
+        internal void MergeMetadata(IDictionary<string, object> newMetadata)
+        {
+            if (newMetadata == null)
+            {
+                return;
+            }
+            foreach (var section in newMetadata)
+            {
+                var sectionkey = section.Key;
+                var sectionToMergeIn = (IDictionary<string, object>)section.Value;
+                AddMetadata(sectionkey, sectionToMergeIn);
+            }
+        }
+
     }
 }

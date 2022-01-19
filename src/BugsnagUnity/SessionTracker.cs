@@ -76,23 +76,39 @@ namespace BugsnagUnity
         {
             var session = new Session();
 
-            CurrentSession = session;
-
             var app = new App(Client.Configuration);
             Client.NativeClient.PopulateApp(app);
-            var device = new Device();
+            session.App = app;
+
+            var device = new Device(Client.Configuration);
             Client.NativeClient.PopulateDevice(device);
-            device.AddRuntimeVersions(Client.Configuration);
+            session.Device = device;
+
+            session.User = Client.GetUser().Clone();
+
+            foreach (var sessionCallback in Client.Configuration.GetOnSessionCallbacks())
+            {
+                try {
+                    if (!sessionCallback.Invoke(session))
+                    {
+                        return;
+                    }
+                } catch {
+                    // If the callback causes an exception, ignore it and execute the next one
+                }
+            }
 
             if (Client.Configuration.Endpoints.IsValid)
             {
-                var payload = new SessionReport(Client.Configuration, app, device, Client.User, session);
+                var payload = new SessionReport(Client.Configuration, app, device, Client.GetUser().Clone(), session);
                 Client.Send(payload);
             }
             else
             {
                 UnityEngine.Debug.LogWarning("Invalid configuration. Configuration.Endpoints is not correctly configured, no sessions will be sent.");
             }
+
+            CurrentSession = session;
         }
 
         public void PauseSession()

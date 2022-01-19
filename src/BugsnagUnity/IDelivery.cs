@@ -101,7 +101,7 @@ namespace BugsnagUnity
             using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
             {
                 req.SetRequestHeader("Content-Type", "application/json");
-                req.SetRequestHeader("Bugsnag-Sent-At", DateTime.UtcNow.ToString("o", CultureInfo.InvariantCulture));
+                req.SetRequestHeader("Bugsnag-Sent-At", DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture));
                 foreach (var header in payload.Headers)
                 {
                     req.SetRequestHeader(header.Key, header.Value);

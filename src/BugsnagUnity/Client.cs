@@ -6,12 +6,13 @@ using System.ComponentModel;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace BugsnagUnity
 {
     internal class Client : IClient
     {
-        public IConfiguration Configuration => NativeClient.Configuration;
+        public Configuration Configuration => NativeClient.Configuration;
 
         public IBreadcrumbs Breadcrumbs => NativeClient.Breadcrumbs;
 
@@ -19,73 +20,52 @@ namespace BugsnagUnity
 
         public LastRunInfo LastRunInfo => NativeClient.GetLastRunInfo();
 
-        public User User { get; }
+        private User _cachedUser;
 
-        public Metadata Metadata { get; }
+        private Metadata _storedMetadata;
 
-        UniqueLogThrottle UniqueCounter { get; }
+        private UniqueLogThrottle _uniqueCounter;
 
-        MaximumLogTypeCounter LogTypeCounter { get; }
+        private MaximumLogTypeCounter _logTypeCounter;
 
         protected IDelivery Delivery => NativeClient.Delivery;
 
-        List<Middleware> Middleware { get; }
-
-        object MiddlewareLock { get; } = new object();
+        object CallbackLock { get; } = new object();
 
         internal INativeClient NativeClient { get; }
 
-        Stopwatch ForegroundStopwatch { get; }
+        private Stopwatch _foregroundStopwatch;
 
-        Stopwatch BackgroundStopwatch { get; }
+        private Stopwatch _backgroundStopwatch;
 
-        bool InForeground => ForegroundStopwatch.IsRunning;
-
-        const string AppMetadataKey = "app";
-
-        const string DeviceMetadataKey = "device";
+        bool InForeground => _foregroundStopwatch.IsRunning;
 
         private Thread MainThread;
 
         private static double AutoCaptureSessionThresholdSeconds = 30;
 
-        private GameObject TimingTrackerObject { get; }
-
         private static object autoSessionLock = new object();
 
-        private static bool _contextSetManually;
 
         public Client(INativeClient nativeClient)
         {
-            MainThread = Thread.CurrentThread;
-            ForegroundStopwatch = new Stopwatch();
-            BackgroundStopwatch = new Stopwatch();
             NativeClient = nativeClient;
-            User = new User { Id = SystemInfo.deviceUniqueIdentifier };
-            Middleware = new List<Middleware>();
-            Metadata = new Metadata(nativeClient);
-            UniqueCounter = new UniqueLogThrottle(Configuration);
-            LogTypeCounter = new MaximumLogTypeCounter(Configuration);
             SessionTracking = new SessionTracker(this);
+            MainThread = Thread.CurrentThread;
+            InitStopwatches();
+            InitUserObject();
+            InitMetadata();
+            InitCounters();
+            ListenForSceneLoad();
+            InitLogHandlers();       
+            InitTimingTracker();
+            InitInitialSessionCheck();          
+            CheckForMisconfiguredEndpointsWarning();
+            AddBugsnagLoadedBreadcrumb();
+        }
 
-            UnityMetadata.InitDefaultMetadata();
-            NativeClient.SetMetadata(AppMetadataKey, UnityMetadata.DefaultAppMetadata);
-            NativeClient.SetMetadata(DeviceMetadataKey, UnityMetadata.DefaultDeviceMetadata);
-
-            Device.InitUnityVersion();
-            NativeClient.PopulateUser(User);
-            if (!string.IsNullOrEmpty(nativeClient.Configuration.Context))
-            {
-                _contextSetManually = true;
-            }
-
-            SetupSceneLoadedBreadcrumbTracking();
-
-            Application.logMessageReceivedThreaded += MultiThreadedNotify;
-            Application.logMessageReceived += Notify;
-            User.PropertyChanged += (obj, args) => { NativeClient.SetUser(User); };
-            TimingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
-            TimingTrackerObject.AddComponent<TimingTrackerBehaviour>();
+        private void InitInitialSessionCheck()
+        {
             // Run initial session check in next frame to allow potential configuration
             // changes to be completed first.
             try
@@ -97,16 +77,64 @@ namespace BugsnagUnity
             {
                 // Async behavior is not available in a test environment
             }
-            if (!Configuration.Endpoints.IsValid)
+        }
+
+        private void InitTimingTracker()
+        {
+            var timingTrackerObject = new GameObject("Bugsnag app lifecycle tracker");
+            timingTrackerObject.AddComponent<TimingTrackerBehaviour>();
+        }
+
+        private void InitLogHandlers()
+        {
+            Application.logMessageReceivedThreaded += MultiThreadedNotify;
+            Application.logMessageReceived += Notify;
+        }
+
+        private void InitCounters()
+        {
+            _uniqueCounter = new UniqueLogThrottle(Configuration);
+            _logTypeCounter = new MaximumLogTypeCounter(Configuration);
+        }
+
+        private void InitMetadata()
+        {
+            _storedMetadata = new Metadata(NativeClient);
+            _storedMetadata.MergeMetadata(Configuration.Metadata.Payload);
+            AutomaticDataCollector.SetDefaultData(NativeClient);
+        }
+
+        private void InitStopwatches()
+        {
+            _foregroundStopwatch = new Stopwatch();
+            _backgroundStopwatch = new Stopwatch();
+        }
+
+        private void InitUserObject()
+        {
+            if (Configuration.GetUser() != null)
             {
-                CheckForMisconfiguredEndpointsWarning();
+                // if a user is supplied in the config then use that
+                _cachedUser = Configuration.GetUser();
             }
-            AddBugsnagLoadedBreadcrumb();
+            else
+            {
+                // otherwise create one
+                _cachedUser = new User { Id = SystemInfo.deviceUniqueIdentifier };
+                // see if a native user is avaliable
+                NativeClient.PopulateUser(_cachedUser);
+            }
+            // listen for changes and pass the data to the native layer
+            _cachedUser.PropertyChanged.AddListener(() => { NativeClient.SetUser(_cachedUser); });
         }
 
         private void CheckForMisconfiguredEndpointsWarning()
         {
             var endpoints = Configuration.Endpoints;
+            if (endpoints.IsValid)
+            {
+                return;
+            }
             if (endpoints.NotifyIsCustom && !endpoints.SessionIsCustom)
             {
                 UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Notify cannot be set without also setting endpoints.Session. Events will not be sent to Bugsnag.");
@@ -115,14 +143,13 @@ namespace BugsnagUnity
             {
                 UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Session cannot be set without also setting endpoints.Notify. Sessions will not be sent to Bugsnag.");
             }
-
         }
 
         private void AddBugsnagLoadedBreadcrumb()
         {
             if (IsUsingFallback() && Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.State))
             {
-                Breadcrumbs.Leave("Bugsnag loaded", BreadcrumbType.State, null);
+                Breadcrumbs.Leave("Bugsnag loaded", null, BreadcrumbType.State);
             }
         }
 
@@ -141,13 +168,16 @@ namespace BugsnagUnity
             return false;
         }
 
-        private void SetupSceneLoadedBreadcrumbTracking()
+        private void ListenForSceneLoad()
         {
-            if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Navigation))
-            {
-                SceneManager.sceneLoaded += SceneLoaded;
-            }
-        }
+            SceneManager.sceneLoaded += (Scene scene, LoadSceneMode loadSceneMode) => {
+                if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Navigation))
+                {
+                    Breadcrumbs.Leave("Scene Loaded", new Dictionary<string, object> { { "sceneName", scene.name } }, BreadcrumbType.Navigation);
+                }
+                _storedMetadata.AddMetadata("app", "lastLoadedUnityScene",scene.name);
+            };
+        }       
 
         public void Send(IPayload payload)
         {
@@ -158,28 +188,10 @@ namespace BugsnagUnity
             Delivery.Send(payload);
         }
 
-        /// <summary>
-        /// Sets the current context to the scene name and leaves a breadcrumb with
-        /// the current scene information.
-        /// </summary>
-        /// <param name="scene"></param>
-        /// <param name="loadSceneMode"></param>
-        void SceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
-        {
-            if (!_contextSetManually)
-            {
-                Configuration.Context = scene.name;
-
-                // propagate the change to the native property also
-                NativeClient.SetContext(scene.name);
-            }
-            Breadcrumbs.Leave("Scene Loaded", BreadcrumbType.State, new Dictionary<string, string> { { "sceneName", scene.name } });
-        }
-
         void MultiThreadedNotify(string condition, string stackTrace, LogType logType)
         {
             // Discard messages from the main thread as they will be reported separately
-            if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
+            if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
                 Notify(condition, stackTrace, logType);
             }
@@ -195,49 +207,44 @@ namespace BugsnagUnity
         /// <param name="logType"></param>
         void Notify(string condition, string stackTrace, LogType logType)
         {
-
-            if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel) && Configuration.IsUnityLogErrorTypeEnabled(logType))
+            if (!Configuration.EnabledErrorTypes.UnityLog)
+            {
+                return;
+            }
+            if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel))
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
-                var shouldSend = Exception.ShouldSend(logMessage)
-                  && UniqueCounter.ShouldSend(logMessage)
-                  && LogTypeCounter.ShouldSend(logMessage);
+                var shouldSend = Error.ShouldSend(logMessage)
+                  && _uniqueCounter.ShouldSend(logMessage)
+                  && _logTypeCounter.ShouldSend(logMessage);
                 if (shouldSend)
                 {
                     var severity = Configuration.LogTypeSeverityMapping.Map(logType);
                     var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
-                    var forceUnhandled = logType == LogType.Exception && !Configuration.ReportUncaughtExceptionsAsHandled;
-                    var exception = Exception.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
-                    Notify(new Exception[] { exception }, exception.HandledState, null, logType);
+                    var forceUnhandled = logType == LogType.Exception && !Configuration.ReportExceptionLogsAsHandled;
+                    var exception = Error.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
+                    Notify(new Error[] { exception }, exception.HandledState, null, logType);
                 }
             }
             else if (Configuration.ShouldLeaveLogBreadcrumb(logType))
             {
-                Breadcrumbs.Leave(logType.ToString(), BreadcrumbType.Log, new Dictionary<string, string> {
-                    { "message", condition },
-                });
+                var metadata = new Dictionary<string, object>()
+                {
+                    {"logLevel" , logType.ToString() }
+                };
+                Breadcrumbs.Leave(condition, metadata, BreadcrumbType.Log );
             }
         }
 
-
-
-        public void BeforeNotify(Middleware middleware)
+        public void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback)
         {
-            lock (MiddlewareLock)
-            {
-                Middleware.Add(middleware);
-            }
-        }
-
-        public void Notify(string name, string message, string stackTrace, Middleware callback)
-        {
-            var exceptions = new Exception[] { Exception.FromStringInfo(name, message, stackTrace) };
+            var exceptions = new Error[] { Error.FromStringInfo(name, message, stackTrace) };
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
-        public void Notify(System.Exception exception, string stacktrace, Middleware callback)
+        public void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback)
         {
-            var exceptions = new Exceptions(exception, stacktrace).ToArray();
+            var exceptions = new Errors(exception, stacktrace).ToArray();
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
@@ -251,12 +258,12 @@ namespace BugsnagUnity
             Notify(exception, HandledState.ForHandledException(), null, level);
         }
 
-        public void Notify(System.Exception exception, Middleware callback)
+        public void Notify(System.Exception exception, Func<IEvent, bool> callback)
         {
             Notify(exception, callback, 3);
         }
 
-        internal void Notify(System.Exception exception, Middleware callback, int level)
+        internal void Notify(System.Exception exception, Func<IEvent, bool> callback, int level)
         {
             Notify(exception, HandledState.ForHandledException(), callback, level);
         }
@@ -271,31 +278,32 @@ namespace BugsnagUnity
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, level);
         }
 
-        public void Notify(System.Exception exception, Severity severity, Middleware callback)
+        public void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback)
         {
             Notify(exception, severity, callback, 3);
         }
 
-        internal void Notify(System.Exception exception, Severity severity, Middleware callback, int level)
+        internal void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback, int level)
         {
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, level);
         }
 
-        void Notify(System.Exception exception, HandledState handledState, Middleware callback, int level)
+        void Notify(System.Exception exception, HandledState handledState, Func<IEvent, bool> callback, int level)
         {
             // we need to generate a substitute stacktrace here as if we are not able
             // to generate one from the exception that we are given then we are not able
             // to do this inside of the IEnumerator generator code
             var substitute = new System.Diagnostics.StackTrace(level, true).GetFrames();
-            Notify(new Exceptions(exception, substitute).ToArray(), handledState, callback, null);
+            Notify(new Errors(exception, substitute).ToArray(), handledState, callback, null);
         }
 
-        void Notify(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
+        void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
-                return; // Skip overhead of computing payload to to ultimately not be sent
+                return;
             }
+
 
             if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
             {
@@ -316,40 +324,52 @@ namespace BugsnagUnity
            
         }
 
-        // This method should only be called on the main thread as it uses environment data that can only be accessed from the main thread
-        private void NotifyOnMainThread(Exception[] exceptions, HandledState handledState, Middleware callback, LogType? logType)
+        private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
         {
-            var user = new User { Id = User.Id, Email = User.Email, Name = User.Name };
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
+            {
+                return;
+            }
 
-            var app = new App(Configuration)
+            var user = _cachedUser.Clone();
+
+            var app = new AppWithState(Configuration)
             {
                 InForeground = InForeground,
-                DurationInForeground = ForegroundStopwatch.Elapsed,
+                DurationInForeground = _foregroundStopwatch.Elapsed,
             };
-            NativeClient.PopulateApp(app);
 
-            var device = new Device();
-            NativeClient.PopulateDevice(device);
-            device.AddRuntimeVersions(Configuration);
+            NativeClient.PopulateAppWithState(app);
 
-            var metadata = new Metadata();
-            NativeClient.PopulateMetadata(metadata);
-            foreach (var item in Metadata)
+            var device = new DeviceWithState(Configuration);
+
+            NativeClient.PopulateDeviceWithState(device);
+
+            var eventMetadata = new Metadata();
+
+            eventMetadata.MergeMetadata(NativeClient.GetNativeMetadata());
+
+            AutomaticDataCollector.AddStatefulDeviceData(eventMetadata);
+
+            var activeScene = SceneManager.GetActiveScene();
+            if (activeScene != null)
             {
-                metadata.AddToPayload(item.Key, item.Value);
+                eventMetadata.AddMetadata("app", "activeUnityScene", activeScene.name);
             }
-            RedactMetadata(metadata);
+
+            eventMetadata.MergeMetadata(_storedMetadata.Payload);
 
             var @event = new Payload.Event(
               Configuration.Context,
-              metadata,
+              eventMetadata,
               app,
               device,
               user,
               exceptions,
               handledState,
               Breadcrumbs.Retrieve(),
-              SessionTracking.CurrentSession);
+              SessionTracking.CurrentSession,
+              Configuration.ApiKey);
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))
@@ -357,70 +377,74 @@ namespace BugsnagUnity
                 @event.AddAndroidProjectPackagesToEvent(Configuration.ProjectPackages);
             }
 
-            var report = new Report(Configuration, @event);
-
-            lock (MiddlewareLock)
+            lock (CallbackLock)
             {
-                foreach (var middleware in Middleware)
+                foreach (var onErrorCallback in Configuration.GetOnErrorCallbacks())
                 {
                     try
                     {
-                        middleware(report);
+                        if (!onErrorCallback.Invoke(@event))
+                        {
+                            return;
+                        }
                     }
-                    catch (System.Exception)
+                    catch
                     {
+                        // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
             }
 
             try
             {
-                callback?.Invoke(report);
+                if (callback != null)
+                {
+                    if (!callback.Invoke(@event))
+                    {
+                        return;
+                    }
+                }
             }
-            catch (System.Exception)
+            catch
             {
+                // If the callback causes an exception, ignore it and execute the next one
             }
+
+
+            lock (CallbackLock)
+            {
+                foreach (var onSendErrorCallback in Configuration.GetOnSendErrorCallbacks())
+                {
+                    try
+                    {
+                        if (!onSendErrorCallback.Invoke(@event))
+                        {
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        // If the callback causes an exception, ignore it and execute the next one
+                    }
+                }
+            }
+
+            @event.RedactMetadata(Configuration);
+
+            var report = new Report(Configuration, @event);
 
             if (!report.Ignored)
             {
                 Send(report);
-
-                Breadcrumbs.Leave(Breadcrumb.FromReport(report));
-
+                if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
+                {
+                    Breadcrumbs.Leave(Breadcrumb.FromReport(report));
+                }
                 SessionTracking.AddException(report);
             }
         }
 
-        private void RedactMetadata(Metadata metadata)
-        {
-            foreach (var section in metadata)
-            {
-                var sectionDictionaryType = section.Value.GetType();
-                if (sectionDictionaryType == typeof(Dictionary<string, object>))
-                {
-                    var theSection = (Dictionary<string, object>)section.Value;
-                    foreach (var key in theSection.Keys.ToList())
-                    {
-                        if (Configuration.KeyIsRedacted(key))
-                        {
-                            theSection[key] = "[REDACTED]";
-                        }
-                    }
-                }
-                if (sectionDictionaryType == typeof(Dictionary<string, string>))
-                {
-                    var theSection = (Dictionary<string, string>)section.Value;
-                    foreach (var key in theSection.Keys.ToList())
-                    {
-                        if (Configuration.KeyIsRedacted(key))
-                        {
-                            theSection[key] = "[REDACTED]";
-                        }
-                    }
-                }
-            }
-        }
-
+       
         private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
         {
             return Application.platform.Equals(RuntimePlatform.Android)
@@ -429,7 +453,7 @@ namespace BugsnagUnity
                && theEvent.IsAndroidJavaError();
         }
 
-        private bool EventContainsDiscardedClass(Exception[] exceptions)
+        private bool EventContainsDiscardedClass(Error[] exceptions)
         {
             foreach (var exception in exceptions)
             {
@@ -445,11 +469,11 @@ namespace BugsnagUnity
         {
             if (inFocus)
             {
-                ForegroundStopwatch.Start();
+                _foregroundStopwatch.Start();
                 lock (autoSessionLock)
                 {
                     if (Configuration.AutoTrackSessions
-                     && BackgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
+                     && _backgroundStopwatch.Elapsed.TotalSeconds > AutoCaptureSessionThresholdSeconds)
                     {
                         if (IsUsingFallback())
                         {
@@ -464,13 +488,13 @@ namespace BugsnagUnity
                             }
                         }
                     }
-                    BackgroundStopwatch.Reset();
+                    _backgroundStopwatch.Reset();
                 }
             }
             else
             {
-                ForegroundStopwatch.Stop();
-                BackgroundStopwatch.Start();
+                _foregroundStopwatch.Stop();
+                _backgroundStopwatch.Start();
             }
         }
 
@@ -498,9 +522,6 @@ namespace BugsnagUnity
 
         public void SetContext(string context)
         {
-
-            _contextSetManually = true;
-
             // set the context property on Configuration, as it currently holds the global state
             Configuration.Context = context;
 
@@ -511,26 +532,40 @@ namespace BugsnagUnity
         public string GetContext()
         {
             return Configuration.Context;
-        }
+        }      
 
-        public void SetAutoDetectErrors(bool autoDetectErrors)
+        public void MarkLaunchCompleted() => NativeClient.MarkLaunchCompleted();
+        
+        public void AddOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.AddOnError(bugsnagCallback);
+
+        public void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
+
+        public void AddOnSession(Func<ISession, bool> callback) => Configuration.AddOnSession(callback);
+
+        public void RemoveOnSession(Func<ISession, bool> callback) => Configuration.RemoveOnSession(callback);
+
+        public void AddMetadata(string section, string key, object value) => _storedMetadata.AddMetadata(section, key, value);
+
+        public void AddMetadata(string section, IDictionary<string, object> metadata) => _storedMetadata.AddMetadata(section,metadata);
+
+        public void ClearMetadata(string section) => _storedMetadata.ClearMetadata(section);
+
+        public void ClearMetadata(string section, string key) => _storedMetadata.ClearMetadata(section, key);
+
+        public IDictionary<string,object> GetMetadata(string section) => _storedMetadata.GetMetadata(section);
+
+        public object GetMetadata(string section, string key) => _storedMetadata.GetMetadata(section, key);
+
+        public User GetUser()
         {
-            // set the property on Configuration, as it currently controls whether C# errors are reported
-            Configuration.AutoDetectErrors = autoDetectErrors;
-
-            // propagate the change to the native property also
-            NativeClient.SetAutoDetectErrors(autoDetectErrors);
+            return _cachedUser;
         }
 
-        public void SetAutoDetectAnrs(bool autoDetectAnrs)
+        public void SetUser(string id, string email, string name)
         {
-            // Set the native property
-            NativeClient.SetAutoDetectAnrs(autoDetectAnrs);
+            _cachedUser = new User(id, email, name);
+            NativeClient.SetUser(_cachedUser);
         }
-
-        public void MarkLaunchCompleted()
-        {
-            NativeClient.MarkLaunchCompleted();
-        }
+       
     }
 }

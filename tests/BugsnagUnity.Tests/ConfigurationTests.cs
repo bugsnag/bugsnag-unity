@@ -12,7 +12,7 @@ namespace BugsnagUnity.Payload.Tests
         public void DefaultConfigurationValues()
         {
             var config = new Configuration("foo");
-            Assert.IsTrue(config.ReportUncaughtExceptionsAsHandled);
+            Assert.IsTrue(config.ReportExceptionLogsAsHandled);
             Assert.IsTrue(config.AutoDetectErrors);
             Assert.IsTrue(config.AutoTrackSessions);
             Assert.AreEqual("production", config.ReleaseStage);
@@ -27,12 +27,41 @@ namespace BugsnagUnity.Payload.Tests
         {
             var config = new Configuration("foo");
             config.MaximumBreadcrumbs = 101;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 25);
+            Assert.AreEqual(config.MaximumBreadcrumbs, 50);
             config.MaximumBreadcrumbs = -1;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 25);
+            Assert.AreEqual(config.MaximumBreadcrumbs, 50);
             config.MaximumBreadcrumbs = 20;
             Assert.AreEqual(config.MaximumBreadcrumbs, 20);
         }
+
+        [Test]
+        public void CloneTest()
+        {
+            var original = new Configuration("foo");
+
+            original.MaximumBreadcrumbs = 1;
+            original.ReleaseStage = "1";
+            original.SetUser("1","1","1");
+
+            var clone = original.Clone();
+
+            //int check
+            Assert.AreEqual(original.MaximumBreadcrumbs, clone.MaximumBreadcrumbs);
+            clone.MaximumBreadcrumbs = 2;
+            Assert.AreEqual(1, original.MaximumBreadcrumbs);
+            Assert.AreEqual( 2, clone.MaximumBreadcrumbs);
+
+            //string check
+            clone.ReleaseStage = "2";
+            Assert.AreNotEqual(original.ReleaseStage, clone.ReleaseStage);
+
+
+            //user check
+            clone.SetUser("2", "2", "2");
+            Assert.AreEqual("1", original.GetUser().Name);
+            Assert.AreEqual("2", clone.GetUser().Name);
+        }
+
 
         [Test]
         public void EndpointValidation()
@@ -41,15 +70,15 @@ namespace BugsnagUnity.Payload.Tests
 
             Assert.IsTrue(config.Endpoints.IsValid);
 
-            config.Endpoint = new System.Uri("https://www.richIsCool.com/");
+            config.Endpoints.Notify = new System.Uri("https://www.richIsCool.com/");
 
             Assert.IsFalse(config.Endpoints.IsValid);
 
-            config.SessionEndpoint = new System.Uri("https://www.richIsSuperCool.com/");
+            config.Endpoints.Session = new System.Uri("https://www.richIsSuperCool.com/");
 
             Assert.IsTrue(config.Endpoints.IsValid);
 
-            config.Endpoint = null;
+            config.Endpoints.Notify = null;
 
             Assert.IsFalse(config.Endpoints.IsValid);
         }

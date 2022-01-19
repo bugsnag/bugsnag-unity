@@ -23,6 +23,7 @@ public class Main : MonoBehaviour
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
 
+    private float _closeTime = 5;
 
     public void Start()
     {
@@ -33,32 +34,44 @@ public class Main : MonoBehaviour
 
 #if UNITY_WEBGL
         ParseUrlParameters();
-#else
-        //close the desktop fixture automatically
-        Invoke("CloseApplication", 5);
+ 
 #endif
         var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);
+        Invoke("CloseApplication", _closeTime);
         Bugsnag.Start(config);
 
         // Add different varieties of custom metadata
-        Bugsnag.Metadata.Add("init", new Dictionary<string, string>(){
-      {"foo", "bar" },
-    });
-        Bugsnag.Metadata.Add("custom", new Dictionary<string, object>(){
-      {"letter", "QX" },
-      {"better", 400 },
-      {"setter", new OtherMetadata() },
-    });
-        Bugsnag.Metadata.Add("app", new Dictionary<string, string>(){
-      {"buildno", "0.1" },
-      {"cache", null },
-    });
+        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
+            {"foo", "bar" },
+        });
+
+        Bugsnag.AddMetadata("test","test1","test1");
+
+        Bugsnag.AddMetadata("test", "test2", "test2");
+
+        Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
+            {"letter", "QX" },
+            {"better", 400 },
+            {"string-array", new string []{"1","2","3"} },
+            {"int-array", new int []{1,2,3} },
+            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }  
+        });
+
+        Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
+            {"buildno", "0.1" },
+            {"cache", null },
+        });
+
         // Remove a tab
-        Bugsnag.Metadata.Remove("init");
+        Bugsnag.ClearMetadata("init");
+
+        // Remove a value
+        Bugsnag.ClearMetadata("test","test2");
 
         // trigger the crash
         RunScenario(scenario);
+
     }
 
     void CloseApplication()
@@ -138,6 +151,22 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "DisableErrorBreadcrumbs":
+                config.EnabledBreadcrumbTypes = new BreadcrumbType[] { BreadcrumbType.Log };
+                break;
+            case "InfLaunchDurationMark":
+            case "InfLaunchDuration":
+                config.LaunchDurationMillis = 0;
+                _closeTime = 8;
+                break;
+            case "LongLaunchDuration":
+                config.LaunchDurationMillis = 10000;
+                _closeTime = 12;
+                break;
+            case "ShortLaunchDuration":
+                config.LaunchDurationMillis = 1000;
+                _closeTime = 10;
+                break;
             case "DisabledReleaseStage":
                 config.EnabledReleaseStages = new string[] { "test" };
                 config.ReleaseStage = "somevalue";
@@ -156,19 +185,32 @@ public class Main : MonoBehaviour
                 config.DiscardClasses = new string[] { "ExecutionEngineException" };
                 break;
             case "EnableUnhandledExceptions":
-                config.EnabledErrorTypes = new ErrorTypes[] {ErrorTypes.UnhandledExceptions };
-                config.NotifyLevel = LogType.Log;
+                config.EnabledErrorTypes = new EnabledErrorTypes()
+                {
+                    ANRs = false,
+                    AppHangs = false,
+                    OOMs = false,
+                    Crashes = false,
+                    UnityLog = true
+                };
+                config.NotifyLogLevel = LogType.Exception;
                 break;
             case "EnableLogLogs":
-                config.EnabledErrorTypes = new ErrorTypes[] { ErrorTypes.UnityLogLogs };
-                config.NotifyLevel = LogType.Log;
+                config.EnabledErrorTypes = new EnabledErrorTypes() {
+                    ANRs = false,
+                    AppHangs = false,
+                    OOMs = false,
+                    Crashes = false,
+                    UnityLog = true
+                };
+                config.NotifyLogLevel = LogType.Log;
                 break;
             case "DisableAllErrorTypes":
-                config.EnabledErrorTypes = new ErrorTypes[0];
-                config.NotifyLevel = LogType.Log;
+                config.AutoDetectErrors = false;
+                config.NotifyLogLevel = LogType.Log;
                 break;
             case "NewSession":
-                config.AutoCaptureSessions = false;
+                config.AutoTrackSessions = false;
                 break;
             case "MaxBreadcrumbs":
                 config.MaximumBreadcrumbs = 5;
@@ -182,76 +224,129 @@ public class Main : MonoBehaviour
                 break;
             case "LogExceptionOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "NotifyOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "NativeCrashOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "UncaughtExceptionOutsideNotifyReleaseStages":
                 config.ReleaseStage = "dev";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "UncaughtExceptionAsUnhandled":
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.ReportExceptionLogsAsHandled = false;
+                break;
+            case "SetUserInConfigNativeCrash":
+            case "SetUserInConfigCsharpError":
+                config.SetUser("1","2","3");
                 break;
             case "LogUnthrownAsUnhandled":
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.ReportExceptionLogsAsHandled = false;
                 break;
             case "ReportLoggedWarning":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
+                config.EnabledErrorTypes.UnityLog = true;
                 break;
             case "ReportLoggedError":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
+                config.EnabledErrorTypes.UnityLog = true;
                 break;
             case "ReportLoggedWarningWithHandledConfig":
-                config.ReportUncaughtExceptionsAsHandled = false;
-                config.NotifyLevel = LogType.Warning;
+                config.EnabledErrorTypes.UnityLog = true;
+                config.ReportExceptionLogsAsHandled = false;
+                config.NotifyLogLevel = LogType.Warning;
                 break;
             case "ManualSessionCrash":
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.ReportExceptionLogsAsHandled = false;
                 break;
             case "AutoSessionInNotifyReleaseStages":
                 config.ReleaseStage = "production";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "ManualSessionInNotifyReleaseStages":
                 config.ReleaseStage = "production";
-                config.NotifyReleaseStages = new[] { "production" };
+                config.EnabledReleaseStages = new[] { "production" };
                 break;
             case "AutoSessionNotInNotifyReleaseStages":
-                config.NotifyReleaseStages = new[] { "no-op" };
+                config.EnabledReleaseStages = new[] { "no-op" };
                 break;
             case "ManualSessionNotInNotifyReleaseStages":
-                config.NotifyReleaseStages = new[] { "no-op" };
+                config.EnabledReleaseStages = new[] { "no-op" };
                 break;
             case "ManualSessionMixedEvents":
-                config.ReportUncaughtExceptionsAsHandled = false;
-                config.NotifyLevel = LogType.Warning;
+                config.ReportExceptionLogsAsHandled = false;
+                config.NotifyLogLevel = LogType.Warning;
+                config.EnabledErrorTypes.UnityLog = true;
                 break;
             case "UncaughtExceptionWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "NotifyWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "LoggedExceptionWithoutAutoNotify":
-                config.AutoNotify = false;
-                config.ReportUncaughtExceptionsAsHandled = false;
+                config.AutoDetectErrors = false;
+                config.ReportExceptionLogsAsHandled = false;
                 break;
             case "NativeCrashWithoutAutoNotify":
-                config.AutoNotify = false;
+                config.AutoDetectErrors = false;
                 break;
             case "NativeCrashReEnableAutoNotify":
-                config.AutoNotify = false;
-                config.AutoNotify = true;
+                config.AutoDetectErrors = false;
+                config.AutoDetectErrors = true;
                 break;
             case "ReportLoggedWarningThreaded":
-                config.NotifyLevel = LogType.Warning;
+                config.NotifyLogLevel = LogType.Warning;
+                config.EnabledErrorTypes.UnityLog = true;
+                break;
+            case "EventCallbacks":
+                config.AddOnError((@event)=> {
+
+                    @event.App.BinaryArch = "BinaryArch";
+                    @event.App.BundleVersion = "BundleVersion";
+                    @event.App.CodeBundleId = "CodeBundleId";
+                    @event.App.DsymUuid = "DsymUuid";
+                    @event.App.Id = "Id";
+                    @event.App.ReleaseStage = "ReleaseStage";
+                    @event.App.Type = "Type";
+                    @event.App.Version = "Version";
+                    @event.App.InForeground = false;
+                    @event.App.IsLaunching = false;
+
+                    @event.Device.Id = "Id";
+                    @event.Device.Jailbroken = true;
+                    @event.Device.Locale = "Locale";
+                    @event.Device.Manufacturer = "Manufacturer";
+                    @event.Device.Model = "Model";
+                    @event.Device.OsName = "OsName";
+                    @event.Device.OsVersion = "OsVersion";
+                    @event.Device.FreeDisk = 123;
+                    @event.Device.FreeMemory = 123;
+                    @event.Device.Orientation = "Orientation";
+
+                    @event.Errors[0].ErrorClass = "ErrorClass";
+
+                    @event.Errors[0].Stacktrace[0].Method = "Method";
+
+                    foreach (var crumb in @event.Breadcrumbs)
+                    {
+                        crumb.Message = "Custom Message";
+                        crumb.Type = BreadcrumbType.Request;
+                        crumb.Metadata = new Dictionary<string, object> { {"test", "test" } };
+                    }
+
+                    @event.AddMetadata("test1", new Dictionary<string, object> { { "test", "test" } });
+                    @event.AddMetadata("test2", new Dictionary<string, object> { { "test", "test" } });
+                    @event.ClearMetadata("test2");
+
+
+                    return true;
+                });
                 break;
             default: // no special config required
                 break;
@@ -265,6 +360,28 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "SetUserAfterInitCsharpError":
+                Bugsnag.SetUser("1","2","3");
+                Bugsnag.Notify(new Exception("SetUserAfterInitCsharpError"));
+                break;
+            case "SetUserAfterInitNativeError":
+                Bugsnag.SetUser("1", "2", "3");
+                crashy_signal_runner(8);
+                break;
+            case "LongLaunchDuration":
+            case "ShortLaunchDuration":
+                Invoke("LaunchException", 6);
+                break;
+            case "InfLaunchDurationMark":
+                Bugsnag.MarkLaunchCompleted();
+                throw new Exception("InfLaunchDurationMark");
+                break;
+            case "InfLaunchDuration":
+                Invoke("LaunchException",6);
+                break;
+            case "EventCallbacks":
+                DoNotify();
+                break;
             case "BackgroundThreadCrash":
                 BackgroundThreadCrash();
                 break;
@@ -285,10 +402,11 @@ public class Main : MonoBehaviour
                 DoUnhandledException(0);
                 break;
             case "EnableUnhandledExceptions":
-                CheckEnabledErrorTypes();
+                Debug.Log("LogLog");
+                Debug.LogException(new Exception("LogException"));
                 break;
             case "EnableLogLogs":
-                CheckEnabledErrorTypes();
+                Debug.Log("EnableLogLogs");
                 break;
             case "DisableAllErrorTypes":
                 CheckDisabledErrorTypes();
@@ -347,6 +465,7 @@ public class Main : MonoBehaviour
             case "LogUnthrown":
                 DoLogUnthrown();
                 break;
+            case "SetUserInConfigCsharpError":
             case "UncaughtException":
                 DoUnhandledException(0);
                 break;
@@ -354,10 +473,10 @@ public class Main : MonoBehaviour
                 MakeAssertionFailure(4);
                 break;
             case "UncaughtExceptionAsUnhandled":
-                UncaughtExceptionAsUnhandled();
+                ThrowException();
                 break;
             case "LogUnthrownAsUnhandled":
-                DoLogUnthrownAsUnhandled();
+                DebugLogException();
                 break;
             case "ReportLoggedWarningThreaded":
                 new System.Threading.Thread(() => DoLogWarning()).Start();
@@ -376,7 +495,7 @@ public class Main : MonoBehaviour
                 break;
             case "ManualSessionCrash":
                 Bugsnag.StartSession();
-                UncaughtExceptionAsUnhandled();
+                ThrowException();
                 break;
             case "ManualSessionNotify":
                 Bugsnag.StartSession();
@@ -396,11 +515,11 @@ public class Main : MonoBehaviour
                 Bugsnag.StartSession();
                 DoNotify();
                 DoLogWarning();
-                UncaughtExceptionAsUnhandled();
+                ThrowException();
                 break;
             case "StoppedSession":
                 Bugsnag.StartSession();
-                Bugsnag.StopSession();
+                Bugsnag.PauseSession();
                 DoNotify();
                 break;
             case "ResumedSession":
@@ -409,6 +528,7 @@ public class Main : MonoBehaviour
             case "NewSession":
                 RunNewSession();
                 break;
+            case "SetUserInConfigNativeCrash":
             case "NativeCrash":
                 crashy_signal_runner(8);
                 break;
@@ -419,7 +539,7 @@ public class Main : MonoBehaviour
                 DoNotify();
                 break;
             case "LoggedExceptionWithoutAutoNotify":
-                DoLogUnthrownAsUnhandled();
+                DebugLogException();
                 break;
             case "NativeCrashWithoutAutoNotify":
                 crashy_signal_runner(8);
@@ -439,6 +559,9 @@ public class Main : MonoBehaviour
                 break;
             case "AutoSession":
                 break;
+            case "DisableErrorBreadcrumbs":
+                DisableErrorBreadcrumbs();
+                break;
             case "(noop)":
                 break;
             default:
@@ -446,6 +569,16 @@ public class Main : MonoBehaviour
                 break;
         }
     }
+
+
+    private void DisableErrorBreadcrumbs()
+    {
+        Debug.Log("1");
+        Bugsnag.Notify(new Exception("1"));
+        Debug.Log("2");
+        Bugsnag.Notify(new Exception("2"));
+    }
+
 
     private void BackgroundThreadCrash()
     {
@@ -460,7 +593,7 @@ public class Main : MonoBehaviour
 
     private void AddKeysForRedaction()
     {
-        Bugsnag.Metadata.Add("User", new Dictionary<string, string>() {
+        Bugsnag.AddMetadata("User", new Dictionary<string, object>() {
                     {"test","test" },
                     { "password","password" }
                 });
@@ -508,7 +641,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("First Error"));
 
         // send 2nd exception after resuming a session
-        Bugsnag.StopSession();
+        Bugsnag.PauseSession();
         Bugsnag.ResumeSession();
         Bugsnag.Notify(new System.Exception("Second Error"));
     }
@@ -525,7 +658,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("First Error"));
 
         // stop tracking the existing session
-        Bugsnag.StopSession();
+        Bugsnag.PauseSession();
         yield return new WaitForSeconds(1);
         Bugsnag.StartSession();
 
@@ -533,7 +666,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("Second Error"));
     }
 
-    void UncaughtExceptionAsUnhandled()
+    void ThrowException()
     {
         throw new ExecutionEngineException("Invariant state failure");
     }
@@ -555,9 +688,9 @@ public class Main : MonoBehaviour
 
     void LeaveComplexBreadcrumbAndNotify()
     {
-        Bugsnag.LeaveBreadcrumb("Reload", BreadcrumbType.Navigation, new Dictionary<string, string>() {
+        Bugsnag.LeaveBreadcrumb("Reload",  new Dictionary<string, object>() {
       { "preload", "launch" }
-    });
+    }, BreadcrumbType.Navigation);
         Bugsnag.Notify(new System.Exception("Collective failure"));
     }
 
@@ -576,7 +709,7 @@ public class Main : MonoBehaviour
     IEnumerator SetManualContextReloadSceneAndNotify()
     {
         Bugsnag.Context = "Manually-Set";
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1,LoadSceneMode.Additive);
         yield return new WaitForSeconds(0.5f);
         Bugsnag.Notify(new System.Exception("ManualContext"));
     }
@@ -595,13 +728,16 @@ public class Main : MonoBehaviour
 
     void DoNotifyWithCallback()
     {
-        Bugsnag.Notify(new System.Exception("blorb"), report =>
+        Bugsnag.Notify(new System.Exception("blorb"), @event =>
         {
-            report.Exceptions[0].ErrorClass = "FunnyBusiness";
-            report.Exceptions[0].ErrorMessage = "cake";
-            report.Metadata.Add("shape", new Dictionary<string, string>() {
+            @event.Errors[0].ErrorClass = "FunnyBusiness";
+            @event.Errors[0].ErrorMessage = "cake";
+            @event.AddMetadata("shape", new Dictionary<string, object>() {
         { "arc", "yes" },
+        
       });
+
+            return true;
         });
     }
 
@@ -615,7 +751,7 @@ public class Main : MonoBehaviour
         Bugsnag.Notify(new System.Exception("blorb"));
     }
 
-    void DoLogUnthrownAsUnhandled()
+    void DebugLogException()
     {
         Debug.LogException(new System.Exception("WAT"));
     }
@@ -623,6 +759,11 @@ public class Main : MonoBehaviour
     void DoLogUnthrown()
     {
         Debug.LogException(new System.Exception("auth failed!"));
+    }
+
+    void LaunchException()
+    {
+        throw new Exception("Launch");
     }
 
     void DoUnhandledException(long counter)
@@ -671,11 +812,5 @@ public class Main : MonoBehaviour
     }
 }
 
-class OtherMetadata
-{
-    public override string ToString()
-    {
-        return "more stuff";
-    }
-}
+
 

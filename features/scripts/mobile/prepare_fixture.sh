@@ -2,7 +2,7 @@
 
 if [ -z "$UNITY_PATH" ]
 then
-  echo "UNITY_PATH must be set, to e.g. /Applications/Unity/Hub/Editor/2017.4.40f1/Unity.app/Contents/MacOS"
+  echo "UNITY_PATH must be set, to e.g. /Applications/Unity/Hub/Editor/2018.4.36f1/Unity.app/Contents/MacOS"
   exit 1
 fi
 
@@ -38,13 +38,5 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
                   -projectPath $project_path \
                   -ignoreCompilerErrors \
                   -importPackage $script_path/../../../Bugsnag.unitypackage
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
-echo "Importing Bugsnag-with-android-64bit.unitypackage into $project_path"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
-                  -projectPath $project_path \
-                  -ignoreCompilerErrors \
-                  -importPackage $script_path/../../../Bugsnag-with-android-64bit.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi

@@ -7,72 +7,132 @@ namespace BugsnagUnity.Payload
     /// <summary>
     /// Represents an individual breadcrumb in the error report payload.
     /// </summary>
-    public class Breadcrumb : Dictionary<string, object>
+    public class Breadcrumb : PayloadContainer, IBreadcrumb
     {
-        private const string UndefinedName = "Breadcrumb";
+        // Notifier spec specifies Message, but the pipeline is still expecting the legacy field name
+        private const string MESSAGE_KEY = "name";
+        private const string TIMESTAMP_KEY = "timestamp";
+        private const string METADATA_KEY = "metaData";
+        private const string TYPE_KEY = "type";
 
         internal static Breadcrumb FromReport(Report report)
         {
-            var name = "Error";
-            var metadata = new Dictionary<string, string> { };
+            var message = "Error";
+            var metadata = new Dictionary<string, object> { };
             if (report.Context != null)
             {
                 metadata["context"] = report.Context;
             }
-
             if (report.Exceptions != null && report.Exceptions.Any())
             {
                 var exception = report.Exceptions.First();
-                name = exception.ErrorClass;
-                metadata.Add("message", exception.ErrorMessage);
+                metadata["message"] = exception.ErrorMessage;
+                metadata["errorClass"] = exception.ErrorClass;
+                metadata["unhandled"] = !report.IsHandled;
+                metadata["severity"] = report.OriginalSeverity;
+                message = exception.ErrorClass;
             }
-
-            return new Breadcrumb(name, BreadcrumbType.Error, metadata);
+            return new Breadcrumb(message, metadata, BreadcrumbType.Error);
         }
 
         /// <summary>
         /// Used to construct a breadcrumb from the native data obtained from a
         /// native notifier if present.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="timestamp"></param>
-        /// <param name="type"></param>
-        /// <param name="metadata"></param>
-        internal Breadcrumb(string name, string timestamp, string type, IDictionary<string, string> metadata)
+        internal Breadcrumb(string message, string timestamp, string type, IDictionary<string, object> metadata)
         {
-            this.AddToPayload("name", name);
-            this.AddToPayload("timestamp", timestamp);
-            this.AddToPayload("metaData", metadata);
-            this.AddToPayload("type", type);
-        }
-
-        public Breadcrumb(string name, BreadcrumbType type) : this(name, type, null)
-        {
-
-        }
-
-        public Breadcrumb(string name, BreadcrumbType type, IDictionary<string, string> metadata)
-        {
-            if (name == null) name = UndefinedName;
-
-            this.AddToPayload("name", name);
-            this.AddToPayload("timestamp", DateTime.UtcNow);
-            this.AddToPayload("metaData", metadata);
-
-            string breadcrumbType = Enum.GetName(typeof(BreadcrumbType), type).ToLower();
-
-            if (string.IsNullOrEmpty(breadcrumbType))
+            Timestamp = DateTimeOffset.Parse( timestamp );
+            Metadata = metadata;
+            if (string.IsNullOrEmpty(type))
             {
-                breadcrumbType = "manual";
+                Type = BreadcrumbType.Manual;
             }
-
-            this.AddToPayload("type", breadcrumbType);
+            else
+            {
+                Type = ParseBreadcrumbType(type);
+            }
+            Message = message;
         }
 
-        public string Name { get { return this.Get("name") as string; } }
+        internal Breadcrumb(string message,IDictionary<string, object> metadata, BreadcrumbType type)
+        {
+            Timestamp = DateTime.UtcNow;
+            Metadata = metadata;
+            Type = type;
+            Message = message;
+        }
 
-        public string Type { get { return this.Get("type") as string; } }
+        public IDictionary<string, object> Metadata
+        {
+            get
+            {
+                if (Get(METADATA_KEY) == null)
+                {
+                    Metadata = new Dictionary<string, object>();
+                }
+                return Get(METADATA_KEY) as IDictionary<string, object>;
+            }
+            set
+            {
+                Add(METADATA_KEY, value);
+            }
+        }
 
-        public IDictionary<string, string> Metadata { get { return this.Get("metaData") as IDictionary<string, string>; } }
+        public string Message
+        {
+            get { return Get(MESSAGE_KEY) as string; }
+            set { Add(MESSAGE_KEY, value); }
+        }
+
+        public BreadcrumbType Type {
+            get {
+                var stringValue = (string)Get(TYPE_KEY);
+                return ParseBreadcrumbType(stringValue);
+            }
+            set { Add(TYPE_KEY, value.ToString().ToLower()); }
+        }
+
+        public DateTimeOffset? Timestamp {
+            get { return (DateTimeOffset)Get(TIMESTAMP_KEY); }
+            set { Add(TIMESTAMP_KEY,value); }
+        }
+
+        internal static BreadcrumbType ParseBreadcrumbType(string name)
+        {
+            if (name.Contains("error"))
+            {
+                return BreadcrumbType.Error;
+            }
+            if (name.Contains("log"))
+            {
+                return BreadcrumbType.Log;
+            }
+            if (name.Contains("navigation"))
+            {
+                return BreadcrumbType.Navigation;
+            }
+            if (name.Contains("process"))
+            {
+                return BreadcrumbType.Process;
+            }
+            if (name.Contains("request"))
+            {
+                return BreadcrumbType.Request;
+            }
+            if (name.Contains("state"))
+            {
+                return BreadcrumbType.State;
+            }
+            if (name.Contains("user"))
+            {
+                return BreadcrumbType.User;
+            }
+            if (name.Contains("manual"))
+            {
+                return BreadcrumbType.Manual;
+            }
+            return BreadcrumbType.Manual;            
+        }
+
     }
 }

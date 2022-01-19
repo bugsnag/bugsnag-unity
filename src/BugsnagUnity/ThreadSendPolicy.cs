@@ -3,8 +3,8 @@ namespace BugsnagUnity
 {
     public enum ThreadSendPolicy
     {
-        ALWAYS = 0,
-        UNHANDLED_ONLY = 1,
-        NEVER = 2
+        Always = 0,
+        UnhandledOnly = 1,
+        Never = 2
     }
 }

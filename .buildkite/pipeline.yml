@@ -15,7 +15,6 @@ steps:
       - bundle exec rake plugin:export
     artifact_paths:
       - Bugsnag.unitypackage
-      - Bugsnag-with-android-64bit.unitypackage
 
   #
   # Build MacOS and WebGL test fixtures
@@ -32,7 +31,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
     commands:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
@@ -99,7 +97,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
         upload:
           - features/fixtures/maze_runner/mazerunner_2020.3.25f1.apk
           - features/fixtures/unity.log
@@ -155,7 +152,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
         upload:
           - features/fixtures/maze_runner/mazerunner_2020.3.25f1.ipa
           - features/fixtures/unity.log
@@ -182,7 +178,6 @@ steps:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
-          - Bugsnag-with-android-64bit.unitypackage
           - project_2020.tgz
         upload:
           - features/fixtures/maze_runner/mazerunner_2020.3.25f1.ipa

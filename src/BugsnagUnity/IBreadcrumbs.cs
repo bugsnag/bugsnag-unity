@@ -5,12 +5,10 @@ namespace BugsnagUnity
 {
     public interface IBreadcrumbs
     {
-        void Leave(string message);
-
-        void Leave(string message, BreadcrumbType type, IDictionary<string, string> metadata);
+        void Leave(string message, Dictionary<string, object> metadata, BreadcrumbType type);
 
         void Leave(Breadcrumb breadcrumb);
 
-        Breadcrumb[] Retrieve();
+        List<Breadcrumb> Retrieve();
     }
 }

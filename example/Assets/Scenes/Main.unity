@@ -1525,10 +1525,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1400368127}
-  - component: {fileID: 1400368129}
   - component: {fileID: 1400368128}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: ExampleController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1573,25 +1572,6 @@ MonoBehaviour:
   ApplicationNotResponding: {fileID: 1395618190}
   OutOfMemory: {fileID: 51741570}
   AppHang: {fileID: 2008444565}
---- !u!114 &1400368129
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1400368126}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b05d91f2dc71f4d69bd3591a6381b3d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  BugsnagApiKey: 272559925a6765983bffd141324f0a43
-  AutoNotify: 1
-  AutoDetectAnrs: 1
-  NotifyLevel: 4
-  MaximumBreadcrumbs: 25
-  UniqueLogsPerSecond: 5
-  AutoCaptureSessions: 1
 --- !u!1 &1496039625
 GameObject:
   m_ObjectHideFlags: 0
