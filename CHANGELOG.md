@@ -1,6 +1,12 @@
 # Changelog
 
-## TBD
+* ## 6.0.0 (2022-01-20)
+
+This version contains **breaking** changes, as bugsnag-unity has been updated to allow for more convenient and performant initialisation and configuration features.
+
+Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
+
+In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag Android Notifier has been updated. See below for details.
 
 * Update bugsnag-android to v5.18.0
   * Bump compileSdkVersion to apiLevel 31
