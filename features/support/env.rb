@@ -39,6 +39,13 @@ Maze.hooks.before do
     support_dir = File.expand_path '~/Library/Application Support/com.bugsnag.Bugsnag'
     $logger.info "Clearing #{support_dir}"
     FileUtils.rm_rf(support_dir)
+    $logger.info "Clearing User defaults"
+    Maze::Runner.run_command("defaults delete com.bugsnag.MazeRunner");
+
+    # This is to get around a strange macos bug where clearing prefs does not work 
+    $logger.info "Killing defaults service"
+    Maze::Runner.run_command("killall -u #{ENV['USER']} cfprefsd")
+
   end
 end
 
