@@ -2,7 +2,7 @@
 
 ## TBD
 
-* Update bugsnag-android to v5.17.0
+* Update bugsnag-android to v5.18.0
   * Bump compileSdkVersion to apiLevel 31
     [bugsnag-android#1536](https://github.com/bugsnag/bugsnag-android/pull/1536)
   * Flush in-memory sessions first
@@ -20,6 +20,16 @@
     [bugsnag-android#1531](https://github.com/bugsnag/bugsnag-android/pull/1531)
   * Improve performance on the breadcrumb storage "hot path" by removing Date formatting
     [bugsnag-android#1525](https://github.com/bugsnag/bugsnag-android/pull/1525)
+  * Improve the memory use and performance overhead when handling the delivery response status codes
+    [bugsnag-android#1558](https://github.com/bugsnag/bugsnag-android/pull/1558)
+  * Harden ndk layer through use of const keyword
+    [bugsnag-android#1566](https://github.com/bugsnag/bugsnag-android/pull/1566)
+  * Delete persisted NDK events earlier in delivery process
+    [bugsnag-android#1562](https://github.com/bugsnag/bugsnag-android/pull/1562)
+  * Add null checks for strlen()
+    [bugsnag-android#1563](https://github.com/bugsnag/bugsnag-android/pull/1563)
+  * Catch IOException when logging response status code
+    [bugsnag-android#1567](https://github.com/bugsnag/bugsnag-android/pull/1567)
 
 ## 5.4.2 (2021-11-16)
 
