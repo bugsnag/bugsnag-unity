@@ -68,7 +68,7 @@ namespace BugsnagUnity.Payload
     /// <summary>
     /// Represents an individual stack trace line in the Bugsnag payload.
     /// </summary>
-    public class StackTraceLine : Dictionary<string, object>
+    public class StackTraceLine : Dictionary<string, object>, IStackframe
     {
         private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
         private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
@@ -166,5 +166,15 @@ namespace BugsnagUnity.Payload
                 this.AddToPayload("method", value);
             }
         }
+
+        public string FrameAddress { get; set; }
+        public bool? IsLr { get; set; }
+        public bool? IsPc { get; set; }
+        public string MachoFile { get; set; }
+        public string MachoLoadAddress { get; set; }
+        public string MachoUuid { get; set; }
+        public string MachoVmAddress { get; set; }
+        public string SymbolAddress { get; set; }
+        public bool? InProject { get; set; }
     }
 }

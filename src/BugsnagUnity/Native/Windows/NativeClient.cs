@@ -8,7 +8,7 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
-        public IConfiguration Configuration { get; }
+        public Configuration Configuration { get; }
 
         public IBreadcrumbs Breadcrumbs { get; }
 
@@ -18,7 +18,9 @@ namespace BugsnagUnity
 
         private bool _hasReceivedLowMemoryWarning = false;
 
-        public NativeClient(IConfiguration configuration)
+        private Metadata _fallbackMetadata = new Metadata();
+
+        public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
@@ -28,36 +30,41 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            AddIsLaunching(app);
-            app.AddToPayload("lowMemory", _hasReceivedLowMemoryWarning);
         }
 
-        private void AddIsLaunching(App app)
+        public void PopulateAppWithState(AppWithState app)
         {
-            if (!app.ContainsKey("durationInForeground"))
-            {
-                return;
-            }
+            AddIsLaunching(app);
+            app.Add("lowMemory", _hasReceivedLowMemoryWarning);
+        }
+
+        private void AddIsLaunching(AppWithState app)
+        {
             bool isLaunching;
             if (Configuration.LaunchDurationMillis == 0)
             {
-                isLaunching = _launchMarkedAsCompleted;
+                isLaunching = !_launchMarkedAsCompleted;
             }
             else
             {
-                isLaunching = app.DurationInForeground.Milliseconds < Configuration.LaunchDurationMillis;
+                isLaunching = app.DurationInForeground?.TotalMilliseconds < Configuration.LaunchDurationMillis;
             }
-            app.AddToPayload("isLaunching", isLaunching);
+            app.IsLaunching = isLaunching;
         }
 
         public void PopulateDevice(Device device)
         {
-            device.AddToPayload("manufacturer", "PC");
-            device.AddToPayload("model", SystemInfo.deviceModel);
+            device.Manufacturer = "PC";
+            device.Model =  SystemInfo.deviceModel;
+        }
+
+        public void PopulateDeviceWithState(DeviceWithState device)
+        {
+            PopulateDevice(device);
             MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
             if (GlobalMemoryStatusEx(memStatus))
             {
-                device.AddToPayload("freeMemory", memStatus.ullAvailPhys);
+                device.FreeMemory = (long)memStatus.ullAvailPhys;
             }
 
             // This is generally the main drive on a Windows machine
@@ -68,7 +75,7 @@ namespace BugsnagUnity
                                               out ulong totalNumberOfBytes,
                                               out ulong totalNumberOfFreeBytes))
             {
-                device.AddToPayload("freeDisk", freeBytesAvailable);
+                device.FreeDisk = (long)freeBytesAvailable;
             }
         }
 
@@ -80,7 +87,7 @@ namespace BugsnagUnity
         {
         }
 
-        public void SetMetadata(string tab, Dictionary<string, string> metadata)
+        public void SetMetadata(string section, Dictionary<string, object> metadata)
         {
         }
 
@@ -161,6 +168,26 @@ namespace BugsnagUnity
         public LastRunInfo GetLastRunInfo()
         {
             return null;
+        }
+
+        public void ClearNativeMetadata(string section)
+        {
+            _fallbackMetadata.ClearMetadata(section);
+        }
+
+        public void ClearNativeMetadata(string section, string key)
+        {
+            _fallbackMetadata.ClearMetadata(section, key);
+        }
+
+        public void AddNativeMetadata(string section, IDictionary<string, object> data)
+        {
+            _fallbackMetadata.AddMetadata(section, data);
+        }
+
+        public IDictionary<string, object> GetNativeMetadata()
+        {
+            return _fallbackMetadata.Payload;
         }
     }
 }

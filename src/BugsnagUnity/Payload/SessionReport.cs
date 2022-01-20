@@ -5,13 +5,13 @@ namespace BugsnagUnity.Payload
 {
     class SessionReport : Dictionary<string, object>, IPayload
     {
-        IConfiguration Configuration { get; }
+        Configuration Configuration { get; }
 
         public Uri Endpoint => Configuration.Endpoints.Session;
 
         public KeyValuePair<string, string>[] Headers { get; }
 
-        public SessionReport(IConfiguration configuration, App app, Device device, User user, Payload.Session session)
+        public SessionReport(Configuration configuration, App app, Device device, User user, Payload.Session session)
         {
             Configuration = configuration;
             Headers = new KeyValuePair<string, string>[] {
@@ -19,8 +19,8 @@ namespace BugsnagUnity.Payload
         new KeyValuePair<string, string>("Bugsnag-Payload-Version", Configuration.SessionPayloadVersion),
       };
             this.AddToPayload("notifier", NotifierInfo.Instance);
-            this.AddToPayload("app", app);
-            this.AddToPayload("device", device);
+            this.AddToPayload("app", app.Payload);
+            this.AddToPayload("device", device.Payload);
             this.AddToPayload("sessions", new Session[] { new Session(user, session) });
         }
 
@@ -30,7 +30,7 @@ namespace BugsnagUnity.Payload
             {
                 this.AddToPayload("id", session.Id);
                 this.AddToPayload("startedAt", session.StartedAt);
-                this.AddToPayload("user", user);
+                this.AddToPayload("user", user.Payload);
             }
         }
     }

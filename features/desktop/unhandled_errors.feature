@@ -27,11 +27,10 @@ Feature: Reporting unhandled events
             | Main.RunScenario(System.String scenario)         | |
             | Main.Start()               | |
 
+
         #device metadata
-        And the event "device.charging" is not null
         And the event "device.freeDisk" is greater than 0
         And the event "device.freeMemory" is greater than 0
-        And the event "device.hostname" is not null
         And the event "device.id" is not null
         And the event "device.locale" is not null
         And the event "device.manufacturer" is not null
@@ -39,22 +38,32 @@ Feature: Reporting unhandled events
         And the event "device.osName" is not null
         And the event "device.osVersion" is not null
         And the event "device.runtimeVersions" is not null
-        And the event "device.screenDensity" is greater than 0
-        And the event "device.screenResolution" is not null
         And the event "device.time" is a timestamp
-        And the event "device.timezone" is not null
         And the event "device.totalMemory" is greater than 0
+
+        #auto metadata
+        And the event "metaData.device.screenDensity" is not null
+        And the event "metaData.device.screenResolution" is not null
+        And the event "metaData.device.osLanguage" equals "English"
+        And the event "metaData.device.graphicsDeviceVersion" is not null
+        And the event "metaData.device.graphicsMemorySize" is not null
+        And the event "metaData.device.processorType" is not null
+
 
         #app metadata
         And the event "app.duration" is greater than 0
-        # TODO Pending PLAT-7433
-        # And the event "app.durationInForeground" is greater than 0
+        And the event "app.durationInForeground" is not null
         And the event "app.inForeground" is not null
         And the event "app.isLaunching" is not null
         And the event "app.lowMemory" is not null
         And the event "app.releaseStage" is not null
         And the event "app.type" equals "Windows"
         And the event "app.version" is not null
+
+        #auto app data
+        And the event "metaData.app.companyName" equals "bugsnag"
+        And the event "metaData.app.name" equals "Mazerunner"
+        And the event "metaData.app.buildno" is not null
 
 
     @skip_webgl
@@ -80,7 +89,7 @@ Feature: Reporting unhandled events
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the first significant stack frame methods and files should match:
-            | Main.UncaughtExceptionAsUnhandled() |
+            | Main.ThrowException() |
             | Main.RunScenario(System.String scenario) |
             | Main.Start()               |
 
@@ -161,4 +170,74 @@ Feature: Reporting unhandled events
         And I wait to receive an error
         Then the error is valid for the error reporting API sent by the Unity notifier
         And the exception "message" equals "Background Thread Crash"
+
+    @windows_only
+    Scenario: Fallback Launch Duration set to 0
+        When I run the game in the "InfLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" is true
+
+    @windows_only
+    Scenario: Calling Mark Launch Complete
+        When I run the game in the "InfLaunchDurationMark" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "InfLaunchDurationMark"
+       
+        #app metadata
+        And the event "app.isLaunching" is false
+
+    @macos_only
+    Scenario: Fallback Launch Duration set to 0
+        When I run the game in the "InfLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" equals "true"
+
+    @macos_only
+    Scenario: Calling Mark Launch Complete
+        When I run the game in the "InfLaunchDurationMark" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "InfLaunchDurationMark"
+       
+        #app metadata
+        And the event "app.isLaunching" equals "false"
+
+    @macos_only
+    Scenario: Setting long launch time
+        When I run the game in the "LongLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" equals "true"
+
+    @macos_only
+    Scenario: Setting short launch time
+        When I run the game in the "ShortLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" equals "false"
+
+    @windows_only
+    Scenario: Setting long launch time
+        When I run the game in the "LongLaunchDuration" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "Launch"
+       
+        #app metadata
+        And the event "app.isLaunching" is true
 

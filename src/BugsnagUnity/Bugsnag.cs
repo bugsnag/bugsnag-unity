@@ -6,76 +6,67 @@ namespace BugsnagUnity
 {
     public static class Bugsnag
     {
+
+        private const string INIT_WARNING = "Bugsnag is already running and this call to Start() will be ignored. If this was unexpected please check whether Bugsnag is set to start automatically via the settings dialog.";
+
         static object _clientLock = new object();
 
-        public static IClient Start(string apiKey)
+        public static void Start(string apiKey)
         {
-            return Start(new Configuration(apiKey));
+            Start(new Configuration(apiKey));
         }
 
-        public static IClient Start(IConfiguration configuration)
+        public static void Start(Configuration configuration)
         {
+
             lock (_clientLock)
             {
                 if (InternalClient == null)
                 {
-                    var nativeClient = new NativeClient(configuration);
+                    var configClone = configuration.Clone();
+                    var nativeClient = new NativeClient(configClone);
                     InternalClient = new Client(nativeClient);
                 }
+                else
+                {
+                    UnityEngine.Debug.LogWarning(INIT_WARNING);
+                }
             }
-
-            return Client;
         }
 
         static Client InternalClient { get; set; }
 
         private static IClient Client => InternalClient;
 
-        public static IBreadcrumbs Breadcrumbs => Client.Breadcrumbs;
-
         public static ISessionTracker SessionTracking => Client.SessionTracking;
-
-        public static User User => Client.User;
 
         public static void Send(IPayload payload) => Client.Send(payload);
 
-        public static Metadata Metadata => Client.Metadata;
-
-        public static void BeforeNotify(Middleware middleware) => Client.BeforeNotify(middleware);
-
         public static void Notify(string name, string message, string stackTrace) => InternalClient.Notify(name, message, stackTrace, null);
 
-        public static void Notify(string name, string message, string stackTrace, Middleware callback) => InternalClient.Notify(name, message, stackTrace, callback);
+        public static void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback) => InternalClient.Notify(name, message, stackTrace, callback);
 
         public static void Notify(System.Exception exception) => InternalClient.Notify(exception, 3);
 
         public static void Notify(System.Exception exception, string stacktrace) => InternalClient.Notify(exception, stacktrace, null);
 
-        public static void Notify(System.Exception exception, string stacktrace, Middleware callback) => InternalClient.Notify(exception, stacktrace, callback);
+        public static void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback) => InternalClient.Notify(exception, stacktrace, callback);
 
-        public static void Notify(System.Exception exception, Middleware callback) => InternalClient.Notify(exception, callback, 3);
+        public static void Notify(System.Exception exception, Func<IEvent, bool> callback) => InternalClient.Notify(exception, callback, 3);
 
         public static void Notify(System.Exception exception, Severity severity) => InternalClient.Notify(exception, severity, 3);
 
-        public static void Notify(System.Exception exception, Severity severity, Middleware callback) => InternalClient.Notify(exception, severity, callback, 3);
+        public static void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback) => InternalClient.Notify(exception, severity, callback, 3);
 
-        public static void LeaveBreadcrumb(string message) => InternalClient.Breadcrumbs.Leave(message);
+        public static List<Breadcrumb> Breadcrumbs => Client.Breadcrumbs.Retrieve();
 
-        public static void LeaveBreadcrumb(string message, BreadcrumbType type, IDictionary<string, string> metadata) => InternalClient.Breadcrumbs.Leave(message, type, metadata);
+        public static void LeaveBreadcrumb(string message, Dictionary<string, object> metadata = null, BreadcrumbType type = BreadcrumbType.Manual ) => InternalClient.Breadcrumbs.Leave(message, metadata, type);
 
-        public static void LeaveBreadcrumb(Breadcrumb breadcrumb) => InternalClient.Breadcrumbs.Leave(breadcrumb);
+        public static User GetUser() => Client.GetUser();
 
-        public static void SetUser(string id, string email, string name)
-        {
-            User.Id = id;
-            User.Email = email;
-            User.Name = name;
-        }
+        public static void SetUser(string id, string email, string name) => Client.SetUser(id, email, name);
 
         public static void StartSession() => InternalClient.SessionTracking.StartSession();
-
-        [Obsolete("StopSession is deprecated, please use PauseSession instead.", false)]
-        public static void StopSession() => PauseSession();
 
         public static void PauseSession() => InternalClient.SessionTracking.PauseSession();
 
@@ -88,18 +79,6 @@ namespace BugsnagUnity
         /// </summary>
         /// <param name="inFocus"></param>
         public static void SetApplicationState(bool inFocus) => Client.SetApplicationState(inFocus);
-
-        /// <summary>
-        /// Bugsnag uses the concept of contexts to help display and group your errors.
-        /// Contexts represent what was happening in your game at the time an error
-        /// occurs. Unless manually set, this will be automatically set to be your currently active Unity Scene.
-        /// </summary>
-        /// <param name="context"></param>
-        [Obsolete("SetContext is deprecated, please use the property Bugsnag.Context instead.", false)]
-        public static void SetContext(string context)
-        {
-            Client.SetContext(context);
-        }
 
         /// <summary>
         /// Bugsnag uses the concept of contexts to help display and group your errors.
@@ -119,52 +98,65 @@ namespace BugsnagUnity
         }
 
         /// <summary>
-        /// By default, we will automatically notify Bugsnag of any fatal errors (crashes) in your game.
-        /// If you want to stop this from happening, you can set the AutoNotify property to false. It
-        /// is recommended that you set this value by Configuration at init rather than this method.
-        /// </summary>
-        /// <param name="autoNotify"></param>
-        [Obsolete("SetAutoNotify is deprecated, please use SetAutoDetectErrors instead.", false)]
-        public static void SetAutoNotify(bool autoNotify)
-        {
-            SetAutoDetectErrors(autoNotify);
-        }
-
-        /// <summary>
-        /// By default, we will automatically notify Bugsnag of any fatal errors (crashes) in your game.
-        /// If you want to stop this from happening, you can set the AutoDetectErrors property to false. It
-        /// is recommended that you set this value by Configuration at init rather than this method.
-        /// </summary>
-        /// <param name="autoDetectErrors"></param>
-        public static void SetAutoDetectErrors(bool autoDetectErrors)
-        {
-            Client.SetAutoDetectErrors(autoDetectErrors);
-        }
-
-        /// <summary>
-        /// Enable or disable Bugsnag reporting any Android not responding errors (ANRs) in your game.
-        /// </summary>
-        /// <param name="autoDetectAnrs"></param>
-        public static void SetAutoDetectAnrs(bool autoDetectAnrs)
-        {
-            Client.SetAutoDetectAnrs(autoDetectAnrs);
-        }
-
-        /// <summary>
         /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
         /// </summary>
-        public static void MarkLaunchCompleted()
-        {
-            Client.MarkLaunchCompleted();
-        }
-
+        public static void MarkLaunchCompleted() => Client.MarkLaunchCompleted();
+      
         /// <summary>
         /// Get information regarding the last application run. This will be null on non mobile platforms.
         /// </summary>
-        public static LastRunInfo GetLastRunInfo()
-        {
-            return Client.LastRunInfo;
-        }
+        public static LastRunInfo GetLastRunInfo() => Client.LastRunInfo;
+       
+
+        /// <summary>
+        /// Add an OnError callback to run when an error occurs
+        /// </summary>
+        public static void AddOnError(Func<IEvent, bool> bugsnagCallback) => Client.AddOnError(bugsnagCallback);
+
+        /// <summary>
+        /// Remove an OnError callback
+        /// </summary>
+        public static void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Client.RemoveOnError(bugsnagCallback);
+       
+        /// <summary>
+        /// Add an OnSession callback to run when an session is created
+        /// </summary>
+        public static void AddOnSession(Func<ISession, bool> callback) => Client.AddOnSession(callback);
+       
+        /// <summary>
+        /// Remove an OnSession callback
+        /// </summary>
+        public static void RemoveOnSession(Func<ISession, bool> callback) => Client.RemoveOnSession(callback);
+
+        /// <summary>
+        /// AddMetadata that will appear in every reported event
+        /// </summary>
+        public static void AddMetadata(string section, string key, object value) => Client.AddMetadata(section, key, value);
+
+        /// <summary>
+        /// AddMetadata that will appear in every reported event
+        /// </summary>
+        public static void AddMetadata(string section, IDictionary<string, object> metadata) => Client.AddMetadata(section, metadata);
+
+        /// <summary>
+        /// Clear the metadata stored in the specified section
+        /// </summary>
+        public static void ClearMetadata(string section) => Client.ClearMetadata(section);
+
+        /// <summary>
+        /// Clear the metadata stored with the specified section and key
+        /// </summary>
+        public static void ClearMetadata(string section, string key) => Client.ClearMetadata(section, key);
+
+        /// <summary>
+        /// Get the metadata stored in the specified section 
+        /// </summary>
+        public static IDictionary<string, object> GetMetadata(string section) => Client.GetMetadata(section);
+
+        /// <summary>
+        /// Get the metadata stored with the specified section and key
+        /// </summary>
+        public static object GetMetadata(string section, string key) => Client.GetMetadata(section, key);
 
     }
 }

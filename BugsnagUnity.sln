@@ -7,7 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnityEngine", "tests\UnityE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{330E1C29-F8C0-4FFC-9FE9-9FA71DE400FC}"
 	ProjectSection(SolutionItems) = preProject
-		src\Assets\Standard Assets\Bugsnag\BugsnagBehaviour.cs = src\Assets\Standard Assets\Bugsnag\BugsnagBehaviour.cs
 		src\BugsnagUnity.mm = src\BugsnagUnity.mm
 	EndProjectSection
 EndProject

@@ -1,12 +1,54 @@
 # Changelog
 
-## TBD
+* ## 6.0.0 (2022-01-20)
+
+This version contains **breaking** changes, as bugsnag-unity has been updated to allow for more convenient and performant initialisation and configuration features.
+
+Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
+
+In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag Android Notifier has been updated. See below for details.
+
+* Update bugsnag-android to v5.18.0
+  * Bump compileSdkVersion to apiLevel 31
+    [bugsnag-android#1536](https://github.com/bugsnag/bugsnag-android/pull/1536)
+  * Flush in-memory sessions first
+    [bugsnag-android#1538](https://github.com/bugsnag/bugsnag-android/pull/1538)
+  * Avoid unnecessary network connectivity change breadcrumb
+    [bugsnag-android#1540](https://github.com/bugsnag/bugsnag-android/pull/1540)
+    [bugsnag-android#1546](https://github.com/bugsnag/bugsnag-android/pull/1546)
+  * Clear native stacktrace memory in `bugsnag_notify_env` before attempting to unwind the stack
+    [bugsnag-android#1543](https://github.com/bugsnag/bugsnag-android/pull/1543)
+  * Increase resilience of NDK stackframe method capture
+    [bugsnag-android#1484](https://github.com/bugsnag/bugsnag-android/pull/1484)
+  * `redactedKeys` now correctly apply to metadata on Event breadcrumbs
+    [bugsnag-android#1526](https://github.com/bugsnag/bugsnag-android/pull/1526)
+  * Improved the robustness of automatically logged `ERROR` breadcrumbs
+    [bugsnag-android#1531](https://github.com/bugsnag/bugsnag-android/pull/1531)
+  * Improve performance on the breadcrumb storage "hot path" by removing Date formatting
+    [bugsnag-android#1525](https://github.com/bugsnag/bugsnag-android/pull/1525)
+  * Improve the memory use and performance overhead when handling the delivery response status codes
+    [bugsnag-android#1558](https://github.com/bugsnag/bugsnag-android/pull/1558)
+  * Harden ndk layer through use of const keyword
+    [bugsnag-android#1566](https://github.com/bugsnag/bugsnag-android/pull/1566)
+  * Delete persisted NDK events earlier in delivery process
+    [bugsnag-android#1562](https://github.com/bugsnag/bugsnag-android/pull/1562)
+  * Add null checks for strlen()
+    [bugsnag-android#1563](https://github.com/bugsnag/bugsnag-android/pull/1563)
+  * Catch IOException when logging response status code
+    [bugsnag-android#1567](https://github.com/bugsnag/bugsnag-android/pull/1567)
 
 ## 5.4.2 (2021-11-16)
 
 * Update bugsnag-cocoa to v6.14.2
   * Fix missing `configuration.user` and manually resumed `session` info in unhandled errors.
     [bugsnag-cocoa#1215](https://github.com/bugsnag/bugsnag-cocoa/pull/1215)
+* Update bugsnag-android to v5.15.0 
+  * Avoid reporting false-positive background ANRs with improved foreground detection
+    [bugsnag-android#1429](https://github.com/bugsnag/bugsnag-android/pull/1429)
+  * Prevent events being attached to phantom sessions when they are blocked by an `OnSessionCallback`
+    [bugsnag-android#1434](https://github.com/bugsnag/bugsnag-android/pull/1434)
+  * Plugins will correctly mirror metadata added using `addMetadata(String, Map)`
+    [bugsnag-android#1454](https://github.com/bugsnag/bugsnag-android/pull/1454)
 
 ### Bug fixes
 

@@ -1,40 +1,63 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using UnityEngine.Events;
+#nullable enable
 
 namespace BugsnagUnity.Payload
 {
-    public class User : Dictionary<string, string>, IFilterable, INotifyPropertyChanged
+    public class User : PayloadContainer, IUser
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        internal UnityEvent PropertyChanged = new UnityEvent();
+
+        private const string ID_KEY = "id";
+        private const string NAME_KEY = "name";
+        private const string EMAIL_KEY = "email";
+
 
         internal User()
         {
 
         }
 
+        public User(string id,  string email, string name)
+        {
+            Id = id;
+            Name = name;
+            Email = email;
+        }
+
         public string Id
         {
-            get
-            {
-                return this.Get("id");
-            }
+            get {
+                var @object = Get(ID_KEY);
+                if (@object == null)
+                {
+                    return string.Empty;
+                }
+                return (string)@object;
+            } 
             set
             {
-                this.AddToPayload("id", value);
-                OnPropertyChanged("Id");
-            }
+                Add(ID_KEY, value);
+                PropertyChanged.Invoke();
+            }  
         }
 
         public string Name
         {
             get
             {
-                return this.Get("name");
+                var @object = Get(NAME_KEY);
+                if (@object == null)
+                {
+                    return string.Empty;
+                }
+                return (string)@object;
             }
             set
             {
-                this.AddToPayload("name", value);
-                OnPropertyChanged("Name");
+                Add(NAME_KEY, value);
+                PropertyChanged.Invoke();
             }
         }
 
@@ -42,20 +65,23 @@ namespace BugsnagUnity.Payload
         {
             get
             {
-                return this.Get("email");
+                var @object = Get(EMAIL_KEY);
+                if (@object == null)
+                {
+                    return string.Empty;
+                }
+                return (string)@object;
             }
             set
             {
-                this.AddToPayload("email", value);
-                OnPropertyChanged("Email");
+                Add(EMAIL_KEY, value);
+                PropertyChanged.Invoke();
             }
         }
 
-        public void OnPropertyChanged(string propertyName)
+        internal User Clone()
         {
-            // Inform the Client when its user changes a property as it will need to be
-            // synchronized with the native layer
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            return (User)MemberwiseClone();
         }
     }
 }

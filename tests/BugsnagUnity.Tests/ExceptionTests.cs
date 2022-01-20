@@ -21,10 +21,10 @@ namespace BugsnagUnity.Payload.Tests
    UnityEngine.EventSystems.ExecuteEvents.Execute[IPointerClickHandler] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor) [0x00000] in <filename unknown>:0";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
-            Assert.True(Exception.ShouldSend(log));
+            Assert.True(Error.ShouldSend(log));
 
-            var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Info);
-            var stack = exception.StackTrace.ToList();
+            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Info);
+            var stack = exception.Stacktrace.ToList();
             Assert.AreEqual(7, stack.Count);
             Assert.AreEqual("IndexOutOfRangeException", exception.ErrorClass);
             Assert.AreEqual("Array index is out of range.", exception.ErrorMessage);
@@ -61,7 +61,7 @@ libunity.003606e3(Unknown:-2)
 app_process64.000d1b11(Unknown:-2)";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
-            Assert.False(Exception.ShouldSend(log));
+            Assert.False(Error.ShouldSend(log));
         }
 
         [Test]
@@ -73,9 +73,9 @@ com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash(CrashHelper.java:11)
 com.unity3d.player.UnityPlayer.nativeRender(Native Method)";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
-            Assert.True(Exception.ShouldSend(log));
-            var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
-            var stack = exception.StackTrace.ToList();
+            Assert.True(Error.ShouldSend(log));
+            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
+            var stack = exception.Stacktrace.ToList();
             Assert.AreEqual("java.lang.IllegalArgumentException", exception.ErrorClass);
             Assert.True(System.String.IsNullOrEmpty(exception.ErrorMessage));
             Assert.AreEqual(2, stack.Count);
@@ -107,10 +107,10 @@ UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData,
 UnityEngine.EventSystems.EventSystem:Update()";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
-            Assert.True(Exception.ShouldSend(log));
+            Assert.True(Error.ShouldSend(log));
 
-            var exception = Exception.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
-            var stack = exception.StackTrace.ToList();
+            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
+            var stack = exception.Stacktrace.ToList();
             Assert.AreEqual(13, stack.Count);
             Assert.AreEqual("java.lang.ArrayIndexOutOfBoundsException", exception.ErrorClass);
             Assert.AreEqual("length=2; index=2", exception.ErrorMessage);

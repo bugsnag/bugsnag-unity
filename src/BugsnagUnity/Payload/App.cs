@@ -1,56 +1,101 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+#nullable enable
 
 namespace BugsnagUnity.Payload
 {
     /// <summary>
     /// Represents the "app" key in the error report payload.
     /// </summary>
-    public class App : Dictionary<string, object>, IFilterable
+    public class App : PayloadContainer, IApp
     {
 
-        private IConfiguration _configuration;
+        private const string BINARY_ARCH_KEY = "binaryArch";
+        private const string BUILD_UUID_KEY = "buildUuid";
+        private const string BUNDLE_VERSION_KEY = "bundleVersion";
+        private const string CODE_BUNDLE_ID = "codeBundleId";
+        private const string DSYM_UUID_KEY = "dsymUuid";
+        private const string ID_KEY = "id";
+        private const string RELEASESTAGE_KEY = "releaseStage";
+        private const string TYPE_KEY = "type";
+        private const string VERSION_KEY = "version";
+        private const string VERSION_CODE_KEY = "versionCode";
 
-        internal App(IConfiguration configuration)
+
+        public string? BinaryArch
         {
-            _configuration = configuration;
-            Version = configuration.AppVersion;
+            get => (string?)Get(BINARY_ARCH_KEY);
+            set => Add(BINARY_ARCH_KEY, value);
+        }
+
+        public string? BuildUuid
+        {
+            get => (string?)Get(BUILD_UUID_KEY);
+            set => Add(BUILD_UUID_KEY, value);
+        }
+
+        public string? BundleVersion
+        {
+            get => (string?)Get(BUNDLE_VERSION_KEY);
+            set => Add(BUNDLE_VERSION_KEY, value);
+        }
+
+        public string? CodeBundleId
+        {
+            get => (string?)Get(CODE_BUNDLE_ID);
+            set => Add(CODE_BUNDLE_ID, value);
+        }
+
+        public string? DsymUuid
+        {
+            get => (string?)Get(DSYM_UUID_KEY);
+            set => Add(DSYM_UUID_KEY, value);
+        }
+
+        public string? Id
+        {
+            get => (string?)Get(ID_KEY);
+            set => Add(ID_KEY, value);
+        }
+
+        public string? ReleaseStage
+        {
+            get => (string?)Get(RELEASESTAGE_KEY);
+            set => Add(RELEASESTAGE_KEY, value);
+        }
+
+        public string? Type
+        {
+            get => (string?)Get(TYPE_KEY);
+            set => Add(TYPE_KEY, value);
+        }
+
+        public string? Version
+        {
+            get => (string?)Get(VERSION_KEY);
+            set => Add(VERSION_KEY, value);
+        }
+
+        public int? VersionCode
+        {
+            get => (int?)Get(VERSION_CODE_KEY);
+            set => Add(VERSION_CODE_KEY, value);
+        }
+
+        internal App(Configuration configuration)
+        {
+            Id = Application.identifier;
             ReleaseStage = configuration.ReleaseStage;
-            this.AddToPayload("id", Application.identifier);
-            this.AddToPayload("type", GetAppType());
-            AddDuration();
+            Type = GetAppType(configuration);
+            Version = configuration.AppVersion;
         }
 
-        public string Version
+        private string GetAppType(Configuration configuration)
         {
-            get => this.Get("version") as string;
-            set => this.AddToPayload("version", value);
-        }
-
-        public string ReleaseStage
-        {
-            get => this.Get("releaseStage") as string;
-            set => this.AddToPayload("releaseStage", value);
-        }
-
-        public bool InForeground
-        {
-            get => (bool)this.Get("inForeground");
-            set => this.AddToPayload("inForeground", value);
-        }
-
-        public TimeSpan DurationInForeground
-        {
-            get => TimeSpan.FromMilliseconds((double)this.Get("durationInForeground"));
-            set => this.AddToPayload("durationInForeground", value.TotalMilliseconds);
-        }
-
-        private string GetAppType()
-        {
-            if (!string.IsNullOrEmpty(_configuration.AppType))
+            if (!string.IsNullOrEmpty(configuration.AppType))
             {
-                return _configuration.AppType;
+                return configuration.AppType;
             }
             switch (Application.platform)
             {
@@ -68,12 +113,6 @@ namespace BugsnagUnity.Payload
                 default:
                     return string.Empty;
             }
-        }
-
-        private void AddDuration()
-        {
-            var timeSinceStartup = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
-            this.AddToPayload("duration", timeSinceStartup.TotalMilliseconds);
         }
 
     }

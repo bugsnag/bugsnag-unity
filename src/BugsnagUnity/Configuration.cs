@@ -6,24 +6,32 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class Configuration : IConfiguration
+    public class Configuration : IMetadataEditor
     {
 
-        public string BundleVersion { get; set; }
+        public string AppType;
 
-        public string AppType { get; set; }
+        public string BundleVersion;
 
-        public string[] RedactedKeys { get; set; } = new string[] { "password" };
+        public string[] RedactedKeys = new string[] { "password" };
 
-        public int VersionCode { get; set; } = -1;
+        public int VersionCode = -1;
 
-        public long LaunchDurationMillis { get; set; } = 5000;
+        public long LaunchDurationMillis = 5000;
 
-        public ThreadSendPolicy SendThreads { get; set; } = ThreadSendPolicy.UNHANDLED_ONLY;
+        public ThreadSendPolicy SendThreads = ThreadSendPolicy.UnhandledOnly;
 
-        public bool SendLaunchCrashesSynchronously { get; set; } = true;
+        public bool SendLaunchCrashesSynchronously = true;
 
-        public bool PersistUser { get; set; }
+        public bool GenerateAnonymousId = true;
+
+        public bool PersistUser = true;
+
+        public string HostName;
+
+        private User _user = null;
+
+        internal Metadata Metadata = new Metadata();
 
         public bool KeyIsRedacted(string key)
         {
@@ -44,20 +52,15 @@ namespace BugsnagUnity
         public Configuration(string apiKey)
         {
             ApiKey = apiKey;
-            AppVersion = Application.version;
-            AutoTrackSessions = true;
-            AutoDetectErrors = true;
-            AutoDetectAnrs = true;
-            ReleaseStage = "production";
         }
 
-        public string PersistenceDirectory { get; set; }
+        public string PersistenceDirectory;
 
-        public virtual bool ReportUncaughtExceptionsAsHandled { get; set; } = true;
+        public bool ReportExceptionLogsAsHandled = true;
 
-        public virtual TimeSpan MaximumLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(1);
+        public TimeSpan MaximumLogsTimePeriod = TimeSpan.FromSeconds(1);
 
-        public virtual Dictionary<LogType, int> MaximumTypePerTimePeriod { get; set; } = new Dictionary<LogType, int>
+        public Dictionary<LogType, int> MaximumTypePerTimePeriod = new Dictionary<LogType, int>
         {
             { LogType.Assert, 5 },
             { LogType.Error, 5 },
@@ -66,11 +69,11 @@ namespace BugsnagUnity
             { LogType.Warning, 5 },
         };
 
-        public virtual TimeSpan UniqueLogsTimePeriod { get; set; } = TimeSpan.FromSeconds(5);
+        public TimeSpan SecondsPerUniqueLog = TimeSpan.FromSeconds(5);
 
-        public virtual LogType BreadcrumbLogLevel { get; set; } = LogType.Log;
+        public LogType BreadcrumbLogLevel = LogType.Log;
 
-        public virtual bool ShouldLeaveLogBreadcrumb(LogType logType)
+        public bool ShouldLeaveLogBreadcrumb(LogType logType)
         {
             return IsBreadcrumbTypeEnabled(BreadcrumbType.Log)
                 && logType.IsGreaterThanOrEqualTo(BreadcrumbLogLevel);
@@ -78,17 +81,17 @@ namespace BugsnagUnity
 
         public BreadcrumbType[] EnabledBreadcrumbTypes { get; set; }
 
-        public virtual bool IsBreadcrumbTypeEnabled(BreadcrumbType breadcrumbType)
+        public bool IsBreadcrumbTypeEnabled(BreadcrumbType breadcrumbType)
         {
             return EnabledBreadcrumbTypes == null ||
                EnabledBreadcrumbTypes.Contains(breadcrumbType);
         }
 
-        public virtual string ApiKey { get; protected set; }
+        public string ApiKey { get; set; }
 
-        private int _maximumBreadcrumbs = 25;
+        private int _maximumBreadcrumbs = 50;
 
-        public virtual int MaximumBreadcrumbs
+        public int MaximumBreadcrumbs
         {
             get { return _maximumBreadcrumbs; }
             set
@@ -108,142 +111,37 @@ namespace BugsnagUnity
             }
         }
 
-        public virtual string ReleaseStage { get; set; } = "production";
+        public string ReleaseStage = "production";
 
-        private string[] _enabledReleaseStages;
+        public string[] EnabledReleaseStages;
 
-        [Obsolete("NotifyReleaseStages is deprecated, please use Configuration.EnabledReleaseStages instead.", false)]
-        public virtual string[] NotifyReleaseStages {
-            get
-            {
-                return _enabledReleaseStages;
-            }
-            set
-            {
-                _enabledReleaseStages = value;
-            }
-        }
+        public string[] ProjectPackages;
 
-        public virtual string[] EnabledReleaseStages
-        {
-            get
-            {
-                return _enabledReleaseStages;
-            }
-            set
-            {
-                _enabledReleaseStages = value;
-            }
-        }
+        public string AppVersion = Application.version;
 
-        public virtual string[] ProjectPackages { get; set; }
+        public EndpointConfiguration Endpoints = new EndpointConfiguration();
 
-        public virtual string AppVersion { get; set; }
+        internal string PayloadVersion { get; } = "4.0";
 
-        [Obsolete("Endpoint is deprecated, please use Configuration.Endpoints instead.", false)]
-        public virtual Uri Endpoint
-        {
-            get
-            {
-                return Endpoints.Notify;
-            }
-            set
-            {
-                Endpoints.Notify = value;
-            }
-        }
+        internal string SessionPayloadVersion { get; } = "1.0";
 
-        [Obsolete("SessionEndpoint is deprecated, please use Configuration.Endpoints instead.", false)]
-        public virtual Uri SessionEndpoint
-        {
-            get
-            {
-                return Endpoints.Session;
-            }
-            set
-            {
-                Endpoints.Session = value;
-            }
-        }
+        public string Context;
 
-        public EndpointConfiguration Endpoints { get; set; } = new EndpointConfiguration();
+        public LogType NotifyLogLevel = LogType.Exception;
 
-        public virtual string PayloadVersion { get; } = "4.0";
+        public bool AutoDetectErrors = true;
 
-        public virtual string SessionPayloadVersion { get; } = "1.0";
+        public bool AutoTrackSessions = true;
 
-        public virtual string Context { get; set; }
+        public LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
 
+        public string ScriptingBackend;
 
-        private LogType _notifyLogLevel = LogType.Exception;
+        public string DotnetScriptingRuntime;
 
-        [Obsolete("NotifyLevel is deprecated, please use NotifyLogLevel instead.", false)]
-        public virtual LogType NotifyLevel
-        {
-            get
-            {
-                return _notifyLogLevel;
-            }
-            set
-            {
-                _notifyLogLevel = value;
-            }
-        }
+        public string DotnetApiCompatibility;
 
-        public virtual LogType NotifyLogLevel
-        {
-            get
-            {
-                return _notifyLogLevel;
-            }
-            set
-            {
-                _notifyLogLevel = value;
-            }
-        }
-
-        private bool _autoDetectErrors = true;
-
-        [Obsolete("AutoNotify is deprecated, please use AutoDetectErrors instead.", false)]
-        public virtual bool AutoNotify
-        {
-            get { return _autoDetectErrors; }
-            set { _autoDetectErrors = value; }
-        }
-
-        public virtual bool AutoDetectErrors
-        {
-            get { return _autoDetectErrors; }
-            set { _autoDetectErrors = value; }
-        }
-
-        public virtual bool AutoDetectAnrs { get; set; } = true;
-
-        private bool _autoTrackSessions = true;
-
-        [Obsolete("AutoCaptureSessions is deprecated, please use AutoTrackSessions instead.", false)]
-        public virtual bool AutoCaptureSessions
-        {
-            get { return _autoTrackSessions; }
-            set { _autoTrackSessions = value; }
-        }
-
-        public virtual bool AutoTrackSessions
-        {
-            get { return _autoTrackSessions; }
-            set { _autoTrackSessions = value; }
-        }
-
-        public virtual LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
-
-        public virtual string ScriptingBackend { get; set; }
-
-        public virtual string DotnetScriptingRuntime { get; set; }
-
-        public virtual string DotnetApiCompatibility { get; set; }
-
-        public ErrorTypes[] EnabledErrorTypes { get; set; }
-
+        public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
 
         private ulong _appHangThresholdMillis = 0;
 
@@ -267,41 +165,13 @@ namespace BugsnagUnity
             }
         }
 
-        public string[] DiscardClasses { get; set; }
+        public string[] DiscardClasses;
 
-        public int MaxPersistedEvents { get; set; } = 32;
+        public int MaxPersistedEvents = 32;
 
-        public virtual bool ErrorClassIsDiscarded(string className)
+        internal bool ErrorClassIsDiscarded(string className)
         {
             return DiscardClasses != null && DiscardClasses.Contains(className);
-        }
-
-        public virtual bool IsErrorTypeEnabled(ErrorTypes errorType)
-        {
-            return EnabledErrorTypes == null || EnabledErrorTypes.Contains(errorType);
-        }
-
-        public virtual bool IsUnityLogErrorTypeEnabled(LogType logType)
-        {
-            if (EnabledErrorTypes == null)
-            {
-                return true;
-            }
-            switch (logType)
-            {
-                case LogType.Error:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnityErrorLogs);
-                case LogType.Warning:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnityWarningLogs);
-                case LogType.Log:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnityLogLogs);
-                case LogType.Exception:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnhandledExceptions);
-                case LogType.Assert:
-                    return EnabledErrorTypes.Contains(ErrorTypes.UnityAssertLogs);
-                default:
-                    return false;
-            }
         }
 
         private bool IsRunningInEditor()
@@ -310,6 +180,106 @@ namespace BugsnagUnity
                 || Application.platform == RuntimePlatform.WindowsEditor
                 || Application.platform == RuntimePlatform.LinuxEditor;
         }
+
+
+        private List<Func<IEvent, bool>> _onErrorCallbacks = new List<Func<IEvent, bool>>();
+
+        public void AddOnError(Func<IEvent, bool> callback)
+        {
+            _onErrorCallbacks.Add(callback);
+        }
+
+        internal List<Func<IEvent, bool>> GetOnErrorCallbacks()
+        {
+            return _onErrorCallbacks;
+        }
+
+        public void RemoveOnError(Func<IEvent, bool> callback)
+        {
+            _onErrorCallbacks.Remove(callback);
+        }
+
+        private List<Func<IEvent, bool>> _onSendErrorCallbacks = new List<Func<IEvent, bool>>();
+
+        public void AddOnSendError(Func<IEvent, bool> callback)
+        {
+            _onSendErrorCallbacks.Add(callback);
+        }
+
+        internal List<Func<IEvent, bool>> GetOnSendErrorCallbacks()
+        {
+            return _onSendErrorCallbacks;
+        }
+
+        public void RemoveOnSendError(Func<IEvent, bool> callback)
+        {
+            _onSendErrorCallbacks.Remove(callback);
+        }
+
+        private List<Func<ISession, bool>> _onSessionCallbacks = new List<Func<ISession, bool>>();
+
+        public void AddOnSession(Func<ISession, bool> callback)
+        {
+            _onSessionCallbacks.Add(callback);
+        }
+
+        public void RemoveOnSession(Func<ISession, bool> callback)
+        {
+            _onSessionCallbacks.Remove(callback);
+        }
+
+        internal List<Func<ISession, bool>> GetOnSessionCallbacks()
+        {
+            return _onSessionCallbacks;
+        }
+
+        public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
+
+        public void AddMetadata(string section, IDictionary<string, object> metadata) => Metadata.AddMetadata(section, metadata);
+
+        public void ClearMetadata(string section) => Metadata.ClearMetadata(section);
+
+        public void ClearMetadata(string section, string key) => Metadata.ClearMetadata(section, key);
+
+        public IDictionary<string, object> GetMetadata(string section) => Metadata.GetMetadata(section);
+
+        public object GetMetadata(string section, string key) => Metadata.GetMetadata(section, key);
+
+        public User GetUser() => _user;
+
+        public void SetUser(string id, string email, string name)
+        {
+            _user = new User(id, email, name);
+        }
+
+        internal Configuration Clone()
+        {
+            var clone = (Configuration)MemberwiseClone();
+            if (_user != null)
+            {
+                clone._user = _user.Clone();
+            }
+            if (Endpoints.IsValid)
+            {
+                clone.Endpoints = Endpoints.Clone();
+            }
+            return clone;
+        }
+
+    }
+
+    [Serializable]
+    public class EnabledErrorTypes
+    {
+        public bool ANRs = true;
+        public bool AppHangs = true;
+        public bool OOMs = true;
+        public bool Crashes = true;
+        public bool ThermalKills = true;
+        public bool UnityLog = true;
+        
+        public EnabledErrorTypes()
+        { }
     }
 }
 

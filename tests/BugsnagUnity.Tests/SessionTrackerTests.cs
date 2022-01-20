@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
@@ -32,7 +33,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsNull(Tracker.CurrentSession);
 
             Assert.IsTrue(Tracker.ResumeSession());
-            Assert.AreEqual(originalSession, Tracker.CurrentSession);
+            Assert.IsTrue(SessionsAreTheSame(originalSession, Tracker.CurrentSession));
         }
 
         /**
@@ -72,10 +73,11 @@ namespace BugsnagUnity.Payload.Tests
             Tracker.PauseSession();
 
             Assert.IsTrue(Tracker.ResumeSession());
-            Assert.AreEqual(original, Tracker.CurrentSession);
-
+            Assert.IsTrue(SessionsAreTheSame(original, Tracker.CurrentSession));
+           
             Assert.IsFalse(Tracker.ResumeSession());
-            Assert.AreEqual(original, Tracker.CurrentSession);
+            Assert.IsTrue(SessionsAreTheSame(original, Tracker.CurrentSession));
+
         }
 
         /**
@@ -92,6 +94,12 @@ namespace BugsnagUnity.Payload.Tests
 
             Tracker.PauseSession();
             Assert.IsNull(Tracker.CurrentSession);
+        }
+
+        private bool SessionsAreTheSame(Session original, Session other)
+        {
+            return original.Id == other.Id
+                && original.StartedAt == other.StartedAt;
         }
     }
 }

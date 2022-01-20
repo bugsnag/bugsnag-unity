@@ -12,9 +12,9 @@ namespace UnityEngine
         {
         }
 
-        public static string GetString(string key, string defaultValue)
+        public static string GetString(string key)
         {
-            return defaultValue;
+            return "";
         }
     }
 }

@@ -95,13 +95,13 @@ def project_path
 end
 
 def assets_path
-  File.join(project_path, "Assets", "Plugins")
+  File.join(project_path, "Assets", "Bugsnag/Plugins")
 end
 
 def export_package name="Bugsnag.unitypackage"
   package_output = File.join(current_directory, name)
   rm_f package_output
-  unity "-projectPath", project_path, "-exportPackage", "Assets", package_output, force_free: false
+  unity "-projectPath", project_path, "-exportPackage", "Assets/Bugsnag", package_output, force_free: false
 end
 
 def assemble_android filter_abis=true
@@ -147,8 +147,8 @@ namespace :plugin do
       task all: [:assets, :csharp]
       task all_android64: [:assets, :csharp]
     else
-      task all: [:assets, :cocoa, :csharp, :android]
-      task all_android64: [:assets, :cocoa, :csharp, :android_64bit]
+      task all: [:assets, :cocoa, :android, :csharp, ]
+      task all_android64: [:assets, :cocoa, :android_64bit, :csharp ]
     end
 
 
@@ -177,7 +177,7 @@ namespace :plugin do
       build_type = "Release" # "Debug" or "Release"
       FileUtils.mkdir_p cocoa_build_dir
       FileUtils.cp_r "bugsnag-cocoa/Bugsnag", cocoa_build_dir
-      bugsnag_unity_file = File.realpath("BugsnagUnity.mm", "src")
+      bugsnag_unity_file = File.realpath("BugsnagUnity.m", "src")
       public_headers = Dir.entries(File.join(cocoa_build_dir, "Bugsnag", "include", "Bugsnag"))
 
       cd cocoa_build_dir do
@@ -251,9 +251,11 @@ namespace :plugin do
         end
       end
 
-      osx_dir = File.join(assets_path, "OSX", "Bugsnag")
-      ios_dir = File.join(assets_path, "iOS", "Bugsnag")
-      tvos_dir = File.join(assets_path, "tvOS", "Bugsnag")
+      osx_dir = File.join(assets_path, "OSX")
+
+      ios_dir = File.join(assets_path, "iOS")
+
+      tvos_dir = File.join(assets_path, "tvOS")
 
       cd cocoa_build_dir do
         cd "build" do
@@ -262,6 +264,7 @@ namespace :plugin do
             return !stdout.start_with?('Non-fat')
           end
           # we just need to copy the os x bundle into the correct directory
+
           cp_r File.join(build_type, "bugsnag-osx.bundle"), osx_dir
 
           # for ios and tvos we need to build a fat binary that includes architecture
@@ -290,6 +293,15 @@ namespace :plugin do
         end
       end
     end
+
+    task :android do
+      assemble_android(true)
+    end
+
+    task :android_64bit do
+      assemble_android(false)
+    end
+
     task :csharp do
       if is_windows?
         env = { "UnityDir" => unity_dll_location }
@@ -305,7 +317,8 @@ namespace :plugin do
 
       cd File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
         cp File.realpath("BugsnagUnity.dll"), assets_path
-        cp File.realpath("BugsnagUnity.Windows.dll"), File.join(assets_path, "Windows")
+        windows_dir = File.join(assets_path, "Windows")        
+        cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
         cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
         cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
         cp File.realpath("BugsnagUnity.MacOS.dll"), File.join(assets_path, "OSX")
@@ -313,13 +326,7 @@ namespace :plugin do
       end
     end
 
-    task :android do
-      assemble_android(true)
-    end
 
-    task :android_64bit do
-      assemble_android(false)
-    end
   end
 
   task :export_package do
@@ -328,16 +335,16 @@ namespace :plugin do
 
   desc "Generate release artifacts"
   task export: ["plugin:build:clean"] do
-    Rake::Task["plugin:build:all"].invoke
-    export_package("Bugsnag.unitypackage")
+    #Rake::Task["plugin:build:all"].invoke
+    #export_package("Bugsnag.unitypackage")
     Rake::Task["plugin:build:all_android64"].invoke
-    export_package("Bugsnag-with-android-64bit.unitypackage")
+    export_package("Bugsnag.unitypackage")
   end
 
   desc "Generate release artifacts from cache (using Android 64-bit)"
   task :quick_export do
     Rake::Task["plugin:build:all_android64"].invoke
-    export_package("Bugsnag-with-android-64bit.unitypackage")
+    export_package("Bugsnag.unitypackage")
   end
 end
 

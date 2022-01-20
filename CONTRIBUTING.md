@@ -23,16 +23,22 @@
 
 ## Installing and using multiple versions of Unity
 
-You can install as many versions of Unity as you like on the same computer. On a Mac the installer creates a folder called Unity, and overwrites any existing folder with this name. If you want more than one version of Unity on your Mac, rename the existing Unity folder before installing another version. On a PC, the install folder defaults to C:\Program Files\Unity, this can be changed to another path so that you can install more than one version.
+You can install as many versions of Unity as you like on the same computer. On a Mac the installer creates a folder 
+called Unity, and overwrites any existing folder with this name. If you want more than one version of Unity on your Mac, 
+rename the existing Unity folder before installing another version. On a PC, the install folder defaults to 
+C:\Program Files\Unity, this can be changed to another path so that you can install more than one version.
 
-There is a helper script that will use homebrew cask to install a version of 5.6, 2017 and 2018 which are the three major versions of Unity that we support. Along with the support packages for iOS, tvOS and Android. This script only works on MacOS.
+There is a helper script that will use homebrew cask to install the major versions of Unity that we support. Along with 
+the support packages for iOS, tvOS and Android. This script only works on macOS.
 
 MacOS
 ```
 scripts/bootstap-unity.sh
 ```
 
-The build script will by default locate Unity in it's default location on both Mac and Windows machines. If you want to use an alternative location for Unity (to test against multiple versions for instance) then you can specify the location in an ENV variable when running the build script.
+The build script will by default locate Unity in its default location on both Mac and Windows machines. If you want to 
+use an alternative location for Unity (to test against multiple versions for instance) then you can specify the location 
+in an ENV variable when running the build script.
 
 MacOS
 ```
@@ -47,7 +53,8 @@ bundle exec rake
 
 ## Testing Changes
 
-A simple project can be found at [example](https://github.com/bugsnag/bugsnag-unity/blob/master/example), which allows various crashes to be triggered by clicking buttons.
+A simple project can be found at [example](https://github.com/bugsnag/bugsnag-unity/blob/master/example), which allows 
+various crashes to be triggered by clicking buttons.
 
 ## Building Plugin
 
@@ -97,7 +104,7 @@ bundle exec maze-runner features/handled_errors.feature
 - [ ] Have the installation instructions been updated on the [docs site](https://github.com/bugsnag/docs.bugsnag.com)?
 
 
-#### Making the release
+#### Making the package release
 
 1. Make sure any changes made since last release in `master` are merged into `next`.
 
@@ -107,21 +114,40 @@ bundle exec maze-runner features/handled_errors.feature
 
     ```
     git add CHANGELOG.md build.cake
-    git commit -m "Release v5.x.x"
+    git commit -m "Release v6.x.x"
     ```
 4. Make a pull request to merge the changes into `master`
 
 5. Once merged, tag the new release version, pushing the tag to GitHub:
 
    ```
-   git tag v5.x.x
-   git push origin v5.x.x
+   git tag v6.x.x
+   git push origin v6.x.x
    ```
 
 6. Wait. The CI build will build the new package and create a draft release.
 
 7. Verify that the release looks good, upload the unity packages to the release, copy in the changelog entry into the release notes and publish the draft.
 
+#### Making the UPM release
+
+Once the UnityPackage release is confirmed a UPM release should be deployed
+
+1. Checkout the release commit on `master`
+
+2. Build the upm package by running the `build-upm-package.sh` script in the upm-tools directory. You should pass the version number of the release like so `./build-upm-package.sh 6.x.x`. You must run the script from within the upm-tools folder. This will build the upm package in a directory called `upm-package`
+
+3. Test that the built package installs by using the install local package option in unity package manager.
+
+4. Clone the `bugsnag-unity-upm` repo and make sure you are in the `main` branch.
+
+5. Replace the contents of the repo with the contents of the `upm-package` directory in the `bugsnag-unity` repo
+6. Commit these changes to main with the message `Release V6.x.x`
+7. Tag the release and push the tag
+  ```
+   git tag v6.x.x
+   git push origin v6.x.x
+   ```
 #### Post-release
 
 - [ ] Have all Docs PRs been merged?

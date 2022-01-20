@@ -46,10 +46,70 @@ namespace BugsnagUnity
 
         private bool CanRunOnBackgroundThread;
 
-        private bool Unity2019OrNewer;
+        private static bool Unity2019OrNewer;
         private Thread MainThread;
 
-        public NativeInterface(IConfiguration cfg)
+        private class OnSessionCallback : AndroidJavaProxy
+        {
+
+            private Configuration _config;
+
+            public OnSessionCallback(Configuration config) : base("com.bugsnag.android.OnSessionCallback")
+            {
+                _config = config;
+            }
+            public bool onSession(AndroidJavaObject session)
+            {
+
+                var wrapper = new NativeSession(session);
+                foreach (var callback in _config.GetOnSessionCallbacks())
+                {
+                    try
+                    {
+                        if (!callback.Invoke(wrapper))
+                        {
+                            return false;
+                        }
+                    }
+                    catch {
+                        // If the callback causes an exception, ignore it and execute the next one
+                    }
+
+                }
+
+                return true;
+            }
+        }
+
+        private class OnSendErrorCallback : AndroidJavaProxy
+        {
+            private Configuration _config;
+
+            public OnSendErrorCallback(Configuration config) : base("com.bugsnag.android.OnSendCallback")
+            {
+                _config = config;
+            }
+            public bool onSend(AndroidJavaObject @event)
+            {
+                var wrapper = new NativeEvent(@event);
+                foreach (var callback in _config.GetOnSendErrorCallbacks())
+                {
+                    try
+                    {
+                        if (!callback.Invoke(wrapper))
+                        {
+                            return false;
+                        }
+                    }
+                    catch {
+                        // If the callback causes an exception, ignore it and execute the next one
+                    }
+                }
+                return true;
+            }
+        }
+
+        public NativeInterface(Configuration cfg)
         {
             AndroidJavaObject config = CreateNativeConfig(cfg);
             Unity2019OrNewer = IsUnity2019OrNewer();
@@ -182,15 +242,15 @@ namespace BugsnagUnity
         /**
          * Transforms an IConfiguration C# object into a Java Configuration object.
          */
-        AndroidJavaObject CreateNativeConfig(IConfiguration config)
+        AndroidJavaObject CreateNativeConfig(Configuration config)
         {
             var obj = new AndroidJavaObject("com.bugsnag.android.Configuration", config.ApiKey);
             // configure automatic tracking of errors/sessions
             using (AndroidJavaObject errorTypes = new AndroidJavaObject("com.bugsnag.android.ErrorTypes"))
             {
-                errorTypes.Call("setAnrs", config.AutoDetectAnrs &&  config.IsErrorTypeEnabled(ErrorTypes.ANRs));
-                errorTypes.Call("setNdkCrashes", config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes));
-                errorTypes.Call("setUnhandledExceptions", config.IsErrorTypeEnabled(ErrorTypes.NativeCrashes));
+                errorTypes.Call("setAnrs", config.EnabledErrorTypes.ANRs);
+                errorTypes.Call("setNdkCrashes", config.EnabledErrorTypes.Crashes);
+                errorTypes.Call("setUnhandledExceptions", config.EnabledErrorTypes.Crashes);
                 obj.Call("setEnabledErrorTypes", errorTypes);
             }
 
@@ -203,6 +263,17 @@ namespace BugsnagUnity
             obj.Call("setPersistUser", config.PersistUser);
             obj.Call("setLaunchDurationMillis", config.LaunchDurationMillis);
             obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
+
+            if (config.GetUser() != null)
+            {
+                var user = config.GetUser();
+                obj.Call("setUser", user.Id, user.Email, user.Name);
+            }
+
+            //Register for callbacks
+            obj.Call("addOnSession", new OnSessionCallback(config));
+            obj.Call("addOnSend", new OnSendErrorCallback(config));
+
 
             // set endpoints
             var notify = config.Endpoints.Notify.ToString();
@@ -218,7 +289,7 @@ namespace BugsnagUnity
                 var javaInteger = new AndroidJavaObject("java.lang.Integer", config.VersionCode);
                 obj.Call("setVersionCode", javaInteger);
             }
-            
+
             //Null or empty check necessary because android will set the app.type to empty if that or null is passed as default
             if (!string.IsNullOrEmpty(config.AppType))
             {
@@ -246,12 +317,10 @@ namespace BugsnagUnity
 
             // set sendThreads
             AndroidJavaClass androidThreadSendPolicyClass = new AndroidJavaClass("com.bugsnag.android.ThreadSendPolicy");
-            var threadSendStringValue = Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads);
-            using (AndroidJavaObject policy = androidThreadSendPolicyClass.CallStatic<AndroidJavaObject>("valueOf", threadSendStringValue))
+            using (AndroidJavaObject policy = androidThreadSendPolicyClass.CallStatic<AndroidJavaObject>("valueOf", GetAndroidFormatThreadSendName(config.SendThreads)))
             {
                 obj.Call("setSendThreads", policy);
             }
-                                   
 
             // set release stages
             obj.Call("setReleaseStage", config.ReleaseStage);
@@ -286,11 +355,24 @@ namespace BugsnagUnity
             // set persistence directory
             if (!string.IsNullOrEmpty(config.PersistenceDirectory))
             {
-                AndroidJavaObject androidFile = new AndroidJavaObject("java.io.File",config.PersistenceDirectory);
-                obj.Call("setPersistenceDirectory",androidFile);
+                AndroidJavaObject androidFile = new AndroidJavaObject("java.io.File", config.PersistenceDirectory);
+                obj.Call("setPersistenceDirectory", androidFile);
             }
 
             return obj;
+        }
+
+        private string GetAndroidFormatThreadSendName(ThreadSendPolicy threadSendPolicy)
+        {
+            switch (threadSendPolicy)
+            {
+                case ThreadSendPolicy.Always:
+                    return "ALWAYS";
+                case ThreadSendPolicy.UnhandledOnly:
+                    return "UNHANDLED_ONLY";
+                default:
+                    return "NEVER";
+            }
         }
 
         private AndroidJavaObject GetAndroidStringSetFromArray(string[] array)
@@ -355,11 +437,6 @@ namespace BugsnagUnity
             CallNativeVoidMethod("setAutoNotify", "(Z)V", new object[] { newValue });
         }
 
-        public void SetAutoDetectAnrs(bool newValue)
-        {
-            CallNativeVoidMethod("setAutoDetectAnrs", "(Z)V", new object[] { newValue });
-        }
-
         public void SetContext(string newValue)
         {
             CallNativeVoidMethod("setContext", "(Ljava/lang/String;)V", new object[] { newValue });
@@ -382,7 +459,7 @@ namespace BugsnagUnity
 
         public void StartSession()
         {
-            CallNativeVoidMethod("startSession", "()V", new object[] {  });
+            CallNativeVoidMethod("startSession", "()V", new object[] { });
         }
 
         public bool ResumeSession()
@@ -400,7 +477,7 @@ namespace BugsnagUnity
             if (session != null)
             {
                 // The ancient version of the runtime used doesn't have an equivalent to GetUnixTime()
-                var startedAt = (long)(session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalMilliseconds;
+                var startedAt = (long)(session.StartedAt - new DateTime(1970, 1, 1, 0, 0, 0, 0))?.TotalMilliseconds;
                 CallNativeVoidMethod("registerSession", "(JLjava/lang/String;II)V", new object[]{
                     startedAt, session.Id.ToString(), session.UnhandledCount(),
                     session.HandledCount()
@@ -431,7 +508,7 @@ namespace BugsnagUnity
 
         public void MarkLaunchCompleted()
         {
-            CallNativeVoidMethod("markLaunchCompleted", "()V", new object[] {});
+            CallNativeVoidMethod("markLaunchCompleted", "()V", new object[] { });
         }
 
         public Dictionary<string, object> GetApp()
@@ -454,7 +531,7 @@ namespace BugsnagUnity
             return GetJavaMapData("getUser");
         }
 
-        public void RemoveMetadata(string tab)
+        public void ClearMetadata(string tab)
         {
             if (tab == null)
             {
@@ -463,7 +540,16 @@ namespace BugsnagUnity
             CallNativeVoidMethod("clearMetadata", "(Ljava/lang/String;Ljava/lang/String;)V", new object[] { tab, null });
         }
 
-        public void AddToTab(string tab, string key, string value)
+        public void ClearMetadata(string tab, string key)
+        {
+            if (tab == null)
+            {
+                return;
+            }
+            CallNativeVoidMethod("clearMetadata", "(Ljava/lang/String;Ljava/lang/String;)V", new object[] { tab, key });
+        }
+
+        public void AddMetadata(string tab, string key, string value)
         {
             if (tab == null || key == null)
             {
@@ -473,7 +559,7 @@ namespace BugsnagUnity
                 new object[] { tab, key, value });
         }
 
-        public void LeaveBreadcrumb(string name, string type, IDictionary<string, string> metadata)
+        public void LeaveBreadcrumb(string name, string type, IDictionary<string, object> metadata)
         {
             if (!CanRunJNI())
             {
@@ -732,7 +818,7 @@ namespace BugsnagUnity
 
         private Breadcrumb ConvertToBreadcrumb(IntPtr javaBreadcrumb)
         {
-            var metadata = new Dictionary<string, string>();
+            var metadata = new Dictionary<string, object>();
 
             IntPtr javaMetadata = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetMetadata, new jvalue[] { });
             IntPtr entries = AndroidJNI.CallObjectMethod(javaMetadata, MapEntrySet, new jvalue[] { });
@@ -774,7 +860,7 @@ namespace BugsnagUnity
             return new Breadcrumb(message, timestamp, typeName, metadata);
         }
 
-        private AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, string> src)
+        internal static AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, object> src)
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
             if (src != null)
@@ -782,7 +868,7 @@ namespace BugsnagUnity
                 foreach (var entry in src)
                 {
                     using (AndroidJavaObject key = BuildJavaStringDisposable(entry.Key))
-                    using (AndroidJavaObject value = BuildJavaStringDisposable(entry.Value))
+                    using (AndroidJavaObject value = BuildJavaStringDisposable(entry.Value.ToString()))
                     {
                         map.Call<AndroidJavaObject>("put", key, value);
                     }
@@ -791,7 +877,7 @@ namespace BugsnagUnity
             return map;
         }
 
-        private AndroidJavaObject BuildJavaStringDisposable(string input)
+        internal static AndroidJavaObject BuildJavaStringDisposable(string input)
         {
             if (input == null)
             {
@@ -825,7 +911,7 @@ namespace BugsnagUnity
             }
         }
 
-        private bool IsUnity2019OrNewer()
+        internal static bool IsUnity2019OrNewer()
         {
             using (AndroidJavaClass CharsetClass = new AndroidJavaClass("java.nio.charset.Charset"))
             using (AndroidJavaObject Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset"))
@@ -900,7 +986,7 @@ namespace BugsnagUnity
         public LastRunInfo GetlastRunInfo()
         {
             var javaLastRunInfo = CallNativeObjectMethodRef("getLastRunInfo", "()Lcom/bugsnag/android/LastRunInfo;", new object[] { });
-            var crashed = AndroidJNI.GetBooleanField(javaLastRunInfo , AndroidJNIHelper.GetFieldID(LastRunInfoClass,"crashed"));
+            var crashed = AndroidJNI.GetBooleanField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "crashed"));
             var consecutiveLaunchCrashes = AndroidJNI.GetIntField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "consecutiveLaunchCrashes"));
             var crashedDuringLaunch = AndroidJNI.GetBooleanField(javaLastRunInfo, AndroidJNIHelper.GetFieldID(LastRunInfoClass, "crashedDuringLaunch"));
             var lastRunInfo = new LastRunInfo
