@@ -16,10 +16,8 @@ Feature: Android smoke tests for C# errors
         And the event "severityReason.type" equals "handledException"
 
         # Stacktrace validation
-        And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" ends with "MobileScenarioRunner.NotifyWithCallback()"
-        And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
-        And the error payload field "events.0.threads" is null
+        And the error payload field "events.0.exceptions.0.stacktrace.0" is null
+        
 
         # App data
         And the event "app.id" equals "com.bugsnag.mazerunner"
@@ -99,7 +97,7 @@ Feature: Android smoke tests for C# errors
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" equals "MobileScenarioRunner.DoTestAction(System.String scenarioName)"
+        And the event "exceptions.0.stacktrace.0.method" equals "MobileScenarioRunner.ThrowException()"
         And the event "exceptions.0.stacktrace.0.file" is not null
         And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
         And the error payload field "events.0.threads" is null
