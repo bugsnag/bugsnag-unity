@@ -10,5 +10,15 @@ namespace BugsnagUnity.Payload
         Uri Endpoint { get; }
 
         KeyValuePair<string, string>[] Headers { get; }
+
+        string Id { get; set; }
+
+        PayloadType PayloadType { get; }
+    }
+
+    public enum PayloadType
+    {
+        Session,
+        Event
     }
 }

@@ -116,10 +116,11 @@ namespace BugsnagUnity
                 {
                     yield return new WaitForEndOfFrame();
                 }
-
                 if (req.responseCode >= 200 && req.responseCode < 300)
                 {
                     // success!
+                    FileManager.PayloadSent(payload);
+                    TrySendingCachedPayloads();
                 }
                 else if (req.responseCode >= 500)
                 {
@@ -127,6 +128,15 @@ namespace BugsnagUnity
                     DelayBeforeDelivery = true;
                     Send(payload);
                 }
+            }
+        }
+
+        private void TrySendingCachedPayloads()
+        {
+            var payloads = FileManager.GetCachedPayloads();
+            foreach (var payload in payloads)
+            {
+                Send(payload);
             }
         }
 

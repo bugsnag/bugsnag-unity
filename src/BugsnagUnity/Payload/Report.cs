@@ -13,8 +13,11 @@ namespace BugsnagUnity.Payload
 
         internal bool Ignored { get; private set; }
 
+        public string Id { get; set; }
+
         internal Report(Configuration configuration, Event @event)
         {
+            Id = Guid.NewGuid().ToString();
             Ignored = false;
             Endpoint = configuration.Endpoints.Notify;
             Headers = new[] {
@@ -38,6 +41,8 @@ namespace BugsnagUnity.Payload
         internal List<IError> Exceptions => _event.Errors;
 
         internal HandledState OriginalSeverity => _event.OriginalSeverity;
+
+        public PayloadType PayloadType => PayloadType.Event;
 
         public void Ignore()
         {

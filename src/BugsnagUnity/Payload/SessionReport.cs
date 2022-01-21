@@ -11,6 +11,10 @@ namespace BugsnagUnity.Payload
 
         public KeyValuePair<string, string>[] Headers { get; }
 
+        public string Id { get; set; }
+
+        public PayloadType PayloadType { get => PayloadType.Session; }
+
         public SessionReport(Configuration configuration, App app, Device device, User user, Payload.Session session)
         {
             Configuration = configuration;
@@ -22,6 +26,7 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("app", app.Payload);
             this.AddToPayload("device", device.Payload);
             this.AddToPayload("sessions", new Session[] { new Session(user, session) });
+            Id = session.Id;
         }
 
         class Session : Dictionary<string, object>

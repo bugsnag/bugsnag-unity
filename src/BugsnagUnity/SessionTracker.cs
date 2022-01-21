@@ -101,6 +101,7 @@ namespace BugsnagUnity
             if (Client.Configuration.Endpoints.IsValid)
             {
                 var payload = new SessionReport(Client.Configuration, app, device, Client.GetUser().Clone(), session);
+                FileManager.CacheSession(payload);
                 Client.Send(payload);
             }
             else
