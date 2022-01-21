@@ -263,6 +263,20 @@ Then("custom metadata is included in the event") do
   }
 end
 
+When("I clear any error dialogue") do
+  click_if_present 'android:id/button1'
+  click_if_present 'android:id/aerr_close'
+  click_if_present 'android:id/aerr_restart'
+end
+
+def click_if_present(element)
+  return false unless Maze.driver.wait_for_element(element, 1)
+
+  Maze.driver.click_element_if_present(element)
+rescue Selenium::WebDriver::Error::UnknownError
+  # Ignore Appium errors (e.g. during an ANR)
+  return false
+end
 
 # TODO See PLAT-7058
 Then('the event {string} is present from Unity 2018') do |field|
