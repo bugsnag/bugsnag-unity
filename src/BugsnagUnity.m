@@ -387,6 +387,27 @@ void bugsnag_setReleaseStage(const void *configuration, char *releaseStage) {
   ((__bridge BugsnagConfiguration *)configuration).releaseStage = ns_releaseStage;
 }
 
+void bugsnag_addFeatureFlagOnConfig(const void *configuration, char *name, char *varient) {
+    NSString *ns_name = name == NULL ? nil : [NSString stringWithUTF8String: name];
+    NSString *ns_varient = varient == NULL ? nil : [NSString stringWithUTF8String: varient];
+    [(__bridge BugsnagConfiguration *)configuration addFeatureFlagWithName:ns_name variant:ns_varient];
+}
+
+void bugsnag_addFeatureFlag(char *name, char *varient) {
+    NSString *ns_name = name == NULL ? nil : [NSString stringWithUTF8String: name];
+    NSString *ns_varient = varient == NULL ? nil : [NSString stringWithUTF8String: varient];
+    [Bugsnag addFeatureFlagWithName:ns_name variant:ns_varient];
+}
+
+void bugsnag_clearFeatureFlag(char *name) {
+    NSString *ns_name = name == NULL ? nil : [NSString stringWithUTF8String: name];
+    [Bugsnag clearFeatureFlagWithName:ns_name];
+}
+
+void bugsnag_clearFeatureFlags() {
+    [Bugsnag clearFeatureFlags];
+}
+
 NSMutableSet * getSetFromStringArray(const char *values[], int valuesCount)
 {
     NSMutableSet *theSet = [NSMutableSet new];

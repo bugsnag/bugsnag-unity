@@ -207,8 +207,7 @@ namespace BugsnagUnity
 
         public void ClearFeatureFlag(string name)
         {
-            var flagsClone = _featureFlags.ToArray();
-            foreach (var flag in flagsClone)
+            foreach (var flag in _featureFlags.ToArray())
             {
                 if (flag.Name == name)
                 {

@@ -179,25 +179,6 @@ namespace BugsnagUnity
             var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
             return dictionary;
         }
-
-        public void AddFeatureFlag(string name, string variant = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddFeatureFlags(FeatureFlag[] featureFlags)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ClearFeatureFlag(string name)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ClearFeatureFlags()
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

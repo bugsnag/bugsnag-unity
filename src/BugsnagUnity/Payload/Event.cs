@@ -46,7 +46,7 @@ namespace BugsnagUnity.Payload
                 }
                 Session = session;
             }
-            AddFeatureFlags(featureFlags.ToArray());
+            _featureFlags = featureFlags;
         }
 
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
@@ -219,33 +219,6 @@ namespace BugsnagUnity.Payload
             }
 
             return Payload;
-        }
-
-        public void AddFeatureFlag(string name, string variant = null)
-        {
-            _featureFlags.Add(new FeatureFlag(name, variant));
-        }
-
-        public void AddFeatureFlags(FeatureFlag[] featureFlags)
-        {
-            _featureFlags.AddRange(featureFlags);
-        }
-
-        public void ClearFeatureFlag(string name)
-        {
-            var flagsClone = _featureFlags.ToArray();
-            foreach (var flag in flagsClone)
-            {
-                if (flag.Name == name)
-                {
-                    _featureFlags.Remove(flag);
-                }
-            }
-        }
-
-        public void ClearFeatureFlags()
-        {
-            _featureFlags.Clear();
         }
     }
 }

@@ -10,8 +10,8 @@ namespace BugsnagUnity.Payload
         }
         public string Name
         {
-            get => (string)Get("name");
-            set => Add("name", value);
+            get => (string)Get("featureFlag");
+            set => Add("featureFlag", value);
         }
         public string Variant
         {

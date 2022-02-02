@@ -17,6 +17,8 @@ namespace BugsnagUnity
         IntPtr NativeConfiguration { get; }
         private static NativeClient _instance;
 
+        private List<FeatureFlag> _featureFlags = new List<FeatureFlag>();
+
         public NativeClient(Configuration configuration)
         {
             _instance = this;
@@ -49,6 +51,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
             NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
             NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
+            AddFeatureFlagsToConfig(obj,config);
             if (config.GetUser() != null)
             {
                 var user = config.GetUser();
@@ -75,6 +78,19 @@ namespace BugsnagUnity
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }
             return obj;
+        }
+
+        private void AddFeatureFlagsToConfig(IntPtr obj, Configuration config)
+        {
+            if (config.FeatureFlags == null || config.FeatureFlags.Count == 0)
+            {
+                return;
+            }
+            foreach (var flag in config.FeatureFlags)
+            {
+                NativeCode.bugsnag_addFeatureFlagOnConfig(obj, flag.Name, flag.Variant);
+            }
+            _featureFlags = config.FeatureFlags;
         }
 
         [MonoPInvokeCallback(typeof(Func<IntPtr, bool>))]
@@ -417,27 +433,40 @@ namespace BugsnagUnity
 
         public List<FeatureFlag> GetFeatureFlags()
         {
-            throw new NotImplementedException();
+            return _featureFlags;
         }
 
         public void AddFeatureFlag(string name, string variant = null)
         {
-            throw new NotImplementedException();
+            NativeCode.bugsnag_addFeatureFlag(name, variant);
+            _featureFlags.Add(new FeatureFlag(name, variant));
         }
 
         public void AddFeatureFlags(FeatureFlag[] featureFlags)
         {
-            throw new NotImplementedException();
+            foreach (var flag in featureFlags)
+            {
+                AddFeatureFlag(flag.Name, flag.Variant);
+                _featureFlags.Add(new FeatureFlag(flag.Name, flag.Variant));
+            }
         }
 
         public void ClearFeatureFlag(string name)
         {
-            throw new NotImplementedException();
+            NativeCode.bugsnag_clearFeatureFlag(name);
+            foreach (var flag in _featureFlags.ToArray())
+            {
+                if (flag.Name == name)
+                {
+                    _featureFlags.Remove(flag);
+                }
+            }
         }
 
         public void ClearFeatureFlags()
         {
-            throw new NotImplementedException();
+            NativeCode.bugsnag_clearFeatureFlags();
+            _featureFlags.Clear();
         }
     }
 }

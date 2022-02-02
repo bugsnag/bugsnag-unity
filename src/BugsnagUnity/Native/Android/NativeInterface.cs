@@ -315,6 +315,15 @@ namespace BugsnagUnity
                 }
             }
 
+            // set feature flags
+            if (config.FeatureFlags != null && config.FeatureFlags.Count > 0)
+            {
+                foreach (var flag in config.FeatureFlags)
+                {
+                    obj.Call("addFeatureFlag",flag.Name,flag.Variant);
+                }
+            }
+
             // set sendThreads
             AndroidJavaClass androidThreadSendPolicyClass = new AndroidJavaClass("com.bugsnag.android.ThreadSendPolicy");
             using (AndroidJavaObject policy = androidThreadSendPolicyClass.CallStatic<AndroidJavaObject>("valueOf", GetAndroidFormatThreadSendName(config.SendThreads)))
@@ -996,6 +1005,24 @@ namespace BugsnagUnity
                 CrashedDuringLaunch = crashedDuringLaunch
             };
             return lastRunInfo;
+        }
+
+        public void AddFeatureFlag(string name, string varient)
+        {
+            AndroidJavaClass bugsnagClass = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
+            bugsnagClass.CallStatic("addFeatureFlag",name,varient);
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            AndroidJavaClass bugsnagClass = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
+            bugsnagClass.CallStatic("clearFeatureFlag", name);
+        }
+
+        public void ClearFeatureFlags()
+        {
+            AndroidJavaClass bugsnagClass = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
+            bugsnagClass.CallStatic("clearFeatureFlags");
         }
 
     }

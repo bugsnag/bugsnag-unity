@@ -14,6 +14,8 @@ namespace BugsnagUnity
 
         private NativeInterface NativeInterface;
 
+        private List<FeatureFlag> _featureFlags = new List<FeatureFlag>();
+
         public NativeClient(Configuration configuration)
         {
             NativeInterface = new NativeInterface(configuration);
@@ -137,27 +139,40 @@ namespace BugsnagUnity
 
         public List<FeatureFlag> GetFeatureFlags()
         {
-            throw new System.NotImplementedException();
+            return _featureFlags;
         }
 
         public void AddFeatureFlag(string name, string variant = null)
         {
-            throw new System.NotImplementedException();
+            NativeInterface.AddFeatureFlag(name, variant);
+            _featureFlags.Add(new FeatureFlag(name, variant));
         }
 
         public void AddFeatureFlags(FeatureFlag[] featureFlags)
         {
-            throw new System.NotImplementedException();
+            foreach (var flag in featureFlags)
+            {
+                AddFeatureFlag(flag.Name, flag.Variant);
+                _featureFlags.Add(new FeatureFlag(flag.Name, flag.Variant));
+            }
         }
 
         public void ClearFeatureFlag(string name)
         {
-            throw new System.NotImplementedException();
+            NativeInterface.ClearFeatureFlag(name);
+            foreach (var flag in _featureFlags.ToArray())
+            {
+                if (flag.Name == name)
+                {
+                    _featureFlags.Remove(flag);
+                }
+            }
         }
 
         public void ClearFeatureFlags()
         {
-            throw new System.NotImplementedException();
+            NativeInterface.ClearFeatureFlags();
+            _featureFlags.Clear();
         }
     }
 
