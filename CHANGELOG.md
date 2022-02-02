@@ -41,6 +41,18 @@
   * Fix missing imports when building with `CLANG_ENABLE_MODULES=NO`
     [bugsnag-cocoa#1284](https://github.com/bugsnag/bugsnag-cocoa/pull/1284)
 
+* Update bugsnag-android to v5.19.1
+  * New APIs to support forthcoming feature flag and experiment functionality. For more information, please see https://docs.bugsnag.com/product/features-experiments.
+  * Explicitly define Kotlin api/language versions
+    [bugsnag-android#1564](https://github.com/bugsnag/bugsnag-android/pull/1564)
+  * Build project with Kotlin 1.4, maintain compat with Kotlin 1.3
+    [bugsnag-android#1565](https://github.com/bugsnag/bugsnag-android/pull/1565)
+  * Discarded unhandled exceptions are propagated to any previously registered handlers
+    [bugsnag-android#1584](https://github.com/bugsnag/bugsnag-android/pull/1584)
+  * Fix SIGABRT crashes caused by race conditions in the NDK layer
+    [bugsnag-android#1585](https://github.com/bugsnag/bugsnag-android/pull/1585)
+
+
 * ## 6.0.0 (2022-01-20)
 
 This version contains **breaking** changes, as bugsnag-unity has been updated to allow for more convenient and performant initialisation and configuration features.
