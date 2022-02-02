@@ -130,6 +130,8 @@ public class Main : MonoBehaviour
         config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         config.DotnetApiCompatibility = FindDotnetApiCompatibility();
 
+
+        config.AddFeatureFlag("testName", "testVarient");
         // prepare scenario-specific config
         PrepareConfigForScenario(config, scenario);
         return config;

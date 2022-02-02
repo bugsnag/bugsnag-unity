@@ -5,7 +5,7 @@ using BugsnagUnity.Payload;
 namespace BugsnagUnity
 {
 
-    internal interface IClient : IMetadataEditor
+    internal interface IClient : IMetadataEditor, IFeatureFlagStore
     {
         Configuration Configuration { get; }
 

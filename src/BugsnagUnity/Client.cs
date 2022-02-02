@@ -369,7 +369,8 @@ namespace BugsnagUnity
               handledState,
               Breadcrumbs.Retrieve(),
               SessionTracking.CurrentSession,
-              Configuration.ApiKey);
+              Configuration.ApiKey,
+              NativeClient.GetFeatureFlags());
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))
@@ -566,6 +567,13 @@ namespace BugsnagUnity
             _cachedUser = new User(id, email, name);
             NativeClient.SetUser(_cachedUser);
         }
-       
+
+        public void AddFeatureFlag(string name, string variant = null) => NativeClient.AddFeatureFlag(name, variant);
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags) => NativeClient.AddFeatureFlags(featureFlags);
+
+        public void ClearFeatureFlag(string name) => NativeClient.ClearFeatureFlag(name);
+
+        public void ClearFeatureFlags() => NativeClient.ClearFeatureFlags();
     }
 }

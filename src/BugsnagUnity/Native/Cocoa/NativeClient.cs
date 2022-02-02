@@ -415,6 +415,29 @@ namespace BugsnagUnity
             return dictionary;
         }
 
-      
+        public List<FeatureFlag> GetFeatureFlags()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearFeatureFlags()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

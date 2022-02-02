@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace BugsnagUnity
 {
-    interface INativeClient
+    interface INativeClient : IFeatureFlagStore
     {
         /// <summary>
         /// The native configuration
@@ -106,6 +106,8 @@ namespace BugsnagUnity
         void AddNativeMetadata(string section, IDictionary<string, object> data);
 
         IDictionary<string, object> GetNativeMetadata();
+
+        List<FeatureFlag> GetFeatureFlags();
 
     }
 }

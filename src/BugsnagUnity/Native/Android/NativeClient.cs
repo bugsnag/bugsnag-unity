@@ -134,6 +134,31 @@ namespace BugsnagUnity
                 NativeInterface.AddMetadata(section,pair.Key,pair.Value.ToString());
             }
         }
+
+        public List<FeatureFlag> GetFeatureFlags()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void ClearFeatureFlags()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 
 }
