@@ -14,14 +14,22 @@ namespace BugsnagUnity
             get { return Application.temporaryCachePath + "/Bugsnag"; }
         }
 
+        private static Configuration _configuration;
+
 
         private static string SessionsDirectory
         {
             get { return CacheDirectory + "/Sessions"; }
         }
 
+        public static void InitFileManager(Configuration configuration)
+        {
+            _configuration = configuration;
+        }
+
         internal static void CacheSession(SessionReport sessionReport)
         {
+            Debug.Log("Caching session " + sessionReport.Id);
             if (sessionReport != null)
             {
                 using (var stream = new MemoryStream())
@@ -32,13 +40,16 @@ namespace BugsnagUnity
                     writer.Flush();
                     stream.Position = 0;
                     var jsonString = reader.ReadToEnd();
-                    WriteToDisk(jsonString,SessionsDirectory + "/" + sessionReport.Id + ".json");
+                    var path = SessionsDirectory + "/" + sessionReport.Id + ".json";
+                    WriteToDisk(jsonString,path);
+                    Debug.Log("Session written to " + path);
                 }
             }
         }
 
         internal static void PayloadSent(IPayload payload)
         {
+            Debug.Log("Payload sent " + payload.Id);
             switch (payload.PayloadType)
             {
                 case PayloadType.Session:
@@ -51,6 +62,8 @@ namespace BugsnagUnity
 
         internal static void RemovedCachedSession(string id)
         {
+            return;
+            Debug.Log("Removing cached session " + id);
             foreach (var cachedSessionPath in Directory.GetFiles(SessionsDirectory))
             {
                 if (cachedSessionPath.Contains(id))
@@ -66,10 +79,29 @@ namespace BugsnagUnity
             var cachedPayloads = new List<IPayload>();
             foreach (var cachedSessionPath in Directory.GetFiles(SessionsDirectory))
             {
+                if (cachedSessionPath.Contains("DS_Store"))
+                {
+                    continue;
+                }
+                Debug.Log("The path: " + cachedSessionPath);
                 var json = File.ReadAllText(cachedSessionPath);
-                var sessionReport = SimpleJson.DeserializeObject<SessionReport>(json);
-                cachedPayloads.Add(sessionReport);
+                Debug.Log("The json: " + json);
+                var sessionReport = SimpleJson.DeserializeObject<Dictionary<string,object>>(json);
+                Debug.Log("got cached sessionReport: " + sessionReport.Count);
+                foreach (var item in collection)
+                {
+
+                }
+                Debug.Log("sessionReport session type: " + sessionReport.Get("sessions").GetType().Name);
+
+
+
+                var sessionFromPayload = new SessionReport(_configuration,sessionReport);
+                Debug.Log("got cached session payload: " + sessionFromPayload.Id);
+
+                // cachedPayloads.Add(sessionReport);
             }
+            throw new Exception("boop");
             return cachedPayloads;
         }
 

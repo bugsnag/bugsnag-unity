@@ -50,6 +50,7 @@ namespace BugsnagUnity
         public Client(INativeClient nativeClient)
         {
             NativeClient = nativeClient;
+            FileManager.InitFileManager(nativeClient.Configuration);
             SessionTracking = new SessionTracker(this);
             MainThread = Thread.CurrentThread;
             InitStopwatches();

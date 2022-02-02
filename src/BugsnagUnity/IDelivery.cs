@@ -109,7 +109,6 @@ namespace BugsnagUnity
                 req.uploadHandler = new UploadHandlerRaw(body);
                 req.downloadHandler = new DownloadHandlerBuffer();
                 req.method = UnityWebRequest.kHttpVerbPOST;
-
                 yield return req.SendWebRequest();
 
                 while (!req.isDone)
