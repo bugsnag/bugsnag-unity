@@ -1009,20 +1009,27 @@ namespace BugsnagUnity
 
         public void AddFeatureFlag(string name, string varient)
         {
-            AndroidJavaClass bugsnagClass = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
-            bugsnagClass.CallStatic("addFeatureFlag",name,varient);
+            IntPtr bugsnagClient = CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
+            var methodId = AndroidJNI.GetMethodID(AndroidJNI.FindClass("com/bugsnag/android/Client"), "addFeatureFlag", "(Ljava/lang/String;Ljava/lang/String;)V");
+            object[] args = new object[] { name, varient };
+            jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+            AndroidJNI.CallVoidMethod(bugsnagClient, methodId, jargs);
         }
 
         public void ClearFeatureFlag(string name)
         {
-            AndroidJavaClass bugsnagClass = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
-            bugsnagClass.CallStatic("clearFeatureFlag", name);
+            IntPtr bugsnagClient = CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
+            var methodId = AndroidJNI.GetMethodID(AndroidJNI.FindClass("com/bugsnag/android/Client"), "clearFeatureFlag", "(Ljava/lang/String;)V");
+            object[] args = new object[] { name };
+            jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+            AndroidJNI.CallVoidMethod(bugsnagClient, methodId, jargs);
         }
 
         public void ClearFeatureFlags()
         {
-            AndroidJavaClass bugsnagClass = new AndroidJavaClass("com.bugsnag.android.Bugsnag");
-            bugsnagClass.CallStatic("clearFeatureFlags");
+            IntPtr bugsnagClient = CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
+            var methodId = AndroidJNI.GetMethodID(AndroidJNI.FindClass("com/bugsnag/android/Client"), "clearFeatureFlags", "()V");
+            AndroidJNI.CallVoidMethod(bugsnagClient, methodId, null);
         }
 
     }

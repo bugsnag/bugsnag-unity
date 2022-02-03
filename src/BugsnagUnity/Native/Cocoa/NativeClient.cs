@@ -17,8 +17,6 @@ namespace BugsnagUnity
         IntPtr NativeConfiguration { get; }
         private static NativeClient _instance;
 
-        private List<FeatureFlag> _featureFlags = new List<FeatureFlag>();
-
         public NativeClient(Configuration configuration)
         {
             _instance = this;
@@ -90,7 +88,6 @@ namespace BugsnagUnity
             {
                 NativeCode.bugsnag_addFeatureFlagOnConfig(obj, flag.Name, flag.Variant);
             }
-            _featureFlags = config.FeatureFlags;
         }
 
         [MonoPInvokeCallback(typeof(Func<IntPtr, bool>))]
@@ -431,15 +428,9 @@ namespace BugsnagUnity
             return dictionary;
         }
 
-        public List<FeatureFlag> GetFeatureFlags()
-        {
-            return _featureFlags;
-        }
-
         public void AddFeatureFlag(string name, string variant = null)
         {
             NativeCode.bugsnag_addFeatureFlag(name, variant);
-            _featureFlags.Add(new FeatureFlag(name, variant));
         }
 
         public void AddFeatureFlags(FeatureFlag[] featureFlags)
@@ -447,26 +438,17 @@ namespace BugsnagUnity
             foreach (var flag in featureFlags)
             {
                 AddFeatureFlag(flag.Name, flag.Variant);
-                _featureFlags.Add(new FeatureFlag(flag.Name, flag.Variant));
             }
         }
 
         public void ClearFeatureFlag(string name)
         {
             NativeCode.bugsnag_clearFeatureFlag(name);
-            foreach (var flag in _featureFlags.ToArray())
-            {
-                if (flag.Name == name)
-                {
-                    _featureFlags.Remove(flag);
-                }
-            }
         }
 
         public void ClearFeatureFlags()
         {
             NativeCode.bugsnag_clearFeatureFlags();
-            _featureFlags.Clear();
         }
     }
 }

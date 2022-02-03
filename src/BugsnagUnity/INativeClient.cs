@@ -107,7 +107,5 @@ namespace BugsnagUnity
 
         IDictionary<string, object> GetNativeMetadata();
 
-        List<FeatureFlag> GetFeatureFlags();
-
     }
 }

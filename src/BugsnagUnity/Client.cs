@@ -46,15 +46,18 @@ namespace BugsnagUnity
 
         private static object autoSessionLock = new object();
 
+        private List<FeatureFlag> _featureFlags;
+
 
         public Client(INativeClient nativeClient)
         {
             NativeClient = nativeClient;
-            SessionTracking = new SessionTracker(this);
             MainThread = Thread.CurrentThread;
+            SessionTracking = new SessionTracker(this);
             InitStopwatches();
             InitUserObject();
             InitMetadata();
+            InitFeatureFlags();
             InitCounters();
             ListenForSceneLoad();
             InitLogHandlers();       
@@ -62,6 +65,18 @@ namespace BugsnagUnity
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
+        }
+
+        private void InitFeatureFlags()
+        {
+            if (Configuration.FeatureFlags != null)
+            {
+                _featureFlags = Configuration.FeatureFlags;
+            }
+            else
+            {
+                _featureFlags = new List<FeatureFlag>();
+            }
         }
 
         private void InitInitialSessionCheck()
@@ -370,7 +385,7 @@ namespace BugsnagUnity
               Breadcrumbs.Retrieve(),
               SessionTracking.CurrentSession,
               Configuration.ApiKey,
-              NativeClient.GetFeatureFlags());
+              _featureFlags);
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))
@@ -568,12 +583,30 @@ namespace BugsnagUnity
             NativeClient.SetUser(_cachedUser);
         }
 
-        public void AddFeatureFlag(string name, string variant = null) => NativeClient.AddFeatureFlag(name, variant);
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            _featureFlags.Add(new FeatureFlag(name, variant));
+        }
 
-        public void AddFeatureFlags(FeatureFlag[] featureFlags) => NativeClient.AddFeatureFlags(featureFlags);
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            _featureFlags.AddRange(featureFlags);
+        }
 
-        public void ClearFeatureFlag(string name) => NativeClient.ClearFeatureFlag(name);
+        public void ClearFeatureFlag(string name)
+        {
+            foreach (var flag in _featureFlags.ToArray())
+            {
+                if (flag.Name == name)
+                {
+                    _featureFlags.Remove(flag);
+                }
+            }
+        }
 
-        public void ClearFeatureFlags() => NativeClient.ClearFeatureFlags();
+        public void ClearFeatureFlags()
+        {
+            _featureFlags.Clear();
+        }
     }
 }
