@@ -207,12 +207,15 @@ namespace BugsnagUnity.Payload
                 breadcrumbPayloads.Add(crumb.Payload);
             }
             Add("breadcrumbs", breadcrumbPayloads.ToArray());
-            var featureFlagPayloads = new List<Dictionary<string, object>>();
-            foreach (var item in _featureFlags)
+            if (_featureFlags != null && _featureFlags.Count > 0)
             {
-                featureFlagPayloads.Add(item.Payload);
+                var featureFlagPayloads = new List<Dictionary<string, object>>();
+                foreach (var item in _featureFlags)
+                {
+                    featureFlagPayloads.Add(item.Payload);
+                }
+                Add("featureFlags", featureFlagPayloads.ToArray());
             }
-            Add("featureFlags", featureFlagPayloads.ToArray());
             if (Session != null)
             {
                 Add("session", Session.Payload);

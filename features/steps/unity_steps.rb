@@ -60,10 +60,8 @@ def dial_number_for(name)
       "Set User After Init Native Error" => 35,
       "Set User After Init NDK Error" => 36,
       "Feature Flags In Config" => 37,
-
-
-
-
+      "Feature Flags After Init" => 38,
+      "Feature Flags After Init Clear All" => 39,
 
       # Commands
       "Clear iOS Data" => 90

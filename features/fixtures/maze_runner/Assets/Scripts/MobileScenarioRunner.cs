@@ -52,6 +52,9 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "35", "Set User After Init Native Error" },
         { "36", "Set User After Init NDK Error" },
         { "37", "Feature Flags In Config" },
+        { "38", "Feature Flags After Init" },
+        { "39", "Feature Flags After Init Clear All" },
+
 
 
         // Commands
@@ -374,6 +377,26 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Feature Flags After Init Clear All":
+                Bugsnag.AddFeatureFlag("testName1", "testVarient1");
+                Bugsnag.AddFeatureFlag("testName2", "testVarient2");
+                Bugsnag.ClearFeatureFlags();
+#if UNITY_ANDROID
+                MobileNative.TriggerBackgroundJavaCrash();
+#elif UNITY_IOS
+                NativeException();
+#endif
+                break;
+            case "Feature Flags After Init":
+                Bugsnag.AddFeatureFlag("testName1", "testVarient1");
+                Bugsnag.AddFeatureFlag("testName2", "testVarient2");
+                Bugsnag.ClearFeatureFlag("testName1");
+#if UNITY_ANDROID
+                MobileNative.TriggerBackgroundJavaCrash();
+#elif UNITY_IOS
+                NativeException();
+#endif
+                break;
             case "Feature Flags In Config":
 #if UNITY_ANDROID
                 MobileNative.TriggerBackgroundJavaCrash();

@@ -130,8 +130,6 @@ public class Main : MonoBehaviour
         config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         config.DotnetApiCompatibility = FindDotnetApiCompatibility();
 
-
-        config.AddFeatureFlag("testName", "testVarient");
         // prepare scenario-specific config
         PrepareConfigForScenario(config, scenario);
         return config;
@@ -153,6 +151,16 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "FeatureFlagsConfigClearAll":
+                config.AddFeatureFlag("testName1", "testVarient1");
+                config.AddFeatureFlag("testName2", "testVarient2");
+                config.ClearFeatureFlags();
+                break;
+            case "FeatureFlagsInConfig":
+                config.AddFeatureFlag("testName1", "testVarient1");
+                config.AddFeatureFlag("testName2", "testVarient2");
+                config.ClearFeatureFlag("testName1");
+                break;
             case "DisableErrorBreadcrumbs":
                 config.EnabledBreadcrumbTypes = new BreadcrumbType[] { BreadcrumbType.Log };
                 break;
@@ -362,6 +370,22 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "FeatureFlagsAfterInitClearAll":
+                Bugsnag.AddFeatureFlag("testName1", "testVarient1");
+                Bugsnag.AddFeatureFlag("testName2", "testVarient2");
+                Bugsnag.ClearFeatureFlags();
+                throw new Exception("FeatureFlags");
+                break;
+            case "FeatureFlagsConfigClearAll":
+                throw new Exception("FeatureFlags");
+                break;
+            case "FeatureFlagsInConfig":
+                throw new Exception("FeatureFlags");
+            case "FeatureFlagsAfterInit":
+                Bugsnag.AddFeatureFlag("testName1", "testVarient1");
+                Bugsnag.AddFeatureFlag("testName2", "testVarient2");
+                Bugsnag.ClearFeatureFlag("testName1");
+                throw new Exception("FeatureFlags");
             case "SetUserAfterInitCsharpError":
                 Bugsnag.SetUser("1","2","3");
                 Bugsnag.Notify(new Exception("SetUserAfterInitCsharpError"));

@@ -1007,31 +1007,31 @@ namespace BugsnagUnity
             return lastRunInfo;
         }
 
+        private IntPtr GetClientRef()
+        {
+            return CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
+        }
+
         public void AddFeatureFlag(string name, string varient)
         {
-            //object[] args = new object[] { name, varient };
-            //CallNativeVoidMethod("addFeatureFlag", "(Ljava/lang/String;Ljava/lang/String;)V", args);// CallNativeVoidMethod("addFeatureFlag", "(Ljava/lang/String;Ljava/lang/String;)V",)
-            IntPtr bugsnagClient = CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
             var methodId = AndroidJNI.GetMethodID(AndroidJNI.FindClass("com/bugsnag/android/Client"), "addFeatureFlag", "(Ljava/lang/String;Ljava/lang/String;)V");
             object[] args = new object[] { name, varient };
             jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
-            AndroidJNI.CallVoidMethod(bugsnagClient, methodId, jargs);
+            AndroidJNI.CallVoidMethod(GetClientRef(), methodId, jargs);
         }
 
         public void ClearFeatureFlag(string name)
         {
-            IntPtr bugsnagClient = CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
             var methodId = AndroidJNI.GetMethodID(AndroidJNI.FindClass("com/bugsnag/android/Client"), "clearFeatureFlag", "(Ljava/lang/String;)V");
             object[] args = new object[] { name };
             jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
-            AndroidJNI.CallVoidMethod(bugsnagClient, methodId, jargs);
+            AndroidJNI.CallVoidMethod(GetClientRef(), methodId, jargs);
         }
 
         public void ClearFeatureFlags()
         {
-            IntPtr bugsnagClient = CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
             var methodId = AndroidJNI.GetMethodID(AndroidJNI.FindClass("com/bugsnag/android/Client"), "clearFeatureFlags", "()V");
-            AndroidJNI.CallVoidMethod(bugsnagClient, methodId, null);
+            AndroidJNI.CallVoidMethod(GetClientRef(), methodId, null);
         }
 
     }

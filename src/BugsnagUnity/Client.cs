@@ -600,13 +600,7 @@ namespace BugsnagUnity
 
         public void ClearFeatureFlag(string name)
         {
-            foreach (var flag in _featureFlags.ToArray())
-            {
-                if (flag.Name == name)
-                {
-                    _featureFlags.Remove(flag);
-                }
-            }
+            _featureFlags.RemoveAll(item => item.Name == name);
             NativeClient.ClearFeatureFlag(name);
         }
 
