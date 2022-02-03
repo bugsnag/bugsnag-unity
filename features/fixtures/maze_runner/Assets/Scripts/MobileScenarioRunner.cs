@@ -80,6 +80,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         config.BundleVersion = "1.2.3";
         config.RedactedKeys = new string[] { "test", "password" };
         config.VersionCode = 123;
+        config.AutoTrackSessions = false;
         return config;
     }
 
@@ -323,6 +324,9 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "Custom App Type":
                 config.AppType = "test";
+                break;
+            case "Notify with callback":
+                config.AutoTrackSessions = true;
                 break;
             case "Native Event Callback":
                 config.AddOnSendError((@event) => {
