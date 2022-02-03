@@ -1009,6 +1009,8 @@ namespace BugsnagUnity
 
         public void AddFeatureFlag(string name, string varient)
         {
+            //object[] args = new object[] { name, varient };
+            //CallNativeVoidMethod("addFeatureFlag", "(Ljava/lang/String;Ljava/lang/String;)V", args);// CallNativeVoidMethod("addFeatureFlag", "(Ljava/lang/String;Ljava/lang/String;)V",)
             IntPtr bugsnagClient = CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
             var methodId = AndroidJNI.GetMethodID(AndroidJNI.FindClass("com/bugsnag/android/Client"), "addFeatureFlag", "(Ljava/lang/String;Ljava/lang/String;)V");
             object[] args = new object[] { name, varient };

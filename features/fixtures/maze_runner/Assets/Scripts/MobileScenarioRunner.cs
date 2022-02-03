@@ -51,6 +51,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "34", "Set User After Init Csharp Error" },
         { "35", "Set User After Init Native Error" },
         { "36", "Set User After Init NDK Error" },
+        { "37", "Feature Flags In Config" },
 
 
         // Commands
@@ -135,6 +136,11 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Feature Flags In Config":
+                config.AddFeatureFlag("testName1","testVarient1");
+                config.AddFeatureFlag("testName2", "testVarient2");
+                config.ClearFeatureFlag("testName1");
+                break;
             case "Set User In Config Csharp error":
             case "Set User In Config Native Crash":
                 config.SetUser("1","2","3");
@@ -368,7 +374,13 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
-
+            case "Feature Flags In Config":
+#if UNITY_ANDROID
+                MobileNative.TriggerBackgroundJavaCrash();
+#elif UNITY_IOS
+                NativeException();
+#endif
+                break;
             case "Set User After Init Csharp Error":
                 Bugsnag.SetUser("1", "2", "3");
                 Bugsnag.Notify(new Exception("SetUserAfterInitCsharpError"));
