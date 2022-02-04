@@ -408,6 +408,21 @@ void bugsnag_clearFeatureFlags() {
     [Bugsnag clearFeatureFlags];
 }
 
+void bugsnag_addFeatureFlagOnEvent(const void *event, char *name, char *variant) {
+    NSString *ns_name = name == NULL ? nil : [NSString stringWithUTF8String: name];
+    NSString *ns_variant = variant == NULL ? nil : [NSString stringWithUTF8String: variant];
+    [(__bridge BugsnagEvent *)event addFeatureFlagWithName:ns_name variant:ns_variant];
+}
+
+void bugsnag_clearFeatureFlagOnEvent(const void *event, char *name) {
+    NSString *ns_name = name == NULL ? nil : [NSString stringWithUTF8String: name];
+    [(__bridge BugsnagEvent *)event clearFeatureFlagWithName:ns_name];
+}
+
+void bugsnag_clearFeatureFlagsOnEvent(const void *event) {
+    [(__bridge BugsnagEvent *)event clearFeatureFlags];
+}
+
 NSMutableSet * getSetFromStringArray(const char *values[], int valuesCount)
 {
     NSMutableSet *theSet = [NSMutableSet new];

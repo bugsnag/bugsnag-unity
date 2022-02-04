@@ -54,7 +54,7 @@ namespace BugsnagUnity.Payload
             _androidProjectPackages = packages;
         }
 
-        private List<FeatureFlag> _featureFlags = new List<FeatureFlag>();
+        private List<FeatureFlag> _featureFlags;
 
         HandledState _handledState;
 
@@ -207,7 +207,7 @@ namespace BugsnagUnity.Payload
                 breadcrumbPayloads.Add(crumb.Payload);
             }
             Add("breadcrumbs", breadcrumbPayloads.ToArray());
-            if (_featureFlags != null && _featureFlags.Count > 0)
+            if (_featureFlags.Count > 0)
             {
                 var featureFlagPayloads = new List<Dictionary<string, object>>();
                 foreach (var item in _featureFlags)
@@ -222,6 +222,26 @@ namespace BugsnagUnity.Payload
             }
 
             return Payload;
+        }
+
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            _featureFlags.Add(new FeatureFlag(name, variant));
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            _featureFlags.AddRange(featureFlags);
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            _featureFlags.RemoveAll(item => item.Name == name);
+        }
+
+        public void ClearFeatureFlags()
+        {
+            _featureFlags.Clear();
         }
     }
 }

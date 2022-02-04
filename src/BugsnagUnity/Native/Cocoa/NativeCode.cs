@@ -266,6 +266,15 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_clearMetadataWithKey(string section, string key);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_addFeatureFlagOnEvent(IntPtr @event, string name, string variant);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearFeatureFlagOnEvent(IntPtr @event, string name);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearFeatureFlagsOnEvent(IntPtr @event);
     }
 }
 
