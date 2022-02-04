@@ -28,7 +28,7 @@ Feature: Android Feature Flags
         And the exception "errorClass" equals "java.lang.RuntimeException"
 
         And the event "featureFlags.0.featureFlag" equals "testName2"
-        And the event "featureFlags.0.variant" equals "testVarient2"
+        And the event "featureFlags.0.variant" equals "testVariant2"
         And the event "featureFlags.1" is null
 
    Scenario: Feature Flag After Init Clear All
