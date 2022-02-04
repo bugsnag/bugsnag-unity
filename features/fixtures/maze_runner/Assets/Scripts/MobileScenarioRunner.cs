@@ -141,8 +141,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         switch (scenarioName)
         {
             case "Feature Flags In Config":
-                config.AddFeatureFlag("testName1","testVarient1");
-                config.AddFeatureFlag("testName2", "testVarient2");
+                config.AddFeatureFlag("testName1","testVariant1");
+                config.AddFeatureFlag("testName2", "testVariant2");
                 config.ClearFeatureFlag("testName1");
                 break;
             case "Set User In Config Csharp error":
