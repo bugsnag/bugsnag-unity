@@ -393,8 +393,8 @@ public class MobileScenarioRunner : MonoBehaviour {
 #endif
                 break;
             case "Feature Flags After Init":
-                Bugsnag.AddFeatureFlag("testName1", "testVarient1");
-                Bugsnag.AddFeatureFlag("testName2", "testVarient2");
+                Bugsnag.AddFeatureFlag("testName1", "testVariant1");
+                Bugsnag.AddFeatureFlag("testName2", "testVariant2");
                 Bugsnag.ClearFeatureFlag("testName1");
 #if UNITY_ANDROID
                 MobileNative.TriggerBackgroundJavaCrash();
