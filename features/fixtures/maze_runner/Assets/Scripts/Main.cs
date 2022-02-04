@@ -371,8 +371,8 @@ public class Main : MonoBehaviour
         switch (scenario)
         {
             case "FeatureFlagsAfterInitClearAll":
-                Bugsnag.AddFeatureFlag("testName1", "testVarient1");
-                Bugsnag.AddFeatureFlag("testName2", "testVarient2");
+                Bugsnag.AddFeatureFlag("testName1", "testVariant1");
+                Bugsnag.AddFeatureFlag("testName2", "testVariant2");
                 Bugsnag.ClearFeatureFlags();
                 throw new Exception("FeatureFlags");
                 break;
@@ -382,8 +382,8 @@ public class Main : MonoBehaviour
             case "FeatureFlagsInConfig":
                 throw new Exception("FeatureFlags");
             case "FeatureFlagsAfterInit":
-                Bugsnag.AddFeatureFlag("testName1", "testVarient1");
-                Bugsnag.AddFeatureFlag("testName2", "testVarient2");
+                Bugsnag.AddFeatureFlag("testName1", "testVariant1");
+                Bugsnag.AddFeatureFlag("testName2", "testVariant2");
                 Bugsnag.ClearFeatureFlag("testName1");
                 throw new Exception("FeatureFlags");
             case "SetUserAfterInitCsharpError":
