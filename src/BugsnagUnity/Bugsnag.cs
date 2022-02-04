@@ -158,5 +158,13 @@ namespace BugsnagUnity
         /// </summary>
         public static object GetMetadata(string section, string key) => Client.GetMetadata(section, key);
 
+        public static void AddFeatureFlag(string name, string variant = null) => Client.AddFeatureFlag(name,variant);
+
+        public static void AddFeatureFlags(FeatureFlag[] featureFlags) => Client.AddFeatureFlags(featureFlags);
+
+        public static void ClearFeatureFlag(string name) => Client.ClearFeatureFlag(name);
+
+        public static void ClearFeatureFlags() => Client.ClearFeatureFlags();
+
     }
 }

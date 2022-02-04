@@ -54,6 +54,18 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setReleaseStage(IntPtr configuration, string releaseStage);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_addFeatureFlagOnConfig(IntPtr configuration, string name, string variant);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_addFeatureFlag(string name, string variant);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearFeatureFlag(string name);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearFeatureFlags();
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);
 
         [DllImport(Import)]

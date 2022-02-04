@@ -179,9 +179,6 @@ namespace BugsnagUnity
             var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
             return dictionary;
         }
-
        
-
-
     }
 }

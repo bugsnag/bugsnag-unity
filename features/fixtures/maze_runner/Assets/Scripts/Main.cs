@@ -151,6 +151,16 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "FeatureFlagsConfigClearAll":
+                config.AddFeatureFlag("testName1", "testVariant1");
+                config.AddFeatureFlag("testName2", "testVariant2");
+                config.ClearFeatureFlags();
+                break;
+            case "FeatureFlagsInConfig":
+                config.AddFeatureFlag("testName1", "testVariant1");
+                config.AddFeatureFlag("testName2", "testVariant2");
+                config.ClearFeatureFlag("testName1");
+                break;
             case "DisableErrorBreadcrumbs":
                 config.EnabledBreadcrumbTypes = new BreadcrumbType[] { BreadcrumbType.Log };
                 break;
@@ -360,6 +370,22 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "FeatureFlagsAfterInitClearAll":
+                Bugsnag.AddFeatureFlag("testName1", "testVariant1");
+                Bugsnag.AddFeatureFlag("testName2", "testVariant2");
+                Bugsnag.ClearFeatureFlags();
+                throw new Exception("FeatureFlags");
+                break;
+            case "FeatureFlagsConfigClearAll":
+                throw new Exception("FeatureFlags");
+                break;
+            case "FeatureFlagsInConfig":
+                throw new Exception("FeatureFlags");
+            case "FeatureFlagsAfterInit":
+                Bugsnag.AddFeatureFlag("testName1", "testVariant1");
+                Bugsnag.AddFeatureFlag("testName2", "testVariant2");
+                Bugsnag.ClearFeatureFlag("testName1");
+                throw new Exception("FeatureFlags");
             case "SetUserAfterInitCsharpError":
                 Bugsnag.SetUser("1","2","3");
                 Bugsnag.Notify(new Exception("SetUserAfterInitCsharpError"));

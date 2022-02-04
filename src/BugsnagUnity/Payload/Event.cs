@@ -8,7 +8,7 @@ namespace BugsnagUnity.Payload
     public class Event : PayloadContainer, IEvent
     {
 
-        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey ,LogType? logType = null)
+        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey, List<FeatureFlag> featureFlags,LogType? logType = null)
         {
             ApiKey = apiKey;
             OriginalSeverity = handledState;
@@ -19,7 +19,6 @@ namespace BugsnagUnity.Payload
             _deviceWithState = device;
             Context = context;
             _user = user;
-
             _errors = errors.ToList();
             Errors = new List<IError>();
             foreach (var error in _errors)
@@ -47,12 +46,15 @@ namespace BugsnagUnity.Payload
                 }
                 Session = session;
             }
+            _featureFlags = featureFlags;
         }
 
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
         {
             _androidProjectPackages = packages;
         }
+
+        private List<FeatureFlag> _featureFlags = new List<FeatureFlag>();
 
         HandledState _handledState;
 
@@ -205,6 +207,15 @@ namespace BugsnagUnity.Payload
                 breadcrumbPayloads.Add(crumb.Payload);
             }
             Add("breadcrumbs", breadcrumbPayloads.ToArray());
+            if (_featureFlags != null && _featureFlags.Count > 0)
+            {
+                var featureFlagPayloads = new List<Dictionary<string, object>>();
+                foreach (var item in _featureFlags)
+                {
+                    featureFlagPayloads.Add(item.Payload);
+                }
+                Add("featureFlags", featureFlagPayloads.ToArray());
+            }
             if (Session != null)
             {
                 Add("session", Session.Payload);
@@ -212,6 +223,5 @@ namespace BugsnagUnity.Payload
 
             return Payload;
         }
-
     }
 }
