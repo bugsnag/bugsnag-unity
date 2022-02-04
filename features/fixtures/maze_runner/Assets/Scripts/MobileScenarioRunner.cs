@@ -239,6 +239,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
 
             case "Session Callback":
+                config.AutoTrackSessions = true;
                 config.AddOnSession((session) => {
 
                     session.Id = "Custom Id";
