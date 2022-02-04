@@ -148,6 +148,5 @@ namespace BugsnagUnity
         {
             NativePointer.Call("setUser", id, email, name);
         }
-
     }
 }
