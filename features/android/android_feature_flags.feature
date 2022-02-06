@@ -48,7 +48,7 @@ Feature: Android Feature Flags
         And I wait for 2 seconds
         When I clear any error dialogue
         And I relaunch the Unity mobile app
-        When I run the "Start SDK" mobile scenario
+        When I run the "Feature Flags In Callback" mobile scenario
         Then I wait to receive an error
         
         And the exception "errorClass" equals "java.lang.RuntimeException"
@@ -64,7 +64,7 @@ Feature: Android Feature Flags
         And I wait for 2 seconds
         When I clear any error dialogue
         And I relaunch the Unity mobile app
-        When I run the "Start SDK" mobile scenario
+        When I run the "Clear Feature Flags In Callback" mobile scenario
         Then I wait to receive an error
         
         And the exception "errorClass" equals "java.lang.RuntimeException"

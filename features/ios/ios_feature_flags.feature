@@ -46,7 +46,7 @@ Feature: Feature Flags
         When I run the "Feature Flags In Callback" mobile scenario
         And I wait for 2 seconds
         And I relaunch the Unity mobile app
-        When I run the "Start SDK" mobile scenario
+        When I run the "Feature Flags In Callback" mobile scenario
         Then I wait to receive an error
         
         And the exception "errorClass" equals "St13runtime_error"
@@ -61,7 +61,7 @@ Feature: Feature Flags
         When I run the "Clear Feature Flags In Callback" mobile scenario
         And I wait for 2 seconds
         And I relaunch the Unity mobile app
-        When I run the "Start SDK" mobile scenario
+        When I run the "Clear Feature Flags In Callback" mobile scenario
         Then I wait to receive an error
         
         And the exception "errorClass" equals "St13runtime_error"
