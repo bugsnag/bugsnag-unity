@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 6.1.0 (2022-02-08)
 
 ### Enhancements
 
@@ -61,7 +61,7 @@
     [bugsnag-android#1592](https://github.com/bugsnag/bugsnag-android/pull/1592)
 
 
-* ## 6.0.0 (2022-01-20)
+## 6.0.0 (2022-01-20)
 
 This version contains **breaking** changes, as bugsnag-unity has been updated to allow for more convenient and performant initialisation and configuration features.
 
