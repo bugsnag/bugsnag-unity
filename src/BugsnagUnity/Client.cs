@@ -585,18 +585,25 @@ namespace BugsnagUnity
 
         public void AddFeatureFlag(string name, string variant = null)
         {
-            _featureFlags.Add(new FeatureFlag(name, variant));
             NativeClient.AddFeatureFlag(name, variant);
+            foreach (var flag in _featureFlags)
+            {
+                if (flag.Name.Equals(name))
+                {
+                    flag.Variant = variant;
+                    return;
+                }
+            }
+            _featureFlags.Add(new FeatureFlag(name, variant));
         }
 
         public void AddFeatureFlags(FeatureFlag[] featureFlags)
         {
-            _featureFlags.AddRange(featureFlags);
             foreach (var flag in featureFlags)
             {
-                NativeClient.AddFeatureFlag(flag.Name, flag.Variant);
+                AddFeatureFlag(flag.Name, flag.Variant);
             }
-        }
+        } 
 
         public void ClearFeatureFlag(string name)
         {
