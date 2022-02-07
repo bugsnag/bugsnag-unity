@@ -307,7 +307,9 @@ steps:
     concurrency_group: browserstack-app
     concurrency_method: eager
 
+  # TODO: PLAT-7967 Investigate failures specific to Unity 2021 on Android
   - label: ':android: Run Android e2e tests for Unity 2021'
+    skip: Pending PLAT-7967
     depends_on: 'build-android-fixture-2021'
     timeout_in_minutes: 30
     agents:
