@@ -160,6 +160,7 @@ public class Main : MonoBehaviour
                 break;
             case "FeatureFlagsInCallback":
                 config.AddFeatureFlag("testName1", "testVariant1");
+                config.AddFeatureFlag("testName2", "testVariant1");
                 config.AddFeatureFlag("testName2", "testVariant2");
                 config.ClearFeatureFlag("testName1");
                 config.AddOnSendError((@event)=> {
@@ -169,11 +170,13 @@ public class Main : MonoBehaviour
                 break;
             case "FeatureFlagsConfigClearAll":
                 config.AddFeatureFlag("testName1", "testVariant1");
+                config.AddFeatureFlag("testName2", "testVariant1");
                 config.AddFeatureFlag("testName2", "testVariant2");
                 config.ClearFeatureFlags();
                 break;
             case "FeatureFlagsInConfig":
                 config.AddFeatureFlag("testName1", "testVariant1");
+                config.AddFeatureFlag("testName2", "testVariant1");
                 config.AddFeatureFlag("testName2", "testVariant2");
                 config.ClearFeatureFlag("testName1");
                 break;
@@ -388,6 +391,7 @@ public class Main : MonoBehaviour
         {
             case "FeatureFlagsAfterInitClearAll":
                 Bugsnag.AddFeatureFlag("testName1", "testVariant1");
+                Bugsnag.AddFeatureFlag("testName2", "testVariant1");
                 Bugsnag.AddFeatureFlag("testName2", "testVariant2");
                 Bugsnag.ClearFeatureFlags();
                 throw new Exception("FeatureFlags");
@@ -398,6 +402,7 @@ public class Main : MonoBehaviour
                 throw new Exception("FeatureFlags");
             case "FeatureFlagsAfterInit":
                 Bugsnag.AddFeatureFlag("testName1", "testVariant1");
+                Bugsnag.AddFeatureFlag("testName2", "testVariant1");
                 Bugsnag.AddFeatureFlag("testName2", "testVariant2");
                 Bugsnag.ClearFeatureFlag("testName1");
                 throw new Exception("FeatureFlags");
