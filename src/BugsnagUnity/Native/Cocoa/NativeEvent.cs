@@ -179,6 +179,29 @@ namespace BugsnagUnity
             var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
             return dictionary;
         }
-       
+
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            NativeCode.bugsnag_addFeatureFlagOnEvent(NativePointer, name, variant);
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            foreach (var flag in featureFlags)
+            {
+                AddFeatureFlag(flag.Name, flag.Variant);
+            }
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            NativeCode.bugsnag_clearFeatureFlagOnEvent(NativePointer, name);
+        }
+
+        public void ClearFeatureFlags()
+        {
+            NativeCode.bugsnag_clearFeatureFlagsOnEvent(NativePointer);
+
+        }
     }
 }

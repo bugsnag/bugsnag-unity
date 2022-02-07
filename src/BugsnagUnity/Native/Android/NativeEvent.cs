@@ -148,5 +148,28 @@ namespace BugsnagUnity
         {
             NativePointer.Call("setUser", id, email, name);
         }
+
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            NativePointer.Call("addFeatureFlag",name,variant);
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            foreach (var flag in featureFlags)
+            {
+                AddFeatureFlag(flag.Name, flag.Variant);
+            }
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            NativePointer.Call("clearFeatureFlag",name);
+        }
+
+        public void ClearFeatureFlags()
+        {
+            NativePointer.Call("clearFeatureFlags");
+        }
     }
 }

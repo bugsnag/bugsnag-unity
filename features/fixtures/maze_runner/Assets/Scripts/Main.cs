@@ -151,6 +151,22 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "ClearFeatureFlagsInCallback":
+                config.AddOnSendError((@event) => {
+                    @event.AddFeatureFlag("testName3", "testVariant3");
+                    @event.ClearFeatureFlags();
+                    return true;
+                });
+                break;
+            case "FeatureFlagsInCallback":
+                config.AddFeatureFlag("testName1", "testVariant1");
+                config.AddFeatureFlag("testName2", "testVariant2");
+                config.ClearFeatureFlag("testName1");
+                config.AddOnSendError((@event)=> {
+                    @event.AddFeatureFlag("testName3", "testVariant3");
+                    return true;
+                });
+                break;
             case "FeatureFlagsConfigClearAll":
                 config.AddFeatureFlag("testName1", "testVariant1");
                 config.AddFeatureFlag("testName2", "testVariant2");
@@ -375,11 +391,10 @@ public class Main : MonoBehaviour
                 Bugsnag.AddFeatureFlag("testName2", "testVariant2");
                 Bugsnag.ClearFeatureFlags();
                 throw new Exception("FeatureFlags");
-                break;
+            case "FeatureFlagsInCallback":
             case "FeatureFlagsConfigClearAll":
-                throw new Exception("FeatureFlags");
-                break;
             case "FeatureFlagsInConfig":
+            case "ClearFeatureFlagsInCallback":
                 throw new Exception("FeatureFlags");
             case "FeatureFlagsAfterInit":
                 Bugsnag.AddFeatureFlag("testName1", "testVariant1");

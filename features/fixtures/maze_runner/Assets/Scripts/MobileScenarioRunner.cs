@@ -54,6 +54,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "37", "Feature Flags In Config" },
         { "38", "Feature Flags After Init" },
         { "39", "Feature Flags After Init Clear All" },
+        { "40", "Feature Flags In Callback" },
+        { "41", "Clear Feature Flags In Callback" },
 
 
 
@@ -140,6 +142,22 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Clear Feature Flags In Callback":
+                config.AddOnSendError((@event) => {
+                    @event.AddFeatureFlag("testName3", "testVariant3");
+                    @event.ClearFeatureFlags();
+                    return true;
+                });
+                break;
+            case "Feature Flags In Callback":
+                config.AddFeatureFlag("testName1", "testVariant1");
+                config.AddFeatureFlag("testName2", "testVariant2");
+                config.ClearFeatureFlag("testName1");
+                config.AddOnSendError((@event) => {
+                    @event.AddFeatureFlag("testName3", "testVariant3");
+                    return true;
+                });
+                break;
             case "Feature Flags In Config":
                 config.AddFeatureFlag("testName1","testVariant1");
                 config.AddFeatureFlag("testName2", "testVariant2");
@@ -403,6 +421,8 @@ public class MobileScenarioRunner : MonoBehaviour {
 #endif
                 break;
             case "Feature Flags In Config":
+            case "Clear Feature Flags In Callback":
+            case "Feature Flags In Callback":
 #if UNITY_ANDROID
                 MobileNative.TriggerBackgroundJavaCrash();
 #elif UNITY_IOS

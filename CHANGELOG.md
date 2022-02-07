@@ -4,6 +4,10 @@
 
 ### Enhancements
 
+* New APIs to support forthcoming feature flag and experiment functionality.
+  For more information, please see https://docs.bugsnag.com/product/features-experiments
+  [#504](https://github.com/bugsnag/bugsnag-unity/pull/504) [#501](https://github.com/bugsnag/bugsnag-unity/pull/501)
+
 * Update bugsnag-cocoa to v6.16.1
   * New APIs to support forthcoming feature flag and experiment functionality.
     For more information, please see https://docs.bugsnag.com/product/features-experiments
