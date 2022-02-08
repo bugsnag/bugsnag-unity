@@ -3,7 +3,6 @@ Feature: Android user operations tests
     Background:
         Given I wait for the mobile game to start
 
-
     Scenario: Set User In Config Csharp error
         When I run the "Set User In Config Csharp error" mobile scenario
         Then I wait to receive an error
@@ -57,6 +56,7 @@ Feature: Android user operations tests
     Scenario: Set User After Init NDK Error
         When I run the "Set User After Init NDK Error" mobile scenario
         And I wait for 8 seconds
+        When I clear any error dialogue
         And I relaunch the Unity mobile app
         When I run the "Start SDK" mobile scenario
         Then I wait to receive an error

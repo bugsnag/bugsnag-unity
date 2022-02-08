@@ -69,7 +69,7 @@ cp AssemblyDefinitions/BugsnagEditor.asmdef.meta "$PACKAGE_DIR/Editor"
 
 echo "Setting the version $VERSION in the copied manifest and readme"
 sed -i '' "s/VERSION_STRING/$VERSION/g" "$PACKAGE_DIR/package.json"
-sed -i '' "s/VERSION_STRING/$VERSION/g" "$PACKAGE_DIR/README.md"
+sed -i '' "s/VERSION_STRING/v$VERSION/g" "$PACKAGE_DIR/README.md"
 
 
 echo "complete, ready to deploy"

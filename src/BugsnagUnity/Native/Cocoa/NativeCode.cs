@@ -54,6 +54,18 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setReleaseStage(IntPtr configuration, string releaseStage);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_addFeatureFlagOnConfig(IntPtr configuration, string name, string variant);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_addFeatureFlag(string name, string variant);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearFeatureFlag(string name);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearFeatureFlags();
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setAutoNotifyConfig(IntPtr configuration, bool autoNotify);
 
         [DllImport(Import)]
@@ -254,6 +266,15 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_clearMetadataWithKey(string section, string key);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_addFeatureFlagOnEvent(IntPtr @event, string name, string variant);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearFeatureFlagOnEvent(IntPtr @event, string name);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_clearFeatureFlagsOnEvent(IntPtr @event);
     }
 }
 

@@ -49,6 +49,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
             NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
             NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
+            AddFeatureFlagsToConfig(obj,config);
             if (config.GetUser() != null)
             {
                 var user = config.GetUser();
@@ -75,6 +76,18 @@ namespace BugsnagUnity
                 NativeCode.bugsnag_setNotifyReleaseStages(obj, releaseStages, releaseStages.Length);
             }
             return obj;
+        }
+
+        private void AddFeatureFlagsToConfig(IntPtr obj, Configuration config)
+        {
+            if (config.FeatureFlags == null || config.FeatureFlags.Count == 0)
+            {
+                return;
+            }
+            foreach (var flag in config.FeatureFlags)
+            {
+                NativeCode.bugsnag_addFeatureFlagOnConfig(obj, flag.Name, flag.Variant);
+            }
         }
 
         [MonoPInvokeCallback(typeof(Func<IntPtr, bool>))]
@@ -415,6 +428,27 @@ namespace BugsnagUnity
             return dictionary;
         }
 
-      
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            NativeCode.bugsnag_addFeatureFlag(name, variant);
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            foreach (var flag in featureFlags)
+            {
+                AddFeatureFlag(flag.Name, flag.Variant);
+            }
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            NativeCode.bugsnag_clearFeatureFlag(name);
+        }
+
+        public void ClearFeatureFlags()
+        {
+            NativeCode.bugsnag_clearFeatureFlags();
+        }
     }
 }

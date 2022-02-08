@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    class NativeClient : INativeClient
+    class NativeClient : INativeClient, IFeatureFlagStore
     {
         public Configuration Configuration { get; }
 
@@ -19,12 +19,15 @@ namespace BugsnagUnity
 
         private Metadata _fallbackMetadata = new Metadata();
 
+        private List<FeatureFlag> _featureFlags = new List<FeatureFlag>();
+
         public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
             Delivery = new Delivery();
             Application.lowMemory += () => { _hasReceivedLowMemoryWarning = true; };
+            AddFeatureFlags(configuration.FeatureFlags.ToArray());
         }
 
         public void PopulateApp(App app)
@@ -132,5 +135,38 @@ namespace BugsnagUnity
         {
             return _fallbackMetadata.Payload;
         }
+
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            _featureFlags.Add(new FeatureFlag(name, variant));
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            _featureFlags.AddRange(featureFlags);
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            foreach (var flag in _featureFlags.ToArray())
+            {
+                if (flag.Name == name)
+                {
+                    _featureFlags.Remove(flag);
+                }
+            }
+        }
+
+        public void ClearFeatureFlags()
+        {
+            _featureFlags.Clear();
+        }
+
+        public List<FeatureFlag> GetFeatureFlags()
+        {
+            return _featureFlags;
+        }
+       
+
     }
 }

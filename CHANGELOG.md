@@ -1,6 +1,67 @@
 # Changelog
 
-* ## 6.0.0 (2022-01-20)
+## 6.1.0 (2022-02-08)
+
+### Enhancements
+
+* New APIs to support forthcoming feature flag and experiment functionality.
+  For more information, please see https://docs.bugsnag.com/product/features-experiments
+  [#504](https://github.com/bugsnag/bugsnag-unity/pull/504) [#501](https://github.com/bugsnag/bugsnag-unity/pull/501)
+
+* Update bugsnag-cocoa to v6.16.1
+  * New APIs to support forthcoming feature flag and experiment functionality.
+    For more information, please see https://docs.bugsnag.com/product/features-experiments
+    [bugsnag-cocoa#1279](https://github.com/bugsnag/bugsnag-cocoa/pull/1279)
+  * Fix missing user.id in OOM events with no active session.
+    [bugsnag-cocoa#1274](https://github.com/bugsnag/bugsnag-cocoa/pull/1274)
+  * Improve crash report writing performance and size on disk.
+    [bugsnag-cocoa#1273](https://github.com/bugsnag/bugsnag-cocoa/pull/1273)
+    [bugsnag-cocoa#1281](https://github.com/bugsnag/bugsnag-cocoa/pull/1281)
+  * Detect hangs during launch of UIScene based apps.
+    [bugsnag-cocoa#1263](https://github.com/bugsnag/bugsnag-cocoa/pull/1263)
+  * Stop persisting changes made by `OnSendError` callbacks if delivery needs to be retried.
+    [bugsnag-cocoa#1262](https://github.com/bugsnag/bugsnag-cocoa/pull/1262)
+  * Fix incorrect `device.freeDisk` in crash errors.
+    [bugsnag-cocoa#1256](https://github.com/bugsnag/bugsnag-cocoa/pull/1256)
+  * Fix some potential deadlocks that could occur if a crash handler crashes.
+    [bugsnag-cocoa#1252](https://github.com/bugsnag/bugsnag-cocoa/pull/1252)
+  * Fix `UIApplicationState` detection when started from a SwiftUI app's `init()` function.
+    This fixes false positive OOMs on iOS 15 for apps that have been prewarmed without transitioning to the foreground.
+    [bugsnag-cocoa#1248](https://github.com/bugsnag/bugsnag-cocoa/pull/1248)
+  * Load configuration from the plist instead of using defaults when calling Bugsnag.start(withApiKey:)
+    [bugsnag-cocoa#1245](https://github.com/bugsnag/bugsnag-cocoa/pull/1245)
+  * New APIs to allow `OnBreadcrumb`, `OnSendError` and `OnSession` Swift closures to be removed.
+    The following APIs are now deprecated and will be removed in the next major release:
+    * `removeOnBreadcrumb(block:)`
+    * `removeOnSendError(block:)`
+    * `removeOnSession(block:)`
+    [bugsnag-cocoa#1240](https://github.com/bugsnag/bugsnag-cocoa/pull/1240)
+  * Include metadata in breadcrumbs for `UIWindow` / `NSWindow` notifications.
+    [bugsnag-cocoa#1238](https://github.com/bugsnag/bugsnag-cocoa/pull/1238)
+  * Fix a crash in `-[BSGURLSessionTracingDelegate URLSession:task:didFinishCollectingMetrics:]` for tasks with no request.
+    [bugsnag-cocoa#1230](https://github.com/bugsnag/bugsnag-cocoa/pull/1230)
+  * Use `LC_FUNCTION_STARTS` to improve symbolication accuracy.
+    [bugsnag-cocoa#1214](https://github.com/bugsnag/bugsnag-cocoa/pull/1214)
+  * Fix missing imports when building with `CLANG_ENABLE_MODULES=NO`
+    [bugsnag-cocoa#1284](https://github.com/bugsnag/bugsnag-cocoa/pull/1284)
+
+* Update bugsnag-android to v5.19.2
+  * New APIs to support forthcoming feature flag and experiment functionality. For more information, please see https://docs.bugsnag.com/product/features-experiments.
+  * Explicitly define Kotlin api/language versions
+    [bugsnag-android#1564](https://github.com/bugsnag/bugsnag-android/pull/1564)
+  * Build project with Kotlin 1.4, maintain compat with Kotlin 1.3
+    [bugsnag-android#1565](https://github.com/bugsnag/bugsnag-android/pull/1565)
+  * Discarded unhandled exceptions are propagated to any previously registered handlers
+    [bugsnag-android#1584](https://github.com/bugsnag/bugsnag-android/pull/1584)
+  * Fix SIGABRT crashes caused by race conditions in the NDK layer
+    [bugsnag-android#1585](https://github.com/bugsnag/bugsnag-android/pull/1585)
+  * Fixed an issue where feature-flags were not always sent if an OnSendCallback was configured
+    [bugsnag-android#1589](https://github.com/bugsnag/bugsnag-android/pull/1589)
+  * Fix a bug where api keys set in React Native callbacks were ignored
+    [bugsnag-android#1592](https://github.com/bugsnag/bugsnag-android/pull/1592)
+
+
+## 6.0.0 (2022-01-20)
 
 This version contains **breaking** changes, as bugsnag-unity has been updated to allow for more convenient and performant initialisation and configuration features.
 

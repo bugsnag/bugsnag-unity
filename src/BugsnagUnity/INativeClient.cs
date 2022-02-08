@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 
 namespace BugsnagUnity
 {
-    interface INativeClient
+    interface INativeClient : IFeatureFlagStore
     {
         /// <summary>
         /// The native configuration

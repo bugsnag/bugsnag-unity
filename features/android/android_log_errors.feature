@@ -98,8 +98,6 @@ Feature: Android smoke tests for C# errors
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" equals "UnityEngine.Application.CallLogCallback(string logString, string stackTrace, LogType type, bool invokedOnMainThread)"
-        And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
         And the error payload field "events.0.threads" is null
 
         # App data

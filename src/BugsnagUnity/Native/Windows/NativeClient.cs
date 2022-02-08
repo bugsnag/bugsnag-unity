@@ -189,5 +189,22 @@ namespace BugsnagUnity
         {
             return _fallbackMetadata.Payload;
         }
+
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+        }
+
+        public void ClearFeatureFlags()
+        {
+        }
+
     }
 }

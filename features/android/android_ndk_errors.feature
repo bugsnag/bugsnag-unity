@@ -7,6 +7,7 @@ Feature: Android manual smoke tests
         When I run the "NDK signal" mobile scenario
         And I wait for 8 seconds
         And I relaunch the Unity mobile app
+        When I clear any error dialogue
         When I run the "Start SDK" mobile scenario
         # Intentionally adding long wait times here - a core component of this
         # feature is ensuring that only a SINGLE event is sent. Unity includes
