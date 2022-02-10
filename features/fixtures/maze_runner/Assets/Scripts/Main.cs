@@ -15,8 +15,14 @@ using UnityEditor;
 
 public class Main : MonoBehaviour
 {
-    [DllImport("NativeCrashy")]
-    private static extern void crashy_signal_runner(float num);
+
+
+#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
+
+    [DllImport("__Internal")]
+    private static extern void RaiseCocoaSignal();
+
+#endif
 
     private Dictionary<string, string> _webGlArguments;
 
@@ -412,7 +418,7 @@ public class Main : MonoBehaviour
                 break;
             case "SetUserAfterInitNativeError":
                 Bugsnag.SetUser("1", "2", "3");
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "LongLaunchDuration":
             case "ShortLaunchDuration":
@@ -479,7 +485,7 @@ public class Main : MonoBehaviour
                 DoNotify();
                 break;
             case "NativeCrashOutsideNotifyReleaseStages":
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "UncaughtExceptionOutsideNotifyReleaseStages":
                 DoUnhandledException(0);
@@ -576,7 +582,7 @@ public class Main : MonoBehaviour
                 break;
             case "SetUserInConfigNativeCrash":
             case "NativeCrash":
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "UncaughtExceptionWithoutAutoNotify":
                 DoUnhandledException(0);
@@ -588,10 +594,10 @@ public class Main : MonoBehaviour
                 DebugLogException();
                 break;
             case "NativeCrashWithoutAutoNotify":
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "NativeCrashReEnableAutoNotify":
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "CheckForManualContextAfterSceneLoad":
                 StartCoroutine(SetManualContextReloadSceneAndNotify());
@@ -600,7 +606,7 @@ public class Main : MonoBehaviour
                 new Thread(() =>
                 {
                     Thread.Sleep(900);
-                    crashy_signal_runner(8);
+                    MacOSNativeCrash();
                 }).Start();
                 break;
             case "AutoSession":
@@ -856,6 +862,14 @@ public class Main : MonoBehaviour
       return ".NET 2.0";
 #endif
     }
+
+    private void MacOSNativeCrash()
+    {
+#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
+        RaiseCocoaSignal();
+#endif
+    }
+
 }
 
 
