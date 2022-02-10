@@ -7,7 +7,7 @@ steps:
     key: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2018.4.36f1"
     commands:
@@ -24,7 +24,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2020.3.25f1"
     plugins:
@@ -90,7 +90,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2020.3.25f1"
     plugins:
@@ -145,7 +145,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2020.3.25f1"
     plugins:
