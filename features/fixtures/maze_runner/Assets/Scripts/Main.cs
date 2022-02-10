@@ -17,10 +17,10 @@ public class Main : MonoBehaviour
 {
 
 
-#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
+#if UNITY_STANDALONE_OSX
 
-    [DllImport("__Internal")]
-    private static extern void RaiseCocoaSignal();
+    [DllImport("NativeCrashy")]
+    private static extern void crashy_signal_runner(float num);
 
 #endif
 
@@ -865,8 +865,9 @@ public class Main : MonoBehaviour
 
     private void MacOSNativeCrash()
     {
-#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
-        RaiseCocoaSignal();
+
+#if UNITY_STANDALONE_OSX
+         crashy_signal_runner(8);
 #endif
     }
 
