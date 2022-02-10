@@ -77,7 +77,7 @@ The following methods have been added to the `Bugsnag` client to replace direct 
 | `AddMetadata(string section, string key, object value)`            | Add a specific value by key to a section of metadata              |
 | `AddMetadata(string section, Dictionary<string, object> metadata)` | Add a section by name to the metadata metadata                    |
 | `ClearMetadata(string section)`                                    | Clear a section of metadata                                       |
-| `ClearMetadataClearMetadata(string section, string key)`           | Clear a specific entry in a metadata section by key               |
+| `ClearMetadata(string section, string key)`                        | Clear a specific entry in a metadata section by key               |
 | `Dictionary<string, object> GetMetadata(string section)`           | Get an entire section from the metadata as a Dictionary           |
 | `object GetMetadata(string section, string key)`                   | Get an specific entry from the metadata as an object              |
 
