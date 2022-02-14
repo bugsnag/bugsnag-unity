@@ -26,7 +26,7 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -52,7 +52,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -72,7 +72,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -92,7 +92,7 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -118,7 +118,7 @@ steps:
     agents:
       queue: opensource
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     plugins:
       artifacts#v1.3.0:
         download:
@@ -147,7 +147,7 @@ steps:
     agents:
       queue: opensource-mac-unity
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -173,7 +173,7 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -203,14 +203,14 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.25f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.27f1.ipa"
         upload:
           - "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.25f1.ipa"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.27f1.ipa"
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
@@ -229,7 +229,7 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
@@ -251,7 +251,7 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.25f1"
+      UNITY_VERSION: "2020.3.27f1"
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
