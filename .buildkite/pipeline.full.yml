@@ -8,7 +8,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -33,7 +33,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2019.4.34f1"
     plugins:
@@ -58,7 +58,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2021.2.7f1"
     plugins:
@@ -191,7 +191,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -215,7 +215,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2019.4.34f1"
     plugins:
@@ -239,7 +239,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2021.2.7f1"
     plugins:
@@ -340,7 +340,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -391,7 +391,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2019.4.34f1"
     plugins:
@@ -442,7 +442,7 @@ steps:
     depends_on: 'build-artifacts'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-unity
+      queue: opensource-arm-mac-unity
     env:
       UNITY_VERSION: "2021.2.7f1"
     plugins:
