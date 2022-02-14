@@ -8,7 +8,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoNotify()      |
             | Main.RunScenario(string scenario)  |
             | Main.Start()        |
@@ -20,7 +20,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "Exception"
         And the exception "message" equals "CUSTOM"
         And the event "unhandled" is false
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.CUSTOM()      |
             | Main.CUSTOM()  |
 
@@ -31,7 +31,7 @@ Feature: Handled Errors and Exceptions
         And the exception "errorClass" equals "CUSTOM"
         And the exception "message" equals "CUSTOM"
         And the event "unhandled" is false
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.CUSTOM()      |
             | Main.CUSTOM()  |
 
@@ -51,7 +51,7 @@ Feature: Handled Errors and Exceptions
         And the event "app.type" equals the platform-dependent string:
             | macos | MacOS |
             | windows | Windows |
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoNotify()           |
 
     Scenario: Custom App Type
@@ -59,7 +59,7 @@ Feature: Handled Errors and Exceptions
         And I wait to receive an error
         Then the error is valid for the error reporting API sent by the Unity notifier
         And the event "app.type" equals "test"
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoNotify()           |
 
     Scenario: Redacted Keys
@@ -79,7 +79,7 @@ Feature: Handled Errors and Exceptions
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the event "metaData.shape.arc" equals "yes"
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoNotifyWithCallback() |
             | Main.RunScenario(string scenario)         |
             | Main.Start()               |
@@ -94,7 +94,7 @@ Feature: Handled Errors and Exceptions
         And the event "severityReason.type" equals "userSpecifiedSeverity"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoNotifyWithSeverity() |
             | Main.RunScenario(string scenario)         |
             | Main.Start()               |
@@ -107,7 +107,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "auth failed!"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main:DoLogUnthrown() |
             | Main:RunScenario(String) |
             | Main:Start() |
@@ -120,7 +120,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "WAT"
         And the event "unhandled" is true
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main:DebugLogException() |
             | Main:RunScenario(String) |
             | Main:Start() |
@@ -134,7 +134,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoLogWarning()       |
 
     Scenario: Notifying when the current release stage is not in "notify release stages"
@@ -155,7 +155,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoNotify()      |
             | Main.RunScenario(string scenario)  |
             | Main.Start()        |
@@ -177,7 +177,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoLogWarning()  |
             | Main.RunScenario(string scenario)  |
             | Main.Start()        |
@@ -191,7 +191,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main:DoLogWarning()  |
             | Main:RunScenario(String)  |
             | Main:Start()        |
@@ -205,7 +205,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "Bad bad things"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoLogError()  |
             | Main.RunScenario(string scenario)  |
             | Main.Start()        |
@@ -219,7 +219,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "Bad bad things"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main:DoLogError()  |
             | Main:RunScenario(String)  |
             | Main:Start()        |
@@ -233,7 +233,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoLogWarningWithHandledConfig()  |
             | Main.RunScenario(string scenario)  |
             | Main.Start()        |
@@ -247,7 +247,7 @@ Feature: Handled Errors and Exceptions
         And the exception "message" equals "Something went terribly awry"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main:DoLogWarningWithHandledConfig()  |
             | Main:RunScenario(String)  |
             | Main:Start()        |

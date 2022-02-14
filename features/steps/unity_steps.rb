@@ -207,25 +207,24 @@ Then('the error is valid for the error reporting API sent by the Unity notifier'
   check_error_reporting_api notifier_name
 end
 
-Then('the first significant stack frame methods and files should match:') do |expected_values|
+Then('the stack frame methods should match:') do |expected_values|
   stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
   expected_frame_values = expected_values.raw
-  expected_index = 0
 
   flunk('The stacktrace is empty') if stacktrace.length == 0
   flunk('The stacktrace is not long enough') if stacktrace.length < expected_frame_values.length
 
-  stacktrace.each_with_index do |item, index|
-    next if expected_index >= expected_frame_values.length
+  methods = stacktrace.map { |item| item['method'] }
+  method_index = 0
 
-    expected_frames = expected_frame_values[expected_index]
-
-    method = item['method']
-    next if method.start_with? 'UnityEngine' or method.start_with? 'BugsnagUnity'
-
-    frame_matches = expected_frames.any? { |frame| frame == method }
-    Maze.check.true(frame_matches, "None of the given methods match the frame #{method}")
-    expected_index += 1
+  expected_frame_values.each do |expected_frames|
+    frame_matches = false
+    until frame_matches || method_index.eql?(methods.size)
+      method = methods[method_index]
+      frame_matches = expected_frames.any? { |frame| frame == method }
+      method_index += 1
+    end
+    Maze.check.true(frame_matches, "None of the methods match the expected frames #{expected_frames}")
   end
 end
 
