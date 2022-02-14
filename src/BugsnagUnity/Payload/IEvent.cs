@@ -5,7 +5,7 @@ using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
 {
-    public interface IEvent: IMetadataEditor, IUserEditor
+    public interface IEvent: IMetadataEditor, IUserEditor, IFeatureFlagStore
     {
         string ApiKey { get; set; }
 

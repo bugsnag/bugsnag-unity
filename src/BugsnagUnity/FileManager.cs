@@ -40,7 +40,7 @@ namespace BugsnagUnity
                     writer.Flush();
                     stream.Position = 0;
                     var jsonString = reader.ReadToEnd();
-                    var path = SessionsDirectory + "/" + sessionReport.Id + ".json";
+                    var path = SessionsDirectory + "/" + sessionReport.Id + ".session";
                     WriteToDisk(jsonString,path);
                     Debug.Log("Session written to " + path);
                 }
@@ -79,7 +79,7 @@ namespace BugsnagUnity
             var cachedPayloads = new List<IPayload>();
             foreach (var cachedSessionPath in Directory.GetFiles(SessionsDirectory))
             {
-                if (cachedSessionPath.Contains("DS_Store"))
+                if (!cachedSessionPath.Contains(".session"))
                 {
                     continue;
                 }
@@ -88,10 +88,7 @@ namespace BugsnagUnity
                 Debug.Log("The json: " + json);
                 var sessionReport = SimpleJson.DeserializeObject<Dictionary<string,object>>(json);
                 Debug.Log("got cached sessionReport: " + sessionReport.Count);
-                foreach (var item in collection)
-                {
-
-                }
+               
                 Debug.Log("sessionReport session type: " + sessionReport.Get("sessions").GetType().Name);
 
 

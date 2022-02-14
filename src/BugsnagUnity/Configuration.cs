@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class Configuration : IMetadataEditor
+    public class Configuration : IMetadataEditor, IFeatureFlagStore
     {
 
         public string AppType;
@@ -32,6 +32,8 @@ namespace BugsnagUnity
         private User _user = null;
 
         internal Metadata Metadata = new Metadata();
+
+        internal List<FeatureFlag> FeatureFlags = new List<FeatureFlag>();
 
         public bool KeyIsRedacted(string key)
         {
@@ -266,6 +268,36 @@ namespace BugsnagUnity
             return clone;
         }
 
+        public void AddFeatureFlag(string name, string variant = null)
+        {
+            foreach (var flag in FeatureFlags)
+            {
+                if (flag.Name.Equals(name))
+                {
+                    flag.Variant = variant;
+                    return;
+                }
+            }
+            FeatureFlags.Add(new FeatureFlag(name,variant));
+        }
+
+        public void AddFeatureFlags(FeatureFlag[] featureFlags)
+        {
+            foreach (var flag in featureFlags)
+            {
+                AddFeatureFlag(flag.Name,flag.Variant);
+            }
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            FeatureFlags.RemoveAll(item => item.Name == name);
+        }
+
+        public void ClearFeatureFlags()
+        {
+            FeatureFlags.Clear();
+        }
     }
 
     [Serializable]

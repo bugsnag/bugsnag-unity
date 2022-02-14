@@ -26,6 +26,8 @@ namespace BugsnagUnity
         private IntPtr SetClass;
         private IntPtr StringClass;
         private IntPtr SessionClass;
+        private IntPtr ClientClass;
+
         // Cache of methods used:
         private IntPtr BreadcrumbGetMessage;
         private IntPtr BreadcrumbGetMetadata;
@@ -41,6 +43,12 @@ namespace BugsnagUnity
         private IntPtr ObjectGetClass;
         private IntPtr ObjectToString;
         private IntPtr ToIso8601;
+        private IntPtr AddFeatureFlagMethod;
+        private IntPtr ClearFeatureFlagMethod;
+        private IntPtr ClearFeatureFlagsMethod;
+
+
+
 
 
 
@@ -194,6 +202,10 @@ namespace BugsnagUnity
                 SessionClass = AndroidJNI.NewGlobalRef(sessionRef);
                 AndroidJNI.DeleteLocalRef(sessionRef);
 
+                IntPtr clientRef = AndroidJNI.FindClass("com/bugsnag/android/Client");
+                ClientClass = AndroidJNI.NewGlobalRef(clientRef);
+                AndroidJNI.DeleteLocalRef(clientRef);
+
                 BreadcrumbGetMetadata = AndroidJNI.GetMethodID(BreadcrumbClass, "getMetadata", "()Ljava/util/Map;");
                 BreadcrumbGetType = AndroidJNI.GetMethodID(BreadcrumbClass, "getType", "()Lcom/bugsnag/android/BreadcrumbType;");
                 BreadcrumbGetTimestamp = AndroidJNI.GetMethodID(BreadcrumbClass, "getStringTimestamp", "()Ljava/lang/String;");
@@ -204,6 +216,9 @@ namespace BugsnagUnity
                 MapEntryGetKey = AndroidJNI.GetMethodID(MapEntryClass, "getKey", "()Ljava/lang/Object;");
                 MapEntryGetValue = AndroidJNI.GetMethodID(MapEntryClass, "getValue", "()Ljava/lang/Object;");
                 MapEntrySet = AndroidJNI.GetMethodID(MapClass, "entrySet", "()Ljava/util/Set;");
+                AddFeatureFlagMethod = AndroidJNI.GetMethodID(ClientClass, "addFeatureFlag", "(Ljava/lang/String;Ljava/lang/String;)V");
+                ClearFeatureFlagMethod = AndroidJNI.GetMethodID(ClientClass, "clearFeatureFlag", "(Ljava/lang/String;)V");
+                ClearFeatureFlagsMethod = AndroidJNI.GetMethodID(ClientClass, "clearFeatureFlags", "()V");
 
                 IntPtr objectRef = AndroidJNI.FindClass("java/lang/Object");
                 ObjectToString = AndroidJNI.GetMethodID(objectRef, "toString", "()Ljava/lang/String;");
@@ -312,6 +327,15 @@ namespace BugsnagUnity
                         }
                     }
                     obj.Call("setEnabledBreadcrumbTypes", enabledBreadcrumbs);
+                }
+            }
+
+            // set feature flags
+            if (config.FeatureFlags != null && config.FeatureFlags.Count > 0)
+            {
+                foreach (var flag in config.FeatureFlags)
+                {
+                    obj.Call("addFeatureFlag",flag.Name,flag.Variant);
                 }
             }
 
@@ -996,6 +1020,30 @@ namespace BugsnagUnity
                 CrashedDuringLaunch = crashedDuringLaunch
             };
             return lastRunInfo;
+        }
+
+        private IntPtr GetClientRef()
+        {
+            return CallNativeObjectMethodRef("getClient", "()Lcom/bugsnag/android/Client;", new object[] { });
+        }
+
+        public void AddFeatureFlag(string name, string variant)
+        {
+            object[] args = new object[] { name, variant };
+            jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+            AndroidJNI.CallVoidMethod(GetClientRef(), AddFeatureFlagMethod, jargs);
+        }
+
+        public void ClearFeatureFlag(string name)
+        {
+            object[] args = new object[] { name };
+            jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+            AndroidJNI.CallVoidMethod(GetClientRef(), ClearFeatureFlagMethod, jargs);
+        }
+
+        public void ClearFeatureFlags()
+        {
+            AndroidJNI.CallVoidMethod(GetClientRef(), ClearFeatureFlagsMethod, null);
         }
 
     }
