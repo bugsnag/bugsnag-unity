@@ -35,8 +35,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2020.3.25f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2020.3.25f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2020.3.27f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2020.3.27f1.zip
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -56,7 +56,7 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2020.3.25f1.zip
+          - features/fixtures/maze_runner/build/MacOS-2020.3.27f1.zip
         upload:
           - maze_output/*
           - Mazerunner.log
@@ -76,7 +76,7 @@ steps:
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2020.3.25f1.zip
+          - features/fixtures/maze_runner/build/WebGL-2020.3.27f1.zip
         upload:
           - maze_output/failed/**/*
     commands:
@@ -98,7 +98,7 @@ steps:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.25f1.apk
+          - features/fixtures/maze_runner/mazerunner_2020.3.27f1.apk
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
@@ -122,14 +122,14 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.25f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.27f1.apk"
         upload:
           - "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.25f1.apk"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.27f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/android"
@@ -153,7 +153,7 @@ steps:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.25f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2020.3.27f1.ipa
           - features/fixtures/unity.log
           - project_2020.tgz
     commands:
@@ -180,7 +180,7 @@ steps:
           - Bugsnag.unitypackage
           - project_2020.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.25f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2020.3.27f1.ipa
           - features/fixtures/unity.log
     commands:
       - tar -zxf project_2020.tgz features/fixtures/maze_runner
@@ -234,7 +234,7 @@ steps:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/Windows-2020.3.25f1.zip
+      - features/fixtures/maze_runner/build/Windows-2020.3.27f1.zip
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
