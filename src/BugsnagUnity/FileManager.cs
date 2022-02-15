@@ -11,7 +11,7 @@ namespace BugsnagUnity
 
         private static string CacheDirectory
         {
-            get { return Application.temporaryCachePath + "/Bugsnag"; }
+            get { return Application.persistentDataPath + "/Bugsnag"; }
         }
 
         private static Configuration _configuration;
@@ -27,6 +27,7 @@ namespace BugsnagUnity
         public static void InitFileManager(Configuration configuration)
         {
             _configuration = configuration;
+            CheckForDirectoryCreation();
         }
 
         internal static void CacheSession(SessionReport sessionReport)

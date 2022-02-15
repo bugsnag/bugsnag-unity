@@ -50,6 +50,18 @@ Feature: Session Tracking
             | AutoSession                      |
             | AutoSessionInNotifyReleaseStages |
 
+
+    @skip_macos
+    Scenario: Receive a persisted session
+        When I run the game in the "PersistSession" state
+        And I wait for 26 seconds
+        And I run the game in the "PersistSessionReport" state
+        And I wait to receive 2 sessions
+        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        And the error is valid for the error reporting API sent by the native Unity notifier
+        And the session payload field "sessions.0.id" equals the stored value "session_id"
+
+
     @macos_only
     Scenario: Automatically receiving a session before a native crash
         When I run the game in the "AutoSessionNativeCrash" state
