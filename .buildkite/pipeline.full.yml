@@ -1,6 +1,5 @@
 steps:
 
-  #
   # Build MacOS and WebGL test fixtures
   #
   - label: Build Unity 2018 MacOS and WebGL test fixtures
