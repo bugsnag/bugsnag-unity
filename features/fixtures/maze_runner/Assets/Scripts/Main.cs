@@ -156,7 +156,7 @@ public class Main : MonoBehaviour
                     session.App.ReleaseStage = "First Session";
                     return true;
                 });
-                config.Endpoints = new EndpointConfiguration("https://www.fakeaddress.com", "https://www.fakeaddress.com");
+                config.Endpoints = new EndpointConfiguration("https://notify.bugsdnag.com", "https://notify.bugsdnag.com");
                 config.AutoTrackSessions = true;
                 break;
             case "PersistSessionReport":
