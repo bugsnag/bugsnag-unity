@@ -8,7 +8,7 @@ Feature: Enabled and disabled release stages
         And the exception "message" equals "blorb"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoNotify()      |
             | Main.RunScenario(string scenario)  |
             | Main.Start()        |
