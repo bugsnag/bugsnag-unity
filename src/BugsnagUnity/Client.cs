@@ -66,6 +66,7 @@ namespace BugsnagUnity
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
+            Delivery.TrySendingCachedPayloads();
         }
 
         private void InitFeatureFlags()
@@ -495,6 +496,7 @@ namespace BugsnagUnity
                         if (IsUsingFallback())
                         {
                             SessionTracking.StartSession();
+                            Delivery.TrySendingCachedPayloads();
                         }
                         else
                         {

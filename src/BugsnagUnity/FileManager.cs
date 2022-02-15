@@ -22,6 +22,8 @@ namespace BugsnagUnity
             get { return CacheDirectory + "/Sessions"; }
         }
 
+        private static string[] _cachedSessions => Directory.GetFiles(SessionsDirectory, "*.session");
+
         public static void InitFileManager(Configuration configuration)
         {
             _configuration = configuration;
@@ -40,7 +42,7 @@ namespace BugsnagUnity
                     { "app", sessionReport["app"] },
                     { "device", sessionReport["device"] },
                     { "notifier", sessionReport["notifier"] },
-                    { "session", ((PayloadDictionary[])sessionReport["sessions"])[0] }
+                    { "session", ((Dictionary<string, object>[])sessionReport["sessions"])[0] }
                 };
                 SimpleJson.SerializeObject(serialisableSessionReport, writer);
                 writer.Flush();
@@ -49,11 +51,40 @@ namespace BugsnagUnity
                 var path = SessionsDirectory + "/" + sessionReport.Id + ".session";
                 WriteToDisk(jsonString,path);
                 Debug.Log("Session written to " + path);
+                CheckForMaxCachedSessions();
             }
-            
         }
 
-        internal static void PayloadSent(IPayload payload)
+        private static void CheckForMaxCachedSessions()
+        {
+            Debug.Log("Checking max cached sessions");
+            var filesCount = _cachedSessions.Length;
+            Debug.Log("Num cached sessions: " + filesCount);
+            while(filesCount > _configuration.MaxPersistedSessions)
+            {
+                RemoveOldestSession();
+                filesCount = _cachedSessions.Length;
+            }
+            Debug.Log("Num cached sessions after trimming: " + filesCount);
+        }
+
+        private static void RemoveOldestSession()
+        {
+            var oldestSession = string.Empty;
+            var oldestMillis = default(double);
+            foreach (var cachedSessionPath in _cachedSessions)
+            {
+                var milliesSinceCreated = (DateTime.UtcNow - File.GetCreationTimeUtc(cachedSessionPath)).TotalMilliseconds;
+                if (milliesSinceCreated > oldestMillis)
+                {
+                    oldestMillis = milliesSinceCreated;
+                    oldestSession = cachedSessionPath;
+                }
+            }
+            File.Delete(oldestSession);
+        }
+
+        internal static void PayloadSendSuccess(IPayload payload)
         {
             Debug.Log("Payload sent " + payload.Id);
             switch (payload.PayloadType)
@@ -68,9 +99,8 @@ namespace BugsnagUnity
 
         internal static void RemovedCachedSession(string id)
         {
-            return;
             Debug.Log("Removing cached session " + id);
-            foreach (var cachedSessionPath in Directory.GetFiles(SessionsDirectory))
+            foreach (var cachedSessionPath in _cachedSessions)
             {
                 if (cachedSessionPath.Contains(id))
                 {
@@ -84,12 +114,8 @@ namespace BugsnagUnity
         {
             Debug.Log("Collecting Cached Payloads");
             var cachedPayloads = new List<IPayload>();
-            foreach (var cachedSessionPath in Directory.GetFiles(SessionsDirectory))
+            foreach (var cachedSessionPath in _cachedSessions)
             {
-                if (!cachedSessionPath.Contains(".session"))
-                {
-                    continue;
-                }
                 Debug.Log("Found a session at: " + cachedSessionPath);
                 var json = File.ReadAllText(cachedSessionPath);
                 Debug.Log("The session json: " + json);

@@ -13,6 +13,7 @@ namespace BugsnagUnity
     interface IDelivery
     {
         void Send(IPayload payload);
+        void TrySendingCachedPayloads();
     }
 
     class Delivery : IDelivery
@@ -115,10 +116,12 @@ namespace BugsnagUnity
                 {
                     yield return new WaitForEndOfFrame();
                 }
+                Debug.Log("Send Session Response code: " + req.responseCode);
+                    
                 if (req.responseCode >= 200 && req.responseCode < 300)
                 {
                     // success!
-                    FileManager.PayloadSent(payload);
+                    FileManager.PayloadSendSuccess(payload);
                 }
                 else if (req.responseCode >= 500)
                 {
@@ -129,7 +132,7 @@ namespace BugsnagUnity
             }
         }
 
-        private void TrySendingCachedPayloads()
+        public void TrySendingCachedPayloads()
         {
             var payloads = FileManager.GetCachedPayloads();
             foreach (var payload in payloads)

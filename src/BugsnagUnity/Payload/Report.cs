@@ -7,9 +7,9 @@ namespace BugsnagUnity.Payload
     public class Report : Dictionary<string, object>, IPayload
     {
 
-        public Uri Endpoint { get; }
+        public Uri Endpoint { get; set; }
 
-        public KeyValuePair<string, string>[] Headers { get; }
+        public KeyValuePair<string, string>[] Headers { get; set; }
 
         internal bool Ignored { get; private set; }
 

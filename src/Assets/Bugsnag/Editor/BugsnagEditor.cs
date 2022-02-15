@@ -165,6 +165,7 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("LaunchDurationMillis"));
             settings.MaximumBreadcrumbs = EditorGUILayout.IntField("Max Breadcrumbs", settings.MaximumBreadcrumbs);
             EditorGUILayout.PropertyField(so.FindProperty("MaxPersistedEvents"));
+            EditorGUILayout.PropertyField(so.FindProperty("MaxPersistedSessions"));
             EditorGUILayout.PropertyField(so.FindProperty("NotifyLogLevel"));
             EditorGUILayout.PropertyField(so.FindProperty("PersistUser"));
             EditorGUILayout.PropertyField(so.FindProperty("RedactedKeys"));
