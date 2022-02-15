@@ -34,7 +34,7 @@ steps:
     agents:
       queue: opensource-arm-mac-cocoa-12
     env:
-      UNITY_VERSION: "2019.4.34f1"
+      UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -43,8 +43,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2019.4.34f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2019.4.34f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2019.4.35f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2019.4.35f1.zip
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -103,11 +103,11 @@ steps:
     agents:
       queue: opensource-mac-cocoa-10.15
     env:
-      UNITY_VERSION: "2019.4.34f1"
+      UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2019.4.34f1.zip
+          - features/fixtures/maze_runner/build/MacOS-2019.4.35f1.zip
         upload:
           - maze_output/*
           - Mazerunner.log
@@ -156,11 +156,11 @@ steps:
     agents:
       queue: opensource-arm-mac-cocoa-12
     env:
-      UNITY_VERSION: "2019.4.34f1"
+      UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.2.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2019.4.34f1.zip
+          - features/fixtures/maze_runner/build/WebGL-2019.4.35f1.zip
         upload:
           - maze_output/failed/**/*
     commands:
@@ -216,13 +216,13 @@ steps:
     agents:
       queue: opensource-arm-mac-cocoa-12
     env:
-      UNITY_VERSION: "2019.4.34f1"
+      UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2019.4.34f1.apk
+          - features/fixtures/maze_runner/mazerunner_2019.4.35f1.apk
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
@@ -291,14 +291,14 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2019.4.34f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2019.4.35f1.apk"
         upload:
           - "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.34f1.apk"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.35f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/android"
@@ -392,7 +392,7 @@ steps:
     agents:
       queue: opensource-arm-mac-cocoa-12
     env:
-      UNITY_VERSION: "2019.4.34f1"
+      UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.2.0:
         download:
@@ -417,14 +417,14 @@ steps:
     agents:
       queue: opensource-arm-mac-cocoa-12
     env:
-      UNITY_VERSION: "2019.4.34f1"
+      UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.2.0:
         download:
           - Bugsnag.unitypackage
           - project_2019.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2019.4.34f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2019.4.35f1.ipa
           - features/fixtures/unity.log
     commands:
       - tar -zxf project_2019.tgz features/fixtures/maze_runner
@@ -522,14 +522,14 @@ steps:
     plugins:
       artifacts#v1.3.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2019.4.34f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2019.4.35f1.ipa"
         upload:
           - "maze_output/failed/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.34f1.ipa"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.35f1.ipa"
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
@@ -592,12 +592,12 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2019.4.34f1"
+      UNITY_VERSION: "2019.4.35f1"
     command:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/Windows-2019.4.34f1.zip
+      - features/fixtures/maze_runner/build/Windows-2019.4.35f1.zip
     retry:
       automatic:
         - exit_status: -1  # Agent was lost
@@ -646,7 +646,7 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2019.4.34f1"
+      UNITY_VERSION: "2019.4.35f1"
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
