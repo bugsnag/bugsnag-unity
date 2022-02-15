@@ -84,7 +84,7 @@ steps:
     depends_on: 'cocoa-webgl-2018-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -101,7 +101,7 @@ steps:
     depends_on: 'cocoa-webgl-2019-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -118,7 +118,7 @@ steps:
     depends_on: 'cocoa-webgl-2021-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-mac-cocoa-10.15
+      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
