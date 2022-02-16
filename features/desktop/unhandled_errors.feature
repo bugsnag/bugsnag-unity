@@ -8,7 +8,7 @@ Feature: Reporting unhandled events
         And the exception "message" equals "Promise Rejection"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
             | Main.RunScenario(System.String scenario)         | |
             | Main.Start()               | |
@@ -22,7 +22,7 @@ Feature: Reporting unhandled events
         And the exception "message" equals "Promise Rejection"
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
             | Main.RunScenario(System.String scenario)         | |
             | Main.Start()               | |
@@ -75,7 +75,7 @@ Feature: Reporting unhandled events
         And the exception "message" equals "Invariant state failure"
         And the event "unhandled" is true
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.RunScenario(System.String scenario)         |
             | Main.Start()               |
 
@@ -88,7 +88,7 @@ Feature: Reporting unhandled events
         And the exception "message" equals "Invariant state failure"
         And the event "unhandled" is true
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.ThrowException() |
             | Main.RunScenario(System.String scenario) |
             | Main.Start()               |
@@ -103,7 +103,7 @@ Feature: Reporting unhandled events
             | Index was outside the bounds of the array. |
         And the event "unhandled" is false
         And custom metadata is included in the event
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | Main.MakeAssertionFailure(Int32 counter) | Main.MakeAssertionFailure(System.Int32 counter) |
             | Main.RunScenario(System.String scenario)                      | |
             | Main.Start()                            | |
@@ -116,7 +116,7 @@ Feature: Reporting unhandled events
         Then the error is valid for the error reporting API sent by the native Unity notifier
         And the exception "errorClass" equals "SIGABRT"
         And the event "unhandled" is true
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | __pthread_kill       |
             | abort                |
             | crashy_signal_runner |
@@ -156,7 +156,7 @@ Feature: Reporting unhandled events
         Then the error is valid for the error reporting API sent by the native Unity notifier
         And the exception "errorClass" equals "SIGABRT"
         And the event "unhandled" is true
-        And the first significant stack frame methods and files should match:
+        And the stack frame methods should match:
             | __pthread_kill       |
             | abort                |
             | crashy_signal_runner |
