@@ -115,9 +115,7 @@ namespace BugsnagUnity
                 while (!req.isDone)
                 {
                     yield return new WaitForEndOfFrame();
-                }
-                Debug.Log("Send Session Response code: " + req.responseCode);
-                    
+                }                    
                 if (req.responseCode >= 200 && req.responseCode < 300)
                 {
                     // success!
@@ -134,10 +132,17 @@ namespace BugsnagUnity
 
         public void TrySendingCachedPayloads()
         {
-            var payloads = FileManager.GetCachedPayloads();
-            foreach (var payload in payloads)
+            try
             {
-                Send(payload);
+                var payloads = FileManager.GetCachedPayloads();
+                foreach (var payload in payloads)
+                {
+                    Send(payload);
+                }
+            }
+            catch
+            {
+                // Not possible in unit tests
             }
         }
 

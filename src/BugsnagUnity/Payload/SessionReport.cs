@@ -44,10 +44,8 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("notifier", cachedReport.Get("notifier"));
             this.AddToPayload("app", cachedReport.Get("app"));
             this.AddToPayload("device", cachedReport.Get("device"));
-            var cachedSessionObject = ((JsonObject)cachedReport.Get("session")).GetDictionary();
-            this.AddToPayload("sessions", new [] { cachedSessionObject });
-            Debug.Log("SettingSessionId");
-            Id = cachedSessionObject["id"].ToString();
+            this.AddToPayload("sessions", new [] { cachedReport.Get("session") });
+            Id = cachedReport["payloadId"].ToString();
         }
 
     }
