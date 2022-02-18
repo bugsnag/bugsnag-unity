@@ -115,7 +115,7 @@ namespace BugsnagUnity
                 while (!req.isDone)
                 {
                     yield return new WaitForEndOfFrame();
-                }                    
+                }
                 if (req.responseCode >= 200 && req.responseCode < 300)
                 {
                     // success!
@@ -126,6 +126,11 @@ namespace BugsnagUnity
                     // Something is wrong with the server/connection, retry after a delay
                     DelayBeforeDelivery = true;
                     Send(payload);
+                }
+                else
+                {
+                    // sending failed, cache payload to disk
+                    FileManager.SendPayloadFailed(payload);
                 }
             }
         }

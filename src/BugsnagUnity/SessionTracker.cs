@@ -101,14 +101,7 @@ namespace BugsnagUnity
             if (Client.Configuration.Endpoints.IsValid)
             {
                 var payload = new SessionReport(Client.Configuration, app, device, Client.GetUser().Clone(), session);
-                try
-                {
-                    FileManager.CacheSession(payload);
-                }
-                catch
-                {
-                    // Not possible in unit tests
-                }
+                FileManager.AddPendingSession(payload);               
                 Client.Send(payload);
             }
             else

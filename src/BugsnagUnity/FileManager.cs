@@ -9,6 +9,8 @@ namespace BugsnagUnity
     public class FileManager
     {
 
+        private static List<SessionReport> _pendingSessions = new List<SessionReport>();
+
         private static string CacheDirectory
         {
             get { return Application.persistentDataPath + "/Bugsnag"; }
@@ -24,14 +26,63 @@ namespace BugsnagUnity
 
         private static string[] _cachedSessions => Directory.GetFiles(SessionsDirectory, "*.session");
 
-        public static void InitFileManager(Configuration configuration)
+        internal static void InitFileManager(Configuration configuration)
         {
             _configuration = configuration;
             CheckForDirectoryCreation();
         }
 
-        internal static void CacheSession(SessionReport sessionReport)
+        internal static void AddPendingSession(SessionReport sessionReport)
         {
+            _pendingSessions.Add(sessionReport);
+        }
+
+        private static SessionReport GetPendingSessionReport(string id)
+        {
+            foreach (var report in _pendingSessions)
+            {
+                if (report.Id.Equals(id))
+                {
+                    return report;
+                }
+            }
+            return null;
+        }
+
+        internal static void SendPayloadFailed(IPayload payload)
+        {
+            if (!PayloadAlreadyCached(payload.Id))
+            {
+                switch (payload.PayloadType)
+                {
+                    case PayloadType.Session:
+                        CacheSession(payload.Id);
+                        break;
+                    case PayloadType.Event:
+                        break;
+                }
+            }
+        }
+
+        private static bool PayloadAlreadyCached(string payloadId)
+        {
+            foreach (var cachedSession in _cachedSessions)
+            {
+                if (cachedSession.Contains(payloadId))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        internal static void CacheSession(string reportId)
+        {
+            var sessionReport = GetPendingSessionReport(reportId);
+            if (sessionReport == null)
+            {
+                return;
+            }
             using (var stream = new MemoryStream())
             using (var reader = new StreamReader(stream))
             using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
@@ -86,6 +137,7 @@ namespace BugsnagUnity
             switch (payload.PayloadType)
             {
                 case PayloadType.Session:
+                    RemovePendingSession(payload.Id);
                     RemovedCachedSession(payload.Id);
                     break;
                 case PayloadType.Event:
@@ -102,6 +154,11 @@ namespace BugsnagUnity
                     File.Delete(cachedSessionPath);
                 }
             }
+        }
+
+        private static void RemovePendingSession(string id)
+        {
+            _pendingSessions.RemoveAll(item => item.Id == id);
         }
 
         internal static List<IPayload> GetCachedPayloads()
