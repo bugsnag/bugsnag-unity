@@ -50,8 +50,22 @@ Feature: Session Tracking
             | AutoSession                      |
             | AutoSessionInNotifyReleaseStages |
 
+    @skip_webgl
+    Scenario: Receive a persisted session
+        When I run the game in the "PersistSession" state
+        And I wait for 6 seconds
+        And I run the game in the "PersistSessionReport" state
+        And I wait to receive 2 sessions
+        Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+        And the session payload field "app.releaseStage" equals the platform-dependent string:
+            | macos | Second Session |
+            | windows | First Session |
+        And I discard the oldest session
+        And the session payload field "app.releaseStage" equals the platform-dependent string:
+            | macos | First Session |
+            | windows | Second Session |
 
-    @skip_macos
+    @webgl_only
     Scenario: Receive a persisted session
         When I run the game in the "PersistSession" state
         And I wait for 6 seconds
@@ -61,6 +75,8 @@ Feature: Session Tracking
         And the session payload field "app.releaseStage" equals "First Session"
         And I discard the oldest session
         And the session payload field "app.releaseStage" equals "Second Session"
+        And I wait for 1 seconds
+
 
 
 
