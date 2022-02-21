@@ -120,7 +120,6 @@ namespace BugsnagUnity
                 {
                     // success!
                     FileManager.PayloadSendSuccess(payload);
-                    TrySendingCachedPayloads();
                 }
                 else if (req.responseCode >= 500)
                 {
