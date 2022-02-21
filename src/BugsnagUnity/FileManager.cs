@@ -11,20 +11,29 @@ namespace BugsnagUnity
 
         private static List<SessionReport> _pendingSessions = new List<SessionReport>();
 
+        private static List<Report> _pendingEvents = new List<Report>();
+
+        private static Configuration _configuration;
+
         private static string CacheDirectory
         {
             get { return Application.persistentDataPath + "/Bugsnag"; }
         }
-
-        private static Configuration _configuration;
-
 
         private static string SessionsDirectory
         {
             get { return CacheDirectory + "/Sessions"; }
         }
 
+        private static string EventsDirectory
+        {
+            get { return CacheDirectory + "/Events"; }
+        }
+
         private static string[] _cachedSessions => Directory.GetFiles(SessionsDirectory, "*.session");
+
+        private static string[] _cachedEvents => Directory.GetFiles(EventsDirectory, "*.event");
+
 
         internal static void InitFileManager(Configuration configuration)
         {
@@ -37,9 +46,26 @@ namespace BugsnagUnity
             _pendingSessions.Add(sessionReport);
         }
 
+        internal static void AddPendingEvent(Report report)
+        {
+            _pendingEvents.Add(report);
+        }
+
         private static SessionReport GetPendingSessionReport(string id)
         {
             foreach (var report in _pendingSessions)
+            {
+                if (report.Id.Equals(id))
+                {
+                    return report;
+                }
+            }
+            return null;
+        }
+
+        private static Report GetPendingEventReport(string id)
+        {
+            foreach (var report in _pendingEvents)
             {
                 if (report.Id.Equals(id))
                 {
@@ -106,6 +132,37 @@ namespace BugsnagUnity
             }
         }
 
+        internal static void CacheEvent(string reportId)
+        {
+            var eventReport = GetPendingEventReport(reportId);
+            if (eventReport == null)
+            {
+                return;
+            }
+            using (var stream = new MemoryStream())
+            using (var reader = new StreamReader(stream))
+            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+            {
+                SimpleJson.SerializeObject(eventReport, writer);
+                writer.Flush();
+                stream.Position = 0;
+                var jsonString = reader.ReadToEnd();
+                var path = EventsDirectory + "/" + eventReport.Id + ".event";
+                WriteToDisk(jsonString, path);
+                CheckForMaxCachedEvents();
+            }
+        }
+
+        private static void CheckForMaxCachedEvents()
+        {
+            var filesCount = _cachedEvents.Length;
+            while (filesCount > _configuration.MaxPersistedEvents)
+            {
+                RemoveOldestEvent();
+                filesCount = _cachedEvents.Length;
+            }
+        }
+
         private static void CheckForMaxCachedSessions()
         {
             var filesCount = _cachedSessions.Length;
@@ -114,6 +171,23 @@ namespace BugsnagUnity
                 RemoveOldestSession();
                 filesCount = _cachedSessions.Length;
             }
+        }
+
+
+        private static void RemoveOldestEvent()
+        {
+            var oldestEvent = string.Empty;
+            var oldestMillis = default(double);
+            foreach (var cachedEventPath in _cachedEvents)
+            {
+                var milliesSinceCreated = (DateTime.UtcNow - File.GetCreationTimeUtc(cachedEventPath)).TotalMilliseconds;
+                if (milliesSinceCreated > oldestMillis)
+                {
+                    oldestMillis = milliesSinceCreated;
+                    oldestEvent = cachedEventPath;
+                }
+            }
+            File.Delete(oldestEvent);
         }
 
         private static void RemoveOldestSession()
@@ -141,8 +215,26 @@ namespace BugsnagUnity
                     RemovedCachedSession(payload.Id);
                     break;
                 case PayloadType.Event:
+                    RemovedCachedEvent(payload.Id);
+                    RemovePendingEvent(payload.Id);
                     break;
             }
+        }
+
+        internal static void RemovedCachedEvent(string id)
+        {
+            foreach (var cachedEventPath in _cachedEvents)
+            {
+                if (cachedEventPath.Contains(id))
+                {
+                    File.Delete(cachedEventPath);
+                }
+            }
+        }
+
+        private static void RemovePendingEvent(string id)
+        {
+            _pendingEvents.RemoveAll(item => item.Id == id);
         }
 
         internal static void RemovedCachedSession(string id)
@@ -191,6 +283,10 @@ namespace BugsnagUnity
                 if (!Directory.Exists(SessionsDirectory))
                 {
                     Directory.CreateDirectory(SessionsDirectory);
+                }
+                if (!Directory.Exists(EventsDirectory))
+                {
+                    Directory.CreateDirectory(EventsDirectory);
                 }
             }
             catch
