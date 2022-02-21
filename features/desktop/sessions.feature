@@ -67,17 +67,17 @@ Feature: Session Tracking
 
     @webgl_only
     Scenario: Receive a persisted session
-        When I run the game in the "PersistSession" state
-        And I wait for 10 seconds
+        When I run the game in the "PersistSessionWeb" state
+        And I wait to receive an error
+        And the error is valid for the error reporting API sent by the native Unity notifier
+        And the exception "message" equals "SessionCached"
         And I run the game in the "PersistSessionReport" state
         And I wait to receive 2 sessions
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
         And the session payload field "app.releaseStage" equals "First Session"
         And I discard the oldest session
         And the session payload field "app.releaseStage" equals "Second Session"
-        And I wait for 5 seconds
-
-
+        And I wait for 2 seconds
 
 
     @macos_only

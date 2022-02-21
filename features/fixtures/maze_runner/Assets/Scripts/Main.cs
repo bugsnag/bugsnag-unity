@@ -8,6 +8,7 @@ using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -30,6 +31,8 @@ public class Main : MonoBehaviour
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
 
     private float _closeTime = 5;
+
+    private string _correctEndpoint;
 
     public void Start()
     {
@@ -127,8 +130,8 @@ public class Main : MonoBehaviour
         var config = new Configuration(apiKey);
 
         // setup default endpoints etc
-        var endpoint = GetEvnVar("MAZE_ENDPOINT");
-        config.Endpoints = new EndpointConfiguration(endpoint + "/notify", endpoint + "/sessions");
+        _correctEndpoint = GetEvnVar("MAZE_ENDPOINT");
+        config.Endpoints  = new EndpointConfiguration(_correctEndpoint + "/notify", _correctEndpoint + "/sessions");
         config.AutoTrackSessions = scenario.Contains("AutoSession");
 
         // replacement for BugsnagBehaviour as not practical to load script in fixture
@@ -162,7 +165,7 @@ public class Main : MonoBehaviour
                     session.App.ReleaseStage = "First Session";
                     return true;
                 });
-                config.Endpoints = new EndpointConfiguration("https://notify.bugsdnag.com", "https://notify.bugsdnag.com");
+                config.Endpoints = new EndpointConfiguration(_correctEndpoint + "/notify", "https://notify.bugsdnag.com");
                 config.AutoTrackSessions = true;
                 break;
             case "PersistSessionReport":
@@ -629,6 +632,9 @@ public class Main : MonoBehaviour
             case "DisableErrorBreadcrumbs":
                 DisableErrorBreadcrumbs();
                 break;
+            case "PersistSessionWeb":
+                StartCoroutine(SendSessionCachedMessage());
+                break;
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":
@@ -637,6 +643,18 @@ public class Main : MonoBehaviour
                 throw new ArgumentException("Unable to run unexpected scenario: " + scenario);
                 break;
         }
+    }
+
+    private IEnumerator SendSessionCachedMessage()
+    {
+        var sessionsDir = Application.persistentDataPath + "/Bugsnag" + "/Sessions";
+        var cachedSessions = Directory.GetFiles(sessionsDir, "*.session");
+        while (cachedSessions.Length < 1)
+        {
+            yield return new WaitForSeconds(1);
+            cachedSessions = Directory.GetFiles(sessionsDir, "*.session");
+        }
+        throw new Exception("SessionCached");
     }
 
 
