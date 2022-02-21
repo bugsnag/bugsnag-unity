@@ -75,7 +75,7 @@ Feature: Session Tracking
         And the session payload field "app.releaseStage" equals "First Session"
         And I discard the oldest session
         And the session payload field "app.releaseStage" equals "Second Session"
-        And I wait for 1 seconds
+        And I wait for 5 seconds
 
 
 
