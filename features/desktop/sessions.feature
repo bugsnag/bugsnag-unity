@@ -68,7 +68,7 @@ Feature: Session Tracking
     @webgl_only
     Scenario: Receive a persisted session
         When I run the game in the "PersistSession" state
-        And I wait for 6 seconds
+        And I wait for 10 seconds
         And I run the game in the "PersistSessionReport" state
         And I wait to receive 2 sessions
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
