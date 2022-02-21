@@ -13,6 +13,7 @@ namespace BugsnagUnity
     interface IDelivery
     {
         void Send(IPayload payload);
+        void TrySendingCachedPayloads();
     }
 
     class Delivery : IDelivery
@@ -109,17 +110,16 @@ namespace BugsnagUnity
                 req.uploadHandler = new UploadHandlerRaw(body);
                 req.downloadHandler = new DownloadHandlerBuffer();
                 req.method = UnityWebRequest.kHttpVerbPOST;
-
                 yield return req.SendWebRequest();
 
                 while (!req.isDone)
                 {
                     yield return new WaitForEndOfFrame();
                 }
-
                 if (req.responseCode >= 200 && req.responseCode < 300)
                 {
                     // success!
+                    FileManager.PayloadSendSuccess(payload);
                 }
                 else if (req.responseCode >= 500)
                 {
@@ -127,6 +127,27 @@ namespace BugsnagUnity
                     DelayBeforeDelivery = true;
                     Send(payload);
                 }
+                else
+                {
+                    // sending failed, cache payload to disk
+                    FileManager.SendPayloadFailed(payload);
+                }
+            }
+        }
+
+        public void TrySendingCachedPayloads()
+        {
+            try
+            {
+                var payloads = FileManager.GetCachedPayloads();
+                foreach (var payload in payloads)
+                {
+                    Send(payload);
+                }
+            }
+            catch
+            {
+                // Not possible in unit tests
             }
         }
 

@@ -26,6 +26,7 @@ namespace BugsnagUnity
         public long LaunchDurationMillis = 5000;
         public int MaximumBreadcrumbs = 50;
         public int MaxPersistedEvents = 32;
+        public int MaxPersistedSessions = 128;
         public string NotifyEndpoint = "https://notify.bugsnag.com";
         public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
         public bool PersistUser = true;
@@ -79,6 +80,7 @@ namespace BugsnagUnity
             config.LaunchDurationMillis = LaunchDurationMillis;
             config.MaximumBreadcrumbs = MaximumBreadcrumbs;
             config.MaxPersistedEvents = MaxPersistedEvents;
+            config.MaxPersistedSessions = MaxPersistedSessions;
             config.NotifyLogLevel = GetLogTypeFromLogLevel( NotifyLogLevel );
             config.SendThreads = SendThreads;
             if (!string.IsNullOrEmpty(NotifyEndpoint) && !string.IsNullOrEmpty(SessionEndpoint))

@@ -157,6 +157,21 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "PersistSession":
+                config.AddOnSession((session)=> {
+                    session.App.ReleaseStage = "First Session";
+                    return true;
+                });
+                config.Endpoints = new EndpointConfiguration("https://notify.bugsdnag.com", "https://notify.bugsdnag.com");
+                config.AutoTrackSessions = true;
+                break;
+            case "PersistSessionReport":
+                config.AddOnSession((session) => {
+                    session.App.ReleaseStage = "Second Session";
+                    return true;
+                });
+                config.AutoTrackSessions = true;
+                break;
             case "ClearFeatureFlagsInCallback":
                 config.AddOnSendError((@event) => {
                     @event.AddFeatureFlag("testName3", "testVariant3");
@@ -614,6 +629,8 @@ public class Main : MonoBehaviour
             case "DisableErrorBreadcrumbs":
                 DisableErrorBreadcrumbs();
                 break;
+            case "PersistSession":
+            case "PersistSessionReport":
             case "(noop)":
                 break;
             default:

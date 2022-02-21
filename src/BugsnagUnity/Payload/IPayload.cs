@@ -7,8 +7,18 @@ namespace BugsnagUnity.Payload
 {
     public interface IPayload
     {
-        Uri Endpoint { get; }
+        Uri Endpoint { get; set; }
 
-        KeyValuePair<string, string>[] Headers { get; }
+        KeyValuePair<string, string>[] Headers { get; set; }
+
+        string Id { get; set; }
+
+        PayloadType PayloadType { get; }
+    }
+
+    public enum PayloadType
+    {
+        Session,
+        Event
     }
 }

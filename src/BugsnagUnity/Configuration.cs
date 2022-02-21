@@ -171,6 +171,9 @@ namespace BugsnagUnity
 
         public int MaxPersistedEvents = 32;
 
+        public int MaxPersistedSessions = 128;
+
+
         internal bool ErrorClassIsDiscarded(string className)
         {
             return DiscardClasses != null && DiscardClasses.Contains(className);

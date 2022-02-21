@@ -52,6 +52,7 @@ namespace BugsnagUnity
         public Client(INativeClient nativeClient)
         {
             NativeClient = nativeClient;
+            FileManager.InitFileManager(nativeClient.Configuration);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
             InitStopwatches();
@@ -65,6 +66,7 @@ namespace BugsnagUnity
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
+            Delivery.TrySendingCachedPayloads();
         }
 
         private void InitFeatureFlags()
@@ -494,6 +496,7 @@ namespace BugsnagUnity
                         if (IsUsingFallback())
                         {
                             SessionTracking.StartSession();
+                            Delivery.TrySendingCachedPayloads();
                         }
                         else
                         {

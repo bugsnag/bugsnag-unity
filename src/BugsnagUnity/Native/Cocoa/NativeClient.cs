@@ -42,6 +42,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAppType(obj, GetAppType(config));
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
+            NativeCode.bugsnag_setMaxPersistedSessions(obj, config.MaxPersistedSessions);
             NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
             NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
             NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);

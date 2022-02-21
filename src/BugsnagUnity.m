@@ -485,6 +485,10 @@ void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEv
   ((__bridge BugsnagConfiguration *)configuration).maxPersistedEvents = maxPersistedEvents;
 }
 
+void bugsnag_setMaxPersistedSessions(const void *configuration, int maxPersistedSessions) {
+  ((__bridge BugsnagConfiguration *)configuration).maxPersistedSessions = maxPersistedSessions;
+}
+
 void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count){
     if(types == NULL)
     {
