@@ -160,6 +160,7 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "PersistSessionWeb":
             case "PersistSession":
                 config.AddOnSession((session)=> {
                     session.App.ReleaseStage = "First Session";
