@@ -162,6 +162,7 @@ public class Main : MonoBehaviour
         {
             case "PersistSessionWeb":
             case "PersistSession":
+                config.AddMetadata("wtf", "dataPath", Application.persistentDataPath);
                 config.AddMetadata("wtf", "url", Application.absoluteURL);
                 config.AddOnSession((session)=> {
                     session.App.ReleaseStage = "First Session";
@@ -174,6 +175,7 @@ public class Main : MonoBehaviour
             case "PersistSessionReportWeb":
                 var sessionsDir = Application.persistentDataPath + "/Bugsnag" + "/Sessions";
                 var cachedSessions = Directory.GetFiles(sessionsDir, "*.session");
+                config.AddMetadata("wtf", "dataPath", Application.persistentDataPath);
                 config.AddMetadata("wtf","numCached",cachedSessions.Length);
                 config.AddMetadata("wtf","url", Application.absoluteURL);
                 config.AddOnSession((session) => {
