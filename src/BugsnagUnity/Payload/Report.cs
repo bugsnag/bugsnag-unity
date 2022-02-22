@@ -17,15 +17,17 @@ namespace BugsnagUnity.Payload
 
         public string Id { get; set; }
 
+        private string _payloadVersion;
 
         internal Report(Configuration configuration, Event @event)
         {
             Id = Guid.NewGuid().ToString();
             Ignored = false;
             Endpoint = configuration.Endpoints.Notify;
+            _payloadVersion = configuration.PayloadVersion;
             Headers = new[] {
                 new KeyValuePair<string, string>("Bugsnag-Api-Key", @event.ApiKey),
-                new KeyValuePair<string, string>("Bugsnag-Payload-Version", configuration.PayloadVersion),
+                new KeyValuePair<string, string>("Bugsnag-Payload-Version", _payloadVersion),
             };
             _event = @event;
             this.AddToPayload("apiKey", @event.ApiKey);
@@ -33,22 +35,29 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("events", new[] { _event.GetEventPayload() });
         }
 
-        internal string GetSerialisedReport()
+        internal Report(Configuration configuration, Dictionary<string, object> data)
+        {
+            Id = data["id"].ToString();
+            Endpoint = configuration.Endpoints.Notify;
+            var apiKey = data["apiKey"].ToString();
+            Headers = new[] {
+                new KeyValuePair<string, string>("Bugsnag-Api-Key", apiKey),
+                new KeyValuePair<string, string>("Bugsnag-Payload-Version", data["payloadVersion"].ToString()),
+            };
+            this.AddToPayload("apiKey", apiKey);
+            this.AddToPayload("notifier", data["notifier"]);
+            this.AddToPayload("events", new[] { data["event"] });
+        }
+
+        internal Dictionary<string, object> GetSerialisableDictionary()
         {
             var serialisableReport = new Dictionary<string, object>();
             serialisableReport["id"] = Id;
             serialisableReport["apiKey"] = _event.ApiKey;
             serialisableReport["notifier"] = NotifierInfo.Instance;
             serialisableReport["event"] = _event.GetEventPayload();
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
-            {
-                SimpleJson.SerializeObject(serialisableReport, writer);
-                writer.Flush();
-                stream.Position = 0;
-                return reader.ReadToEnd();
-            }
+            serialisableReport["payloadVersion"] = _payloadVersion;
+            return serialisableReport;
         }
 
         private Event _event;

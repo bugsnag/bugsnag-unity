@@ -49,6 +49,7 @@ namespace BugsnagUnity
         internal static void AddPendingEvent(Report report)
         {
             _pendingEvents.Add(report);
+            Debug.Log("Adding pending event with id: " + report.Id);
         }
 
         private static SessionReport GetPendingSessionReport(string id)
@@ -85,6 +86,7 @@ namespace BugsnagUnity
                         CacheSession(payload.Id);
                         break;
                     case PayloadType.Event:
+                        CacheEvent(payload.Id);
                         break;
                 }
             }
@@ -134,6 +136,7 @@ namespace BugsnagUnity
 
         internal static void CacheEvent(string reportId)
         {
+            Debug.Log("Sending event failed, caching event with id: " + reportId);
             var eventReport = GetPendingEventReport(reportId);
             if (eventReport == null)
             {
@@ -143,7 +146,7 @@ namespace BugsnagUnity
             using (var reader = new StreamReader(stream))
             using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
             {
-                SimpleJson.SerializeObject(eventReport, writer);
+                SimpleJson.SerializeObject(eventReport.GetSerialisableDictionary(), writer);
                 writer.Flush();
                 stream.Position = 0;
                 var jsonString = reader.ReadToEnd();
@@ -223,6 +226,8 @@ namespace BugsnagUnity
 
         internal static void RemovedCachedEvent(string id)
         {
+            Debug.Log("Removing cached event: " + id);
+
             foreach (var cachedEventPath in _cachedEvents)
             {
                 if (cachedEventPath.Contains(id))
@@ -255,6 +260,7 @@ namespace BugsnagUnity
 
         internal static List<IPayload> GetCachedPayloads()
         {
+            Debug.Log("Get Cached Payloads " + _cachedEvents.Length);
             var cachedPayloads = new List<IPayload>();
             foreach (var cachedSessionPath in _cachedSessions)
             {
@@ -263,11 +269,23 @@ namespace BugsnagUnity
                 var sessionReportFromCachedPayload = new SessionReport(_configuration,deserialisedSessionReport);
                 cachedPayloads.Add(sessionReportFromCachedPayload);
             }
+
+            foreach (var cachedEventPath in _cachedEvents)
+            {
+                Debug.Log("Got Cached Event: " + cachedEventPath);
+
+                var json = File.ReadAllText(cachedEventPath);
+                var deserialisedEventReport = ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary();
+                var eventReportFromCachedPayload = new Report(_configuration, deserialisedEventReport);
+                cachedPayloads.Add(eventReportFromCachedPayload);
+                Debug.Log("Created event from json with id: " + eventReportFromCachedPayload.Id);
+            }
             return cachedPayloads;
         }
 
         private static void WriteToDisk(string json, string path)
         {
+            Debug.Log("Writing to disk: " + path);
             CheckForDirectoryCreation();
             File.WriteAllText(path, json);
         }

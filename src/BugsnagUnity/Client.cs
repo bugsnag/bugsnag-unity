@@ -453,6 +453,7 @@ namespace BugsnagUnity
 
             if (!report.Ignored)
             {
+                FileManager.AddPendingEvent(report);
                 Send(report);
                 if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
                 {
