@@ -71,7 +71,11 @@ Feature: Session Tracking
         And I wait to receive an error
         And the error is valid for the error reporting API sent by the native Unity notifier
         And the exception "message" equals "SessionCached"
-        And I run the game in the "PersistSessionReport" state
+        And I discard the oldest error
+        And I run the game in the "PersistSessionReportWeb" state
+        And I wait to receive an error
+        And the error is valid for the error reporting API sent by the native Unity notifier
+        And the exception "message" equals "PersistSessionReportWeb"
         And I wait to receive 2 sessions
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
         And the session payload field "app.releaseStage" equals "First Session"

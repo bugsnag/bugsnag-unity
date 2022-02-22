@@ -162,11 +162,24 @@ public class Main : MonoBehaviour
         {
             case "PersistSessionWeb":
             case "PersistSession":
+                config.AddMetadata("wtf", "url", Application.absoluteURL);
                 config.AddOnSession((session)=> {
                     session.App.ReleaseStage = "First Session";
                     return true;
                 });
                 config.Endpoints = new EndpointConfiguration(_correctEndpoint + "/notify", "https://notify.bugsdnag.com");
+                config.AutoTrackSessions = true;
+                break;
+
+            case "PersistSessionReportWeb":
+                var sessionsDir = Application.persistentDataPath + "/Bugsnag" + "/Sessions";
+                var cachedSessions = Directory.GetFiles(sessionsDir, "*.session");
+                config.AddMetadata("wtf","numCached",cachedSessions.Length);
+                config.AddMetadata("wtf","url", Application.absoluteURL);
+                config.AddOnSession((session) => {
+                    session.App.ReleaseStage = "Second Session";
+                    return true;
+                });
                 config.AutoTrackSessions = true;
                 break;
             case "PersistSessionReport":
@@ -636,6 +649,8 @@ public class Main : MonoBehaviour
             case "PersistSessionWeb":
                 StartCoroutine(SendSessionCachedMessage());
                 break;
+            case "PersistSessionReportWeb":
+                throw new Exception("PersistSessionReportWeb");
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":
