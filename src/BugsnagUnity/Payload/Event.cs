@@ -49,6 +49,29 @@ namespace BugsnagUnity.Payload
             _featureFlags = featureFlags;
         }
 
+        internal Event(Dictionary<string, object> serialisedEvent)
+        {
+            Debug.Log("Creating event from Serialised data: " + serialisedEvent.Keys.Count);
+           
+            ApiKey = serialisedEvent["apiKey"].ToString();
+            Debug.Log("API key set: " + ApiKey);
+
+            var eventObject = (Dictionary<string, object>)serialisedEvent["event"];
+            Debug.Log("Got event object: " + eventObject.Keys.Count);
+
+            _metadata = new Metadata();
+            _metadata.MergeMetadata((Dictionary<string, object>)eventObject["metaData"]);
+            Debug.Log("Merge Metadata complete");
+
+            _appWithState = new AppWithState((Dictionary<string, object>)eventObject["app"]);
+            Debug.Log("AppWithState complete");
+
+            _deviceWithState = new DeviceWithState((Dictionary<string, object>)eventObject["device"]);
+            Debug.Log("DeviceWithState complete");
+
+
+        }
+
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
         {
             _androidProjectPackages = packages;

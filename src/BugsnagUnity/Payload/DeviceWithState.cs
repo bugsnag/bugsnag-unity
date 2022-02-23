@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 #nullable enable
 
@@ -35,6 +36,8 @@ namespace BugsnagUnity.Payload
             get => (DateTimeOffset?)Get(TIME_KEY);
             set => Add(TIME_KEY, value);
         }
+
+        internal DeviceWithState(Dictionary<string, object> cachedData) : base(cachedData) { }
 
         internal DeviceWithState(Configuration configuration) : base(configuration)
         {

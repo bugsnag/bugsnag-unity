@@ -29,10 +29,10 @@ namespace BugsnagUnity.Payload
                 new KeyValuePair<string, string>("Bugsnag-Api-Key", @event.ApiKey),
                 new KeyValuePair<string, string>("Bugsnag-Payload-Version", _payloadVersion),
             };
-            _event = @event;
+            Event = @event;
             this.AddToPayload("apiKey", @event.ApiKey);
             this.AddToPayload("notifier", NotifierInfo.Instance);
-            this.AddToPayload("events", new[] { _event.GetEventPayload() });
+            this.AddToPayload("events", new[] { Event.GetEventPayload() });
         }
 
         internal Report(Configuration configuration, Dictionary<string, object> data)
@@ -47,30 +47,31 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("apiKey", apiKey);
             this.AddToPayload("notifier", data["notifier"]);
             this.AddToPayload("events", new[] { data["event"] });
+            Event = new Event(data);
         }
 
         internal Dictionary<string, object> GetSerialisableDictionary()
         {
             var serialisableReport = new Dictionary<string, object>();
             serialisableReport["id"] = Id;
-            serialisableReport["apiKey"] = _event.ApiKey;
+            serialisableReport["apiKey"] = Event.ApiKey;
             serialisableReport["notifier"] = NotifierInfo.Instance;
-            serialisableReport["event"] = _event.GetEventPayload();
+            serialisableReport["event"] = Event.GetEventPayload();
             serialisableReport["payloadVersion"] = _payloadVersion;
             return serialisableReport;
         }
 
-        private Event _event;
+        internal Event Event;
 
-        internal Session Session => _event.Session;
+        internal Session Session => Event.Session;
 
-        internal bool IsHandled => _event.IsHandled;
+        internal bool IsHandled => Event.IsHandled;
 
-        internal string Context => _event.Context;
+        internal string Context => Event.Context;
 
-        internal List<IError> Exceptions => _event.Errors;
+        internal List<IError> Exceptions => Event.Errors;
 
-        internal HandledState OriginalSeverity => _event.OriginalSeverity;
+        internal HandledState OriginalSeverity => Event.OriginalSeverity;
 
         public PayloadType PayloadType => PayloadType.Event;
 

@@ -115,6 +115,10 @@ namespace BugsnagUnity.Payload
             set => Add(USER_AGENT_KEY, value);
         }
 
+        internal Device(Dictionary<string, object> cachedData)
+        {
+            Add(cachedData);
+        }
 
         internal Device(Configuration configuration)
         {

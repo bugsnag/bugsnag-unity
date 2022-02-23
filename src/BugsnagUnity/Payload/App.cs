@@ -83,6 +83,11 @@ namespace BugsnagUnity.Payload
             set => Add(VERSION_CODE_KEY, value);
         }
 
+        internal App(Dictionary<string, object> cachedData)
+        {
+            Add(cachedData);
+        }
+
         internal App(Configuration configuration)
         {
             Id = Application.identifier;
