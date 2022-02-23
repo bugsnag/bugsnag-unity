@@ -636,6 +636,7 @@ public class Main : MonoBehaviour
             case "PersistSessionWeb":
                 StartCoroutine(SendSessionCachedMessage());
                 break;
+
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":
