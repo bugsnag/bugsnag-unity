@@ -119,6 +119,10 @@ namespace BugsnagUnity
                 if (req.responseCode >= 200 && req.responseCode < 300)
                 {
                     // success!
+                    if (payload.PayloadType == PayloadType.Session)
+                    {
+                        Debug.Log("Session successfully sent with the id: " + payload.Id);
+                    }
                     FileManager.PayloadSendSuccess(payload);
                 }
                 else if (req.responseCode >= 500)
@@ -129,6 +133,10 @@ namespace BugsnagUnity
                 }
                 else
                 {
+                    if (payload.PayloadType == PayloadType.Session)
+                    {
+                        Debug.Log("sending session failed with the id: " + payload.Id);
+                    }
                     // sending failed, cache payload to disk
                     FileManager.SendPayloadFailed(payload);
                 }

@@ -28,12 +28,16 @@ namespace BugsnagUnity
 
         internal static void InitFileManager(Configuration configuration)
         {
+            Debug.Log("Initialising the Cache Manager");
             _configuration = configuration;
             CheckForDirectoryCreation();
+            Debug.Log("there are currently " + _cachedSessions.Length + " sessions saved in the cache");
+
         }
 
         internal static void AddPendingSession(SessionReport sessionReport)
         {
+            Debug.Log("Added a session to the list of pending session payloads with the id: " + sessionReport.Id);
             _pendingSessions.Add(sessionReport);
         }
 
@@ -51,6 +55,8 @@ namespace BugsnagUnity
 
         internal static void SendPayloadFailed(IPayload payload)
         {
+            Debug.Log("sending a session with the id" + payload.Id + " failed, writing the session to disk now");
+
             if (!PayloadAlreadyCached(payload.Id))
             {
                 switch (payload.PayloadType)
@@ -147,6 +153,8 @@ namespace BugsnagUnity
 
         internal static void RemovedCachedSession(string id)
         {
+
+            Debug.Log("Removing session file from the cache, session id: " + id);
             foreach (var cachedSessionPath in _cachedSessions)
             {
                 if (cachedSessionPath.Contains(id))
@@ -158,6 +166,7 @@ namespace BugsnagUnity
 
         private static void RemovePendingSession(string id)
         {
+            Debug.Log("Removing session from the list of pending session requests, session id: " + id);
             _pendingSessions.RemoveAll(item => item.Id == id);
         }
 
@@ -176,21 +185,38 @@ namespace BugsnagUnity
 
         private static void WriteToDisk(string json, string path)
         {
+            Debug.Log("Writing a session to disk with the content: " + json);
             CheckForDirectoryCreation();
             File.WriteAllText(path, json);
+            Debug.Log("session was written to disk at the location: " + path);
+
         }
 
         private static void CheckForDirectoryCreation()
         {
+
+            Debug.Log("Checking if the Bugsnag session cache already exists");
+
+
             try
             {
                 if (!Directory.Exists(CacheDirectory))
                 {
+                    Debug.Log("The Root Cache Directory does not exist, creating it here: " + CacheDirectory);
                     Directory.CreateDirectory(CacheDirectory);
+                }
+                else
+                {
+                    Debug.Log("The Root Cache Directory already exists here: " + CacheDirectory);
                 }
                 if (!Directory.Exists(SessionsDirectory))
                 {
+                    Debug.Log("The session Cache Directory does not exist, creating it here: " + SessionsDirectory);
                     Directory.CreateDirectory(SessionsDirectory);
+                }
+                else
+                {
+                    Debug.Log("The session Cache Directory already exists here: " + SessionsDirectory);
                 }
             }
             catch

@@ -162,8 +162,6 @@ public class Main : MonoBehaviour
         {
             case "PersistSessionWeb":
             case "PersistSession":
-                config.AddMetadata("wtf", "dataPath", Application.persistentDataPath);
-                config.AddMetadata("wtf", "url", Application.absoluteURL);
                 config.AddOnSession((session)=> {
                     session.App.ReleaseStage = "First Session";
                     return true;
@@ -173,11 +171,6 @@ public class Main : MonoBehaviour
                 break;
 
             case "PersistSessionReportWeb":
-                var sessionsDir = Application.persistentDataPath + "/Bugsnag" + "/Sessions";
-                var cachedSessions = Directory.GetFiles(sessionsDir, "*.session");
-                config.AddMetadata("wtf", "dataPath", Application.persistentDataPath);
-                config.AddMetadata("wtf","numCached",cachedSessions.Length);
-                config.AddMetadata("wtf","url", Application.absoluteURL);
                 config.AddOnSession((session) => {
                     session.App.ReleaseStage = "Second Session";
                     return true;
@@ -652,7 +645,6 @@ public class Main : MonoBehaviour
                 StartCoroutine(SendSessionCachedMessage());
                 break;
             case "PersistSessionReportWeb":
-                throw new Exception("PersistSessionReportWeb");
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":
@@ -665,13 +657,17 @@ public class Main : MonoBehaviour
 
     private IEnumerator SendSessionCachedMessage()
     {
+        Debug.Log("MAZE_RUNNER: polling for cached session");
         var sessionsDir = Application.persistentDataPath + "/Bugsnag" + "/Sessions";
         var cachedSessions = Directory.GetFiles(sessionsDir, "*.session");
         while (cachedSessions.Length < 1)
         {
+            Debug.Log("MAZE_RUNNER: polling for cached session");
             yield return new WaitForSeconds(1);
             cachedSessions = Directory.GetFiles(sessionsDir, "*.session");
         }
+        Debug.Log("MAZE_RUNNER: cached session found, sending exception to start next stage of test");
+
         throw new Exception("SessionCached");
     }
 

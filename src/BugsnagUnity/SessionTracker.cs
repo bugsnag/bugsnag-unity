@@ -1,5 +1,6 @@
 ﻿using BugsnagUnity.Payload;
 using System.Runtime.CompilerServices;
+using UnityEngine;
 
 [assembly: InternalsVisibleTo("BugsnagUnity.Tests")]
 
@@ -101,6 +102,7 @@ namespace BugsnagUnity
             if (Client.Configuration.Endpoints.IsValid)
             {
                 var payload = new SessionReport(Client.Configuration, app, device, Client.GetUser().Clone(), session);
+                Debug.Log("Created a session payload with the id: " + payload.Id);
                 FileManager.AddPendingSession(payload);               
                 Client.Send(payload);
             }
