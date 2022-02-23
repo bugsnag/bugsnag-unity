@@ -169,14 +169,6 @@ public class Main : MonoBehaviour
                 config.Endpoints = new EndpointConfiguration(_correctEndpoint + "/notify", "https://notify.bugsdnag.com");
                 config.AutoTrackSessions = true;
                 break;
-
-            case "PersistSessionReportWeb":
-                config.AddOnSession((session) => {
-                    session.App.ReleaseStage = "Second Session";
-                    return true;
-                });
-                config.AutoTrackSessions = true;
-                break;
             case "PersistSessionReport":
                 config.AddOnSession((session) => {
                     session.App.ReleaseStage = "Second Session";
@@ -644,7 +636,6 @@ public class Main : MonoBehaviour
             case "PersistSessionWeb":
                 StartCoroutine(SendSessionCachedMessage());
                 break;
-            case "PersistSessionReportWeb":
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":

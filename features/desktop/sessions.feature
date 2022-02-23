@@ -73,7 +73,7 @@ Feature: Session Tracking
         And the exception "message" equals "SessionCached"
         And I wait for 10 seconds
 
-        And I run the game in the "PersistSessionReportWeb" state
+        And I run the game in the "PersistSessionReport" state
         And I wait to receive 2 sessions
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
         And the session payload field "app.releaseStage" equals "First Session"
