@@ -35,6 +35,11 @@ namespace BugsnagUnity.Payload
             return new Breadcrumb(message, metadata, BreadcrumbType.Error);
         }
 
+        internal Breadcrumb(Dictionary<string, object> data)
+        {
+            Add(data);
+        }
+
         /// <summary>
         /// Used to construct a breadcrumb from the native data obtained from a
         /// native notifier if present.

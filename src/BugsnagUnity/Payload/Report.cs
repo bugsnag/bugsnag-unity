@@ -46,7 +46,6 @@ namespace BugsnagUnity.Payload
             };
             this.AddToPayload("apiKey", apiKey);
             this.AddToPayload("notifier", data["notifier"]);
-            this.AddToPayload("events", new[] { data["event"] });
             Event = new Event(data);
         }
 
@@ -59,6 +58,11 @@ namespace BugsnagUnity.Payload
             serialisableReport["event"] = Event.GetEventPayload();
             serialisableReport["payloadVersion"] = _payloadVersion;
             return serialisableReport;
+        }
+
+        internal void ApplyEventPayload()
+        {
+            this.AddToPayload("events", new[] { Event.GetEventPayload() });
         }
 
         internal Event Event;

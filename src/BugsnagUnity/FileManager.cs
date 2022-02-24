@@ -278,25 +278,32 @@ namespace BugsnagUnity
                 var deserialisedEventReport = ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary();
                 var eventReportFromCachedPayload = new Report(_configuration, deserialisedEventReport);
                 Debug.Log("Created event from json with id: " + eventReportFromCachedPayload.Id);
+                var shouldDiscard = false;
                 foreach (var onSendErrorCallback in _configuration.GetOnSendErrorCallbacks())
                 {
                     try
                     {
-                        if (onSendErrorCallback.Invoke(eventReportFromCachedPayload.Event))
+                        if (!onSendErrorCallback.Invoke(eventReportFromCachedPayload.Event))
                         {
-                            cachedPayloads.Add(eventReportFromCachedPayload);
-                        }
-                        else
-                        {
-                            RemovedCachedEvent(eventReportFromCachedPayload.Id);
-                            RemovePendingEvent(eventReportFromCachedPayload.Id);
+                            shouldDiscard = true;
+                            break;
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         Debug.Log("Cached callback exception: " + e.Message);
                         // If the callback causes an exception, ignore it and execute the next one
                     }
+                }
+                if (shouldDiscard)
+                {
+                    RemovedCachedEvent(eventReportFromCachedPayload.Id);
+                    RemovePendingEvent(eventReportFromCachedPayload.Id);
+                }
+                else
+                {
+                    eventReportFromCachedPayload.ApplyEventPayload();
+                    cachedPayloads.Add(eventReportFromCachedPayload);
                 }
             }
             return cachedPayloads;

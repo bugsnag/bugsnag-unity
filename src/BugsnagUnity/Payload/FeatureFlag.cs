@@ -4,6 +4,8 @@ namespace BugsnagUnity.Payload
     public class FeatureFlag : PayloadContainer
     {
 
+        internal FeatureFlag() { }
+
         public FeatureFlag(string name)
         {
             Name = name;

@@ -69,6 +69,66 @@ namespace BugsnagUnity.Payload
             _deviceWithState = new DeviceWithState((Dictionary<string, object>)eventObject["device"]);
             Debug.Log("DeviceWithState complete");
 
+            _featureFlags = new List<FeatureFlag>();
+            if (eventObject.ContainsKey("featureFlags"))
+            {
+                Debug.Log("Creating feature flags");
+                var flagsArray = (JsonArray)eventObject["featureFlags"];
+                Debug.Log("Got feature flags array: " + flagsArray.GetType().Name);
+
+                foreach (JsonObject flag in flagsArray)
+                {
+                    var newFlag = new FeatureFlag();
+                    newFlag.Add(flag.GetDictionary());
+                    Debug.Log("Created Feature Flag: " + newFlag.Name);
+                }
+            }
+
+            if (eventObject.ContainsKey("context"))
+            {
+                Context = eventObject["context"].ToString();
+                Debug.Log("Context set");
+            }
+
+            _user = new User();
+            if (eventObject.ContainsKey("user"))
+            {
+                _user.Add((Dictionary<string, object>)eventObject["user"]);
+                Debug.Log("User set");
+            }
+
+            if (eventObject.ContainsKey("breadcrumbs"))
+            {
+                _breadcrumbs = new List<Breadcrumb>();
+                var crumbsArray = (JsonArray)eventObject["breadcrumbs"];
+                foreach (JsonObject crumb in crumbsArray)
+                {
+                    _breadcrumbs.Add(new Breadcrumb(crumb.GetDictionary()));
+                }
+                var breadcrumbsList = new List<IBreadcrumb>();
+                foreach (var crumb in _breadcrumbs)
+                {
+                    breadcrumbsList.Add(crumb);
+                }
+                Breadcrumbs = new ReadOnlyCollection<IBreadcrumb>(breadcrumbsList);
+            }
+
+            if (eventObject.ContainsKey("groupingHash"))
+            {
+                GroupingHash = eventObject["groupingHash"].ToString();
+            }
+
+            _errors = new List<Error>();
+            var errorsArray = (JsonArray)eventObject["exceptions"];
+            foreach (JsonObject error in errorsArray)
+            {
+                _errors.Add(new Error(error.GetDictionary()));
+            }
+            Errors = new List<IError>();
+            foreach (var error in _errors)
+            {
+                Errors.Add(error);
+            }
 
         }
 

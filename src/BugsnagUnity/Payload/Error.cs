@@ -80,7 +80,13 @@ namespace BugsnagUnity.Payload
         private const string MESSAGE_KEY = "message";
         private const string STACKTRACE_KEY = "stacktrace";
 
-
+        internal Error(Dictionary<string, object> data)
+        {
+            foreach (var item in data)
+            {
+                this.AddToPayload(item.Key, item.Value);
+            }
+        }
 
         internal Error(string errorClass, string message, StackTraceLine[] stackTrace)
           : this(errorClass, message, stackTrace, HandledState.ForHandledException(),false) { }
