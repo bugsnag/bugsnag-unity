@@ -92,7 +92,7 @@ steps:
         download:
           - features/fixtures/maze_runner/build/MacOS-2018.4.36f1.zip
         upload:
-          - maze_output/*
+          - maze_output/**/*
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
@@ -109,7 +109,7 @@ steps:
         download:
           - features/fixtures/maze_runner/build/MacOS-2019.4.35f1.zip
         upload:
-          - maze_output/*
+          - maze_output/**/*
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
@@ -126,7 +126,7 @@ steps:
         download:
           - features/fixtures/maze_runner/build/MacOS-2021.2.11f1.zip
         upload:
-          - maze_output/*
+          - maze_output/**/*
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
@@ -148,7 +148,7 @@ steps:
         download:
           - features/fixtures/maze_runner/build/WebGL-2018.4.36f1.zip
         upload:
-          - maze_output/failed/**/*
+          - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
@@ -165,7 +165,7 @@ steps:
         download:
           - features/fixtures/maze_runner/build/WebGL-2019.4.35f1.zip
         upload:
-          - maze_output/failed/**/*
+          - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
@@ -182,7 +182,7 @@ steps:
         download:
           - features/fixtures/maze_runner/build/WebGL-2021.2.11f1.zip
         upload:
-          - maze_output/failed/**/*
+          - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
@@ -275,7 +275,7 @@ steps:
         download:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
         upload:
-          - "maze_output/failed/**/*"
+          - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
@@ -298,7 +298,7 @@ steps:
         download:
           - "features/fixtures/maze_runner/mazerunner_2019.4.35f1.apk"
         upload:
-          - "maze_output/failed/**/*"
+          - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
@@ -323,7 +323,7 @@ steps:
         download:
           - "features/fixtures/maze_runner/mazerunner_2021.2.11f1.apk"
         upload:
-          - "maze_output/failed/**/*"
+          - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
@@ -505,7 +505,7 @@ steps:
         download:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa"
         upload:
-          - "maze_output/failed/**/*"
+          - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
@@ -529,7 +529,7 @@ steps:
         download:
           - "features/fixtures/maze_runner/mazerunner_2019.4.35f1.ipa"
         upload:
-          - "maze_output/failed/**/*"
+          - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
@@ -553,7 +553,7 @@ steps:
         download:
           - "features/fixtures/maze_runner/mazerunner_2021.2.11f1.ipa"
         upload:
-          - "maze_output/failed/**/*"
+          - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
@@ -643,7 +643,7 @@ steps:
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
-      - maze_output/failed/**/*
+      - maze_output/**/*
 
   - label: Run Windows e2e tests for Unity 2019
     depends_on: 'windows-2019-fixture'
@@ -655,7 +655,7 @@ steps:
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
-      - maze_output/failed/**/*
+      - maze_output/**/*
 
   - label: Run Windows e2e tests for Unity 2021
     depends_on: 'windows-2021-fixture'
@@ -667,4 +667,4 @@ steps:
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
-      - maze_output/failed/**/*
+      - maze_output/**/*
