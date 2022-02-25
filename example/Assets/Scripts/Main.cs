@@ -78,17 +78,6 @@ public class Main : MonoBehaviour
 		ApplicationNotResponding.GetComponent<Button>().onClick.AddListener(OnApplicationNotRespondingClick);
 		OutOfMemory.GetComponent<Button>().onClick.AddListener(OnOutOfMemoryClick);
 		AppHang.GetComponent<Button>().onClick.AddListener(OnAppHangClick);
-		var config = BugsnagSettingsObject.LoadConfiguration();
-		config.AddMetadata("test", "test", "test");
-		config.AddOnSendError((@event)=>
-		{
-			Debug.Log("CALLBACK api test: " + @event.ApiKey);
-			Debug.Log("CALLBACK metadata test: " + @event.GetMetadata("app", "name").ToString());
-			Debug.Log("CALLBACK App test: " + @event.App.Id);
-
-			return true;
-		});
-		Bugsnag.Start(config);
 	}
 
 	private void OnManagedCrashClick()
