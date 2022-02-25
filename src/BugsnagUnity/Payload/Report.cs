@@ -49,7 +49,7 @@ namespace BugsnagUnity.Payload
             Event = new Event(data);
         }
 
-        internal Dictionary<string, object> GetSerialisableDictionary()
+        internal Dictionary<string, object> GetSerialisableEventReport()
         {
             var serialisableReport = new Dictionary<string, object>();
             serialisableReport["id"] = Id;

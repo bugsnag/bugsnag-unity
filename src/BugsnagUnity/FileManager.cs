@@ -114,16 +114,8 @@ namespace BugsnagUnity
             using (var reader = new StreamReader(stream))
             using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
             {
-                // Use a dictionary that breaks out the session from the sessions array due to issues deserialising that array later
-                var serialisableSessionReport = new Dictionary<string, object>
-                {
-                    { "payloadId", sessionReport.Id },
-                    { "app", sessionReport["app"] },
-                    { "device", sessionReport["device"] },
-                    { "notifier", sessionReport["notifier"] },
-                    { "session", ((Dictionary<string, object>[])sessionReport["sessions"])[0] }
-                };
-                SimpleJson.SerializeObject(serialisableSessionReport, writer);
+               
+                SimpleJson.SerializeObject(sessionReport.GetSerialisableSessionReport(), writer);
                 writer.Flush();
                 stream.Position = 0;
                 var jsonString = reader.ReadToEnd();
@@ -144,7 +136,7 @@ namespace BugsnagUnity
             using (var reader = new StreamReader(stream))
             using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
             {
-                SimpleJson.SerializeObject(eventReport.GetSerialisableDictionary(), writer);
+                SimpleJson.SerializeObject(eventReport.GetSerialisableEventReport(), writer);
                 writer.Flush();
                 stream.Position = 0;
                 var jsonString = reader.ReadToEnd();
@@ -159,7 +151,7 @@ namespace BugsnagUnity
             var filesCount = _cachedEvents.Length;
             while (filesCount > _configuration.MaxPersistedEvents)
             {
-                RemoveOldestEvent();
+                RemoveOldestFile(_cachedEvents);
                 filesCount = _cachedEvents.Length;
             }
         }
@@ -169,42 +161,28 @@ namespace BugsnagUnity
             var filesCount = _cachedSessions.Length;
             while(filesCount > _configuration.MaxPersistedSessions)
             {
-                RemoveOldestSession();
+                RemoveOldestFile(_cachedSessions);
                 filesCount = _cachedSessions.Length;
             }
         }
 
-
-        private static void RemoveOldestEvent()
+        private static void RemoveOldestFile(string[] filePaths)
         {
-            var oldestEvent = string.Empty;
+            var oldestFilePath = string.Empty;
             var oldestMillis = default(double);
-            foreach (var cachedEventPath in _cachedEvents)
+            foreach (var filePath in filePaths)
             {
-                var milliesSinceCreated = (DateTime.UtcNow - File.GetCreationTimeUtc(cachedEventPath)).TotalMilliseconds;
+                var milliesSinceCreated = (DateTime.UtcNow - File.GetCreationTimeUtc(filePath)).TotalMilliseconds;
                 if (milliesSinceCreated > oldestMillis)
                 {
                     oldestMillis = milliesSinceCreated;
-                    oldestEvent = cachedEventPath;
+                    oldestFilePath = filePath;
                 }
             }
-            File.Delete(oldestEvent);
-        }
-
-        private static void RemoveOldestSession()
-        {
-            var oldestSession = string.Empty;
-            var oldestMillis = default(double);
-            foreach (var cachedSessionPath in _cachedSessions)
+            if (!string.IsNullOrEmpty(oldestFilePath))
             {
-                var milliesSinceCreated = (DateTime.UtcNow - File.GetCreationTimeUtc(cachedSessionPath)).TotalMilliseconds;
-                if (milliesSinceCreated > oldestMillis)
-                {
-                    oldestMillis = milliesSinceCreated;
-                    oldestSession = cachedSessionPath;
-                }
+                File.Delete(oldestFilePath);
             }
-            File.Delete(oldestSession);
         }
 
         internal static void PayloadSendSuccess(IPayload payload)
