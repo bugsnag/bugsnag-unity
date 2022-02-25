@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -48,6 +49,7 @@ namespace BugsnagUnity
 
         internal static void AddPendingEvent(Report report)
         {
+            RemovePendingEvent(report.Id);
             _pendingEvents.Add(report);
         }
 
@@ -77,21 +79,18 @@ namespace BugsnagUnity
 
         internal static void SendPayloadFailed(IPayload payload)
         {
-            if (!PayloadAlreadyCached(payload.Id))
+            switch (payload.PayloadType)
             {
-                switch (payload.PayloadType)
-                {
-                    case PayloadType.Session:
-                        CacheSession(payload.Id);
-                        break;
-                    case PayloadType.Event:
-                        CacheEvent(payload.Id);
-                        break;
-                }
+                case PayloadType.Session:
+                    CacheSession(payload.Id);
+                    break;
+                case PayloadType.Event:
+                    CacheEvent(payload.Id);
+                    break;
             }
         }
 
-        private static bool PayloadAlreadyCached(string payloadId)
+        private static bool SessionAlreadyCached(string payloadId)
         {
             foreach (var cachedSession in _cachedSessions)
             {
@@ -105,6 +104,10 @@ namespace BugsnagUnity
 
         internal static void CacheSession(string reportId)
         {
+            if (SessionAlreadyCached(reportId))
+            {
+                return;
+            }
             var sessionReport = GetPendingSessionReport(reportId);
             if (sessionReport == null)
             {
@@ -235,19 +238,21 @@ namespace BugsnagUnity
         internal static List<IPayload> GetCachedPayloads()
         {
             var cachedPayloads = new List<IPayload>();
+
+            //Get cached sessions
             foreach (var cachedSessionPath in _cachedSessions)
             {
                 var json = File.ReadAllText(cachedSessionPath);
-                var deserialisedSessionReport = ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary();               
-                var sessionReportFromCachedPayload = new SessionReport(_configuration,deserialisedSessionReport);
+                var sessionReportFromCachedPayload = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
                 cachedPayloads.Add(sessionReportFromCachedPayload);
             }
 
-            foreach (var cachedEventPath in _cachedEvents)
+            //get cached events and run them through on send callbacks
+            var cachedEvents = _cachedEvents.ToList();
+            foreach (var cachedEventPath in cachedEvents)
             {
                 var json = File.ReadAllText(cachedEventPath);
-                var deserialisedEventReport = ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary();
-                var eventReportFromCachedPayload = new Report(_configuration, deserialisedEventReport);
+                var eventReportFromCachedPayload = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
                 var shouldDiscard = false;
                 foreach (var onSendErrorCallback in _configuration.GetOnSendErrorCallbacks())
                 {
@@ -271,6 +276,7 @@ namespace BugsnagUnity
                 }
                 else
                 {
+                    AddPendingEvent(eventReportFromCachedPayload);
                     eventReportFromCachedPayload.ApplyEventPayload();
                     cachedPayloads.Add(eventReportFromCachedPayload);
                 }
@@ -281,6 +287,10 @@ namespace BugsnagUnity
         private static void WriteToDisk(string json, string path)
         {
             CheckForDirectoryCreation();
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
             File.WriteAllText(path, json);
         }
 

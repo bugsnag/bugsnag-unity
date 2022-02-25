@@ -17,17 +17,14 @@ namespace BugsnagUnity.Payload
 
         public string Id { get; set; }
 
-        private string _payloadVersion;
-
         internal Report(Configuration configuration, Event @event)
         {
             Id = Guid.NewGuid().ToString();
             Ignored = false;
             Endpoint = configuration.Endpoints.Notify;
-            _payloadVersion = configuration.PayloadVersion;
             Headers = new[] {
                 new KeyValuePair<string, string>("Bugsnag-Api-Key", @event.ApiKey),
-                new KeyValuePair<string, string>("Bugsnag-Payload-Version", _payloadVersion),
+                new KeyValuePair<string, string>("Bugsnag-Payload-Version", configuration.PayloadVersion),
             };
             Event = @event;
             this.AddToPayload("apiKey", @event.ApiKey);
@@ -42,7 +39,7 @@ namespace BugsnagUnity.Payload
             var apiKey = data["apiKey"].ToString();
             Headers = new[] {
                 new KeyValuePair<string, string>("Bugsnag-Api-Key", apiKey),
-                new KeyValuePair<string, string>("Bugsnag-Payload-Version", data["payloadVersion"].ToString()),
+                new KeyValuePair<string, string>("Bugsnag-Payload-Version", configuration.PayloadVersion),
             };
             this.AddToPayload("apiKey", apiKey);
             this.AddToPayload("notifier", data["notifier"]);
@@ -56,7 +53,6 @@ namespace BugsnagUnity.Payload
             serialisableReport["apiKey"] = Event.ApiKey;
             serialisableReport["notifier"] = NotifierInfo.Instance;
             serialisableReport["event"] = Event.GetEventPayload();
-            serialisableReport["payloadVersion"] = _payloadVersion;
             return serialisableReport;
         }
 
