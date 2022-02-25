@@ -37,6 +37,7 @@ Feature: Unity Persistance
         And I discard the oldest error
         And the event "context" equals "Second Error"
         And the exception "message" equals "Second Event"
+        And I wait for 5 seconds
 
     Scenario: Receive a persisted event with on send callback
         When I run the game in the "PersistEvent" state
@@ -61,6 +62,7 @@ Feature: Unity Persistance
 
         #metadata
         And the event "metaData.Persist.Persist" equals "Persist"
+        And I wait for 5 seconds
 
 
         
