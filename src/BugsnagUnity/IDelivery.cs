@@ -145,9 +145,8 @@ namespace BugsnagUnity
                     Send(payload);
                 }
             }
-            catch(Exception e)
+            catch
             {
-                throw e;
                 // Not possible in unit tests
             }
         }

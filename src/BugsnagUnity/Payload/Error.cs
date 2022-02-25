@@ -84,7 +84,21 @@ namespace BugsnagUnity.Payload
         {
             foreach (var item in data)
             {
-                this.AddToPayload(item.Key, item.Value);
+                if (item.Key == STACKTRACE_KEY)
+                {
+                    var stackArray = (JsonArray)data[STACKTRACE_KEY];
+                    var stackList = new List<IStackframe>();
+                    foreach (JsonObject jsonFrame in stackArray)
+                    {
+                        var newFrame = new StackTraceLine(jsonFrame.GetDictionary());
+                        stackList.Add(newFrame);
+                    }
+                    _stacktrace = stackList;
+                }
+                else
+                {
+                    this.AddToPayload(item.Key, item.Value);
+                }
             }
         }
 

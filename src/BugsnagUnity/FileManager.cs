@@ -49,7 +49,6 @@ namespace BugsnagUnity
         internal static void AddPendingEvent(Report report)
         {
             _pendingEvents.Add(report);
-            Debug.Log("Adding pending event with id: " + report.Id);
         }
 
         private static SessionReport GetPendingSessionReport(string id)
@@ -136,7 +135,6 @@ namespace BugsnagUnity
 
         internal static void CacheEvent(string reportId)
         {
-            Debug.Log("Sending event failed, caching event with id: " + reportId);
             var eventReport = GetPendingEventReport(reportId);
             if (eventReport == null)
             {
@@ -226,8 +224,6 @@ namespace BugsnagUnity
 
         internal static void RemovedCachedEvent(string id)
         {
-            Debug.Log("Removing cached event: " + id);
-
             foreach (var cachedEventPath in _cachedEvents)
             {
                 if (cachedEventPath.Contains(id))
@@ -260,7 +256,6 @@ namespace BugsnagUnity
 
         internal static List<IPayload> GetCachedPayloads()
         {
-            Debug.Log("Get Cached Payloads " + _cachedEvents.Length);
             var cachedPayloads = new List<IPayload>();
             foreach (var cachedSessionPath in _cachedSessions)
             {
@@ -272,12 +267,9 @@ namespace BugsnagUnity
 
             foreach (var cachedEventPath in _cachedEvents)
             {
-                Debug.Log("Got Cached Event: " + cachedEventPath);
-
                 var json = File.ReadAllText(cachedEventPath);
                 var deserialisedEventReport = ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary();
                 var eventReportFromCachedPayload = new Report(_configuration, deserialisedEventReport);
-                Debug.Log("Created event from json with id: " + eventReportFromCachedPayload.Id);
                 var shouldDiscard = false;
                 foreach (var onSendErrorCallback in _configuration.GetOnSendErrorCallbacks())
                 {
@@ -289,9 +281,8 @@ namespace BugsnagUnity
                             break;
                         }
                     }
-                    catch (Exception e)
+                    catch
                     {
-                        Debug.Log("Cached callback exception: " + e.Message);
                         // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
@@ -311,7 +302,6 @@ namespace BugsnagUnity
 
         private static void WriteToDisk(string json, string path)
         {
-            Debug.Log("Writing to disk: " + path);
             CheckForDirectoryCreation();
             File.WriteAllText(path, json);
         }

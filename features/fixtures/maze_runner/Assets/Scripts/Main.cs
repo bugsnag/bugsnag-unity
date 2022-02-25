@@ -157,6 +157,39 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "PersistEvent":
+                config.AutoDetectErrors = true;
+                config.Endpoints = new EndpointConfiguration("https://notify.bugsdnag.com", "https://notify.bugsdnag.com");
+                config.Context = "First Error";
+                break;
+            case "PersistEventReport":
+                config.AutoDetectErrors = true;
+                config.Context = "Second Error";
+               
+                break;
+            case "PersistEventReportCallback":
+                config.AutoDetectErrors = true;
+                config.Context = "Second Error";
+                config.AddOnSendError((@event) => {
+
+                    @event.App.BinaryArch = "Persist BinaryArch";
+
+                    @event.Device.Id = "Persist Id";
+
+                    @event.Errors[0].ErrorClass = "Persist ErrorClass";
+
+                    @event.Errors[0].Stacktrace[0].Method = "Persist Method";
+
+                    foreach (var crumb in @event.Breadcrumbs)
+                    {
+                        crumb.Message = "Persist Message";
+                    }
+
+                    @event.AddMetadata("Persist", new Dictionary<string, object> { { "Persist", "Persist" } });
+
+                    return true;
+                });
+                break;
             case "PersistSession":
                 config.AddOnSession((session)=> {
                     session.App.ReleaseStage = "First Session";
@@ -629,6 +662,11 @@ public class Main : MonoBehaviour
             case "DisableErrorBreadcrumbs":
                 DisableErrorBreadcrumbs();
                 break;
+            case "PersistEvent":
+                throw new Exception("First Event");
+            case "PersistEventReport":
+            case "PersistEventReportCallback":
+                throw new Exception("Second Event");
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":

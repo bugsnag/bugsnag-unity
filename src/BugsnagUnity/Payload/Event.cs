@@ -50,51 +50,38 @@ namespace BugsnagUnity.Payload
         }
 
         internal Event(Dictionary<string, object> serialisedEvent)
-        {
-            Debug.Log("Creating event from Serialised data: " + serialisedEvent.Keys.Count);
-           
+        {        
             ApiKey = serialisedEvent["apiKey"].ToString();
-            Debug.Log("API key set: " + ApiKey);
 
             var eventObject = (Dictionary<string, object>)serialisedEvent["event"];
-            Debug.Log("Got event object: " + eventObject.Keys.Count);
 
             _metadata = new Metadata();
             _metadata.MergeMetadata((Dictionary<string, object>)eventObject["metaData"]);
-            Debug.Log("Merge Metadata complete");
 
             _appWithState = new AppWithState((Dictionary<string, object>)eventObject["app"]);
-            Debug.Log("AppWithState complete");
 
             _deviceWithState = new DeviceWithState((Dictionary<string, object>)eventObject["device"]);
-            Debug.Log("DeviceWithState complete");
 
             _featureFlags = new List<FeatureFlag>();
             if (eventObject.ContainsKey("featureFlags"))
             {
-                Debug.Log("Creating feature flags");
                 var flagsArray = (JsonArray)eventObject["featureFlags"];
-                Debug.Log("Got feature flags array: " + flagsArray.GetType().Name);
-
                 foreach (JsonObject flag in flagsArray)
                 {
                     var newFlag = new FeatureFlag();
                     newFlag.Add(flag.GetDictionary());
-                    Debug.Log("Created Feature Flag: " + newFlag.Name);
                 }
             }
 
             if (eventObject.ContainsKey("context"))
             {
                 Context = eventObject["context"].ToString();
-                Debug.Log("Context set");
             }
 
             _user = new User();
             if (eventObject.ContainsKey("user"))
             {
                 _user.Add((Dictionary<string, object>)eventObject["user"]);
-                Debug.Log("User set");
             }
 
             if (eventObject.ContainsKey("breadcrumbs"))
@@ -122,7 +109,9 @@ namespace BugsnagUnity.Payload
             var errorsArray = (JsonArray)eventObject["exceptions"];
             foreach (JsonObject error in errorsArray)
             {
-                _errors.Add(new Error(error.GetDictionary()));
+                var newError = new Error(error.GetDictionary());
+                _errors.Add(newError);
+
             }
             Errors = new List<IError>();
             foreach (var error in _errors)
@@ -130,6 +119,22 @@ namespace BugsnagUnity.Payload
                 Errors.Add(error);
             }
 
+            if (eventObject.ContainsKey("session"))
+            {
+                Session = new Session();
+                Session.Add((Dictionary<string, object>)eventObject["session"]);
+            }
+
+            if (eventObject.ContainsKey("projectPackages"))
+            {
+                var packagesList = new List<string>();
+                var packagesArray = (JsonArray)eventObject["projectPackages"];
+                foreach (var item in packagesArray)
+                {
+                    packagesList.Add(item.ToString());
+                }
+                _androidProjectPackages = packagesList.ToArray();
+            }
         }
 
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
