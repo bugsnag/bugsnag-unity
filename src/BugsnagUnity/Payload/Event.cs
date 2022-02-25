@@ -68,8 +68,7 @@ namespace BugsnagUnity.Payload
                 var flagsArray = (JsonArray)eventObject["featureFlags"];
                 foreach (JsonObject flag in flagsArray)
                 {
-                    var newFlag = new FeatureFlag();
-                    newFlag.Add(flag.GetDictionary());
+                    _featureFlags.Add(new FeatureFlag(flag.GetDictionary()));
                 }
             }
 

@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+
 namespace BugsnagUnity.Payload
 {
     public class FeatureFlag : PayloadContainer
     {
 
-        internal FeatureFlag() { }
+        internal FeatureFlag(Dictionary<string,object> data)
+        {
+            Add(data);
+        }
 
         public FeatureFlag(string name)
         {
