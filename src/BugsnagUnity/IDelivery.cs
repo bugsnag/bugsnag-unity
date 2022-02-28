@@ -116,12 +116,13 @@ namespace BugsnagUnity
                 {
                     yield return new WaitForEndOfFrame();
                 }
-                if (req.responseCode >= 200 && req.responseCode < 300)
+
+                if (IsSuccess(req.responseCode))
                 {
                     // success!
                     FileManager.PayloadSendSuccess(payload);
                 }
-                else if (req.responseCode >= 500)
+                else if (IsRetryableNow(req.responseCode))
                 {
                     // Something is wrong with the server/connection, retry after a delay
                     DelayBeforeDelivery = true;
@@ -133,6 +134,16 @@ namespace BugsnagUnity
                     FileManager.SendPayloadFailed(payload);
                 }
             }
+        }
+
+        private bool IsSuccess(long code)
+        {
+            return code == 200 || code == 202;
+        }
+
+        private bool IsRetryableNow(long code)
+        {
+            return code >= 500 || code == 408 || code == 429;
         }
 
         public void TrySendingCachedPayloads()
