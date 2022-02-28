@@ -16,24 +16,24 @@ namespace BugsnagUnity
 
         private static Configuration _configuration;
 
-        private static string CacheDirectory
+        private static string _cacheDirectory
         {
             get { return Application.persistentDataPath + "/Bugsnag"; }
         }
 
-        private static string SessionsDirectory
+        private static string _sessionsDirectory
         {
-            get { return CacheDirectory + "/Sessions"; }
+            get { return _cacheDirectory + "/Sessions"; }
         }
 
-        private static string EventsDirectory
+        private static string _eventsDirectory
         {
-            get { return CacheDirectory + "/Events"; }
+            get { return _cacheDirectory + "/Events"; }
         }
 
-        private static string[] _cachedSessions => Directory.GetFiles(SessionsDirectory, "*.session");
+        private static string[] _cachedSessions => Directory.GetFiles(_sessionsDirectory, "*.session");
 
-        private static string[] _cachedEvents => Directory.GetFiles(EventsDirectory, "*.event");
+        private static string[] _cachedEvents => Directory.GetFiles(_eventsDirectory, "*.event");
 
 
         internal static void InitFileManager(Configuration configuration)
@@ -113,7 +113,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            var path = SessionsDirectory + "/" + sessionReport.Id + ".session";
+            var path = _sessionsDirectory + "/" + sessionReport.Id + ".session";
             var data = sessionReport.GetSerialisableSessionReport();
             WriteToDisk(data, path);
             CheckForMaxCachedSessions();
@@ -126,7 +126,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            var path = EventsDirectory + "/" + eventReport.Id + ".event";
+            var path = _eventsDirectory + "/" + eventReport.Id + ".event";
             var data = eventReport.GetSerialisableEventReport();
             WriteToDisk(data,path);
             CheckForMaxCachedEvents();          
@@ -155,9 +155,9 @@ namespace BugsnagUnity
         private static void RemoveOldestFiles(string[] filePaths,int numToRemove)
         {
             var ordered = filePaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
-            for (int i = 0; i < numToRemove; i++)
+            foreach (var file in ordered.Take(numToRemove))
             {
-                File.Delete(ordered[i]);
+                File.Delete(file);
             }
         }
 
@@ -271,21 +271,21 @@ namespace BugsnagUnity
 
 
 
-private static void CheckForDirectoryCreation()
+        private static void CheckForDirectoryCreation()
         {
             try
             {
-                if (!Directory.Exists(CacheDirectory))
+                if (!Directory.Exists(_cacheDirectory))
                 {
-                    Directory.CreateDirectory(CacheDirectory);
+                    Directory.CreateDirectory(_cacheDirectory);
                 }
-                if (!Directory.Exists(SessionsDirectory))
+                if (!Directory.Exists(_sessionsDirectory))
                 {
-                    Directory.CreateDirectory(SessionsDirectory);
+                    Directory.CreateDirectory(_sessionsDirectory);
                 }
-                if (!Directory.Exists(EventsDirectory))
+                if (!Directory.Exists(_eventsDirectory))
                 {
-                    Directory.CreateDirectory(EventsDirectory);
+                    Directory.CreateDirectory(_eventsDirectory);
                 }
             }
             catch

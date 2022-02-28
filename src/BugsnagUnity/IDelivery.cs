@@ -116,39 +116,24 @@ namespace BugsnagUnity
                 {
                     yield return new WaitForEndOfFrame();
                 }
-
-                if (IsSuccess(req.responseCode))
+                var code = req.responseCode;
+                if (code == 200 || code == 202)
                 {
                     // success!
                     FileManager.PayloadSendSuccess(payload);
                 }
-                else if (IsRetryableNow(req.responseCode))
+                else if (code >= 500 || code == 408 || code == 429)
                 {
                     // Something is wrong with the server/connection, retry after a delay
                     DelayBeforeDelivery = true;
                     Send(payload);
                 }
-                else if(ShouldCache(req.responseCode))
+                else if (req.isNetworkError || code < 400)
                 {
                     // sending failed, cache payload to disk
                     FileManager.SendPayloadFailed(payload);
                 }
             }
-        }
-
-        private bool IsSuccess(long code)
-        {
-            return code == 200 || code == 202;
-        }
-
-        private bool IsRetryableNow(long code)
-        {
-            return code >= 500 || code == 408 || code == 429;
-        }
-
-        private bool ShouldCache(long code)
-        {
-            return code < 400;
         }
 
         public void TrySendingCachedPayloads()
