@@ -61,7 +61,7 @@ Feature: Unity Persistance
         And the event "breadcrumbs.0.name" equals "Persist Message"
 
         #metadata
-        And the event "metaData.Persist.Persist" equals "Persist"
+        And the event "metaData.Persist Section.Persist Key" equals "Persist Value"
         And I wait for 5 seconds
 
 

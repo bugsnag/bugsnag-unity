@@ -185,7 +185,7 @@ public class Main : MonoBehaviour
                         crumb.Message = "Persist Message";
                     }
 
-                    @event.AddMetadata("Persist", new Dictionary<string, object> { { "Persist", "Persist" } });
+                    @event.AddMetadata("Persist Section", new Dictionary<string, object> { { "Persist Key", "Persist Value" } });
 
                     return true;
                 });
