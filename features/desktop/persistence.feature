@@ -1,4 +1,4 @@
-Feature: Unity Persistance
+Feature: Unity Persistence
 
     @skip_webgl
     Scenario: Receive a persisted session mac and windows
