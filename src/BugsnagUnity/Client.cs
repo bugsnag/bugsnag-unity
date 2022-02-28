@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
@@ -51,6 +52,8 @@ namespace BugsnagUnity
 
         public Client(INativeClient nativeClient)
         {
+            UnityEngine.Debug.Log("WHAAAAAATTTTT");
+
             NativeClient = nativeClient;
             FileManager.InitFileManager(nativeClient.Configuration);
             MainThread = Thread.CurrentThread;
@@ -66,7 +69,28 @@ namespace BugsnagUnity
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
+            UnityEngine.Debug.Log("1");
+
             Delivery.TrySendingCachedPayloads();
+            UnityEngine.Debug.Log("2");
+
+            ListenForUnobservedTaskExceptions();
+        }
+
+        private void ListenForUnobservedTaskExceptions()
+        {
+            UnityEngine.Debug.Log("ListenForUnobservedTaskExceptions");
+
+            if (Configuration.AutoDetectErrors && Configuration.EnabledErrorTypes.UnityLog)
+            {
+                UnityEngine.Debug.Log("Should set listener");
+
+                TaskScheduler.UnobservedTaskException += (sender, args) =>
+                {
+                    UnityEngine.Debug.Log("Should Notify");
+                    Notify(args.Exception);
+                };
+            }
         }
 
         private void InitFeatureFlags()
@@ -224,6 +248,8 @@ namespace BugsnagUnity
         /// <param name="logType"></param>
         void Notify(string condition, string stackTrace, LogType logType)
         {
+            UnityEngine.Debug.Log("Notify");
+
             if (!Configuration.EnabledErrorTypes.UnityLog)
             {
                 return;

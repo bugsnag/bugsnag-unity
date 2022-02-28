@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using BugsnagUnity;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
+using System.Threading.Tasks;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -65,7 +66,7 @@ public class Main : MonoBehaviour
 
 	void Start()
 	{
-		ManagedCrash.GetComponent<Button>().onClick.AddListener(OnManagedCrashClick);
+		ManagedCrash.GetComponent<Button>().onClick.AddListener(DoTest);
 		BugsnagNotify.GetComponent<Button>().onClick.AddListener(OnBugsnagNotifyClick);
 		LogException.GetComponent<Button>().onClick.AddListener(OnLogExceptionClick);
 		LogError.GetComponent<Button>().onClick.AddListener(OnLogErrorClick);
@@ -78,6 +79,26 @@ public class Main : MonoBehaviour
 		ApplicationNotResponding.GetComponent<Button>().onClick.AddListener(OnApplicationNotRespondingClick);
 		OutOfMemory.GetComponent<Button>().onClick.AddListener(OnOutOfMemoryClick);
 		AppHang.GetComponent<Button>().onClick.AddListener(OnAppHangClick);
+	}
+
+	public async void DoTest()
+	{
+		var t = new Task(delegate {
+			Debug.Log("hello");
+			TaskScheduler.UnobservedTaskException += (sender, args) =>
+			{
+				Debug.Log("UnobservedTaskException");
+			};
+			DoStuff();
+			GC.Collect();
+		});
+		t.Start();
+	}
+
+	async Task DoStuff()
+	{
+		await Task.Delay(100);
+		throw new Exception();
 	}
 
 	private void OnManagedCrashClick()
