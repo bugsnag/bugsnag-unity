@@ -159,7 +159,7 @@ public class Main : MonoBehaviour
         {
             case "PersistEvent":
                 config.AutoDetectErrors = true;
-                config.Endpoints = new EndpointConfiguration("https://notify.bugsdnag.com", "https://notify.bugsdnag.com");
+                config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
                 config.Context = "First Error";
                 break;
             case "PersistEventReport":
