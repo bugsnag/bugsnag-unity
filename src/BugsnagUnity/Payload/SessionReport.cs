@@ -45,14 +45,14 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("app", cachedReport.Get("app"));
             this.AddToPayload("device", cachedReport.Get("device"));
             this.AddToPayload("sessions", cachedReport.Get("sessions"));
-            Id = cachedReport["payloadId"].ToString();
+            Id = cachedReport["id"].ToString();
         }
 
         public Dictionary<string, object> GetSerialisableSessionReport()
         {
             var serialisableSessionReport = new Dictionary<string, object>
                 {
-                    { "payloadId", Id },
+                    { "id", Id },
                     { "app", this["app"] },
                     { "device", this["device"] },
                     { "notifier", this["notifier"] },
