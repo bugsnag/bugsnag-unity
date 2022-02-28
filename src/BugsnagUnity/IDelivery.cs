@@ -128,7 +128,7 @@ namespace BugsnagUnity
                     DelayBeforeDelivery = true;
                     Send(payload);
                 }
-                else
+                else if(ShouldCache(req.responseCode))
                 {
                     // sending failed, cache payload to disk
                     FileManager.SendPayloadFailed(payload);
@@ -144,6 +144,11 @@ namespace BugsnagUnity
         private bool IsRetryableNow(long code)
         {
             return code >= 500 || code == 408 || code == 429;
+        }
+
+        private bool ShouldCache(long code)
+        {
+            return code < 400;
         }
 
         public void TrySendingCachedPayloads()
