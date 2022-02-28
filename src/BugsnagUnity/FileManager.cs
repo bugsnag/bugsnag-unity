@@ -113,19 +113,10 @@ namespace BugsnagUnity
             {
                 return;
             }
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
-            {
-               
-                SimpleJson.SerializeObject(sessionReport.GetSerialisableSessionReport(), writer);
-                writer.Flush();
-                stream.Position = 0;
-                var jsonString = reader.ReadToEnd();
-                var path = SessionsDirectory + "/" + sessionReport.Id + ".session";
-                WriteToDisk(jsonString,path);
-                CheckForMaxCachedSessions();
-            }
+            var path = SessionsDirectory + "/" + sessionReport.Id + ".session";
+            var data = sessionReport.GetSerialisableSessionReport();
+            WriteToDisk(data, path);
+            CheckForMaxCachedSessions();
         }
 
         internal static void CacheEvent(string reportId)
@@ -135,18 +126,10 @@ namespace BugsnagUnity
             {
                 return;
             }
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
-            {
-                SimpleJson.SerializeObject(eventReport.GetSerialisableEventReport(), writer);
-                writer.Flush();
-                stream.Position = 0;
-                var jsonString = reader.ReadToEnd();
-                var path = EventsDirectory + "/" + eventReport.Id + ".event";
-                WriteToDisk(jsonString, path);
-                CheckForMaxCachedEvents();
-            }
+            var path = EventsDirectory + "/" + eventReport.Id + ".event";
+            var data = eventReport.GetSerialisableEventReport();
+            WriteToDisk(data,path);
+            CheckForMaxCachedEvents();          
         }
 
         private static void CheckForMaxCachedEvents()
@@ -154,7 +137,7 @@ namespace BugsnagUnity
             var filesCount = _cachedEvents.Length;
             while (filesCount > _configuration.MaxPersistedEvents)
             {
-                RemoveOldestFile(_cachedEvents);
+                RemoveOldestFiles(_cachedEvents, filesCount - _configuration.MaxPersistedEvents);
                 filesCount = _cachedEvents.Length;
             }
         }
@@ -164,27 +147,17 @@ namespace BugsnagUnity
             var filesCount = _cachedSessions.Length;
             while(filesCount > _configuration.MaxPersistedSessions)
             {
-                RemoveOldestFile(_cachedSessions);
+                RemoveOldestFiles(_cachedSessions, filesCount - _configuration.MaxPersistedSessions);
                 filesCount = _cachedSessions.Length;
             }
         }
 
-        private static void RemoveOldestFile(string[] filePaths)
+        private static void RemoveOldestFiles(string[] filePaths,int numToRemove)
         {
-            var oldestFilePath = string.Empty;
-            var oldestMillis = default(double);
-            foreach (var filePath in filePaths)
+            var ordered = filePaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+            for (int i = 0; i < numToRemove; i++)
             {
-                var milliesSinceCreated = (DateTime.UtcNow - File.GetCreationTimeUtc(filePath)).TotalMilliseconds;
-                if (milliesSinceCreated > oldestMillis)
-                {
-                    oldestMillis = milliesSinceCreated;
-                    oldestFilePath = filePath;
-                }
-            }
-            if (!string.IsNullOrEmpty(oldestFilePath))
-            {
-                File.Delete(oldestFilePath);
+                File.Delete(ordered[i]);
             }
         }
 
@@ -194,16 +167,16 @@ namespace BugsnagUnity
             {
                 case PayloadType.Session:
                     RemovePendingSession(payload.Id);
-                    RemovedCachedSession(payload.Id);
+                    RemoveCachedSession(payload.Id);
                     break;
                 case PayloadType.Event:
-                    RemovedCachedEvent(payload.Id);
+                    RemoveCachedEvent(payload.Id);
                     RemovePendingEvent(payload.Id);
                     break;
             }
         }
 
-        internal static void RemovedCachedEvent(string id)
+        internal static void RemoveCachedEvent(string id)
         {
             foreach (var cachedEventPath in _cachedEvents)
             {
@@ -219,7 +192,7 @@ namespace BugsnagUnity
             _pendingEvents.RemoveAll(item => item.Id == id);
         }
 
-        internal static void RemovedCachedSession(string id)
+        internal static void RemoveCachedSession(string id)
         {
             foreach (var cachedSessionPath in _cachedSessions)
             {
@@ -271,7 +244,7 @@ namespace BugsnagUnity
                 }
                 if (shouldDiscard)
                 {
-                    RemovedCachedEvent(eventReportFromCachedPayload.Id);
+                    RemoveCachedEvent(eventReportFromCachedPayload.Id);
                     RemovePendingEvent(eventReportFromCachedPayload.Id);
                 }
                 else
@@ -284,17 +257,21 @@ namespace BugsnagUnity
             return cachedPayloads;
         }
 
-        private static void WriteToDisk(string json, string path)
+        private static void WriteToDisk(Dictionary<string,object> data, string path)
         {
             CheckForDirectoryCreation();
             if (File.Exists(path))
             {
                 File.Delete(path);
             }
-            File.WriteAllText(path, json);
+            using var fileStream = File.Create(path);
+            using var writer = new StreamWriter(fileStream, new UTF8Encoding(false)) { AutoFlush = false };
+            SimpleJson.SerializeObject(data, writer);
         }
 
-        private static void CheckForDirectoryCreation()
+
+
+private static void CheckForDirectoryCreation()
         {
             try
             {
