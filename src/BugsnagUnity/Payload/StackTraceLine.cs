@@ -130,6 +130,13 @@ namespace BugsnagUnity.Payload
             }
             this.AddToPayload("method", methodName);
         }
+        internal StackTraceLine(Dictionary<string, object> data)
+        {
+            foreach (var item in data)
+            {
+                this.AddToPayload(item.Key, item.Value);
+            }
+        }
 
         public string File
         {

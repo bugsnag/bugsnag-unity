@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -11,20 +12,29 @@ namespace BugsnagUnity
 
         private static List<SessionReport> _pendingSessions = new List<SessionReport>();
 
-        private static string CacheDirectory
+        private static List<Report> _pendingEvents = new List<Report>();
+
+        private static Configuration _configuration;
+
+        private static string _cacheDirectory
         {
             get { return Application.persistentDataPath + "/Bugsnag"; }
         }
 
-        private static Configuration _configuration;
-
-
-        private static string SessionsDirectory
+        private static string _sessionsDirectory
         {
-            get { return CacheDirectory + "/Sessions"; }
+            get { return _cacheDirectory + "/Sessions"; }
         }
 
-        private static string[] _cachedSessions => Directory.GetFiles(SessionsDirectory, "*.session");
+        private static string _eventsDirectory
+        {
+            get { return _cacheDirectory + "/Events"; }
+        }
+
+        private static string[] _cachedSessions => Directory.GetFiles(_sessionsDirectory, "*.session");
+
+        private static string[] _cachedEvents => Directory.GetFiles(_eventsDirectory, "*.event");
+
 
         internal static void InitFileManager(Configuration configuration)
         {
@@ -35,6 +45,12 @@ namespace BugsnagUnity
         internal static void AddPendingSession(SessionReport sessionReport)
         {
             _pendingSessions.Add(sessionReport);
+        }
+
+        internal static void AddPendingEvent(Report report)
+        {
+            RemovePendingEvent(report.Id);
+            _pendingEvents.Add(report);
         }
 
         private static SessionReport GetPendingSessionReport(string id)
@@ -49,22 +65,32 @@ namespace BugsnagUnity
             return null;
         }
 
+        private static Report GetPendingEventReport(string id)
+        {
+            foreach (var report in _pendingEvents)
+            {
+                if (report.Id.Equals(id))
+                {
+                    return report;
+                }
+            }
+            return null;
+        }
+
         internal static void SendPayloadFailed(IPayload payload)
         {
-            if (!PayloadAlreadyCached(payload.Id))
+            switch (payload.PayloadType)
             {
-                switch (payload.PayloadType)
-                {
-                    case PayloadType.Session:
-                        CacheSession(payload.Id);
-                        break;
-                    case PayloadType.Event:
-                        break;
-                }
+                case PayloadType.Session:
+                    CacheSession(payload.Id);
+                    break;
+                case PayloadType.Event:
+                    CacheEvent(payload.Id);
+                    break;
             }
         }
 
-        private static bool PayloadAlreadyCached(string payloadId)
+        private static bool SessionAlreadyCached(string payloadId)
         {
             foreach (var cachedSession in _cachedSessions)
             {
@@ -78,31 +104,41 @@ namespace BugsnagUnity
 
         internal static void CacheSession(string reportId)
         {
+            if (SessionAlreadyCached(reportId))
+            {
+                return;
+            }
             var sessionReport = GetPendingSessionReport(reportId);
             if (sessionReport == null)
             {
                 return;
             }
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+            var path = _sessionsDirectory + "/" + sessionReport.Id + ".session";
+            var data = sessionReport.GetSerialisableSessionReport();
+            WriteToDisk(data, path);
+            CheckForMaxCachedSessions();
+        }
+
+        internal static void CacheEvent(string reportId)
+        {
+            var eventReport = GetPendingEventReport(reportId);
+            if (eventReport == null)
             {
-                // Use a dictionary that breaks out the session from the sessions array due to issues deserialising that array later
-                var serialisableSessionReport = new Dictionary<string, object>
-                {
-                    { "payloadId", sessionReport.Id },
-                    { "app", sessionReport["app"] },
-                    { "device", sessionReport["device"] },
-                    { "notifier", sessionReport["notifier"] },
-                    { "session", ((Dictionary<string, object>[])sessionReport["sessions"])[0] }
-                };
-                SimpleJson.SerializeObject(serialisableSessionReport, writer);
-                writer.Flush();
-                stream.Position = 0;
-                var jsonString = reader.ReadToEnd();
-                var path = SessionsDirectory + "/" + sessionReport.Id + ".session";
-                WriteToDisk(jsonString,path);
-                CheckForMaxCachedSessions();
+                return;
+            }
+            var path = _eventsDirectory + "/" + eventReport.Id + ".event";
+            var data = eventReport.GetSerialisableEventReport();
+            WriteToDisk(data,path);
+            CheckForMaxCachedEvents();          
+        }
+
+        private static void CheckForMaxCachedEvents()
+        {
+            var filesCount = _cachedEvents.Length;
+            while (filesCount > _configuration.MaxPersistedEvents)
+            {
+                RemoveOldestFiles(_cachedEvents, filesCount - _configuration.MaxPersistedEvents);
+                filesCount = _cachedEvents.Length;
             }
         }
 
@@ -111,25 +147,18 @@ namespace BugsnagUnity
             var filesCount = _cachedSessions.Length;
             while(filesCount > _configuration.MaxPersistedSessions)
             {
-                RemoveOldestSession();
+                RemoveOldestFiles(_cachedSessions, filesCount - _configuration.MaxPersistedSessions);
                 filesCount = _cachedSessions.Length;
             }
         }
 
-        private static void RemoveOldestSession()
+        private static void RemoveOldestFiles(string[] filePaths,int numToRemove)
         {
-            var oldestSession = string.Empty;
-            var oldestMillis = default(double);
-            foreach (var cachedSessionPath in _cachedSessions)
+            var ordered = filePaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+            foreach (var file in ordered.Take(numToRemove))
             {
-                var milliesSinceCreated = (DateTime.UtcNow - File.GetCreationTimeUtc(cachedSessionPath)).TotalMilliseconds;
-                if (milliesSinceCreated > oldestMillis)
-                {
-                    oldestMillis = milliesSinceCreated;
-                    oldestSession = cachedSessionPath;
-                }
+                File.Delete(file);
             }
-            File.Delete(oldestSession);
         }
 
         internal static void PayloadSendSuccess(IPayload payload)
@@ -138,14 +167,32 @@ namespace BugsnagUnity
             {
                 case PayloadType.Session:
                     RemovePendingSession(payload.Id);
-                    RemovedCachedSession(payload.Id);
+                    RemoveCachedSession(payload.Id);
                     break;
                 case PayloadType.Event:
+                    RemoveCachedEvent(payload.Id);
+                    RemovePendingEvent(payload.Id);
                     break;
             }
         }
 
-        internal static void RemovedCachedSession(string id)
+        internal static void RemoveCachedEvent(string id)
+        {
+            foreach (var cachedEventPath in _cachedEvents)
+            {
+                if (cachedEventPath.Contains(id))
+                {
+                    File.Delete(cachedEventPath);
+                }
+            }
+        }
+
+        private static void RemovePendingEvent(string id)
+        {
+            _pendingEvents.RemoveAll(item => item.Id == id);
+        }
+
+        internal static void RemoveCachedSession(string id)
         {
             foreach (var cachedSessionPath in _cachedSessions)
             {
@@ -164,33 +211,81 @@ namespace BugsnagUnity
         internal static List<IPayload> GetCachedPayloads()
         {
             var cachedPayloads = new List<IPayload>();
+
+            //Get cached sessions
             foreach (var cachedSessionPath in _cachedSessions)
             {
                 var json = File.ReadAllText(cachedSessionPath);
-                var deserialisedSessionReport = ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary();               
-                var sessionReportFromCachedPayload = new SessionReport(_configuration,deserialisedSessionReport);
+                var sessionReportFromCachedPayload = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
                 cachedPayloads.Add(sessionReportFromCachedPayload);
+            }
+
+            //get cached events and run them through on send callbacks
+            var cachedEvents = _cachedEvents.ToList();
+            foreach (var cachedEventPath in cachedEvents)
+            {
+                var json = File.ReadAllText(cachedEventPath);
+                var eventReportFromCachedPayload = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
+                var shouldDiscard = false;
+                foreach (var onSendErrorCallback in _configuration.GetOnSendErrorCallbacks())
+                {
+                    try
+                    {
+                        if (!onSendErrorCallback.Invoke(eventReportFromCachedPayload.Event))
+                        {
+                            shouldDiscard = true;
+                            break;
+                        }
+                    }
+                    catch
+                    {
+                        // If the callback causes an exception, ignore it and execute the next one
+                    }
+                }
+                if (shouldDiscard)
+                {
+                    RemoveCachedEvent(eventReportFromCachedPayload.Id);
+                    RemovePendingEvent(eventReportFromCachedPayload.Id);
+                }
+                else
+                {
+                    AddPendingEvent(eventReportFromCachedPayload);
+                    eventReportFromCachedPayload.ApplyEventPayload();
+                    cachedPayloads.Add(eventReportFromCachedPayload);
+                }
             }
             return cachedPayloads;
         }
 
-        private static void WriteToDisk(string json, string path)
+        private static void WriteToDisk(Dictionary<string,object> data, string path)
         {
             CheckForDirectoryCreation();
-            File.WriteAllText(path, json);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+            using var fileStream = File.Create(path);
+            using var writer = new StreamWriter(fileStream, new UTF8Encoding(false)) { AutoFlush = false };
+            SimpleJson.SerializeObject(data, writer);
         }
+
+
 
         private static void CheckForDirectoryCreation()
         {
             try
             {
-                if (!Directory.Exists(CacheDirectory))
+                if (!Directory.Exists(_cacheDirectory))
                 {
-                    Directory.CreateDirectory(CacheDirectory);
+                    Directory.CreateDirectory(_cacheDirectory);
                 }
-                if (!Directory.Exists(SessionsDirectory))
+                if (!Directory.Exists(_sessionsDirectory))
                 {
-                    Directory.CreateDirectory(SessionsDirectory);
+                    Directory.CreateDirectory(_sessionsDirectory);
+                }
+                if (!Directory.Exists(_eventsDirectory))
+                {
+                    Directory.CreateDirectory(_eventsDirectory);
                 }
             }
             catch
