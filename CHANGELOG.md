@@ -4,7 +4,8 @@
 
 ### Enhancements
 
-* Added event and session persistence for Windows and WebGL builds [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509)
+* Added event, session and device id persistence for Windows and WebGL builds [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509) [#514](https://github.com/bugsnag/bugsnag-unity/pull/514)
+
 
 ## 6.1.0 (2022-02-08)
 
