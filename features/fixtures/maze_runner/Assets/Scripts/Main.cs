@@ -443,6 +443,8 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "PersistDeviceId":
+                throw new Exception("PersistDeviceId");
             case "FeatureFlagsAfterInitClearAll":
                 Bugsnag.AddFeatureFlag("testName1", "testVariant1");
                 Bugsnag.AddFeatureFlag("testName2", "testVariant1");

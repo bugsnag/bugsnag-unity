@@ -35,6 +35,49 @@ namespace BugsnagUnity
 
         private static string[] _cachedEvents => Directory.GetFiles(_eventsDirectory, "*.event");
 
+        private static string _deviceIdFile = _cacheDirectory + "/deviceId.txt";
+
+        [Serializable]
+        private class DeviceIdModel
+        {
+            public string DeviceId;
+        }
+
+        internal static string GetDeviceId()
+        {
+            try
+            {
+                var deviceId = string.Empty;
+                if (File.Exists(_deviceIdFile))
+                {
+
+                    var deviceIdStore = JsonUtility.FromJson<DeviceIdModel>(File.ReadAllText(_deviceIdFile));
+                    deviceId = deviceIdStore.DeviceId;
+                }
+                if (string.IsNullOrEmpty(deviceId) && _configuration.GenerateAnonymousId)
+                {
+                    deviceId = Guid.NewGuid().ToString();
+                    StoreDeviceId(deviceId);
+                }
+                return deviceId;
+            }
+            catch
+            {
+                // not possible in unit tests
+                return string.Empty;
+            }
+           
+        }
+
+        private static void StoreDeviceId(string deviceId)
+        {
+            var model = new DeviceIdModel()
+            {
+                DeviceId = deviceId
+            };
+            var json = JsonUtility.ToJson(model);
+            File.WriteAllText(_deviceIdFile, json);
+        }
 
         internal static void InitFileManager(Configuration configuration)
         {

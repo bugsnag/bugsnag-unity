@@ -137,7 +137,7 @@ namespace BugsnagUnity
             else
             {
                 // otherwise create one
-                _cachedUser = new User { Id = SystemInfo.deviceUniqueIdentifier };
+                _cachedUser = new User { Id = FileManager.GetDeviceId() };
                 // see if a native user is avaliable
                 NativeClient.PopulateUser(_cachedUser);
             }

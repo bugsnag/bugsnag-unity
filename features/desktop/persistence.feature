@@ -64,5 +64,17 @@ Feature: Unity Persistence
         And the event "metaData.Persist Section.Persist Key" equals "Persist Value"
         And I wait for 5 seconds
 
+    Scenario: Persist Device Id
+        When I run the game in the "PersistDeviceId" state
+        And I wait to receive an error
+        And the exception "message" equals "PersistDeviceId"
+        And the error payload field "events.0.device.id" is stored as the value "device_id"
+        And the error payload field "events.0.user.id" equals the stored value "device_id"
+        And I discard the oldest error
+        And I run the game in the "PersistDeviceId" state
+        And I wait to receive an error
+        And the exception "message" equals "PersistDeviceId"   
+        And the error payload field "events.0.device.id" equals the stored value "device_id"
+        And the error payload field "events.0.user.id" equals the stored value "device_id"
 
         
