@@ -8,7 +8,7 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
     commands:
@@ -30,7 +30,7 @@ steps:
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
     commands:
@@ -52,7 +52,7 @@ steps:
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
     commands:
@@ -76,7 +76,7 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/MacOS-2018.4.36f1.zip
         upload:
@@ -90,7 +90,7 @@ steps:
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/MacOS-2019.4.35f1.zip
         upload:
@@ -104,7 +104,7 @@ steps:
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/MacOS-2021.2.11f1.zip
         upload:
@@ -125,7 +125,7 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/WebGL-2018.4.36f1.zip
         upload:
@@ -141,7 +141,7 @@ steps:
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/WebGL-2019.4.35f1.zip
         upload:
@@ -157,7 +157,7 @@ steps:
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/WebGL-2021.2.11f1.zip
         upload:
@@ -175,7 +175,7 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -196,7 +196,7 @@ steps:
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -217,7 +217,7 @@ steps:
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -240,7 +240,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
         upload:
@@ -262,7 +262,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2019.4.35f1.apk"
         upload:
@@ -286,7 +286,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2021.2.11f1.apk"
         upload:
@@ -312,7 +312,7 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -334,7 +334,7 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2018.tgz
@@ -357,7 +357,7 @@ steps:
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -379,7 +379,7 @@ steps:
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2019.tgz
@@ -402,7 +402,7 @@ steps:
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -424,7 +424,7 @@ steps:
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2021.tgz
@@ -449,7 +449,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa"
         upload:
@@ -472,7 +472,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2019.4.35f1.ipa"
         upload:
@@ -495,7 +495,7 @@ steps:
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2021.2.11f1.ipa"
         upload:
