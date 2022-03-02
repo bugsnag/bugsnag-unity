@@ -134,11 +134,13 @@ steps:
   #
   # Run WebGL tests
   #
+  # Note: These are run on Intel due to an issue with persistence with Firefox on ARM.
+  #
   - label: Run WebGL e2e tests for Unity 2018
     depends_on: 'cocoa-webgl-2018-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -154,7 +156,7 @@ steps:
     depends_on: 'cocoa-webgl-2019-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -170,7 +172,7 @@ steps:
     depends_on: 'cocoa-webgl-2021-fixtures'
     timeout_in_minutes: 30
     agents:
-      queue: opensource-arm-mac-cocoa-12
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
