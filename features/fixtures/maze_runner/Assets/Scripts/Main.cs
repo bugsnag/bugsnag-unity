@@ -8,6 +8,7 @@ using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -669,6 +670,9 @@ public class Main : MonoBehaviour
             case "PersistEventReport":
             case "PersistEventReportCallback":
                 throw new Exception("Second Event");
+            case "ClearBugsnagCache":
+                ClearBugsnagCache();
+                break;
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":
@@ -679,6 +683,14 @@ public class Main : MonoBehaviour
         }
     }
 
+    private void ClearBugsnagCache()
+    {
+        var path = Application.persistentDataPath + "/Bugsnag";
+        if(Directory.Exists(path))
+        {
+            Directory.Delete(path, true);
+        }
+    }
 
     private void DisableErrorBreadcrumbs()
     {
