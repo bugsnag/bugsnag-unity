@@ -1,3 +1,7 @@
+timeout_in_minutes: 30
+agents:
+  queue: opensource-arm-mac-cocoa-12
+
 steps:
 
   # Build MacOS and WebGL test fixtures
