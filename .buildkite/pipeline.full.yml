@@ -5,9 +5,6 @@ steps:
   - label: Build Unity 2018 MacOS and WebGL test fixtures
     key: 'cocoa-webgl-2018-fixtures'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -30,9 +27,6 @@ steps:
   - label: Build Unity 2019 MacOS and WebGL test fixtures
     key: 'cocoa-webgl-2019-fixtures'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -55,9 +49,6 @@ steps:
   - label: Build Unity 2021 MacOS and WebGL test fixtures
     key: 'cocoa-webgl-2021-fixtures'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
@@ -82,9 +73,6 @@ steps:
   #
   - label: Run MacOS e2e tests for Unity 2018
     depends_on: 'cocoa-webgl-2018-fixtures'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -99,9 +87,6 @@ steps:
 
   - label: Run MacOS e2e tests for Unity 2019
     depends_on: 'cocoa-webgl-2019-fixtures'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -116,9 +101,6 @@ steps:
 
   - label: Run MacOS e2e tests for Unity 2021
     depends_on: 'cocoa-webgl-2021-fixtures'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
@@ -138,7 +120,6 @@ steps:
   #
   - label: Run WebGL e2e tests for Unity 2018
     depends_on: 'cocoa-webgl-2018-fixtures'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-11
     env:
@@ -155,7 +136,6 @@ steps:
 
   - label: Run WebGL e2e tests for Unity 2019
     depends_on: 'cocoa-webgl-2019-fixtures'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-11
     env:
@@ -172,7 +152,6 @@ steps:
 
   - label: Run WebGL e2e tests for Unity 2021
     depends_on: 'cocoa-webgl-2021-fixtures'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-11
     env:
@@ -193,9 +172,6 @@ steps:
   - label: ':android: Build Android test fixture for Unity 2018'
     key: 'build-android-fixture-2018'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -217,9 +193,6 @@ steps:
   - label: ':android: Build Android test fixture for Unity 2019'
     key: 'build-android-fixture-2019'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -241,9 +214,6 @@ steps:
   - label: ':android: Build Android test fixture for Unity 2021'
     key: 'build-android-fixture-2021'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
@@ -267,7 +237,6 @@ steps:
   #
   - label: ':android: Run Android e2e tests for Unity 2018'
     depends_on: 'build-android-fixture-2018'
-    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
@@ -290,7 +259,6 @@ steps:
 
   - label: ':android: Run Android e2e tests for Unity 2019'
     depends_on: 'build-android-fixture-2019'
-    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
@@ -315,7 +283,6 @@ steps:
   - label: ':android: Run Android e2e tests for Unity 2021'
     skip: Pending PLAT-7967
     depends_on: 'build-android-fixture-2021'
-    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
@@ -342,9 +309,6 @@ steps:
   - label: ':ios: Generate Xcode project - Unity 2018'
     key: 'generate-fixture-project-2018'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -367,9 +331,6 @@ steps:
   - label: ':ios: Build iOS test fixture for Unity 2018'
     key: 'build-ios-fixture-2018'
     depends_on: 'generate-fixture-project-2018'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -393,9 +354,6 @@ steps:
   - label: ':ios: Generate Xcode project - Unity 2019'
     key: 'generate-fixture-project-2019'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -418,9 +376,6 @@ steps:
   - label: ':ios: Build iOS test fixture for Unity 2019'
     key: 'build-ios-fixture-2019'
     depends_on: 'generate-fixture-project-2019'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -444,9 +399,6 @@ steps:
   - label: ':ios: Generate Xcode project - Unity 2021'
     key: 'generate-fixture-project-2021'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
@@ -469,9 +421,6 @@ steps:
   - label: ':ios: Build iOS test fixture for Unity 2021'
     key: 'build-ios-fixture-2021'
     depends_on: 'generate-fixture-project-2021'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2021.2.11f1"
     plugins:
@@ -497,7 +446,6 @@ steps:
   #
   - label: ':ios: Run iOS e2e tests for Unity 2018'
     depends_on: 'build-ios-fixture-2018'
-    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
@@ -521,7 +469,6 @@ steps:
 
   - label: ':ios: Run iOS e2e tests for Unity 2019'
     depends_on: 'build-ios-fixture-2019'
-    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
@@ -545,7 +492,6 @@ steps:
 
   - label: ':ios: Run iOS e2e tests for Unity 2021'
     depends_on: 'build-ios-fixture-2021'
-    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
@@ -573,7 +519,6 @@ steps:
   - label: Build Unity 2018 Windows test fixture
     key: 'windows-2018-fixture'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
@@ -593,7 +538,6 @@ steps:
   - label: Build Unity 2019 Windows test fixture
     key: 'windows-2019-fixture'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
@@ -613,7 +557,6 @@ steps:
   - label: Build Unity 2021 Windows test fixture
     key: 'windows-2021-fixture'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
@@ -635,7 +578,6 @@ steps:
   #
   - label: Run Windows e2e tests for Unity 2018
     depends_on: 'windows-2018-fixture'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
@@ -647,7 +589,6 @@ steps:
 
   - label: Run Windows e2e tests for Unity 2019
     depends_on: 'windows-2019-fixture'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
@@ -659,7 +600,6 @@ steps:
 
   - label: Run Windows e2e tests for Unity 2021
     depends_on: 'windows-2021-fixture'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
