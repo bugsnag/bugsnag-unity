@@ -1,3 +1,7 @@
+timeout_in_minutes: 30
+agents:
+  queue: opensource-arm-mac-cocoa-12
+
 steps:
 
   #
@@ -5,9 +9,6 @@ steps:
   #
   - label: Build notifier artifacts
     key: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2018.4.36f1"
     commands:
@@ -22,13 +23,10 @@ steps:
   - label: Build Unity 2020 MacOS and WebGL test fixtures
     key: 'cocoa-webgl-2020-fixtures'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
     commands:
@@ -48,13 +46,10 @@ steps:
   #
   - label: Run MacOS e2e tests for Unity 2020
     depends_on: 'cocoa-webgl-2020-fixtures'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/MacOS-2020.3.28f1.zip
         upload:
@@ -70,13 +65,12 @@ steps:
   #
   - label: Run WebGL e2e tests for Unity 2020
     depends_on: 'cocoa-webgl-2020-fixtures'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/WebGL-2020.3.28f1.zip
         upload:
@@ -91,13 +85,10 @@ steps:
   - label: ':android: Build Android test fixture for Unity 2020'
     key: 'build-android-fixture-2020'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -117,13 +108,12 @@ steps:
   #
   - label: ':android: Run Android e2e tests for Unity 2020'
     depends_on: 'build-android-fixture-2020'
-    timeout_in_minutes: 30
     agents:
       queue: opensource
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.28f1.apk"
         upload:
@@ -146,13 +136,10 @@ steps:
   - label: ':ios: Generate Xcode project - Unity 2020'
     key: 'generate-fixture-project-2020'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -171,13 +158,10 @@ steps:
   - label: ':ios: Build iOS test fixture for Unity 2020'
     key: 'build-ios-fixture-2020'
     depends_on: 'generate-fixture-project-2020'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2020.tgz
@@ -199,11 +183,10 @@ steps:
   #
   - label: ':ios: Run iOS e2e tests for Unity 2020'
     depends_on: 'build-ios-fixture-2020'
-    timeout_in_minutes: 30
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.28f1.ipa"
         upload:
@@ -227,7 +210,6 @@ steps:
   - label: Build Unity 2020 Windows test fixture
     key: 'windows-2020-fixture'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
@@ -249,7 +231,6 @@ steps:
   #
   - label: Run Windows e2e tests for Unity 2020
     depends_on: 'windows-2020-fixture'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
