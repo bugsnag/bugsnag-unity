@@ -20,7 +20,9 @@ Feature: Unity Persistence
 
     @webgl_only
     Scenario: Receive a persisted session webgl
-        When I run the game in the "PersistSession" state
+        When I run the game in the "ClearBugsnagCache" state
+        And I wait for 5 seconds
+        And I run the game in the "PersistSession" state
         And I wait for 5 seconds
         And I run the game in the "PersistSessionReport" state
         And I wait to receive 2 sessions
@@ -28,11 +30,11 @@ Feature: Unity Persistence
         And the session payload field "app.releaseStage" equals "First Session"
         And I discard the oldest session
         And the session payload field "app.releaseStage" equals "Second Session"
-        And I run the game in the "ClearBugsnagCache" state
-        And I wait for 5 seconds
     
     Scenario: Receive a persisted event
-        When I run the game in the "PersistEvent" state
+        When I run the game in the "ClearBugsnagCache" state
+        And I wait for 5 seconds
+        And I run the game in the "PersistEvent" state
         And I wait for 5 seconds
         And I run the game in the "PersistEventReport" state
         And I wait to receive 2 errors
@@ -41,11 +43,12 @@ Feature: Unity Persistence
         And I discard the oldest error
         And the event "context" equals "Second Error"
         And the exception "message" equals "Second Event"
-        And I run the game in the "ClearBugsnagCache" state
-        And I wait for 5 seconds
+
 
     Scenario: Receive a persisted event with on send callback
-        When I run the game in the "PersistEvent" state
+        When I run the game in the "ClearBugsnagCache" state
+        And I wait for 5 seconds
+        And I run the game in the "PersistEvent" state
         And I wait for 5 seconds
         And I run the game in the "PersistEventReportCallback" state
         And I wait to receive 2 errors
@@ -67,11 +70,11 @@ Feature: Unity Persistence
 
         #metadata
         And the event "metaData.Persist Section.Persist Key" equals "Persist Value"
-        And I run the game in the "ClearBugsnagCache" state
-        And I wait for 5 seconds
 
     Scenario: Persist Device Id
-        When I run the game in the "PersistDeviceId" state
+        When I run the game in the "ClearBugsnagCache" state
+        And I wait for 5 seconds
+        And I run the game in the "PersistDeviceId" state
         And I wait to receive an error
         And the exception "message" equals "PersistDeviceId"
         And the error payload field "events.0.device.id" is stored as the value "device_id"
@@ -83,6 +86,5 @@ Feature: Unity Persistence
         And the exception "message" equals "PersistDeviceId"   
         And the error payload field "events.0.device.id" equals the stored value "device_id"
         And the error payload field "events.0.user.id" equals the stored value "device_id"
-        And I run the game in the "ClearBugsnagCache" state
-        And I wait for 5 seconds
+
         

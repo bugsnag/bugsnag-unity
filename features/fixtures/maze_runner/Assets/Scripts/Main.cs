@@ -40,45 +40,34 @@ public class Main : MonoBehaviour
 #endif
 
 #if UNITY_WEBGL
-        ParseUrlParameters();
- 
+        ParseUrlParameters(); 
 #endif
         var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);
         Invoke("CloseApplication", _closeTime);
-        Bugsnag.Start(config);
-
-        // Add different varieties of custom metadata
-        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
-            {"foo", "bar" },
-        });
-
-        Bugsnag.AddMetadata("test","test1","test1");
-
-        Bugsnag.AddMetadata("test", "test2", "test2");
-
-        Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
-            {"letter", "QX" },
-            {"better", 400 },
-            {"string-array", new string []{"1","2","3"} },
-            {"int-array", new int []{1,2,3} },
-            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }  
-        });
-
-        Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
-            {"buildno", "0.1" },
-            {"cache", null },
-        });
-
-        // Remove a tab
-        Bugsnag.ClearMetadata("init");
-
-        // Remove a value
-        Bugsnag.ClearMetadata("test","test2");
-
-        // trigger the crash
+        if (scenario != "ClearBugsnagCache")
+        {
+            Bugsnag.Start(config);
+            Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
+                {"foo", "bar" },
+            });
+            Bugsnag.AddMetadata("test", "test1", "test1");
+            Bugsnag.AddMetadata("test", "test2", "test2");
+            Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
+                {"letter", "QX" },
+                {"better", 400 },
+                {"string-array", new string []{"1","2","3"} },
+                {"int-array", new int []{1,2,3} },
+                {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }
+            });
+            Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
+                {"buildno", "0.1" },
+                {"cache", null },
+            });
+            Bugsnag.ClearMetadata("init");
+            Bugsnag.ClearMetadata("test", "test2");
+        }
         RunScenario(scenario);
-
     }
 
     void CloseApplication()
@@ -119,25 +108,19 @@ public class Main : MonoBehaviour
         throw new System.Exception("COULD NOT GET ENV VAR: " + key);
     }
 
-    /**
-     * Creates a configuration object and prepares it for the given scenario
-     */
     Configuration PrepareConfig(string scenario)
     {
         string apiKey = GetEvnVar("BUGSNAG_APIKEY");
         var config = new Configuration(apiKey);
 
-        // setup default endpoints etc
         var endpoint = GetEvnVar("MAZE_ENDPOINT");
         config.Endpoints = new EndpointConfiguration(endpoint + "/notify", endpoint + "/sessions");
         config.AutoTrackSessions = scenario.Contains("AutoSession");
 
-        // replacement for BugsnagBehaviour as not practical to load script in fixture
         config.ScriptingBackend = FindScriptingBackend();
         config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         config.DotnetApiCompatibility = FindDotnetApiCompatibility();
 
-        // prepare scenario-specific config
         PrepareConfigForScenario(config, scenario);
         return config;
     }
@@ -151,9 +134,6 @@ public class Main : MonoBehaviour
 #endif
     }
 
-    /**
-     * Prepares the configuration object for a given scenario
-     */
     void PrepareConfigForScenario(Configuration config, string scenario)
     {
         switch (scenario)
