@@ -149,6 +149,7 @@ steps:
           - features/fixtures/maze_runner/build/WebGL-2018.4.36f1.zip
         upload:
           - maze_output/failed/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
 
@@ -165,6 +166,7 @@ steps:
           - features/fixtures/maze_runner/build/WebGL-2019.4.35f1.zip
         upload:
           - maze_output/failed/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
 
@@ -181,6 +183,7 @@ steps:
           - features/fixtures/maze_runner/build/WebGL-2021.2.11f1.zip
         upload:
           - maze_output/failed/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
 

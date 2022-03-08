@@ -81,6 +81,7 @@ steps:
           - features/fixtures/maze_runner/build/WebGL-2020.3.28f1.zip
         upload:
           - maze_output/failed/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
 
