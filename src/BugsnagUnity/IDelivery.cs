@@ -19,48 +19,17 @@ namespace BugsnagUnity
     class Delivery : IDelivery
     {
 
-        const int DeliveryFailureDelay = 10000;
-        Boolean DelayBeforeDelivery { get; set; } = false;
-        Thread Worker { get; }
-
-        BlockingQueue<IPayload> Queue { get; }
-
-        GameObject DispatcherObject { get; }
+        private GameObject _dispatcherObject;
 
         internal Delivery()
         {
-            DispatcherObject = new GameObject("Bugsnag thread dispatcher");
-            DispatcherObject.AddComponent<MainThreadDispatchBehaviour>();
-
-            Queue = new BlockingQueue<IPayload>();
-            if (CanUseThreading())
-            {
-                Worker = new Thread(ProcessQueue) { IsBackground = true };
-                Worker.Start();
-            }
+            CreateDispatchBehaviour();
         }
 
-        void ProcessQueue()
+        private void CreateDispatchBehaviour()
         {
-            while (true)
-            {
-                try
-                {
-                    if (DelayBeforeDelivery)
-                    {
-                        DelayBeforeDelivery = false;
-                        Thread.Sleep(DeliveryFailureDelay);
-                    }
-                    else
-                    {
-                        SerializeAndDeliverPayload(Queue.Dequeue());
-                    }
-                }
-                catch (System.Exception)
-                {
-                    // ensure that the thread carries on processing error reports
-                }
-            }
+            _dispatcherObject = new GameObject("Bugsnag main thread dispatcher");
+            _dispatcherObject.AddComponent<MainThreadDispatchBehaviour>();
         }
 
         void SerializeAndDeliverPayload(IPayload payload)
@@ -69,32 +38,26 @@ namespace BugsnagUnity
             using (var reader = new StreamReader(stream))
             using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
             {
-                BugsnagUnity.SimpleJson.SerializeObject(payload, writer);
+                SimpleJson.SerializeObject(payload, writer);
                 writer.Flush();
                 stream.Position = 0;
                 var body = Encoding.UTF8.GetBytes(reader.ReadToEnd());
-                MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
+                if (_dispatcherObject == null)
+                {
+                    CreateDispatchBehaviour();
+                }
+                try
+                {
+                    // not avaliable in unit tests
+                    MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
+                }
+                catch{}
             }
         }
 
         public void Send(IPayload payload)
         {
-            if (CanUseThreading())
-            {
-                Queue.Enqueue(payload);
-            }
-            else
-            {
-                if (DelayBeforeDelivery)
-                {
-                    DelayBeforeDelivery = false;
-                    MainThreadDispatchBehaviour.Instance().EnqueueWithDelayCoroutine(()=> { SerializeAndDeliverPayload(payload); }, DeliveryFailureDelay / 1000);
-                }
-                else
-                {
-                    SerializeAndDeliverPayload(payload);
-                }
-            }
+            SerializeAndDeliverPayload(payload);            
         }
 
         IEnumerator PushToServer(IPayload payload, byte[] body)
@@ -122,13 +85,7 @@ namespace BugsnagUnity
                     // success!
                     FileManager.PayloadSendSuccess(payload);
                 }
-                else if (code >= 500 || code == 408 || code == 429)
-                {
-                    // Something is wrong with the server/connection, retry after a delay
-                    DelayBeforeDelivery = true;
-                    Send(payload);
-                }
-                else if (req.isNetworkError || code < 400)
+                else if (code >= 500 || code == 408 || code == 429 || req.isNetworkError || code < 400)
                 {
                     // sending failed, cache payload to disk
                     FileManager.SendPayloadFailed(payload);
@@ -151,10 +108,6 @@ namespace BugsnagUnity
                 // Not possible in unit tests
             }
         }
-
-        private bool CanUseThreading()
-        {
-            return Application.platform != RuntimePlatform.WebGLPlayer;
-        }
+      
     }
 }

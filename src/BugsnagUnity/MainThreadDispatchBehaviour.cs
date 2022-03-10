@@ -81,30 +81,19 @@ namespace BugsnagUnity
             action.Invoke();
         }
 
-
-        private static MainThreadDispatchBehaviour _instance = null;
-
-        public static bool Exists()
-        {
-            return _instance != null;
-        }
+        private static MainThreadDispatchBehaviour _instance;
 
         public static MainThreadDispatchBehaviour Instance()
         {
-            if (!Exists())
-            {
-                throw new Exception("MainThreadDispatchBehaviour could not find the MainThreadDispatchBehaviour object.");
-            }
             return _instance;
         }
-
 
         void Awake()
         {
             if (_instance == null)
             {
                 _instance = this;
-                DontDestroyOnLoad(this.gameObject);
+                DontDestroyOnLoad(gameObject);
             }
         }
 
