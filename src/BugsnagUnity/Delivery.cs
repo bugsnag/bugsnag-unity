@@ -3,26 +3,22 @@ using System.Collections;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Threading;
 using BugsnagUnity.Payload;
 using UnityEngine;
 using UnityEngine.Networking;
 
 namespace BugsnagUnity
 {
-    interface IDelivery
-    {
-        void Send(IPayload payload);
-        void TrySendingCachedPayloads();
-    }
-
-    class Delivery : IDelivery
+    class Delivery
     {
 
         private GameObject _dispatcherObject;
+        private Configuration _configuration;
+        private object _callbackLock { get; } = new object();
 
-        internal Delivery()
+        internal Delivery(Configuration configuration)
         {
+            _configuration = configuration;
             CreateDispatchBehaviour();
         }
 
@@ -51,13 +47,37 @@ namespace BugsnagUnity
                     // not avaliable in unit tests
                     MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
                 }
-                catch{}
+                catch { }
             }
         }
 
         public void Send(IPayload payload)
         {
-            SerializeAndDeliverPayload(payload);            
+            if (payload.PayloadType == PayloadType.Event)
+            {
+                var report = (Report)payload;
+
+                lock (_callbackLock)
+                {
+                    foreach (var onSendErrorCallback in _configuration.GetOnSendErrorCallbacks())
+                    {
+                        try
+                        {
+                            if (!onSendErrorCallback.Invoke(report.Event))
+                            {
+                                return;
+                            }
+                        }
+                        catch
+                        {
+                            // If the callback causes an exception, ignore it and execute the next one
+                        }
+                    }
+                }
+                report.Event.RedactMetadata(_configuration);
+                report.ApplyEventPayload();
+            }
+            SerializeAndDeliverPayload(payload);
         }
 
         IEnumerator PushToServer(IPayload payload, byte[] body)
@@ -108,6 +128,6 @@ namespace BugsnagUnity
                 // Not possible in unit tests
             }
         }
-      
+
     }
 }
