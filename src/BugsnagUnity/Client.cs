@@ -225,7 +225,7 @@ namespace BugsnagUnity
         /// <param name="logType"></param>
         void Notify(string condition, string stackTrace, LogType logType)
         {
-            if (!Configuration.EnabledErrorTypes.UnityLog)
+            if (!Configuration.EnabledErrorTypes.UnityLog || condition.Contains("Bugsnag Warning"))
             {
                 return;
             }
