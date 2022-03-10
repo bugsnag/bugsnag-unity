@@ -48,6 +48,42 @@ namespace BugsnagUnity
 
         private List<FeatureFlag> _featureFlags;
 
+        private class BugsnagLogHandler : ILogHandler
+        {
+
+            private ILogHandler _oldLogHandler;
+
+            private Client _client;
+
+            public BugsnagLogHandler(ILogHandler oldLogHandler, Client client)
+            {
+                _oldLogHandler = oldLogHandler;
+                _client = client;
+            }
+
+            public void LogException(System.Exception exception, UnityEngine.Object context)
+            {
+                Bugsnag.Notify(exception);
+                if (_oldLogHandler != null)
+                {
+                    _oldLogHandler.LogException(exception, context);
+                }
+            }
+
+            public void LogFormat(LogType logType, UnityEngine.Object context, string format, params object[] args)
+            {
+                if (_oldLogHandler != null)
+                {
+                    _oldLogHandler.LogFormat(logType, context, format, args);
+                }
+            }
+        }
+
+        private void SetupAdvancedExceptionInterceptor()
+        {
+            var oldHandler = UnityEngine.Debug.unityLogger.logHandler;
+            UnityEngine.Debug.unityLogger.logHandler = new BugsnagLogHandler(oldHandler, this);
+        }
 
         public Client(INativeClient nativeClient)
         {
@@ -61,7 +97,8 @@ namespace BugsnagUnity
             InitFeatureFlags();
             InitCounters();
             ListenForSceneLoad();
-            InitLogHandlers();       
+            //InitLogHandlers();
+            SetupAdvancedExceptionInterceptor();
             InitTimingTracker();
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
