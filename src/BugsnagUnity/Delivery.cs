@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -15,6 +16,11 @@ namespace BugsnagUnity
         private GameObject _dispatcherObject;
         private Configuration _configuration;
         private object _callbackLock { get; } = new object();
+
+        private static List<string> _finishedCacheDeliveries = new List<string>();
+
+        private bool _cacheDeliveryInProcess;
+        private WaitForSeconds _deliverCacheWaitTime = new WaitForSeconds(0.1f);
 
         internal Delivery(Configuration configuration)
         {
@@ -110,23 +116,56 @@ namespace BugsnagUnity
                     // sending failed, cache payload to disk
                     FileManager.SendPayloadFailed(payload);
                 }
+                _finishedCacheDeliveries.Add(payload.Id);
             }
         }
 
         public void TrySendingCachedPayloads()
         {
+            if (_cacheDeliveryInProcess)
+            {
+                return;
+            }
+            _cacheDeliveryInProcess = true;
             try
             {
-                var payloads = FileManager.GetCachedPayloads();
-                foreach (var payload in payloads)
-                {
-                    Send(payload);
-                }
+                _finishedCacheDeliveries.Clear();
+                var payloads = FileManager.GetCachedPayloadPaths();
+                MainThreadDispatchBehaviour.Instance().Enqueue(DeliverCachedPayloads(payloads));
             }
             catch
             {
                 // Not possible in unit tests
             }
+        }
+
+        private bool CachedPayloadProcessed(string id)
+        {
+            foreach (var processedCachedPayloadIds in _finishedCacheDeliveries)
+            {
+                if (id == processedCachedPayloadIds)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private IEnumerator DeliverCachedPayloads(string[] payloadPaths)
+        {
+            foreach (var cachedPayloadPath in payloadPaths)
+            {
+                var payload = FileManager.GetPayloadFromCachePath(cachedPayloadPath);
+                if (payload != null)
+                {
+                    Send(payload);
+                    while (!CachedPayloadProcessed(payload.Id))
+                    {
+                        yield return _deliverCacheWaitTime;
+                    }
+                }
+            }
+            _cacheDeliveryInProcess = false;
         }
 
     }

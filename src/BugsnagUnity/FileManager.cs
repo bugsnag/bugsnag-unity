@@ -234,25 +234,32 @@ namespace BugsnagUnity
             }
         }
 
-        internal static List<IPayload> GetCachedPayloads()
+        internal static string[] GetCachedPayloadPaths()
         {
-            var cachedPayloads = new List<IPayload>();
+            var cachedPayloadPaths = new List<string>();
+            cachedPayloadPaths.AddRange(_cachedSessions);
+            cachedPayloadPaths.AddRange(_cachedEvents);
+            return cachedPayloadPaths.ToArray();
+        }
 
-            foreach (var cachedSessionPath in _cachedSessions)
+        internal static IPayload GetPayloadFromCachePath(string path)
+        {
+            if (File.Exists(path))
             {
-                var json = File.ReadAllText(cachedSessionPath);
-                var sessionReportFromCachedPayload = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
-                cachedPayloads.Add(sessionReportFromCachedPayload);
+                if (path.Contains("session"))
+                {
+                    var json = File.ReadAllText(path);
+                    var sessionReportFromCachedPayload = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
+                    return sessionReportFromCachedPayload;
+                }
+                if (path.Contains("event"))
+                {
+                    var json = File.ReadAllText(path);
+                    var eventReportFromCachedPayload = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
+                    return eventReportFromCachedPayload;
+                }
             }
-
-            var cachedEvents = _cachedEvents.ToList();
-            foreach (var cachedEventPath in cachedEvents)
-            {
-                var json = File.ReadAllText(cachedEventPath);
-                var eventReportFromCachedPayload = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
-                cachedPayloads.Add(eventReportFromCachedPayload);
-            }
-            return cachedPayloads;
+            return null;
         }
 
         private static void WritePayloadToDisk(string jsonData, string path)
