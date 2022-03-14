@@ -231,7 +231,7 @@ namespace BugsnagUnity
             var cachedPayloadPaths = new List<string>();
             cachedPayloadPaths.AddRange(_cachedSessions);
             cachedPayloadPaths.AddRange(_cachedEvents);
-            return cachedPayloadPaths.ToArray();
+            return cachedPayloadPaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
         }
 
         internal static IPayload GetPayloadFromCachePath(string path)

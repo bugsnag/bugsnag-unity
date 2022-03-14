@@ -88,4 +88,20 @@ Feature: Unity Persistence
         And the error payload field "events.0.device.id" equals the stored value "device_id"
         And the error payload field "events.0.user.id" equals the stored value "device_id"
 
+    Scenario: Max Persisted Events
+        When I run the game in the "ClearBugsnagCache" state
+        And I wait for 5 seconds
+        And I run the game in the "MaxPersistEvents" state
+        And I wait for 5 seconds
+        And I run the game in the "(noop)" state
+        And I wait to receive 4 errors
+        And the exception "message" equals "Event 1"
+        And I discard the oldest error
+        And the exception "message" equals "Event 2"
+        And I discard the oldest error
+        And the exception "message" equals "Event 3"
+        And I discard the oldest error
+        And the exception "message" equals "Event 4"
+
+
         

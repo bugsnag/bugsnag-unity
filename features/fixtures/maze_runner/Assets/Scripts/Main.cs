@@ -138,6 +138,13 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "MaxPersistEvents":
+                config.MaximumBreadcrumbs = 0;
+                config.MaxPersistedEvents = 4;
+                config.AutoDetectErrors = true;
+                config.AutoTrackSessions = false;
+                config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
+                break;
             case "PersistEvent":
                 config.AutoDetectErrors = true;
                 config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
@@ -424,6 +431,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "MaxPersistEvents":
+                StartCoroutine(NotifyPersistedEvents());
+                break;
             case "PersistDeviceId":
                 throw new Exception("PersistDeviceId");
             case "FeatureFlagsAfterInitClearAll":
@@ -660,6 +670,15 @@ public class Main : MonoBehaviour
             default:
                 throw new ArgumentException("Unable to run unexpected scenario: " + scenario);
                 break;
+        }
+    }
+
+    private IEnumerator NotifyPersistedEvents()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Bugsnag.Notify(new Exception("Event " + i));
+            yield return new WaitForSeconds(0.75f);
         }
     }
 
