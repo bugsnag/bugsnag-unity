@@ -13,7 +13,6 @@ namespace BugsnagUnity
     class Delivery
     {
 
-        private GameObject _dispatcherObject;
         private Configuration _configuration;
         private object _callbackLock { get; } = new object();
 
@@ -25,7 +24,6 @@ namespace BugsnagUnity
         internal Delivery(Configuration configuration)
         {
             _configuration = configuration;
-            CreateDispatchBehaviour();
         }
 
         // Run any on send error callbacks if it's an event, serialise the payload and add it to the sending queue
@@ -56,11 +54,6 @@ namespace BugsnagUnity
                 }
                 report.Event.RedactMetadata(_configuration);
                 report.ApplyEventPayload();
-            }
-
-            if (_dispatcherObject == null)
-            {
-                CreateDispatchBehaviour();
             }
             try
             {
@@ -128,10 +121,6 @@ namespace BugsnagUnity
             try
             {
                 _finishedCacheDeliveries.Clear();
-                if (_dispatcherObject == null)
-                {
-                    CreateDispatchBehaviour();
-                }
                 MainThreadDispatchBehaviour.Instance().Enqueue(DeliverCachedPayloads());
             }
             catch
@@ -152,13 +141,7 @@ namespace BugsnagUnity
                 }
             }
             _cacheDeliveryInProcess = false;
-        }
-
-        private void CreateDispatchBehaviour()
-        {
-            _dispatcherObject = new GameObject("Bugsnag main thread dispatcher");
-            _dispatcherObject.AddComponent<MainThreadDispatchBehaviour>();
-        }
+        }     
 
         private bool CachedPayloadProcessed(string id)
         {

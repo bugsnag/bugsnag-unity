@@ -85,6 +85,10 @@ namespace BugsnagUnity
 
         public static MainThreadDispatchBehaviour Instance()
         {
+            if (_instance == null)
+            {
+                _instance = new GameObject("Bugsnag main thread dispatcher").AddComponent<MainThreadDispatchBehaviour>();
+            }
             return _instance;
         }
 
