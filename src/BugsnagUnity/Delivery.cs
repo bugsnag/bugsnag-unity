@@ -20,7 +20,7 @@ namespace BugsnagUnity
         private static List<string> _finishedCacheDeliveries = new List<string>();
 
         private bool _cacheDeliveryInProcess;
-        private WaitForSeconds _deliverCacheWaitTime = new WaitForSeconds(0.1f);
+
 
         internal Delivery(Configuration configuration)
         {
@@ -28,13 +28,49 @@ namespace BugsnagUnity
             CreateDispatchBehaviour();
         }
 
-        private void CreateDispatchBehaviour()
+        // Run any on send error callbacks if it's an event, serialise the payload and add it to the sending queue
+        public void Deliver(IPayload payload)
         {
-            _dispatcherObject = new GameObject("Bugsnag main thread dispatcher");
-            _dispatcherObject.AddComponent<MainThreadDispatchBehaviour>();
+            if (payload.PayloadType == PayloadType.Event)
+            {
+                var report = (Report)payload;
+                if (_configuration.GetOnSendErrorCallbacks().Count > 0)
+                {
+                    lock (_callbackLock)
+                    {
+                        foreach (var onSendErrorCallback in _configuration.GetOnSendErrorCallbacks())
+                        {
+                            try
+                            {
+                                if (!onSendErrorCallback.Invoke(report.Event))
+                                {
+                                    return;
+                                }
+                            }
+                            catch
+                            {
+                                // If the callback causes an exception, ignore it and execute the next one
+                            }
+                        }
+                    }
+                }
+                report.Event.RedactMetadata(_configuration);
+                report.ApplyEventPayload();
+            }
+
+            if (_dispatcherObject == null)
+            {
+                CreateDispatchBehaviour();
+            }
+            try
+            {
+                // not avaliable in unit tests
+                MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, SerializePayload(payload)));
+            }
+            catch { }
         }
 
-        void SerializeAndDeliverPayload(IPayload payload)
+        byte[] SerializePayload(IPayload payload)
         {
             using (var stream = new MemoryStream())
             using (var reader = new StreamReader(stream))
@@ -43,49 +79,11 @@ namespace BugsnagUnity
                 SimpleJson.SerializeObject(payload, writer);
                 writer.Flush();
                 stream.Position = 0;
-                var body = Encoding.UTF8.GetBytes(reader.ReadToEnd());
-                if (_dispatcherObject == null)
-                {
-                    CreateDispatchBehaviour();
-                }
-                try
-                {
-                    // not avaliable in unit tests
-                    MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, body));
-                }
-                catch { }
+                return Encoding.UTF8.GetBytes(reader.ReadToEnd());
             }
         }
 
-        public void Send(IPayload payload)
-        {
-            if (payload.PayloadType == PayloadType.Event)
-            {
-                var report = (Report)payload;
-
-                lock (_callbackLock)
-                {
-                    foreach (var onSendErrorCallback in _configuration.GetOnSendErrorCallbacks())
-                    {
-                        try
-                        {
-                            if (!onSendErrorCallback.Invoke(report.Event))
-                            {
-                                return;
-                            }
-                        }
-                        catch
-                        {
-                            // If the callback causes an exception, ignore it and execute the next one
-                        }
-                    }
-                }
-                report.Event.RedactMetadata(_configuration);
-                report.ApplyEventPayload();
-            }
-            SerializeAndDeliverPayload(payload);
-        }
-
+        // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload, byte[] body)
         {
             using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
@@ -111,16 +109,16 @@ namespace BugsnagUnity
                     // success!
                     FileManager.PayloadSendSuccess(payload);
                 }
-                else if (code >= 500 || code == 408 || code == 429 || req.isNetworkError || code < 400)
+                else if (req.isNetworkError || code == 0 || code == 408 || code == 429 || code >= 500)
                 {
-                    // sending failed, cache payload to disk
+                    // sending failed with no network or retryable error, cache payload to disk
                     FileManager.SendPayloadFailed(payload);
                 }
                 _finishedCacheDeliveries.Add(payload.Id);
             }
         }
 
-        public void TrySendingCachedPayloads()
+        public void StartDeliveringCachedPayloads()
         {
             if (_cacheDeliveryInProcess)
             {
@@ -130,13 +128,36 @@ namespace BugsnagUnity
             try
             {
                 _finishedCacheDeliveries.Clear();
-                var payloads = FileManager.GetCachedPayloadPaths();
-                MainThreadDispatchBehaviour.Instance().Enqueue(DeliverCachedPayloads(payloads));
+                if (_dispatcherObject == null)
+                {
+                    CreateDispatchBehaviour();
+                }
+                MainThreadDispatchBehaviour.Instance().Enqueue(DeliverCachedPayloads());
             }
             catch
             {
                 // Not possible in unit tests
             }
+        }
+
+        private IEnumerator DeliverCachedPayloads()
+        {
+            foreach (var cachedPayloadPath in FileManager.GetCachedPayloadPaths())
+            {
+                var payload = FileManager.GetPayloadFromCachePath(cachedPayloadPath);
+                if (payload != null)
+                {
+                    Deliver(payload);
+                    yield return new WaitUntil(() => CachedPayloadProcessed(payload.Id));
+                }
+            }
+            _cacheDeliveryInProcess = false;
+        }
+
+        private void CreateDispatchBehaviour()
+        {
+            _dispatcherObject = new GameObject("Bugsnag main thread dispatcher");
+            _dispatcherObject.AddComponent<MainThreadDispatchBehaviour>();
         }
 
         private bool CachedPayloadProcessed(string id)
@@ -149,23 +170,6 @@ namespace BugsnagUnity
                 }
             }
             return false;
-        }
-
-        private IEnumerator DeliverCachedPayloads(string[] payloadPaths)
-        {
-            foreach (var cachedPayloadPath in payloadPaths)
-            {
-                var payload = FileManager.GetPayloadFromCachePath(cachedPayloadPath);
-                if (payload != null)
-                {
-                    Send(payload);
-                    while (!CachedPayloadProcessed(payload.Id))
-                    {
-                        yield return _deliverCacheWaitTime;
-                    }
-                }
-            }
-            _cacheDeliveryInProcess = false;
         }
 
     }

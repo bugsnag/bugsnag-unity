@@ -10,6 +10,10 @@ namespace BugsnagUnity
     public class FileManager
     {
 
+        private const string SESSION_FILE_PREFIX = ".session";
+        private const string EVENT_FILE_PREFIX = ".event";
+
+
         private static List<PendingPayload> _pendingPayloads = new List<PendingPayload>();
 
         private static Configuration _configuration;
@@ -29,9 +33,9 @@ namespace BugsnagUnity
             get { return _cacheDirectory + "/Events"; }
         }
 
-        private static string[] _cachedSessions => Directory.GetFiles(_sessionsDirectory, "*.session");
+        private static string[] _cachedSessions => Directory.GetFiles(_sessionsDirectory, "*" + SESSION_FILE_PREFIX);
 
-        private static string[] _cachedEvents => Directory.GetFiles(_eventsDirectory, "*.event");
+        private static string[] _cachedEvents => Directory.GetFiles(_eventsDirectory, "*" + EVENT_FILE_PREFIX);
 
         private static string _deviceIdFile = _cacheDirectory + "/deviceId.txt";
 
@@ -146,7 +150,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            var path = _sessionsDirectory + "/" + pendingSession.PayloadId + ".session";
+            var path = _sessionsDirectory + "/" + pendingSession.PayloadId + SESSION_FILE_PREFIX;
             WritePayloadToDisk(pendingSession.Json, path);
             CheckForMaxCachedSessions();
         }
@@ -158,7 +162,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            var path = _eventsDirectory + "/" + eventReport.PayloadId + ".event";
+            var path = _eventsDirectory + "/" + eventReport.PayloadId + EVENT_FILE_PREFIX;
             WritePayloadToDisk(eventReport.Json, path);
             RemovePendingPayload(reportId);
             CheckForMaxCachedEvents();          
@@ -246,13 +250,13 @@ namespace BugsnagUnity
         {
             if (File.Exists(path))
             {
-                if (path.Contains("session"))
+                if (path.EndsWith(SESSION_FILE_PREFIX))
                 {
                     var json = File.ReadAllText(path);
                     var sessionReportFromCachedPayload = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
                     return sessionReportFromCachedPayload;
                 }
-                if (path.Contains("event"))
+                else if (path.EndsWith(EVENT_FILE_PREFIX))
                 {
                     var json = File.ReadAllText(path);
                     var eventReportFromCachedPayload = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());

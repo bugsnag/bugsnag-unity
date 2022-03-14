@@ -67,7 +67,7 @@ namespace BugsnagUnity
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
-            _delivery.TrySendingCachedPayloads();
+            _delivery.StartDeliveringCachedPayloads();
         }
 
         private void InitFeatureFlags()
@@ -203,7 +203,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            _delivery.Send(payload);
+            _delivery.Deliver(payload);
         }
 
         void MultiThreadedNotify(string condition, string stackTrace, LogType logType)
@@ -467,7 +467,6 @@ namespace BugsnagUnity
         {
             if (inFocus)
             {
-                _delivery.TrySendingCachedPayloads();
                 _foregroundStopwatch.Start();
                 lock (autoSessionLock)
                 {
@@ -489,6 +488,7 @@ namespace BugsnagUnity
                     }
                     _backgroundStopwatch.Reset();
                 }
+                _delivery.StartDeliveringCachedPayloads();
             }
             else
             {

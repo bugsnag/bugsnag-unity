@@ -38,11 +38,11 @@ Feature: Unity Persistence
         And I wait for 5 seconds
         And I run the game in the "PersistEventReport" state
         And I wait to receive 2 errors
-        And the event "context" equals "First Error"
-        And the exception "message" equals "First Event"
-        And I discard the oldest error
         And the event "context" equals "Second Error"
         And the exception "message" equals "Second Event"
+        And I discard the oldest error
+        And the event "context" equals "First Error"
+        And the exception "message" equals "First Event"
 
 
     Scenario: Receive a persisted event with on send callback
@@ -52,6 +52,7 @@ Feature: Unity Persistence
         And I wait for 5 seconds
         And I run the game in the "PersistEventReportCallback" state
         And I wait to receive 2 errors
+        And I discard the oldest error
         And the event "context" equals "First Error"
         And the exception "message" equals "First Event"
 
