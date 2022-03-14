@@ -12,6 +12,14 @@ namespace BugsnagUnity.Editor
     public class BugsnagEditor : EditorWindow
     {
 
+        private const string ANDROID_DEPS_XML = "<dependencies><androidPackages><repositories><repository>https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib</repository></repositories><androidPackage spec=\"org.jetbrains.kotlin:kotlin-stdlib:1.5.0\"></androidPackage></androidPackages></dependencies>";
+
+        private const string EDM_MENU_ITEM = "Window/Bugsnag/EDM Support Enabled";
+
+        private static string EDMDepsFilePath = Application.dataPath + "/Bugsnag/Editor/BugsnagAndroidDependencies.xml";
+
+        private static string KotlinLibsDirPath = Application.dataPath + "/Bugsnag/Plugins/Android/Kotlin";
+
         private bool _showBasicConfig = true;
 
         private bool _showAdvancedSettings, _showAppInformation, _showEndpoints, _showEnabledErrorTypes;
@@ -20,6 +28,41 @@ namespace BugsnagUnity.Editor
 
         private Vector2 _scrollPos;
 
+        private static bool EDMEnabled;
+
+
+
+        //[MenuItem("Window/Bugsnag/Enable EDM Support")]
+        //public static void EnableEdm()
+        //{
+        //    
+            
+        //    foreach (var libPath in Directory.GetFiles(KotlinLibsDirPath))
+        //    {
+        //        Debug.Log(libPath);
+        //        var lib = (PluginImporter)AssetImporter.GetAtPath(libPath);
+        //        Debug.Log(lib == null);
+        //        lib.SetCompatibleWithAnyPlatform(false);
+        //    }
+        //}
+
+        [MenuItem(EDM_MENU_ITEM)]
+        private static void EnableEDM()
+        {
+            File.WriteAllText(EDMDepsFilePath, ANDROID_DEPS_XML);
+        }
+
+        [MenuItem(EDM_MENU_ITEM, true)]
+        private static bool EnableEDMValidate()
+        {
+            Menu.SetChecked(EDM_MENU_ITEM, EDMEnabled);
+            return true;
+        }
+
+        private static bool IsEDMEnabled()
+        {
+            return File.Exists(EDMDepsFilePath);
+        }
 
         private void OnEnable()
         {
