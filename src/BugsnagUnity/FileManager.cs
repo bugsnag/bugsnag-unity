@@ -152,7 +152,7 @@ namespace BugsnagUnity
             }
             var path = _sessionsDirectory + "/" + pendingSession.PayloadId + SESSION_FILE_PREFIX;
             WritePayloadToDisk(pendingSession.Json, path);
-            CheckForMaxCachedSessions();
+            CheckForMaxCachedPayloads(_cachedSessions, _configuration.MaxPersistedSessions);
         }
 
         internal static void CacheEvent(string reportId)
@@ -165,26 +165,14 @@ namespace BugsnagUnity
             var path = _eventsDirectory + "/" + eventReport.PayloadId + EVENT_FILE_PREFIX;
             WritePayloadToDisk(eventReport.Json, path);
             RemovePendingPayload(reportId);
-            CheckForMaxCachedEvents();          
+            CheckForMaxCachedPayloads(_cachedEvents, _configuration.MaxPersistedEvents);
         }
 
-        private static void CheckForMaxCachedEvents()
+        private static void CheckForMaxCachedPayloads(string[] payloads, int maxPayloads)
         {
-            var filesCount = _cachedEvents.Length;
-            while (filesCount > _configuration.MaxPersistedEvents)
+            if (payloads.Length > maxPayloads)
             {
-                RemoveOldestFiles(_cachedEvents, filesCount - _configuration.MaxPersistedEvents);
-                filesCount = _cachedEvents.Length;
-            }
-        }
-
-        private static void CheckForMaxCachedSessions()
-        {
-            var filesCount = _cachedSessions.Length;
-            while(filesCount > _configuration.MaxPersistedSessions)
-            {
-                RemoveOldestFiles(_cachedSessions, filesCount - _configuration.MaxPersistedSessions);
-                filesCount = _cachedSessions.Length;
+                RemoveOldestFiles(payloads, payloads.Length - maxPayloads);
             }
         }
 
