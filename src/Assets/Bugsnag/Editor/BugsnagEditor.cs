@@ -17,9 +17,9 @@ namespace BugsnagUnity.Editor
 
         private const string EDM_MENU_ITEM = "Window/Bugsnag/EDM Support";
 
-        private static string EDMDepsFilePath = Application.dataPath + "/Bugsnag/Editor/BugsnagAndroidDependencies.xml";
+        private static string EDMDepsFilePath = "/Bugsnag/Editor/BugsnagAndroidDependencies.xml";
 
-        private static string KotlinLibsDirPath = Application.dataPath + "/Bugsnag/Plugins/Android/Kotlin";
+        private static string KotlinLibsDirPath = "/Bugsnag/Plugins/Android/Kotlin";
 
         private bool _showBasicConfig = true;
 
@@ -257,7 +257,9 @@ namespace BugsnagUnity.Editor
         {
             try
             {
-                File.WriteAllText(EDMDepsFilePath, ANDROID_DEPS_XML);
+                var path = Application.dataPath + EDMDepsFilePath;
+
+                File.WriteAllText(path, ANDROID_DEPS_XML);
 
                 foreach (var lib in GetKotlinLibs())
                 {
@@ -286,8 +288,9 @@ namespace BugsnagUnity.Editor
         {
             try
             {
-                File.Delete(EDMDepsFilePath);
-                File.Delete(EDMDepsFilePath + ".meta");
+                var path = Application.dataPath + EDMDepsFilePath;
+                File.Delete(path);
+                File.Delete(path + ".meta");
 
                 foreach (var lib in GetKotlinLibs())
                 {
@@ -315,7 +318,7 @@ namespace BugsnagUnity.Editor
         private static List<PluginImporter> GetKotlinLibs()
         {
             var kotlinLibs = new List<PluginImporter>();
-            foreach (var libPath in Directory.GetFiles(KotlinLibsDirPath, "*.jar"))
+            foreach (var libPath in Directory.GetFiles(Application.dataPath + KotlinLibsDirPath, "*.jar"))
             {
                 kotlinLibs.Add((PluginImporter)AssetImporter.GetAtPath(libPath.Replace(Application.dataPath, "Assets")));
             }
@@ -324,7 +327,7 @@ namespace BugsnagUnity.Editor
 
         private static bool IsEDMEnabled()
         {
-            var success = File.Exists(EDMDepsFilePath);
+            var success = File.Exists(Application.dataPath + EDMDepsFilePath);
             foreach (var lib in GetKotlinLibs())
             {
                 if (lib.GetCompatibleWithPlatform(BuildTarget.Android))
