@@ -12,7 +12,7 @@ namespace BugsnagUnity
 
         private const string SESSION_FILE_PREFIX = ".session";
         private const string EVENT_FILE_PREFIX = ".event";
-
+        private const int MAX_CACHED_DAYS = 60;
 
         private static List<PendingPayload> _pendingPayloads = new List<PendingPayload>();
 
@@ -102,6 +102,26 @@ namespace BugsnagUnity
         {
             _configuration = configuration;
             CheckForDirectoryCreation();
+            RemoveExpiredPayloads();
+        }
+
+        private static void RemoveExpiredPayloads()
+        {
+            try
+            {
+                var files = _cachedEvents.ToList();
+                files.AddRange(_cachedSessions);
+                foreach (var file in files)
+                {
+                    var creationTime = File.GetCreationTimeUtc(file);
+                    if ((DateTime.UtcNow - creationTime).TotalDays > MAX_CACHED_DAYS)
+                    {
+                        Debug.LogWarning("Bugsnag Warning: Discarding historical event from " + creationTime.ToLongDateString() + " after failed delivery");
+                        File.Delete(file);
+                    }
+                }
+            }
+            catch { }
         }
 
         internal static void AddPendingPayload(IPayload payload)
