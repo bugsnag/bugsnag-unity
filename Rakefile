@@ -135,9 +135,10 @@ def assemble_android filter_abis=true
   cp ndk_lib, File.join(android_dir, "bugsnag-android-ndk-release.aar")
   cp anr_lib, File.join(android_dir, "bugsnag-plugin-android-anr-release.aar")
   cp unity_lib, File.join(android_dir, "bugsnag-android-unity-release.aar")
-  cp kotlin_stdlib, File.join(android_dir, "kotlin-stdlib.jar")
-  cp kotlin_stdlib_common, File.join(android_dir, "kotlin-stdlib-common.jar")
-  cp kotlin_annotations, File.join(android_dir, "kotlin-annotations.jar")
+  mkdir File.join(android_dir, "Kotlin")
+  cp kotlin_stdlib, File.join(android_dir, "Kotlin/kotlin-stdlib.jar")
+  cp kotlin_stdlib_common, File.join(android_dir, "Kotlin/kotlin-stdlib-common.jar")
+  cp kotlin_annotations, File.join(android_dir, "Kotlin/kotlin-annotations.jar")
 end
 
 namespace :plugin do
