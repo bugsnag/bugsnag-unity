@@ -11,8 +11,6 @@ namespace BugsnagUnity
 
         public IBreadcrumbs Breadcrumbs { get; }
 
-        public IDelivery Delivery { get; }
-
         private bool _launchMarkedAsCompleted = false;
 
         private bool _hasReceivedLowMemoryWarning = false;
@@ -25,7 +23,6 @@ namespace BugsnagUnity
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
-            Delivery = new Delivery();
             Application.lowMemory += () => { _hasReceivedLowMemoryWarning = true; };
             AddFeatureFlags(configuration.FeatureFlags.ToArray());
         }

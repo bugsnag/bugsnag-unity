@@ -14,6 +14,8 @@ namespace BugsnagUnity.Payload
         string Id { get; set; }
 
         PayloadType PayloadType { get; }
+
+        Dictionary<string, object> GetSerialisablePayload();
     }
 
     public enum PayloadType

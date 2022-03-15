@@ -12,7 +12,6 @@ namespace BugsnagUnity
     {
         public Configuration Configuration { get; }
         public IBreadcrumbs Breadcrumbs { get; }
-        public IDelivery Delivery { get; }
         private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
         private static NativeClient _instance;
@@ -23,7 +22,6 @@ namespace BugsnagUnity
             Configuration = configuration;
             NativeConfiguration = CreateNativeConfig(configuration);
             NativeCode.bugsnag_startBugsnagWithConfiguration(NativeConfiguration, NotifierInfo.NotifierVersion);
-            Delivery = new Delivery();
             Breadcrumbs = new Breadcrumbs();
         }
 

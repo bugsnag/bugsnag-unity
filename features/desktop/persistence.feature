@@ -38,11 +38,11 @@ Feature: Unity Persistence
         And I wait for 5 seconds
         And I run the game in the "PersistEventReport" state
         And I wait to receive 2 errors
-        And the event "context" equals "First Error"
-        And the exception "message" equals "First Event"
-        And I discard the oldest error
         And the event "context" equals "Second Error"
         And the exception "message" equals "Second Event"
+        And I discard the oldest error
+        And the event "context" equals "First Error"
+        And the exception "message" equals "First Event"
 
 
     Scenario: Receive a persisted event with on send callback
@@ -52,6 +52,7 @@ Feature: Unity Persistence
         And I wait for 5 seconds
         And I run the game in the "PersistEventReportCallback" state
         And I wait to receive 2 errors
+        And I discard the oldest error
         And the event "context" equals "First Error"
         And the exception "message" equals "First Event"
 
@@ -86,5 +87,21 @@ Feature: Unity Persistence
         And the exception "message" equals "PersistDeviceId"   
         And the error payload field "events.0.device.id" equals the stored value "device_id"
         And the error payload field "events.0.user.id" equals the stored value "device_id"
+
+    Scenario: Max Persisted Events
+        When I run the game in the "ClearBugsnagCache" state
+        And I wait for 5 seconds
+        And I run the game in the "MaxPersistEvents" state
+        And I wait for 5 seconds
+        And I run the game in the "(noop)" state
+        And I wait to receive 4 errors
+        And the exception "message" equals "Event 1"
+        And I discard the oldest error
+        And the exception "message" equals "Event 2"
+        And I discard the oldest error
+        And the exception "message" equals "Event 3"
+        And I discard the oldest error
+        And the exception "message" equals "Event 4"
+
 
         
