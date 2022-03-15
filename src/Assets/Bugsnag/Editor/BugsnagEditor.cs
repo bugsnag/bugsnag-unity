@@ -6,6 +6,7 @@ using System.IO;
 using BugsnagUnity;
 using UnityEditor.Callbacks;
 using System.Linq;
+using System;
 
 namespace BugsnagUnity.Editor
 {
@@ -14,7 +15,7 @@ namespace BugsnagUnity.Editor
 
         private const string ANDROID_DEPS_XML = "<dependencies><androidPackages><repositories><repository>https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib</repository></repositories><androidPackage spec=\"org.jetbrains.kotlin:kotlin-stdlib:1.5.0\"></androidPackage></androidPackages></dependencies>";
 
-        private const string EDM_MENU_ITEM = "Window/Bugsnag/EDM Support Enabled";
+        private const string EDM_MENU_ITEM = "Window/Bugsnag/EDM Support";
 
         private static string EDMDepsFilePath = Application.dataPath + "/Bugsnag/Editor/BugsnagAndroidDependencies.xml";
 
@@ -28,40 +29,25 @@ namespace BugsnagUnity.Editor
 
         private Vector2 _scrollPos;
 
-        private static bool EDMEnabled;
-
-
-
-        //[MenuItem("Window/Bugsnag/Enable EDM Support")]
-        //public static void EnableEdm()
-        //{
-        //    
-            
-        //    foreach (var libPath in Directory.GetFiles(KotlinLibsDirPath))
-        //    {
-        //        Debug.Log(libPath);
-        //        var lib = (PluginImporter)AssetImporter.GetAtPath(libPath);
-        //        Debug.Log(lib == null);
-        //        lib.SetCompatibleWithAnyPlatform(false);
-        //    }
-        //}
 
         [MenuItem(EDM_MENU_ITEM)]
-        private static void EnableEDM()
+        private static void ToggleEDM()
         {
-            File.WriteAllText(EDMDepsFilePath, ANDROID_DEPS_XML);
+            if (IsEDMEnabled())
+            {
+                DisableEDM();
+            }
+            else
+            {
+                EnableEDM();
+            }
         }
 
         [MenuItem(EDM_MENU_ITEM, true)]
-        private static bool EnableEDMValidate()
+        private static bool ToggleEDMValidate()
         {
-            Menu.SetChecked(EDM_MENU_ITEM, EDMEnabled);
+            Menu.SetChecked(EDM_MENU_ITEM, IsEDMEnabled());
             return true;
-        }
-
-        private static bool IsEDMEnabled()
-        {
-            return File.Exists(EDMDepsFilePath);
         }
 
         private void OnEnable()
@@ -266,5 +252,87 @@ namespace BugsnagUnity.Editor
             File.WriteAllLines(pbxPath, lines.ToArray());
         }
 #endif
+
+        private static void EnableEDM()
+        {
+            try
+            {
+                File.WriteAllText(EDMDepsFilePath, ANDROID_DEPS_XML);
+
+                foreach (var lib in GetKotlinLibs())
+                {
+                    lib.SetCompatibleWithPlatform(BuildTarget.Android, false);
+                    lib.SaveAndReimport();
+                }
+
+                AssetDatabase.Refresh();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error enabling Bugsnag EDM support: " + e.Message);
+            }
+
+            if (IsEDMEnabled())
+            {
+                Debug.Log("Bugsnag EDM support successfully enabled");
+            }
+            else
+            {
+                Debug.LogError("Error enabling Bugsnag EDM support, please check the console for error messages");
+            }
+        }
+
+        private static void DisableEDM()
+        {
+            try
+            {
+                File.Delete(EDMDepsFilePath);
+                File.Delete(EDMDepsFilePath + ".meta");
+
+                foreach (var lib in GetKotlinLibs())
+                {
+                    lib.SetCompatibleWithPlatform(BuildTarget.Android, true);
+                    lib.SaveAndReimport();
+                }
+
+                AssetDatabase.Refresh();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error disabling Bugsnag EDM support: " + e.Message);
+            }
+
+            if (!IsEDMEnabled())
+            {
+                Debug.Log("Bugsnag EDM support successfully disabled");
+            }
+            else
+            {
+                Debug.LogError("Error disabling Bugsnag EDM support, please check the console for error messages");
+            }
+        }
+
+        private static List<PluginImporter> GetKotlinLibs()
+        {
+            var kotlinLibs = new List<PluginImporter>();
+            foreach (var libPath in Directory.GetFiles(KotlinLibsDirPath, "*.jar"))
+            {
+                kotlinLibs.Add((PluginImporter)AssetImporter.GetAtPath(libPath.Replace(Application.dataPath, "Assets")));
+            }
+            return kotlinLibs;
+        }
+
+        private static bool IsEDMEnabled()
+        {
+            var success = File.Exists(EDMDepsFilePath);
+            foreach (var lib in GetKotlinLibs())
+            {
+                if (lib.GetCompatibleWithPlatform(BuildTarget.Android))
+                {
+                    success = false;
+                }
+            }
+            return success;
+        }
     }
 }
