@@ -6,6 +6,8 @@
 
 * Added event, session and device id persistence for Windows and WebGL builds [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509) [#514](https://github.com/bugsnag/bugsnag-unity/pull/514)
 
+* Add `Configuration.MaxReportedThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxreportedthreads) [523](https://github.com/bugsnag/bugsnag-unity/pull/523)
+
 * Update bugsnag-android to v5.20.0
   * The number of threads reported can now be limited using `Configuration.setMaxReportedThreads` (defaulting to 200)
     [bugsnag-android#1607](https://github.com/bugsnag/bugsnag-android/pull/1607)
