@@ -92,8 +92,9 @@ Feature: Unity Persistence
         When I run the game in the "ClearBugsnagCache" state
         And I wait for 5 seconds
         And I run the game in the "MaxPersistEvents" state
-        And I wait for 5 seconds
+        And I wait for 12 seconds
         And I run the game in the "(noop)" state
+        And I wait for 5 seconds
         And I wait to receive 4 errors
         And the exception "message" equals "Event 1"
         And I discard the oldest error
