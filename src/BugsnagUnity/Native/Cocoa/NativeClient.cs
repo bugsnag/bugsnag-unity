@@ -12,7 +12,6 @@ namespace BugsnagUnity
     {
         public Configuration Configuration { get; }
         public IBreadcrumbs Breadcrumbs { get; }
-        public IDelivery Delivery { get; }
         private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
         private static NativeClient _instance;
@@ -23,7 +22,6 @@ namespace BugsnagUnity
             Configuration = configuration;
             NativeConfiguration = CreateNativeConfig(configuration);
             NativeCode.bugsnag_startBugsnagWithConfiguration(NativeConfiguration, NotifierInfo.NotifierVersion);
-            Delivery = new Delivery();
             Breadcrumbs = new Breadcrumbs();
         }
 
@@ -42,6 +40,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAppType(obj, GetAppType(config));
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);
+            NativeCode.bugsnag_setMaxPersistedSessions(obj, config.MaxPersistedSessions);
             NativeCode.bugsnag_setThreadSendPolicy(obj, Enum.GetName(typeof(ThreadSendPolicy), config.SendThreads));
             NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
             NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);

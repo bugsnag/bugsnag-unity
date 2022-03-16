@@ -22,6 +22,8 @@ void ClearPersistentData() {
 }
 
 void RaiseCocoaSignal() {
+    NSLog(@"RaiseCocoaSignal");
+
     abort();
 }
 

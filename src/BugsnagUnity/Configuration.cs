@@ -113,6 +113,8 @@ namespace BugsnagUnity
             }
         }
 
+        public int MaxReportedThreads = 200;
+
         public string ReleaseStage = "production";
 
         public string[] EnabledReleaseStages;
@@ -170,6 +172,9 @@ namespace BugsnagUnity
         public string[] DiscardClasses;
 
         public int MaxPersistedEvents = 32;
+
+        public int MaxPersistedSessions = 128;
+
 
         internal bool ErrorClassIsDiscarded(string className)
         {

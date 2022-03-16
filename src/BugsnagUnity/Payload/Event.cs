@@ -49,6 +49,93 @@ namespace BugsnagUnity.Payload
             _featureFlags = featureFlags;
         }
 
+        internal Event(Dictionary<string, object> serialisedEvent)
+        {        
+            ApiKey = serialisedEvent["apiKey"].ToString();
+
+            var eventObject = (Dictionary<string, object>)serialisedEvent["event"];
+
+            _metadata = new Metadata();
+            _metadata.MergeMetadata((Dictionary<string, object>)eventObject["metaData"]);
+
+            _appWithState = new AppWithState((Dictionary<string, object>)eventObject["app"]);
+
+            _deviceWithState = new DeviceWithState((Dictionary<string, object>)eventObject["device"]);
+
+            _featureFlags = new List<FeatureFlag>();
+            if (eventObject.ContainsKey("featureFlags"))
+            {
+                var flagsArray = (JsonArray)eventObject["featureFlags"];
+                foreach (JsonObject flag in flagsArray)
+                {
+                    _featureFlags.Add(new FeatureFlag(flag.GetDictionary()));
+                }
+            }
+
+            if (eventObject.ContainsKey("context"))
+            {
+                Context = eventObject["context"].ToString();
+            }
+
+            _user = new User();
+            if (eventObject.ContainsKey("user"))
+            {
+                _user.Add((Dictionary<string, object>)eventObject["user"]);
+            }
+
+            if (eventObject.ContainsKey("breadcrumbs"))
+            {
+                _breadcrumbs = new List<Breadcrumb>();
+                var crumbsArray = (JsonArray)eventObject["breadcrumbs"];
+                foreach (JsonObject crumb in crumbsArray)
+                {
+                    _breadcrumbs.Add(new Breadcrumb(crumb.GetDictionary()));
+                }
+                var breadcrumbsList = new List<IBreadcrumb>();
+                foreach (var crumb in _breadcrumbs)
+                {
+                    breadcrumbsList.Add(crumb);
+                }
+                Breadcrumbs = new ReadOnlyCollection<IBreadcrumb>(breadcrumbsList);
+            }
+
+            if (eventObject.ContainsKey("groupingHash"))
+            {
+                GroupingHash = eventObject["groupingHash"].ToString();
+            }
+
+            _errors = new List<Error>();
+            var errorsArray = (JsonArray)eventObject["exceptions"];
+            foreach (JsonObject error in errorsArray)
+            {
+                var newError = new Error(error.GetDictionary());
+                _errors.Add(newError);
+
+            }
+            Errors = new List<IError>();
+            foreach (var error in _errors)
+            {
+                Errors.Add(error);
+            }
+
+            if (eventObject.ContainsKey("session"))
+            {
+                Session = new Session();
+                Session.Add((Dictionary<string, object>)eventObject["session"]);
+            }
+
+            if (eventObject.ContainsKey("projectPackages"))
+            {
+                var packagesList = new List<string>();
+                var packagesArray = (JsonArray)eventObject["projectPackages"];
+                foreach (var item in packagesArray)
+                {
+                    packagesList.Add(item.ToString());
+                }
+                _androidProjectPackages = packagesList.ToArray();
+            }
+        }
+
         internal void AddAndroidProjectPackagesToEvent(string[] packages)
         {
             _androidProjectPackages = packages;

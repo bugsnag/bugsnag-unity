@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MobileNative : MonoBehaviour {
 
-#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
+#if UNITY_IOS || UNITY_TVOS
 
     [DllImport("__Internal")]
     private static extern void RaiseCocoaSignal();
@@ -41,7 +41,7 @@ public class MobileNative : MonoBehaviour {
 
     private static void IOSCrash()
     {
-#if UNITY_IOS || UNITY_TVOS || UNITY_OSX
+#if UNITY_IOS || UNITY_TVOS 
         TriggerCocoaCppException();
 #endif
     }

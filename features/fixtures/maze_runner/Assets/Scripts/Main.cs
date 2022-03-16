@@ -8,6 +8,7 @@ using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -15,8 +16,14 @@ using UnityEditor;
 
 public class Main : MonoBehaviour
 {
+
+
+#if UNITY_STANDALONE_OSX
+
     [DllImport("NativeCrashy")]
     private static extern void crashy_signal_runner(float num);
+
+#endif
 
     private Dictionary<string, string> _webGlArguments;
 
@@ -33,45 +40,34 @@ public class Main : MonoBehaviour
 #endif
 
 #if UNITY_WEBGL
-        ParseUrlParameters();
- 
+        ParseUrlParameters(); 
 #endif
         var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);
         Invoke("CloseApplication", _closeTime);
-        Bugsnag.Start(config);
-
-        // Add different varieties of custom metadata
-        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
-            {"foo", "bar" },
-        });
-
-        Bugsnag.AddMetadata("test","test1","test1");
-
-        Bugsnag.AddMetadata("test", "test2", "test2");
-
-        Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
-            {"letter", "QX" },
-            {"better", 400 },
-            {"string-array", new string []{"1","2","3"} },
-            {"int-array", new int []{1,2,3} },
-            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }  
-        });
-
-        Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
-            {"buildno", "0.1" },
-            {"cache", null },
-        });
-
-        // Remove a tab
-        Bugsnag.ClearMetadata("init");
-
-        // Remove a value
-        Bugsnag.ClearMetadata("test","test2");
-
-        // trigger the crash
+        if (scenario != "ClearBugsnagCache")
+        {
+            Bugsnag.Start(config);
+            Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
+                {"foo", "bar" },
+            });
+            Bugsnag.AddMetadata("test", "test1", "test1");
+            Bugsnag.AddMetadata("test", "test2", "test2");
+            Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
+                {"letter", "QX" },
+                {"better", 400 },
+                {"string-array", new string []{"1","2","3"} },
+                {"int-array", new int []{1,2,3} },
+                {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }
+            });
+            Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
+                {"buildno", "0.1" },
+                {"cache", null },
+            });
+            Bugsnag.ClearMetadata("init");
+            Bugsnag.ClearMetadata("test", "test2");
+        }
         RunScenario(scenario);
-
     }
 
     void CloseApplication()
@@ -112,25 +108,19 @@ public class Main : MonoBehaviour
         throw new System.Exception("COULD NOT GET ENV VAR: " + key);
     }
 
-    /**
-     * Creates a configuration object and prepares it for the given scenario
-     */
     Configuration PrepareConfig(string scenario)
     {
         string apiKey = GetEvnVar("BUGSNAG_APIKEY");
         var config = new Configuration(apiKey);
 
-        // setup default endpoints etc
         var endpoint = GetEvnVar("MAZE_ENDPOINT");
         config.Endpoints = new EndpointConfiguration(endpoint + "/notify", endpoint + "/sessions");
         config.AutoTrackSessions = scenario.Contains("AutoSession");
 
-        // replacement for BugsnagBehaviour as not practical to load script in fixture
         config.ScriptingBackend = FindScriptingBackend();
         config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         config.DotnetApiCompatibility = FindDotnetApiCompatibility();
 
-        // prepare scenario-specific config
         PrepareConfigForScenario(config, scenario);
         return config;
     }
@@ -144,13 +134,66 @@ public class Main : MonoBehaviour
 #endif
     }
 
-    /**
-     * Prepares the configuration object for a given scenario
-     */
     void PrepareConfigForScenario(Configuration config, string scenario)
     {
         switch (scenario)
         {
+            case "MaxPersistEvents":
+                config.MaximumBreadcrumbs = 0;
+                config.MaxPersistedEvents = 4;
+                config.AutoDetectErrors = true;
+                config.AutoTrackSessions = false;
+                config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
+                _closeTime = 12;
+                break;
+            case "PersistEvent":
+                config.AutoDetectErrors = true;
+                config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
+                config.Context = "First Error";
+                break;
+            case "PersistEventReport":
+                config.AutoDetectErrors = true;
+                config.Context = "Second Error";
+               
+                break;
+            case "PersistEventReportCallback":
+                config.AutoDetectErrors = true;
+                config.Context = "Second Error";
+                config.AddOnSendError((@event) => {
+
+                    @event.App.BinaryArch = "Persist BinaryArch";
+
+                    @event.Device.Id = "Persist Id";
+
+                    @event.Errors[0].ErrorClass = "Persist ErrorClass";
+
+                    @event.Errors[0].Stacktrace[0].Method = "Persist Method";
+
+                    foreach (var crumb in @event.Breadcrumbs)
+                    {
+                        crumb.Message = "Persist Message";
+                    }
+
+                    @event.AddMetadata("Persist Section", new Dictionary<string, object> { { "Persist Key", "Persist Value" } });
+
+                    return true;
+                });
+                break;
+            case "PersistSession":
+                config.AddOnSession((session)=> {
+                    session.App.ReleaseStage = "First Session";
+                    return true;
+                });
+                config.Endpoints = new EndpointConfiguration("https://notify.bugsdnag.com", "https://notify.bugsdnag.com");
+                config.AutoTrackSessions = true;
+                break;
+            case "PersistSessionReport":
+                config.AddOnSession((session) => {
+                    session.App.ReleaseStage = "Second Session";
+                    return true;
+                });
+                config.AutoTrackSessions = true;
+                break;
             case "ClearFeatureFlagsInCallback":
                 config.AddOnSendError((@event) => {
                     @event.AddFeatureFlag("testName3", "testVariant3");
@@ -389,6 +432,11 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "MaxPersistEvents":
+                StartCoroutine(NotifyPersistedEvents());
+                break;
+            case "PersistDeviceId":
+                throw new Exception("PersistDeviceId");
             case "FeatureFlagsAfterInitClearAll":
                 Bugsnag.AddFeatureFlag("testName1", "testVariant1");
                 Bugsnag.AddFeatureFlag("testName2", "testVariant1");
@@ -412,7 +460,7 @@ public class Main : MonoBehaviour
                 break;
             case "SetUserAfterInitNativeError":
                 Bugsnag.SetUser("1", "2", "3");
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "LongLaunchDuration":
             case "ShortLaunchDuration":
@@ -479,7 +527,7 @@ public class Main : MonoBehaviour
                 DoNotify();
                 break;
             case "NativeCrashOutsideNotifyReleaseStages":
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "UncaughtExceptionOutsideNotifyReleaseStages":
                 DoUnhandledException(0);
@@ -576,7 +624,7 @@ public class Main : MonoBehaviour
                 break;
             case "SetUserInConfigNativeCrash":
             case "NativeCrash":
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "UncaughtExceptionWithoutAutoNotify":
                 DoUnhandledException(0);
@@ -588,10 +636,10 @@ public class Main : MonoBehaviour
                 DebugLogException();
                 break;
             case "NativeCrashWithoutAutoNotify":
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "NativeCrashReEnableAutoNotify":
-                crashy_signal_runner(8);
+                MacOSNativeCrash();
                 break;
             case "CheckForManualContextAfterSceneLoad":
                 StartCoroutine(SetManualContextReloadSceneAndNotify());
@@ -600,7 +648,7 @@ public class Main : MonoBehaviour
                 new Thread(() =>
                 {
                     Thread.Sleep(900);
-                    crashy_signal_runner(8);
+                    MacOSNativeCrash();
                 }).Start();
                 break;
             case "AutoSession":
@@ -608,14 +656,40 @@ public class Main : MonoBehaviour
             case "DisableErrorBreadcrumbs":
                 DisableErrorBreadcrumbs();
                 break;
+            case "PersistEvent":
+                throw new Exception("First Event");
+            case "PersistEventReport":
+            case "PersistEventReportCallback":
+                throw new Exception("Second Event");
+            case "ClearBugsnagCache":
+                ClearBugsnagCache();
+                break;
+            case "PersistSession":
+            case "PersistSessionReport":
             case "(noop)":
                 break;
             default:
                 throw new ArgumentException("Unable to run unexpected scenario: " + scenario);
-                break;
         }
     }
 
+    private IEnumerator NotifyPersistedEvents()
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            Bugsnag.Notify(new Exception("Event " + i));
+            yield return new WaitForSeconds(2f);
+        }
+    }
+
+    private void ClearBugsnagCache()
+    {
+        var path = Application.persistentDataPath + "/Bugsnag";
+        if(Directory.Exists(path))
+        {
+            Directory.Delete(path, true);
+        }
+    }
 
     private void DisableErrorBreadcrumbs()
     {
@@ -856,6 +930,15 @@ public class Main : MonoBehaviour
       return ".NET 2.0";
 #endif
     }
+
+    private void MacOSNativeCrash()
+    {
+
+#if UNITY_STANDALONE_OSX
+         crashy_signal_runner(8);
+#endif
+    }
+
 }
 
 

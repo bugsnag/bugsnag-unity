@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 #nullable enable
 
@@ -50,6 +51,8 @@ namespace BugsnagUnity.Payload
             get => (bool?)Get(IS_LAUNCHING_KEY);
             set => Add(IS_LAUNCHING_KEY, value);
         }
+
+        internal AppWithState(Dictionary<string, object> cachedData) : base(cachedData){}
 
         internal AppWithState(Configuration configuration) : base(configuration)
         {

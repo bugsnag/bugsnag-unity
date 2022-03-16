@@ -27,9 +27,6 @@ namespace BugsnagUnity.Payload
         private const string TOTAL_MEMORY_KEY = "totalMemory";
         private const string USER_AGENT_KEY = "userAgent";
 
-        //Player prefs id for Bugsnag generated device id
-        private const string GENERATED_ID_KEY = "GENERATED_ID_KEY";
-
 
         public string? BrowserName
         {
@@ -115,6 +112,10 @@ namespace BugsnagUnity.Payload
             set => Add(USER_AGENT_KEY, value);
         }
 
+        internal Device(Dictionary<string, object> cachedData)
+        {
+            Add(cachedData);
+        }
 
         internal Device(Configuration configuration)
         {
@@ -122,21 +123,11 @@ namespace BugsnagUnity.Payload
             Locale = CultureInfo.CurrentCulture.ToString();
             AddOsInfo();
             AddRuntimeVersions(configuration);
-            if (configuration.GenerateAnonymousId)
-            {
-                Id = GetGeneratedDeviceId();
-            }
+            Id = FileManager.GetDeviceId();
             Model = SystemInfo.deviceModel;
         }
 
-        private string GetGeneratedDeviceId()
-        {
-            if (!PlayerPrefs.HasKey(GENERATED_ID_KEY))
-            {
-                PlayerPrefs.SetString(GENERATED_ID_KEY, Guid.NewGuid().ToString());
-            }
-            return PlayerPrefs.GetString(GENERATED_ID_KEY);
-        }
+      
 
         private void AddOsInfo()
         {

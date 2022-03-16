@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 pushd features/fixtures/maze_runner/build
   unzip MacOS-$UNITY_VERSION.zip
 popd
