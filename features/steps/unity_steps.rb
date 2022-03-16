@@ -64,7 +64,7 @@ def dial_number_for(name)
       "Feature Flags After Init Clear All" => 39,
       "Feature Flags In Callback" => 40,
       "Clear Feature Flags In Callback" => 41,
-
+      "Max Reported Threads" => 42,
 
 
       # Commands
