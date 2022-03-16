@@ -144,6 +144,7 @@ public class Main : MonoBehaviour
                 config.AutoDetectErrors = true;
                 config.AutoTrackSessions = false;
                 config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
+                _closeTime = 12;
                 break;
             case "PersistEvent":
                 config.AutoDetectErrors = true;
@@ -669,7 +670,6 @@ public class Main : MonoBehaviour
                 break;
             default:
                 throw new ArgumentException("Unable to run unexpected scenario: " + scenario);
-                break;
         }
     }
 
@@ -678,7 +678,7 @@ public class Main : MonoBehaviour
         for (int i = 0; i < 5; i++)
         {
             Bugsnag.Notify(new Exception("Event " + i));
-            yield return new WaitForSeconds(0.75f);
+            yield return new WaitForSeconds(2f);
         }
     }
 
