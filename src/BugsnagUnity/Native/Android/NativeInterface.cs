@@ -279,6 +279,8 @@ namespace BugsnagUnity
             obj.Call("setPersistUser", config.PersistUser);
             obj.Call("setLaunchDurationMillis", config.LaunchDurationMillis);
             obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
+            obj.Call("setMaxReportedThreads", config.MaxReportedThreads);
+
 
             if (config.GetUser() != null)
             {
