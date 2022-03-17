@@ -16,23 +16,6 @@ pushd "$script_path/../../fixtures"
 
 DEFAULT_CLI_ARGS="-quit -nographics -batchmode -logFile unity.log"
 
-if [[ "$UNITY_PATH" == *"2021"* ]]; then
-  # Copy the 2021 package manifest in for that version
-  mkdir -p maze_runner/Packages
-  cp manifests/manifest_2021.json maze_runner/Packages/manifest.json
-elif [[ "$UNITY_PATH" == *"2020"* ]]; then
-  # Copy the 2020 package manifest in for that version
-  mkdir -p maze_runner/Packages
-  cp manifests/manifest_2020.json maze_runner/Packages/manifest.json
-elif [[ "$UNITY_PATH" == *"2019"* ]]; then
-  # Copy the 2019 package manifest in for that version
-  mkdir -p maze_runner/Packages
-  cp manifests/manifest_2019.json maze_runner/Packages/manifest.json
-else
-  # On all other versions disable the package manager
-  DEFAULT_CLI_ARGS="${DEFAULT_CLI_ARGS} -noUpm"
-fi
-
 project_path=`pwd`/maze_runner
 
 # Generate the Xcode project for iOS
