@@ -15,7 +15,7 @@ namespace BugsnagUnity.Editor
 
         private const string ANDROID_DEPS_XML = "<dependencies><androidPackages><repositories><repository>https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib</repository></repositories><androidPackage spec=\"org.jetbrains.kotlin:kotlin-stdlib:1.5.0\"></androidPackage></androidPackages></dependencies>";
 
-        private const string EDM_MENU_ITEM = "Window/Bugsnag/EDM Support";
+        private const string EDM_MENU_ITEM = "Window/Bugsnag/Enable EDM4U Support";
 
         private static string EDMDepsFilePath = "/Bugsnag/Editor/BugsnagAndroidDependencies.xml";
 
@@ -30,7 +30,7 @@ namespace BugsnagUnity.Editor
         private Vector2 _scrollPos;
 
 
-        [MenuItem(EDM_MENU_ITEM)]
+        [MenuItem(EDM_MENU_ITEM,false,1)]
         private static void ToggleEDM()
         {
             if (IsEDMEnabled())
@@ -56,7 +56,7 @@ namespace BugsnagUnity.Editor
             CheckForSettingsCreation();
         }
 
-        [MenuItem("Window/Bugsnag/Configuration")]
+        [MenuItem("Window/Bugsnag/Configuration",false,0)]
         public static void ShowWindow()
         {
             CheckForSettingsCreation();
@@ -271,16 +271,16 @@ namespace BugsnagUnity.Editor
             }
             catch (Exception e)
             {
-                Debug.LogError("Error enabling Bugsnag EDM support: " + e.Message);
+                Debug.LogError("Error enabling Bugsnag EDM4U support: " + e.Message);
             }
 
             if (IsEDMEnabled())
             {
-                Debug.Log("Bugsnag EDM support successfully enabled");
+                ReportEDMSuccess("Bugsnag EDM4U support successfully enabled.\n\nPlease restart Unity before building.");
             }
             else
             {
-                Debug.LogError("Error enabling Bugsnag EDM support, please check the console for error messages");
+                ReportEDMError("Error enabling Bugsnag EDM4U support.\n\nPlease check the console for error messages");
             }
         }
 
@@ -302,17 +302,29 @@ namespace BugsnagUnity.Editor
             }
             catch (Exception e)
             {
-                Debug.LogError("Error disabling Bugsnag EDM support: " + e.Message);
+                Debug.LogError("Error disabling Bugsnag EDM4U support: " + e.Message);
             }
 
             if (!IsEDMEnabled())
             {
-                Debug.Log("Bugsnag EDM support successfully disabled");
+                ReportEDMSuccess("Bugsnag EDM4U support successfully disabled.\n\nPlease restart Unity before building.");
             }
             else
             {
-                Debug.LogError("Error disabling Bugsnag EDM support, please check the console for error messages");
+                ReportEDMError("Error disabling Bugsnag EDM4U support.\n\nPlease check the console for error messages");
             }
+        }
+
+        private static void ReportEDMSuccess(string msg)
+        {
+            BugsnagEDMPopup.Open(msg);
+            Debug.Log(msg);
+        }
+
+        private static void ReportEDMError(string msg)
+        {
+            BugsnagEDMPopup.Open(msg);
+            Debug.LogError(msg);
         }
 
         private static List<PluginImporter> GetKotlinLibs()
@@ -336,6 +348,29 @@ namespace BugsnagUnity.Editor
                 }
             }
             return success;
+        }
+    }
+
+    public class BugsnagEDMPopup : EditorWindow
+    {
+        private static string _msg;
+
+        public static void Open(string msg)
+        {
+            _msg = msg;
+            BugsnagEDMPopup window = ScriptableObject.CreateInstance<BugsnagEDMPopup>();
+            window.position = new Rect(Screen.width / 2, Screen.height / 2, 200, 110);
+            window.ShowPopup();
+        }
+
+        void OnGUI()
+        {
+            var style = EditorStyles.wordWrappedLabel;
+            style.alignment = TextAnchor.MiddleCenter;
+            GUILayout.Space(5);
+            EditorGUILayout.LabelField(_msg,style );
+            GUILayout.Space(5);
+            if (GUILayout.Button("ok")) this.Close();
         }
     }
 }
