@@ -28,7 +28,7 @@ namespace BugsnagUnity
 
         private MaximumLogTypeCounter _logTypeCounter;
 
-        protected IDelivery Delivery => NativeClient.Delivery;
+        private Delivery _delivery;
 
         object CallbackLock { get; } = new object();
 
@@ -52,6 +52,7 @@ namespace BugsnagUnity
         public Client(INativeClient nativeClient)
         {
             NativeClient = nativeClient;
+            _delivery = new Delivery(nativeClient.Configuration);
             FileManager.InitFileManager(nativeClient.Configuration);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
@@ -66,7 +67,7 @@ namespace BugsnagUnity
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
-            Delivery.TrySendingCachedPayloads();
+            _delivery.StartDeliveringCachedPayloads();
         }
 
         private void InitFeatureFlags()
@@ -202,7 +203,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            Delivery.Send(payload);
+            _delivery.Deliver(payload);
         }
 
         void MultiThreadedNotify(string condition, string stackTrace, LogType logType)
@@ -428,32 +429,10 @@ namespace BugsnagUnity
                 // If the callback causes an exception, ignore it and execute the next one
             }
 
-
-            lock (CallbackLock)
-            {
-                foreach (var onSendErrorCallback in Configuration.GetOnSendErrorCallbacks())
-                {
-                    try
-                    {
-                        if (!onSendErrorCallback.Invoke(@event))
-                        {
-                            return;
-                        }
-                    }
-                    catch
-                    {
-                        // If the callback causes an exception, ignore it and execute the next one
-                    }
-                }
-            }
-
-            @event.RedactMetadata(Configuration);
-
             var report = new Report(Configuration, @event);
-
             if (!report.Ignored)
             {
-                FileManager.AddPendingEvent(report);
+                FileManager.AddPendingPayload(report);
                 Send(report);
                 if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
                 {
@@ -497,7 +476,6 @@ namespace BugsnagUnity
                         if (IsUsingFallback())
                         {
                             SessionTracking.StartSession();
-                            Delivery.TrySendingCachedPayloads();
                         }
                         else
                         {
@@ -510,6 +488,7 @@ namespace BugsnagUnity
                     }
                     _backgroundStopwatch.Reset();
                 }
+                _delivery.StartDeliveringCachedPayloads();
             }
             else
             {

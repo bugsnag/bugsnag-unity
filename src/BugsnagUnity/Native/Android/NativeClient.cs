@@ -10,15 +10,12 @@ namespace BugsnagUnity
 
         public IBreadcrumbs Breadcrumbs { get; }
 
-        public IDelivery Delivery { get; }
-
         private NativeInterface NativeInterface;
 
         public NativeClient(Configuration configuration)
         {
             NativeInterface = new NativeInterface(configuration);
             Configuration = configuration;
-            Delivery = new Delivery();
             Breadcrumbs = new Breadcrumbs(NativeInterface);
             if (configuration.AutoTrackSessions)
             {

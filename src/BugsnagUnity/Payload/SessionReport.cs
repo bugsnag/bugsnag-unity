@@ -48,7 +48,7 @@ namespace BugsnagUnity.Payload
             Id = cachedReport["id"].ToString();
         }
 
-        public Dictionary<string, object> GetSerialisableSessionReport()
+        public Dictionary<string, object> GetSerialisablePayload()
         {
             var serialisableSessionReport = new Dictionary<string, object>
                 {

@@ -113,6 +113,8 @@ namespace BugsnagUnity
             }
         }
 
+        public int MaxReportedThreads = 200;
+
         public string ReleaseStage = "production";
 
         public string[] EnabledReleaseStages;
