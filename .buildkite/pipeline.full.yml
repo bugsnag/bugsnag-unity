@@ -85,10 +85,6 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: Run MacOS e2e tests for Unity 2019
     timeout_in_minutes: 30
@@ -104,10 +100,6 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: Run MacOS e2e tests for Unity 2021
     timeout_in_minutes: 30
@@ -123,10 +115,6 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Run WebGL tests
@@ -149,10 +137,6 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: Run WebGL e2e tests for Unity 2019
     timeout_in_minutes: 30
@@ -170,10 +154,6 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: Run WebGL e2e tests for Unity 2021
     timeout_in_minutes: 30
@@ -191,10 +171,6 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Build Android test fixtures
@@ -284,10 +260,6 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: ':android: Run Android e2e tests for Unity 2019'
     timeout_in_minutes: 30
@@ -311,10 +283,6 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   # TODO: PLAT-7967 Investigate failures specific to Unity 2021 on Android
   - label: ':android: Run Android e2e tests for Unity 2021'
@@ -340,10 +308,6 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Build iOS test fixtures
@@ -503,10 +467,6 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: ':ios: Run iOS e2e tests for Unity 2019'
     timeout_in_minutes: 30
@@ -531,10 +491,6 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: ':ios: Run iOS e2e tests for Unity 2021'
     timeout_in_minutes: 30
@@ -559,10 +515,6 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Build Windows test fixtures
@@ -635,10 +587,6 @@ steps:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
       - maze_output/**/*
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: Run Windows e2e tests for Unity 2019
     timeout_in_minutes: 30
@@ -651,10 +599,6 @@ steps:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
       - maze_output/**/*
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   - label: Run Windows e2e tests for Unity 2021
     timeout_in_minutes: 30
@@ -667,7 +611,3 @@ steps:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
       - maze_output/**/*
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1

@@ -62,10 +62,6 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Run WebGL tests
@@ -88,10 +84,6 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Build Android test fixtures
@@ -143,10 +135,6 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Build iOS test fixtures
@@ -220,10 +208,6 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Build Windows test fixture
@@ -260,10 +244,6 @@ steps:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
       - maze_output/**/*
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
 
   #
   # Conditionally trigger full pipeline
