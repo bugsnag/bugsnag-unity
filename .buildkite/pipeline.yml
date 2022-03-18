@@ -16,6 +16,10 @@ steps:
       - bundle exec rake plugin:export
     artifact_paths:
       - Bugsnag.unitypackage
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build MacOS and WebGL test fixtures
@@ -38,10 +42,9 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2020.3.28f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
+        - exit_status: "*"
           limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
-          limit: 1
+
   #
   # Run desktop tests
   #
@@ -59,6 +62,10 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Run WebGL tests
@@ -81,6 +88,10 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build Android test fixtures
@@ -102,9 +113,7 @@ steps:
       - rake test:android:build
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -134,6 +143,10 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build iOS test fixtures
@@ -156,9 +169,7 @@ steps:
       - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2020'
@@ -180,9 +191,7 @@ steps:
       - rake test:ios:build_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -211,6 +220,10 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build Windows test fixture
@@ -230,9 +243,7 @@ steps:
       - features/fixtures/maze_runner/build/Windows-2020.3.28f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -249,6 +260,10 @@ steps:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
       - maze_output/**/*
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Conditionally trigger full pipeline

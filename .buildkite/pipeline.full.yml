@@ -23,9 +23,7 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2018.4.36f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: Build Unity 2019 MacOS and WebGL test fixtures
@@ -46,9 +44,7 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2019.4.35f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: Build Unity 2021 MacOS and WebGL test fixtures
@@ -69,9 +65,7 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2021.2.11f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -91,6 +85,10 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: Run MacOS e2e tests for Unity 2019
     timeout_in_minutes: 30
@@ -106,6 +104,10 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: Run MacOS e2e tests for Unity 2021
     timeout_in_minutes: 30
@@ -121,6 +123,10 @@ steps:
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Run WebGL tests
@@ -143,6 +149,10 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: Run WebGL e2e tests for Unity 2019
     timeout_in_minutes: 30
@@ -160,6 +170,10 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: Run WebGL e2e tests for Unity 2021
     timeout_in_minutes: 30
@@ -177,6 +191,10 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build Android test fixtures
@@ -198,9 +216,7 @@ steps:
       - rake test:android:build
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':android: Build Android test fixture for Unity 2019'
@@ -220,9 +236,7 @@ steps:
       - rake test:android:build
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':android: Build Android test fixture for Unity 2021'
@@ -242,9 +256,7 @@ steps:
       - rake test:android:build
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -272,6 +284,10 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: ':android: Run Android e2e tests for Unity 2019'
     timeout_in_minutes: 30
@@ -295,6 +311,10 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   # TODO: PLAT-7967 Investigate failures specific to Unity 2021 on Android
   - label: ':android: Run Android e2e tests for Unity 2021'
@@ -320,6 +340,10 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build iOS test fixtures
@@ -342,9 +366,7 @@ steps:
       - tar -zvcf project_2018.tgz  features/fixtures/maze_runner/mazerunner_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2018'
@@ -366,9 +388,7 @@ steps:
       - rake test:ios:build_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':ios: Generate Xcode project - Unity 2019'
@@ -389,9 +409,7 @@ steps:
       - tar -zvcf project_2019.tgz features/fixtures/maze_runner/mazerunner_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2019'
@@ -413,9 +431,7 @@ steps:
       - rake test:ios:build_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':ios: Generate Xcode project - Unity 2021'
@@ -436,9 +452,7 @@ steps:
       - tar -zvcf project_2021.tgz features/fixtures/maze_runner/mazerunner_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2021'
@@ -460,9 +474,7 @@ steps:
       - rake test:ios:build_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -491,6 +503,10 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: ':ios: Run iOS e2e tests for Unity 2019'
     timeout_in_minutes: 30
@@ -515,6 +531,10 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: ':ios: Run iOS e2e tests for Unity 2021'
     timeout_in_minutes: 30
@@ -539,6 +559,10 @@ steps:
     concurrency: 9
     concurrency_group: browserstack-app
     concurrency_method: eager
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build Windows test fixtures
@@ -558,9 +582,7 @@ steps:
       - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: Build Unity 2019 Windows test fixture
@@ -578,9 +600,7 @@ steps:
       - features/fixtures/maze_runner/build/Windows-2019.4.35f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: Build Unity 2021 Windows test fixture
@@ -598,9 +618,7 @@ steps:
       - features/fixtures/maze_runner/build/Windows-2021.2.11f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -617,6 +635,10 @@ steps:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
       - maze_output/**/*
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: Run Windows e2e tests for Unity 2019
     timeout_in_minutes: 30
@@ -629,6 +651,10 @@ steps:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
       - maze_output/**/*
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: Run Windows e2e tests for Unity 2021
     timeout_in_minutes: 30
@@ -641,3 +667,7 @@ steps:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
       - maze_output/**/*
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
