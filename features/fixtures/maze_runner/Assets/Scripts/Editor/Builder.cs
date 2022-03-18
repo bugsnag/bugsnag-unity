@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using UnityEngine;
+using BugsnagUnity.Editor;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -44,6 +45,12 @@ public class Builder : MonoBehaviour {
 
         var result = BuildPipeline.BuildPlayer(opts);
         Debug.Log("Result: " + result);
+    }
+
+    public static void EnableEDM()
+    {
+        BugsnagEditor.EnableEDM();
+        Google.VersionHandler.InvokeStaticMethod(Google.VersionHandler.FindClass("Google.JarResolver", "GooglePlayServices.PlayServicesResolver"), "Resolve", args: null, namedArgs: new System.Collections.Generic.Dictionary<string, object> { { "resolutionComplete", null }, });
     }
 
     // Generates the Mazerunner IPA
