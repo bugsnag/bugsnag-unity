@@ -254,7 +254,7 @@ namespace BugsnagUnity.Editor
         }
 #endif
 
-        private static void EnableEDM()
+        public static void EnableEDM()
         {
             try
             {
@@ -285,7 +285,7 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        private static void DisableEDM()
+        public static void DisableEDM()
         {
             try
             {

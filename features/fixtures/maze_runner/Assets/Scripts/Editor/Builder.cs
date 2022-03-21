@@ -47,12 +47,6 @@ public class Builder : MonoBehaviour {
         Debug.Log("Result: " + result);
     }
 
-    public static void EnableEDM()
-    {
-        BugsnagEditor.EnableEDM();
-        Google.VersionHandler.InvokeStaticMethod(Google.VersionHandler.FindClass("Google.JarResolver", "GooglePlayServices.PlayServicesResolver"), "Resolve", args: null, namedArgs: new System.Collections.Generic.Dictionary<string, object> { { "resolutionComplete", null }, });
-    }
-
     // Generates the Mazerunner IPA
     public static void IosBuild()
     {

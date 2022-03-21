@@ -15,18 +15,30 @@ popd
 pushd "$script_path/../../fixtures"
 
 DEFAULT_CLI_ARGS="-quit -batchmode -nographics"
-project_path=`pwd`/maze_runner
+project_path=`pwd`/EDM_Fixture
 
 # Installing the Bugsnag package
-echo "Importing external-dependency-manager-1.2.169.unitypackage into $project_path"
+echo "Importing Bugsnag.unitypackage into $project_path"
 $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
                   -projectPath $project_path \
                   -ignoreCompilerErrors \
-                  -logFile edmImport.log\
-                  -importPackage $script_path/../../EDM4U/external-dependency-manager-1.2.169.unitypackage
+                  -logFile $script_path/edmImport.log\
+                  -importPackage $script_path/../../../Bugsnag.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -logFile edmEnable.log -projectPath $project_path -executeMethod Builder.EnableEDM
+echo "Enable EDM"
+
+
+$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -buildTarget Android -logFile edmEnable.log -projectPath $project_path -executeMethod Builder.EnableEDM
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+
+echo "Build EDM APK"
+
+
+$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -buildTarget Android -logFile edmEnable.log -projectPath $project_path -executeMethod Builder.EnableEDM
+RESULT=$?
+if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+
+  mv $project_path/edm.apk $project_path/edm_$UNITY_VERSION.apk
