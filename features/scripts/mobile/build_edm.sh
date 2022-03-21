@@ -30,14 +30,14 @@ if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 echo "Enable EDM"
 
 
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -buildTarget Android -logFile edmEnable.log -projectPath $project_path -executeMethod Builder.EnableEDM
+$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -buildTarget Android -logFile $script_path/enableEdm.log -projectPath $project_path -executeMethod Builder.EnableEDM
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
 echo "Build EDM APK"
 
 
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -buildTarget Android -logFile edmEnable.log -projectPath $project_path -executeMethod Builder.EnableEDM
+$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -buildTarget Android -logFile $script_path/buildEdmFixture.log -projectPath $project_path -executeMethod Builder.AndroidBuild
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
