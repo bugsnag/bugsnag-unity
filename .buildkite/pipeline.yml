@@ -16,6 +16,10 @@ steps:
       - bundle exec rake plugin:export
     artifact_paths:
       - Bugsnag.unitypackage
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build MacOS and WebGL test fixtures
@@ -38,10 +42,9 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2020.3.28f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
+        - exit_status: "*"
           limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
-          limit: 1
+
   #
   # Run desktop tests
   #
@@ -102,9 +105,7 @@ steps:
       - rake test:android:build
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -156,9 +157,7 @@ steps:
       - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2020'
@@ -180,9 +179,7 @@ steps:
       - rake test:ios:build_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
@@ -230,9 +227,7 @@ steps:
       - features/fixtures/maze_runner/build/Windows-2020.3.28f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
