@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD 
+
+### Enhancements
+
+* Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). See the new menu item at Window/Bugsnag/Enable EDM Support. [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
+
+
 ## 6.2.0 (2022-03-16)
 
 ### Enhancements
