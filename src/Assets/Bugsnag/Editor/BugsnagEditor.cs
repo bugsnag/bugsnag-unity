@@ -12,8 +12,8 @@ namespace BugsnagUnity.Editor
 {
     public class BugsnagEditor : EditorWindow
     {
-
-        private const string ANDROID_DEPS_XML = "<dependencies><androidPackages><repositories><repository>https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib</repository></repositories><androidPackage spec=\"org.jetbrains.kotlin:kotlin-stdlib:1.5.0\"></androidPackage></androidPackages></dependencies>";
+        // The kotlin Version here needs to match the one in the rake build file. Both should reflect what the android notifier is using.
+        private const string ANDROID_DEPS_XML = "<dependencies><androidPackages><repositories><repository>https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib</repository></repositories><androidPackage spec=\"org.jetbrains.kotlin:kotlin-stdlib:1.4.32\"></androidPackage></androidPackages></dependencies>";
 
         private const string EDM_MENU_ITEM = "Window/Bugsnag/Enable EDM4U Support";
 
@@ -258,16 +258,8 @@ namespace BugsnagUnity.Editor
         {
             try
             {
-                var path = Application.dataPath + EDMDepsFilePath;
-
-                File.WriteAllText(path, ANDROID_DEPS_XML);
-
-                foreach (var lib in GetKotlinLibs())
-                {
-                    lib.SetCompatibleWithPlatform(BuildTarget.Android, false);
-                    lib.SaveAndReimport();
-                }
-
+                EditDepsFile(true);
+                UpdateKotlinLibraryImportSettings(false);
                 AssetDatabase.Refresh();
             }
             catch (Exception e)
@@ -289,16 +281,8 @@ namespace BugsnagUnity.Editor
         {
             try
             {
-                var path = Application.dataPath + EDMDepsFilePath;
-                File.Delete(path);
-                File.Delete(path + ".meta");
-
-                foreach (var lib in GetKotlinLibs())
-                {
-                    lib.SetCompatibleWithPlatform(BuildTarget.Android, true);
-                    lib.SaveAndReimport();
-                }
-
+                EditDepsFile(false);
+                UpdateKotlinLibraryImportSettings(true);
                 AssetDatabase.Refresh();
             }
             catch (Exception e)
@@ -328,6 +312,29 @@ namespace BugsnagUnity.Editor
             Debug.LogError(msg);
         }
 
+        private static void UpdateKotlinLibraryImportSettings(bool active)
+        {
+            foreach (var lib in GetKotlinLibs())
+            {
+                lib.SetCompatibleWithPlatform(BuildTarget.Android, active);
+                lib.SaveAndReimport();
+            }
+        }
+
+        private static void EditDepsFile(bool create)
+        {
+            var path = Application.dataPath + EDMDepsFilePath;
+            if (create)
+            {
+                File.WriteAllText(path, ANDROID_DEPS_XML);
+            }
+            else
+            {
+                File.Delete(path);
+                File.Delete(path + ".meta");
+            }
+        }
+
         private static List<PluginImporter> GetKotlinLibs()
         {
             var kotlinLibs = new List<PluginImporter>();
@@ -340,15 +347,18 @@ namespace BugsnagUnity.Editor
 
         private static bool IsEDMEnabled()
         {
-            var success = File.Exists(Application.dataPath + EDMDepsFilePath);
+            if (!File.Exists(Application.dataPath + EDMDepsFilePath))
+            {
+                return false;
+            }
             foreach (var lib in GetKotlinLibs())
             {
                 if (lib.GetCompatibleWithPlatform(BuildTarget.Android))
                 {
-                    success = false;
+                    return false;
                 }
             }
-            return success;
+            return true;
         }
     }
 
