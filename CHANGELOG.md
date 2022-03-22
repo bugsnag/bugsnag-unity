@@ -1,11 +1,35 @@
 # Changelog
 
-## TBD
+## 6.3.0 (2022-03-23)
+
+### Enhancements
+
+* Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). See the new menu item at Window/Bugsnag/Enable EDM Support. [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
+
+* Update bugsnag-android to v5.21.0
+  * Fix inconsistencies in stack trace quality for C/C++ events. Resolves a few
+    cases where file and line number information was not resolving to the correct
+    locations. This change may result in grouping changes to more correctly
+    highlight the root cause of an event.
+    [#1605](https://github.com/bugsnag/bugsnag-android/pull/1605)
+    [#1606](https://github.com/bugsnag/bugsnag-android/pull/1606)
+  * Fixed an issue where an uncaught exception on the main thread could in rare cases trigger an ANR.
+    [#1624](https://github.com/bugsnag/bugsnag-android/pull/1624)
+
+## 6.2.0 (2022-03-16)
 
 ### Enhancements
 
 * Added event, session and device id persistence for Windows and WebGL builds [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509) [#514](https://github.com/bugsnag/bugsnag-unity/pull/514)
 
+* Add `Configuration.MaxReportedThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxreportedthreads) [523](https://github.com/bugsnag/bugsnag-unity/pull/523)
+
+* Update bugsnag-android to v5.20.0
+  * The number of threads reported can now be limited using `Configuration.setMaxReportedThreads` (defaulting to 200)
+    [bugsnag-android#1607](https://github.com/bugsnag/bugsnag-android/pull/1607)
+  * Improved the performance and stability of the NDK and ANR plugins by caching JNI references on start
+    [bugsnag-android#1596](https://github.com/bugsnag/bugsnag-android/pull/1596)
+    [bugsnag-android#1601](https://github.com/bugsnag/bugsnag-android/pull/1601)
 
 ## 6.1.0 (2022-02-08)
 

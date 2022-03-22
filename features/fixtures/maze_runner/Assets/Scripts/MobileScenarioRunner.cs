@@ -56,6 +56,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "39", "Feature Flags After Init Clear All" },
         { "40", "Feature Flags In Callback" },
         { "41", "Clear Feature Flags In Callback" },
+        { "42", "Max Reported Threads" },
 
 
 
@@ -142,6 +143,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Max Reported Threads":
+                config.MaxReportedThreads = 2;
+                break;
             case "Clear Feature Flags In Callback":
                 config.AddOnSendError((@event) => {
                     @event.AddFeatureFlag("testName3", "testVariant3");
@@ -427,6 +431,11 @@ public class MobileScenarioRunner : MonoBehaviour {
                 MobileNative.TriggerBackgroundJavaCrash();
 #elif UNITY_IOS
                 NativeException();
+#endif
+                break;
+            case "Max Reported Threads":
+#if UNITY_ANDROID
+                MobileNative.TriggerBackgroundJavaCrash();
 #endif
                 break;
             case "Set User After Init Csharp Error":

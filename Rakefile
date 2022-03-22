@@ -123,10 +123,12 @@ def assemble_android filter_abis=true
 
   # copy kotlin dependencies required by bugsnag-android. the exact files required for each
   # version can be found here:
-  # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72.pom
-  kotlin_stdlib = File.join("android-libs", "kotlin-stdlib-1.3.72.jar")
-  kotlin_stdlib_common = File.join("android-libs", "kotlin-stdlib-common-1.3.72.jar")
-  kotlin_annotations = File.join("android-libs", "annotations-13.0.jar")
+  # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.4.32/kotlin-stdlib-1.4.32.pom
+  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script. 
+  # Both should be informed by what the android notifier is using
+  kotlin_stdlib = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-1.4.32.jar")
+  kotlin_stdlib_common = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-common-1.4.32.jar")
+  kotlin_annotations = File.join("android-libs", "org.jetbrains.annotations-13.0.jar")
 
   # copy unity lib
   unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
@@ -135,9 +137,10 @@ def assemble_android filter_abis=true
   cp ndk_lib, File.join(android_dir, "bugsnag-android-ndk-release.aar")
   cp anr_lib, File.join(android_dir, "bugsnag-plugin-android-anr-release.aar")
   cp unity_lib, File.join(android_dir, "bugsnag-android-unity-release.aar")
-  cp kotlin_stdlib, File.join(android_dir, "kotlin-stdlib.jar")
-  cp kotlin_stdlib_common, File.join(android_dir, "kotlin-stdlib-common.jar")
-  cp kotlin_annotations, File.join(android_dir, "kotlin-annotations.jar")
+  mkdir File.join(android_dir, "Kotlin")
+  cp kotlin_stdlib, File.join(android_dir, "Kotlin/kotlin-stdlib.jar")
+  cp kotlin_stdlib_common, File.join(android_dir, "Kotlin/kotlin-stdlib-common.jar")
+  cp kotlin_annotations, File.join(android_dir, "Kotlin/kotlin-annotations.jar")
 end
 
 namespace :plugin do

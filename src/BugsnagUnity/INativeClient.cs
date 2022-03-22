@@ -19,11 +19,6 @@ namespace BugsnagUnity
         IBreadcrumbs Breadcrumbs { get; }
 
         /// <summary>
-        /// The native delivery method
-        /// </summary>
-        IDelivery Delivery { get; }
-
-        /// <summary>
         /// Populates the native app information
         /// </summary>
         /// <returns></returns>

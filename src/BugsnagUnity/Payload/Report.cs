@@ -29,7 +29,6 @@ namespace BugsnagUnity.Payload
             Event = @event;
             this.AddToPayload("apiKey", @event.ApiKey);
             this.AddToPayload("notifier", NotifierInfo.Instance);
-            this.AddToPayload("events", new[] { Event.GetEventPayload() });
         }
 
         internal Report(Configuration configuration, Dictionary<string, object> data)
@@ -46,7 +45,7 @@ namespace BugsnagUnity.Payload
             Event = new Event(data);
         }
 
-        internal Dictionary<string, object> GetSerialisableEventReport()
+        public Dictionary<string, object> GetSerialisablePayload()
         {
             var serialisableReport = new Dictionary<string, object>();
             serialisableReport["id"] = Id;

@@ -1,13 +1,14 @@
+agents:
+  queue: opensource-arm-mac-cocoa-12
+
 steps:
 
   #
   # Build notifier.  We run tests for all Unity versions with the 2018 artifacts, as that is what we ship.
   #
   - label: Build notifier artifacts
-    key: 'build-artifacts'
     timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
+    key: 'build-artifacts'
     env:
       UNITY_VERSION: "2018.4.36f1"
     commands:
@@ -15,20 +16,22 @@ steps:
       - bundle exec rake plugin:export
     artifact_paths:
       - Bugsnag.unitypackage
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Build MacOS and WebGL test fixtures
   #
   - label: Build Unity 2020 MacOS and WebGL test fixtures
+    timeout_in_minutes: 30
     key: 'cocoa-webgl-2020-fixtures'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
     commands:
@@ -39,26 +42,23 @@ steps:
       - features/fixtures/maze_runner/build/WebGL-2020.3.28f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
+        - exit_status: "*"
           limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
-          limit: 1
+
   #
   # Run desktop tests
   #
   - label: Run MacOS e2e tests for Unity 2020
-    depends_on: 'cocoa-webgl-2020-fixtures'
     timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
+    depends_on: 'cocoa-webgl-2020-fixtures'
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/MacOS-2020.3.28f1.zip
         upload:
-          - maze_output/*
+          - maze_output/**/*
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests.sh
@@ -69,18 +69,18 @@ steps:
   # Note: These are run on Intel due to an issue with persistence with Firefox on ARM.
   #
   - label: Run WebGL e2e tests for Unity 2020
-    depends_on: 'cocoa-webgl-2020-fixtures'
     timeout_in_minutes: 30
+    depends_on: 'cocoa-webgl-2020-fixtures'
     agents:
       queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - features/fixtures/maze_runner/build/WebGL-2020.3.28f1.zip
         upload:
-          - maze_output/failed/**/*
+          - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
@@ -89,15 +89,13 @@ steps:
   # Build Android test fixtures
   #
   - label: ':android: Build Android test fixture for Unity 2020'
+    timeout_in_minutes: 30
     key: 'build-android-fixture-2020'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -107,27 +105,25 @@ steps:
       - rake test:android:build
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
   # Run Android tests
   #
   - label: ':android: Run Android e2e tests for Unity 2020'
-    depends_on: 'build-android-fixture-2020'
     timeout_in_minutes: 30
+    depends_on: 'build-android-fixture-2020'
     agents:
       queue: opensource
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.28f1.apk"
         upload:
-          - "maze_output/failed/**/*"
+          - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
@@ -144,15 +140,13 @@ steps:
   # Build iOS test fixtures
   #
   - label: ':ios: Generate Xcode project - Unity 2020'
+    timeout_in_minutes: 30
     key: 'generate-fixture-project-2020'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
@@ -163,21 +157,17 @@ steps:
       - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   - label: ':ios: Build iOS test fixture for Unity 2020'
+    timeout_in_minutes: 30
     key: 'build-ios-fixture-2020'
     depends_on: 'generate-fixture-project-2020'
-    timeout_in_minutes: 30
-    agents:
-      queue: opensource-arm-mac-cocoa-12
     env:
       UNITY_VERSION: "2020.3.28f1"
     plugins:
-      artifacts#v1.2.0:
+      artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2020.tgz
@@ -189,25 +179,23 @@ steps:
       - rake test:ios:build_xcode
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
   # Run iOS tests
   #
   - label: ':ios: Run iOS e2e tests for Unity 2020'
-    depends_on: 'build-ios-fixture-2020'
     timeout_in_minutes: 30
+    depends_on: 'build-ios-fixture-2020'
     agents:
       queue: opensource
     plugins:
-      artifacts#v1.3.0:
+      artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.28f1.ipa"
         upload:
-          - "maze_output/failed/**/*"
+          - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
@@ -225,9 +213,9 @@ steps:
   # Build Windows test fixture
   #
   - label: Build Unity 2020 Windows test fixture
+    timeout_in_minutes: 30
     key: 'windows-2020-fixture'
     depends_on: 'build-artifacts'
-    timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
     env:
@@ -239,17 +227,15 @@ steps:
       - features/fixtures/maze_runner/build/Windows-2020.3.28f1.zip
     retry:
       automatic:
-        - exit_status: -1  # Agent was lost
-          limit: 1
-        - exit_status: 255 # Forced agent shutdown (e.g. timeout)
+        - exit_status: "*"
           limit: 1
 
   #
   # Run Windows e2e tests
   #
   - label: Run Windows e2e tests for Unity 2020
-    depends_on: 'windows-2020-fixture'
     timeout_in_minutes: 30
+    depends_on: 'windows-2020-fixture'
     agents:
       queue: opensource-windows-unity
     env:
@@ -257,11 +243,12 @@ steps:
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
-      - maze_output/failed/**/*
+      - maze_output/**/*
 
   #
   # Conditionally trigger full pipeline
   #
   - label: 'Conditionally trigger full set of tests'
+    timeout_in_minutes: 30
     command: sh -c .buildkite/pipeline_trigger.sh
 
