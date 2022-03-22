@@ -1,8 +1,10 @@
 # Changelog
 
-## TBD
+## TBD 
 
 ### Enhancements
+
+* Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). See the new menu item at Window/Bugsnag/Enable EDM Support. [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
 
 * Update bugsnag-android to v5.21.0
   * Fix inconsistencies in stack trace quality for C/C++ events. Resolves a few
