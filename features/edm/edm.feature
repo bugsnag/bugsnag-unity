@@ -8,7 +8,4 @@ Feature: Android EDM smoke test
 
         # Exception details
         And the error payload field "events" is an array with 1 elements
-        And the exception "message" equals "edm"
-
-
-
+        And the exception "message" equals "EDM"
