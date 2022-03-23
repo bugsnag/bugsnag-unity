@@ -48,12 +48,16 @@ namespace BugsnagUnity
 
         private List<FeatureFlag> _featureFlags;
 
+        private bool _isUnity2019OrHigher;
+
         private class BugsnagLogHandler : ILogHandler
         {
 
             private ILogHandler _oldLogHandler;
 
             private Client _client;
+
+            private Configuration _config => _client.Configuration;
 
             public BugsnagLogHandler(ILogHandler oldLogHandler, Client client)
             {
@@ -63,7 +67,17 @@ namespace BugsnagUnity
 
             public void LogException(System.Exception exception, UnityEngine.Object context)
             {
-                Bugsnag.Notify(exception);
+                if (_config.AutoDetectErrors && LogType.Exception.IsGreaterThanOrEqualTo(_config.NotifyLogLevel))
+                {
+                    var unityLogMessage = new UnityLogMessage(exception);
+                    var shouldSend = Error.ShouldSend(exception)
+                      && _client._uniqueCounter.ShouldSend(unityLogMessage)
+                      && _client._logTypeCounter.ShouldSend(unityLogMessage);
+                    if (shouldSend)
+                    {
+                        Bugsnag.Notify(exception);
+                    }
+                }
                 if (_oldLogHandler != null)
                 {
                     _oldLogHandler.LogException(exception, context);
@@ -92,19 +106,35 @@ namespace BugsnagUnity
             FileManager.InitFileManager(nativeClient.Configuration);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
+            _isUnity2019OrHigher = IsUnity2019OrHigher();
             InitStopwatches();
             InitUserObject();
             InitMetadata();
             InitFeatureFlags();
             InitCounters();
             ListenForSceneLoad();
-            //InitLogHandlers();
-            SetupAdvancedExceptionInterceptor();
+            InitLogHandlers();
+            if (_isUnity2019OrHigher)
+            {
+                SetupAdvancedExceptionInterceptor();
+            }
             InitTimingTracker();
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
+        }
+
+        private bool IsUnity2019OrHigher()
+        {
+            var version = Application.unityVersion;
+            //will be null in unit tests
+            if (version == null)
+            {
+                return false;
+            }
+            return !version.Contains("2017") &&
+                !!version.Contains("2018");
         }
 
         private void InitFeatureFlags()
@@ -263,6 +293,10 @@ namespace BugsnagUnity
         void Notify(string condition, string stackTrace, LogType logType)
         {
             if (!Configuration.EnabledErrorTypes.UnityLog)
+            {
+                return;
+            }
+            if (logType.Equals(LogType.Exception) && _isUnity2019OrHigher)
             {
                 return;
             }
