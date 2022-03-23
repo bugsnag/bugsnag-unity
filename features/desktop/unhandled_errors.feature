@@ -1,5 +1,18 @@
 Feature: Reporting unhandled events
 
+    Scenario: Reporting an inner exception
+        When I run the game in the "InnerException" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "errorClass" equals "ExecutionEngineException"
+        And the exception "message" equals "Promise Rejection"
+        And the event "unhandled" is false
+        And custom metadata is included in the event
+        And the stack frame methods should match:
+            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
+            | Main.RunScenario(System.String scenario)         | |
+            | Main.Start()               | |
+
     Scenario: Reporting an uncaught exception
         When I run the game in the "UncaughtException" state
         And I wait to receive an error
