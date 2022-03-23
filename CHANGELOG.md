@@ -1,5 +1,21 @@
 # Changelog
 
+## 6.3.0 (2022-03-23)
+
+### Enhancements
+
+* Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). See the new menu item at Window/Bugsnag/Enable EDM Support. [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
+
+* Update bugsnag-android to v5.21.0
+  * Fix inconsistencies in stack trace quality for C/C++ events. Resolves a few
+    cases where file and line number information was not resolving to the correct
+    locations. This change may result in grouping changes to more correctly
+    highlight the root cause of an event.
+    [#1605](https://github.com/bugsnag/bugsnag-android/pull/1605)
+    [#1606](https://github.com/bugsnag/bugsnag-android/pull/1606)
+  * Fixed an issue where an uncaught exception on the main thread could in rare cases trigger an ANR.
+    [#1624](https://github.com/bugsnag/bugsnag-android/pull/1624)
+
 ## 6.2.0 (2022-03-16)
 
 ### Enhancements
