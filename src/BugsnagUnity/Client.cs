@@ -134,7 +134,7 @@ namespace BugsnagUnity
                 return false;
             }
             return !version.Contains("2017") &&
-                !!version.Contains("2018");
+                !version.Contains("2018");
         }
 
         private void InitFeatureFlags()
