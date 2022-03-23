@@ -19,8 +19,8 @@ namespace BugsnagUnity
         public UnityLogMessage(Exception exception)
         {
             CreatedAt = DateTime.UtcNow;
-            Condition = exception.Message;
-            StackTrace = exception.StackTrace;
+            Condition = exception.Message == null ? string.Empty : exception.Message;
+            StackTrace = exception.StackTrace == null ? string.Empty : exception.StackTrace;
             Type = LogType.Exception;
         }
 
