@@ -32,9 +32,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
-            | Main.RunScenario(System.String scenario)         | |
-            | Main.Start()               | |
+            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) | Main.DoUnhandledException(long counter) |
+            | Main.RunScenario(System.String scenario)         | Main.RunScenario(string scenario) ||
+            | Main.Start()               |||
 
 
         #device metadata
@@ -98,9 +98,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.ThrowException() |
-            | Main.RunScenario(System.String scenario) |
-            | Main.Start()               |
+            | Main.ThrowException() ||
+            | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario) |
+            | Main.Start()               ||
 
     Scenario: Reporting an assertion failure
         When I run the game in the "AssertionFailure" state
