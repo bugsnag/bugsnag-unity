@@ -18,9 +18,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
-            | Main.RunScenario(System.String scenario)         | |
-            | Main.Start()               | |
+            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) | Main.DoUnhandledException(long counter) |
+            | Main.RunScenario(System.String scenario)         | Main.RunScenario(string scenario) | |
+            | Main.Start()               | | |
 
     @windows_only
     Scenario: Windows device and app data
@@ -85,8 +85,8 @@ Feature: Reporting unhandled events
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.RunScenario(System.String scenario)         |
-            | Main.Start()               |
+            | Main.RunScenario(System.String scenario)         | Main.RunScenario(string scenario) |
+            | Main.Start()               ||
 
     @webgl_only
     Scenario: Forcing uncaught exceptions to be unhandled
@@ -113,9 +113,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.MakeAssertionFailure(Int32 counter) | Main.MakeAssertionFailure(System.Int32 counter) |
-            | Main.RunScenario(System.String scenario)                      | |
-            | Main.Start()                            | |
+            | Main.MakeAssertionFailure(Int32 counter) | Main.MakeAssertionFailure(System.Int32 counter) | Main.MakeAssertionFailure(int counter) |
+            | Main.RunScenario(System.String scenario)                      | Main.RunScenario(string scenario) ||
+            | Main.Start()                            | ||
 
     @macos_only
     Scenario: Reporting a native crash
