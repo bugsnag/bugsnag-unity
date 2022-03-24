@@ -75,7 +75,7 @@ namespace BugsnagUnity
                       && _client._logTypeCounter.ShouldSend(unityLogMessage);
                     if (shouldSend)
                     {
-                        var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForHandledException() : HandledState.ForUnhandledException();
+                        var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();
                         _client.Notify(exception, handledState, null, 3);
                     }
                 }
