@@ -25,7 +25,7 @@ namespace BugsnagUnity.Payload
         /// <returns></returns>
         internal static HandledState ForLoggedException()
         {
-            return new HandledState(true, Severity.Error, SeverityReason.ForUnhandledException());
+            return new HandledState(true, Severity.Error, SeverityReason.ForHandledException());
         }
 
         /// <summary>
