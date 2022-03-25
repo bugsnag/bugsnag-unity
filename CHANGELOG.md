@@ -4,7 +4,7 @@
 
 ### Enhancements
 
-* Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). See the new menu item at Window/Bugsnag/Enable EDM Support. [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
+* Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). For manual installs there see the new menu item at Window/Bugsnag/Enable EDM Support. For UPM installs we have a [dedicated package](https://github.com/bugsnag/bugsnag-unity-upm-edm4u). [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
 
 * Update bugsnag-android to v5.21.0
   * Fix inconsistencies in stack trace quality for C/C++ events. Resolves a few
@@ -20,7 +20,7 @@
 
 ### Enhancements
 
-* Added event, session and device id persistence for Windows and WebGL builds [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509) [#514](https://github.com/bugsnag/bugsnag-unity/pull/514)
+* Added offline persistence of C# events/exceptions (all platforms); and of sessions and device ID (Windows and WebGL) [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509) [#514](https://github.com/bugsnag/bugsnag-unity/pull/514)
 
 * Add `Configuration.MaxReportedThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxreportedthreads) [523](https://github.com/bugsnag/bugsnag-unity/pull/523)
 

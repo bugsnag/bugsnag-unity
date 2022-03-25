@@ -397,7 +397,21 @@ namespace :test do
       # Build the Android APK
       script = File.join("features", "scripts", "mobile", "build_android.sh")
       unless system env, script
-        raise 'APK build failed'
+        raise 'Android APK build failed'
+      end
+    end
+  end
+
+  namespace :edm do
+    task :build do
+      # Check that a Unity version has been selected and the path exists before calling the build script
+      unity_path, unity = get_required_unity_paths
+
+      # Build the Android APK
+      env = { "UNITY_PATH" => File.dirname(unity) }
+      script = File.join("features", "scripts", "mobile", "build_edm.sh")
+      unless system env, script
+        raise 'EDM APK build failed'
       end
     end
   end
