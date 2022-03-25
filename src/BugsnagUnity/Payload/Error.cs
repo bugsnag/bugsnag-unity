@@ -137,19 +137,44 @@ namespace BugsnagUnity.Payload
         {
             var errorClass = exception.GetType().Name;
             var stackFrames = new System.Diagnostics.StackTrace(exception, true).GetFrames();
+           
 
-            StackTraceLine[] lines = null;
-
-            if (stackFrames != null && stackFrames.Length > 0)
+            if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
             {
-                lines = new StackTrace(stackFrames).ToArray();
+                string message;
+                var match = Regex.Match(exception.Message, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
+                // If the message matches the "class: message" pattern, then the Java class is followed
+                // by a description of the Java exception. These two values will be used as the error
+                // class and message.
+                if (match.Success)
+                {
+                    errorClass = match.Groups["errorClass"].Value;
+                    message = match.Groups["message"].Value.Trim();
+                }
+                else
+                {
+                    // There was no Java exception description, so the Java class is the only content in
+                    // the message.
+                    errorClass = match.Groups["errorClass"].Value;
+                    message = "";
+                }
+                var lines = new StackTrace(exception.StackTrace, StackTraceFormat.AndroidJava).ToArray();
+                return new Error(errorClass, message, lines, HandledState.ForUnhandledException(), true);
             }
             else
             {
-                lines = new StackTrace(alternativeStackTrace).ToArray();
+                StackTraceLine[] lines;
+                if (stackFrames != null && stackFrames.Length > 0)
+                {
+                    lines = new StackTrace(stackFrames).ToArray();
+                }
+                else
+                {
+                    lines = new StackTrace(alternativeStackTrace).ToArray();
+                }
+                return new Error(errorClass, exception.Message, lines);
             }
 
-            return new Error(errorClass, exception.Message, lines);
         }
 
         internal static Error FromStringInfo(string name, string message, string stacktrace)

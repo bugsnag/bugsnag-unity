@@ -384,7 +384,15 @@ namespace BugsnagUnity
             // to generate one from the exception that we are given then we are not able
             // to do this inside of the IEnumerator generator code
             var substitute = new System.Diagnostics.StackTrace(level, true).GetFrames();
-            Notify(new Errors(exception, substitute).ToArray(), handledState, callback, null);
+            var errors = new Errors(exception, substitute).ToArray();
+            foreach (var error in errors)
+            {
+                if (error.IsAndroidJavaException)
+                {
+                    handledState = HandledState.ForUnhandledException();
+                }
+            }
+            Notify(errors, handledState, callback, null);
         }
 
         void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
