@@ -287,6 +287,7 @@ steps:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2020.3.28f1"
+      WSLENV: "UNITY_VERSION"
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:

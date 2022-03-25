@@ -68,7 +68,7 @@ Feature: iOS smoke tests for log entries
 
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" ends with "MobileScenarioRunner.LogCaughtException()"
+        And the event "exceptions.0.stacktrace.0.method" is not null
         And the error payload field "events.0.threads" is null
 
         # App data
