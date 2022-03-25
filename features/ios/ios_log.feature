@@ -68,7 +68,7 @@ Feature: iOS smoke tests for log entries
         # Stacktrace validation
         And the error payload field "events.0.threads" is null
         And the stack frame methods should match:
-            | UnityEngine.Debug:LogError(Object) |
+            | MobileScenarioRunner.LogCaughtException() |
             
         # App data
         And the event "app.id" equals "com.bugsnag.unity.mazerunner"
