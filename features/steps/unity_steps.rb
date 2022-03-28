@@ -20,6 +20,13 @@ When('I relaunch the Unity mobile app') do
   sleep 3
 end
 
+When('I close and relaunch the Unity mobile app') do
+  Maze.driver.close_app
+  Maze.driver.launch_app
+  # Wait for a fixed time period
+  sleep 3
+end
+
 def dial_number_for(name)
   lookup = {
       # Scenarios
@@ -65,6 +72,8 @@ def dial_number_for(name)
       "Feature Flags In Callback" => 40,
       "Clear Feature Flags In Callback" => 41,
       "Max Reported Threads" => 42,
+      "Persist" => 43,
+      "Persist Report" => 44,
 
 
       # Commands
