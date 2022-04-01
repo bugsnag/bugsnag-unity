@@ -1,5 +1,20 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Update bugsnag-android to v5.22.0
+  * Added `Bugsnag.isStarted()` to test whether the Bugsnag client is in the middle of initializing. This can be used to guard uses of the Bugsnag API that are either on separate threads early in the app's start-up and so not guaranteed to be executed after `Bugsnag.start` has completed, or where Bugsnag may not have been started at all due to some internal app logic.
+    [slack-jallen](https://github.com/slack-jallen):[#1621](https://github.com/bugsnag/bugsnag-android/pull/1621)
+    [bugsnag-android#1640](https://github.com/bugsnag/bugsnag-android/pull/1640)
+  * Events and Sessions will be discarded if they cannot be uploaded and are older than 60 days or larger than 1MB
+    [bugsnag-android#1633](https://github.com/bugsnag/bugsnag-android/pull/1633)
+  * Fixed potentially [thread-unsafe access](https://github.com/bugsnag/bugsnag-android/issues/883) when invoking `Bugsnag` static methods across different threads whilst `Bugsnag.start` is still in-flight. It is now safe to call any `Bugsnag` static method once `Bugsnag.start` has _begun_ executing, as access to the client singleton is controlled by a lock, so the new `isStarted` method (see above) should only be required where it cannot be determined whether the call to `Bugsnag.start` has begun or you do not want to wait.
+    [bugsnag-android#1638](https://github.com/bugsnag/bugsnag-android/pull/1638)
+  * Calling `bugsnag_event_set_context` with NULL `context` correctly clears the event context again
+    [bugsnag-android#1637](https://github.com/bugsnag/bugsnag-android/pull/1637)
+
 ## 6.3.0 (2022-03-23)
 
 ### Enhancements
