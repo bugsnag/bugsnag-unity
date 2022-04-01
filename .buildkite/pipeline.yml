@@ -1,5 +1,5 @@
 agents:
-  queue: opensource-arm-mac-cocoa-12
+  queue: macos-12-arm-unity
 
 steps:
 

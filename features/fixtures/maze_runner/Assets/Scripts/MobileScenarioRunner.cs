@@ -57,7 +57,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "40", "Feature Flags In Callback" },
         { "41", "Clear Feature Flags In Callback" },
         { "42", "Max Reported Threads" },
-
+        { "43", "Persist" },
+        { "44", "Persist Report" },
 
 
         // Commands
@@ -143,6 +144,14 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Persist":
+                config.EnabledErrorTypes.OOMs = false;
+                config.AutoDetectErrors = true;
+                config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
+                break;
+            case "Persist Report":
+                config.EnabledErrorTypes.OOMs = false;
+                break;
             case "Max Reported Threads":
                 config.MaxReportedThreads = 2;
                 break;
@@ -503,6 +512,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "throw Exception":
+            case "Persist Report":
                 ThrowException();
                 break;
             case "throw Exception with breadcrumbs":
@@ -553,6 +563,8 @@ public class MobileScenarioRunner : MonoBehaviour {
                 LeaveFiveBreadcrumbs();
                 ThrowException();
                 break;
+            case "Persist":
+                throw new Exception("Persisted Exception");
             case "Clear iOS Data":
                 MobileNative.ClearIOSData();
                 break;
