@@ -48,6 +48,57 @@ namespace BugsnagUnity
 
         private List<FeatureFlag> _featureFlags;
 
+        private bool _isUnity2019OrHigher;
+
+        private class BugsnagLogHandler : ILogHandler
+        {
+
+            private ILogHandler _oldLogHandler;
+
+            private Client _client;
+
+            private Configuration _config => _client.Configuration;
+
+            public BugsnagLogHandler(ILogHandler oldLogHandler, Client client)
+            {
+                _oldLogHandler = oldLogHandler;
+                _client = client;
+            }
+
+            public void LogException(System.Exception exception, UnityEngine.Object context)
+            {
+                if (_config.AutoDetectErrors && LogType.Exception.IsGreaterThanOrEqualTo(_config.NotifyLogLevel))
+                {
+                    var unityLogMessage = new UnityLogMessage(exception);
+                    var shouldSend = Error.ShouldSend(exception)
+                      && _client._uniqueCounter.ShouldSend(unityLogMessage)
+                      && _client._logTypeCounter.ShouldSend(unityLogMessage);
+                    if (shouldSend)
+                    {
+                        var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();
+                        _client.Notify(exception, handledState, null, 3);
+                    }
+                }
+                if (_oldLogHandler != null)
+                {
+                    _oldLogHandler.LogException(exception, context);
+                }
+            }
+
+            public void LogFormat(LogType logType, UnityEngine.Object context, string format, params object[] args)
+            {
+                if (_oldLogHandler != null)
+                {
+                    _oldLogHandler.LogFormat(logType, context, format, args);
+                }
+            }
+        }
+
+        private void SetupAdvancedExceptionInterceptor()
+        {
+            var oldHandler = UnityEngine.Debug.unityLogger.logHandler;
+            UnityEngine.Debug.unityLogger.logHandler = new BugsnagLogHandler(oldHandler, this);
+        }
 
         public Client(INativeClient nativeClient)
         {
@@ -56,18 +107,35 @@ namespace BugsnagUnity
             FileManager.InitFileManager(nativeClient.Configuration);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
+            _isUnity2019OrHigher = IsUnity2019OrHigher();
             InitStopwatches();
             InitUserObject();
             InitMetadata();
             InitFeatureFlags();
             InitCounters();
             ListenForSceneLoad();
-            InitLogHandlers();       
+            InitLogHandlers();
+            if (_isUnity2019OrHigher)
+            {
+                SetupAdvancedExceptionInterceptor();
+            }
             InitTimingTracker();
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
+        }
+
+        private bool IsUnity2019OrHigher()
+        {
+            var version = Application.unityVersion;
+            //will be null in unit tests
+            if (version == null)
+            {
+                return false;
+            }
+            return !version.Contains("2017") &&
+                !version.Contains("2018");
         }
 
         private void InitFeatureFlags()
@@ -229,6 +297,10 @@ namespace BugsnagUnity
             {
                 return;
             }
+            if (logType.Equals(LogType.Exception) && _isUnity2019OrHigher)
+            {
+                return;
+            }
             if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel))
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
@@ -312,7 +384,15 @@ namespace BugsnagUnity
             // to generate one from the exception that we are given then we are not able
             // to do this inside of the IEnumerator generator code
             var substitute = new System.Diagnostics.StackTrace(level, true).GetFrames();
-            Notify(new Errors(exception, substitute).ToArray(), handledState, callback, null);
+            var errors = new Errors(exception, substitute).ToArray();
+            foreach (var error in errors)
+            {
+                if (error.IsAndroidJavaException)
+                {
+                    handledState = HandledState.ForUnhandledException();
+                }
+            }
+            Notify(errors, handledState, callback, null);
         }
 
         void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)

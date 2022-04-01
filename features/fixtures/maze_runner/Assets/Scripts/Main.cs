@@ -664,6 +664,9 @@ public class Main : MonoBehaviour
             case "ClearBugsnagCache":
                 ClearBugsnagCache();
                 break;
+            case "InnerException":
+                DoInnerException();
+                break;
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":
@@ -671,6 +674,11 @@ public class Main : MonoBehaviour
             default:
                 throw new ArgumentException("Unable to run unexpected scenario: " + scenario);
         }
+    }
+
+    private void DoInnerException()
+    {
+        throw new Exception("Outer",new Exception("Inner"));
     }
 
     private IEnumerator NotifyPersistedEvents()
