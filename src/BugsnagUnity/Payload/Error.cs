@@ -245,11 +245,6 @@ namespace BugsnagUnity.Payload
 
         public static bool ShouldSend(System.Exception exception)
         {
-            if (exception.StackTrace == null)
-            {
-                return true;
-            }
-
             var errorClass = exception.GetType().Name;
             if (errorClass != ANDROID_JAVA_EXCEPTION_CLASS && errorClass != NATIVE_ANDROID_ERROR_CLASS)
             {
