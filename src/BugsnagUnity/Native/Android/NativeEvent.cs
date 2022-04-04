@@ -32,7 +32,7 @@ namespace BugsnagUnity
 
         private Severity GetSeverity()
         {
-            var nativeSeverity = NativePointer.Call<AndroidJavaObject>("getSeverity").Call<string>("toString").ToLower();
+            var nativeSeverity = NativePointer.Call<AndroidJavaObject>("getSeverity").Call<string>("toString").ToLowerInvariant();
             if (nativeSeverity.Contains("error"))
             {
                 return Severity.Error;
@@ -46,7 +46,7 @@ namespace BugsnagUnity
 
         private void SetSeverity(Severity severity)
         {
-            var nativeSeverity = new AndroidJavaClass("com.bugsnag.android.Severity").GetStatic<AndroidJavaObject>(severity.ToString().ToUpper());
+            var nativeSeverity = new AndroidJavaClass("com.bugsnag.android.Severity").GetStatic<AndroidJavaObject>(severity.ToString().ToUpperInvariant());
             NativePointer.Call("setSeverity",nativeSeverity);
         }
 
