@@ -2,6 +2,14 @@
 
 ## TBD
 
+#### New Exception Interceptor
+
+In applications built with Unity 2019+, the Bugsnag SDK now uses the [Unity Logger Interface](https://docs.unity3d.com/ScriptReference/Logger.html) to intercept exceptions and report them. This allows for more reliable exception data and enables proper processing for inner exceptions. 
+
+Uncaught exceptions and exceptions reported via `UnityEngine.Debug.logException` will have differently formatted stack traces to before, this will break grouping in the Bugsnag dashboard.
+
+[532](https://github.com/bugsnag/bugsnag-unity/pull/532)
+
 ### Enhancements
 
 * Update bugsnag-android to v5.22.0
