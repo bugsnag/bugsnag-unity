@@ -148,6 +148,8 @@ Once the UnityPackage release is confirmed a UPM release should be deployed
    git tag v6.x.x
    git push origin v6.x.x
    ```
+8. Run the script `./build-edm-package.sh` , this will convert the built package to the EDM4U support version. Repeat the UPM release steps but with the `bugsnag-unity-upm-edm4u repo`
+
 #### Post-release
 
 - [ ] Have all Docs PRs been merged?
