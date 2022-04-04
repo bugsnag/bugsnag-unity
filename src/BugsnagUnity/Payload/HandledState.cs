@@ -20,15 +20,6 @@ namespace BugsnagUnity.Payload
         }
 
         /// <summary>
-        /// Creates a HandledState object for an error report payload where the exception was logged and Config.ReportExceptionLogsAsHandled is true
-        /// </summary>
-        /// <returns></returns>
-        internal static HandledState ForLoggedException()
-        {
-            return new HandledState(true, Severity.Error, SeverityReason.ForHandledException());
-        }
-
-        /// <summary>
         /// Creates a HandledState object for an error report payload where the exception was handled by the application
         /// and notified manually.
         /// </summary>

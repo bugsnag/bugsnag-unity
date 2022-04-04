@@ -108,9 +108,9 @@ Feature: Handled Errors and Exceptions
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main:DoLogUnthrown() | Main.DoLogUnthrown() |
-            | Main:RunScenario(String) | Main.RunScenario(string scenario) |
-            | Main:Start() | Main.Start() |
+            | Main:DoLogUnthrown() |
+            | Main:RunScenario(String) |
+            | Main:Start() |
 
     Scenario: Logging an unthrown exception as unhandled
         When I run the game in the "LogUnthrownAsUnhandled" state
@@ -121,9 +121,9 @@ Feature: Handled Errors and Exceptions
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main:DebugLogException() | Main.DebugLogException() |
-            | Main:RunScenario(String) | Main.RunScenario(string scenario) |
-            | Main:Start() | Main.Start() |
+            | Main:DebugLogException() |
+            | Main:RunScenario(String) |
+            | Main:Start() |
 
     @skip_webgl
     Scenario: Logging a warning from a background thread to Bugsnag

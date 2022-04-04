@@ -1,14 +1,5 @@
 Feature: Reporting unhandled events
 
-    @skip_unity_2018
-    Scenario: Reporting an inner exception
-        When I run the game in the "InnerException" state
-        And I wait to receive an error
-        Then the error is valid for the error reporting API sent by the Unity notifier
-        And the event "exceptions.0.message" equals "Outer"
-        And the event "exceptions.1.message" equals "Inner"
-        And the event "exceptions.2" is null
-       
     Scenario: Reporting an uncaught exception
         When I run the game in the "UncaughtException" state
         And I wait to receive an error
@@ -18,9 +9,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) | Main.DoUnhandledException(long counter) |
-            | Main.RunScenario(System.String scenario)         | Main.RunScenario(string scenario) | |
-            | Main.Start()               | | |
+            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
+            | Main.RunScenario(System.String scenario)         | |
+            | Main.Start()               | |
 
     @windows_only
     Scenario: Windows device and app data
@@ -32,9 +23,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) | Main.DoUnhandledException(long counter) |
-            | Main.RunScenario(System.String scenario)         | Main.RunScenario(string scenario) ||
-            | Main.Start()               |||
+            | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) |
+            | Main.RunScenario(System.String scenario)         | |
+            | Main.Start()               | |
 
 
         #device metadata
@@ -85,8 +76,8 @@ Feature: Reporting unhandled events
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.RunScenario(System.String scenario)         | Main.RunScenario(string scenario) |
-            | Main.Start()               ||
+            | Main.RunScenario(System.String scenario)         |
+            | Main.Start()               |
 
     @webgl_only
     Scenario: Forcing uncaught exceptions to be unhandled
@@ -98,9 +89,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is true
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.ThrowException() ||
-            | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario) |
-            | Main.Start()               ||
+            | Main.ThrowException() |
+            | Main.RunScenario(System.String scenario) |
+            | Main.Start()               |
 
     Scenario: Reporting an assertion failure
         When I run the game in the "AssertionFailure" state
@@ -113,9 +104,9 @@ Feature: Reporting unhandled events
         And the event "unhandled" is false
         And custom metadata is included in the event
         And the stack frame methods should match:
-            | Main.MakeAssertionFailure(Int32 counter) | Main.MakeAssertionFailure(System.Int32 counter) | Main.MakeAssertionFailure(int counter) |
-            | Main.RunScenario(System.String scenario)                      | Main.RunScenario(string scenario) ||
-            | Main.Start()                            | ||
+            | Main.MakeAssertionFailure(Int32 counter) | Main.MakeAssertionFailure(System.Int32 counter) |
+            | Main.RunScenario(System.String scenario)                      | |
+            | Main.Start()                            | |
 
     @macos_only
     Scenario: Reporting a native crash

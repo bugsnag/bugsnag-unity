@@ -138,29 +138,18 @@ namespace BugsnagUnity.Payload
             var errorClass = exception.GetType().Name;
             var stackFrames = new System.Diagnostics.StackTrace(exception, true).GetFrames();
 
-            // JVM exceptions in the main thread are handled by unity and require extra formatting
-            if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
+            StackTraceLine[] lines = null;
+
+            if (stackFrames != null && stackFrames.Length > 0)
             {
-                var androidErrorData = ProcessAndroidError(exception.Message);
-                var androidErrorClass = androidErrorData[0];
-                var androidErrorMessage = androidErrorData[1];
-                var lines = new StackTrace(exception.StackTrace, StackTraceFormat.AndroidJava).ToArray();
-                return new Error(androidErrorClass, androidErrorMessage, lines, HandledState.ForUnhandledException(), true);
+                lines = new StackTrace(stackFrames).ToArray();
             }
             else
             {
-                StackTraceLine[] lines;
-                if (stackFrames != null && stackFrames.Length > 0)
-                {
-                    lines = new StackTrace(stackFrames).ToArray();
-                }
-                else
-                {
-                    lines = new StackTrace(alternativeStackTrace).ToArray();
-                }
-                return new Error(errorClass, exception.Message, lines);
+                lines = new StackTrace(alternativeStackTrace).ToArray();
             }
 
+            return new Error(errorClass, exception.Message, lines);
         }
 
         internal static Error FromStringInfo(string name, string message, string stacktrace)
@@ -182,29 +171,6 @@ namespace BugsnagUnity.Payload
             return FromUnityLogMessage(logMessage, stackFrames, severity, false);
         }
 
-        private static string[] ProcessAndroidError(string originalMessage)
-        {
-            string message;
-            string errorClass;
-            var match = Regex.Match(originalMessage, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
-            // If the message matches the "class: message" pattern, then the Java class is followed
-            // by a description of the Java exception. These two values will be used as the error
-            // class and message.
-            if (match.Success)
-            {
-                errorClass = match.Groups["errorClass"].Value;
-                message = match.Groups["message"].Value.Trim();
-            }
-            else
-            {
-                // There was no Java exception description, so the Java class is the only content in
-                // the message.
-                errorClass = originalMessage;
-                message = string.Empty;
-            }
-            return new[] { errorClass, message };
-        }
-
         public static Error FromUnityLogMessage(UnityLogMessage logMessage, System.Diagnostics.StackFrame[] fallbackStackFrames, Severity severity, bool forceUnhandled)
         {
             var match = Regex.Match(logMessage.Condition, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
@@ -224,13 +190,28 @@ namespace BugsnagUnity.Payload
                 var errorClass = match.Groups["errorClass"].Value;
                 var message = match.Groups["message"].Value.Trim();
                 var isAndroidJavaException = false;
-                // JVM exceptions in the main thread are handled by unity and require extra formatting
+                // Exceptions starting with "AndroidJavaException" are uncaught Java exceptions reported
+                // via the Unity log handler
                 if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
                 {
                     isAndroidJavaException = true;
-                    var androidErrorData = ProcessAndroidError(message);
-                    errorClass = androidErrorData[0];
-                    message = androidErrorData[1];
+                    match = Regex.Match(message, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
+
+                    // If the message matches the "class: message" pattern, then the Java class is followed
+                    // by a description of the Java exception. These two values will be used as the error
+                    // class and message.
+                    if (match.Success)
+                    {
+                        errorClass = match.Groups["errorClass"].Value;
+                        message = match.Groups["message"].Value.Trim();
+                    }
+                    else
+                    {
+                        // There was no Java exception description, so the Java class is the only content in
+                        // the message.
+                        errorClass = message;
+                        message = "";
+                    }
                     lines = new StackTrace(logMessage.StackTrace, StackTraceFormat.AndroidJava).ToArray();
                     handledState = HandledState.ForUnhandledException();
                 }
@@ -241,18 +222,6 @@ namespace BugsnagUnity.Payload
                 // include the type somehow in there
                 return new Error($"UnityLog{logMessage.Type}", logMessage.Condition, lines, handledState, false);
             }
-        }
-
-        public static bool ShouldSend(System.Exception exception)
-        {
-            var errorClass = exception.GetType().Name;
-            if (errorClass != ANDROID_JAVA_EXCEPTION_CLASS && errorClass != NATIVE_ANDROID_ERROR_CLASS)
-            {
-                return true;
-            }
-
-            var match = Regex.Match(exception.StackTrace, NATIVE_ANDROID_MESSAGE_PATTERN, RegexOptions.Singleline);
-            return !match.Success;
         }
 
         /// <summary>
