@@ -45,10 +45,6 @@ namespace BugsnagUnity.Payload
                   : StackTraceLine.FromLogMessage(lines[i]);
                 if (frame != null)
                 {
-                    if (frame.Method.StartsWith("at "))
-                    {
-                        frame.Method = frame.Method.TrimStart('a', 't', ' ');
-                    }
                     frames.Add(frame);
                 }
             }

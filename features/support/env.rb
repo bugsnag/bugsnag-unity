@@ -1,14 +1,5 @@
 require 'fileutils'
 
-Before('@skip_unity_2018') do |_scenario|
-    if ENV['UNITY_VERSION']
-      unity_version = ENV['UNITY_VERSION'][0..3].to_i
-      if unity_version == 2018
-        skip_this_scenario('Skipping scenario on Unity 2018')
-      end
-  end
-end
-
 Before('@skip_webgl') do |_scenario|
   skip_this_scenario("Skipping scenario") unless Maze.config.browser.nil?
 end
