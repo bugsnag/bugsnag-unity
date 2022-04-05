@@ -27,26 +27,28 @@ namespace BugsnagUnity
 
         public void Leave(Breadcrumb breadcrumb)
         {
-            if (breadcrumb != null)
+            if (breadcrumb == null || string.IsNullOrEmpty(breadcrumb.Message))
             {
-                if (breadcrumb.Metadata != null)
-                {
-                    using (var stream = new MemoryStream())
-                    using (var reader = new StreamReader(stream))
-                    using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
-                    {
-                        SimpleJson.SerializeObject(breadcrumb.Metadata, writer);
-                        writer.Flush();
-                        stream.Position = 0;
-                        var jsonString = reader.ReadToEnd();
-                        NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), jsonString);
-                    }                    
-                }
-                else
-                {
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), null);
-                }
+                return;
             }
+            if (breadcrumb.Metadata != null)
+            {
+                using (var stream = new MemoryStream())
+                using (var reader = new StreamReader(stream))
+                using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+                {
+                    SimpleJson.SerializeObject(breadcrumb.Metadata, writer);
+                    writer.Flush();
+                    stream.Position = 0;
+                    var jsonString = reader.ReadToEnd();
+                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), jsonString);
+                }                    
+            }
+            else
+            {
+                NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), null);
+            }
+            
         }
 
         public List<Breadcrumb> Retrieve()
