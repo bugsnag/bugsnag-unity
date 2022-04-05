@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace BugsnagUnity.Editor
 {
+    // This class contains all the code for the EDM4U support menu item. This is removed in UPM releases by the upm-tools/build-upm-package.sh script.
     public partial class BugsnagEditor : EditorWindow
     {
 
