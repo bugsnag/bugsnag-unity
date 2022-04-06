@@ -31,23 +31,20 @@ namespace BugsnagUnity
 
         public void Leave(Breadcrumb breadcrumb)
         {
-            if (Configuration.MaximumBreadcrumbs == 0)
+            if (Configuration.MaximumBreadcrumbs == 0 || breadcrumb == null || string.IsNullOrEmpty(breadcrumb.Message))
             {
                 return;
             }
 
-            if (breadcrumb != null)
+            lock (_lock)
             {
-                lock (_lock)
+
+                if (_breadcrumbs.Count >= Configuration.MaximumBreadcrumbs)
                 {
-
-                    if (_breadcrumbs.Count >= Configuration.MaximumBreadcrumbs)
-                    {
-                        _breadcrumbs.RemoveFirst();
-                    }
-
-                    _breadcrumbs.AddLast(breadcrumb);
+                    _breadcrumbs.RemoveFirst();
                 }
+
+                _breadcrumbs.AddLast(breadcrumb);
             }
         }
 

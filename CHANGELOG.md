@@ -20,6 +20,9 @@
 * Fixed an issue where the use of ToUpper caused a crash on devices using the Turkish language
   [#543](https://github.com/bugsnag/bugsnag-unity/pull/543)
 
+* Fixed an issue where breadcrumbs with null messages caused errors
+  [#545](https://github.com/bugsnag/bugsnag-unity/pull/545)
+
 ## 6.3.0 (2022-03-23)
 
 ### Enhancements
