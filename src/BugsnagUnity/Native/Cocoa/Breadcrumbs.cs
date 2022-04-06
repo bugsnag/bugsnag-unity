@@ -31,6 +31,8 @@ namespace BugsnagUnity
             {
                 return;
             }
+
+            string metadataJson = null;
             if (breadcrumb.Metadata != null)
             {
                 using (var stream = new MemoryStream())
@@ -40,15 +42,10 @@ namespace BugsnagUnity
                     SimpleJson.SerializeObject(breadcrumb.Metadata, writer);
                     writer.Flush();
                     stream.Position = 0;
-                    var jsonString = reader.ReadToEnd();
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLowerInvariant(), jsonString);
+                    metadataJson = reader.ReadToEnd();
                 }                    
             }
-            else
-            {
-                NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLowerInvariant(), null);
-             
-            }
+            NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLowerInvariant(), metadataJson);
         }
 
         public List<Breadcrumb> Retrieve()
