@@ -37,7 +37,7 @@ namespace BugsnagUnity
 
         public List<IError> Errors => _errors;
 
-        public Severity Severity { get => GetSeverityFromEvent(); set => NativeCode.bugsnag_setEventSeverity(NativePointer, value.ToString().ToLower()); }
+        public Severity Severity { get => GetSeverityFromEvent(); set => NativeCode.bugsnag_setEventSeverity(NativePointer, value.ToString().ToLowerInvariant()); }
 
         private List<IThread> _threads = new List<IThread>();
 

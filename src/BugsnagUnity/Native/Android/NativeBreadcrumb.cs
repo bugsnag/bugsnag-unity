@@ -18,13 +18,13 @@ namespace BugsnagUnity
 
         private BreadcrumbType GetBreadcrumbType()
         {
-            var native = NativePointer.Call<AndroidJavaObject>("getType").Call<string>("toString").ToLower();
+            var native = NativePointer.Call<AndroidJavaObject>("getType").Call<string>("toString").ToLowerInvariant();
             return Breadcrumb.ParseBreadcrumbType(native);
         }
 
         private void SetBreadcrumbType(BreadcrumbType breadcrumbType)
         {
-            var nativeCrumb = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType").GetStatic<AndroidJavaObject>(breadcrumbType.ToString().ToUpper());
+            var nativeCrumb = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType").GetStatic<AndroidJavaObject>(breadcrumbType.ToString().ToUpperInvariant());
             NativePointer.Call("setType",nativeCrumb);
         }
     }
