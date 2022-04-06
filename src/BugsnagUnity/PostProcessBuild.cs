@@ -27,7 +27,7 @@ namespace BugsnagUnity
 
         public static void Apply(LinkedList<string> lines)
         {
-            Apply(lines, Guid.NewGuid().ToString("N").Substring(0, 24).ToUpper());
+            Apply(lines, Guid.NewGuid().ToString("N").Substring(0, 24).ToUpperInvariant());
         }
 
         /// <summary>

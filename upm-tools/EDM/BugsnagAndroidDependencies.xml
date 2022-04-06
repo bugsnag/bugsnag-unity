@@ -1,0 +1,8 @@
+<dependencies>
+	<androidPackages>
+		<repositories>
+			<repository>https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib</repository>
+		</repositories>
+		<androidPackage spec="org.jetbrains.kotlin:kotlin-stdlib:1.4.32"></androidPackage>
+	</androidPackages>
+</dependencies>

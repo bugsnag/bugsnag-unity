@@ -94,7 +94,7 @@ namespace BugsnagUnity.Payload
                 var stringValue = (string)Get(TYPE_KEY);
                 return ParseBreadcrumbType(stringValue);
             }
-            set { Add(TYPE_KEY, value.ToString().ToLower()); }
+            set { Add(TYPE_KEY, value.ToString().ToLowerInvariant()); }
         }
 
         public DateTimeOffset? Timestamp {

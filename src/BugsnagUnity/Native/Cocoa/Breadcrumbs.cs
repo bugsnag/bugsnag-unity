@@ -41,14 +41,14 @@ namespace BugsnagUnity
                     writer.Flush();
                     stream.Position = 0;
                     var jsonString = reader.ReadToEnd();
-                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), jsonString);
+                    NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLowerInvariant(), jsonString);
                 }                    
             }
             else
             {
-                NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLower(), null);
+                NativeCode.bugsnag_addBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString().ToLowerInvariant(), null);
+             
             }
-            
         }
 
         public List<Breadcrumb> Retrieve()

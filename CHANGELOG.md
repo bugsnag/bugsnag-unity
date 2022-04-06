@@ -15,6 +15,11 @@
   * Calling `bugsnag_event_set_context` with NULL `context` correctly clears the event context again
     [bugsnag-android#1637](https://github.com/bugsnag/bugsnag-android/pull/1637)
 
+### Bug fixes
+
+* Fixed an issue where the use of ToUpper caused a crash on devices using the Turkish language
+  [#543](https://github.com/bugsnag/bugsnag-unity/pull/543)
+
 ## 6.3.0 (2022-03-23)
 
 ### Enhancements
