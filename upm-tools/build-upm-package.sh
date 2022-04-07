@@ -65,6 +65,10 @@ cp AssemblyDefinitions/BugsnagEditor.asmdef "$PACKAGE_DIR/Editor"
 cp AssemblyDefinitions/BugsnagEditor.asmdef.meta "$PACKAGE_DIR/Editor"
 
 
+# remove EDM menu from package 
+rm "$PACKAGE_DIR/Editor/BugsnagEditor.EDM.cs"
+rm "$PACKAGE_DIR/Editor/BugsnagEditor.EDM.cs.meta"
+
 # Set the specified version in the manifest
 
 echo "Setting the version $VERSION in the copied manifest and readme"

@@ -124,8 +124,8 @@ def assemble_android filter_abis=true
   # copy kotlin dependencies required by bugsnag-android. the exact files required for each
   # version can be found here:
   # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.4.32/kotlin-stdlib-1.4.32.pom
-  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script. 
-  # Both should be informed by what the android notifier is using
+  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script and in the upm-tools/EDM/BugsnagAndroidDependencies.xml file. 
+  # All should be informed by what the android notifier is using
   kotlin_stdlib = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-1.4.32.jar")
   kotlin_stdlib_common = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-common-1.4.32.jar")
   kotlin_annotations = File.join("android-libs", "org.jetbrains.annotations-13.0.jar")
@@ -397,7 +397,21 @@ namespace :test do
       # Build the Android APK
       script = File.join("features", "scripts", "mobile", "build_android.sh")
       unless system env, script
-        raise 'APK build failed'
+        raise 'Android APK build failed'
+      end
+    end
+  end
+
+  namespace :edm do
+    task :build do
+      # Check that a Unity version has been selected and the path exists before calling the build script
+      unity_path, unity = get_required_unity_paths
+
+      # Build the Android APK
+      env = { "UNITY_PATH" => File.dirname(unity) }
+      script = File.join("features", "scripts", "mobile", "build_edm.sh")
+      unless system env, script
+        raise 'EDM APK build failed'
       end
     end
   end

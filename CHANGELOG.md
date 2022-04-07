@@ -1,10 +1,33 @@
 # Changelog
 
+## 6.3.1 (2022-04-06)
+
+### Enhancements
+
+* Update bugsnag-android to v5.22.0
+  * Added `Bugsnag.isStarted()` to test whether the Bugsnag client is in the middle of initializing. This can be used to guard uses of the Bugsnag API that are either on separate threads early in the app's start-up and so not guaranteed to be executed after `Bugsnag.start` has completed, or where Bugsnag may not have been started at all due to some internal app logic.
+    [slack-jallen](https://github.com/slack-jallen):[#1621](https://github.com/bugsnag/bugsnag-android/pull/1621)
+    [bugsnag-android#1640](https://github.com/bugsnag/bugsnag-android/pull/1640)
+  * Events and Sessions will be discarded if they cannot be uploaded and are older than 60 days or larger than 1MB
+    [bugsnag-android#1633](https://github.com/bugsnag/bugsnag-android/pull/1633)
+  * Fixed potentially [thread-unsafe access](https://github.com/bugsnag/bugsnag-android/issues/883) when invoking `Bugsnag` static methods across different threads whilst `Bugsnag.start` is still in-flight. It is now safe to call any `Bugsnag` static method once `Bugsnag.start` has _begun_ executing, as access to the client singleton is controlled by a lock, so the new `isStarted` method (see above) should only be required where it cannot be determined whether the call to `Bugsnag.start` has begun or you do not want to wait.
+    [bugsnag-android#1638](https://github.com/bugsnag/bugsnag-android/pull/1638)
+  * Calling `bugsnag_event_set_context` with NULL `context` correctly clears the event context again
+    [bugsnag-android#1637](https://github.com/bugsnag/bugsnag-android/pull/1637)
+
+### Bug fixes
+
+* Fixed an issue where the use of ToUpper caused a crash on devices using the Turkish language
+  [#543](https://github.com/bugsnag/bugsnag-unity/pull/543)
+
+* Fixed an issue where breadcrumbs with null messages caused errors
+  [#545](https://github.com/bugsnag/bugsnag-unity/pull/545)
+
 ## 6.3.0 (2022-03-23)
 
 ### Enhancements
 
-* Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). See the new menu item at Window/Bugsnag/Enable EDM Support. [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
+* Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). For manual installs there see the new menu item at Window/Bugsnag/Enable EDM Support. For UPM installs we have a [dedicated package](https://github.com/bugsnag/bugsnag-unity-upm-edm4u). [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
 
 * Update bugsnag-android to v5.21.0
   * Fix inconsistencies in stack trace quality for C/C++ events. Resolves a few
@@ -20,7 +43,7 @@
 
 ### Enhancements
 
-* Added event, session and device id persistence for Windows and WebGL builds [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509) [#514](https://github.com/bugsnag/bugsnag-unity/pull/514)
+* Added offline persistence of C# events/exceptions (all platforms); and of sessions and device ID (Windows and WebGL) [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509) [#514](https://github.com/bugsnag/bugsnag-unity/pull/514)
 
 * Add `Configuration.MaxReportedThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxreportedthreads) [523](https://github.com/bugsnag/bugsnag-unity/pull/523)
 

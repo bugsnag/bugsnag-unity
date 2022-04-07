@@ -47,7 +47,7 @@ namespace BugsnagUnity
 
         public BreadcrumbType Type {
             get => Breadcrumb.ParseBreadcrumbType( NativeCode.bugsnag_getBreadcrumbType(NativePointer) );
-            set => NativeCode.bugsnag_setBreadcrumbType(NativePointer, value.ToString().ToLower());
+            set => NativeCode.bugsnag_setBreadcrumbType(NativePointer, value.ToString().ToLowerInvariant());
         }
     }
 }

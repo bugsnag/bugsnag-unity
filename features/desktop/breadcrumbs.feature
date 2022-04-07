@@ -84,4 +84,12 @@ Feature: Leaving breadcrumbs to attach to reports
         And the event "breadcrumbs.3.name" equals "Crumb 5"
         And the event "breadcrumbs.4.name" equals "Item #1 is: 1"
 
-
+    Scenario: Breadcrumb with null message
+        When I run the game in the "NullBreadcrumbMessage" state
+        And I wait to receive an error
+        Then the error is valid for the error reporting API sent by the Unity notifier
+        And the exception "message" equals "NullBreadcrumbMessage"
+        And the error payload field "events.0.breadcrumbs" is an array with 2 elements
+        And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
+        And the event "breadcrumbs.1.name" equals "Not Null"
+        

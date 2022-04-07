@@ -664,6 +664,10 @@ public class Main : MonoBehaviour
             case "ClearBugsnagCache":
                 ClearBugsnagCache();
                 break;
+            case "NullBreadcrumbMessage":
+                Bugsnag.LeaveBreadcrumb(null);
+                Bugsnag.LeaveBreadcrumb("Not Null");
+                throw new Exception("NullBreadcrumbMessage");
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":
