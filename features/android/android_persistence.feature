@@ -5,7 +5,7 @@ Feature: Android event persistence tests
 
     Scenario: Get Persisted event
         When I run the "Persist" mobile scenario
-        And I wait for 4 seconds
+        Then I wait to receive a session
         When I clear any error dialogue
         And I relaunch the Unity mobile app
         When I run the "throw Exception" mobile scenario
