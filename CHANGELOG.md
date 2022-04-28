@@ -1,5 +1,15 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Update bugsnag-android to v5.22.1
+  * Max reported threads can now be configured using manifest meta-data "com.bugsnag.android. MAX_REPORTED_THREADS"
+    [bugsnag-android#1655](https://github.com/bugsnag/bugsnag-android/pull/1655)
+  * Small improvement to startup performance (Bugsnag.start)
+    [bugsnag-android#1648](https://github.com/bugsnag/bugsnag-android/pull/1648)
+
 ## 6.3.1 (2022-04-06)
 
 ### Enhancements
