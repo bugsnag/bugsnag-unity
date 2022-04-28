@@ -6,7 +6,7 @@ Feature: iOS event persistence tests
 
     Scenario: Get Persisted event
         When I run the "Persist" mobile scenario
-        And I wait for 4 seconds
+        Then I wait to receive a session
         And I close and relaunch the Unity mobile app
         When I run the "Persist Report" mobile scenario
         Then I wait to receive 2 errors
