@@ -580,11 +580,11 @@ public class MobileScenarioRunner : MonoBehaviour {
 
     private IEnumerator CheckEventIsPersisted()
     {
-        if (!Directory.Exists(Application.persistentDataPath + "/Bugsnag/Events"))
+        while (!Directory.Exists(Application.persistentDataPath + "/Bugsnag/Events"))
         {
             yield return new WaitForSeconds(1);
         }
-        if (Directory.GetFiles(Application.persistentDataPath + "/Bugsnag/Events", "*.event").Length == 0)
+        while (Directory.GetFiles(Application.persistentDataPath + "/Bugsnag/Events", "*.event").Length == 0)
         {
             yield return new WaitForSeconds(1);
         }
