@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash -e
 
 if [ -z "$UNITY_VERSION" ]; then
   echo "UNITY_VERSION must be set, to e.g. 2018.4.36f1"
