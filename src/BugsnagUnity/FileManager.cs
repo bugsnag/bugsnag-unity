@@ -61,6 +61,7 @@ namespace BugsnagUnity
 
         internal static string GetDeviceId()
         {
+            return "test";
             try
             {
                 var deviceId = string.Empty;
@@ -87,6 +88,7 @@ namespace BugsnagUnity
 
         private static void StoreDeviceId(string deviceId)
         {
+            return;
             var model = new DeviceIdModel()
             {
                 DeviceId = deviceId

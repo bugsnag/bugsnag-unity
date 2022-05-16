@@ -123,7 +123,7 @@ namespace BugsnagUnity.Payload
             Locale = CultureInfo.CurrentCulture.ToString();
             AddOsInfo();
             AddRuntimeVersions(configuration);
-            Id = FileManager.GetDeviceId();
+            Id = "test";//FileManager.GetDeviceId();
             Model = SystemInfo.deviceModel;
         }
 

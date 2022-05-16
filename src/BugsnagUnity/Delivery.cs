@@ -100,12 +100,12 @@ namespace BugsnagUnity
                 if (code == 200 || code == 202)
                 {
                     // success!
-                    FileManager.PayloadSendSuccess(payload);
+                    //FileManager.PayloadSendSuccess(payload);
                 }
                 else if (req.isNetworkError || code == 0 || code == 408 || code == 429 || code >= 500)
                 {
                     // sending failed with no network or retryable error, cache payload to disk
-                    FileManager.SendPayloadFailed(payload);
+                    //FileManager.SendPayloadFailed(payload);
                 }
                 _finishedCacheDeliveries.Add(payload.Id);
             }

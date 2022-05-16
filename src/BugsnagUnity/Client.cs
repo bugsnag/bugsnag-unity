@@ -53,7 +53,7 @@ namespace BugsnagUnity
         {
             NativeClient = nativeClient;
             _delivery = new Delivery(nativeClient.Configuration);
-            FileManager.InitFileManager(nativeClient.Configuration);
+          //  FileManager.InitFileManager(nativeClient.Configuration);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
             InitStopwatches();
@@ -67,7 +67,7 @@ namespace BugsnagUnity
             InitInitialSessionCheck();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
-            _delivery.StartDeliveringCachedPayloads();
+         //   _delivery.StartDeliveringCachedPayloads();
         }
 
         private void InitFeatureFlags()
@@ -130,6 +130,8 @@ namespace BugsnagUnity
 
         private void InitUserObject()
         {
+            _cachedUser = new User("test", "test", "test");
+            return;
             if (Configuration.GetUser() != null)
             {
                 // if a user is supplied in the config then use that
@@ -181,6 +183,7 @@ namespace BugsnagUnity
                 case RuntimePlatform.LinuxPlayer:
                 case RuntimePlatform.LinuxEditor:
                 case RuntimePlatform.WebGLPlayer:
+                case RuntimePlatform.Switch:
                     return true;
             }
             return false;
@@ -432,7 +435,7 @@ namespace BugsnagUnity
             var report = new Report(Configuration, @event);
             if (!report.Ignored)
             {
-                FileManager.AddPendingPayload(report);
+              //  FileManager.AddPendingPayload(report);
                 Send(report);
                 if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
                 {
