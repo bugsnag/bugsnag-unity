@@ -642,6 +642,7 @@ steps:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2018.4.36f1"
+      WSLENV: "UNITY_VERSION"
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
@@ -654,6 +655,7 @@ steps:
       queue: opensource-windows-unity
     env:
       UNITY_VERSION: "2019.4.35f1"
+      WSLENV: "UNITY_VERSION"
     command:
       - scripts/ci-run-windows-tests.bat
     artifact_paths:
