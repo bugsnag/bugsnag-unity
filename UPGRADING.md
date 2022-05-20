@@ -11,7 +11,7 @@ This means that uncaught C# exceptions previously reported will not group automa
 
 All errors will still be reported, but you may wish to pay extra attention to new exceptions that come through once upgrading and group them accordingly.
 
-Handled errors and native errors will remain grouped and are not effected by this upgrade.
+Handled errors and native crashes will continue grouping in the same way and are not affected by this upgrade.
 
 ## 5.x to 6.x
 
