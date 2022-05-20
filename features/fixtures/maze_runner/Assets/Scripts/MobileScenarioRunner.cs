@@ -147,7 +147,8 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Persist":
                 config.EnabledErrorTypes.OOMs = false;
                 config.AutoDetectErrors = true;
-                config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
+                config.AutoTrackSessions = false;
+                config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "http://bs-local.com:9339/sessions");
                 break;
             case "Persist Report":
                 config.EnabledErrorTypes.OOMs = false;
@@ -512,7 +513,10 @@ public class MobileScenarioRunner : MonoBehaviour {
                 MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "throw Exception":
+                ThrowException();
+                break;
             case "Persist Report":
+                AddDebugMetadata();
                 ThrowException();
                 break;
             case "throw Exception with breadcrumbs":
@@ -564,6 +568,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 ThrowException();
                 break;
             case "Persist":
+                StartCoroutine(CheckEventIsPersisted());
                 throw new Exception("Persisted Exception");
             case "Clear iOS Data":
                 MobileNative.ClearIOSData();
@@ -571,6 +576,33 @@ public class MobileScenarioRunner : MonoBehaviour {
             default:
                 throw new System.Exception("Unknown scenario: " + scenarioName);
         }
+    }
+
+    private IEnumerator CheckEventIsPersisted()
+    {
+        while (!Directory.Exists(Application.persistentDataPath + "/Bugsnag/Events"))
+        {
+            yield return new WaitForSeconds(1);
+        }
+        while (Directory.GetFiles(Application.persistentDataPath + "/Bugsnag/Events", "*.event").Length == 0)
+        {
+            yield return new WaitForSeconds(1);
+        }
+        Bugsnag.StartSession();
+    }
+
+    private void AddDebugMetadata()
+    {
+        var metadata = new Dictionary<string, object>();
+        if (Directory.Exists(Application.persistentDataPath + "/Bugsnag/Events"))
+        {
+            metadata.Add("Events directory exsitsts with file count", Directory.GetFiles(Application.persistentDataPath + "/Bugsnag/Events", "*.event").Length);
+        }
+        else
+        {
+            metadata.Add("Events Dir Does Not Exist!","wtf");
+        }
+        Bugsnag.AddMetadata("debug", metadata);
     }
 
     private void CheckLastRunInfo()

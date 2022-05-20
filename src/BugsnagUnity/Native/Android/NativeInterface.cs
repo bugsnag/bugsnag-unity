@@ -323,7 +323,7 @@ namespace BugsnagUnity
                     AndroidJavaClass androidBreadcrumbEnumClass = new AndroidJavaClass("com.bugsnag.android.BreadcrumbType");
                     for (int i = 0; i < config.EnabledBreadcrumbTypes.Length; i++)
                     {
-                        var stringValue = Enum.GetName(typeof(BreadcrumbType), config.EnabledBreadcrumbTypes[i]).ToUpper();
+                        var stringValue = Enum.GetName(typeof(BreadcrumbType), config.EnabledBreadcrumbTypes[i]).ToUpperInvariant();
                         using (AndroidJavaObject crumbType = androidBreadcrumbEnumClass.CallStatic<AndroidJavaObject>("valueOf", stringValue))
                         {
                             enabledBreadcrumbs.Call<Boolean>("add", crumbType);

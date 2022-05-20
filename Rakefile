@@ -124,8 +124,8 @@ def assemble_android filter_abis=true
   # copy kotlin dependencies required by bugsnag-android. the exact files required for each
   # version can be found here:
   # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.4.32/kotlin-stdlib-1.4.32.pom
-  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script. 
-  # Both should be informed by what the android notifier is using
+  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script and in the upm-tools/EDM/BugsnagAndroidDependencies.xml file. 
+  # All should be informed by what the android notifier is using
   kotlin_stdlib = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-1.4.32.jar")
   kotlin_stdlib_common = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-common-1.4.32.jar")
   kotlin_annotations = File.join("android-libs", "org.jetbrains.annotations-13.0.jar")

@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 6.3.1 (2022-04-06)
 
 ### Enhancements
 
@@ -14,6 +14,14 @@
     [bugsnag-android#1638](https://github.com/bugsnag/bugsnag-android/pull/1638)
   * Calling `bugsnag_event_set_context` with NULL `context` correctly clears the event context again
     [bugsnag-android#1637](https://github.com/bugsnag/bugsnag-android/pull/1637)
+
+### Bug fixes
+
+* Fixed an issue where the use of ToUpper caused a crash on devices using the Turkish language
+  [#543](https://github.com/bugsnag/bugsnag-unity/pull/543)
+
+* Fixed an issue where breadcrumbs with null messages caused errors
+  [#545](https://github.com/bugsnag/bugsnag-unity/pull/545)
 
 ## 6.3.0 (2022-03-23)
 
