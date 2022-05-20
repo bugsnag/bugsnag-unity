@@ -1,8 +1,12 @@
 # Changelog
 
-## TBD
+## 7.0.0 (2022-04-23)
 
-### Enhancements
+This version contains **breaking** changes, as bugsnag-unity has been updated to use a more advanced Exception interceptor and existing grouping between errors in the Bugsnag dashboard may be broken.
+
+Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
+
+In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag Android Notifier has been updated. See below for details.
 
 * Update bugsnag-android to v5.22.3
   * Max reported threads can now be configured using manifest meta-data "com.bugsnag.android. MAX_REPORTED_THREADS"
