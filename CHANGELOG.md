@@ -22,6 +22,8 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
   * Small performance improvements to `Bugnag.start`
     [bugsnag-android#1680](https://github.com/bugsnag/bugsnag-android/pull/1680)
 
+* Update bugsnag-cocoa from v6.16.1 to [v6.17.1](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6171-2022-05-18)
+
 ## 6.3.1 (2022-04-06)
 
 ### Enhancements
