@@ -7,7 +7,7 @@ Upgrading
 
 When building using Unity 2019+, the Bugsnag SDK now uses a new method to intercept uncaught C# exceptions. This allows us access to the original exception object, meaning more accurate exception data and full support for nested/inner exceptions.
 
-This means that uncaught C# exceptions previously reported will not group automatically in the Bugsnag dashboard with exceptions reported by the new notifier. 
+This has slightly changed the format used for method names and signatures, which means that uncaught C# exceptions reported by `bugsnag-unity` V7+ will not group automatically in the Bugsnag dashboard with the equivalent exception reported by older versions of the library. 
 
 All errors will still be reported, but you may wish to pay extra attention to new exceptions that come through once upgrading and group them accordingly.
 
