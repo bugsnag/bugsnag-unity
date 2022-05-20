@@ -1,5 +1,23 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Update bugsnag-android to v5.22.3
+  * Max reported threads can now be configured using manifest meta-data "com.bugsnag.android. MAX_REPORTED_THREADS"
+    [bugsnag-android#1655](https://github.com/bugsnag/bugsnag-android/pull/1655)
+  * Small improvement to startup performance (Bugsnag.start)
+    [bugsnag-android#1648](https://github.com/bugsnag/bugsnag-android/pull/1648)
+  * Fixed NDK stack-traces for libraries linked after `Bugsnag.start` was called
+    [bugsnag-android#1671](https://github.com/bugsnag/bugsnag-android/pull/1671)
+  * Fixed concurrency bug that could be triggered via the React Native plugin
+    [bugsnag-android#1679](https://github.com/bugsnag/bugsnag-android/pull/1679)
+  * Correctly report `device.locationStatus` on Android 12 onwards using `LocationManager.isLocationEnabled`
+    [bugsnag-android#1683](https://github.com/bugsnag/bugsnag-android/pull/1683)
+  * Small performance improvements to `Bugnag.start`
+    [bugsnag-android#1680](https://github.com/bugsnag/bugsnag-android/pull/1680)
+
 ## 6.3.1 (2022-04-06)
 
 ### Enhancements
