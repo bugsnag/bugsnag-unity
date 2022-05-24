@@ -7,7 +7,7 @@ When building using Unity 2019+, the Bugsnag SDK now uses a new method to interc
 
 This has slightly changed the format used for method names and signatures, which means that uncaught C# exceptions reported by `bugsnag-unity` V7+ will not group automatically in the Bugsnag dashboard with the equivalent exception reported by older versions of the library. 
 
-All errors will still be reported, but you may wish to pay extra attention to new exceptions that come through once upgrading and group them accordingly.
+The impact of this will be that some errors will effectively be duplicated between older and newer versions of your app.
 
 Handled errors and native crashes will continue grouping in the same way and are not affected by this upgrade.
 
