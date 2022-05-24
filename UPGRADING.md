@@ -9,7 +9,7 @@ This has slightly changed the format used for method names and signatures, which
 
 The impact of this will be that some errors will effectively be duplicated between older and newer versions of your app.
 
-Handled errors and native crashes will continue grouping in the same way and are not affected by this upgrade.
+Handled errors and native crashes will maintain their existing groups and are not affected by this upgrade.
 
 ## 5.x to 6.x
 
