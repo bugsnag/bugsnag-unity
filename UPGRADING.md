@@ -3,8 +3,6 @@ Upgrading
 
 ## 6.x to 7.x
 
-### The new Exception interceptor
-
 When building using Unity 2019+, the Bugsnag SDK now uses a new method to intercept uncaught C# exceptions. This allows us access to the original exception object, meaning more accurate exception data and full support for inner exceptions.
 
 This has slightly changed the format used for method names and signatures, which means that uncaught C# exceptions reported by `bugsnag-unity` V7+ will not group automatically in the Bugsnag dashboard with the equivalent exception reported by older versions of the library. 
