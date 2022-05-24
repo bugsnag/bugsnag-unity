@@ -6,7 +6,7 @@ This version contains **breaking** changes, as bugsnag-unity has been updated to
 
 Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
 
-In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag Android Notifier has been updated from v5.22.0 to [v5.22.3](https://github.com/bugsnag/bugsnag-android/releases/tag/v5.22.3)
+In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag Android Notifier has been updated from v5.22.0 to [v5.22.3](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5223-2022-05-12)
 
 
 ## 6.3.1 (2022-04-06)
