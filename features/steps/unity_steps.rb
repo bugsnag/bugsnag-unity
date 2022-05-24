@@ -146,7 +146,7 @@ When('I run the game in the {string} state') do |state|
     Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
 
     # Call executable directly rather than use open, which flakes on CI
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -batchmode -nographics"
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args"
     Maze::Runner.run_command(command)
 
   when 'windows'
