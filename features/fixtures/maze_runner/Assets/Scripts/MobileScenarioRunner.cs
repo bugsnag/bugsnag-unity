@@ -59,6 +59,8 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "42", "Max Reported Threads" },
         { "43", "Persist" },
         { "44", "Persist Report" },
+        { "45", "Breadcrumb Null Metadata Value" },
+
 
 
         // Commands
@@ -413,6 +415,9 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Breadcrumb Null Metadata Value":
+                NullBreadcrumbMetadataValue();
+                break;
             case "Feature Flags After Init Clear All":
                 Bugsnag.AddFeatureFlag("testName1", "testVariant1");
                 Bugsnag.AddFeatureFlag("testName2", "testVariant2");
@@ -461,9 +466,9 @@ public class MobileScenarioRunner : MonoBehaviour {
                 break;
             case "Clear Metadata":
 
-                Bugsnag.AddMetadata("test","test1","test1");
+                Bugsnag.AddMetadata("test", "test1", "test1");
                 Bugsnag.AddMetadata("test", "test2", "test2");
-                Bugsnag.ClearMetadata("test","test2");
+                Bugsnag.ClearMetadata("test", "test2");
                 Bugsnag.AddMetadata("test3", "test3", "test3");
                 Bugsnag.AddMetadata("test4", "test4", "test4");
                 Bugsnag.ClearMetadata("test4");
@@ -471,7 +476,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
                 break;
             case "Inf Launch Duration":
-                Invoke("ThrowException",6);
+                Invoke("ThrowException", 6);
                 break;
             case "Ios Signal":
                 MobileNative.DoIosSignal();
@@ -551,7 +556,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 LeaveBreadcrumbString();
                 LeaveBreadcrumbTuple();
                 // Wait 6 seconds for launch timer to be over
-                Invoke("NotifyWithCallback" , 6);
+                Invoke("NotifyWithCallback", 6);
                 break;
             case "Change scene":
                 ChangeScene();
@@ -571,6 +576,19 @@ public class MobileScenarioRunner : MonoBehaviour {
             default:
                 throw new System.Exception("Unknown scenario: " + scenarioName);
         }
+
+
+    }
+
+    private void NullBreadcrumbMetadataValue()
+    {
+        var foo = new Dictionary<string, object>()
+        {
+            {"KeyA", "ValueA"},
+            {"KeyB", null},
+        };
+        Bugsnag.LeaveBreadcrumb("testbreadcrumb", foo, BreadcrumbType.State);
+        throw new Exception("NullBreadcrumbMetadata");
     }
 
     private void CheckLastRunInfo()

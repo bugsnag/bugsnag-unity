@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.3.2 (2022-05-27)
+
+### Bug fixes
+
+* Fixed an issue where leaving a breadcrumb that contained metadata with a null value caused an exception
+  [#543](https://github.com/bugsnag/bugsnag-unity/pull/543)
+
 ## 6.3.1 (2022-04-06)
 
 ### Enhancements
