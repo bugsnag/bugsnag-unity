@@ -5,7 +5,7 @@
 ### Bug fixes
 
 * Fixed an issue where leaving a breadcrumb that contained metadata with a null value caused an exception
-  [#543](https://github.com/bugsnag/bugsnag-unity/pull/543)
+  [#561](https://github.com/bugsnag/bugsnag-unity/pull/561)
 
 ## 6.3.1 (2022-04-06)
 
