@@ -895,7 +895,7 @@ namespace BugsnagUnity
                 foreach (var entry in src)
                 {
                     using (AndroidJavaObject key = BuildJavaStringDisposable(entry.Key))
-                    using (AndroidJavaObject value = BuildJavaStringDisposable(entry.Value.ToString()))
+                    using (AndroidJavaObject value = BuildJavaStringDisposable(entry.Value == null ? "null" : entry.Value.ToString()))
                     {
                         map.Call<AndroidJavaObject>("put", key, value);
                     }

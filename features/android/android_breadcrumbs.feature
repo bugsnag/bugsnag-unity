@@ -19,3 +19,10 @@ Feature: android breadcrumbs
         When I run the "throw Exception" mobile scenario
         Then I wait to receive an error
         And the event has a "state" breadcrumb named "Bugsnag loaded"
+
+    Scenario: Breadcrumb Null Metadata Value
+        When I run the "Breadcrumb Null Metadata Value" mobile scenario
+        Then I wait to receive an error
+        And the exception "message" equals "NullBreadcrumbMetadata"
+        And the event has a "state" breadcrumb named "testbreadcrumb"
+        And the event "breadcrumbs.1.metaData.KeyB" equals "null"
