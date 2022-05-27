@@ -72,7 +72,7 @@ steps:
   # Run macOS desktop tests
   #
   - label: Run MacOS e2e tests for Unity 2018
-    timeout_in_minutes: 30
+    timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2018-fixtures'
     agents:
       queue: macos-12-arm-unity
@@ -89,7 +89,7 @@ steps:
       - scripts/ci-run-macos-tests.sh
 
   - label: Run MacOS e2e tests for Unity 2019
-    timeout_in_minutes: 30
+    timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2019-fixtures'
     agents:
       queue: macos-12-arm-unity
@@ -106,7 +106,7 @@ steps:
       - scripts/ci-run-macos-tests.sh
 
   - label: Run MacOS e2e tests for Unity 2021
-    timeout_in_minutes: 30
+    timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2021-fixtures'
     agents:
       queue: macos-12-arm-unity
