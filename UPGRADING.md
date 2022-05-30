@@ -11,6 +11,15 @@ The impact of this will be that some errors will effectively be duplicated betwe
 
 Handled errors and native crashes will maintain their existing groups and are not affected by this upgrade.
 
+#### Deprecation summary
+
+The following methods have been removed from the `Bugsnag` client:
+
+`Bugsnag.SessionTracking;` Please see the [capturing sessions](https://docs.bugsnag.com/platforms/unity/capturing-sessions/) section of our documentation for details on working with sessions. 
+
+`Bugsnag.Send(IPayload payload);`
+
+
 ## 5.x to 6.x
 
 ### Key points
