@@ -92,4 +92,11 @@ Feature: Leaving breadcrumbs to attach to reports
         And the error payload field "events.0.breadcrumbs" is an array with 2 elements
         And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
         And the event "breadcrumbs.1.name" equals "Not Null"
+
+     Scenario: Breadcrumb Null Metadata Value
+        When I run the game in the "NullBreadcrumbMetadataValue" state
+        Then I wait to receive an error
+        And the exception "message" equals "NullBreadcrumbMetadata"
+        And the event has a "state" breadcrumb named "testbreadcrumb"
+        And the event "breadcrumbs.1.metaData.KeyB" is null
         

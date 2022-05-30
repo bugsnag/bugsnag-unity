@@ -671,6 +671,9 @@ public class Main : MonoBehaviour
                 Bugsnag.LeaveBreadcrumb(null);
                 Bugsnag.LeaveBreadcrumb("Not Null");
                 throw new Exception("NullBreadcrumbMessage");
+            case "NullBreadcrumbMetadataValue":
+                NullBreadcrumbMetadataValue();
+                break;
             case "PersistSession":
             case "PersistSessionReport":
             case "(noop)":
@@ -680,9 +683,21 @@ public class Main : MonoBehaviour
         }
     }
 
+
     private void DoInnerException()
     {
         throw new Exception("Outer",new Exception("Inner"));
+    }
+
+    private void NullBreadcrumbMetadataValue()
+    {
+        var foo = new Dictionary<string, object>()
+        {
+            {"KeyA", "ValueA"},
+            {"KeyB", null},
+        };
+        Bugsnag.LeaveBreadcrumb("testbreadcrumb", foo, BreadcrumbType.State);
+        throw new Exception("NullBreadcrumbMetadata");
     }
 
     private IEnumerator NotifyPersistedEvents()
