@@ -18,9 +18,8 @@ Feature: iOS smoke tests for log entries
         And the event "severityReason.type" equals "handledException"
 
         # Stacktrace validation
-        And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" ends with "UnityEngine.Debug:LogError(Object)"
-        And the error payload field "events.0.threads" is null
+        And the stack frame methods should match:
+            | UnityEngine.Debug:LogError(Object) |
 
         # App data
         And the event "app.id" equals "com.bugsnag.unity.mazerunner"
@@ -67,10 +66,10 @@ Feature: iOS smoke tests for log entries
         And the event "severityReason.type" equals "handledException"
 
         # Stacktrace validation
-        And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-        And the event "exceptions.0.stacktrace.0.method" ends with "MobileScenarioRunner.LogCaughtException()"
         And the error payload field "events.0.threads" is null
-
+        And the stack frame methods should match:
+            | MobileScenarioRunner.LogCaughtException() |
+            
         # App data
         And the event "app.id" equals "com.bugsnag.unity.mazerunner"
         And the event "app.releaseStage" equals "production"

@@ -360,18 +360,10 @@ void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount
                       unhandledCount:(NSUInteger)unhandledCount];
 }
 
-void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
-    if([Bugsnag client].sessionTracker.runningSession == NULL)
-    {
-      callback(session, NULL, NULL, 0, 0);
-      return;
-    }
-    NSDictionary * sessionDict = [[Bugsnag client].sessionTracker.runningSession toDictionary];
-    const char *sessionId = [[sessionDict objectForKey:@"id"] UTF8String];
-    const char *timeString = [[sessionDict objectForKey:@"startedAt"] UTF8String];
-    int handled = [sessionDict[@"handledCount"] integerValue];
-    int unhandled = [sessionDict[@"unhandledCount"] integerValue];
-    callback(session, sessionId, timeString, handled, unhandled);
+void bugsnag_retrieveCurrentSession(const void *ptr, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
+    BugsnagSession *session = Bugsnag.client.sessionTracker.runningSession;
+    NSString *startedAt = session.startedAt ? [BSG_RFC3339DateTool stringFromDate:session.startedAt] : nil;
+    callback(ptr, session.id.UTF8String, startedAt.UTF8String, (int)session.handledCount, (int)session.unhandledCount);
 }
 
 void bugsnag_markLaunchCompleted() {

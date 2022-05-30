@@ -34,13 +34,9 @@ namespace BugsnagUnity
             }
         }
 
-        static Client InternalClient { get; set; }
+        private static Client InternalClient { get; set; }
 
         private static IClient Client => InternalClient;
-
-        public static ISessionTracker SessionTracking => Client.SessionTracking;
-
-        public static void Send(IPayload payload) => Client.Send(payload);
 
         public static void Notify(string name, string message, string stackTrace) => InternalClient.Notify(name, message, stackTrace, null);
 

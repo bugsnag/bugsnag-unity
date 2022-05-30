@@ -49,7 +49,7 @@ steps:
   # Run desktop tests
   #
   - label: Run MacOS e2e tests for Unity 2020
-    timeout_in_minutes: 30
+    timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2020-fixtures'
     agents:
       queue: macos-12-arm-unity
@@ -156,7 +156,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/android"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
 
@@ -181,7 +181,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/edm"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
 
@@ -254,7 +254,7 @@ steps:
           - "--device=IOS_14"
           - "--fail-fast"
           - "features/ios"
-    concurrency: 9
+    concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
 

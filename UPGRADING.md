@@ -1,6 +1,25 @@
 Upgrading
 =========
 
+## 6.x to 7.x
+
+When building using Unity 2019+, the Bugsnag SDK now uses a new method to intercept uncaught C# exceptions. This allows us access to the original exception object, meaning more accurate exception data and full support for inner exceptions.
+
+This has slightly changed the format used for method names and signatures, which means that uncaught C# exceptions reported by `bugsnag-unity` V7+ will not group automatically in the Bugsnag dashboard with the equivalent exception reported by older versions of the library. 
+
+The impact of this will be that some errors will effectively be duplicated between older and newer versions of your app.
+
+Handled errors and native crashes will maintain their existing groups and are not affected by this upgrade.
+
+#### Deprecation summary
+
+The following methods have been removed from the `Bugsnag` client:
+
+`Bugsnag.SessionTracking;` Please see the [capturing sessions](https://docs.bugsnag.com/platforms/unity/capturing-sessions/) section of our documentation for details on working with sessions. 
+
+`Bugsnag.Send(IPayload payload);`
+
+
 ## 5.x to 6.x
 
 ### Key points
