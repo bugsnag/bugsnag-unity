@@ -28,6 +28,10 @@ namespace BugsnagUnity
 
         private MaximumLogTypeCounter _logTypeCounter;
 
+        internal CacheManager CacheManager;
+
+        internal PayloadManager PayloadManager;
+
         private Delivery _delivery;
 
         object CallbackLock { get; } = new object();
@@ -103,8 +107,9 @@ namespace BugsnagUnity
         public Client(INativeClient nativeClient)
         {
             NativeClient = nativeClient;
-            _delivery = new Delivery(nativeClient.Configuration);
-            FileManager.InitFileManager(nativeClient.Configuration);
+            CacheManager = new CacheManager(Configuration);
+            PayloadManager = new PayloadManager(CacheManager);
+            _delivery = new Delivery(Configuration,CacheManager,PayloadManager);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
             _isUnity2019OrHigher = IsUnity2019OrHigher();
@@ -206,7 +211,7 @@ namespace BugsnagUnity
             else
             {
                 // otherwise create one
-                _cachedUser = new User { Id = FileManager.GetDeviceId() };
+                _cachedUser = new User { Id = CacheManager.GetCachedDeviceId() };
                 // see if a native user is avaliable
                 NativeClient.PopulateUser(_cachedUser);
             }
@@ -439,7 +444,7 @@ namespace BugsnagUnity
 
             NativeClient.PopulateAppWithState(app);
 
-            var device = new DeviceWithState(Configuration);
+            var device = new DeviceWithState(Configuration,CacheManager.GetCachedDeviceId());
 
             NativeClient.PopulateDeviceWithState(device);
 
@@ -512,7 +517,7 @@ namespace BugsnagUnity
             var report = new Report(Configuration, @event);
             if (!report.Ignored)
             {
-                FileManager.AddPendingPayload(report);
+                PayloadManager.AddPendingPayload(report);
                 Send(report);
                 if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
                 {
