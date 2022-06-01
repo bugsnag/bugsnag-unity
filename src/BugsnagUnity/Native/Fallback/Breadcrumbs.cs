@@ -25,8 +25,7 @@ namespace BugsnagUnity
         /// </summary>
         public void Leave(string message, Dictionary<string, object> metadata,BreadcrumbType type )
         {
-            var breadcrumb = new Breadcrumb(message, metadata, type);
-            Leave(breadcrumb);
+            Leave(new Breadcrumb(message, metadata, type));
         }
 
         public void Leave(Breadcrumb breadcrumb)
@@ -35,7 +34,8 @@ namespace BugsnagUnity
             {
                 return;
             }
-
+            // Clone the metadata to prevent thread related exceptions
+            breadcrumb.Metadata = breadcrumb.Metadata.ToDictionary(entry => entry.Key, entry => entry.Value);
             lock (_lock)
             {
 

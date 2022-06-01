@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using BugsnagUnity.Payload;
+using System.Linq;
 
 namespace BugsnagUnity
 {
@@ -35,7 +36,9 @@ namespace BugsnagUnity
             {
                 return;
             }
-            NativeInterface.LeaveBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString(), breadcrumb.Metadata);
+            // Clone the metadata to prevent thread related exceptions
+            var metadataClone = breadcrumb.Metadata.ToDictionary(entry => entry.Key, entry => entry.Value);
+            NativeInterface.LeaveBreadcrumb(breadcrumb.Message, breadcrumb.Type.ToString(), metadataClone);
         }
 
         /// <summary>
