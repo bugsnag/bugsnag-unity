@@ -6,7 +6,7 @@ steps:
   #
   # Build notifier.  We run tests for all Unity versions with the 2018 artifacts, as that is what we ship.
   #
-  - label: Build notifier artifacts
+  - label: Build released notifier artifact
     timeout_in_minutes: 30
     key: 'build-artifacts'
     env:
@@ -16,6 +16,19 @@ steps:
       - bundle exec rake plugin:export
     artifact_paths:
       - Bugsnag.unitypackage
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Ensure notifier builds on Windows (for development)
+    timeout_in_minutes: 30
+    agents:
+      queue: opensource-windows-unity
+    env:
+      UNITY_VERSION: "2018.4.36f1"
+    command:
+      - scripts/ci-build-windows-plugin.bat
     retry:
       automatic:
         - exit_status: "*"

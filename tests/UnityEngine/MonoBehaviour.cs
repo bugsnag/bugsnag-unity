@@ -5,7 +5,7 @@ using System.Text;
 
 namespace UnityEngine
 {
-    public class MonoBehaviour
+    public class MonoBehaviour : Component
     {
     }
 }
