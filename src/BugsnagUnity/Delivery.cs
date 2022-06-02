@@ -138,12 +138,15 @@ namespace BugsnagUnity
 
         private IEnumerator DeliverCachedPayloads()
         {
-            var payload = _cacheManager.GetNextCachedPayload();
-            while (payload != null)
+            var payloadIds = _cacheManager.GetCachedPayloadIds();
+            foreach (var payloadId in payloadIds)
             {
-                Deliver(payload);
-                yield return new WaitUntil(() => CachedPayloadProcessed(payload.Id));
-                payload = _cacheManager.GetNextCachedPayload();
+                var payload = _cacheManager.GetCachedPayload(payloadId);
+                if (payload != null)
+                {
+                    Deliver(payload);
+                    yield return new WaitUntil(() => CachedPayloadProcessed(payload.Id));
+                }
             }
             _cacheDeliveryInProcess = false;
         }     

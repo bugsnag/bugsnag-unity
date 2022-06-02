@@ -11,6 +11,7 @@ namespace BugsnagUnity
         void CacheEvent(string id, string json);
         void RemoveCachedEvent(string id);
         void RemoveCachedSession(string id);
-        IPayload GetNextCachedPayload();
+        string[] GetCachedPayloadIds();
+        IPayload GetCachedPayload(string id);
     }
 }

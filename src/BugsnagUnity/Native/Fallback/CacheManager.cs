@@ -153,6 +153,20 @@ namespace BugsnagUnity
             }
         }
 
+        public string[] GetCachedPayloadIds()
+        {
+            var cachedPayloadIds = new List<string>();
+            foreach (var path in _cachedSessions)
+            {
+                cachedPayloadIds.Add(Path.GetFileNameWithoutExtension(path));
+            }
+            foreach (var path in _cachedEvents)
+            {
+                cachedPayloadIds.Add(Path.GetFileNameWithoutExtension(path));
+            }
+            return cachedPayloadIds.ToArray();
+        }
+
         private string[] GetCachedPayloadPaths()
         {
             var cachedPayloadPaths = new List<string>();
@@ -181,15 +195,13 @@ namespace BugsnagUnity
             return null;
         }
 
-        public IPayload GetNextCachedPayload()
+        public IPayload GetCachedPayload(string id)
         {
-            var paths = GetCachedPayloadPaths();
-            if (paths.Length == 0)
+            foreach (var path in GetCachedPayloadPaths())
             {
-                return null;
+                return GetPayloadFromCachePath(path);
             }
-            var payload = GetPayloadFromCachePath(paths[0]);
-            return payload;
+            return null;
         }
 
         private static void CheckForDirectoryCreation()
