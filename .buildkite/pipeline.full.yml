@@ -1,5 +1,5 @@
 agents:
-  queue: macos-12-arm-unity
+  queue: ms-arm-12-6
 
 steps:
 
@@ -75,7 +75,7 @@ steps:
     timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2018-fixtures'
     agents:
-      queue: macos-12-arm-unity
+      queue: ms-arm-12-6
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -92,7 +92,7 @@ steps:
     timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2019-fixtures'
     agents:
-      queue: macos-12-arm-unity
+      queue: ms-arm-12-6
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -109,7 +109,7 @@ steps:
     timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2021-fixtures'
     agents:
-      queue: macos-12-arm-unity
+      queue: ms-arm-12-6
     env:
       UNITY_VERSION: "2021.3.3f1"
     plugins:
@@ -391,7 +391,7 @@ steps:
     key: 'build-ios-fixture-2018'
     depends_on: 'generate-fixture-project-2018'
     agents:
-      queue: macos-12-arm-unity
+      queue: ms-arm-12-6
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -436,7 +436,7 @@ steps:
     key: 'build-ios-fixture-2019'
     depends_on: 'generate-fixture-project-2019'
     agents:
-      queue: macos-12-arm-unity
+      queue: ms-arm-12-6
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -481,7 +481,7 @@ steps:
     key: 'build-ios-fixture-2021'
     depends_on: 'generate-fixture-project-2021'
     agents:
-      queue: macos-12-arm-unity
+      queue: ms-arm-12-6
     env:
       UNITY_VERSION: "2021.3.3f1"
     plugins:
