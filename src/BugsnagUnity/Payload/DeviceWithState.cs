@@ -39,10 +39,11 @@ namespace BugsnagUnity.Payload
 
         internal DeviceWithState(Dictionary<string, object> cachedData) : base(cachedData) { }
 
-        internal DeviceWithState(Configuration configuration) : base(configuration)
+        internal DeviceWithState(Configuration configuration, string deviceId) : base(configuration, deviceId)
         {
             Orientation = Input.deviceOrientation.ToString();
             Time = DateTimeOffset.Now;
+            Id = deviceId;
         }
 
 

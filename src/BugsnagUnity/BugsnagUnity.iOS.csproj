@@ -9,5 +9,6 @@
     <Compile Remove="Native/**/*.cs" />
     <Compile Include="Native/Cocoa/**/*.cs" />
     <Compile Include="Native/iOS/**/*.cs" />
+    <Compile Include="Native\Fallback\CacheManager.cs" />
   </ItemGroup>
 </Project>

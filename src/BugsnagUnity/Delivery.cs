@@ -14,6 +14,11 @@ namespace BugsnagUnity
     {
 
         private Configuration _configuration;
+
+        private CacheManager _cacheManager;
+
+        private PayloadManager _payloadManager;
+
         private object _callbackLock { get; } = new object();
 
         private static List<string> _finishedCacheDeliveries = new List<string>();
@@ -21,9 +26,11 @@ namespace BugsnagUnity
         private bool _cacheDeliveryInProcess;
 
 
-        internal Delivery(Configuration configuration)
+        internal Delivery(Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
         {
             _configuration = configuration;
+            _cacheManager = cacheManager;
+            _payloadManager = payloadManager;
         }
 
         // Run any on send error callbacks if it's an event, serialise the payload and add it to the sending queue
@@ -100,12 +107,12 @@ namespace BugsnagUnity
                 if (code == 200 || code == 202)
                 {
                     // success!
-                    FileManager.PayloadSendSuccess(payload);
+                    _payloadManager.PayloadSendSuccess(payload);
                 }
                 else if (req.isNetworkError || code == 0 || code == 408 || code == 429 || code >= 500)
                 {
                     // sending failed with no network or retryable error, cache payload to disk
-                    FileManager.SendPayloadFailed(payload);
+                    _payloadManager.SendPayloadFailed(payload);
                 }
                 _finishedCacheDeliveries.Add(payload.Id);
             }
@@ -131,9 +138,10 @@ namespace BugsnagUnity
 
         private IEnumerator DeliverCachedPayloads()
         {
-            foreach (var cachedPayloadPath in FileManager.GetCachedPayloadPaths())
+            var payloadIds = _cacheManager.GetCachedPayloadIds();
+            foreach (var payloadId in payloadIds)
             {
-                var payload = FileManager.GetPayloadFromCachePath(cachedPayloadPath);
+                var payload = _cacheManager.GetCachedPayload(payloadId);
                 if (payload != null)
                 {
                     Deliver(payload);
