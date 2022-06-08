@@ -7,6 +7,9 @@
 * Increased thread saftey of the metadata dictionary in Bugsnag.LeaveBreadcrumb
   [#564](https://github.com/bugsnag/bugsnag-unity/pull/564)
 
+### Dependency updates
+
+* Update bugsnag-cocoa from v6.17.1 to [v6.18.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6180-2022-06-08)
 
 ## 7.0.0 (2022-05-30)
 
