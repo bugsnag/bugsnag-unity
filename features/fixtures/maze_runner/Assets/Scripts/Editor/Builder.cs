@@ -63,6 +63,18 @@ public class Builder : MonoBehaviour {
         Debug.Log("Result: " + result);
     }
 
+    public static void SwitchBuild()
+    {
+        Debug.Log("Building Switch app...");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Switch, "com.bugsnag.unity.mazerunner");
+
+        var opts = CommonOptions("mazerunner_xcode");
+        opts.target = BuildTarget.Switch;
+
+        var result = BuildPipeline.BuildPlayer(opts);
+        Debug.Log("Result: " + result);
+    }
+
     private static BuildPlayerOptions CommonOptions(string outputFile)
     {
         var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
