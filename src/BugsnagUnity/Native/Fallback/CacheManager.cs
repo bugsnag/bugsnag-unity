@@ -95,14 +95,14 @@ namespace BugsnagUnity
             catch { }
         }
 
-        public void CacheSession(string id,string json)
+        public void SaveSessionToCache(string id,string json)
         {
             var path = _sessionsDirectory + "/" + id + SESSION_FILE_PREFIX;
             WritePayloadToDisk(json, path);
             CheckForMaxCachedPayloads(_cachedSessions, _configuration.MaxPersistedSessions);
         }
 
-        public void CacheEvent(string id, string json)
+        public void SaveEventToCache(string id, string json)
         {
             var path = _eventsDirectory + "/" + id + EVENT_FILE_PREFIX;
             WritePayloadToDisk(json, path);

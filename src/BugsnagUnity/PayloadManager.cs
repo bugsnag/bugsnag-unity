@@ -77,7 +77,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            _cacheManager.CacheSession(pendingSession.PayloadId, pendingSession.Json);
+            _cacheManager.SaveSessionToCache(pendingSession.PayloadId, pendingSession.Json);
             RemovePendingPayload(reportId);
         }
 
@@ -88,7 +88,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            _cacheManager.CacheEvent(pendingEvent.PayloadId, pendingEvent.Json);
+            _cacheManager.SaveEventToCache(pendingEvent.PayloadId, pendingEvent.Json);
             RemovePendingPayload(reportId);
         }
 
