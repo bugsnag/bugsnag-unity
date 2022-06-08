@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/bugsnag/maze-runner
-  revision: 971b390f5617825c18186a35f3f66ffdfcddd315
-  tag: v6.9.4
+  revision: 1840fb2c142e7c28cbade633d0832b444fe4a869
+  tag: v6.18.1
   specs:
-    bugsnag-maze-runner (6.9.4)
+    bugsnag-maze-runner (6.18.1)
       appium_lib (~> 11.2.0)
       bugsnag (~> 6.24)
       cucumber (~> 7.1)
@@ -36,7 +36,7 @@ GEM
     childprocess (3.0.0)
     claide (1.1.0)
     colored2 (3.1.2)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     cucumber (7.1.0)
       builder (~> 3.2, >= 3.2.4)
       cucumber-core (~> 10.1, >= 10.1.0)
@@ -80,7 +80,7 @@ GEM
     mime-types-data (3.2022.0105)
     multi_test (0.1.2)
     nanaimo (0.3.0)
-    nokogiri (1.13.3-x86_64-darwin)
+    nokogiri (1.13.6-x86_64-darwin)
       racc (~> 1.4)
     optimist (3.0.1)
     os (1.0.1)
