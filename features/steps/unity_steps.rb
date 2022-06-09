@@ -153,9 +153,9 @@ When('I run the game in the {string} state') do |state|
   when 'windows'
     command = "#{Maze.config.app} -batchmode -nographics"
     env = {
-        'BUGSNAG_SCENARIO' => state,
-        'BUGSNAG_APIKEY' => $api_key,
-        'MAZE_ENDPOINT' => endpoint
+      'BUGSNAG_SCENARIO' => state,
+      'BUGSNAG_APIKEY' => $api_key,
+      'MAZE_ENDPOINT' => endpoint
     }
     system(env, command)
 
