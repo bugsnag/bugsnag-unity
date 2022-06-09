@@ -40,8 +40,7 @@ Feature: Reporting unhandled events
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario)               |                                         |
       | Main.Start()                             |                                                 |                                         |
 
-
-        #device metadata
+    # Device metadata
     And the event "device.freeDisk" is greater than 0
     And the event "device.freeMemory" is greater than 0
     And the event "device.id" is not null
@@ -54,7 +53,7 @@ Feature: Reporting unhandled events
     And the event "device.time" is a timestamp
     And the event "device.totalMemory" is greater than 0
 
-        #auto metadata
+    # Auto metadata
     And the event "metaData.device.screenDensity" is not null
     And the event "metaData.device.screenResolution" is not null
     And the event "metaData.device.osLanguage" equals "English"
@@ -62,8 +61,7 @@ Feature: Reporting unhandled events
     And the event "metaData.device.graphicsMemorySize" is not null
     And the event "metaData.device.processorType" is not null
 
-
-        #app metadata
+    # App metadata
     And the event "app.duration" is greater than 0
     And the event "app.durationInForeground" is not null
     And the event "app.inForeground" is not null
@@ -73,11 +71,10 @@ Feature: Reporting unhandled events
     And the event "app.type" equals "Windows"
     And the event "app.version" is not null
 
-        #auto app data
+    # Auto app data
     And the event "metaData.app.companyName" equals "bugsnag"
     And the event "metaData.app.name" equals "Mazerunner"
     And the event "metaData.app.buildno" is not null
-
 
   @skip_webgl
   Scenario: Forcing uncaught exceptions to be unhandled
@@ -133,10 +130,8 @@ Feature: Reporting unhandled events
       | __pthread_kill       |
       | abort                |
       | crashy_signal_runner |
-        # awaiting fix in PLAT-6495
-        # And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
-        # And custom metadata is included in the event
-
+    And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
+    And custom metadata is included in the event
 
   Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
     When I run the game in the "UncaughtExceptionOutsideNotifyReleaseStages" state
@@ -173,9 +168,8 @@ Feature: Reporting unhandled events
       | __pthread_kill       |
       | abort                |
       | crashy_signal_runner |
-        # awaiting fix in PLAT-6495
-        # And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
-        # And custom metadata is included in the event
+    And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
+    And custom metadata is included in the event
 
   @skip_webgl
   Scenario: Report exception from background thread
@@ -190,8 +184,6 @@ Feature: Reporting unhandled events
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Launch"
-       
-        #app metadata
     And the event "app.isLaunching" is true
 
   @windows_only
@@ -200,8 +192,6 @@ Feature: Reporting unhandled events
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "InfLaunchDurationMark"
-       
-        #app metadata
     And the event "app.isLaunching" is false
 
   @macos_only
@@ -210,8 +200,6 @@ Feature: Reporting unhandled events
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Launch"
-       
-        #app metadata
     And the event "app.isLaunching" equals "true"
 
   @macos_only
@@ -220,8 +208,6 @@ Feature: Reporting unhandled events
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "InfLaunchDurationMark"
-       
-        #app metadata
     And the event "app.isLaunching" equals "false"
 
   @macos_only
@@ -230,8 +216,6 @@ Feature: Reporting unhandled events
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Launch"
-       
-        #app metadata
     And the event "app.isLaunching" equals "true"
 
   @macos_only
@@ -240,8 +224,6 @@ Feature: Reporting unhandled events
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Launch"
-       
-        #app metadata
     And the event "app.isLaunching" equals "false"
 
   @windows_only
@@ -250,7 +232,4 @@ Feature: Reporting unhandled events
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Launch"
-       
-        #app metadata
     And the event "app.isLaunching" is true
-

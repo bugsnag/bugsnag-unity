@@ -6,7 +6,7 @@ Feature: User operations tests
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "errorClass" equals "ExecutionEngineException"
        
-         # User
+    # User
     And the event "user.id" equals "1"
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"
@@ -18,7 +18,8 @@ Feature: User operations tests
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the native Unity notifier
     And the exception "errorClass" equals "SIGABRT"
-        # User
+
+    # User
     And the event "user.id" equals "1"
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"
@@ -29,7 +30,7 @@ Feature: User operations tests
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "errorClass" equals "Exception"
        
-         # User
+    # User
     And the event "user.id" equals "1"
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"
@@ -41,7 +42,8 @@ Feature: User operations tests
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the native Unity notifier
     And the exception "errorClass" equals "SIGABRT"
-        # User
+
+    # User
     And the event "user.id" equals "1"
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"

@@ -53,21 +53,11 @@ Feature: Unity Persistence
     And I discard the oldest error
     And the event "context" equals "First Error"
     And the exception "message" equals "First Event"
-
-    # Device metadata
     And the event "device.id" equals "Persist Id"
-
-    # App metadata
     And the event "app.binaryArch" equals "Persist BinaryArch"
- 
-    # Exception data
     And the event "exceptions.0.errorClass" equals "Persist ErrorClass"
     And the event "exceptions.0.stacktrace.0.method" equals "Persist Method"
-
-    # Breadcrumbs
     And the event "breadcrumbs.0.name" equals "Persist Message"
-
-    # Metadata
     And the event "metaData.Persist Section.Persist Key" equals "Persist Value"
 
   Scenario: Persist Device Id
