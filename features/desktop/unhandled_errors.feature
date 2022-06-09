@@ -16,6 +16,10 @@ Feature: Reporting unhandled events
     And the exception "errorClass" equals "ExecutionEngineException"
     And the exception "message" equals "Promise Rejection"
     And the event "unhandled" is false
+    And the event "device.runtimeVersions.unity" is not null
+    And the event "device.runtimeVersions.unityScriptingBackend" is not null
+    And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
+    And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
     And custom metadata is included in the event
     And the stack frame methods should match:
       | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) | Main.DoUnhandledException(long counter) |
