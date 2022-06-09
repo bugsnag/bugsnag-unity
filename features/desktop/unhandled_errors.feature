@@ -130,7 +130,7 @@ Feature: Reporting unhandled events
       | __pthread_kill       |
       | abort                |
       | crashy_signal_runner |
-    And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
+    And the error payload field "notifier.name" equals "Unity Bugsnag Notifier"
     And custom metadata is included in the event
 
   Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
@@ -168,7 +168,7 @@ Feature: Reporting unhandled events
       | __pthread_kill       |
       | abort                |
       | crashy_signal_runner |
-    And the payload field "notifier.name" equals "Bugsnag Unity (Cocoa)"
+    And the error payload field "notifier.name" equals "Unity Bugsnag Notifier"
     And custom metadata is included in the event
 
   @skip_webgl
