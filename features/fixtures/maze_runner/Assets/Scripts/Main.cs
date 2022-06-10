@@ -1,18 +1,30 @@
 using UnityEngine;
+using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
+
+public class Command
+{
+    public string action { get; set; }
+    public string scenario_name { get; set; }
+    public string scenario_mode { get; set; }
+    public string sessions_endpoint { get; set; }
+    public string notify_endpoint { get; set; }
+}
 
 public class Main : MonoBehaviour
 {
@@ -32,6 +44,28 @@ public class Main : MonoBehaviour
 
     private float _closeTime = 5;
 
+#if UNITY_STANDALONE
+    private string _mazeHost = "localhost";
+#else
+    private string _mazeHost = "bs-local.com";
+#endif
+
+    private void GetMazeCommand() {
+
+        var endpoint = string.Format("http://{0}:9339/command", _mazeHost);
+        var response = UnityWebRequest.Get(endpoint);
+
+        var command = JsonUtility.FromJson<Command>(response.downloadHandler.text);
+
+        Console.WriteLine(command.action);
+        Console.WriteLine(command.scenario_name);
+        Console.WriteLine(command.scenario_mode);
+        Console.WriteLine(command.sessions_endpoint);
+        Console.WriteLine(command.notify_endpoint);
+
+        //CancelInvoke("GetMazeCommand");
+    }
+
     public void Start()
     {
 
@@ -42,6 +76,9 @@ public class Main : MonoBehaviour
 #if UNITY_WEBGL
         ParseUrlParameters(); 
 #endif
+
+        InvokeRepeating("GetMazeCommand", 0, 1);
+
         var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);
         Invoke("CloseApplication", _closeTime);

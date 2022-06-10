@@ -1,6 +1,72 @@
 require 'cgi'
 
 #
+# Common steps
+#
+def execute_command(action, scenario_name = '')
+  command = {
+    action: action,
+    scenario_name: scenario_name,
+    scenario_mode: $scenario_mode,
+    sessions_endpoint: $sessions_endpoint,
+    notify_endpoint: $notify_endpoint
+  }
+  Maze::Server.commands.add command
+
+  # Reset values to defaults
+  $scenario_mode = ''
+  $sessions_endpoint = 'http://bs-local.com:9339/sessions'
+  $notify_endpoint = 'http://bs-local.com:9339/notify'
+
+  # Ensure fixture has read the command
+  count = 600
+  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
+end
+
+When('I run the game in the {string} state') do |state|
+  endpoint = "http://localhost:#{Maze.config.port}"
+
+  case Maze::Helper.get_current_platform
+  when 'macos'
+    Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
+    Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
+    Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
+
+    # Call executable directly rather than use open, which flakes on CI
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args"
+    Maze::Runner.run_command(command)
+
+  when 'windows'
+    command = "#{Maze.config.app} -batchmode -nographics"
+    env = {
+      'BUGSNAG_SCENARIO' => state,
+      'BUGSNAG_APIKEY' => $api_key,
+      'MAZE_ENDPOINT' => endpoint
+    }
+    system(env, command)
+
+  when 'android', 'ios'
+
+    # Run a Maze Command here...?
+    # Convert Desktop tests to use /command first?
+
+
+    # dial_number_for state
+    # step('I press Run Scenario')
+
+  else
+    # WebGL in a browser
+    # endpoint = CGI.escape endpoint
+    fixture_host = "http://localhost:#{Maze.config.document_server_port}"
+    url = "#{fixture_host}/index.html?BUGSNAG_SCENARIO=#{state}&BUGSNAG_APIKEY=#{$api_key}&MAZE_ENDPOINT=#{endpoint}"
+    $logger.debug "Navigating to URL: #{url}"
+    step("I navigate to the URL \"#{url}\"")
+  end
+end
+
+
+#
 # Mobile steps
 #
 
@@ -137,38 +203,6 @@ end
 #
 # Desktop steps
 #
-When('I run the game in the {string} state') do |state|
-  endpoint = "http://localhost:#{Maze.config.port}"
-
-  case Maze.config.os
-  when 'macos'
-    Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
-    Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
-    Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
-
-    # Call executable directly rather than use open, which flakes on CI
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args"
-    Maze::Runner.run_command(command)
-
-  when 'windows'
-    command = "#{Maze.config.app} -batchmode -nographics"
-    env = {
-      'BUGSNAG_SCENARIO' => state,
-      'BUGSNAG_APIKEY' => $api_key,
-      'MAZE_ENDPOINT' => endpoint
-    }
-    system(env, command)
-
-  else
-    # WebGL in a browser
-    # endpoint = CGI.escape endpoint
-    fixture_host = "http://localhost:#{Maze.config.document_server_port}"
-    url = "#{fixture_host}/index.html?BUGSNAG_SCENARIO=#{state}&BUGSNAG_APIKEY=#{$api_key}&MAZE_ENDPOINT=#{endpoint}"
-    $logger.debug "Navigating to URL: #{url}"
-    step("I navigate to the URL \"#{url}\"")
-  end
-end
-
 def check_error_reporting_api(notifier_name)
   steps %(
     Then the error "Bugsnag-Api-Key" header equals "#{$api_key}"

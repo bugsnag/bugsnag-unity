@@ -1,28 +1,32 @@
 require 'fileutils'
 
 Before('@skip_unity_2018') do |_scenario|
-    if ENV['UNITY_VERSION']
-      unity_version = ENV['UNITY_VERSION'][0..3].to_i
-      if unity_version == 2018
-        skip_this_scenario('Skipping scenario on Unity 2018')
-      end
+  $scenario_mode = ''
+  $sessions_endpoint = 'http://bs-local.com:9339/sessions'
+  $notify_endpoint = 'http://bs-local.com:9339/notify'
+
+  if ENV['UNITY_VERSION']
+    unity_version = ENV['UNITY_VERSION'][0..3].to_i
+    if unity_version == 2018
+      skip_this_scenario('Skipping scenario on Unity 2018')
+    end
   end
 end
 
 Before('@skip_webgl') do |_scenario|
-  skip_this_scenario("Skipping scenario") unless Maze.config.browser.nil?
+  skip_this_scenario('Skipping scenario') unless Maze.config.browser.nil?
 end
 
 Before('@webgl_only') do |_scenario|
-  skip_this_scenario("Skipping scenario") if Maze.config.browser.nil?
+  skip_this_scenario('Skipping scenario') if Maze.config.browser.nil?
 end
 
 Before('@macos_only') do |_scenario|
-  skip_this_scenario("Skipping scenario") unless Maze.config.os == 'macos'
+  skip_this_scenario('Skipping scenario') unless Maze.config.os == 'macos'
 end
 
 Before('@windows_only') do |_scenario|
-  skip_this_scenario("Skipping scenario") unless Maze.config.os == 'windows'
+  skip_this_scenario('Skipping scenario') unless Maze.config.os == 'windows'
 end
 
 BeforeAll do
@@ -48,11 +52,11 @@ Maze.hooks.before do
     support_dir = File.expand_path '~/Library/Application Support/com.bugsnag.Bugsnag'
     $logger.info "Clearing #{support_dir}"
     FileUtils.rm_rf(support_dir)
-    $logger.info "Clearing User defaults"
-    Maze::Runner.run_command("defaults delete com.bugsnag.MazeRunner");
+    $logger.info 'Clearing User defaults'
+    Maze::Runner.run_command('defaults delete com.bugsnag.MazeRunner');
 
     # This is to get around a strange macos bug where clearing prefs does not work 
-    $logger.info "Killing defaults service"
+    $logger.info 'Killing defaults service'
     Maze::Runner.run_command("killall -u #{ENV['USER']} cfprefsd")
 
   end
