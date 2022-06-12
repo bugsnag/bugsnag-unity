@@ -6,11 +6,14 @@ require 'cgi'
 def execute_command(action, scenario_name = '')
   command = {
     action: action,
-    scenario_name: scenario_name,
-    scenario_mode: $scenario_mode,
-    sessions_endpoint: $sessions_endpoint,
-    notify_endpoint: $notify_endpoint
+    scenarioName: scenario_name,
+    scenarioMode: $scenario_mode,
+    sessionsEndpoint: $sessions_endpoint,
+    notifyEndpoint: $notify_endpoint
   }
+
+  $logger.info JSON.pretty_generate(command)
+
   Maze::Server.commands.add command
 
   # Reset values to defaults
@@ -19,9 +22,9 @@ def execute_command(action, scenario_name = '')
   $notify_endpoint = 'http://bs-local.com:9339/notify'
 
   # Ensure fixture has read the command
-  count = 600
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
+  # count = 600
+  # sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+  # raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 When('I run the game in the {string} state') do |state|
@@ -29,13 +32,16 @@ When('I run the game in the {string} state') do |state|
 
   case Maze::Helper.get_current_platform
   when 'macos'
-    Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
-    Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
-    Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
 
-    # Call executable directly rather than use open, which flakes on CI
+    execute_command('run_scenario', state)
+
+    # Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
+    # Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
+    # Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
+    #
+    # # Call executable directly rather than use open, which flakes on CI
     command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args"
-    Maze::Runner.run_command(command)
+    Maze::Runner.run_command(command, blocking: false)
 
   when 'windows'
     command = "#{Maze.config.app} -batchmode -nographics"

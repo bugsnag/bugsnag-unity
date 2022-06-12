@@ -16,14 +16,14 @@ using System.IO;
 using UnityEditor;
 #endif
 
-
+[Serializable]
 public class Command
 {
-    public string action { get; set; }
-    public string scenario_name { get; set; }
-    public string scenario_mode { get; set; }
-    public string sessions_endpoint { get; set; }
-    public string notify_endpoint { get; set; }
+    public string action;
+    public string scenarioName;
+    public string scenarioMode;
+    public string sessionsEndpoint;
+    public string notifyEndpoint;
 }
 
 public class Main : MonoBehaviour
@@ -50,20 +50,46 @@ public class Main : MonoBehaviour
     private string _mazeHost = "bs-local.com";
 #endif
 
-    private void GetMazeCommand() {
+    IEnumerator GetMazeCommand()
+    {
+        var uri = string.Format("http://{0}:9339/command", _mazeHost);
+        Console.WriteLine("SKW endpoint: " + uri);
 
-        var endpoint = string.Format("http://{0}:9339/command", _mazeHost);
-        var response = UnityWebRequest.Get(endpoint);
+        using (UnityWebRequest request = UnityWebRequest.Get(uri))
+        {
+            // Request and wait for the desired page.
+            yield return request.SendWebRequest();
 
-        var command = JsonUtility.FromJson<Command>(response.downloadHandler.text);
+            switch (request.result)
+            {
+                case UnityWebRequest.Result.ConnectionError:
+                case UnityWebRequest.Result.DataProcessingError:
+                    Debug.LogError("Error: " + request.error);
+                    break;
+                case UnityWebRequest.Result.ProtocolError:
+                    Debug.LogError("HTTP Error: " + request.error);
+                    break;
+                case UnityWebRequest.Result.Success:
+                    Debug.Log("Received: " + request.downloadHandler.text);
 
-        Console.WriteLine(command.action);
-        Console.WriteLine(command.scenario_name);
-        Console.WriteLine(command.scenario_mode);
-        Console.WriteLine(command.sessions_endpoint);
-        Console.WriteLine(command.notify_endpoint);
+                    var response = request.downloadHandler.text;
+                    var command = JsonUtility.FromJson<Command>(response);
+                    if (command != null)
+                    {
+                        Console.WriteLine(command.action);
+                        Console.WriteLine(command.scenarioName);
+                        Console.WriteLine(command.scenarioMode);
+                        Console.WriteLine(command.sessionsEndpoint);
+                        Console.WriteLine(command.notifyEndpoint);
 
-        //CancelInvoke("GetMazeCommand");
+                        if ("run_scenario".Equals(command.action))
+                        {
+
+                        }
+                    }
+                    break;
+            }
+        }
     }
 
     public void Start()
@@ -77,7 +103,7 @@ public class Main : MonoBehaviour
         ParseUrlParameters(); 
 #endif
 
-        InvokeRepeating("GetMazeCommand", 0, 1);
+        StartCoroutine(GetMazeCommand());
 
         var scenario = GetEvnVar("BUGSNAG_SCENARIO");
         var config = PrepareConfig(scenario);

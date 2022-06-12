@@ -1,10 +1,12 @@
 require 'fileutils'
 
-Before('@skip_unity_2018') do |_scenario|
+Before do
   $scenario_mode = ''
   $sessions_endpoint = 'http://bs-local.com:9339/sessions'
   $notify_endpoint = 'http://bs-local.com:9339/notify'
+end
 
+Before('@skip_unity_2018') do |_scenario|
   if ENV['UNITY_VERSION']
     unity_version = ENV['UNITY_VERSION'][0..3].to_i
     if unity_version == 2018
