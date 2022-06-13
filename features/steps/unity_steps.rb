@@ -6,25 +6,17 @@ require 'cgi'
 def execute_command(action, scenario_name = '')
   command = {
     action: action,
-    scenarioName: scenario_name,
-    scenarioMode: $scenario_mode,
-    sessionsEndpoint: $sessions_endpoint,
-    notifyEndpoint: $notify_endpoint
+    scenarioName: scenario_name
   }
 
   $logger.info JSON.pretty_generate(command)
 
   Maze::Server.commands.add command
 
-  # Reset values to defaults
-  $scenario_mode = ''
-  $sessions_endpoint = 'http://bs-local.com:9339/sessions'
-  $notify_endpoint = 'http://bs-local.com:9339/notify'
-
   # Ensure fixture has read the command
-  # count = 600
-  # sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  # raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
+  count = 300
+  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 When('I run the game in the {string} state') do |state|
@@ -32,16 +24,15 @@ When('I run the game in the {string} state') do |state|
 
   case Maze::Helper.get_current_platform
   when 'macos'
+    # Call executable directly rather than use open, which flakes on CI
+    $logger.info 'Run the fixture'
+
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner"
+    Maze::Runner.run_command(command, blocking: false)
+
+    $logger.info 'Run the fixture - DONE'
 
     execute_command('run_scenario', state)
-
-    # Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
-    # Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
-    # Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
-    #
-    # # Call executable directly rather than use open, which flakes on CI
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args"
-    Maze::Runner.run_command(command, blocking: false)
 
   when 'windows'
     command = "#{Maze.config.app} -batchmode -nographics"
@@ -53,13 +44,7 @@ When('I run the game in the {string} state') do |state|
     system(env, command)
 
   when 'android', 'ios'
-
-    # Run a Maze Command here...?
-    # Convert Desktop tests to use /command first?
-
-
-    # dial_number_for state
-    # step('I press Run Scenario')
+    # TODO Come back to this
 
   else
     # WebGL in a browser

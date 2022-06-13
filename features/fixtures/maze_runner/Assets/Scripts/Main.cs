@@ -3,10 +3,8 @@ using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
@@ -21,9 +19,6 @@ public class Command
 {
     public string action;
     public string scenarioName;
-    public string scenarioMode;
-    public string sessionsEndpoint;
-    public string notifyEndpoint;
 }
 
 public class Main : MonoBehaviour
@@ -37,54 +32,60 @@ public class Main : MonoBehaviour
 
 #endif
 
+    private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private Dictionary<string, string> _webGlArguments;
 
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
 
-    private float _closeTime = 5;
-
 #if UNITY_STANDALONE
-    private string _mazeHost = "localhost";
+    private string _mazeHost = "http://localhost:9339";
 #else
-    private string _mazeHost = "bs-local.com";
+    private string _mazeHost = "http://bs-local.com:9339";
 #endif
 
-    IEnumerator GetMazeCommand()
+    IEnumerator RunNextMazeCommand()
     {
-        var uri = string.Format("http://{0}:9339/command", _mazeHost);
-        Console.WriteLine("SKW endpoint: " + uri);
-
-        using (UnityWebRequest request = UnityWebRequest.Get(uri))
+        using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
         {
-            // Request and wait for the desired page.
             yield return request.SendWebRequest();
 
             switch (request.result)
             {
                 case UnityWebRequest.Result.ConnectionError:
                 case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError("Error: " + request.error);
-                    break;
                 case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError("HTTP Error: " + request.error);
+                    Console.Error.WriteLine("Failed to make HTTP request for next Maze Runner command: " + request.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    Debug.Log("Received: " + request.downloadHandler.text);
-
                     var response = request.downloadHandler.text;
                     var command = JsonUtility.FromJson<Command>(response);
                     if (command != null)
                     {
+                        Console.WriteLine("Received Maze Runner command:");
                         Console.WriteLine(command.action);
                         Console.WriteLine(command.scenarioName);
-                        Console.WriteLine(command.scenarioMode);
-                        Console.WriteLine(command.sessionsEndpoint);
-                        Console.WriteLine(command.notifyEndpoint);
 
-                        if ("run_scenario".Equals(command.action))
+                        if ("clear_cache".Equals(command.action))
                         {
-
+                            // Clear the Bugsnag cache
+                            RunScenario("ClearBugsnagCache");
+                        }
+                        else if ("start_bugsnag".Equals(command.action))
+                        {
+                            // Just start Bugsnag
+                            StartBugsnag(command.scenarioName);
+                        }
+                        else if ("run_scenario".Equals(command.action))
+                        {
+                            // Start Bugsnag and run the scenario
+                            StartBugsnag(command.scenarioName);
+                            RunScenario(command.scenarioName);
+                        }
+                        else if ("close_application".Equals(command.action))
+                        {
+                            // Close the app
+                            Application.Quit();
                         }
                     }
                     break;
@@ -103,39 +104,7 @@ public class Main : MonoBehaviour
         ParseUrlParameters(); 
 #endif
 
-        StartCoroutine(GetMazeCommand());
-
-        var scenario = GetEvnVar("BUGSNAG_SCENARIO");
-        var config = PrepareConfig(scenario);
-        Invoke("CloseApplication", _closeTime);
-        if (scenario != "ClearBugsnagCache")
-        {
-            Bugsnag.Start(config);
-            Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
-                {"foo", "bar" },
-            });
-            Bugsnag.AddMetadata("test", "test1", "test1");
-            Bugsnag.AddMetadata("test", "test2", "test2");
-            Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
-                {"letter", "QX" },
-                {"better", 400 },
-                {"string-array", new string []{"1","2","3"} },
-                {"int-array", new int []{1,2,3} },
-                {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }
-            });
-            Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
-                {"buildno", "0.1" },
-                {"cache", null },
-            });
-            Bugsnag.ClearMetadata("init");
-            Bugsnag.ClearMetadata("test", "test2");
-        }
-        RunScenario(scenario);
-    }
-
-    void CloseApplication()
-    {
-        Application.Quit();
+        StartCoroutine(RunNextMazeCommand());
     }
 
     private void ParseUrlParameters()
@@ -173,11 +142,8 @@ public class Main : MonoBehaviour
 
     Configuration PrepareConfig(string scenario)
     {
-        string apiKey = GetEvnVar("BUGSNAG_APIKEY");
-        var config = new Configuration(apiKey);
-
-        var endpoint = GetEvnVar("MAZE_ENDPOINT");
-        config.Endpoints = new EndpointConfiguration(endpoint + "/notify", endpoint + "/sessions");
+        var config = new Configuration(API_KEY);
+        config.Endpoints = new EndpointConfiguration(_mazeHost + "/notify", _mazeHost + "/sessions");
         config.AutoTrackSessions = scenario.Contains("AutoSession");
 
         config.ScriptingBackend = FindScriptingBackend();
@@ -186,6 +152,31 @@ public class Main : MonoBehaviour
 
         PrepareConfigForScenario(config, scenario);
         return config;
+    }
+
+    private void StartBugsnag(string scenario)
+    {
+        var config = PrepareConfig(scenario);
+        Bugsnag.Start(config);
+
+        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
+            {"foo", "bar" },
+        });
+        Bugsnag.AddMetadata("test", "test1", "test1");
+        Bugsnag.AddMetadata("test", "test2", "test2");
+        Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
+            {"letter", "QX" },
+            {"better", 400 },
+            {"string-array", new string []{"1","2","3"} },
+            {"int-array", new int []{1,2,3} },
+            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }
+        });
+        Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
+            {"buildno", "0.1" },
+            {"cache", null },
+        });
+        Bugsnag.ClearMetadata("init");
+        Bugsnag.ClearMetadata("test", "test2");
     }
 
     private string GetEvnVar(string key)
@@ -210,7 +201,6 @@ public class Main : MonoBehaviour
                 config.AutoDetectErrors = true;
                 config.AutoTrackSessions = false;
                 config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
-                _closeTime = 12;
                 break;
             case "PersistEvent":
                 config.AutoDetectErrors = true;
@@ -295,15 +285,12 @@ public class Main : MonoBehaviour
             case "InfLaunchDurationMark":
             case "InfLaunchDuration":
                 config.LaunchDurationMillis = 0;
-                _closeTime = 8;
                 break;
             case "LongLaunchDuration":
                 config.LaunchDurationMillis = 10000;
-                _closeTime = 12;
                 break;
             case "ShortLaunchDuration":
                 config.LaunchDurationMillis = 1000;
-                _closeTime = 10;
                 break;
             case "DisabledReleaseStage":
                 config.EnabledReleaseStages = new string[] { "test" };

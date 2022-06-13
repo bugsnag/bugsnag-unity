@@ -1,11 +1,5 @@
 require 'fileutils'
 
-Before do
-  $scenario_mode = ''
-  $sessions_endpoint = 'http://bs-local.com:9339/sessions'
-  $notify_endpoint = 'http://bs-local.com:9339/notify'
-end
-
 Before('@skip_unity_2018') do |_scenario|
   if ENV['UNITY_VERSION']
     unity_version = ENV['UNITY_VERSION'][0..3].to_i
@@ -60,9 +54,15 @@ Maze.hooks.before do
     # This is to get around a strange macos bug where clearing prefs does not work 
     $logger.info 'Killing defaults service'
     Maze::Runner.run_command("killall -u #{ENV['USER']} cfprefsd")
-
   end
 end
+
+# After do
+#   if Maze::Helper.get_current_platform == 'macos'
+#     $logger.info 'Sending command to close the test fixture'
+#     execute_command 'close_application'
+#   end
+# end
 
 AfterAll do
   if Maze.config.os == 'macos'
