@@ -27,7 +27,7 @@ When('I run the game in the {string} state') do |state|
     # Call executable directly rather than use open, which flakes on CI
     $logger.info 'Run the fixture'
 
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner"
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
 
     $logger.info 'Run the fixture - DONE'
