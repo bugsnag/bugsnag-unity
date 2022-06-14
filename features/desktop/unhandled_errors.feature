@@ -26,6 +26,13 @@ Feature: Reporting unhandled events
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario)               |                                         |
       | Main.Start()                             |                                                 |                                         |
 
+  Scenario: Session is present in exception called directly after start
+    When I run the game in the "ExceptionWithSessionAfterStart" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "ExceptionWithSessionAfterStart"
+    And the event "session" is not null
+
   @windows_only
   Scenario: Windows device and app data
     When I run the game in the "UncaughtException" state

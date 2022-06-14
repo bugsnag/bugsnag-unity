@@ -90,3 +90,9 @@ Feature: iOS smoke tests for C# errors
         And the exception "message" equals "You threw an exception!"
         And the event "app.isLaunching" equals "false"
 
+     Scenario: Uncaught C# exception directly after start contains session
+        When I run the "Launch Exception Session" mobile scenario
+        Then I wait to receive an error
+
+        And the event "session" is not null
+

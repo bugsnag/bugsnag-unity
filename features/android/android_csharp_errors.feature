@@ -163,6 +163,7 @@ Feature: Android smoke tests for C# errors
         And the error payload field "events.0.device.runtimeVersions.osBuild" is not null
         And the error payload field "events.0.device.runtimeVersions.unity" is not null
 
+
      Scenario: Mark Launch Complete
         When I run the "Mark Launch Complete" mobile scenario
         Then I wait to receive an error
@@ -184,4 +185,9 @@ Feature: Android smoke tests for C# errors
         And the event "app.isLaunching" equals "true"
 
 
+    Scenario: Uncaught C# exception directly after start contains session
+        When I run the "Launch Exception Session" mobile scenario
+        Then I wait to receive an error
+
+        And the event "session" is not null
 

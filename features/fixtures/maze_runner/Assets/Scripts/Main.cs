@@ -138,6 +138,10 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "ExceptionWithSessionAfterStart":
+                config.AutoTrackSessions = true;
+                config.Endpoints = new EndpointConfiguration("https://webhook.site/4345f13f-49ad-49d5-b8cb-da8d29acb329", "https://webhook.site/4345f13f-49ad-49d5-b8cb-da8d29acb329");
+                break;
             case "MaxPersistEvents":
                 config.MaximumBreadcrumbs = 0;
                 config.MaxPersistedEvents = 4;
@@ -432,6 +436,8 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "ExceptionWithSessionAfterStart":
+                throw new Exception("ExceptionWithSessionAfterStart");
             case "MaxPersistEvents":
                 StartCoroutine(NotifyPersistedEvents());
                 break;
