@@ -577,6 +577,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                 throw new Exception("Persisted Exception");
             case "Clear iOS Data":
                 MobileNative.ClearIOSData();
+                ClearPersistedData();
                 break;
             default:
                 throw new System.Exception("Unknown scenario: " + scenarioName);
@@ -584,6 +585,8 @@ public class MobileScenarioRunner : MonoBehaviour {
 
 
     }
+
+
 
     private void NullBreadcrumbMetadataValue()
     {
@@ -607,6 +610,14 @@ public class MobileScenarioRunner : MonoBehaviour {
             yield return new WaitForSeconds(1);
         }
         Bugsnag.StartSession();
+    }
+
+    private void ClearPersistedData()
+    {
+        if (Directory.Exists(Application.persistentDataPath + "/Bugsnag"))
+        {
+            Directory.Delete(Application.persistentDataPath + "/Bugsnag", true);
+        }
     }
 
     private void AddDebugMetadata()
