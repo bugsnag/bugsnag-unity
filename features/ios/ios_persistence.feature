@@ -17,5 +17,3 @@ Feature: iOS event persistence tests
         And I discard the oldest error
 
         And the exception "message" equals "Persisted Exception"
-
-        And I wait for 2 seconds
