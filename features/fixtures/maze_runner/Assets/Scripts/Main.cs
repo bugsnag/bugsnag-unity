@@ -140,7 +140,6 @@ public class Main : MonoBehaviour
         {
             case "ExceptionWithSessionAfterStart":
                 config.AutoTrackSessions = true;
-                config.Endpoints = new EndpointConfiguration("https://webhook.site/4345f13f-49ad-49d5-b8cb-da8d29acb329", "https://webhook.site/4345f13f-49ad-49d5-b8cb-da8d29acb329");
                 break;
             case "MaxPersistEvents":
                 config.MaximumBreadcrumbs = 0;
