@@ -8,9 +8,6 @@ def execute_command(action, scenario_name = '')
     action: action,
     scenarioName: scenario_name
   }
-
-  $logger.info JSON.pretty_generate(command)
-
   Maze::Server.commands.add command
 
   # Ensure fixture has read the command
@@ -25,12 +22,8 @@ When('I run the game in the {string} state') do |state|
   case Maze::Helper.get_current_platform
   when 'macos'
     # Call executable directly rather than use open, which flakes on CI
-    $logger.info 'Run the fixture'
-
     command = "#{Maze.config.app}/Contents/MacOS/Mazerunner > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
-
-    $logger.info 'Run the fixture - DONE'
 
     execute_command('run_scenario', state)
 

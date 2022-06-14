@@ -58,7 +58,6 @@ Maze.hooks.before do
 end
 
 Maze.hooks.after do
-  $logger.info 'Our hook'
   if Maze::Helper.get_current_platform == 'macos'
     # Maze::Runner.run_command "pkill #{Maze::Runner.pids.join ' '}"
     `pkill -P #{Maze::Runner.pids.join ' '}`
