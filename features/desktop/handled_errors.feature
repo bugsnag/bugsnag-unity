@@ -15,7 +15,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main.DoNotify()                   |
       | Main.RunScenario(string scenario) |
-      | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Calling notify with a custom stacktrace
     When I run the game in the "CustomStacktrace" state
@@ -86,7 +86,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main.DoNotifyWithCallback()       |
       | Main.RunScenario(string scenario) |
-      | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Reporting a handled exception with a custom severity
     When I run the game in the "NotifySeverity" state
@@ -101,7 +101,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main.DoNotifyWithSeverity()       |
       | Main.RunScenario(string scenario) |
-      | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Logging an unthrown exception
     When I run the game in the "LogUnthrown" state
@@ -114,7 +114,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main:DoLogUnthrown()     | Main.DoLogUnthrown()              |
       | Main:RunScenario(String) | Main.RunScenario(string scenario) |
-      | Main:Start()             | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Logging an unthrown exception as unhandled
     When I run the game in the "LogUnthrownAsUnhandled" state
@@ -127,7 +127,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main:DebugLogException() | Main.DebugLogException()          |
       | Main:RunScenario(String) | Main.RunScenario(string scenario) |
-      | Main:Start()             | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   @skip_webgl
   Scenario: Logging a warning from a background thread to Bugsnag
@@ -143,12 +143,10 @@ Feature: Handled Errors and Exceptions
 
   Scenario: Notifying when the current release stage is not in "notify release stages"
     When I run the game in the "NotifyOutsideNotifyReleaseStages" state
-    And I wait for 5 seconds
     Then I should receive no errors
 
   Scenario: Logging an exception when the current release stage is not in "notify release stages"
     When I run the game in the "LogExceptionOutsideNotifyReleaseStages" state
-    And I wait for 5 seconds
     Then I should receive no errors
 
   Scenario: Reporting a handled exception when AutoNotify = false
@@ -162,7 +160,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main.DoNotify()                   |
       | Main.RunScenario(string scenario) |
-      | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Logging an exception when AutoNotify = false
     When I run the game in the "LoggedExceptionWithoutAutoNotify" state
@@ -184,7 +182,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main.DoLogWarning()               |
       | Main.RunScenario(string scenario) |
-      | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   @webgl_only
   Scenario: Logging a warning to Bugsnag
@@ -198,7 +196,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main:DoLogWarning()      |
       | Main:RunScenario(String) |
-      | Main:Start()             |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator, IntPtr) |
 
   @skip_webgl
   Scenario: Logging an error to Bugsnag
@@ -212,7 +210,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main.DoLogError()                 |
       | Main.RunScenario(string scenario) |
-      | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   @webgl_only
   Scenario: Logging an error to Bugsnag
@@ -226,7 +224,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main:DoLogError()        |
       | Main:RunScenario(String) |
-      | Main:Start()             |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator, IntPtr) |
 
   @skip_webgl
   Scenario: Logging a warning to Bugsnag with 'ReportAsHandled = false'
@@ -240,7 +238,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main.DoLogWarningWithHandledConfig() |
       | Main.RunScenario(string scenario)    |
-      | Main.Start()                         |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   @webgl_only
   Scenario: Logging a warning to Bugsnag with 'ReportAsHandled = false'
@@ -254,4 +252,4 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main:DoLogWarningWithHandledConfig() |
       | Main:RunScenario(String)             |
-      | Main:Start()                         |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator, IntPtr) |
