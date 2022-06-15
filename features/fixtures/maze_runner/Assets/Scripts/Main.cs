@@ -82,11 +82,6 @@ public class Main : MonoBehaviour
                             StartBugsnag(command.scenarioName);
                             RunScenario(command.scenarioName);
                         }
-                        else if ("close_application".Equals(command.action))
-                        {
-                            // Close the app
-                            Application.Quit();
-                        }
                     }
                     break;
             }

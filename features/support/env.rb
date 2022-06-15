@@ -60,16 +60,9 @@ end
 Maze.hooks.after do
   if Maze::Helper.get_current_platform == 'macos'
     # Maze::Runner.run_command "pkill #{Maze::Runner.pids.join ' '}"
-    `pkill -P #{Maze::Runner.pids.join ' '}`
+    `pkill -P #{Maze::Runner.pids.join ' '}` unless Maze::Runner.pids.empty?
   end
 end
-
-# After do
-#   if Maze::Helper.get_current_platform == 'macos'
-#     $logger.info 'Sending command to close the test fixture'
-#     execute_command 'close_application'
-#   end
-# end
 
 AfterAll do
   if Maze.config.os == 'macos'
