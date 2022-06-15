@@ -114,7 +114,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main:DoLogUnthrown()     | Main.DoLogUnthrown()              |
       | Main:RunScenario(String) | Main.RunScenario(string scenario) |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator, IntPtr | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Logging an unthrown exception as unhandled
     When I run the game in the "LogUnthrownAsUnhandled" state
@@ -127,7 +127,7 @@ Feature: Handled Errors and Exceptions
     And the stack frame methods should match:
       | Main:DebugLogException() | Main.DebugLogException()          |
       | Main:RunScenario(String) | Main.RunScenario(string scenario) |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator, IntPtr | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   @skip_webgl
   Scenario: Logging a warning from a background thread to Bugsnag
