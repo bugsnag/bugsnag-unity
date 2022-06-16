@@ -125,7 +125,7 @@ namespace BugsnagUnity
                 SetupAdvancedExceptionInterceptor();
             }
             InitTimingTracker();
-            InitInitialSessionCheck();          
+            StartInitialSession();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
@@ -155,18 +155,11 @@ namespace BugsnagUnity
             }
         }
 
-        private void InitInitialSessionCheck()
+        private void StartInitialSession()
         {
-            // Run initial session check in next frame to allow potential configuration
-            // changes to be completed first.
-            try
+            if (IsUsingFallback() && Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
             {
-                var asyncHandler = MainThreadDispatchBehaviour.Instance();
-                asyncHandler.Enqueue(RunInitialSessionCheck());
-            }
-            catch (System.Exception ex)
-            {
-                // Async behavior is not available in a test environment
+                SessionTracking.StartSession();
             }
         }
 
@@ -590,18 +583,6 @@ namespace BugsnagUnity
             return Configuration.ReleaseStage == null
                 || Configuration.EnabledReleaseStages == null
                 || Configuration.EnabledReleaseStages.Contains(Configuration.ReleaseStage);
-        }
-
-        /// <summary>
-        /// Check next frame if a new session should be captured
-        /// </summary>
-        private IEnumerator<UnityEngine.AsyncOperation> RunInitialSessionCheck()
-        {
-            yield return null;
-            if (IsUsingFallback() && Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
-            {
-                SessionTracking.StartSession();
-            }
         }
 
         public void SetContext(string context)

@@ -75,7 +75,7 @@ def dial_number_for(name)
       "Persist" => 43,
       "Persist Report" => 44,
       "Breadcrumb Null Metadata Value" => 45,
-
+      "Launch Exception Session" => 46,
 
       # Commands
       "Clear iOS Data" => 90

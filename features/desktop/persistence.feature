@@ -7,13 +7,9 @@ Feature: Unity Persistence
     And I run the game in the "PersistSessionReport" state
     And I wait to receive 2 sessions
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-    And the session payload field "app.releaseStage" equals the platform-dependent string:
-      | macos   | Second Session |
-      | windows | First Session  |
+    And the session payload field "app.releaseStage" equals "Second Session"
     And I discard the oldest session
-    And the session payload field "app.releaseStage" equals the platform-dependent string:
-      | macos   | First Session  |
-      | windows | Second Session |
+    And the session payload field "app.releaseStage" equals "First Session"
     And I run the game in the "ClearBugsnagCache" state
     And I wait for 5 seconds
 

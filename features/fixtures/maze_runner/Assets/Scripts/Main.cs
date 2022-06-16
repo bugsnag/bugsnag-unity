@@ -138,6 +138,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "ExceptionWithSessionAfterStart":
+                config.AutoTrackSessions = true;
+                break;
             case "MaxPersistEvents":
                 config.MaximumBreadcrumbs = 0;
                 config.MaxPersistedEvents = 4;
@@ -432,6 +435,8 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "ExceptionWithSessionAfterStart":
+                throw new Exception("ExceptionWithSessionAfterStart");
             case "MaxPersistEvents":
                 StartCoroutine(NotifyPersistedEvents());
                 break;

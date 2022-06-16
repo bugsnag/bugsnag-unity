@@ -60,7 +60,7 @@ public class MobileScenarioRunner : MonoBehaviour {
         { "43", "Persist" },
         { "44", "Persist Report" },
         { "45", "Breadcrumb Null Metadata Value" },
-
+        { "46", "Launch Exception Session" },
 
 
         // Commands
@@ -146,6 +146,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
         switch (scenarioName)
         {
+            case "Launch Exception Session":
+                config.AutoTrackSessions = true;
+                break;
             case "Persist":
                 config.EnabledErrorTypes.OOMs = false;
                 config.AutoDetectErrors = true;
@@ -416,6 +419,8 @@ public class MobileScenarioRunner : MonoBehaviour {
     {
         switch (scenarioName)
         {
+            case "Launch Exception Session":
+                throw new Exception("Session");
             case "Breadcrumb Null Metadata Value":
                 NullBreadcrumbMetadataValue();
                 break;
