@@ -7,6 +7,9 @@
 * Increased thread saftey of the metadata dictionary in Bugsnag.LeaveBreadcrumb
   [#564](https://github.com/bugsnag/bugsnag-unity/pull/564)
 
+* Fixed an issue where events occuring directly after Bugsnag init had no session information attached.
+  [#571](https://github.com/bugsnag/bugsnag-unity/pull/571)
+
 
 ## 7.0.0 (2022-05-30)
 
