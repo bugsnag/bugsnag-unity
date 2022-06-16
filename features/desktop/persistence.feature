@@ -10,9 +10,7 @@ Feature: Unity Persistence
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
     And the session payload field "app.releaseStage" equals "Second Session"
     And I discard the oldest session
-    And the session payload field "app.releaseStage" equals the platform-dependent string:
-      | macos   | First Session  |
-      | windows | Second Session |
+    And the session payload field "app.releaseStage" equals "First Session"
 
   @webgl_only
   Scenario: Receive a persisted session webgl
