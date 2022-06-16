@@ -53,6 +53,8 @@ Feature: Session Tracking
   @macos_only
   Scenario: Automatically receiving a session before a native crash
     When I run the game in the "AutoSessionNativeCrash" state
+    And I wait for 5 seconds
+    And I close the Unity app
     And I run the game in the "(noop)" state
     And I wait to receive a session
     And I wait to receive an error

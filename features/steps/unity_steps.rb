@@ -22,16 +22,18 @@ When('I clear the Bugsnag cache') do
   case Maze::Helper.get_current_platform
   when 'macos', 'webgl'
     # Call executable directly rather than use open, which flakes on CI
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner > /dev/null"
+    # TODO: Need to think harder about logging for mulitple scenarios
+    log = File.join(Dir.pwd, 'mazerunner.log')
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log}"
     Maze::Runner.run_command(command, blocking: false)
 
     execute_command('clear_cache')
 
   when 'android', 'ios'
-    # TODO Come back to this
+    # TODO: Come back to this
 
   else
-    # TODO WebGL in a browser
+    # TODO: WebGL in a browser
     # endpoint = CGI.escape endpoint
     fixture_host = "http://localhost:#{Maze.config.document_server_port}"
     url = "#{fixture_host}/index.html?BUGSNAG_SCENARIO=#{state}&BUGSNAG_APIKEY=#{$api_key}&MAZE_ENDPOINT=#{endpoint}"
@@ -47,9 +49,9 @@ When('I close the Unity app') do
     `pkill -P #{Maze::Runner.pids.join ' '}` unless Maze::Runner.pids.empty?
     Maze::Runner.pids.clear
   when 'android', 'ios'
-    # TODO Come back to this
+    # TODO: Come back to this
   else
-    # TODO WebGL - come back to this
+    # TODO: WebGL - come back to this
   end
 end
 
@@ -59,7 +61,8 @@ When('I run the game in the {string} state') do |state|
   case Maze::Helper.get_current_platform
   when 'macos'
     # Call executable directly rather than use open, which flakes on CI
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner > /dev/null"
+    log = File.join(Dir.pwd, 'mazerunner.log')
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log}"
     Maze::Runner.run_command(command, blocking: false)
 
     execute_command('run_scenario', state)

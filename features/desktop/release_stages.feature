@@ -11,7 +11,7 @@ Feature: Enabled and disabled release stages
     And the stack frame methods should match:
       | Main.DoNotify()                   |
       | Main.RunScenario(string scenario) |
-      | Main.Start()                      |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Disable custom release stage
     When I run the game in the "DisabledReleaseStage" state

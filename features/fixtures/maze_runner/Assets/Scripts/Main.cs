@@ -62,9 +62,9 @@ public class Main : MonoBehaviour
                     var command = JsonUtility.FromJson<Command>(response);
                     if (command != null)
                     {
-                        Debug.Log("Received Maze Runner command:");
-                        Debug.Log(command.action);
-                        Debug.Log(command.scenarioName);
+                        Console.WriteLine("Received Maze Runner command:");
+                        Console.WriteLine("Action: " + command.action);
+                        Console.WriteLine("Scenario: " + command.scenarioName);
 
                         if ("clear_cache".Equals(command.action))
                         {
