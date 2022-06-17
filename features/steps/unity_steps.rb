@@ -46,7 +46,7 @@ When('I close the Unity app') do
   case Maze::Helper.get_current_platform
   when 'macos'
     $logger.info "Close #{Maze::Runner.pids}"
-    `pkill -P #{Maze::Runner.pids.join ' '}` unless Maze::Runner.pids.empty?
+    `killall Mazerunner`
     Maze::Runner.pids.clear
   when 'android', 'ios'
     # TODO: Come back to this

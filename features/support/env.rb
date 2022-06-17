@@ -59,8 +59,7 @@ end
 
 Maze.hooks.after do
   if Maze::Helper.get_current_platform == 'macos'
-    # Maze::Runner.run_command "pkill #{Maze::Runner.pids.join ' '}"
-    `pkill -P #{Maze::Runner.pids.join ' '}` unless Maze::Runner.pids.empty?
+    `killall Mazerunner`
   end
 end
 
