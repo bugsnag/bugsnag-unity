@@ -35,10 +35,10 @@ When('I clear the Bugsnag cache') do
   else
     # TODO: WebGL in a browser
     # endpoint = CGI.escape endpoint
-    fixture_host = "http://localhost:#{Maze.config.document_server_port}"
-    url = "#{fixture_host}/index.html?BUGSNAG_SCENARIO=#{state}&BUGSNAG_APIKEY=#{$api_key}&MAZE_ENDPOINT=#{endpoint}"
+    url = "http://localhost:#{Maze.config.document_server_port}/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
+    execute_command('clear_cache')
   end
 end
 
@@ -79,13 +79,12 @@ When('I run the game in the {string} state') do |state|
   when 'android', 'ios'
     # TODO Come back to this
 
-  else
+  when 'browser'
     # WebGL in a browser
-    # endpoint = CGI.escape endpoint
-    fixture_host = "http://localhost:#{Maze.config.document_server_port}"
-    url = "#{fixture_host}/index.html?BUGSNAG_SCENARIO=#{state}&BUGSNAG_APIKEY=#{$api_key}&MAZE_ENDPOINT=#{endpoint}"
+    url = "http://localhost:#{Maze.config.document_server_port}/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
+    execute_command('run_scenario', state)
   end
 end
 

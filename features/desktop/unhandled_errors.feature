@@ -84,7 +84,6 @@ Feature: Reporting unhandled events
     And the event "metaData.app.name" equals "Mazerunner"
     And the event "metaData.app.buildno" is not null
 
-  @skip_webgl
   Scenario: Forcing uncaught exceptions to be unhandled
     When I run the game in the "UncaughtExceptionAsUnhandled" state
     And I wait to receive an error
@@ -95,21 +94,7 @@ Feature: Reporting unhandled events
     And custom metadata is included in the event
     And the stack frame methods should match:
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario) |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |
-
-  @webgl_only
-  Scenario: Forcing uncaught exceptions to be unhandled
-    When I run the game in the "UncaughtExceptionAsUnhandled" state
-    And I wait to receive an error
-    Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "errorClass" equals "ExecutionEngineException"
-    And the exception "message" equals "Invariant state failure"
-    And the event "unhandled" is true
-    And custom metadata is included in the event
-    And the stack frame methods should match:
-      | Main.ThrowException()                    |                                   |
-      | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario) |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Reporting an assertion failure
     When I run the game in the "AssertionFailure" state

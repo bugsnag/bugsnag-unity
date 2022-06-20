@@ -41,7 +41,7 @@ public class Main : MonoBehaviour
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
 
-#if UNITY_STANDALONE
+#if UNITY_STANDALONE || UNITY_WEBGL
     private string _mazeHost = "http://localhost:9339";
 #else
     private string _mazeHost = "http://bs-local.com:9339";
@@ -98,48 +98,11 @@ public class Main : MonoBehaviour
         return;
 #endif
 
-#if UNITY_WEBGL
-        ParseUrlParameters(); 
-#endif
-
 #if UNITY_STANDALONE_OSX
         PreventCrashPopups(); 
 #endif
 
         StartCoroutine(RunNextMazeCommand());
-    }
-
-    private void ParseUrlParameters()
-    {
-
-        //Expected url format for webgl tests
-        //http://localhost:8888/index.html?BUGSNAG_SCENARIO=MaxBreadcrumbs&BUGSNAG_APIKEY=123344343289478347238947&MAZE_ENDPOINT=http://localhost:9339
-
-        string parameters = Application.absoluteURL.Substring(Application.absoluteURL.IndexOf("?")+1);
-
-        var splitParams = parameters.Split(new char[] { '&', '=' });
-
-        _webGlArguments = new Dictionary<string, string>();
-
-        var currentindex = 0;
-
-        while (currentindex < splitParams.Length)
-        {
-            _webGlArguments.Add(splitParams[currentindex],splitParams[currentindex + 1]);
-            currentindex += 2;
-        }
-    }
-
-    private string GetWebGLEnvVar(string key)
-    {
-        foreach (var pair in _webGlArguments)
-        {
-            if (pair.Key == key)
-            {
-                return pair.Value;
-            }
-        }
-        throw new System.Exception("COULD NOT GET ENV VAR: " + key);
     }
 
     Configuration PrepareConfig(string scenario)
@@ -179,15 +142,6 @@ public class Main : MonoBehaviour
         });
         Bugsnag.ClearMetadata("init");
         Bugsnag.ClearMetadata("test", "test2");
-    }
-
-    private string GetEvnVar(string key)
-    {
-#if UNITY_WEBGL
-        return GetWebGLEnvVar(key);
-#else
-        return System.Environment.GetEnvironmentVariable(key);
-#endif
     }
 
     void PrepareConfigForScenario(Configuration config, string scenario)
@@ -526,7 +480,6 @@ public class Main : MonoBehaviour
             case "InfLaunchDurationMark":
                 Bugsnag.MarkLaunchCompleted();
                 throw new Exception("InfLaunchDurationMark");
-                break;
             case "InfLaunchDuration":
                 Invoke("LaunchException",6);
                 break;
