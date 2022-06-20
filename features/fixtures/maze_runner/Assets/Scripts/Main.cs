@@ -28,6 +28,9 @@ public class Main : MonoBehaviour
 #if UNITY_STANDALONE_OSX
 
     [DllImport("NativeCrashy")]
+    private static extern void PreventCrashPopups();
+
+    [DllImport("NativeCrashy")]
     private static extern void crashy_signal_runner(float num);
 
 #endif
@@ -97,6 +100,10 @@ public class Main : MonoBehaviour
 
 #if UNITY_WEBGL
         ParseUrlParameters(); 
+#endif
+
+#if UNITY_STANDALONE_OSX
+        PreventCrashPopups(); 
 #endif
 
         StartCoroutine(RunNextMazeCommand());
