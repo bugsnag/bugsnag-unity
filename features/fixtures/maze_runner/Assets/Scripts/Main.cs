@@ -53,40 +53,42 @@ public class Main : MonoBehaviour
         {
             yield return request.SendWebRequest();
 
-            switch (request.result)
-            {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                case UnityWebRequest.Result.ProtocolError:
-                    Console.Error.WriteLine("Failed to make HTTP request for next Maze Runner command: " + request.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    var response = request.downloadHandler.text;
-                    var command = JsonUtility.FromJson<Command>(response);
-                    if (command != null)
-                    {
-                        Console.WriteLine("Received Maze Runner command:");
-                        Console.WriteLine("Action: " + command.action);
-                        Console.WriteLine("Scenario: " + command.scenarioName);
 
-                        if ("clear_cache".Equals(command.action))
-                        {
-                            // Clear the Bugsnag cache
-                            RunScenario("ClearBugsnagCache");
-                        }
-                        else if ("start_bugsnag".Equals(command.action))
-                        {
-                            // Just start Bugsnag
-                            StartBugsnag(command.scenarioName);
-                        }
-                        else if ("run_scenario".Equals(command.action))
-                        {
-                            // Start Bugsnag and run the scenario
-                            StartBugsnag(command.scenarioName);
-                            RunScenario(command.scenarioName);
-                        }
+#if UNITY_2020_1_OR_NEWER
+            var result = request != null && request.result == UnityWebRequest.Result.Success;
+#else
+            var result = request != null &&
+                !request.isHttpError &&
+                !request.isNetworkError;
+#endif
+
+            if (result)
+            {
+                var response = request.downloadHandler?.text;
+                var command = JsonUtility.FromJson<Command>(response);
+                if (command != null)
+                {
+                    Console.WriteLine("Received Maze Runner command:");
+                    Console.WriteLine("Action: " + command.action);
+                    Console.WriteLine("Scenario: " + command.scenarioName);
+
+                    if ("clear_cache".Equals(command.action))
+                    {
+                        // Clear the Bugsnag cache
+                        RunScenario("ClearBugsnagCache");
                     }
-                    break;
+                    else if ("start_bugsnag".Equals(command.action))
+                    {
+                        // Just start Bugsnag
+                        StartBugsnag(command.scenarioName);
+                    }
+                    else if ("run_scenario".Equals(command.action))
+                    {
+                        // Start Bugsnag and run the scenario
+                        StartBugsnag(command.scenarioName);
+                        RunScenario(command.scenarioName);
+                    }
+                }
             }
         }
     }
