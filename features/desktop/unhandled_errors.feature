@@ -24,7 +24,7 @@ Feature: Reporting unhandled events
     And the stack frame methods should match:
       | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) | Main.DoUnhandledException(long counter) |
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario)               |                                         |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |                                     |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |
 
   @windows_only
   Scenario: Session is present in exception called directly after start
@@ -94,7 +94,7 @@ Feature: Reporting unhandled events
     And custom metadata is included in the event
     And the stack frame methods should match:
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario) |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
 
   Scenario: Reporting an assertion failure
     When I run the game in the "AssertionFailure" state
@@ -109,7 +109,7 @@ Feature: Reporting unhandled events
     And the stack frame methods should match:
       | Main.MakeAssertionFailure(Int32 counter) | Main.MakeAssertionFailure(System.Int32 counter) | Main.MakeAssertionFailure(int counter) |
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario)               |                                        |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |                                    |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |
 
   @macos_only
   Scenario: Reporting a native crash
