@@ -59,8 +59,11 @@ Maze.hooks.before do
 end
 
 Maze.hooks.after do
-  if Maze::Helper.get_current_platform == 'macos'
+  case Maze::Helper.get_current_platform
+  when 'macos'
     `killall Mazerunner`
+  when 'webgl'
+    execute_command('close_application')
   end
 end
 
