@@ -49,7 +49,8 @@ Maze.hooks.before do
     $logger.info "Clearing #{support_dir}"
     FileUtils.rm_rf(support_dir)
     $logger.info 'Clearing User defaults'
-    Maze::Runner.run_command('defaults delete com.bugsnag.MazeRunner');
+    Maze::Runner.run_command('defaults delete com.bugsnag.Mazerunner');
+    Maze::Runner.run_command('defaults write com.bugsnag.Mazerunner ApplePersistenceIgnoreState YES');
 
     # This is to get around a strange macos bug where clearing prefs does not work 
     $logger.info 'Killing defaults service'
