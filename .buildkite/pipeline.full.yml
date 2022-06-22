@@ -164,8 +164,6 @@ steps:
   - label: Run WebGL e2e tests for Unity 2021
     timeout_in_minutes: 30
     depends_on: 'cocoa-webgl-2021-fixtures'
-    agents:
-      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2021.3.3f1"
     plugins:
