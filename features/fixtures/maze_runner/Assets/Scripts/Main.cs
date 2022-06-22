@@ -57,6 +57,11 @@ public class Main : MonoBehaviour
         PreventCrashPopups();
 #endif
 
+        InvokeRepeating("DoRunNextMazeCommand",0,1);
+    }
+
+    private void DoRunNextMazeCommand()
+    {
         StartCoroutine(RunNextMazeCommand());
     }
 
@@ -67,8 +72,6 @@ public class Main : MonoBehaviour
         using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
         {
             yield return request.SendWebRequest();
-
-
 #if UNITY_2020_1_OR_NEWER
             var result = request != null && request.result == UnityWebRequest.Result.Success;
 #else
@@ -110,7 +113,6 @@ public class Main : MonoBehaviour
                     }
                 }
             }
-
             // Keep polling for commands
             yield return new WaitForSeconds(1);
             Console.WriteLine("Call RunNextMazeCommand again");
