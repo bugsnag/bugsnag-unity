@@ -38,7 +38,6 @@ public class Main : MonoBehaviour
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private Dictionary<string, string> _webGlArguments;
 
-
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
 
 #if UNITY_STANDALONE || UNITY_WEBGL
@@ -46,6 +45,20 @@ public class Main : MonoBehaviour
 #else
     private string _mazeHost = "http://bs-local.com:9339";
 #endif
+
+    public void Start()
+    {
+
+#if UNITY_ANDROID || UNITY_IOS
+        return;
+#endif
+
+#if UNITY_STANDALONE_OSX
+        PreventCrashPopups();
+#endif
+
+        StartCoroutine(RunNextMazeCommand());
+    }
 
     IEnumerator RunNextMazeCommand()
     {
@@ -90,21 +103,10 @@ public class Main : MonoBehaviour
                     }
                 }
             }
+
+            yield return new WaitForSeconds(1);
+            StartCoroutine(RunNextMazeCommand());
         }
-    }
-
-    public void Start()
-    {
-
-#if UNITY_ANDROID || UNITY_IOS
-        return;
-#endif
-
-#if UNITY_STANDALONE_OSX
-        PreventCrashPopups(); 
-#endif
-
-        StartCoroutine(RunNextMazeCommand());
     }
 
     Configuration PrepareConfig(string scenario)
