@@ -62,6 +62,8 @@ public class Main : MonoBehaviour
 
     IEnumerator RunNextMazeCommand()
     {
+        Console.WriteLine("RunNextMazeCommand called");
+
         using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
         {
             yield return request.SendWebRequest();
@@ -101,10 +103,17 @@ public class Main : MonoBehaviour
                         StartBugsnag(command.scenarioName);
                         RunScenario(command.scenarioName);
                     }
+                    else if ("close_application".Equals(command.action))
+                    {
+                        // Close the app
+                        Application.Quit();
+                    }
                 }
             }
 
+            // Keep polling for commands
             yield return new WaitForSeconds(1);
+            Console.WriteLine("Call RunNextMazeCommand again");
             StartCoroutine(RunNextMazeCommand());
         }
     }

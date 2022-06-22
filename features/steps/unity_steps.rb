@@ -44,14 +44,10 @@ end
 
 When('I close the Unity app') do
   case Maze::Helper.get_current_platform
-  when 'macos'
-    $logger.info "Close #{Maze::Runner.pids}"
-    `killall Mazerunner`
-    Maze::Runner.pids.clear
+  when 'macos','webgl'
+    execute_command('close_application')
   when 'android', 'ios'
     # TODO: Come back to this
-  else
-    # TODO: WebGL - come back to this
   end
 end
 
