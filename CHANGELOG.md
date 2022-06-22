@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Dependency updates
+
+* Update bugsnag-android from v5.22.4 to [v5.23.0](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5230-2022-06-20)
+
 ### Bug fixes
 
 * Increased thread saftey of the metadata dictionary in Bugsnag.LeaveBreadcrumb
