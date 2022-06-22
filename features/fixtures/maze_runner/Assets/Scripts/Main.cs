@@ -83,33 +83,41 @@ public class Main : MonoBehaviour
             if (result)
             {
                 var response = request.downloadHandler?.text;
-                var command = JsonUtility.FromJson<Command>(response);
-                if (command != null)
+                Console.WriteLine("Raw response: " + response);
+                if (response == null || response == "null" || response == "No commands to provide")
                 {
-                    Console.WriteLine("Received Maze Runner command:");
-                    Console.WriteLine("Action: " + command.action);
-                    Console.WriteLine("Scenario: " + command.scenarioName);
+                    Console.WriteLine("No Maze Runner command to process at present");
+                }
+                else
+                { 
+                    var command = JsonUtility.FromJson<Command>(response);
+                    if (command != null)
+                    {
+                        Console.WriteLine("Received Maze Runner command:");
+                        Console.WriteLine("Action: " + command.action);
+                        Console.WriteLine("Scenario: " + command.scenarioName);
 
-                    if ("clear_cache".Equals(command.action))
-                    {
-                        // Clear the Bugsnag cache
-                        RunScenario("ClearBugsnagCache");
-                    }
-                    else if ("start_bugsnag".Equals(command.action))
-                    {
-                        // Just start Bugsnag
-                        StartBugsnag(command.scenarioName);
-                    }
-                    else if ("run_scenario".Equals(command.action))
-                    {
-                        // Start Bugsnag and run the scenario
-                        StartBugsnag(command.scenarioName);
-                        RunScenario(command.scenarioName);
-                    }
-                    else if ("close_application".Equals(command.action))
-                    {
-                        // Close the app
-                        Application.Quit();
+                        if ("clear_cache".Equals(command.action))
+                        {
+                            // Clear the Bugsnag cache
+                            RunScenario("ClearBugsnagCache");
+                        }
+                        else if ("start_bugsnag".Equals(command.action))
+                        {
+                            // Just start Bugsnag
+                            StartBugsnag(command.scenarioName);
+                        }
+                        else if ("run_scenario".Equals(command.action))
+                        {
+                            // Start Bugsnag and run the scenario
+                            StartBugsnag(command.scenarioName);
+                            RunScenario(command.scenarioName);
+                        }
+                        else if ("close_application".Equals(command.action))
+                        {
+                            // Close the app
+                            Application.Quit();
+                        }
                     }
                 }
             }
