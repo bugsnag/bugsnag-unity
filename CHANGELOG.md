@@ -4,7 +4,7 @@
 
 ### Dependency updates
 
-* Update bugsnag-android from v5.22.4 to [v5.23.0](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5230-2022-06-20)
+* Update bugsnag-android from v5.22.4 to [v5.23.1](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5231-2022-06-23)
 
 ### Bug fixes
 
