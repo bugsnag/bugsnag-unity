@@ -1,7 +1,10 @@
 Feature: Unity Persistence
 
   Scenario: Receive a persisted session mac and windows
-    When I run the game in the "PersistSession" state
+    When I clear the Bugsnag cache
+    And I wait for 5 seconds
+    And I close the Unity app
+    And I run the game in the "PersistSession" state
     And I wait for 5 seconds
     And I close the Unity app
     And I run the game in the "PersistSessionReport" state
