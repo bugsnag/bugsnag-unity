@@ -5,6 +5,7 @@
 ### Dependency updates
 
 * Update bugsnag-android from v5.22.4 to [v5.23.1](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5231-2022-06-23)
+* Update bugsnag-cocoa from v6.17.1 to [v6.18.1](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6181-2022-06-22)
 
 ### Bug fixes
 
