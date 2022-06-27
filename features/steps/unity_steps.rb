@@ -50,8 +50,6 @@ When('I close the Unity app') do
 end
 
 When('I run the game in the {string} state') do |state|
-  endpoint = "http://localhost:#{Maze.config.port}"
-
   case Maze::Helper.get_current_platform
   when 'macos'
     # Call executable directly rather than use open, which flakes on CI
@@ -63,12 +61,7 @@ When('I run the game in the {string} state') do |state|
 
   when 'windows'
     command = "#{Maze.config.app} -batchmode -nographics"
-    env = {
-      'BUGSNAG_SCENARIO' => state,
-      'BUGSNAG_APIKEY' => $api_key,
-      'MAZE_ENDPOINT' => endpoint
-    }
-    system(env, command)
+    Maze::Runner.run_command(command, blocking: false)
 
   when 'android', 'ios'
     # TODO Come back to this
@@ -89,7 +82,6 @@ end
 
 When('I wait for the mobile game to start') do
   # Wait for a fixed time period
-  # TODO: PLAT-6655 Remove the Unity splash screen so we don't have to wait so long
   sleep 3
 end
 
@@ -339,17 +331,4 @@ def click_if_present(element)
 rescue Selenium::WebDriver::Error::UnknownError
   # Ignore Appium errors (e.g. during an ANR)
   return false
-end
-
-# TODO See PLAT-7058
-Then('the event {string} is present from Unity 2018') do |field|
-  if ENV['UNITY_VERSION']
-    unity_version = ENV['UNITY_VERSION'][0..4].to_i
-    if unity_version < 2018
-      $logger.warn "Not checking #{field} on Unity #{unity_version} due to PLAT-7058"
-      next
-    end
-  end
-
-  step("the event \"#{field}\" is not null")
 end
