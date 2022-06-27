@@ -99,7 +99,10 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setAppHangThresholdMillis(IntPtr configuration, ulong appHangThresholdMillis);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_setEnabledBreadcrumbTypes(IntPtr configuration, string[] types, int count);
+        internal static extern void bugsnag_setEnabledBreadcrumbTypes(IntPtr configuration, string[] types, int count); 
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setEnabledTelemetryTypes(IntPtr configuration, string[] types, int count);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setEnabledErrorTypes(IntPtr configuration, string[] types, int count);

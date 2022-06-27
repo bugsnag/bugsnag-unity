@@ -19,6 +19,18 @@
         const char *user_email;
     };
 
+void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
+  if (notifierVersion) {
+    ((__bridge BugsnagConfiguration *)configuration).notifier =
+      [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
+                                    version:@(notifierVersion)
+                                        url:@"https://github.com/bugsnag/bugsnag-unity"
+                               dependencies:@[[[BugsnagNotifier alloc] init]]];
+  }
+  [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
+  // Memory introspection is unused in a C/C++ context
+}
+
 const char * getMetadataJson(NSDictionary* dictionary){
 
     if (!dictionary) {
@@ -528,6 +540,25 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
       }
 }
 
+void bugsnag_setEnabledTelemetryTypes(const void *configuration, const char *types[], int count){
+    if(types == NULL)
+    {
+        return;
+    }
+
+    ((__bridge BugsnagConfiguration *)configuration).telemetry = 0;
+    for (int i = 0; i < count; i++) {
+        const char *enabledType = types[i];
+        if (enabledType != nil) {
+            NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
+            if([typeString isEqualToString:@"InternalErrors"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).telemetry |= BSGTelemetryInternalErrors;
+            }
+        }
+    }
+}
+
 void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy){
     NSString *ns_threadSendPolicy = [[NSString alloc] initWithUTF8String:threadSendPolicy];
     if([ns_threadSendPolicy isEqualToString:@"Always"])
@@ -657,18 +688,6 @@ void bugsnag_removeMetadata(const void *configuration, const char *tab) {
 
   NSString *tabName = [NSString stringWithUTF8String:tab];
   [Bugsnag.client clearMetadataFromSection:tabName];
-}
-
-void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
-  if (notifierVersion) {
-    ((__bridge BugsnagConfiguration *)configuration).notifier =
-      [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
-                                    version:@(notifierVersion)
-                                        url:@"https://github.com/bugsnag/bugsnag-unity"
-                               dependencies:@[[[BugsnagNotifier alloc] init]]];
-  }
-  [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
-  // Memory introspection is unused in a C/C++ context
 }
 
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadataJson) {
