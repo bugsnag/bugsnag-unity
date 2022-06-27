@@ -29,6 +29,12 @@ When('I clear the Bugsnag cache') do
 
     execute_command('clear_cache')
 
+  when 'windows'
+    command = "#{Maze.config.app} --args -logfile mazerunner.log"
+    Maze::Runner.run_command(command, blocking: false)
+
+    execute_command('clear_cache')
+
   when 'android', 'ios'
     # TODO: Come back to this
 
@@ -60,8 +66,10 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'windows'
-    command = "#{Maze.config.app} -batchmode -nographics"
+    command = "#{Maze.config.app} --args -logfile mazerunner.log"
     Maze::Runner.run_command(command, blocking: false)
+
+    execute_command('run_scenario', state)
 
   when 'android', 'ios'
     # TODO Come back to this
