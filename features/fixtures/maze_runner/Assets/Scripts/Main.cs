@@ -80,6 +80,7 @@ public class Main : MonoBehaviour
                 !request.isNetworkError;
 #endif
 
+            Console.WriteLine("result is " + result);
             if (result)
             {
                 var response = request.downloadHandler?.text;
