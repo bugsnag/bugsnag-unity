@@ -62,7 +62,8 @@ namespace BugsnagUnity
             {
                 NativeCode.bugsnag_setRedactedKeys(obj, config.RedactedKeys, config.RedactedKeys.Length);
             }
-           
+
+            SetEnabledTelemetryTypes(obj,config);
             SetEnabledBreadcrumbTypes(obj,config);
             SetEnabledErrorTypes(obj, config);
             if (config.Context != null)
@@ -171,6 +172,22 @@ namespace BugsnagUnity
                 enabledTypes.Add(typeName);
             }
             NativeCode.bugsnag_setEnabledBreadcrumbTypes(obj, enabledTypes.ToArray(),enabledTypes.Count);
+        }
+
+        private void SetEnabledTelemetryTypes(IntPtr obj, Configuration config)
+        {
+            if (config.Telemetry == null)
+            {
+                NativeCode.bugsnag_setEnabledTelemetryTypes(obj, null, 0);
+                return;
+            }
+            var enabledTypes = new List<string>();
+            foreach (var enabledType in config.Telemetry)
+            {
+                var typeName = Enum.GetName(typeof(TelemetryType), enabledType);
+                enabledTypes.Add(typeName);
+            }
+            NativeCode.bugsnag_setEnabledTelemetryTypes(obj, enabledTypes.ToArray(), enabledTypes.Count);
         }
 
         private void SetEnabledErrorTypes(IntPtr obj, Configuration config)

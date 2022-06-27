@@ -240,6 +240,8 @@ namespace BugsnagUnity
             return _onSessionCallbacks;
         }
 
+        public TelemetryType[] Telemetry = new[] { TelemetryType.InternalErrors };
+
         public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
 
         public void AddMetadata(string section, IDictionary<string, object> metadata) => Metadata.AddMetadata(section, metadata);
