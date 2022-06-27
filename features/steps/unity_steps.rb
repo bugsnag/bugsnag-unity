@@ -33,8 +33,6 @@ When('I clear the Bugsnag cache') do
     # TODO: Come back to this
 
   else
-    # TODO: WebGL in a browser
-    # endpoint = CGI.escape endpoint
     url = "http://localhost:#{Maze.config.document_server_port}/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
