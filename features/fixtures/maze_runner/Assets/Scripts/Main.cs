@@ -121,10 +121,6 @@ public class Main : MonoBehaviour
                     }
                 }
             }
-            // Keep polling for commands
-            yield return new WaitForSeconds(1);
-            Console.WriteLine("Call RunNextMazeCommand again");
-            StartCoroutine(RunNextMazeCommand());
         }
     }
 
