@@ -546,7 +546,7 @@ void bugsnag_setEnabledTelemetryTypes(const void *configuration, const char *typ
         return;
     }
 
-    ((__bridge BugsnagConfiguration *)configuration).telemetry &= ~BSGTelemetryInternalErrors;
+    ((__bridge BugsnagConfiguration *)configuration).telemetry = 0;
     for (int i = 0; i < count; i++) {
         const char *enabledType = types[i];
         if (enabledType != nil) {
