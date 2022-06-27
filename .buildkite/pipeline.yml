@@ -315,6 +315,7 @@ steps:
           - maze_output/**/*
     command:
       - scripts/ci-run-windows-tests-wsl.sh
+
   #
   # Conditionally trigger full pipeline
   #
