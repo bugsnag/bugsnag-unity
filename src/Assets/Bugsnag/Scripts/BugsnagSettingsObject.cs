@@ -38,6 +38,7 @@ namespace BugsnagUnity
         public bool ReportExceptionLogsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
         public double SecondsPerUniqueLog = 5;
+        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors };
         public int VersionCode;
         public static Configuration LoadConfiguration()
         {
@@ -102,6 +103,7 @@ namespace BugsnagUnity
             config.ReportExceptionLogsAsHandled = ReportExceptionLogsAsHandled;
             config.SendLaunchCrashesSynchronously = SendLaunchCrashesSynchronously;
             config.SecondsPerUniqueLog = TimeSpan.FromSeconds(SecondsPerUniqueLog);
+            config.Telemetry = Telemetry;
             config.VersionCode = VersionCode;
             return config;
         }
