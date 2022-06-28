@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+#
+# Note - this script assumes it is being
+#
+
 if [ -z "$UNITY_VERSION" ]; then
   echo "UNITY_VERSION must be set, to e.g. 2018.4.36f1"
   exit 1
@@ -29,35 +33,48 @@ else
   exit 3
 fi
 
+# TODO - wslpath should only be used for Windows
+
 # Set project_path to the repo root
 SCRIPT_DIR=$(dirname "$(realpath $0)")
 pushd $SCRIPT_DIR
   pushd ../..
-    package_path=`pwd`
-    echo "Expecting to find Bugsnag package in: $package_path"
+    root_path=`pwd`
   popd
   pushd ../fixtures
-    import_log_file="$package_path/unity_import.log"
-    log_file="$package_path/unity.log"
-    project_path="$(pwd)/maze_runner"
+    import_log_file=`wslpath -w "$root_path/unity_import.log"`
+    log_file=`wslpath -w "$root_path/unity.log"`
+    package_path=`wslpath -w "$root_path/Bugsnag.unitypackage"`
+    echo "Expecting to find Bugsnag package in: $package_path"
+    project_path=`wslpath -w "$(pwd)/maze_runner"`
 
     # Run unity and immediately exit afterwards, log all output
     DEFAULT_CLI_ARGS="-nographics -quit -batchmode"
 
-    echo "Importing $package_path/Bugsnag.unitypackage into $project_path"
+    echo "Importing $package_path into $project_path"
+    echo "$UNITY_PATH" $DEFAULT_CLI_ARGS \
+      -logFile $import_log_file \
+      -projectPath "$project_path" \
+      -ignoreCompilerErrors \
+      -importPackage "$package_path"
+
     "$UNITY_PATH" $DEFAULT_CLI_ARGS \
       -logFile $import_log_file \
-      -projectPath $project_path \
+      -projectPath "$project_path" \
       -ignoreCompilerErrors \
-      -importPackage "$package_path/Bugsnag.unitypackage"
+      -importPackage "$package_path"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
     echo "Building the fixture for $PLATFORM"
 
+    echo "$UNITY_PATH" $DEFAULT_CLI_ARGS \
+      -logFile "$log_file" \
+      -projectPath "$project_path" \
+      -executeMethod "Builder.$PLATFORM"
     "$UNITY_PATH" $DEFAULT_CLI_ARGS \
-      -logFile $log_file \
-      -projectPath $project_path \
+      -logFile "$log_file" \
+      -projectPath "$project_path" \
       -executeMethod "Builder.$PLATFORM"
     RESULT=$?
     if [ $RESULT -ne 0 ]; then exit $RESULT; fi
