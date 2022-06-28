@@ -3,6 +3,13 @@ agents:
 
 steps:
 
+  - label: Hello
+    timeout_in_minutes: 30
+    agents:
+      queue: win-general-1
+    commands:
+      - echo "Hello"
+
   #
   # Build Windows test fixture
   #
