@@ -23,7 +23,7 @@ steps:
     commands:
       - cd features/scripts
       - ./build_maze_runner.sh windows
-      - cd ../../fixtures/maze_runner/build
+      - cd ../fixtures/maze_runner/build
       - zip -r Windows-$UNITY_VERSION.zip Windows
     artifact_paths:
       - unity.log
