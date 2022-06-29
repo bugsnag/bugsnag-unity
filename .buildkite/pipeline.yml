@@ -29,7 +29,7 @@ steps:
   #
   # Run Windows e2e tests
   #
-  - label: Run Windows e2e tests for Unity 2020
+  - label: Demo - cancel
     timeout_in_minutes: 30
     depends_on: 'windows-2020-fixture'
     agents:
@@ -49,4 +49,62 @@ steps:
         upload:
           - maze_output/**/*
 
+  - label: Demo - timeout
+    timeout_in_minutes: 5
+    depends_on: 'windows-2020-fixture'
+    agents:
+      queue: win-general-1
+    env:
+      UNITY_VERSION: "2020.3.32f1"
+    commands:
+      - cd features/fixtures/maze_runner/build
+      - unzip Windows-2020.3.32f1.zip
+      - cd ../../../..
+      - bundle install
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows features/desktop
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
+        upload:
+          - maze_output/**/*
 
+  - label: Demo - failure
+    timeout_in_minutes: 5
+    depends_on: 'windows-2020-fixture'
+    agents:
+      queue: win-general-1
+    env:
+      UNITY_VERSION: "2020.3.32f1"
+    commands:
+      - cd features/fixtures/maze_runner/build
+      - unzip Windows-2020.3.32f1.zip
+      - cd ../../../..
+      - bundle install
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows features/failure.feature
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
+        upload:
+          - maze_output/**/*
+
+  - label: Demo - full run
+    timeout_in_minutes: 30
+    depends_on: 'windows-2020-fixture'
+    agents:
+      queue: win-general-1
+    env:
+      UNITY_VERSION: "2020.3.32f1"
+    commands:
+      - cd features/fixtures/maze_runner/build
+      - unzip Windows-2020.3.32f1.zip
+      - cd ../../../..
+      - bundle install
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows features/desktop
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
+        upload:
+          - maze_output/**/*
