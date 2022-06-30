@@ -639,37 +639,58 @@ steps:
     timeout_in_minutes: 30
     depends_on: 'windows-2018-fixture'
     agents:
-      queue: opensource-windows-unity
+      queue: windows-general-wsl
     env:
       UNITY_VERSION: "2018.4.36f1"
-      WSLENV: "UNITY_VERSION"
-    command:
-      - scripts/ci-run-windows-tests.bat
-    artifact_paths:
-      - maze_output/**/*
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
+        upload:
+          - maze_output/**/*
+    commands:
+      - cd features/fixtures/maze_runner/build
+      - unzip Windows-2018.4.36f1.zip
+      - cd ../../../..
+      - bundle install
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows features/desktop
 
   - label: Run Windows e2e tests for Unity 2019
     timeout_in_minutes: 30
     depends_on: 'windows-2019-fixture'
     agents:
-      queue: opensource-windows-unity
+      queue: windows-general-wsl
     env:
       UNITY_VERSION: "2019.4.35f1"
-      WSLENV: "UNITY_VERSION"
-    command:
-      - scripts/ci-run-windows-tests.bat
-    artifact_paths:
-      - maze_output/**/*
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2019.4.35f1.zip
+        upload:
+          - maze_output/**/*
+    commands:
+      - cd features/fixtures/maze_runner/build
+      - unzip Windows-2019.4.35f1.zip
+      - cd ../../../..
+      - bundle install
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows features/desktop
 
   - label: Run Windows e2e tests for Unity 2021
     timeout_in_minutes: 30
     depends_on: 'windows-2021-fixture'
     agents:
-      queue: opensource-windows-unity
+      queue: windows-general-wsl
     env:
       UNITY_VERSION: "2021.2.17f1"
-      WSLENV: "UNITY_VERSION"
-    command:
-      - scripts/ci-run-windows-tests.bat
-    artifact_paths:
-      - maze_output/**/*
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2021.2.17f1.zip
+        upload:
+          - maze_output/**/*
+    commands:
+      - cd features/fixtures/maze_runner/build
+      - unzip Windows-2021.2.17f1.zip
+      - cd ../../../..
+      - bundle install
+      - bundle exec maze-runner --app=features/fixtures/maze_runner/build/Windows/Mazerunner.exe --os=windows features/desktop
