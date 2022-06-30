@@ -6,3 +6,9 @@ IF NOT [%ERRORLEVEL%] EQU [0] EXIT /B %ERRORLEVEL%
 
 cd ..\fixtures\maze_runner\build
 7z a -r Windows-%UNITY_VERSION%.zip Windows
+
+#!/bin/bash -e
+cd features/scripts
+./build_maze_runner.sh windows
+cd ../fixtures/maze_runner/build
+zip -r Windows-$(UNITY_VERSION).zip Windows
