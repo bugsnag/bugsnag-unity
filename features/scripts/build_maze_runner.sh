@@ -33,8 +33,6 @@ else
   exit 3
 fi
 
-# TODO - wslpath should only be used for Windows
-
 # Set project_path to the repo root
 SCRIPT_DIR=$(dirname "$(realpath $0)")
 pushd $SCRIPT_DIR
@@ -42,11 +40,20 @@ pushd $SCRIPT_DIR
     root_path=`pwd`
   popd
   pushd ../fixtures
-    import_log_file=`wslpath -w "$root_path/unity_import.log"`
-    log_file=`wslpath -w "$root_path/unity.log"`
-    package_path=`wslpath -w "$root_path/Bugsnag.unitypackage"`
+
+    import_log_file="$root_path/unity_import.log"
+    log_file="$root_path/unity.log"
+    package_path="$root_path/Bugsnag.unitypackage"
+    project_path="$root_path/features/fixtures/maze_runner"
+
+    if [ "$1" == "windows" ]; then
+      import_log_file=`wslpath -w "$import_log_file"`
+      log_file=`wslpath -w "$log_file"`
+      package_path=`wslpath -w "$package_path"`
+      project_path=`wslpath -w "$project_path"`
+    fi
+
     echo "Expecting to find Bugsnag package in: $package_path"
-    project_path=`wslpath -w "$(pwd)/maze_runner"`
 
     # Run unity and immediately exit afterwards, log all output
     DEFAULT_CLI_ARGS="-nographics -quit -batchmode"
