@@ -24,11 +24,12 @@ steps:
   - label: Ensure notifier builds on Windows (for development)
     timeout_in_minutes: 30
     agents:
-      queue: opensource-windows-unity
+      queue: windows-general-wsl
     env:
       UNITY_VERSION: "2018.4.36f1"
+      WSLENV: UNITY_VERSION
     command:
-      - scripts/ci-build-windows-plugin.bat
+      - cmd.exe /c scripts/ci-build-windows-plugin.bat
     retry:
       automatic:
         - exit_status: "*"
