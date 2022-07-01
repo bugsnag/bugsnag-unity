@@ -629,7 +629,7 @@ steps:
     agents:
       queue: windows-general-wsl
     env:
-      UNITY_VERSION: "2021.3.3"
+      UNITY_VERSION: "2021.3.3f1"
     commands:
       - scripts/ci-build-windows-fixture-wsl.sh
     plugins:
@@ -638,7 +638,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
-          - features/fixtures/maze_runner/build/Windows-2021.3.3.zip
+          - features/fixtures/maze_runner/build/Windows-2021.3.3f1.zip
     retry:
       automatic:
         - exit_status: "*"
