@@ -29,7 +29,7 @@ steps:
       UNITY_VERSION: "2018.4.36f1"
       WSLENV: UNITY_VERSION
     command:
-      - cmd.exe /c scripts/ci-build-windows-plugin.bat
+      - cmd.exe /c `wslpath -w scripts/ci-build-windows-plugin.bat`
     retry:
       automatic:
         - exit_status: "*"
