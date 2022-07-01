@@ -28,8 +28,9 @@ steps:
     env:
       UNITY_VERSION: "2018.4.36f1"
       WSLENV: UNITY_VERSION
-    command:
-      - cmd.exe /c `wslpath -w scripts/ci-build-windows-plugin.bat`
+    commands:
+      - "/mnt/c/tools/ruby27/lib/ruby/gems/2.7.0/gems/bundler-2.1.4/libexec/bundle install"
+      - "/mnt/c/tools/ruby27/lib/ruby/gems/2.7.0/gems/bundler-2.1.4/libexec/bundle exec rake plugin:export"
     retry:
       automatic:
         - exit_status: "*"
