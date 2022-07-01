@@ -588,9 +588,13 @@ steps:
       UNITY_VERSION: "2018.4.36f1"
     command:
       - scripts/ci-build-windows-fixture-wsl.sh
-    artifact_paths:
-      - unity.log
-      - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -606,9 +610,13 @@ steps:
       UNITY_VERSION: "2019.4.35f1"
     command:
       - scripts/ci-build-windows-fixture-wsl.sh
-    artifact_paths:
-      - unity.log
-      - features/fixtures/maze_runner/build/Windows-2019.4.35f1.zip
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - features/fixtures/maze_runner/build/Windows-2019.4.35f1.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -624,9 +632,13 @@ steps:
       UNITY_VERSION: "2021.3.3"
     commands:
       - scripts/ci-build-windows-fixture-wsl.sh
-    artifact_paths:
-      - unity.log
-      - features/fixtures/maze_runner/build/Windows-2021.3.3.zip
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - features/fixtures/maze_runner/build/Windows-2021.3.3.zip
     retry:
       automatic:
         - exit_status: "*"

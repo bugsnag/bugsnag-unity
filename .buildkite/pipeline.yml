@@ -282,11 +282,15 @@ steps:
       queue: windows-general-wsl
     env:
       UNITY_VERSION: "2020.3.32f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
     commands:
       - scripts/ci-build-windows-fixture-wsl.sh
-    artifact_paths:
-      - unity.log
-      - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
     retry:
       automatic:
         - exit_status: "*"
