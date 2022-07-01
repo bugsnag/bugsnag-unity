@@ -279,14 +279,18 @@ steps:
     key: 'windows-2020-fixture'
     depends_on: 'build-artifacts'
     agents:
-      queue: opensource-windows-unity
+      queue: windows-general-wsl
     env:
       UNITY_VERSION: "2020.3.32f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
     commands:
-      - scripts/ci-build-windows-package.bat
-    artifact_paths:
-      - unity.log
-      - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
+      - scripts/ci-build-windows-fixture-wsl.sh
     retry:
       automatic:
         - exit_status: "*"
@@ -299,15 +303,17 @@ steps:
     timeout_in_minutes: 30
     depends_on: 'windows-2020-fixture'
     agents:
-      queue: opensource-windows-unity
+      queue: windows-general-wsl
     env:
       UNITY_VERSION: "2020.3.32f1"
-      WSLENV: "UNITY_VERSION"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
+        upload:
+          - maze_output/**/*
     command:
-      - scripts/ci-run-windows-tests.bat
-    artifact_paths:
-      - maze_output/**/*
-
+      - scripts/ci-run-windows-tests-wsl.sh
   #
   # Conditionally trigger full pipeline
   #
