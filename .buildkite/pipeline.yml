@@ -22,6 +22,7 @@ steps:
           limit: 1
 
   - label: Ensure notifier builds on Windows (for development)
+    skip: Pending PLAT-8676
     timeout_in_minutes: 30
     agents:
       queue: opensource-windows-unity
