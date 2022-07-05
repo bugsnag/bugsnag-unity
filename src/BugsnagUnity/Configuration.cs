@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class Configuration : IMetadataEditor, IFeatureFlagStore
+    public partial class Configuration : IMetadataEditor, IFeatureFlagStore
     {
 
         public string AppType;
