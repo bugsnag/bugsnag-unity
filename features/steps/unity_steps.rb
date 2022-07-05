@@ -47,7 +47,7 @@ end
 
 When('I close the Unity app') do
   case Maze::Helper.get_current_platform
-  when 'macos','webgl'
+  when 'macos','webgl','windows'
     execute_command('close_application')
   when 'android', 'ios'
     # TODO: Come back to this

@@ -2,6 +2,7 @@ Feature: Unity Persistence
 
   # TODO Skipped on macOS pending PLAT-8632
   @skip_macos
+  @skip_windows
   Scenario: Receive a persisted session mac and windows
     When I clear the Bugsnag cache
     And I wait for 5 seconds
