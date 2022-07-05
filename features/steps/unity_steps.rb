@@ -17,12 +17,9 @@ def execute_command(action, scenario_name = '')
 end
 
 When('I clear the Bugsnag cache') do
-  endpoint = "http://localhost:#{Maze.config.port}"
-
   case Maze::Helper.get_current_platform
   when 'macos', 'webgl'
     # Call executable directly rather than use open, which flakes on CI
-    # TODO: Need to think harder about logging for mulitple scenarios
     log = File.join(Dir.pwd, 'mazerunner.log')
     command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
@@ -30,7 +27,9 @@ When('I clear the Bugsnag cache') do
     execute_command('clear_cache')
 
   when 'windows'
-    command = "#{Maze.config.app} --args -logfile mazerunner.log"
+    wsl_log = File.join(Dir.pwd, 'mazerunner.log')
+    win_log = `wslpath -w #{wsl_log}`
+    command = "#{Maze.config.app} --args -logfile #{win_log}"
     Maze::Runner.run_command(command, blocking: false)
 
     execute_command('clear_cache')
@@ -66,7 +65,9 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'windows'
-    command = "#{Maze.config.app} --args -logfile mazerunner.log"
+    wsl_log = File.join(Dir.pwd, 'mazerunner.log')
+    win_log = `wslpath -w #{wsl_log}`
+    command = "#{Maze.config.app} --args -logfile #{win_log}"
     Maze::Runner.run_command(command, blocking: false)
 
     execute_command('run_scenario', state)
