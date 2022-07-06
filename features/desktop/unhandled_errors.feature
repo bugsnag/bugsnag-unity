@@ -46,7 +46,7 @@ Feature: Reporting unhandled events
     And the stack frame methods should match:
       | Main.DoUnhandledException(Int64 counter) | Main.DoUnhandledException(System.Int64 counter) | Main.DoUnhandledException(long counter) |
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario)               |                                         |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |                                     |
+      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | UnityEngine.SetupCoroutine.InvokeMoveNext(System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) | |
 
     # Device metadata
     And the event "device.freeDisk" is greater than 0
@@ -130,6 +130,7 @@ Feature: Reporting unhandled events
     When I run the game in the "UncaughtExceptionOutsideNotifyReleaseStages" state
     Then I should receive no requests
 
+  @macos_only
   Scenario: Encountering a handled event when the current release stage is not in "notify release stages"
     When I run the game in the "NativeCrashOutsideNotifyReleaseStages" state
     And I run the game in the "(noop)" state
