@@ -66,7 +66,9 @@ Maze.hooks.before do
   end
 end
 
-Maze.hooks.after do
+After do |scenario|
+  next if scenario.status == :skipped
+
   case Maze::Helper.get_current_platform
   when 'macos'
     `killall Mazerunner`
