@@ -36,9 +36,6 @@ public class MobileNative : MonoBehaviour {
         }
     }
 
-
-
-
     private static void IOSCrash()
     {
 #if UNITY_IOS || UNITY_TVOS 

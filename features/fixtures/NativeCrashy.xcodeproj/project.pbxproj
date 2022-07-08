@@ -10,6 +10,7 @@
 		8A3108832295A62600593AB3 /* very_crashy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A3108822295A62600593AB3 /* very_crashy.cpp */; };
 		8A3108862295A63900593AB3 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A3108852295A63900593AB3 /* libc++.tbd */; };
 		8A3108882295A88000593AB3 /* very_crashy.h in Headers */ = {isa = PBXBuildFile; fileRef = 8A3108872295A86800593AB3 /* very_crashy.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		AA01C4572860946D0008DEED /* native_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = AA01C4562860946D0008DEED /* native_utils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +19,7 @@
 		8A3108822295A62600593AB3 /* very_crashy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = very_crashy.cpp; sourceTree = "<group>"; };
 		8A3108852295A63900593AB3 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		8A3108872295A86800593AB3 /* very_crashy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = very_crashy.h; sourceTree = "<group>"; };
+		AA01C4562860946D0008DEED /* native_utils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = native_utils.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 				8A3108822295A62600593AB3 /* very_crashy.cpp */,
 				8A31087C2295A5DC00593AB3 /* Info.plist */,
 				8A3108872295A86800593AB3 /* very_crashy.h */,
+				AA01C4562860946D0008DEED /* native_utils.m */,
 			);
 			path = NativeCrashy;
 			sourceTree = "<group>";
@@ -145,6 +148,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA01C4572860946D0008DEED /* native_utils.m in Sources */,
 				8A3108832295A62600593AB3 /* very_crashy.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

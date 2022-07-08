@@ -24,6 +24,7 @@ TestResult.xml
 .idea/
 bugsnag-cocoa-build/
 unity.log
+unity_import.log
 bugsnag-android-unity/.cxx
 features/**/*.zip
 *.ipa
@@ -39,3 +40,4 @@ upm-tools/UPMImportProject/Library
 upm-tools/UPMImportProject/Assets/Bugsnag
 Bugsnag.meta
 unity/PackageProject/Assets/Bugsnag
+nunit-agent*.log

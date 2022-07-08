@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,12 +8,18 @@ using System.Threading;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using System.IO;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+
+[Serializable]
+public class Command
+{
+    public string action;
+    public string scenarioName;
+}
 
 public class Main : MonoBehaviour
 {
@@ -21,16 +28,23 @@ public class Main : MonoBehaviour
 #if UNITY_STANDALONE_OSX
 
     [DllImport("NativeCrashy")]
+    private static extern void PreventCrashPopups();
+
+    [DllImport("NativeCrashy")]
     private static extern void crashy_signal_runner(float num);
 
 #endif
 
+    private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private Dictionary<string, string> _webGlArguments;
-
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
 
-    private float _closeTime = 5;
+#if UNITY_STANDALONE || UNITY_WEBGL
+    private string _mazeHost = "http://localhost:9339";
+#else
+    private string _mazeHost = "http://bs-local.com:9339";
+#endif
 
     public void Start()
     {
@@ -39,82 +53,82 @@ public class Main : MonoBehaviour
         return;
 #endif
 
-#if UNITY_WEBGL
-        ParseUrlParameters(); 
+#if UNITY_STANDALONE_OSX
+        PreventCrashPopups();
 #endif
-        var scenario = GetEvnVar("BUGSNAG_SCENARIO");
-        var config = PrepareConfig(scenario);
-        Invoke("CloseApplication", _closeTime);
-        if (scenario != "ClearBugsnagCache")
-        {
-            Bugsnag.Start(config);
-            Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
-                {"foo", "bar" },
-            });
-            Bugsnag.AddMetadata("test", "test1", "test1");
-            Bugsnag.AddMetadata("test", "test2", "test2");
-            Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
-                {"letter", "QX" },
-                {"better", 400 },
-                {"string-array", new string []{"1","2","3"} },
-                {"int-array", new int []{1,2,3} },
-                {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }
-            });
-            Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
-                {"buildno", "0.1" },
-                {"cache", null },
-            });
-            Bugsnag.ClearMetadata("init");
-            Bugsnag.ClearMetadata("test", "test2");
-        }
-        RunScenario(scenario);
+
+        InvokeRepeating("DoRunNextMazeCommand",0,1);
     }
 
-    void CloseApplication()
+    private void DoRunNextMazeCommand()
     {
-        Application.Quit();
+        StartCoroutine(RunNextMazeCommand());
     }
 
-    private void ParseUrlParameters()
+    IEnumerator RunNextMazeCommand()
     {
+        Console.WriteLine("RunNextMazeCommand called");
 
-        //Expected url format for webgl tests
-        //http://localhost:8888/index.html?BUGSNAG_SCENARIO=MaxBreadcrumbs&BUGSNAG_APIKEY=123344343289478347238947&MAZE_ENDPOINT=http://localhost:9339
-
-        string parameters = Application.absoluteURL.Substring(Application.absoluteURL.IndexOf("?")+1);
-
-        var splitParams = parameters.Split(new char[] { '&', '=' });
-
-        _webGlArguments = new Dictionary<string, string>();
-
-        var currentindex = 0;
-
-        while (currentindex < splitParams.Length)
+        using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
         {
-            _webGlArguments.Add(splitParams[currentindex],splitParams[currentindex + 1]);
-            currentindex += 2;
-        }
-    }
+            yield return request.SendWebRequest();
+#if UNITY_2020_1_OR_NEWER
+            var result = request != null && request.result == UnityWebRequest.Result.Success;
+#else
+            var result = request != null &&
+                !request.isHttpError &&
+                !request.isNetworkError;
+#endif
 
-    private string GetWebGLEnvVar(string key)
-    {
-        foreach (var pair in _webGlArguments)
-        {
-            if (pair.Key == key)
+            Console.WriteLine("result is " + result);
+            if (result)
             {
-                return pair.Value;
+                var response = request.downloadHandler?.text;
+                Console.WriteLine("Raw response: " + response);
+                if (response == null || response == "null" || response == "No commands to provide")
+                {
+                    Console.WriteLine("No Maze Runner command to process at present");
+                }
+                else
+                { 
+                    var command = JsonUtility.FromJson<Command>(response);
+                    if (command != null)
+                    {
+                        Console.WriteLine("Received Maze Runner command:");
+                        Console.WriteLine("Action: " + command.action);
+                        Console.WriteLine("Scenario: " + command.scenarioName);
+
+                        if ("clear_cache".Equals(command.action))
+                        {
+                            // Clear the Bugsnag cache
+                            RunScenario("ClearBugsnagCache");
+                        }
+                        else if ("start_bugsnag".Equals(command.action))
+                        {
+                            // Just start Bugsnag
+                            StartBugsnag(command.scenarioName);
+                        }
+                        else if ("run_scenario".Equals(command.action))
+                        {
+                            // Start Bugsnag and run the scenario
+                            StartBugsnag(command.scenarioName);
+                            RunScenario(command.scenarioName);
+                        }
+                        else if ("close_application".Equals(command.action))
+                        {
+                            // Close the app
+                            Application.Quit();
+                        }
+                    }
+                }
             }
         }
-        throw new System.Exception("COULD NOT GET ENV VAR: " + key);
     }
 
     Configuration PrepareConfig(string scenario)
     {
-        string apiKey = GetEvnVar("BUGSNAG_APIKEY");
-        var config = new Configuration(apiKey);
-
-        var endpoint = GetEvnVar("MAZE_ENDPOINT");
-        config.Endpoints = new EndpointConfiguration(endpoint + "/notify", endpoint + "/sessions");
+        var config = new Configuration(API_KEY);
+        config.Endpoints = new EndpointConfiguration(_mazeHost + "/notify", _mazeHost + "/sessions");
         config.AutoTrackSessions = scenario.Contains("AutoSession");
 
         config.ScriptingBackend = FindScriptingBackend();
@@ -125,13 +139,29 @@ public class Main : MonoBehaviour
         return config;
     }
 
-    private string GetEvnVar(string key)
+    private void StartBugsnag(string scenario)
     {
-#if UNITY_WEBGL
-        return GetWebGLEnvVar(key);
-#else
-        return System.Environment.GetEnvironmentVariable(key);
-#endif
+        var config = PrepareConfig(scenario);
+        Bugsnag.Start(config);
+
+        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
+            {"foo", "bar" },
+        });
+        Bugsnag.AddMetadata("test", "test1", "test1");
+        Bugsnag.AddMetadata("test", "test2", "test2");
+        Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
+            {"letter", "QX" },
+            {"better", 400 },
+            {"string-array", new string []{"1","2","3"} },
+            {"int-array", new int []{1,2,3} },
+            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }
+        });
+        Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
+            {"buildno", "0.1" },
+            {"cache", null },
+        });
+        Bugsnag.ClearMetadata("init");
+        Bugsnag.ClearMetadata("test", "test2");
     }
 
     void PrepareConfigForScenario(Configuration config, string scenario)
@@ -147,7 +177,6 @@ public class Main : MonoBehaviour
                 config.AutoDetectErrors = true;
                 config.AutoTrackSessions = false;
                 config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
-                _closeTime = 12;
                 break;
             case "PersistEvent":
                 config.AutoDetectErrors = true;
@@ -232,15 +261,12 @@ public class Main : MonoBehaviour
             case "InfLaunchDurationMark":
             case "InfLaunchDuration":
                 config.LaunchDurationMillis = 0;
-                _closeTime = 8;
                 break;
             case "LongLaunchDuration":
                 config.LaunchDurationMillis = 10000;
-                _closeTime = 12;
                 break;
             case "ShortLaunchDuration":
                 config.LaunchDurationMillis = 1000;
-                _closeTime = 10;
                 break;
             case "DisabledReleaseStage":
                 config.EnabledReleaseStages = new string[] { "test" };
@@ -474,7 +500,6 @@ public class Main : MonoBehaviour
             case "InfLaunchDurationMark":
                 Bugsnag.MarkLaunchCompleted();
                 throw new Exception("InfLaunchDurationMark");
-                break;
             case "InfLaunchDuration":
                 Invoke("LaunchException",6);
                 break;
