@@ -48,11 +48,6 @@ public class Main : MonoBehaviour
 
     public void Start()
     {
-
-#if UNITY_ANDROID || UNITY_IOS
-        return;
-#endif
-
 #if UNITY_STANDALONE_OSX
         PreventCrashPopups();
 #endif

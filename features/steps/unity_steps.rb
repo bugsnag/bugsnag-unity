@@ -35,7 +35,7 @@ When('I clear the Bugsnag cache') do
     execute_command('clear_cache')
 
   when 'android', 'ios'
-    # TODO: Come back to this
+    execute_command('clear_cache')
 
   else
     url = "http://localhost:#{Maze.config.document_server_port}/index.html"
@@ -50,7 +50,7 @@ When('I close the Unity app') do
   when 'macos','webgl','windows'
     execute_command('close_application')
   when 'android', 'ios'
-    # TODO: Come back to this
+    execute_command('close_application')
   end
 end
 
@@ -73,7 +73,7 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'android', 'ios'
-    # TODO Come back to this
+    execute_command('run_scenario', state)
 
   when 'browser'
     # WebGL in a browser
@@ -111,111 +111,8 @@ When('I close and relaunch the Unity mobile app') do
   sleep 3
 end
 
-def dial_number_for(name)
-  lookup = {
-      # Scenarios
-      "throw Exception" => 1,
-      "Log error" => 2,
-      "Native exception" => 3,
-      "Log caught exception" => 4,
-      "NDK signal" => 5,
-      "Notify caught exception" => 6,
-      "Notify with callback" => 7,
-      "Change scene" => 8,
-      "Disable Breadcrumbs" => 9,
-      "Start SDK" => 10,
-      "Max Breadcrumbs" => 11,
-      "Disable Native Errors" => 12,
-      "throw Exception with breadcrumbs" => 13,
-      "Start SDK no errors" => 14,
-      "Discard Error Class" => 15,
-      "Java Background Crash" => 16,
-      "Custom App Type" => 17,
-      "Android Persistence Directory" => 18,
-      "Disabled Release Stage" => 19,
-      "Enabled Release Stage" => 20,
-      "Java Background Crash No Threads" => 21,
-      "iOS Native Error" => 22,
-      "iOS Native Error No Threads" => 23,
-      "Mark Launch Complete" => 24,
-      "Check Last Run Info" => 25,
-      "Native Event Callback" => 26,
-      "Ios Signal" => 27,
-      "Session Callback" => 28,
-      "On Send Native Callback" => 29,
-      "Inf Launch Duration" => 30,
-      "Clear Metadata" => 31,
-      "Set User In Config Csharp error" => 32,
-      "Set User In Config Native Crash" => 33,
-      "Set User After Init Csharp Error" => 34,
-      "Set User After Init Native Error" => 35,
-      "Set User After Init NDK Error" => 36,
-      "Feature Flags In Config" => 37,
-      "Feature Flags After Init" => 38,
-      "Feature Flags After Init Clear All" => 39,
-      "Feature Flags In Callback" => 40,
-      "Clear Feature Flags In Callback" => 41,
-      "Max Reported Threads" => 42,
-      "Persist" => 43,
-      "Persist Report" => 44,
-      "Breadcrumb Null Metadata Value" => 45,
-      "Launch Exception Session" => 46,
-
-      # Commands
-      "Clear iOS Data" => 90
-
-  }
-  number = lookup[name]
-  $logger.debug "Command/scenario '#{name}' has dial-in code #{number}"
-
-  step("I dial #{number / 10}")
-  sleep 1
-  step("I dial #{number % 10}")
-  sleep 1
-end
-
-When('I run the {string} command') do |command|
-  dial_number_for command
-  step('I press Run Command')
-end
-
 When('I run the {string} mobile scenario') do |scenario|
-  dial_number_for scenario
-  step('I press Run Scenario')
-end
-
-When('I dial {int}') do |number|
-  $logger.debug "Dialling #{number}"
-  press_at 40 + (number * 80)
-  sleep 1
-end
-
-When('I press Run Scenario') do
-  press_at 840
-end
-
-When('I press Run Command') do
-  press_at 920
-end
-
-def press_at(y)
-
-  # Ensure we tap in the button
-  viewport = Maze.driver.session_capabilities['viewportRect']
-  x = viewport['width'] / 2
-
-  $logger.debug "Press at: #{x},#{y}"
-
-  # TODO: PLAT-6654 Figure out why the scale is different on iOS
-  factor = if Maze.driver.capabilities['os'] == 'ios'
-             0.5
-           else
-             1
-           end
-
-  touch_action = Appium::TouchAction.new
-  touch_action.tap({:x => x * factor, :y => y * factor})
-  touch_action.perform
+  step("I run the game in the \"#{scenario}\" state")
 end
 
 #
