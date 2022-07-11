@@ -47,6 +47,15 @@ pushd $SCRIPT_DIR
     project_path="$root_path/features/fixtures/maze_runner"
 
     if [ "$1" == "wsl" ]; then
+      # Solves an issue on WSL were wslpath fails if the file does not exist.
+      if [ ! -f "$import_log_file" ]; then
+        touch $import_log_file
+      fi
+
+      if [ ! -f "$log_file" ]; then
+        touch $log_file
+      fi
+      
       import_log_file=`wslpath -w "$import_log_file"`
       log_file=`wslpath -w "$log_file"`
       package_path=`wslpath -w "$package_path"`
