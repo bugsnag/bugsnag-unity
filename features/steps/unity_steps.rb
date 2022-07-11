@@ -27,8 +27,7 @@ When('I clear the Bugsnag cache') do
     execute_command('clear_cache')
 
   when 'windows'
-    wsl_log = File.join(Dir.pwd, 'mazerunner.log')
-    win_log = `wslpath -w #{wsl_log}`
+    win_log = File.join(Dir.pwd, 'mazerunner.log')
     command = "#{Maze.config.app} --args -logfile #{win_log}"
     Maze::Runner.run_command(command, blocking: false)
 
@@ -65,8 +64,7 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'windows'
-    wsl_log = File.join(Dir.pwd, 'mazerunner.log')
-    win_log = `wslpath -w #{wsl_log}`
+    win_log = File.join(Dir.pwd, 'mazerunner.log')
     command = "#{Maze.config.app} --args -logfile #{win_log}"
     Maze::Runner.run_command(command, blocking: false)
 
