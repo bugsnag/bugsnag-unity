@@ -26,7 +26,6 @@ Feature: Reporting unhandled events
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario)               |                                         |
       | UnityEngine.SetupCoroutine.InvokeMoveNext(System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |
 
-  @windows_only
   Scenario: Session is present in exception called directly after start
     When I run the game in the "ExceptionWithSessionAfterStart" state
     And I wait to receive an error

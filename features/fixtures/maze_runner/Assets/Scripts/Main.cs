@@ -110,9 +110,24 @@ public class Main : MonoBehaviour
                         }
                         else if ("run_scenario".Equals(command.action))
                         {
+
+#if UNITY_STANDALONE_OSX
+                            // some scenarios may need to start after a delay because starting an application via command line on macos launches it in the background 
+                            if (command.scenarioName.Equals("ExceptionWithSessionAfterStart"))
+                            {
+                                StartCoroutine(StartScenarioAfterDelay(command.scenarioName, 1));
+                            }
+                            else
+                            {
+                                // Start Bugsnag and run the scenario
+                                StartBugsnag(command.scenarioName);
+                                RunScenario(command.scenarioName);
+                            }
+#else
                             // Start Bugsnag and run the scenario
                             StartBugsnag(command.scenarioName);
                             RunScenario(command.scenarioName);
+#endif
                         }
                         else if ("close_application".Equals(command.action))
                         {
@@ -123,6 +138,13 @@ public class Main : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator StartScenarioAfterDelay(string scenarioName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StartBugsnag(scenarioName);
+        RunScenario(scenarioName);
     }
 
     Configuration PrepareConfig(string scenario)
