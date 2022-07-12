@@ -67,7 +67,7 @@ public class Main : MonoBehaviour
 
     IEnumerator RunNextMazeCommand()
     {
-        Debug.Log("RunNextMazeCommand called");
+        Console.WriteLine("RunNextMazeCommand called");
 
         using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
         {
@@ -80,23 +80,23 @@ public class Main : MonoBehaviour
                 !request.isNetworkError;
 #endif
 
-            Debug.Log("result is " + result);
+            Console.WriteLine("result is " + result);
             if (result)
             {
                 var response = request.downloadHandler?.text;
-                Debug.Log("Raw response: " + response);
+                Console.WriteLine("Raw response: " + response);
                 if (response == null || response == "null" || response == "No commands to provide")
                 {
-                    Debug.Log("No Maze Runner command to process at present");
+                    Console.WriteLine("No Maze Runner command to process at present");
                 }
                 else
                 { 
                     var command = JsonUtility.FromJson<Command>(response);
                     if (command != null)
                     {
-                        Debug.Log("Received Maze Runner command:");
-                        Debug.Log("Action: " + command.action);
-                        Debug.Log("Scenario: " + command.scenarioName);
+                        Console.WriteLine("Received Maze Runner command:");
+                        Console.WriteLine("Action: " + command.action);
+                        Console.WriteLine("Scenario: " + command.scenarioName);
 
                         if ("clear_cache".Equals(command.action))
                         {
