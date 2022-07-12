@@ -114,15 +114,15 @@ bundle exec maze-runner features/handled_errors.feature
 
     ```
     git add CHANGELOG.md build.cake
-    git commit -m "Release v6.x.x"
+    git commit -m "Release v7.x.x"
     ```
 4. Make a pull request to merge the changes into `master`
 
 5. Once merged, tag the new release version, pushing the tag to GitHub:
 
    ```
-   git tag v6.x.x
-   git push origin v6.x.x
+   git tag v7.x.x
+   git push origin v7.x.x
    ```
 
 6. Wait. The CI build will build the new package and create a draft release.
@@ -135,18 +135,18 @@ Once the UnityPackage release is confirmed a UPM release should be deployed
 
 1. Checkout the release commit on `master`
 
-2. Build the upm package by running the `build-upm-package.sh` script in the upm-tools directory. You should pass the version number of the release like so `./build-upm-package.sh 6.x.x`. You must run the script from within the upm-tools folder. This will build the upm package in a directory called `upm-package`
+2. Build the upm package by running the `build-upm-package.sh` script in the upm-tools directory. You should pass the version number of the release like so `./build-upm-package.sh 7.x.x`. You must run the script from within the upm-tools folder. This will build the upm package in a directory called `upm-package`
 
 3. Test that the built package installs by using the install local package option in unity package manager.
 
 4. Clone the `bugsnag-unity-upm` repo and make sure you are in the `main` branch.
 
 5. Replace the contents of the repo with the contents of the `upm-package` directory in the `bugsnag-unity` repo
-6. Commit these changes to main with the message `Release V6.x.x`
+6. Commit these changes to main with the message `Release V7.x.x`
 7. Tag the release and push the tag
   ```
-   git tag v6.x.x
-   git push origin v6.x.x
+   git tag v7.x.x
+   git push origin v7.x.x
    ```
 8. Run the script `./build-edm-package.sh` , this will convert the built package to the EDM4U support version. Repeat the UPM release steps but with the `bugsnag-unity-upm-edm4u` repo.
 

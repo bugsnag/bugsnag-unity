@@ -1,12 +1,94 @@
 require 'cgi'
 
 #
+# Common steps
+#
+def execute_command(action, scenario_name = '')
+  command = {
+    action: action,
+    scenarioName: scenario_name
+  }
+  Maze::Server.commands.add command
+
+  # Ensure fixture has read the command
+  count = 300
+  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
+  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
+end
+
+When('I clear the Bugsnag cache') do
+  case Maze::Helper.get_current_platform
+  when 'macos', 'webgl'
+    # Call executable directly rather than use open, which flakes on CI
+    log = File.join(Dir.pwd, 'mazerunner.log')
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
+    Maze::Runner.run_command(command, blocking: false)
+
+    execute_command('clear_cache')
+
+  when 'windows'
+    win_log = File.join(Dir.pwd, 'mazerunner.log')
+    command = "#{Maze.config.app} --args -logfile #{win_log}"
+    Maze::Runner.run_command(command, blocking: false)
+
+    execute_command('clear_cache')
+
+  when 'android', 'ios'
+    # TODO: Come back to this
+
+  else
+    url = "http://localhost:#{Maze.config.document_server_port}/index.html"
+    $logger.debug "Navigating to URL: #{url}"
+    step("I navigate to the URL \"#{url}\"")
+    execute_command('clear_cache')
+  end
+end
+
+When('I close the Unity app') do
+  case Maze::Helper.get_current_platform
+  when 'macos','webgl','windows'
+    execute_command('close_application')
+  when 'android', 'ios'
+    # TODO: Come back to this
+  end
+end
+
+When('I run the game in the {string} state') do |state|
+  case Maze::Helper.get_current_platform
+  when 'macos'
+    # Call executable directly rather than use open, which flakes on CI
+    log = File.join(Dir.pwd, 'mazerunner.log')
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner"
+    Maze::Runner.run_command(command, blocking: false)
+
+    execute_command('run_scenario', state)
+
+  when 'windows'
+    win_log = File.join(Dir.pwd, 'mazerunner.log')
+    command = "#{Maze.config.app} --args -logfile #{win_log}"
+    Maze::Runner.run_command(command, blocking: false)
+
+    execute_command('run_scenario', state)
+
+  when 'android', 'ios'
+    # TODO Come back to this
+
+  when 'browser'
+    # WebGL in a browser
+    url = "http://localhost:#{Maze.config.document_server_port}/index.html"
+    $logger.debug "Navigating to URL: #{url}"
+    step("I navigate to the URL \"#{url}\"")
+    execute_command('run_scenario', state)
+  end
+end
+
+
+#
 # Mobile steps
 #
 
 When('I wait for the mobile game to start') do
   # Wait for a fixed time period
-  # TODO: PLAT-6655 Remove the Unity splash screen so we don't have to wait so long
   sleep 3
 end
 
@@ -75,7 +157,7 @@ def dial_number_for(name)
       "Persist" => 43,
       "Persist Report" => 44,
       "Breadcrumb Null Metadata Value" => 45,
-
+      "Launch Exception Session" => 46,
 
       # Commands
       "Clear iOS Data" => 90
@@ -137,38 +219,6 @@ end
 #
 # Desktop steps
 #
-When('I run the game in the {string} state') do |state|
-  endpoint = "http://localhost:#{Maze.config.port}"
-
-  case Maze.config.os
-  when 'macos'
-    Maze::Runner.environment['BUGSNAG_SCENARIO'] = state
-    Maze::Runner.environment['BUGSNAG_APIKEY'] = $api_key
-    Maze::Runner.environment['MAZE_ENDPOINT'] = endpoint
-
-    # Call executable directly rather than use open, which flakes on CI
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args"
-    Maze::Runner.run_command(command)
-
-  when 'windows'
-    command = "#{Maze.config.app} -batchmode -nographics"
-    env = {
-        'BUGSNAG_SCENARIO' => state,
-        'BUGSNAG_APIKEY' => $api_key,
-        'MAZE_ENDPOINT' => endpoint
-    }
-    system(env, command)
-
-  else
-    # WebGL in a browser
-    # endpoint = CGI.escape endpoint
-    fixture_host = "http://localhost:#{Maze.config.document_server_port}"
-    url = "#{fixture_host}/index.html?BUGSNAG_SCENARIO=#{state}&BUGSNAG_APIKEY=#{$api_key}&MAZE_ENDPOINT=#{endpoint}"
-    $logger.debug "Navigating to URL: #{url}"
-    step("I navigate to the URL \"#{url}\"")
-  end
-end
-
 def check_error_reporting_api(notifier_name)
   steps %(
     Then the error "Bugsnag-Api-Key" header equals "#{$api_key}"
@@ -288,17 +338,4 @@ def click_if_present(element)
 rescue Selenium::WebDriver::Error::UnknownError
   # Ignore Appium errors (e.g. during an ANR)
   return false
-end
-
-# TODO See PLAT-7058
-Then('the event {string} is present from Unity 2018') do |field|
-  if ENV['UNITY_VERSION']
-    unity_version = ENV['UNITY_VERSION'][0..4].to_i
-    if unity_version < 2018
-      $logger.warn "Not checking #{field} on Unity #{unity_version} due to PLAT-7058"
-      next
-    end
-  end
-
-  step("the event \"#{field}\" is not null")
 end

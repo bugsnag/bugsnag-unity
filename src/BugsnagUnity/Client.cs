@@ -28,6 +28,10 @@ namespace BugsnagUnity
 
         private MaximumLogTypeCounter _logTypeCounter;
 
+        internal CacheManager CacheManager;
+
+        internal PayloadManager PayloadManager;
+
         private Delivery _delivery;
 
         object CallbackLock { get; } = new object();
@@ -103,8 +107,9 @@ namespace BugsnagUnity
         public Client(INativeClient nativeClient)
         {
             NativeClient = nativeClient;
-            _delivery = new Delivery(nativeClient.Configuration);
-            FileManager.InitFileManager(nativeClient.Configuration);
+            CacheManager = new CacheManager(Configuration);
+            PayloadManager = new PayloadManager(CacheManager);
+            _delivery = new Delivery(Configuration,CacheManager,PayloadManager);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
             _isUnity2019OrHigher = IsUnity2019OrHigher();
@@ -120,7 +125,7 @@ namespace BugsnagUnity
                 SetupAdvancedExceptionInterceptor();
             }
             InitTimingTracker();
-            InitInitialSessionCheck();          
+            StartInitialSession();          
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
@@ -150,18 +155,11 @@ namespace BugsnagUnity
             }
         }
 
-        private void InitInitialSessionCheck()
+        private void StartInitialSession()
         {
-            // Run initial session check in next frame to allow potential configuration
-            // changes to be completed first.
-            try
+            if (IsUsingFallback() && Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
             {
-                var asyncHandler = MainThreadDispatchBehaviour.Instance();
-                asyncHandler.Enqueue(RunInitialSessionCheck());
-            }
-            catch (System.Exception ex)
-            {
-                // Async behavior is not available in a test environment
+                SessionTracking.StartSession();
             }
         }
 
@@ -206,7 +204,7 @@ namespace BugsnagUnity
             else
             {
                 // otherwise create one
-                _cachedUser = new User { Id = FileManager.GetDeviceId() };
+                _cachedUser = new User { Id = CacheManager.GetCachedDeviceId() };
                 // see if a native user is avaliable
                 NativeClient.PopulateUser(_cachedUser);
             }
@@ -439,7 +437,7 @@ namespace BugsnagUnity
 
             NativeClient.PopulateAppWithState(app);
 
-            var device = new DeviceWithState(Configuration);
+            var device = new DeviceWithState(Configuration,CacheManager.GetCachedDeviceId());
 
             NativeClient.PopulateDeviceWithState(device);
 
@@ -512,7 +510,7 @@ namespace BugsnagUnity
             var report = new Report(Configuration, @event);
             if (!report.Ignored)
             {
-                FileManager.AddPendingPayload(report);
+                PayloadManager.AddPendingPayload(report);
                 Send(report);
                 if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
                 {
@@ -585,18 +583,6 @@ namespace BugsnagUnity
             return Configuration.ReleaseStage == null
                 || Configuration.EnabledReleaseStages == null
                 || Configuration.EnabledReleaseStages.Contains(Configuration.ReleaseStage);
-        }
-
-        /// <summary>
-        /// Check next frame if a new session should be captured
-        /// </summary>
-        private IEnumerator<UnityEngine.AsyncOperation> RunInitialSessionCheck()
-        {
-            yield return null;
-            if (IsUsingFallback() && Configuration.AutoTrackSessions && SessionTracking.CurrentSession == null)
-            {
-                SessionTracking.StartSession();
-            }
         }
 
         public void SetContext(string context)

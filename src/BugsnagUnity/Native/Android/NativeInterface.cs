@@ -333,6 +333,26 @@ namespace BugsnagUnity
                 }
             }
 
+            if (config.Telemetry != null)
+            {
+                using (AndroidJavaObject enabledTelemetry = new AndroidJavaObject("java.util.HashSet"))
+                {
+                    AndroidJavaClass androidTelemetryEnumClass = new AndroidJavaClass("com.bugsnag.android.Telemetry");
+                    for (int i = 0; i < config.Telemetry.Count; i++)
+                    {
+                        if (config.Telemetry[i] == TelemetryType.InternalErrors)
+                        {
+                            using (AndroidJavaObject telemetryType = androidTelemetryEnumClass.CallStatic<AndroidJavaObject>("valueOf", "INTERNAL_ERRORS"))
+                            {
+                                enabledTelemetry.Call<Boolean>("add", telemetryType);
+                            }
+                        }
+                       
+                    }
+                    obj.Call("setTelemetry", enabledTelemetry);
+                }
+            }
+
             // set feature flags
             if (config.FeatureFlags != null && config.FeatureFlags.Count > 0)
             {

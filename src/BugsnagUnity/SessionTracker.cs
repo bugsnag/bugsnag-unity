@@ -80,7 +80,7 @@ namespace BugsnagUnity
             Client.NativeClient.PopulateApp(app);
             session.App = app;
 
-            var device = new Device(Client.Configuration);
+            var device = new Device(Client.Configuration, Client.CacheManager.GetCachedDeviceId());
             Client.NativeClient.PopulateDevice(device);
             session.Device = device;
 
@@ -101,7 +101,7 @@ namespace BugsnagUnity
             if (Client.Configuration.Endpoints.IsValid)
             {
                 var payload = new SessionReport(Client.Configuration, app, device, Client.GetUser().Clone(), session);
-                FileManager.AddPendingPayload(payload);               
+                Client.PayloadManager.AddPendingPayload(payload);               
                 Client.Send(payload);
             }
             else

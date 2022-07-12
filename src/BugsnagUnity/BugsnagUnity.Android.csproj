@@ -8,5 +8,6 @@
   <ItemGroup>
     <Compile Remove="Native/**/*.cs" />
     <Compile Include="Native/Android/**/*.cs" />
+    <Compile Include="Native\Fallback\CacheManager.cs" />
   </ItemGroup>
 </Project>

@@ -174,6 +174,7 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("SecondsPerUniqueLog"));
             EditorGUILayout.PropertyField(so.FindProperty("SendLaunchCrashesSynchronously"));
             EditorGUILayout.PropertyField(so.FindProperty("SendThreads"));
+            EditorGUILayout.PropertyField(so.FindProperty("Telemetry"));
             EditorGUIUtility.labelWidth = originalWidth;
             EditorGUI.indentLevel--;
 

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public class Configuration : IMetadataEditor, IFeatureFlagStore
+    public partial class Configuration : IMetadataEditor, IFeatureFlagStore
     {
 
         public string AppType;
@@ -239,6 +239,8 @@ namespace BugsnagUnity
         {
             return _onSessionCallbacks;
         }
+
+        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors };
 
         public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
 

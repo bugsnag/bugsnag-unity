@@ -1,6 +1,6 @@
 Feature: Stopping and resuming sessions
 
-Scenario: When a session is stopped the error has no session information
+  Scenario: When a session is stopped the error has no session information
     When I run the game in the "StoppedSession" state
     And I wait to receive a session
     And I wait to receive an error
@@ -8,15 +8,15 @@ Scenario: When a session is stopped the error has no session information
     And the error is valid for the error reporting API sent by the Unity notifier
     And the event "session" is null
 
-Scenario: When a session is resumed the error uses the previous session information
+  Scenario: When a session is resumed the error uses the previous session information
     When I run the game in the "ResumedSession" state
     And I wait to receive a session
     And I wait to receive 2 errors
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
     And the current error request events match one of:
-        | message      | handled | unhandled |
-        | First Error  | 1       | 0         |
-        | Second Error | 2       | 0         |
+      | message      | handled | unhandled |
+      | First Error  | 1       | 0         |
+      | Second Error | 2       | 0         |
     And the error is valid for the error reporting API sent by the Unity notifier
     And the error payload field "session.id" is stored as the value "session_id"
     And the error payload field "session.startedAt" is stored as the value "session_startedAt"
@@ -25,7 +25,7 @@ Scenario: When a session is resumed the error uses the previous session informat
     And the error payload field "session.id" equals the stored value "session_id"
     And the error payload field "session.startedAt" equals the stored value "session_startedAt"
 
-Scenario: When a new session is started the error uses different session information
+  Scenario: When a new session is started the error uses different session information
     When I run the game in the "NewSession" state
     And I wait to receive 2 sessions
     And I wait to receive 2 errors

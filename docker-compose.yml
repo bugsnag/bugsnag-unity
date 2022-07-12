@@ -12,3 +12,4 @@ services:
     volumes:
       - ./test:/app/test
       - ./features/:/app/features
+      - ./maze_output:/app/maze_output

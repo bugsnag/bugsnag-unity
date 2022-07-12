@@ -117,13 +117,13 @@ namespace BugsnagUnity.Payload
             Add(cachedData);
         }
 
-        internal Device(Configuration configuration)
+        internal Device(Configuration configuration, string deviceId)
         {
             TotalMemory = SystemInfo.systemMemorySize;
             Locale = CultureInfo.CurrentCulture.ToString();
             AddOsInfo();
             AddRuntimeVersions(configuration);
-            Id = FileManager.GetDeviceId();
+            Id = deviceId;
             Model = SystemInfo.deviceModel;
         }
 
