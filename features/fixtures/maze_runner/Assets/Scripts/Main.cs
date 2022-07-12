@@ -67,7 +67,7 @@ public class Main : MonoBehaviour
 
     IEnumerator RunNextMazeCommand()
     {
-        Console.WriteLine("RunNextMazeCommand called");
+        Debug.Log("RunNextMazeCommand called");
 
         using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
         {
@@ -80,23 +80,23 @@ public class Main : MonoBehaviour
                 !request.isNetworkError;
 #endif
 
-            Console.WriteLine("result is " + result);
+            Debug.Log("result is " + result);
             if (result)
             {
                 var response = request.downloadHandler?.text;
-                Console.WriteLine("Raw response: " + response);
+                Debug.Log("Raw response: " + response);
                 if (response == null || response == "null" || response == "No commands to provide")
                 {
-                    Console.WriteLine("No Maze Runner command to process at present");
+                    Debug.Log("No Maze Runner command to process at present");
                 }
                 else
                 { 
                     var command = JsonUtility.FromJson<Command>(response);
                     if (command != null)
                     {
-                        Console.WriteLine("Received Maze Runner command:");
-                        Console.WriteLine("Action: " + command.action);
-                        Console.WriteLine("Scenario: " + command.scenarioName);
+                        Debug.Log("Received Maze Runner command:");
+                        Debug.Log("Action: " + command.action);
+                        Debug.Log("Scenario: " + command.scenarioName);
 
                         if ("clear_cache".Equals(command.action))
                         {
@@ -110,9 +110,24 @@ public class Main : MonoBehaviour
                         }
                         else if ("run_scenario".Equals(command.action))
                         {
+
+#if UNITY_STANDALONE_OSX
+                            // some scenarios may need to start after a delay because starting an application via command line on macos launches it in the background 
+                            if (command.scenarioName.Equals("ExceptionWithSessionAfterStart"))
+                            {
+                                StartCoroutine(StartScenarioAfterDelay(command.scenarioName, 1));
+                            }
+                            else
+                            {
+                                // Start Bugsnag and run the scenario
+                                StartBugsnag(command.scenarioName);
+                                RunScenario(command.scenarioName);
+                            }
+#else
                             // Start Bugsnag and run the scenario
                             StartBugsnag(command.scenarioName);
                             RunScenario(command.scenarioName);
+#endif
                         }
                         else if ("close_application".Equals(command.action))
                         {
@@ -123,6 +138,13 @@ public class Main : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator StartScenarioAfterDelay(string scenarioName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StartBugsnag(scenarioName);
+        RunScenario(scenarioName);
     }
 
     Configuration PrepareConfig(string scenario)
