@@ -138,16 +138,30 @@ namespace BugsnagUnity
 
         private IEnumerator DeliverCachedPayloads()
         {
-            var payloadIds = _cacheManager.GetCachedPayloadIds();
-            foreach (var payloadId in payloadIds)
+            var cachedSessionIds = _cacheManager.GetCachedSessionIds();
+            foreach (var sessionId in cachedSessionIds)
             {
-                var payload = _cacheManager.GetCachedPayload(payloadId);
-                if (payload != null)
+                var sessionJson = _cacheManager.GetCachedSession(sessionId);
+                if (!string.IsNullOrEmpty(sessionJson))
                 {
-                    Deliver(payload);
-                    yield return new WaitUntil(() => CachedPayloadProcessed(payload.Id));
+                    var sessionReport = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(sessionJson)).GetDictionary());
+                    Deliver(sessionReport);
+                    yield return new WaitUntil(() => CachedPayloadProcessed(sessionReport.Id));
                 }
             }
+
+            var cachedEvents = _cacheManager.GetCachedEventIds();
+            foreach (var eventId in cachedEvents)
+            {
+                var eventJson = _cacheManager.GetCachedEvent(eventId);
+                if (!string.IsNullOrEmpty(eventJson))
+                {
+                    var eventReport = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(eventJson)).GetDictionary());
+                    Deliver(eventReport);
+                    yield return new WaitUntil(() => CachedPayloadProcessed(eventReport.Id));
+                }
+            }
+
             _cacheDeliveryInProcess = false;
         }     
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using BugsnagUnity.Payload;
 
 namespace BugsnagUnity
@@ -11,7 +12,10 @@ namespace BugsnagUnity
         void SaveEventToCache(string id, string json);
         void RemoveCachedEvent(string id);
         void RemoveCachedSession(string id);
-        string[] GetCachedPayloadIds();
-        IPayload GetCachedPayload(string id);
+        List<string> GetCachedEventIds();
+        List<string> GetCachedSessionIds();
+        string GetCachedEvent(string id);
+        string GetCachedSession(string id);
+
     }
 }
