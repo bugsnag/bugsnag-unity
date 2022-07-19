@@ -153,57 +153,15 @@ namespace BugsnagUnity
             }
         }
 
-        public string[] GetCachedPayloadIds()
-        {
-            var cachedPayloadIds = new List<string>();
-            foreach (var path in _cachedSessions)
-            {
-                cachedPayloadIds.Add(Path.GetFileNameWithoutExtension(path));
-            }
-            foreach (var path in _cachedEvents)
-            {
-                cachedPayloadIds.Add(Path.GetFileNameWithoutExtension(path));
-            }
-            return cachedPayloadIds.ToArray();
-        }
-
-        private string[] GetCachedPayloadPaths()
-        {
-            var cachedPayloadPaths = new List<string>();
-            cachedPayloadPaths.AddRange(_cachedSessions);
-            cachedPayloadPaths.AddRange(_cachedEvents);
-            return cachedPayloadPaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
-        }
-
-        private IPayload GetPayloadFromCachePath(string path)
+        private string GetJsonFromCachePath(string path)
         {
             if (File.Exists(path))
             {
-                if (path.EndsWith(SESSION_FILE_PREFIX))
-                {
-                    var json = File.ReadAllText(path);
-                    var sessionReportFromCachedPayload = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
-                    return sessionReportFromCachedPayload;
-                }
-                else if (path.EndsWith(EVENT_FILE_PREFIX))
-                {
-                    var json = File.ReadAllText(path);
-                    var eventReportFromCachedPayload = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(json)).GetDictionary());
-                    return eventReportFromCachedPayload;
-                }
+                return File.ReadAllText(path);
             }
             return null;
         }
-
-        public IPayload GetCachedPayload(string id)
-        {
-            foreach (var path in GetCachedPayloadPaths())
-            {
-                return GetPayloadFromCachePath(path);
-            }
-            return null;
-        }
-
+       
         private static void CheckForDirectoryCreation()
         {
             try
@@ -228,5 +186,50 @@ namespace BugsnagUnity
 
         }
 
+        public List<string> GetCachedEventIds()
+        {
+            var cachedEventIds = new List<string>();
+            var ordered = _cachedEvents.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+            foreach (var path in ordered)
+            {
+                cachedEventIds.Add(Path.GetFileNameWithoutExtension(path));
+            }
+            return cachedEventIds;
+        }
+
+        public List<string> GetCachedSessionIds()
+        {
+            var cachedSessionIds = new List<string>();
+            var ordered = _cachedSessions.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+            foreach (var path in ordered)
+            {
+                cachedSessionIds.Add(Path.GetFileNameWithoutExtension(path));
+            }
+            return cachedSessionIds;
+        }
+
+        public string GetCachedEvent(string id)
+        {
+            foreach (var path in _cachedEvents)
+            {
+                if (path.Contains(id))
+                {
+                    return GetJsonFromCachePath(path);
+                }
+            }
+            return null;
+        }
+
+        public string GetCachedSession(string id)
+        {
+            foreach (var path in _cachedSessions)
+            {
+                if (path.Contains(id))
+                {
+                    return GetJsonFromCachePath(path);
+                }
+            }
+            return null;
+        }
     }
 }
