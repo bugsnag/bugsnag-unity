@@ -189,7 +189,8 @@ namespace BugsnagUnity
         public List<string> GetCachedEventIds()
         {
             var cachedEventIds = new List<string>();
-            foreach (var path in _cachedEvents)
+            var ordered = _cachedEvents.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+            foreach (var path in ordered)
             {
                 cachedEventIds.Add(Path.GetFileNameWithoutExtension(path));
             }
@@ -199,7 +200,8 @@ namespace BugsnagUnity
         public List<string> GetCachedSessionIds()
         {
             var cachedSessionIds = new List<string>();
-            foreach (var path in _cachedSessions)
+            var ordered = _cachedSessions.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+            foreach (var path in ordered)
             {
                 cachedSessionIds.Add(Path.GetFileNameWithoutExtension(path));
             }
