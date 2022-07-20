@@ -239,17 +239,9 @@ namespace BugsnagUnity
 
         public bool IsUsingFallback()
         {
-            switch (Application.platform)
-            {
-                case RuntimePlatform.OSXEditor:
-                case RuntimePlatform.WindowsPlayer:
-                case RuntimePlatform.WindowsEditor:
-                case RuntimePlatform.LinuxPlayer:
-                case RuntimePlatform.LinuxEditor:
-                case RuntimePlatform.WebGLPlayer:
-                    return true;
-            }
-            return false;
+            return Application.platform != RuntimePlatform.Android &&
+                Application.platform != RuntimePlatform.OSXPlayer &&
+                Application.platform != RuntimePlatform.IPhonePlayer;
         }
 
         private void ListenForSceneLoad()
