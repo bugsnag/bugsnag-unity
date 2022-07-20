@@ -7,8 +7,8 @@
 #import "Bugsnag+Private.h"
 #import "BugsnagClient+Private.h"
 #import "BSG_KSSystemInfo.h"
-#import "BSG_KSMach.h"
 #import "BSG_KSCrash.h"
+#import "BSG_KSCrashReportFields.h"
 #import "BSG_RFC3339DateTool.h"
 #import "BugsnagBreadcrumb+Private.h"
 #import "BugsnagSession+Private.h"
@@ -758,10 +758,8 @@ void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const v
   NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
   callback(deviceData, "freeDisk", [[freeBytes stringValue] UTF8String]);
 
-  uint64_t freeMemory = bsg_ksmachfreeMemory();
-  char buff[30];
-  sprintf(buff, "%lld", freeMemory);
-  callback(deviceData, "freeMemory", buff);
+  NSNumber *freeMemory = sysInfo[@BSG_KSSystemField_Memory][@BSG_KSCrashField_Free];
+  callback(deviceData, "freeMemory", [[freeMemory stringValue] UTF8String]);
 
   callback(deviceData, "id", [sysInfo[@BSG_KSSystemField_DeviceAppHash] UTF8String]);
   callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);

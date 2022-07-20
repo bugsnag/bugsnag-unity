@@ -4,7 +4,7 @@
 
 ### Dependency updates
 
-* Update bugsnag-cocoa from v6.19.0 to [v6.20.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6200-2022-07-13)
+* Update bugsnag-cocoa from v6.19.0 to [v6.21.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6210-2022-07-20)
 
 ## 7.1.0 (2022-07-12)
 
