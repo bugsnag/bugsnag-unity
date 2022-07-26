@@ -16,8 +16,12 @@ public class Builder : MonoBehaviour {
         opts.locationPathName = folder;
         opts.target = target;
         opts.options = BuildOptions.None;
-
         BuildPipeline.BuildPlayer(opts);
+    }
+
+    public static void Switch()
+    {
+        Build("build/Switch/Mazerunner", BuildTarget.Switch);
     }
 
     public static void MacOS()
