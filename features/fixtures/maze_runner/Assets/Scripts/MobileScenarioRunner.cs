@@ -221,7 +221,7 @@ public class MobileScenarioRunner : MonoBehaviour {
                     device.Jailbroken = true;
                     device.CpuAbi = new string[] { "poo", "baar" };
                     device.Orientation = "Custom Orientation";
-                    device.Time = new DateTimeOffset(1985, 08, 21, 01, 01, 01, new TimeSpan(0));
+                    device.Time = new DateTimeOffset(1985, 08, 21, 01, 01, 01, TimeSpan.Zero);
 
                     // breadcrumbs
                     foreach (var crumb in @event.Breadcrumbs)
@@ -281,7 +281,7 @@ public class MobileScenarioRunner : MonoBehaviour {
 
                     session.Id = "Custom Id";
 
-                    var newDate = new DateTimeOffset(1985, 08, 21, 01, 01, 01, new TimeSpan(0));
+                    var newDate = new DateTimeOffset(1985, 08, 21, 01, 01, 01, TimeSpan.Zero);
                     session.StartedAt = newDate;
 
                     var device = session.Device;
