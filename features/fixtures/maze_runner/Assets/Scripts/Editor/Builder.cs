@@ -19,11 +19,6 @@ public class Builder : MonoBehaviour {
         BuildPipeline.BuildPlayer(opts);
     }
 
-    public static void Switch()
-    {
-        Build("build/Switch/Mazerunner", BuildTarget.Switch);
-    }
-
     public static void MacOS()
     {
         Build("build/MacOS/Mazerunner", BuildTarget.StandaloneOSX);
@@ -62,6 +57,17 @@ public class Builder : MonoBehaviour {
 
         var opts = CommonOptions("mazerunner_xcode");
         opts.target = BuildTarget.iOS;
+
+        var result = BuildPipeline.BuildPlayer(opts);
+        Debug.Log("Result: " + result);
+    }
+
+    public static void SwitchBuild()
+    {
+        Debug.Log("Building Switch app...");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Switch, "com.bugsnag.mazerunner");
+        var opts = CommonOptions("mazerunner.nspd");
+        opts.target = BuildTarget.Switch;
 
         var result = BuildPipeline.BuildPlayer(opts);
         Debug.Log("Result: " + result);
