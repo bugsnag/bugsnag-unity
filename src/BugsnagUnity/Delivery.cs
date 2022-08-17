@@ -13,6 +13,8 @@ namespace BugsnagUnity
     class Delivery
     {
 
+        private Client _client;
+
         private Configuration _configuration;
 
         private CacheManager _cacheManager;
@@ -26,8 +28,11 @@ namespace BugsnagUnity
         private bool _cacheDeliveryInProcess;
 
 
-        internal Delivery(Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
+
+
+        internal Delivery(Client client, Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
         {
+            _client = client;
             _configuration = configuration;
             _cacheManager = cacheManager;
             _payloadManager = payloadManager;
@@ -86,6 +91,12 @@ namespace BugsnagUnity
         // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload, byte[] body)
         {
+            if (!_client.NativeClient.ShouldAttemptDelivery())
+            {
+                _payloadManager.SendPayloadFailed(payload);
+                _finishedCacheDeliveries.Add(payload.Id);
+                yield break;
+            }
             using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
             {
                 req.SetRequestHeader("Content-Type", "application/json");

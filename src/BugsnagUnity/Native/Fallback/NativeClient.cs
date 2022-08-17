@@ -163,7 +163,10 @@ namespace BugsnagUnity
         {
             return _featureFlags;
         }
-       
 
+        public bool ShouldAttemptDelivery()
+        {
+            return true;
+        }
     }
 }
