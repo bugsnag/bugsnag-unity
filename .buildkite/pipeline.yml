@@ -30,6 +30,11 @@ steps:
       WSLENV: UNITY_VERSION
     command:
       - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
+    plugins:
+      artifacts#v1.5.0:
+        upload:
+          - from: Bugsnag.unitypackage
+            to: Bugsnag_WindowsBuilt.unitypackage
     retry:
       automatic:
         - exit_status: "*"
