@@ -22,14 +22,13 @@ steps:
           limit: 1
 
   - label: Ensure notifier builds on Windows (for development)
-    skip: Pending PLAT-8676
     timeout_in_minutes: 30
     agents:
-      queue: opensource-windows-unity
+      queue: windows-general-wsl
     env:
       UNITY_VERSION: "2018.4.36f1"
     command:
-      - scripts/ci-build-windows-plugin.bat
+      - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
     retry:
       automatic:
         - exit_status: "*"
