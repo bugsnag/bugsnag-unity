@@ -109,7 +109,7 @@ namespace BugsnagUnity
             NativeClient = nativeClient;
             CacheManager = new CacheManager(Configuration);
             PayloadManager = new PayloadManager(CacheManager);
-            _delivery = new Delivery(Configuration,CacheManager,PayloadManager);
+            _delivery = new Delivery(this, Configuration,CacheManager,PayloadManager);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
             _isUnity2019OrHigher = IsUnity2019OrHigher();

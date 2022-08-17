@@ -102,5 +102,7 @@ namespace BugsnagUnity
 
         IDictionary<string, object> GetNativeMetadata();
 
+        bool ShouldAttemptDelivery();
+
     }
 }

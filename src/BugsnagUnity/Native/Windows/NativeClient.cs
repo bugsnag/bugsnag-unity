@@ -203,5 +203,9 @@ namespace BugsnagUnity
         {
         }
 
+        public bool ShouldAttemptDelivery()
+        {
+            return true;
+        }
     }
 }
