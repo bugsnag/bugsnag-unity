@@ -691,14 +691,9 @@ void bugsnag_removeMetadata(const void *configuration, const char *tab) {
 }
 
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadataJson) {
-  NSString *ns_message = [NSString stringWithUTF8String: message == NULL ? "<empty>" : message];
-  [Bugsnag.client addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-      crumb.message = ns_message;
-      crumb.type = BSGBreadcrumbTypeFromString([NSString stringWithUTF8String:type]);
-      if (metadataJson != NULL) {
-        crumb.metadata = getDictionaryFromMetadataJson(metadataJson);
-      }
-  }];
+  [Bugsnag leaveBreadcrumbWithMessage:message ? @(message) : @"<empty>"
+                             metadata:metadataJson ? getDictionaryFromMetadataJson(metadataJson) : nil
+                              andType:BSGBreadcrumbTypeFromString(@(type))];
 }
 
 void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *metadataJson)) {
