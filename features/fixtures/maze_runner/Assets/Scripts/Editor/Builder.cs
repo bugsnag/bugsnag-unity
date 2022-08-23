@@ -66,8 +66,10 @@ public class Builder : MonoBehaviour {
     {
         Debug.Log("Building Switch app...");
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Switch, "com.bugsnag.mazerunner");
+
         var opts = CommonOptions("mazerunner.nspd");
         opts.target = BuildTarget.Switch;
+        opts.options = BuildOptions.Development;
 
         var result = BuildPipeline.BuildPlayer(opts);
         Debug.Log("Result: " + result);

@@ -35,19 +35,45 @@ public class Main : MonoBehaviour
 
 #endif
 
+//#if UNITY_SWITCH
+//    [DllImport("__Internal")]
+//    internal static extern int bugsnag_getArgsCount();
+//
+//    [DllImport("__Internal")]
+//    internal static extern string bugsnag_getArg(int index);
+//#endif
+
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private Dictionary<string, string> _webGlArguments;
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
-
-#if UNITY_STANDALONE || UNITY_WEBGL
-    private string _mazeHost = "http://localhost:9339";
-#else
-    private string _mazeHost = "http://bs-local.com:9339";
-#endif
+    private string _mazeHost;
 
     public void Start()
     {
+        Debug.Log("Maze Runner app started");
+
+        // Detemine the MAze Runner endpoint based on platform
+#if UNITY_STANDALONE || UNITY_WEBGL
+        _mazeHost = "http://localhost:9339";
+#elif UNITY_SWITCH
+        _mazeHost = "http://UPDATE_ME:9339";
+
+
+        // TODO Rmove this before review!
+        _mazeHost = "http://192.168.33.1:9339";
+
+        //    int count = bugsnag_getArgsCount();
+        //    Debug.Log("args count: " + count);
+        //
+        //    for (int i = 0; i < count; i ++)
+        //    {
+        //	    Debug.Log("env var: " + bugsnag_getArg(i));
+        //    }
+#else
+    _mazeHost = "http://bs-local.com:9339";
+#endif
+
 
 #if UNITY_ANDROID || UNITY_IOS
         return;
