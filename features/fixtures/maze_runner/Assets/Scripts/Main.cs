@@ -93,9 +93,10 @@ public class Main : MonoBehaviour
 
     IEnumerator RunNextMazeCommand()
     {
-        Console.WriteLine("RunNextMazeCommand called");
+        var url = _mazeHost + "/command";
+        Console.WriteLine("RunNextMazeCommand called, requesting command from: {0}", url);
 
-        using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
             yield return request.SendWebRequest();
 #if UNITY_2020_1_OR_NEWER
