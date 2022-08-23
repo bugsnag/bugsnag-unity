@@ -42,6 +42,8 @@ When('I clear the Bugsnag cache') do
     step("I navigate to the URL \"#{url}\"")
     execute_command('clear_cache')
 
+  when 'switch'
+    execute_command('clear_cache')
   else
     raise "Platform #{platform} has not been considered"
   end
