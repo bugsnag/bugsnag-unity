@@ -35,14 +35,6 @@ public class Main : MonoBehaviour
 
 #endif
 
-//#if UNITY_SWITCH
-//    [DllImport("__Internal")]
-//    internal static extern int bugsnag_getArgsCount();
-//
-//    [DllImport("__Internal")]
-//    internal static extern string bugsnag_getArg(int index);
-//#endif
-
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private Dictionary<string, string> _webGlArguments;
 
@@ -58,18 +50,6 @@ public class Main : MonoBehaviour
         _mazeHost = "http://localhost:9339";
 #elif UNITY_SWITCH
         _mazeHost = "http://UPDATE_ME:9339";
-
-
-        // TODO Rmove this before review!
-        _mazeHost = "http://192.168.33.1:9339";
-
-        //    int count = bugsnag_getArgsCount();
-        //    Debug.Log("args count: " + count);
-        //
-        //    for (int i = 0; i < count; i ++)
-        //    {
-        //	    Debug.Log("env var: " + bugsnag_getArg(i));
-        //    }
 #else
     _mazeHost = "http://bs-local.com:9339";
 #endif

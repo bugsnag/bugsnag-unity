@@ -23,14 +23,12 @@ When('I clear the Bugsnag cache') do
     log = File.join(Dir.pwd, 'mazerunner.log')
     command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
-
     execute_command('clear_cache')
 
   when 'windows'
     win_log = File.join(Dir.pwd, 'mazerunner.log')
     command = "#{Maze.config.app} --args -logfile #{win_log}"
     Maze::Runner.run_command(command, blocking: false)
-
     execute_command('clear_cache')
 
   when 'android', 'ios'
@@ -44,6 +42,7 @@ When('I clear the Bugsnag cache') do
 
   when 'switch'
     execute_command('clear_cache')
+
   else
     raise "Platform #{platform} has not been considered"
   end
@@ -77,7 +76,7 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'android', 'ios'
-    # TODO Come back to this
+    # TODO: Come back to this
 
   when 'browser'
     # WebGL in a browser
@@ -88,6 +87,7 @@ When('I run the game in the {string} state') do |state|
 
   when 'switch'
     execute_command('run_scenario', state)
+
   else
     raise "Platform #{platform} has not been considered"
   end
