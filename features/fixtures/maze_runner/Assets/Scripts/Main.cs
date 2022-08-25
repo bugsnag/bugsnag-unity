@@ -49,7 +49,7 @@ public class Main : MonoBehaviour
 #if UNITY_STANDALONE || UNITY_WEBGL
         _mazeHost = "http://localhost:9339";
 #elif UNITY_SWITCH
-        _mazeHost = "http://UPDATE_ME:9339";
+        _mazeHost = "http://192.168.33.1:9339";
 #else
     _mazeHost = "http://bs-local.com:9339";
 #endif
