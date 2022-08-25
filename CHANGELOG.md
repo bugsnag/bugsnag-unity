@@ -6,6 +6,11 @@
 
 * Update bugsnag-cocoa from v6.19.0 to [v6.22.1](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6221-2022-08-10)
 
+### Bug fixes
+
+* Added DontSave HideFlags to gameObjects created by the Bugsnag SDK to negate the chances of them making scenes dirty in the editor.
+  [#604](https://github.com/bugsnag/bugsnag-unity/pull/604)
+
 ## 7.1.0 (2022-07-12)
 
 ### Enhancements
