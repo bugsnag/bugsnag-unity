@@ -55,7 +55,7 @@ Feature: Handled Errors and Exceptions
     And the event "app.type" equals the platform-dependent string:
       | macos   | MacOS   |
       | windows | Windows |
-      | switch  | Switch |
+      | switch  | nintendo-switch |
     And the stack frame methods should match:
       | Main.DoNotify() |
 
