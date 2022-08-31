@@ -28,7 +28,22 @@ namespace BugsnagUnity
 {
     public class MainThreadDispatchBehaviour : MonoBehaviour
     {
+
+        private static MainThreadDispatchBehaviour _instance;       
+    
         private static readonly Queue<Action> _executionQueue = new Queue<Action>();
+
+
+        public static MainThreadDispatchBehaviour Instance()
+        {
+            if (_instance == null)
+            {
+                _instance = new GameObject("Bugsnag main thread dispatcher").AddComponent<MainThreadDispatchBehaviour>();
+                DontDestroyOnLoad(_instance.gameObject);
+                _instance.gameObject.hideFlags = HideFlags.DontSave;
+            }
+            return _instance;
+        }
 
         public void Update()
         {
@@ -72,7 +87,7 @@ namespace BugsnagUnity
 
         public void EnqueueWithDelayCoroutine(Action action, float delay)
         {
-            StartCoroutine(DelayAction(action,delay));
+            StartCoroutine(DelayAction(action, delay));
         }
 
         private IEnumerator DelayAction(Action action, float delay)
@@ -81,29 +96,5 @@ namespace BugsnagUnity
             action.Invoke();
         }
 
-        private static MainThreadDispatchBehaviour _instance;
-
-        public static MainThreadDispatchBehaviour Instance()
-        {
-            if (_instance == null)
-            {
-                _instance = new GameObject("Bugsnag main thread dispatcher").AddComponent<MainThreadDispatchBehaviour>();
-            }
-            return _instance;
-        }
-
-        void Awake()
-        {
-            if (_instance == null)
-            {
-                _instance = this;
-                DontDestroyOnLoad(gameObject);
-            }
-        }
-
-        void OnDestroy()
-        {
-            _instance = null;
-        }
     }
 }

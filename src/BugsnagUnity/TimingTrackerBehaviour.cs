@@ -14,6 +14,7 @@ namespace BugsnagUnity
         {
             // Make sure that the tracker persists accross scenes.
             DontDestroyOnLoad(gameObject);
+            gameObject.hideFlags = HideFlags.DontSave;
         }
 
 
