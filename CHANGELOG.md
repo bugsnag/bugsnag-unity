@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 7.1.1 (2022-09-05)
 
 ### Dependency updates
 
