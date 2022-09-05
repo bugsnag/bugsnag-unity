@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NintendoSdkMeta>
+  <Core>
+    <Name>Application</Name>
+    <Is64BitInstruction>True</Is64BitInstruction>
+    <ApplicationId>0x01004b9000490000</ApplicationId>
+    <ProgramIndex>0</ProgramIndex>
+    <MainThreadStackSize>0x00100000</MainThreadStackSize>
+    <ProcessAddressSpace>AddressSpace64Bit</ProcessAddressSpace>
+    <SystemResourceSize>0x01000000</SystemResourceSize>
+  </Core>
+  <Application>
+    <Title>
+      <Language>AmericanEnglish</Language>
+      <Name>Mazerunner</Name>
+      <Publisher>bugsnag</Publisher>
+    </Title>
+    <Icon>
+      <Language>AmericanEnglish</Language>
+      <IconPath>..\..\..\..\..\..\..\..\Nintendo\lowestSupportedVersion\NintendoSDK\Resources\SpecFiles\NintendoSDK_Application.bmp</IconPath>
+    </Icon>
+    <ReleaseVersion>0</ReleaseVersion>
+    <DisplayVersion>1.0</DisplayVersion>
+    <StartupUserAccount>None</StartupUserAccount>
+    <UserAccountSwitchLock>Disable</UserAccountSwitchLock>
+    <SupportedLanguage>AmericanEnglish</SupportedLanguage>
+    <Screenshot>Allow</Screenshot>
+    <DataLossConfirmation>None</DataLossConfirmation>
+    <UserAccountSaveDataSize>0x0000000000000000</UserAccountSaveDataSize>
+    <UserAccountSaveDataJournalSize>0x0000000000000000</UserAccountSaveDataJournalSize>
+    <LogoType>LicensedByNintendo</LogoType>
+    <LogoHandling>Auto</LogoHandling>
+    <Rating>
+      <Organization>ESRB</Organization>
+      <Age>0</Age>
+    </Rating>
+    <VideoCapture>Enable</VideoCapture>
+    <RuntimeAddOnContentInstall>Deny</RuntimeAddOnContentInstall>
+    <CrashReport>Allow</CrashReport>
+    <CrashScreenshotForProd>Deny</CrashScreenshotForProd>
+    <CrashScreenshotForDev>Deny</CrashScreenshotForDev>
+    <PlayLogQueryCapability>None</PlayLogQueryCapability>
+    <PlayLogPolicy>Open</PlayLogPolicy>
+    <CacheStorageSize>0x0000000000a00000</CacheStorageSize>
+    <CacheStorageJournalSize>0x0000000000200000</CacheStorageJournalSize>
+  </Application>
+</NintendoSdkMeta>
