@@ -2,11 +2,6 @@
 
 ## 7.1.1 (2022-09-05)
 
-### Dependency updates
-
-* Update bugsnag-android from v5.24.0 to [v5.26.0](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5260-2022-08-18)
-* Update bugsnag-cocoa from v6.19.0 to [v6.22.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6222-2022-08-17)
-
 ### Bug fixes
 
 * Added `DontSave` HideFlags to gameObjects created by the Bugsnag SDK to negate the chances of them making scenes dirty in the editor
@@ -14,6 +9,11 @@
 
 * Fixed compilation errors when building with IL2CPP for Android after changes to the Unity API `BlockCopy` method caused `ArgumentException`
   [#605](https://github.com/bugsnag/bugsnag-unity/pull/605)
+
+### Dependency updates
+
+* Update bugsnag-android from v5.24.0 to [v5.26.0](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5260-2022-08-18)
+* Update bugsnag-cocoa from v6.19.0 to [v6.22.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6222-2022-08-17)
 
 ## 7.1.0 (2022-07-12)
 
