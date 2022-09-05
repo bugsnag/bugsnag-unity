@@ -133,10 +133,10 @@ namespace BugsnagUnity.Payload
 
         public string Type { get => "Unity"; }
 
+
         internal static Error FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
-        {
+        {            
             var errorClass = exception.GetType().Name;
-            var stackFrames = new System.Diagnostics.StackTrace(exception, true).GetFrames();
 
             // JVM exceptions in the main thread are handled by unity and require extra formatting
             if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
@@ -150,9 +150,9 @@ namespace BugsnagUnity.Payload
             else
             {
                 StackTraceLine[] lines;
-                if (stackFrames != null && stackFrames.Length > 0)
+                if (!string.IsNullOrEmpty(exception.StackTrace))
                 {
-                    lines = new StackTrace(stackFrames).ToArray();
+                    lines = new StackTrace(exception.StackTrace).ToArray();
                 }
                 else
                 {
