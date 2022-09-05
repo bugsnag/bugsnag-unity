@@ -12,7 +12,7 @@
 * Added `DontSave` HideFlags to gameObjects created by the Bugsnag SDK to negate the chances of them making scenes dirty in the editor
   [#604](https://github.com/bugsnag/bugsnag-unity/pull/604)
 
-* Fixed compilation errors when building with IL2CPP for Android after chenges to the Unity API BlockCopy method caused complications
+* Fixed compilation errors when building with IL2CPP for Android after changes to the Unity API `BlockCopy` method caused `ArgumentException`
   [#605](https://github.com/bugsnag/bugsnag-unity/pull/605)
 
 ## 7.1.0 (2022-07-12)
