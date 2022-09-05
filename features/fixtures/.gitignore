@@ -45,3 +45,7 @@ Assets/Standard\ Assets/Bugsnag/BugsnagBehaviour.cs
 maze_runner/mazerunner_xcode
 maze_runner/archive
 maze_runner/Packages/manifest.json
+
+# Switch artifacts
+maze_runner/Application.*.nmeta
+maze_runner/NintendoSDK_Application.bmp
