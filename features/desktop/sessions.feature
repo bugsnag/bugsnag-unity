@@ -10,14 +10,18 @@ Feature: Session Tracking
     And the session payload field "app.type" equals the platform-dependent string:
       | macos   | MacOS   |
       | windows | Windows |
+      | switch | nintendo-switch |
+    # TODO Reported as 0.0.0.0 on our SDEV
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
+      | switch | Nintendo Switch |
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
       | windows | PC    |
+      | switch | Nintendo |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -71,14 +75,17 @@ Feature: Session Tracking
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
     And the session payload field "app.version" is not null
     And the session payload field "app.releaseStage" equals "production"
+    # TODO On our Switch SDEV this is 0.0.0.0
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
+      | switch | Nintendo Switch |
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
       | windows | PC    |
+      | switch | Nintendo |
 
     And the session "id" is not null
     And the session "startedAt" is not null

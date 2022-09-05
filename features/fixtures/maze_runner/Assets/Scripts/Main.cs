@@ -39,15 +39,21 @@ public class Main : MonoBehaviour
     private Dictionary<string, string> _webGlArguments;
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
-
-#if UNITY_STANDALONE || UNITY_WEBGL
-    private string _mazeHost = "http://localhost:9339";
-#else
-    private string _mazeHost = "http://bs-local.com:9339";
-#endif
+    private string _mazeHost;
 
     public void Start()
     {
+        Debug.Log("Maze Runner app started");
+
+        // Detemine the MAze Runner endpoint based on platform
+#if UNITY_STANDALONE || UNITY_WEBGL
+        _mazeHost = "http://localhost:9339";
+#elif UNITY_SWITCH
+        _mazeHost = "http://UPDATE_ME:9339";
+#else
+    _mazeHost = "http://bs-local.com:9339";
+#endif
+
 
 #if UNITY_ANDROID || UNITY_IOS
         return;
@@ -67,9 +73,10 @@ public class Main : MonoBehaviour
 
     IEnumerator RunNextMazeCommand()
     {
-        Console.WriteLine("RunNextMazeCommand called");
+        var url = _mazeHost + "/command";
+        Console.WriteLine("RunNextMazeCommand called, requesting command from: {0}", url);
 
-        using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
             yield return request.SendWebRequest();
 #if UNITY_2020_1_OR_NEWER

@@ -46,8 +46,10 @@ BeforeAll do
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
   elsif Maze.config.browser != nil # WebGL
     Maze.config.document_server_root = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
+  elsif Maze.config.os&.downcase == 'switch'
+    # Placeholder for Switch
   elsif Maze.config.device.nil?
-    raise '--browser (WebGL), --device (for Android/iOS) or --os (for desktop) option must be set'
+    raise '--browser (WebGL), --device (for Android/iOS) or --os (for desktop or switch) option must be set'
   end
 end
 
@@ -63,6 +65,9 @@ Maze.hooks.before do
     # This is to get around a strange macos bug where clearing prefs does not work 
     $logger.info 'Killing defaults service'
     Maze::Runner.run_command("killall -u #{ENV['USER']} cfprefsd")
+  elsif Maze.config.os == 'switch'
+    # Launch the app
+    `ControlTarget.exe launch-application #{Maze.config.app}`
   end
 end
 
@@ -74,11 +79,15 @@ After do |scenario|
     `killall Mazerunner`
   when 'webgl','windows'
     execute_command('close_application')
+  when 'switch'
+    # Terminate the app
+    Maze::Runner.run_command('ControlTarget.exe terminate')
   end
 end
 
 AfterAll do
-  if Maze.config.os == 'macos'
+  case Maze::Helper.get_current_platform
+  when 'macos'
     app_name = Maze.config.app.gsub /\.app$/, ''
     Maze::Runner.run_command("log show --predicate '(process == \"#{app_name}\")' --style syslog --start '#{Maze.start_time}' > #{app_name}.log")
   end
