@@ -15,10 +15,6 @@
       <Name>Mazerunner</Name>
       <Publisher>bugsnag</Publisher>
     </Title>
-    <Icon>
-      <Language>AmericanEnglish</Language>
-      <IconPath>..\..\..\..\..\..\..\..\Nintendo\lowestSupportedVersion\NintendoSDK\Resources\SpecFiles\NintendoSDK_Application.bmp</IconPath>
-    </Icon>
     <ReleaseVersion>0</ReleaseVersion>
     <DisplayVersion>1.0</DisplayVersion>
     <StartupUserAccount>None</StartupUserAccount>
