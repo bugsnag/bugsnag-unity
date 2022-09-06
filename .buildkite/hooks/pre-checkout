@@ -1,0 +1,5 @@
+echo pre-command hook
+
+if [[ -z "${WSL_DISTRO_NAME}" ]]; then
+  taskkill.exe /IM Mazerunner.exe
+fi
