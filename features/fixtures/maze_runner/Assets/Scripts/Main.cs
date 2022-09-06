@@ -9,6 +9,7 @@ using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System.Threading.Tasks;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -490,6 +491,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "AsyncException":
+                DoAsyncTest();
+                break;
             case "ExceptionWithSessionAfterStart":
                 throw new Exception("ExceptionWithSessionAfterStart");
             case "MaxPersistEvents":
@@ -1023,6 +1027,12 @@ public class Main : MonoBehaviour
 #if UNITY_STANDALONE_OSX
          crashy_signal_runner(8);
 #endif
+    }
+
+    private async void DoAsyncTest()
+    {
+        throw new Exception("AsyncException");
+        await Task.Yield();
     }
 
 }
