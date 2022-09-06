@@ -8,6 +8,9 @@
 
 ### Bug fixes
 
+* Fixed issue where exceptions thrown in async methods were missing some stack frames
+  [#610](https://github.com/bugsnag/bugsnag-unity/pull/610)
+
 * Added `DontSave` HideFlags to gameObjects created by the Bugsnag SDK to negate the chances of them making scenes dirty in the editor
   [#604](https://github.com/bugsnag/bugsnag-unity/pull/604)
 
