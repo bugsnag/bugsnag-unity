@@ -39,7 +39,7 @@ Feature: Reporting unhandled events
     And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | Main+<DoAsyncTest>d__51.MoveNext() |
+      | Main+<DoAsyncTest>d__51.MoveNext() | Main+<DoAsyncTest>d__49.MoveNext() |
       | --- End of stack trace from previous location where exception was thrown --- |
       | System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() |
 
