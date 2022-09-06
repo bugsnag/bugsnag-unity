@@ -135,7 +135,7 @@ namespace BugsnagUnity.Payload
 
 
         internal static Error FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
-        {            
+        {
             var errorClass = exception.GetType().Name;
 
             // JVM exceptions in the main thread are handled by unity and require extra formatting
