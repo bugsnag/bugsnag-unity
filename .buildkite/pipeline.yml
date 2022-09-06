@@ -13,6 +13,7 @@ steps:
         upload:
           - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
     commands:
+      - mkdir -p features/fixtures/maze_runner/build
       - cp Windows-2020.3.32f1.zip features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
 
   #
