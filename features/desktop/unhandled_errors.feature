@@ -40,8 +40,6 @@ Feature: Reporting unhandled events
     And custom metadata is included in the event
     And the stack frame methods should match:
       | Main+<DoAsyncTest>d__51.MoveNext() | Main+<DoAsyncTest>d__49.MoveNext() | Main.DoAsyncTest() |
-      | --- End of stack trace from previous location where exception was thrown --- | | |
-      | System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw() | | |
 
   Scenario: Session is present in exception called directly after start
     When I run the game in the "ExceptionWithSessionAfterStart" state
