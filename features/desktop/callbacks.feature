@@ -41,6 +41,12 @@ Feature: Callbacks
     And the event "breadcrumbs.0.name" equals "Custom Message"
     And the event "breadcrumbs.0.metaData.test" equals "test"
 
+	# Feature flags
+    And the event "featureFlags.0.featureFlag" equals "fromStartup"
+    And the event "featureFlags.0.variant" equals "a"
+    And the event "featureFlags.1.featureFlag" equals "fromCallback"
+    And the event "featureFlags.1.variant" equals "a"
+
     # Metadata
     And the event "metaData.test1.test" equals "test"
     And the event "metaData.test2" is null

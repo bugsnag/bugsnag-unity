@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Added `BugsnagEvent.FeatureFlags` to allow feature flags to be queried before event delivery.
+  [#613](https://github.com/bugsnag/bugsnag-unity/pull/613)
+
 ## 7.1.1 (2022-09-07)
 
 ### Bug fixes

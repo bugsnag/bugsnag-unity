@@ -36,4 +36,10 @@ Feature: Callbacks
         And the event "app.inForeground" is false
         And the event "app.isLaunching" is false
 
+        # Feature flags
+        And the event "featureFlags.0.featureFlag" equals "fromStartup"
+        And the event "featureFlags.0.variant" equals "a"
+        And the event "featureFlags.1.featureFlag" equals "fromCallback"
+        And the event "featureFlags.1.variant" equals "a"
+
         And the event "exceptions.0.stacktrace.0.method" equals "Method"
