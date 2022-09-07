@@ -466,5 +466,10 @@ namespace BugsnagUnity
         {
             NativeCode.bugsnag_clearFeatureFlags();
         }
+
+        public bool ShouldAttemptDelivery()
+        {
+            return true;
+        }
     }
 }

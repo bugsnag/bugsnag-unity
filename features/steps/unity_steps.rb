@@ -23,30 +23,34 @@ When('I clear the Bugsnag cache') do
     log = File.join(Dir.pwd, 'mazerunner.log')
     command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
-
     execute_command('clear_cache')
 
   when 'windows'
     win_log = File.join(Dir.pwd, 'mazerunner.log')
     command = "#{Maze.config.app} --args -logfile #{win_log}"
     Maze::Runner.run_command(command, blocking: false)
-
     execute_command('clear_cache')
 
   when 'android', 'ios'
     # TODO: Come back to this
 
-  else
+  when 'webgl'
     url = "http://localhost:#{Maze.config.document_server_port}/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
     execute_command('clear_cache')
+
+  when 'switch'
+    execute_command('clear_cache')
+
+  else
+    raise "Platform #{platform} has not been considered"
   end
 end
 
 When('I close the Unity app') do
   case Maze::Helper.get_current_platform
-  when 'macos','webgl','windows'
+  when 'macos','webgl','windows','switch'
     execute_command('close_application')
   when 'android', 'ios'
     # TODO: Come back to this
@@ -54,7 +58,8 @@ When('I close the Unity app') do
 end
 
 When('I run the game in the {string} state') do |state|
-  case Maze::Helper.get_current_platform
+  platform = Maze::Helper.get_current_platform
+  case platform
   when 'macos'
     # Call executable directly rather than use open, which flakes on CI
     log = File.join(Dir.pwd, 'mazerunner.log')
@@ -71,7 +76,7 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'android', 'ios'
-    # TODO Come back to this
+    # TODO: Come back to this
 
   when 'browser'
     # WebGL in a browser
@@ -79,6 +84,12 @@ When('I run the game in the {string} state') do |state|
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
     execute_command('run_scenario', state)
+
+  when 'switch'
+    execute_command('run_scenario', state)
+
+  else
+    raise "Platform #{platform} has not been considered"
   end
 end
 

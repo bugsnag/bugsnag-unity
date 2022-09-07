@@ -31,7 +31,7 @@ Feature: Android manual smoke tests
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
         And the event "exceptions.0.stacktrace.0.method" is not null
-        And the error payload field "events.0.exceptions.0.stacktrace.0.frameAddress" is greater than 0
+        And the error payload field "events.0.exceptions.0.stacktrace.0.frameAddress" starts with "0x"
 
         # App data
         And the event "app.id" equals "com.bugsnag.mazerunner"

@@ -1,5 +1,23 @@
 # Changelog
 
+## 7.1.1 (2022-09-07)
+
+### Bug fixes
+
+* Fixed issue where exceptions thrown in async methods were missing some stack frames
+  [#610](https://github.com/bugsnag/bugsnag-unity/pull/610)
+
+* Added `DontSave` HideFlags to gameObjects created by the Bugsnag SDK to negate the chances of them making scenes dirty in the editor
+  [#604](https://github.com/bugsnag/bugsnag-unity/pull/604)
+
+* Fixed compilation errors when building with IL2CPP for Android after changes to the Unity API `BlockCopy` method caused `ArgumentException`
+  [#605](https://github.com/bugsnag/bugsnag-unity/pull/605)
+
+### Dependency updates
+
+* Update bugsnag-android from v5.24.0 to [v5.26.0](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5260-2022-08-18)
+* Update bugsnag-cocoa from v6.19.0 to [v6.22.3](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6223-2022-09-01)
+
 ## 7.1.0 (2022-07-12)
 
 ### Enhancements

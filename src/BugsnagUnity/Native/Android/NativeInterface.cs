@@ -701,7 +701,7 @@ namespace BugsnagUnity
 
                 if (obj is string)
                 {
-                    itemsAsJavaObjects[i] = BuildJavaStringDisposable(obj as string);
+                    itemsAsJavaObjects[i] = new AndroidJavaObject("java.lang.String", obj as string);
                 }
                 else
                 {
@@ -786,7 +786,7 @@ namespace BugsnagUnity
             AndroidJavaObject[] itemsAsJavaObjects = new AndroidJavaObject[items.Length];
             for (int i = 0; i < items.Length; i++)
             {
-                itemsAsJavaObjects[i] = BuildJavaStringDisposable(items[i]);
+                itemsAsJavaObjects[i] = new AndroidJavaObject("java.lang.String", items[i]);
             }
 
             AndroidJavaObject first = itemsAsJavaObjects[0];
@@ -914,49 +914,15 @@ namespace BugsnagUnity
             {
                 foreach (var entry in src)
                 {
-                    using (AndroidJavaObject key = BuildJavaStringDisposable(entry.Key))
-                    using (AndroidJavaObject value = BuildJavaStringDisposable(entry.Value == null ? "null" : entry.Value.ToString()))
+                    using (AndroidJavaObject key = new AndroidJavaObject("java.lang.String", entry.Key))
+                    using (AndroidJavaObject value = new AndroidJavaObject("java.lang.String", entry.Value == null ? "null" : entry.Value.ToString()))
                     {
                         map.Call<AndroidJavaObject>("put", key, value);
                     }
                 }
             }
             return map;
-        }
-
-        internal static AndroidJavaObject BuildJavaStringDisposable(string input)
-        {
-            if (input == null)
-            {
-                return null;
-            }
-
-            try
-            {
-                // The default encoding on Android is UTF-8
-                using (AndroidJavaClass CharsetClass = new AndroidJavaClass("java.nio.charset.Charset"))
-                using (AndroidJavaObject Charset = CharsetClass.CallStatic<AndroidJavaObject>("defaultCharset"))
-                {
-                    byte[] Bytes = Encoding.UTF8.GetBytes(input);
-
-                    if (Unity2019OrNewer)
-                    { // should succeed on Unity 2019.1 and above
-                        sbyte[] SBytes = new sbyte[Bytes.Length];
-                        Buffer.BlockCopy(Bytes, 0, SBytes, 0, Bytes.Length);
-                        return new AndroidJavaObject("java.lang.String", SBytes, Charset);
-                    }
-                    else
-                    { // use legacy API on older versions
-                        return new AndroidJavaObject("java.lang.String", Bytes, Charset);
-                    }
-                }
-            }
-            catch (EncoderFallbackException _)
-            {
-                // The input string could not be encoded as UTF-8
-                return new AndroidJavaObject("java.lang.String");
-            }
-        }
+        }       
 
         internal static bool IsUnity2019OrNewer()
         {

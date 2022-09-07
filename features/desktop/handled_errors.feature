@@ -55,6 +55,7 @@ Feature: Handled Errors and Exceptions
     And the event "app.type" equals the platform-dependent string:
       | macos   | MacOS   |
       | windows | Windows |
+      | switch  | nintendo-switch |
     And the stack frame methods should match:
       | Main.DoNotify() |
 
@@ -139,7 +140,7 @@ Feature: Handled Errors and Exceptions
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | Main.DoLogWarning() |
+      | Main.DoLogWarning() | Main:DoLogWarning() |
 
   Scenario: Notifying when the current release stage is not in "notify release stages"
     When I run the game in the "NotifyOutsideNotifyReleaseStages" state

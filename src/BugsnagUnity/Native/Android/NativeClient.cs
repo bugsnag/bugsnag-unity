@@ -154,6 +154,11 @@ namespace BugsnagUnity
         {
             NativeInterface.ClearFeatureFlags();
         }
+
+        public bool ShouldAttemptDelivery()
+        {
+            return true;
+        }
     }
 
 }

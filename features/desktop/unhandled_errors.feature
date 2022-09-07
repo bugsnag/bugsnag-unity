@@ -26,7 +26,21 @@ Feature: Reporting unhandled events
       | Main.RunScenario(System.String scenario) | Main.RunScenario(string scenario)               |                                         |
       | UnityEngine.SetupCoroutine.InvokeMoveNext(System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | |
 
-  @windows_only
+  Scenario: Reporting an uncaught exception in an async method
+    When I run the game in the "AsyncException" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "errorClass" equals "Exception"
+    And the exception "message" equals "AsyncException"
+    And the event "unhandled" is false
+    And the event "device.runtimeVersions.unity" is not null
+    And the event "device.runtimeVersions.unityScriptingBackend" is not null
+    And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
+    And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
+    And custom metadata is included in the event
+    And the stack frame methods should match:
+      | Main+<DoAsyncTest>d__51.MoveNext() | Main+<DoAsyncTest>d__49.MoveNext() | Main.DoAsyncTest() |
+
   Scenario: Session is present in exception called directly after start
     When I run the game in the "ExceptionWithSessionAfterStart" state
     And I wait to receive an error

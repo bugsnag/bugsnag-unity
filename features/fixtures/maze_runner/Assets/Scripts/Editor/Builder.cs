@@ -16,7 +16,6 @@ public class Builder : MonoBehaviour {
         opts.locationPathName = folder;
         opts.target = target;
         opts.options = BuildOptions.None;
-
         BuildPipeline.BuildPlayer(opts);
     }
 
@@ -58,6 +57,18 @@ public class Builder : MonoBehaviour {
 
         var opts = CommonOptions("mazerunner_xcode");
         opts.target = BuildTarget.iOS;
+
+        var result = BuildPipeline.BuildPlayer(opts);
+        Debug.Log("Result: " + result);
+    }
+
+    public static void SwitchBuild()
+    {
+        Debug.Log("Building Switch app...");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Switch, "com.bugsnag.mazerunner");
+        var opts = CommonOptions("mazerunner.nspd");
+        opts.target = BuildTarget.Switch;
+        opts.options = BuildOptions.Development;
 
         var result = BuildPipeline.BuildPlayer(opts);
         Debug.Log("Result: " + result);

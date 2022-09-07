@@ -29,6 +29,7 @@ bugsnag-android-unity/.cxx
 features/**/*.zip
 *.ipa
 **/maze_runner/output/
+**/maze_runner/SwitchIL2CPPCache/
 **/maze_runner/Mazerunner.log
 **/maze_output
 PackageBranch

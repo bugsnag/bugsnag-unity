@@ -9,6 +9,7 @@ using BugsnagUnity;
 using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System.Threading.Tasks;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -39,15 +40,21 @@ public class Main : MonoBehaviour
     private Dictionary<string, string> _webGlArguments;
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
-
-#if UNITY_STANDALONE || UNITY_WEBGL
-    private string _mazeHost = "http://localhost:9339";
-#else
-    private string _mazeHost = "http://bs-local.com:9339";
-#endif
+    private string _mazeHost;
 
     public void Start()
     {
+        Debug.Log("Maze Runner app started");
+
+        // Detemine the MAze Runner endpoint based on platform
+#if UNITY_STANDALONE || UNITY_WEBGL
+        _mazeHost = "http://localhost:9339";
+#elif UNITY_SWITCH
+        _mazeHost = "http://UPDATE_ME:9339";
+#else
+    _mazeHost = "http://bs-local.com:9339";
+#endif
+
 
 #if UNITY_ANDROID || UNITY_IOS
         return;
@@ -67,9 +74,10 @@ public class Main : MonoBehaviour
 
     IEnumerator RunNextMazeCommand()
     {
-        Console.WriteLine("RunNextMazeCommand called");
+        var url = _mazeHost + "/command";
+        Console.WriteLine("RunNextMazeCommand called, requesting command from: {0}", url);
 
-        using (UnityWebRequest request = UnityWebRequest.Get(_mazeHost + "/command"))
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
             yield return request.SendWebRequest();
 #if UNITY_2020_1_OR_NEWER
@@ -110,9 +118,24 @@ public class Main : MonoBehaviour
                         }
                         else if ("run_scenario".Equals(command.action))
                         {
+
+#if UNITY_STANDALONE_OSX
+                            // some scenarios may need to start after a delay because starting an application via command line on macos launches it in the background 
+                            if (command.scenarioName.Equals("ExceptionWithSessionAfterStart"))
+                            {
+                                StartCoroutine(StartScenarioAfterDelay(command.scenarioName, 1));
+                            }
+                            else
+                            {
+                                // Start Bugsnag and run the scenario
+                                StartBugsnag(command.scenarioName);
+                                RunScenario(command.scenarioName);
+                            }
+#else
                             // Start Bugsnag and run the scenario
                             StartBugsnag(command.scenarioName);
                             RunScenario(command.scenarioName);
+#endif
                         }
                         else if ("close_application".Equals(command.action))
                         {
@@ -123,6 +146,13 @@ public class Main : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator StartScenarioAfterDelay(string scenarioName, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        StartBugsnag(scenarioName);
+        RunScenario(scenarioName);
     }
 
     Configuration PrepareConfig(string scenario)
@@ -461,6 +491,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "AsyncException":
+                DoAsyncTest();
+                break;
             case "ExceptionWithSessionAfterStart":
                 throw new Exception("ExceptionWithSessionAfterStart");
             case "MaxPersistEvents":
@@ -994,6 +1027,12 @@ public class Main : MonoBehaviour
 #if UNITY_STANDALONE_OSX
          crashy_signal_runner(8);
 #endif
+    }
+
+    private async void DoAsyncTest()
+    {
+        throw new Exception("AsyncException");
+        await Task.Yield();
     }
 
 }

@@ -80,7 +80,9 @@ GEM
     mime-types-data (3.2022.0105)
     multi_test (0.1.2)
     nanaimo (0.3.0)
-    nokogiri (1.13.6-x86_64-darwin)
+    nokogiri (1.13.8-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.8-x86_64-linux)
       racc (~> 1.4)
     optimist (3.0.1)
     os (1.0.1)
@@ -115,6 +117,7 @@ GEM
 PLATFORMS
   x86_64-darwin-19
   x86_64-darwin-20
+  x86_64-linux
 
 DEPENDENCIES
   bugsnag-maze-runner!
@@ -123,4 +126,4 @@ DEPENDENCIES
   xcpretty
 
 BUNDLED WITH
-   2.3.8
+   2.3.18

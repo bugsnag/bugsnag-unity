@@ -13,6 +13,8 @@ namespace BugsnagUnity
     class Delivery
     {
 
+        private Client _client;
+
         private Configuration _configuration;
 
         private CacheManager _cacheManager;
@@ -26,8 +28,11 @@ namespace BugsnagUnity
         private bool _cacheDeliveryInProcess;
 
 
-        internal Delivery(Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
+
+
+        internal Delivery(Client client, Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
         {
+            _client = client;
             _configuration = configuration;
             _cacheManager = cacheManager;
             _payloadManager = payloadManager;
@@ -86,6 +91,12 @@ namespace BugsnagUnity
         // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload, byte[] body)
         {
+            if (!_client.NativeClient.ShouldAttemptDelivery())
+            {
+                _payloadManager.SendPayloadFailed(payload);
+                _finishedCacheDeliveries.Add(payload.Id);
+                yield break;
+            }
             using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
             {
                 req.SetRequestHeader("Content-Type", "application/json");
@@ -138,16 +149,30 @@ namespace BugsnagUnity
 
         private IEnumerator DeliverCachedPayloads()
         {
-            var payloadIds = _cacheManager.GetCachedPayloadIds();
-            foreach (var payloadId in payloadIds)
+            var cachedSessionIds = _cacheManager.GetCachedSessionIds();
+            foreach (var sessionId in cachedSessionIds)
             {
-                var payload = _cacheManager.GetCachedPayload(payloadId);
-                if (payload != null)
+                var sessionJson = _cacheManager.GetCachedSession(sessionId);
+                if (!string.IsNullOrEmpty(sessionJson))
                 {
-                    Deliver(payload);
-                    yield return new WaitUntil(() => CachedPayloadProcessed(payload.Id));
+                    var sessionReport = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(sessionJson)).GetDictionary());
+                    Deliver(sessionReport);
+                    yield return new WaitUntil(() => CachedPayloadProcessed(sessionReport.Id));
                 }
             }
+
+            var cachedEvents = _cacheManager.GetCachedEventIds();
+            foreach (var eventId in cachedEvents)
+            {
+                var eventJson = _cacheManager.GetCachedEvent(eventId);
+                if (!string.IsNullOrEmpty(eventJson))
+                {
+                    var eventReport = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(eventJson)).GetDictionary());
+                    Deliver(eventReport);
+                    yield return new WaitUntil(() => CachedPayloadProcessed(eventReport.Id));
+                }
+            }
+
             _cacheDeliveryInProcess = false;
         }     
 
