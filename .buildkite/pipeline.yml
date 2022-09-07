@@ -309,7 +309,7 @@ steps:
     timeout_in_minutes: 30
     depends_on: 'windows-2020-fixture'
     agents:
-      queue: windows-unity-wsl
+      queue: windows-general-wsl
     env:
       UNITY_VERSION: "2020.3.32f1"
     plugins:
