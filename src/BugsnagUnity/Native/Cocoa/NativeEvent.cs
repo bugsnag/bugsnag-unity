@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using AOT;
@@ -201,7 +202,18 @@ namespace BugsnagUnity
         public void ClearFeatureFlags()
         {
             NativeCode.bugsnag_clearFeatureFlagsOnEvent(NativePointer);
+        }
 
+        public ReadOnlyCollection<FeatureFlag> FeatureFlags
+        {
+            get
+            {
+                var jsonString = NativeCode.bugsnag_getFeatureFlagsFromEvent(NativePointer);
+                var jsonArray = (JsonArray)SimpleJson.DeserializeObject(jsonString);
+                var objects = jsonArray.Select((item)
+                    => new FeatureFlag(((JsonObject)item).GetDictionary()));
+                return new ReadOnlyCollection<FeatureFlag>(objects.ToList());
+            }
         }
     }
 }

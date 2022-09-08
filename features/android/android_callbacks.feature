@@ -96,6 +96,12 @@ Feature: Callbacks
         And the event "breadcrumbs.0.type" equals "user"
         And the event "breadcrumbs.0.metaData.Custom" equals "Metadata"
 
+        # Feature flags
+        And the event "featureFlags.0.featureFlag" equals "fromStartup"
+        And the event "featureFlags.0.variant" equals "a"
+        And the event "featureFlags.1.featureFlag" equals "fromCallback"
+        And the event "featureFlags.1.variant" equals "a"
+
         # threads
         And the event "threads.0.name" equals "Custom Name"
 

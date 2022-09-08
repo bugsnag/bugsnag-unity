@@ -19,6 +19,8 @@ namespace BugsnagUnity
 
         List<IError> Errors { get; }
 
+        ReadOnlyCollection<FeatureFlag> FeatureFlags { get; }
+
         string GroupingHash { get; set; }
 
         Severity Severity { get; set; }
