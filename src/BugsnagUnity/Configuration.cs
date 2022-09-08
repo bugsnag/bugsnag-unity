@@ -6,8 +6,26 @@ using UnityEngine;
 
 namespace BugsnagUnity
 {
-    public partial class Configuration : IMetadataEditor, IFeatureFlagStore
+
+    public enum SwitchCacheType
     {
+        None,
+        R,
+        I
+    }
+
+    public class Configuration : IMetadataEditor, IFeatureFlagStore
+    {
+
+        // Nintendo switch specifics ----------
+        public SwitchCacheType SwitchCacheType = SwitchCacheType.R;
+
+        public string SwitchCacheMountName = "BugsnagCache";
+
+        public int SwitchCacheIndex = 0;
+
+        public int SwitchMaxCacheSize = 10485760; //10MiB in Bytes
+        // ----------
 
         public string AppType;
 
