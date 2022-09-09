@@ -774,6 +774,9 @@ public class Main : MonoBehaviour
 
     private void ClearBugsnagCache()
     {
+#if UNITY_SWITCH
+        return;
+#endif
         var path = Application.persistentDataPath + "/Bugsnag";
         if(Directory.Exists(path))
         {
