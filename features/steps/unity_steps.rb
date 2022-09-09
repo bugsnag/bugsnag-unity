@@ -41,6 +41,9 @@ When('I clear the Bugsnag cache') do
     execute_command('clear_cache')
 
   when 'switch'
+
+    `ControlTarget.exe launch-application #{Maze.config.app}`
+
     execute_command('clear_cache')
 
   else
@@ -86,6 +89,9 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'switch'
+
+    `ControlTarget.exe launch-application #{Maze.config.app}`
+
     execute_command('run_scenario', state)
 
   else
