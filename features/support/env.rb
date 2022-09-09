@@ -65,9 +65,8 @@ Maze.hooks.before do
     # This is to get around a strange macos bug where clearing prefs does not work 
     $logger.info 'Killing defaults service'
     Maze::Runner.run_command("killall -u #{ENV['USER']} cfprefsd")
-  elsif Maze.config.os == 'switch'
-    # Launch the app
-    `ControlTarget.exe launch-application #{Maze.config.app}`
+
+   
   end
 end
 
