@@ -9,7 +9,7 @@
 
 ### Bug fixes
 
-* Reverted the hide flags bug fix introduced [here](https://github.com/bugsnag/bugsnag-unity/pull/604) as it was causing null ref errors when using Bugsnag in the editor. Please see this PR for more details
+* Reverted the `HideFlags` fix introduced [here](https://github.com/bugsnag/bugsnag-unity/pull/604) as it was causing (harmless) `NullReferenceException`s in the editor.
   [#617](https://github.com/bugsnag/bugsnag-unity/pull/617)
 
 ## 7.1.1 (2022-09-07)
