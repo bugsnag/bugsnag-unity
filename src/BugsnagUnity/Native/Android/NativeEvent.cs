@@ -171,5 +171,23 @@ namespace BugsnagUnity
         {
             NativePointer.Call("clearFeatureFlags");
         }
+
+        public ReadOnlyCollection<FeatureFlag> FeatureFlags
+        {
+            get
+            {
+                var objects = new List<FeatureFlag>();
+                var list = NativePointer.Call<AndroidJavaObject>("getFeatureFlags");
+                var iterator = list.Call<AndroidJavaObject>("iterator");
+                while (iterator.Call<bool>("hasNext"))
+                {
+                    var javaObject = iterator.Call<AndroidJavaObject>("next");
+                    var name = javaObject.Call<String>("getName");
+                    var variant = javaObject.Call<String>("getVariant");
+                    objects.Add(new FeatureFlag(name, variant));
+                }
+                return new ReadOnlyCollection<FeatureFlag>(objects);
+            }
+        }
     }
 }

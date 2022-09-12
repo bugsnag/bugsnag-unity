@@ -31,15 +31,13 @@ void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *noti
   // Memory introspection is unused in a C/C++ context
 }
 
-const char * getMetadataJson(NSDictionary* dictionary){
-
-    if (!dictionary) {
+static const char * getJson(id obj) {
+    if (!obj) {
         return NULL;
     }
-
     @try {
         NSError *error = nil;
-        NSData *data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+        NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:&error];
         if (data) {
             return strndup((const char *)data.bytes, data.length);
         } else {
@@ -83,7 +81,7 @@ NSDictionary * getDictionaryFromMetadataJson(const char * jsonString){
 
 const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
     NSDictionary* sectionDictionary = [((__bridge BugsnagEvent *)event) getMetadataFromSection:@(tab)];
-    return getMetadataJson(sectionDictionary);
+    return getJson(sectionDictionary);
 }
 
 void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key){
@@ -208,9 +206,20 @@ void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, voi
     free(c_array);
 }
 
+const char * bugsnag_getFeatureFlagsFromEvent(BugsnagEvent *event) {
+    NSMutableArray *array = [NSMutableArray array];
+    for (BugsnagFeatureFlag *flag in event.featureFlags) {
+        [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                          flag.name, @"featureFlag",
+                          flag.variant, @"variant",
+                          nil]];
+    }
+    return getJson(array);
+}
+
 const char * bugsnag_getBreadcrumbMetadata(const void *breadcrumb) {
     NSDictionary* sectionDictionary = ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata;
-    return getMetadataJson(sectionDictionary);
+    return getJson(sectionDictionary);
 }
 
 void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonString) {
@@ -679,7 +688,7 @@ void bugsnag_setMetadata(const char *section, const char *jsonString) {
 }
 
 const char * bugsnag_retrieveMetaData() {
-    return getMetadataJson([Bugsnag.client metadata].dictionary);
+    return getJson([Bugsnag.client metadata].dictionary);
 }
 
 void bugsnag_removeMetadata(const void *configuration, const char *tab) {
@@ -703,7 +712,7 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
     const char *type = [BSGBreadcrumbTypeValue(crumb.type) UTF8String];
 
     NSDictionary *metadata = crumb.metadata;
-    breadcrumb(managedBreadcrumbs, message, timestamp, type, getMetadataJson(metadata));
+    breadcrumb(managedBreadcrumbs, message, timestamp, type, getJson(metadata));
 
   }];
 }

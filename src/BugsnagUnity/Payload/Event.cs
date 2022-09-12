@@ -341,5 +341,10 @@ namespace BugsnagUnity.Payload
         {
             _featureFlags.Clear();
         }
+
+        public ReadOnlyCollection<FeatureFlag> FeatureFlags
+        {
+            get => new ReadOnlyCollection<FeatureFlag>(_featureFlags);
+        }
     }
 }

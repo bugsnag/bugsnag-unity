@@ -475,6 +475,8 @@ public class Main : MonoBehaviour
                     @event.AddMetadata("test2", new Dictionary<string, object> { { "test", "test" } });
                     @event.ClearMetadata("test2");
 
+                    @event.AddFeatureFlag("fromCallback", @event.FeatureFlags[0].Variant);
+                    @event.ClearFeatureFlag("deleteMe");
 
                     return true;
                 });
@@ -537,6 +539,8 @@ public class Main : MonoBehaviour
                 Invoke("LaunchException",6);
                 break;
             case "EventCallbacks":
+                Bugsnag.AddFeatureFlag("fromStartup", "a");
+                Bugsnag.AddFeatureFlag("deleteMe");
                 DoNotify();
                 break;
             case "BackgroundThreadCrash":
@@ -774,6 +778,9 @@ public class Main : MonoBehaviour
 
     private void ClearBugsnagCache()
     {
+#if UNITY_SWITCH
+        return;
+#endif
         var path = Application.persistentDataPath + "/Bugsnag";
         if(Directory.Exists(path))
         {

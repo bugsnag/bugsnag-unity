@@ -281,7 +281,8 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_clearFeatureFlagsOnEvent(IntPtr @event);
+
+        [DllImport(Import)]
+        internal static extern string bugsnag_getFeatureFlagsFromEvent(IntPtr @event);
     }
 }
-
-

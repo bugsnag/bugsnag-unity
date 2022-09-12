@@ -270,6 +270,8 @@ public class MobileScenarioRunner : MonoBehaviour {
 
                     @event.AddMetadata("test", "scoop", "dewoop");
 
+                    @event.AddFeatureFlag("fromCallback", @event.FeatureFlags[0].Variant);
+                    @event.ClearFeatureFlag("deleteMe");
 
                     return true;
                 });
@@ -395,6 +397,9 @@ public class MobileScenarioRunner : MonoBehaviour {
 
                     @event.Errors[0].Stacktrace[0].Method = "Method";
 
+                    @event.AddFeatureFlag("fromCallback", @event.FeatureFlags[0].Variant);
+                    @event.ClearFeatureFlag("deleteMe");
+
                     return true;
                 });
                 break;
@@ -485,6 +490,8 @@ public class MobileScenarioRunner : MonoBehaviour {
                 Invoke("ThrowException", 6);
                 break;
             case "Ios Signal":
+                Bugsnag.AddFeatureFlag("fromStartup", "a");
+                Bugsnag.AddFeatureFlag("deleteMe");
                 MobileNative.DoIosSignal();
                 break;
             case "Check Last Run Info":
@@ -543,6 +550,8 @@ public class MobileScenarioRunner : MonoBehaviour {
             case "Java Background Crash No Threads":
             case "Java Background Crash":
                 AddMetadataForRedaction();
+                Bugsnag.AddFeatureFlag("fromStartup", "a");
+                Bugsnag.AddFeatureFlag("deleteMe");
                 MobileNative.TriggerBackgroundJavaCrash();
                 break;
             case "Native exception":
