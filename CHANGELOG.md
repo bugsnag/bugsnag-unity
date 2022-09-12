@@ -7,6 +7,11 @@
 * Added `BugsnagEvent.FeatureFlags` to allow feature flags to be queried before event delivery.
   [#613](https://github.com/bugsnag/bugsnag-unity/pull/613)
 
+### Bug fixes
+
+* Reverted the `HideFlags` fix introduced [here](https://github.com/bugsnag/bugsnag-unity/pull/604) as it was causing (harmless) `NullReferenceException`s in the editor.
+  [#617](https://github.com/bugsnag/bugsnag-unity/pull/617)
+
 ## 7.1.1 (2022-09-07)
 
 ### Bug fixes
