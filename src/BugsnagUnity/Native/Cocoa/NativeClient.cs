@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -84,9 +85,9 @@ namespace BugsnagUnity
             {
                 return;
             }
-            foreach (var flag in config.FeatureFlags)
+            foreach (DictionaryEntry entry in config.FeatureFlags)
             {
-                NativeCode.bugsnag_addFeatureFlagOnConfig(obj, flag.Name, flag.Variant);
+                NativeCode.bugsnag_addFeatureFlagOnConfig(obj, (string)entry.Key, (string)entry.Value);
             }
         }
 

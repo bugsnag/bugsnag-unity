@@ -1,6 +1,7 @@
 ﻿using BugsnagUnity.Payload;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
 
 namespace BugsnagUnity
@@ -17,14 +18,17 @@ namespace BugsnagUnity
 
         private Metadata _fallbackMetadata = new Metadata();
 
-        private List<FeatureFlag> _featureFlags = new List<FeatureFlag>();
+        private OrderedDictionary _featureFlags = new OrderedDictionary();
 
         public NativeClient(Configuration configuration)
         {
             Configuration = configuration;
             Breadcrumbs = new Breadcrumbs(configuration);
             Application.lowMemory += () => { _hasReceivedLowMemoryWarning = true; };
-            AddFeatureFlags(configuration.FeatureFlags.ToArray());
+            if (configuration.FeatureFlags != null)
+            {
+                _featureFlags = configuration.FeatureFlags;
+            }
         }
 
         public void PopulateApp(App app)
@@ -135,33 +139,25 @@ namespace BugsnagUnity
 
         public void AddFeatureFlag(string name, string variant = null)
         {
-            _featureFlags.Add(new FeatureFlag(name, variant));
+            _featureFlags[name] = variant;
         }
 
         public void AddFeatureFlags(FeatureFlag[] featureFlags)
         {
-            _featureFlags.AddRange(featureFlags);
+            foreach (var flag in featureFlags)
+            {
+                _featureFlags[flag.Name] = flag.Variant;
+            }
         }
 
         public void ClearFeatureFlag(string name)
         {
-            foreach (var flag in _featureFlags.ToArray())
-            {
-                if (flag.Name == name)
-                {
-                    _featureFlags.Remove(flag);
-                }
-            }
+            _featureFlags.Remove(name);
         }
 
         public void ClearFeatureFlags()
         {
             _featureFlags.Clear();
-        }
-
-        public List<FeatureFlag> GetFeatureFlags()
-        {
-            return _featureFlags;
         }
 
         public bool ShouldAttemptDelivery()

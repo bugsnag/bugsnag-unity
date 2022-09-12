@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -51,7 +52,7 @@ namespace BugsnagUnity
 
         internal Metadata Metadata = new Metadata();
 
-        internal List<FeatureFlag> FeatureFlags = new List<FeatureFlag>();
+        internal OrderedDictionary FeatureFlags = new OrderedDictionary();
 
         public bool KeyIsRedacted(string key)
         {
@@ -295,15 +296,7 @@ namespace BugsnagUnity
 
         public void AddFeatureFlag(string name, string variant = null)
         {
-            foreach (var flag in FeatureFlags)
-            {
-                if (flag.Name.Equals(name))
-                {
-                    flag.Variant = variant;
-                    return;
-                }
-            }
-            FeatureFlags.Add(new FeatureFlag(name,variant));
+            FeatureFlags[name] = variant;
         }
 
         public void AddFeatureFlags(FeatureFlag[] featureFlags)
@@ -316,7 +309,7 @@ namespace BugsnagUnity
 
         public void ClearFeatureFlag(string name)
         {
-            FeatureFlags.RemoveAll(item => item.Name == name);
+            FeatureFlags.Remove(name);
         }
 
         public void ClearFeatureFlags()

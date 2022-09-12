@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
@@ -356,9 +357,9 @@ namespace BugsnagUnity
             // set feature flags
             if (config.FeatureFlags != null && config.FeatureFlags.Count > 0)
             {
-                foreach (var flag in config.FeatureFlags)
+                foreach (DictionaryEntry entry in config.FeatureFlags)
                 {
-                    obj.Call("addFeatureFlag",flag.Name,flag.Variant);
+                    obj.Call("addFeatureFlag", (string)entry.Key, (string)entry.Value);
                 }
             }
 
