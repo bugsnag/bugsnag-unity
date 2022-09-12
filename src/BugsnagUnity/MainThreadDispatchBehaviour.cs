@@ -39,8 +39,6 @@ namespace BugsnagUnity
             if (_instance == null)
             {
                 _instance = new GameObject("Bugsnag main thread dispatcher").AddComponent<MainThreadDispatchBehaviour>();
-                DontDestroyOnLoad(_instance.gameObject);
-                _instance.gameObject.hideFlags = HideFlags.DontSave;
             }
             return _instance;
         }
@@ -94,6 +92,11 @@ namespace BugsnagUnity
         {
             yield return new WaitForSeconds(delay);
             action.Invoke();
+        }
+
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
         }
 
     }

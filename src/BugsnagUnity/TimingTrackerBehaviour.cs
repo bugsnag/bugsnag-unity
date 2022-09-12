@@ -9,14 +9,11 @@ namespace BugsnagUnity
     class TimingTrackerBehaviour : MonoBehaviour
     {
 
-
         private void Awake()
         {
             // Make sure that the tracker persists accross scenes.
             DontDestroyOnLoad(gameObject);
-            gameObject.hideFlags = HideFlags.DontSave;
         }
-
 
         /// <summary>
         /// OnApplicationFocus is called when the application loses or gains focus.
