@@ -42,7 +42,8 @@ When('I clear the Bugsnag cache') do
 
   when 'switch'
 
-    `ControlTarget.exe launch-application #{Maze.config.app}`
+    # TODO. Example command: RunOnTarget.exe 0x01004B9000490000 --no-wait -- --mazeIp 192.168.0.11 --cacheType i --cacheIndex 3 --mountName BugsnagCache
+    `RunOnTarget.exe #{Maze.config.app} --no-wait -- --mazeIp ADD_ARG_HERE --cacheType ADD_ARG_HERE --cacheIndex ADD_ARG_HERE --mountName ADD_ARG_HERE`
 
     execute_command('clear_cache')
 
@@ -90,7 +91,8 @@ When('I run the game in the {string} state') do |state|
 
   when 'switch'
 
-    `ControlTarget.exe launch-application #{Maze.config.app}`
+    # TODO. Example command: RunOnTarget.exe 0x01004B9000490000 --no-wait -- --mazeIp 192.168.0.11 --cacheType i --cacheIndex 3 --mountName BugsnagCache
+    `RunOnTarget.exe #{Maze.config.app} --no-wait -- --mazeIp ADD_ARG_HERE --cacheType ADD_ARG_HERE --cacheIndex ADD_ARG_HERE --mountName ADD_ARG_HERE`
 
     execute_command('run_scenario', state)
 
