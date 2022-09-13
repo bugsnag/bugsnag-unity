@@ -36,21 +36,34 @@ public class Main : MonoBehaviour
 
 #endif
 
+#if UNITY_SWITCH
+
+    [DllImport("__Internal")]
+    private static extern int bugsnag_getArgsCount();
+
+    [DllImport("__Internal")]
+    private static extern string bugsnag_getArg(int index);
+
+
+#endif
+
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private Dictionary<string, string> _webGlArguments;
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
     private string _mazeHost;
+    private SwitchCacheType _switchCacheType = SwitchCacheType.R;
+    private int _switchCacheIndex = 0;
 
     public void Start()
     {
         Debug.Log("Maze Runner app started");
-
+#if UNITY_SWITCH
+    GetSwitchArguments();
+#endif
         // Detemine the MAze Runner endpoint based on platform
 #if UNITY_STANDALONE || UNITY_WEBGL
         _mazeHost = "http://localhost:9339";
-#elif UNITY_SWITCH
-        _mazeHost = "http://UPDATE_ME:9339";
 #else
     _mazeHost = "http://bs-local.com:9339";
 #endif
@@ -65,6 +78,54 @@ public class Main : MonoBehaviour
 #endif
 
         InvokeRepeating("DoRunNextMazeCommand",0,1);
+    }
+
+    // example command: RunOnTarget.exe 0x01004B9000490000 --no-wait -- --mazeIp 192.168.0.whatever --cacheType i --cacheIndex 3
+    private void GetSwitchArguments()
+    {
+#if UNITY_SWITCH
+        int count = bugsnag_getArgsCount();
+        Debug.Log("args count: " + count);
+
+        for (int i = 0; i < count; i++)
+        {
+            var arg = bugsnag_getArg(i);
+            if (!arg.Contains("--"))
+            {
+                continue;
+            }
+            Debug.Log("CHECKING ARG: " + arg);
+            if (arg == "--mazeIp")
+            {
+                var ip = bugsnag_getArg(i + 1);
+                _mazeHost = "http://" + ip + ":9339";
+                Debug.Log("SET MAZE HOST TO: " + _mazeHost);
+            }
+            if (arg == "--cacheType")
+            {
+                var cacheType = bugsnag_getArg(i + 1);
+                switch (cacheType)
+                {
+                    case "r":
+                        _switchCacheType = SwitchCacheType.R;
+                        break;
+                    case "i":
+                        _switchCacheType = SwitchCacheType.I;
+                        break;
+                    case "n":
+                        _switchCacheType = SwitchCacheType.None;
+                        break;
+                }
+                Debug.Log("Switch Cache Type set to: " + _switchCacheType);
+            }
+            if (arg == "--cacheIndex")
+            {
+                 _switchCacheIndex = int.Parse( bugsnag_getArg(i + 1));
+                Debug.Log("Switch cache index set to: " + _switchCacheIndex);
+            }
+
+        }
+#endif
     }
 
     private void DoRunNextMazeCommand()
