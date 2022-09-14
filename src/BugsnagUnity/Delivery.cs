@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using BugsnagUnity.Payload;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -91,7 +92,19 @@ namespace BugsnagUnity
         // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload, byte[] body)
         {
-            if (!_client.NativeClient.ShouldAttemptDelivery())
+            var shouldDeliver = false;
+            var networkCheckDone = false;
+            new Thread(() => {
+                shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
+                networkCheckDone = true;
+            }).Start();
+
+            while (!networkCheckDone)
+            {
+                yield return null;
+            }
+
+            if (!shouldDeliver)
             {
                 _payloadManager.SendPayloadFailed(payload);
                 _finishedCacheDeliveries.Add(payload.Id);
