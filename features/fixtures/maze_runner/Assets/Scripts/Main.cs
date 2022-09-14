@@ -44,7 +44,9 @@ public class Main : MonoBehaviour
     [DllImport("__Internal")]
     private static extern string bugsnag_getArg(int index);
 
-
+    private SwitchCacheType _switchCacheType = SwitchCacheType.R;
+    private int _switchCacheIndex = 0;
+    private string _switchCacheMountName = string.Empty;
 #endif
 
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
@@ -52,9 +54,6 @@ public class Main : MonoBehaviour
 
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
     private string _mazeHost;
-    private SwitchCacheType _switchCacheType = SwitchCacheType.R;
-    private int _switchCacheIndex = 0;
-    private string _switchCacheName = string.Empty;
 
     public void Start()
     {
@@ -81,7 +80,7 @@ public class Main : MonoBehaviour
         InvokeRepeating("DoRunNextMazeCommand",0,1);
     }
 
-    // example command: RunOnTarget.exe 0x01004B9000490000 --no-wait -- --mazeIp 192.168.0.whatever --cacheType i --cacheIndex 3 --mountName BugsnagCache
+    // example command: RunOnTarget.exe 0x01004B9000490000 --no-wait -- --mazeIp 192.168.0.whatever --cacheType i --cacheIndex 3 --cacheMountName BugsnagCache
     private void GetSwitchArguments()
     {
 #if UNITY_SWITCH
@@ -124,12 +123,11 @@ public class Main : MonoBehaviour
                  _switchCacheIndex = int.Parse( bugsnag_getArg(i + 1));
                 Debug.Log("Switch cache index set to: " + _switchCacheIndex);
             }
-            if (arg == "--mountName")
+            if (arg == "--cacheMountName")
             {
                 _switchCacheName = bugsnag_getArg(i + 1);
-                Debug.Log("Switch cache name set to: " + _switchCacheName);
+                Debug.Log("Switch cache mount name set to: " + _switchCacheName);
             }
-
         }
 #endif
     }
@@ -234,7 +232,7 @@ public class Main : MonoBehaviour
 #if UNITY_SWITCH
         config.SwitchCacheIndex = _switchCacheIndex;
         config.SwitchCacheType = _switchCacheType;
-        config.SwitchCacheMountName = _switchCacheName;
+        config.SwitchCacheMountName = _switchCacheMountName;
 #endif
 
         PrepareConfigForScenario(config, scenario);
