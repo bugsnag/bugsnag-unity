@@ -92,17 +92,26 @@ namespace BugsnagUnity
         // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload, byte[] body)
         {
-            var shouldDeliver = false;
-            var networkCheckDone = false;
-            new Thread(() => {
-                shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
-                networkCheckDone = true;
-            }).Start();
 
-            while (!networkCheckDone)
+            var shouldDeliver = false;
+
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
-                yield return null;
+                shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
             }
+            else
+            {
+                var networkCheckDone = false;
+                new Thread(() => {
+                    shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
+                    networkCheckDone = true;
+                }).Start();
+
+                while (!networkCheckDone)
+                {
+                    yield return null;
+                }
+            }           
 
             if (!shouldDeliver)
             {
