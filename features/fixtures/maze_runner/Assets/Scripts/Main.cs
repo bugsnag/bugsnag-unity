@@ -58,19 +58,15 @@ public class Main : MonoBehaviour
     public void Start()
     {
         Debug.Log("Maze Runner app started");
-#if UNITY_SWITCH
-    GetSwitchArguments();
-#endif
-        // Detemine the MAze Runner endpoint based on platform
+        // Determine the Maze Runner endpoint based on platform
 #if UNITY_STANDALONE || UNITY_WEBGL
         _mazeHost = "http://localhost:9339";
+#elif UNITY_ANDROID || UNITY_IOS
+        return;
+#elif UNITY_SWITCH
+    GetSwitchArguments();
 #else
     _mazeHost = "http://bs-local.com:9339";
-#endif
-
-
-#if UNITY_ANDROID || UNITY_IOS
-        return;
 #endif
 
 #if UNITY_STANDALONE_OSX
@@ -92,41 +88,47 @@ public class Main : MonoBehaviour
             var arg = bugsnag_getArg(i);
             if (!arg.Contains("--"))
             {
+                Debug.Log("Ignoring arg: " + arg);
                 continue;
             }
             Debug.Log("CHECKING ARG: " + arg);
-            if (arg == "--mazeIp")
+            switch (arg)
             {
-                var ip = bugsnag_getArg(i + 1);
-                _mazeHost = "http://" + ip + ":9339";
-                Debug.Log("SET MAZE HOST TO: " + _mazeHost);
-            }
-            if (arg == "--cacheType")
-            {
-                var cacheType = bugsnag_getArg(i + 1);
-                switch (cacheType)
-                {
-                    case "r":
-                        _switchCacheType = SwitchCacheType.R;
-                        break;
-                    case "i":
-                        _switchCacheType = SwitchCacheType.I;
-                        break;
-                    case "n":
-                        _switchCacheType = SwitchCacheType.None;
-                        break;
-                }
-                Debug.Log("Switch Cache Type set to: " + _switchCacheType);
-            }
-            if (arg == "--cacheIndex")
-            {
-                 _switchCacheIndex = int.Parse( bugsnag_getArg(i + 1));
-                Debug.Log("Switch cache index set to: " + _switchCacheIndex);
-            }
-            if (arg == "--cacheMountName")
-            {
-                _switchCacheName = bugsnag_getArg(i + 1);
-                Debug.Log("Switch cache mount name set to: " + _switchCacheName);
+                case "--mazeIp":
+                    var ip = bugsnag_getArg(i + 1);
+                    _mazeHost = "http://" + ip + ":9339";
+                    Debug.Log("SET MAZE HOST TO: " + _mazeHost);
+                    break;
+
+                case "--cacheType":
+                    var cacheType = bugsnag_getArg(i + 1);
+                    switch (cacheType)
+                    {
+                        case "r":
+                            _switchCacheType = SwitchCacheType.R;
+                            break;
+                        case "i":
+                            _switchCacheType = SwitchCacheType.I;
+                            break;
+                        case "n":
+                            _switchCacheType = SwitchCacheType.None;
+                            break;
+                        default:
+                            var msg = ("Unknown cacheType option: " + cacheType);
+                            throw new Exception(msg);
+                    }
+                    Debug.Log("Switch Cache Type set to: " + _switchCacheType);
+                    break;
+
+                case "--cacheIndex":
+                    _switchCacheIndex = int.Parse(bugsnag_getArg(i + 1));
+                    Debug.Log("Switch cache index set to: " + _switchCacheIndex);
+                    break;
+
+                case "--cacheMountName":
+                    _switchCacheMountName = bugsnag_getArg(i + 1);
+                    Debug.Log("Switch cache mount name set to: " + _switchCacheMountName);
+                    break;
             }
         }
 #endif
