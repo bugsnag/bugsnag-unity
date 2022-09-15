@@ -46,7 +46,7 @@ public class Main : MonoBehaviour
 
     private SwitchCacheType _switchCacheType = SwitchCacheType.R;
     private int _switchCacheIndex = 0;
-    private string _switchCacheMountName = string.Empty;
+    private string _switchCacheMountName = "BugsnagCache";
 #endif
 
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";

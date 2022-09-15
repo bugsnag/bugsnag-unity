@@ -366,7 +366,7 @@ def switch_run_on_target
   # Other args are optional
   cache_type_arg = $switch_cache_type ? "--cacheType #{$switch_cache_type}" : ''
   cache_index_arg = $switch_cache_index ? "--cacheIndex #{$switch_cache_index}" : ''
-  cache_mount_name_arg = $switch_cache_mount_name ? "--cacheMountName #{$switch_cache_mount_name}" : 'Bugsnag'
+  cache_mount_name_arg = $switch_cache_mount_name ? "--cacheMountName #{$switch_cache_mount_name}" : ''
 
   `RunOnTarget.exe #{Maze.config.app} --no-wait -- #{maze_ip_arg} #{cache_type_arg} #{cache_index_arg} #{cache_mount_name_arg}`
 end
