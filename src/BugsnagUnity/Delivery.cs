@@ -141,6 +141,7 @@ namespace BugsnagUnity
                 {
                     // success!
                     _payloadManager.PayloadSendSuccess(payload);
+                    StartDeliveringCachedPayloads();
                 }
                 else if (req.isNetworkError || code == 0 || code == 408 || code == 429 || code >= 500)
                 {
