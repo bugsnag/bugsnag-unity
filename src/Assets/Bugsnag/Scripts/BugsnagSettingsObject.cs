@@ -44,7 +44,7 @@ namespace BugsnagUnity
         public SwitchCacheType SwitchCacheType = SwitchCacheType.R;
         public string SwitchCacheMountName = "BugsnagCache";
         public int SwitchCacheIndex = 0;
-        public int SwitchMaxCacheSize = 10485760;
+        public int SwitchCacheMaxSize = 10485760;
 
         public static Configuration LoadConfiguration()
         {
@@ -114,7 +114,7 @@ namespace BugsnagUnity
 
             config.SwitchCacheType = SwitchCacheType;
             config.SwitchCacheIndex = SwitchCacheIndex;
-            config.SwitchMaxCacheSize = SwitchMaxCacheSize;
+            config.SwitchCacheMaxSize = SwitchCacheMaxSize;
             config.SwitchCacheMountName = SwitchCacheMountName;
 
             return config;

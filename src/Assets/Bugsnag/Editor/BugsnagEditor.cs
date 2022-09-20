@@ -107,7 +107,7 @@ namespace BugsnagUnity.Editor
             }
 
             GUILayout.Space(5);
-            _showSwitch = EditorGUILayout.Foldout(_showSwitch, "Nintendo Switch (Requires Nintendo Switch Bugsnag plugin)", true);
+            _showSwitch = EditorGUILayout.Foldout(_showSwitch, new GUIContent("Nintendo Switch ⓘ", "Requires Nintendo Switch Bugsnag plugin"), true);
             if (_showSwitch)
             {
                 DrawSwitchOptions(so);
@@ -192,9 +192,9 @@ namespace BugsnagUnity.Editor
         {
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheIndex"));
+            EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheMaxSize"));
             EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheMountName"));
             EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheType"));
-            EditorGUILayout.PropertyField(so.FindProperty("SwitchMaxCacheSize"));
             EditorGUI.indentLevel--;
         }
 
