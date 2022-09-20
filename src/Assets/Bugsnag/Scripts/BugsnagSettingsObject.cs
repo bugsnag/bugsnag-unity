@@ -40,6 +40,12 @@ namespace BugsnagUnity
         public double SecondsPerUniqueLog = 5;
         public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors };
         public int VersionCode;
+
+        public SwitchCacheType SwitchCacheType = SwitchCacheType.R;
+        public string SwitchCacheMountName = "BugsnagCache";
+        public int SwitchCacheIndex = 0;
+        public int SwitchMaxCacheSize = 10485760;
+
         public static Configuration LoadConfiguration()
         {
             var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
@@ -105,6 +111,12 @@ namespace BugsnagUnity
             config.SecondsPerUniqueLog = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             config.Telemetry = Telemetry;
             config.VersionCode = VersionCode;
+
+            config.SwitchCacheType = SwitchCacheType;
+            config.SwitchCacheIndex = SwitchCacheIndex;
+            config.SwitchMaxCacheSize = SwitchMaxCacheSize;
+            config.SwitchCacheMountName = SwitchCacheMountName;
+
             return config;
         }
 

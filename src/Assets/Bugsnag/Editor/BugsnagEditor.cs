@@ -15,7 +15,7 @@ namespace BugsnagUnity.Editor
 
         private bool _showBasicConfig = true;
 
-        private bool _showAdvancedSettings, _showAppInformation, _showEndpoints, _showEnabledErrorTypes;
+        private bool _showAdvancedSettings, _showAppInformation, _showEndpoints, _showEnabledErrorTypes, _showSwitch;
 
         public Texture DarkIcon, LightIcon;
 
@@ -105,6 +105,14 @@ namespace BugsnagUnity.Editor
             {
                 DrawEndpoints(so);
             }
+
+            GUILayout.Space(5);
+            _showSwitch = EditorGUILayout.Foldout(_showSwitch, "Nintendo Switch (Requires Nintendo Switch Bugsnag plugin)", true);
+            if (_showSwitch)
+            {
+                DrawSwitchOptions(so);
+            }
+
             GUILayout.Space(10);
 
             GUILayout.EndVertical();
@@ -178,6 +186,16 @@ namespace BugsnagUnity.Editor
             EditorGUIUtility.labelWidth = originalWidth;
             EditorGUI.indentLevel--;
 
+        }
+
+        private void DrawSwitchOptions(SerializedObject so)
+        {
+            EditorGUI.indentLevel++;
+            EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheIndex"));
+            EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheMountName"));
+            EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheType"));
+            EditorGUILayout.PropertyField(so.FindProperty("SwitchMaxCacheSize"));
+            EditorGUI.indentLevel--;
         }
 
         private void DrawEnabledErrorTypesDropdown(BugsnagSettingsObject settings)
