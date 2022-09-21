@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Enhancements
+
+* Added Nintendo Switch specific configuration values to the Bugsnag configuration tool [#626](https://github.com/bugsnag/bugsnag-unity/pull/626)
+
 ### Dependency updates
 
 - Update bugsnag-cocoa from v6.22.3 to [v6.23.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6230-2022-09-14)
