@@ -356,17 +356,14 @@ end
 
 def switch_run_on_target
   # Maze IP must always be provided
-  maze_ip = ENV['SWITCH_MAZE_IP']
-  if maze_ip
-    maze_ip_arg = "--mazeIp #{maze_ip}"
-  else
-    raise 'SWITCH_MAZE_IP must be set'
-  end
+  maze_ip_arg = "--mazeIp #{ENV['SWITCH_MAZE_IP']}"
 
   # Other args are optional
   cache_type_arg = $switch_cache_type ? "--cacheType #{$switch_cache_type}" : ''
   cache_index_arg = $switch_cache_index ? "--cacheIndex #{$switch_cache_index}" : ''
   cache_mount_name_arg = $switch_cache_mount_name ? "--cacheMountName #{$switch_cache_mount_name}" : ''
 
-  `RunOnTarget.exe #{Maze.config.app} --no-wait -- #{maze_ip_arg} #{cache_type_arg} #{cache_index_arg} #{cache_mount_name_arg}`
+  command = "RunOnTarget.exe #{Maze.config.app} --no-wait -- #{maze_ip_arg} #{cache_type_arg} #{cache_index_arg} " \
+              "#{cache_mount_name_arg}"
+  Maze::Runner.run_command(command)
 end
