@@ -29,9 +29,15 @@ Before('@windows_only') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.os == 'windows'
 end
 
+Before('@switch_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze.config.os == 'switch'
+end
+
 Before('@skip_windows') do |_scenario|
   skip_this_scenario("Skipping scenario") if Maze.config.os == 'windows'
 end
+
+
 
 BeforeAll do
   $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
