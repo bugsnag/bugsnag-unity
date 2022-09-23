@@ -270,6 +270,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "SwitchCacheNone":
+                config.SwitchCacheType = SwitchCacheType.None;
+                break;
             case "ExceptionWithSessionAfterStart":
                 config.AutoTrackSessions = true;
                 break;
@@ -565,6 +568,8 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "SwitchCacheNone":
+                throw new Exception("SwitchCacheNone");
             case "AsyncException":
                 DoAsyncTest();
                 break;
