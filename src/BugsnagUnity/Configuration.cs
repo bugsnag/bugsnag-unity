@@ -25,7 +25,7 @@ namespace BugsnagUnity
 
         public int SwitchCacheIndex = 0;
 
-        public int SwitchMaxCacheSize = 10485760; //10MiB in Bytes
+        public int SwitchCacheMaxSize = 10485760; //10MiB in Bytes
         // ----------
 
         public string AppType;

@@ -48,6 +48,17 @@ Feature: Reporting unhandled events
     And the exception "message" equals "ExceptionWithSessionAfterStart"
     And the event "session" is not null
 
+  @switch_only
+  Scenario: Switch Metadata
+    When I run the game in the "UncaughtException" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "errorClass" equals "ExecutionEngineException"
+    And the event "app.type" equals "nintendo-switch"
+    And the event "device.osName" equals "Nintendo Switch"
+    And the event "device.model" equals "Switch"
+    And the event "device.manufacturer" equals "Nintendo"
+
   @windows_only
   Scenario: Windows device and app data
     When I run the game in the "UncaughtException" state
