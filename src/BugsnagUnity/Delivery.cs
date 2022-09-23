@@ -111,7 +111,7 @@ namespace BugsnagUnity
                 {
                     yield return null;
                 }
-            }           
+            }
 
             if (!shouldDeliver)
             {
@@ -173,11 +173,15 @@ namespace BugsnagUnity
         private IEnumerator DeliverCachedPayloads()
         {
             var cachedSessionIds = _cacheManager.GetCachedSessionIds();
-            foreach (var sessionId in cachedSessionIds)
+            if (cachedSessionIds != null)
             {
-                var sessionJson = _cacheManager.GetCachedSession(sessionId);
-                if (!string.IsNullOrEmpty(sessionJson))
+                foreach (var sessionId in cachedSessionIds)
                 {
+                    var sessionJson = _cacheManager.GetCachedSession(sessionId);
+                    if (string.IsNullOrEmpty(sessionJson))
+                    {
+                        continue;
+                    }
                     var sessionReport = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(sessionJson)).GetDictionary());
                     Deliver(sessionReport);
                     yield return new WaitUntil(() => CachedPayloadProcessed(sessionReport.Id));
@@ -185,11 +189,15 @@ namespace BugsnagUnity
             }
 
             var cachedEvents = _cacheManager.GetCachedEventIds();
-            foreach (var eventId in cachedEvents)
+            if (cachedEvents != null)
             {
-                var eventJson = _cacheManager.GetCachedEvent(eventId);
-                if (!string.IsNullOrEmpty(eventJson))
+                foreach (var eventId in cachedEvents)
                 {
+                    var eventJson = _cacheManager.GetCachedEvent(eventId);
+                    if (string.IsNullOrEmpty(eventJson))
+                    {
+                        continue;
+                    }
                     var eventReport = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(eventJson)).GetDictionary());
                     Deliver(eventReport);
                     yield return new WaitUntil(() => CachedPayloadProcessed(eventReport.Id));
@@ -197,7 +205,7 @@ namespace BugsnagUnity
             }
 
             _cacheDeliveryInProcess = false;
-        }     
+        }
 
         private bool CachedPayloadProcessed(string id)
         {
