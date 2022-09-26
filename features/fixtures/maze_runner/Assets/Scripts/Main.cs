@@ -265,11 +265,16 @@ public class Main : MonoBehaviour
         Bugsnag.ClearMetadata("init");
         Bugsnag.ClearMetadata("test", "test2");
     }
-
+   
     void PrepareConfigForScenario(Configuration config, string scenario)
     {
         switch (scenario)
         {
+            case "MaxSwitchCacheSize":
+            config.SwitchCacheMaxSize = 2097155;
+            config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
+            config.AutoTrackSessions = false;
+            break;
             case "SwitchCacheNone":
                 config.SwitchCacheType = SwitchCacheType.None;
                 break;
@@ -568,6 +573,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+        case "MaxSwitchCacheSize":
+                StartCoroutine(DoMaxSwitchCacheTest());
+                break;
             case "SwitchCacheNone":
                 throw new Exception("SwitchCacheNone");
             case "AsyncException":
@@ -827,7 +835,24 @@ public class Main : MonoBehaviour
         }
     }
 
+    private IEnumerator DoMaxSwitchCacheTest()
+    {
+        CacheLargePayload(1);
+        yield return new WaitForSeconds(1);
+        CacheLargePayload(2);
+    }
 
+    private void CacheLargePayload(int index)
+    {
+        Bugsnag.Notify(new System.Exception("LARGE PAYLOAD " + index), report =>
+        {
+            for (int i = 0; i < 100000; i++)
+            {
+                report.AddMetadata("test", "test" + i, "test");
+            }
+            return true;
+        });
+    }
     private void DoInnerException()
     {
         throw new Exception("Outer",new Exception("Inner"));

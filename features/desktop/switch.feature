@@ -12,3 +12,13 @@ Feature: Switch Specific Tests
     And the exception "message" equals "SwitchCacheNone"
     And I discard the oldest error
     Then I should receive no requests
+
+  @switch_only
+  Scenario: Max Cache Size
+    When I run the game in the "MaxSwitchCacheSize" state
+    And I wait for 10 seconds
+    And I close the Unity app
+    And I run the game in the "(noop)" state
+    And I wait to receive 1 errors
+    And the exception "message" equals "LARGE PAYLOAD 2"
+   
