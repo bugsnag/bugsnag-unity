@@ -48,6 +48,8 @@ steps:
     timeout_in_minutes: 30
     key: 'cocoa-webgl-2020-fixtures'
     depends_on: 'build-artifacts'
+    agents:
+      queue: ms-arm-12-3
     env:
       DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2020.3.32f1"
