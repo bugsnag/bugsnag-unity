@@ -396,6 +396,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2018.4.36f1"
     plugins:
       artifacts#v1.5.0:
@@ -441,6 +442,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.5.0:
@@ -486,6 +488,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2021.3.3f1"
     plugins:
       artifacts#v1.5.0:
