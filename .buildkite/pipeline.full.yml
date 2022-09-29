@@ -131,6 +131,7 @@ steps:
   # Note: These are run on Intel due to an issue with persistence with Firefox on ARM.
   #
   - label: Run WebGL e2e tests for Unity 2018
+    skip: Pending PLAT-8984
     timeout_in_minutes: 30
     depends_on: 'cocoa-webgl-2018-fixtures'
     agents:
@@ -148,6 +149,7 @@ steps:
       - scripts/ci-run-webgl-tests.sh
 
   - label: Run WebGL e2e tests for Unity 2019
+    skip: Pending PLAT-8984
     timeout_in_minutes: 30
     depends_on: 'cocoa-webgl-2019-fixtures'
     agents:
