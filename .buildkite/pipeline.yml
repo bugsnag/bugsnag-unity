@@ -51,6 +51,7 @@ steps:
     env:
       DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2020.3.32f1"
+      EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -92,7 +93,6 @@ steps:
   # Note: These are run on Intel due to an issue with persistence with Firefox on ARM.
   #
   - label: Run WebGL e2e tests for Unity 2020
-    skip: Pending PLAT-8984
     timeout_in_minutes: 30
     depends_on: 'cocoa-webgl-2020-fixtures'
     agents:
