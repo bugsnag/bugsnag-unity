@@ -1,8 +1,6 @@
-# Fallback Tests
+# Breadcrumbs
 
-## Breadcrumbs
-
-1: Test for general functionality should check for the following
+1: Test for general functionality should check for the following from a notify call
 
 	a: Max Breadcrumbs is respected
 	b: Bugsnag loaded and manual type crumb is present
@@ -12,4 +10,6 @@
 	f: A breadcrumb with null name is ignored
 	d: A breadcrumb with metadata that has a null value does not cause an exception and should be serialised with the string value 'null'
 
-2: Test for EnabledBreadcrumbTypes
+2: Test for disabling all EnabledBreadcrumbTypes
+
+3: Test for only enabling a few EnabledBreadcrumbTypes
