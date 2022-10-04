@@ -117,8 +117,8 @@ When('I relaunch the Unity mobile app') do
 end
 
 When('I close and relaunch the Unity mobile app') do
-  Maze.driver.close_app
-  Maze.driver.launch_app
+  Maze.driver.terminate_app Maze.driver.app_id
+  Maze.driver.activate_app Maze.driver.app_id
   # Wait for a fixed time period
   sleep 3
 end
