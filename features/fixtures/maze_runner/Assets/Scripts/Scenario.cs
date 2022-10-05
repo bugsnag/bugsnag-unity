@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BugsnagUnity;
-using System;
 
 public class Scenario : MonoBehaviour
 {
@@ -10,10 +9,10 @@ public class Scenario : MonoBehaviour
 
     public Configuration Configuration;
 
-    public virtual void PreapareConfig(BasicConfigData basicConfigData)
+    public virtual void PrepareConfig(string apiKey, string host)
     {
-        Configuration = new Configuration(basicConfigData.ApiKey);
-        Configuration.Endpoints = new EndpointConfiguration(basicConfigData.Host + "/notify", basicConfigData.Host + "/sessions");
+        Configuration = new Configuration(apiKey);
+        Configuration.Endpoints = new EndpointConfiguration(host + "/notify", host + "/sessions");
         Configuration.ScriptingBackend = FindScriptingBackend();
         Configuration.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
@@ -24,7 +23,7 @@ public class Scenario : MonoBehaviour
         Bugsnag.Start(Configuration);
     }
 
-    public virtual void RunScenario()
+    public virtual void Run()
     {
 
     }

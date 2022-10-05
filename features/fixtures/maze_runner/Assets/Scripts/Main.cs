@@ -200,7 +200,7 @@ public class Main : MonoBehaviour
                             //    StartBugsnag(command.scenarioName);
                             //    RunScenario(command.scenarioName);
                             //}
-                            ScenarioRunner.RunScenario(command.scenarioName,new BasicConfigData(API_KEY,_mazeHost));
+                            ScenarioRunner.RunScenario(command.scenarioName,API_KEY,_mazeHost);
 #else
                             // Start Bugsnag and run the scenario
                             StartBugsnag(command.scenarioName);

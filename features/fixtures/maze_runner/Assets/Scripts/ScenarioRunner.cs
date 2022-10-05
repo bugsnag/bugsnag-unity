@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,16 +6,18 @@ using UnityEngine;
 public class ScenarioRunner : MonoBehaviour
 {
 
-    public void RunScenario(string scenarioName, BasicConfigData basicConfigData)
+    public void RunScenario(string scenarioName, string apiKey, string host)
     {
         var scenario = GetScenario(scenarioName);
-        scenario.PreapareConfig(basicConfigData);
+        scenario.PrepareConfig(apiKey,host);
+        scenario.StartBugsnag();
+        scenario.Run();
     }
 
     private Scenario GetScenario(string scenarioName)
     {
 
-        var scenarios = gameObject.GetComponents<Scenario>();
+        var scenarios = gameObject.GetComponentsInChildren<Scenario>();
 
         foreach (var scenario in scenarios)
         {
