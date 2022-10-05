@@ -215,11 +215,10 @@ def press_at(y)
   # Ensure we tap in the button
   viewport = Maze.driver.session_capabilities['viewportRect']
   x = viewport['width'] / 2
-
   $logger.debug "Press at: #{x},#{y}"
 
   # TODO: PLAT-6654 Figure out why the scale is different on iOS
-  factor = if Maze.driver.capabilities['os'] == 'ios'
+  factor = if Maze.driver.capabilities['platformName'] == 'ios'
              0.5
            else
              1
