@@ -6,7 +6,7 @@ gem 'xcodeproj'
 
 unless Gem.win_platform?
   # Use official Maze Runner release
-  gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', tag: 'v7.2.0'
+  gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'cawl/cap-default'
 
   # Use a specific Maze Runner branch
   #gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'master'
