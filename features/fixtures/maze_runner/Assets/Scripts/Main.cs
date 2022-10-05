@@ -55,6 +55,8 @@ public class Main : MonoBehaviour
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
     private string _mazeHost;
 
+    public ScenarioRunner ScenarioRunner;
+
     public void Start()
     {
         Debug.Log("Maze Runner app started");
@@ -188,16 +190,17 @@ public class Main : MonoBehaviour
 
 #if UNITY_STANDALONE_OSX
                             // some scenarios may need to start after a delay because starting an application via command line on macos launches it in the background 
-                            if (command.scenarioName.Equals("ExceptionWithSessionAfterStart"))
-                            {
-                                StartCoroutine(StartScenarioAfterDelay(command.scenarioName, 1));
-                            }
-                            else
-                            {
-                                // Start Bugsnag and run the scenario
-                                StartBugsnag(command.scenarioName);
-                                RunScenario(command.scenarioName);
-                            }
+                            //if (command.scenarioName.Equals("ExceptionWithSessionAfterStart"))
+                            //{
+                            //    StartCoroutine(StartScenarioAfterDelay(command.scenarioName, 1));
+                            //}
+                            //else
+                            //{
+                            //    // Start Bugsnag and run the scenario
+                            //    StartBugsnag(command.scenarioName);
+                            //    RunScenario(command.scenarioName);
+                            //}
+                            ScenarioRunner.RunScenario(command.scenarioName,new BasicConfigData(API_KEY,_mazeHost));
 #else
                             // Start Bugsnag and run the scenario
                             StartBugsnag(command.scenarioName);
