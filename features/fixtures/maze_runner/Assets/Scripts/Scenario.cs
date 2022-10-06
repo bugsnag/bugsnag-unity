@@ -57,4 +57,26 @@ public class Scenario : MonoBehaviour
         return ".NET 2.0";
 #endif
     }
+
+    public void AddTestingMetadata()
+    {
+        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
+            {"foo", "bar" },
+        });
+        Bugsnag.AddMetadata("test", "test1", "test1");
+        Bugsnag.AddMetadata("test", "test2", "test2");
+        Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
+            {"letter", "QX" },
+            {"better", 400 },
+            {"string-array", new string []{"1","2","3"} },
+            {"int-array", new int []{1,2,3} },
+            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }
+        });
+        Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
+            {"buildno", "0.1" },
+            {"cache", null },
+        });
+        Bugsnag.ClearMetadata("init");
+        Bugsnag.ClearMetadata("test", "test2");
+    }
 }
