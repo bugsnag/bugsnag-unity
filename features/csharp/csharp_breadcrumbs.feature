@@ -1,14 +1,14 @@
 Feature: Fallback Breadcrumbs
 
   Scenario: Disabling Breadcrumbs
-    When I run the game in the "DisableBreadcrumbs" state
+    When I run the game in the "NEWDisableBreadcrumbs" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "DisableBreadcrumbs"
     And the event "breadcrumbs.0" is null
 
   Scenario: Enable Specific Breadcrumbs
-    When I run the game in the "EnableBreadcrumbs" state
+    When I run the game in the "NEWEnableBreadcrumbs" state
     And I wait to receive 2 errors
     And I discard the oldest error
 
@@ -18,7 +18,7 @@ Feature: Fallback Breadcrumbs
 
 
   Scenario: Setting max breadcrumbs
-    When I run the game in the "MaxBreadcrumbs" state
+    When I run the game in the "NEWMaxBreadcrumbs" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "MaxBreadcrumbs"
@@ -30,7 +30,7 @@ Feature: Fallback Breadcrumbs
     And the event "breadcrumbs.4.name" equals "Crumb 9"
 
   Scenario: Manual and Automatic Breadcrumbs
-    When I run the game in the "ManualAndAutoBreadcrumbs" state
+    When I run the game in the "NEWManualAndAutoBreadcrumbs" state
     And I wait to receive 3 errors
     And I discard the oldest error
     And I discard the oldest error
