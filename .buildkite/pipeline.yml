@@ -88,6 +88,26 @@ steps:
     commands:
       - scripts/ci-run-macos-tests.sh
 
+       #
+  # Run macos csharp tests
+  #
+  - label: Run MacOS e2e csharp tests
+    timeout_in_minutes: 60
+    depends_on: 'cocoa-webgl-2020-fixtures'
+    agents:
+      queue: macos-12-arm-unity
+    env:
+      UNITY_VERSION: "2020.3.32f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/MacOS-2020.3.32f1.zip
+        upload:
+          - maze_output/**/*
+          - Mazerunner.log
+    commands:
+      - scripts/ci-run-macos-tests-csharp.sh
+
   #
   # Run WebGL tests
   #
