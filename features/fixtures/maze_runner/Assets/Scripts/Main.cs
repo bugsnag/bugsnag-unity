@@ -555,6 +555,8 @@ public class Main : MonoBehaviour
 
                     @event.Errors[0].Stacktrace[0].Method = "Method";
 
+                    @event.Errors[0].Stacktrace[0].LineNumber = 0;
+
                     foreach (var crumb in @event.Breadcrumbs)
                     {
                         crumb.Message = "Custom Message";
