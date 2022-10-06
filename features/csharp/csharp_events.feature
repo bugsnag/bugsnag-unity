@@ -45,8 +45,8 @@ Scenario: Debug Log Exception smoke test
     And custom metadata is included in the event
     
     And the stack frame methods should match:
-      | DebugLogExceptionSmokeTest:Run()| 
-      | ScenarioRunner:RunScenario(String, String, String) | 
+      | DebugLogExceptionSmokeTest:Run()| DebugLogExceptionSmokeTest:Run() |
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
 
     And expected device metadata is included in the event
     And expected app metadata is included in the event
@@ -62,8 +62,8 @@ Scenario: Debug Log Error smoke test
     And custom metadata is included in the event
     
     And the stack frame methods should match:
-      | DebugLogErrorSmokeTest:Run() | 
-      | ScenarioRunner:RunScenario(String, String, String) | 
+      | DebugLogErrorSmokeTest:Run() | DebugLogErrorSmokeTest.Run() |
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
 
 
     And expected device metadata is included in the event
@@ -80,8 +80,8 @@ Scenario: Debug Log Warning smoke test
     And custom metadata is included in the event
     
     And the stack frame methods should match:
-      | DebugLogWarningSmokeTest:Run() | 
-      | ScenarioRunner:RunScenario(String, String, String) | 
+      | DebugLogWarningSmokeTest:Run() | DebugLogWarningSmokeTest.Run() |
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
 
     And expected device metadata is included in the event
     And expected app metadata is included in the event
@@ -97,8 +97,8 @@ Scenario: Debug Log smoke test
     And custom metadata is included in the event
     
     And the stack frame methods should match:
-      | DebugLogSmokeTest:Run() | 
-      | ScenarioRunner:RunScenario(String, String, String) | 
+      | DebugLogSmokeTest:Run() | DebugLogSmokeTest.Run() |
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
 
     And expected device metadata is included in the event
     And expected app metadata is included in the event
@@ -114,8 +114,17 @@ Scenario: Debug Log Assert smoke test
     And custom metadata is included in the event
     
     And the stack frame methods should match:
-      | DebugLogAssertSmokeTest:Run() | 
-      | ScenarioRunner:RunScenario(String, String, String) | 
+      | DebugLogAssertSmokeTest:Run() | DebugLogAssertSmokeTest.Run() |
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
 
     And expected device metadata is included in the event
     And expected app metadata is included in the event
+
+# @skip_unity_2018
+# Scenario: Reporting an inner exception
+#     When I run the game in the "InnerException" state
+#     And I wait to receive an error
+#     Then the error is valid for the error reporting API sent by the Unity notifier
+#     And the event "exceptions.0.message" equals "Outer"
+#     And the event "exceptions.1.message" equals "Inner"
+#     And the event "exceptions.2" is null
