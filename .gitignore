@@ -42,3 +42,4 @@ upm-tools/UPMImportProject/Assets/Bugsnag
 Bugsnag.meta
 unity/PackageProject/Assets/Bugsnag
 nunit-agent*.log
+features/fixtures/maze_runner/Assets/Bugsnag

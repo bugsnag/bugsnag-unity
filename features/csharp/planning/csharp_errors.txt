@@ -1,0 +1,72 @@
+# Errors
+
+1: General error reporting functionality should check for the following from a notify, unhandled exception, Debug.LogError, Debug.LogException, Debug.LogWarning, Debug.Log call
+
+	NOTE: the helper function "Then the error is valid for the error reporting API sent by the Unity notifier" should be refactored to handle most of these checks so that the feature file is kept quite clean. Or perhaps a new helper function for each section of the payload
+
+	- errorClass
+	- message
+	- unhandled
+	- device.runtimeVersions.unity
+	- device.runtimeVersions.unityScriptingBackend
+	- device.runtimeVersions.dotnetScriptingRuntime
+	- device.runtimeVersions.dotnetApiCompatibility
+	- custom metadata is included in the event
+	- the stack frame methods
+
+	- Device info
+		- freeDisk
+		- freeMemory
+		- id
+		- locale
+		- manufacturer
+		- model
+		- osName
+		- osVersion
+		- runtimeVersions
+		- time
+		- totalMemory
+
+	- App info
+		- duration
+		- durationInForeground
+		- inForeground
+		- isLaunching
+		- lowMemory
+		- releaseStage
+		- type
+		- version
+
+	- Auto collected metadata
+		- metaData.device.screenDensity
+		- metaData.device.screenResolution
+		- metaData.device.osLanguage
+		- metaData.device.graphicsDeviceVersion
+		- metaData.device.graphicsMemorySize
+		- metaData.device.processorType
+		- metaData.app.companyName
+		- metaData.app.name
+		- metaData.app.buildno
+
+
+
+2: uncaught exception and notifying with an inner exception
+	 
+3: uncaught exception that occurs within an async method
+
+4: A session is present in exception occuring directly after Bugsnag.Start
+
+5: Reporting an assertion failure
+
+6: Report exception from background thread  @skip_webgl 
+
+7: Call notify and pass a custom stacktrace
+
+8: Call notify only passign strings and stacktrace
+
+9: Call notify from a background thread
+
+10: Call notify with a custom severity
+
+
+

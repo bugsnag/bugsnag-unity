@@ -55,6 +55,8 @@ public class Main : MonoBehaviour
     private string _fakeTrace = "Main.CUSTOM () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM () (at Assets/Scripts/Main.cs:123)";
     private string _mazeHost;
 
+    public ScenarioRunner ScenarioRunner;
+
     public void Start()
     {
         Debug.Log("Maze Runner app started");
@@ -186,23 +188,32 @@ public class Main : MonoBehaviour
                         else if ("run_scenario".Equals(command.action))
                         {
 
-#if UNITY_STANDALONE_OSX
-                            // some scenarios may need to start after a delay because starting an application via command line on macos launches it in the background 
-                            if (command.scenarioName.Equals("ExceptionWithSessionAfterStart"))
+                            if (command.scenarioName.Contains("NEW"))
                             {
-                                StartCoroutine(StartScenarioAfterDelay(command.scenarioName, 1));
+                                ScenarioRunner.RunScenario(command.scenarioName.Replace("NEW", string.Empty), API_KEY, _mazeHost);
                             }
                             else
                             {
-                                // Start Bugsnag and run the scenario
-                                StartBugsnag(command.scenarioName);
-                                RunScenario(command.scenarioName);
-                            }
+#if UNITY_STANDALONE_OSX
+                                // some scenarios may need to start after a delay because starting an application via command line on macos launches it in the background 
+                                if (command.scenarioName.Equals("ExceptionWithSessionAfterStart"))
+                                {
+                                    StartCoroutine(StartScenarioAfterDelay(command.scenarioName, 1));
+                                }
+                                else
+                                {
+                                    // Start Bugsnag and run the scenario
+                                    StartBugsnag(command.scenarioName);
+                                    RunScenario(command.scenarioName);
+                                }
+
 #else
                             // Start Bugsnag and run the scenario
                             StartBugsnag(command.scenarioName);
                             RunScenario(command.scenarioName);
 #endif
+                            }
+
                         }
                         else if ("close_application".Equals(command.action))
                         {
@@ -543,6 +554,8 @@ public class Main : MonoBehaviour
                     @event.Errors[0].ErrorClass = "ErrorClass";
 
                     @event.Errors[0].Stacktrace[0].Method = "Method";
+
+                    @event.Errors[0].Stacktrace[0].LineNumber = 0;
 
                     foreach (var crumb in @event.Breadcrumbs)
                     {

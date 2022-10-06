@@ -38,8 +38,7 @@ Feature: Reporting unhandled events
     And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
     And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
     And custom metadata is included in the event
-    And the stack frame methods should match:
-      | Main+<DoAsyncTest>d__54.MoveNext() | Main+<DoAsyncTest>d__52.MoveNext() | Main.DoAsyncTest() |
+
 
   Scenario: Session is present in exception called directly after start
     When I run the game in the "ExceptionWithSessionAfterStart" state

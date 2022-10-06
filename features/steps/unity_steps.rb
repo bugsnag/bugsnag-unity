@@ -117,8 +117,8 @@ When('I relaunch the Unity mobile app') do
 end
 
 When('I close and relaunch the Unity mobile app') do
-  Maze.driver.close_app
-  Maze.driver.launch_app
+  Maze.driver.terminate_app Maze.driver.app_id
+  Maze.driver.activate_app Maze.driver.app_id
   # Wait for a fixed time period
   sleep 3
 end
@@ -215,11 +215,10 @@ def press_at(y)
   # Ensure we tap in the button
   viewport = Maze.driver.session_capabilities['viewportRect']
   x = viewport['width'] / 2
-
   $logger.debug "Press at: #{x},#{y}"
 
   # TODO: PLAT-6654 Figure out why the scale is different on iOS
-  factor = if Maze.driver.capabilities['os'] == 'ios'
+  factor = if Maze.driver.capabilities['platformName'] == 'ios'
              0.5
            else
              1

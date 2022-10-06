@@ -178,8 +178,6 @@ Feature: Handled Errors and Exceptions
     And custom metadata is included in the event
     And the stack frame methods should match:
       | Main.DoLogWarning()               | Main:DoLogWarning()      |
-      | Main.RunScenario(string scenario) | Main:RunScenario(String) |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) |
 
   Scenario: Logging an error to Bugsnag
     When I run the game in the "ReportLoggedError" state
@@ -191,8 +189,6 @@ Feature: Handled Errors and Exceptions
     And custom metadata is included in the event
     And the stack frame methods should match:
       | Main.DoLogError()                 | Main:DoLogError()        |
-      | Main.RunScenario(string scenario) | Main:RunScenario(String) |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) |
 
   Scenario: Logging a warning to Bugsnag with 'ReportAsHandled = false'
     When I run the game in the "ReportLoggedWarningWithHandledConfig" state
@@ -204,5 +200,4 @@ Feature: Handled Errors and Exceptions
     And custom metadata is included in the event
     And the stack frame methods should match:
       | Main.DoLogWarningWithHandledConfig() | Main:DoLogWarningWithHandledConfig() |
-      | Main.RunScenario(string scenario)    | Main:RunScenario(String)             |
-      | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) |
+
