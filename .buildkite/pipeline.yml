@@ -133,100 +133,100 @@ steps:
   #
   # Build Android test fixtures
   #
-  - label: ':android: Build Android test fixture for Unity 2020'
-    timeout_in_minutes: 30
-    key: 'build-android-fixture-2020'
-    depends_on: 'build-artifacts'
-    env:
-      UNITY_VERSION: "2020.3.32f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - Bugsnag.unitypackage
-        upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk
-          - features/fixtures/unity.log
-    commands:
-      - rake test:android:build
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+  # - label: ':android: Build Android test fixture for Unity 2020'
+  #   timeout_in_minutes: 30
+  #   key: 'build-android-fixture-2020'
+  #   depends_on: 'build-artifacts'
+  #   env:
+  #     UNITY_VERSION: "2020.3.32f1"
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - Bugsnag.unitypackage
+  #       upload:
+  #         - features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk
+  #         - features/fixtures/unity.log
+  #   commands:
+  #     - rake test:android:build
+  #   retry:
+  #     automatic:
+  #       - exit_status: "*"
+  #         limit: 1
 
-  - label: ':android: Build Android EDM test fixture for Unity 2020'
-    timeout_in_minutes: 30
-    key: 'build-edm-fixture-2020'
-    depends_on: 'build-artifacts'
-    env:
-      UNITY_VERSION: "2020.3.32f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - Bugsnag.unitypackage
-        upload:
-          - features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk
-          - features/scripts/mobile/buildEdmFixture.log
-          - features/scripts/mobile/edmImport.log
-          - features/scripts/mobile/enableEdm.log
-    commands:
-      - rake test:edm:build
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+  # - label: ':android: Build Android EDM test fixture for Unity 2020'
+  #   timeout_in_minutes: 30
+  #   key: 'build-edm-fixture-2020'
+  #   depends_on: 'build-artifacts'
+  #   env:
+  #     UNITY_VERSION: "2020.3.32f1"
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - Bugsnag.unitypackage
+  #       upload:
+  #         - features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk
+  #         - features/scripts/mobile/buildEdmFixture.log
+  #         - features/scripts/mobile/edmImport.log
+  #         - features/scripts/mobile/enableEdm.log
+  #   commands:
+  #     - rake test:edm:build
+  #   retry:
+  #     automatic:
+  #       - exit_status: "*"
+  #         limit: 1
 
   #
   # Run Android tests
   #
-  - label: ':android: Run Android e2e tests for Unity 2020'
-    timeout_in_minutes: 30
-    depends_on: 'build-android-fixture-2020'
-    agents:
-      queue: opensource
-    env:
-      UNITY_VERSION: "2020.3.32f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
-        upload:
-          - "maze_output/**/*"
-      docker-compose#v3.7.0:
-        pull: maze-runner
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
-          - "--farm=bs"
-          - "--device=ANDROID_9_0"
-          - "features/android"
-    concurrency: 24
-    concurrency_group: browserstack-app
-    concurrency_method: eager
+  # - label: ':android: Run Android e2e tests for Unity 2020'
+  #   timeout_in_minutes: 30
+  #   depends_on: 'build-android-fixture-2020'
+  #   agents:
+  #     queue: opensource
+  #   env:
+  #     UNITY_VERSION: "2020.3.32f1"
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
+  #       upload:
+  #         - "maze_output/**/*"
+  #     docker-compose#v3.7.0:
+  #       pull: maze-runner
+  #       run: maze-runner
+  #       command:
+  #         - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
+  #         - "--farm=bs"
+  #         - "--device=ANDROID_9_0"
+  #         - "features/android"
+  #   concurrency: 24
+  #   concurrency_group: browserstack-app
+  #   concurrency_method: eager
 
-  - label: ':android: Run Android EDM e2e tests for Unity 2020'
-    timeout_in_minutes: 30
-    depends_on: 'build-edm-fixture-2020'
-    agents:
-      queue: opensource
-    env:
-      UNITY_VERSION: "2020.3.32f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - "features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk"
-        upload:
-          - "maze_output/**/*"
-      docker-compose#v3.7.0:
-        pull: maze-runner
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk"
-          - "--farm=bs"
-          - "--device=ANDROID_9_0"
-          - "features/edm"
-    concurrency: 24
-    concurrency_group: browserstack-app
-    concurrency_method: eager
+  # - label: ':android: Run Android EDM e2e tests for Unity 2020'
+  #   timeout_in_minutes: 30
+  #   depends_on: 'build-edm-fixture-2020'
+  #   agents:
+  #     queue: opensource
+  #   env:
+  #     UNITY_VERSION: "2020.3.32f1"
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - "features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk"
+  #       upload:
+  #         - "maze_output/**/*"
+  #     docker-compose#v3.7.0:
+  #       pull: maze-runner
+  #       run: maze-runner
+  #       command:
+  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk"
+  #         - "--farm=bs"
+  #         - "--device=ANDROID_9_0"
+  #         - "features/edm"
+  #   concurrency: 24
+  #   concurrency_group: browserstack-app
+  #   concurrency_method: eager
 
   #
   # Build iOS test fixtures
