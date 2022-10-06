@@ -45,7 +45,7 @@ Scenario: Debug Log Exception smoke test
     And custom metadata is included in the event
     
     And the stack frame methods should match:
-      | DebugLogExceptionSmokeTest:Run()| DebugLogExceptionSmokeTest:Run() |
+      | DebugLogExceptionSmokeTest:Run()| DebugLogExceptionSmokeTest.Run() |
       | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
 
     And expected device metadata is included in the event
