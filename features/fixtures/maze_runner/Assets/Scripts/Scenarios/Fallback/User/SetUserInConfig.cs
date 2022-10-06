@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using BugsnagUnity;
-using UnityEngine;
 
 public class SetUserInConfig : Scenario
 {
@@ -15,7 +12,6 @@ public class SetUserInConfig : Scenario
 
     public override void Run()
     {
-        base.Run();
         Bugsnag.Notify(new Exception("SetUserInConfig"));
     }
 

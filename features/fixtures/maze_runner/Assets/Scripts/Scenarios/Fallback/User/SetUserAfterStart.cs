@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using BugsnagUnity;
+﻿using BugsnagUnity;
 using System;
 
 public class SetUserAfterStart : Scenario
@@ -14,7 +11,6 @@ public class SetUserAfterStart : Scenario
 
     public override void Run()
     {
-        base.Run();
         Bugsnag.SetUser("1", "2", "3");
         Bugsnag.Notify(new Exception("SetUserAfterStart"));
     }

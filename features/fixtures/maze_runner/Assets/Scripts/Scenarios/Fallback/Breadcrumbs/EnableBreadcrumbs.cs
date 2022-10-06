@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using BugsnagUnity;
 using System;
 
@@ -15,7 +13,6 @@ public class EnableBreadcrumbs : Scenario
 
     public override void Run()
     {
-        base.Run();
         Debug.Log("Debug.Log");
         Bugsnag.Notify(new Exception("FirstError"));
         throw new Exception("EnableBreadcrumbs");

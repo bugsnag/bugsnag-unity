@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using BugsnagUnity;
-using BugsnagUnity.Payload;
+﻿using BugsnagUnity;
 using System;
 public class MaxBreadcrumbs : Scenario
 {
@@ -14,7 +10,6 @@ public class MaxBreadcrumbs : Scenario
 
     public override void Run()
     {
-        base.Run();
         for (int i = 0; i < 10; i++)
         {
             Bugsnag.LeaveBreadcrumb("Crumb " + i);

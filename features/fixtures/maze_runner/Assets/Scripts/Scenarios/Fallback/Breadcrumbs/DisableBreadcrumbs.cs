@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using BugsnagUnity;
+﻿using BugsnagUnity;
 using BugsnagUnity.Payload;
 using System;
 
@@ -15,7 +12,6 @@ public class DisableBreadcrumbs : Scenario
 
     public override void Run()
     {
-        base.Run();
         Bugsnag.Notify(new Exception("DisableBreadcrumbs"));
     }
 }
