@@ -339,25 +339,49 @@ Then("custom metadata is included in the event") do
 end
 
 Then("expected device metadata is included in the event") do
-  steps %Q{
-    And the event "device.freeDisk" is not null
-    And the event "device.freeMemory" is not null
-    And the event "device.id" is not null
-    And the event "device.locale" is not null
-    And the event "device.manufacturer" is not null
-    And the event "device.model" is not null
-    And the event "device.osName" is not null
-    And the event "device.osVersion" is not null
-    And the event "device.runtimeVersions" is not null
-    And the event "device.time" is a timestamp
-    And the event "device.totalMemory" is not null
-    And the event "metaData.device.screenDensity" is not null
-    And the event "metaData.device.screenResolution" is not null
-    And the event "metaData.device.osLanguage" equals "English"
-    And the event "metaData.device.graphicsDeviceVersion" is not null
-    And the event "metaData.device.graphicsMemorySize" is not null
-    And the event "metaData.device.processorType" is not null
-  }
+
+  case Maze::Helper.get_current_platform
+    when 'webgl'
+        steps %Q{
+        And the event "device.id" is not null
+        And the event "device.locale" is not null
+        And the event "device.model" is not null
+        And the event "device.osName" is not null
+        And the event "device.osVersion" is not null
+        And the event "device.runtimeVersions" is not null
+        And the event "device.time" is a timestamp
+        And the event "device.totalMemory" is not null
+        And the event "metaData.device.screenDensity" is not null
+        And the event "metaData.device.screenResolution" is not null
+        And the event "metaData.device.osLanguage" equals "English"
+        And the event "metaData.device.graphicsDeviceVersion" is not null
+        And the event "metaData.device.graphicsMemorySize" is not null
+        And the event "metaData.device.processorType" is not null
+      }
+    else
+      steps %Q{
+        And the event "device.freeDisk" is not null
+        And the event "device.freeMemory" is not null
+        And the event "device.id" is not null
+        And the event "device.locale" is not null
+        And the event "device.manufacturer" is not null
+        And the event "device.model" is not null
+        And the event "device.osName" is not null
+        And the event "device.osVersion" is not null
+        And the event "device.runtimeVersions" is not null
+        And the event "device.time" is a timestamp
+        And the event "device.totalMemory" is not null
+        And the event "metaData.device.screenDensity" is not null
+        And the event "metaData.device.screenResolution" is not null
+        And the event "metaData.device.osLanguage" equals "English"
+        And the event "metaData.device.graphicsDeviceVersion" is not null
+        And the event "metaData.device.graphicsMemorySize" is not null
+        And the event "metaData.device.processorType" is not null
+      }
+    end
+
+
+  
 end
 
 Then("expected app metadata is included in the event") do
