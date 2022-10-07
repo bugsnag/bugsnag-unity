@@ -62,8 +62,8 @@ Scenario: Debug Log Error smoke test
     And custom metadata is included in the event
     
     And the stack frame methods should match:
-      | DebugLogErrorSmokeTest:Run() | DebugLogErrorSmokeTest.Run() |
-      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
+      | DebugLogErrorSmokeTest:Run() | DebugLogErrorSmokeTest.Run() ||
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | ScenarioRunner:RunScenario(string,string,string) |
 
 
     And expected device metadata is included in the event
@@ -81,8 +81,7 @@ Scenario: Debug Log Warning smoke test
     
     And the stack frame methods should match:
       | DebugLogWarningSmokeTest:Run() | DebugLogWarningSmokeTest.Run() |
-      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
-
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | ScenarioRunner:RunScenario(string,string,string) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
@@ -98,8 +97,7 @@ Scenario: Debug Log smoke test
     
     And the stack frame methods should match:
       | DebugLogSmokeTest:Run() | DebugLogSmokeTest.Run() |
-      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
-
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | ScenarioRunner:RunScenario(string,string,string) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
@@ -115,8 +113,7 @@ Scenario: Debug Log Assert smoke test
     
     And the stack frame methods should match:
       | DebugLogAssertSmokeTest:Run() | DebugLogAssertSmokeTest.Run() |
-      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
-
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | ScenarioRunner:RunScenario(string,string,string) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
