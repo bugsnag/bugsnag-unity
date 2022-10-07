@@ -34,7 +34,7 @@ When('I clear the Bugsnag cache') do
   when 'android', 'ios'
     # TODO: Come back to this
 
-  when 'webgl'
+  when 'browser'
     url = "http://localhost:#{Maze.config.document_server_port}/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
@@ -343,8 +343,7 @@ Then("expected device metadata is included in the event") do
   puts Maze::Helper.get_current_platform
 
   case Maze::Helper.get_current_platform
-    when 'webgl'
-
+    when 'browser'
         steps %Q{
         And the event "device.id" is not null
         And the event "device.locale" is not null
@@ -361,7 +360,6 @@ Then("expected device metadata is included in the event") do
         And the event "metaData.device.graphicsMemorySize" is not null
         And the event "metaData.device.processorType" is not null
       }
-      break
     else
       steps %Q{
         And the event "device.freeDisk" is not null
