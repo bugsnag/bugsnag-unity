@@ -10,10 +10,11 @@ Feature: Fallback Breadcrumbs
   Scenario: Enable Specific Breadcrumbs
     When I run the game in the "EnableBreadcrumbs" state
     And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
     And I discard the oldest error
 
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "EnableBreadcrumbs"
+    And the exception "message" equals "Error2"
     And the event "breadcrumbs.0.name" equals "Debug.Log"
 
 

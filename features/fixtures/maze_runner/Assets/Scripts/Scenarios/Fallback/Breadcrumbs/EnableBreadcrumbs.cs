@@ -14,7 +14,7 @@ public class EnableBreadcrumbs : Scenario
     public override void Run()
     {
         Debug.Log("Debug.Log");
-        Bugsnag.Notify(new Exception("FirstError"));
-        throw new Exception("EnableBreadcrumbs");
+        Bugsnag.Notify(new Exception("Error1"));
+        throw new Exception("Error2");
     }
 }
