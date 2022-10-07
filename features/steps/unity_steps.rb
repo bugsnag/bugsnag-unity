@@ -340,8 +340,11 @@ end
 
 Then("expected device metadata is included in the event") do
 
+  puts Maze::Helper.get_current_platform
+
   case Maze::Helper.get_current_platform
     when 'webgl'
+
         steps %Q{
         And the event "device.id" is not null
         And the event "device.locale" is not null
@@ -358,6 +361,7 @@ Then("expected device metadata is included in the event") do
         And the event "metaData.device.graphicsMemorySize" is not null
         And the event "metaData.device.processorType" is not null
       }
+      break
     else
       steps %Q{
         And the event "device.freeDisk" is not null
