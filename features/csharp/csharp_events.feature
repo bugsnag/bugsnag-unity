@@ -120,10 +120,46 @@ Feature: csharp events
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "BackgroundThreadException"
 
+  @skip_webgl
+  Scenario: Notify from background thread
+    When I run the game in the "NotifyFromBackgroundThread" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "NotifyFromBackgroundThread"
+
   Scenario: Session present after start
     When I run the game in the "SessionAfterStart" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "SessionAfterStart"
     And the event "session" is not null
+
+  Scenario: Notify with custom stacktrace
+    When I run the game in the "NotifyWithCustomStacktrace" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "NotifyWithCustomStacktrace"
+        And the stack frame methods should match:
+      | Main.CUSTOM1() |
+      | Main.CUSTOM2() |
+
+  Scenario: Notify with strings
+    When I run the game in the "NotifyWithStrings" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "errorClass" equals "name"
+    And the exception "message" equals "NotifyWithStrings"
+        And the stack frame methods should match:
+      | Main.CUSTOM1() |
+      | Main.CUSTOM2() |
+
+  Scenario: Reporting a handled exception with a custom severity
+    When I run the game in the "CustomSeverity" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "CustomSeverity"
+    And the event "severity" equals "info"
+    And the event "severityReason.type" equals "userSpecifiedSeverity"
+    And the event "unhandled" is false
+
 
