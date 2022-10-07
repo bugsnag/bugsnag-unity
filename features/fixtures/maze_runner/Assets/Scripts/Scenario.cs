@@ -9,6 +9,8 @@ public class Scenario : MonoBehaviour
 
     public Configuration Configuration;
 
+    public string CustomStacktrace = "Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM2 () (at Assets/Scripts/Main.cs:123)";
+
     public virtual void PrepareConfig(string apiKey, string host)
     {
         Configuration = new Configuration(apiKey);

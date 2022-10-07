@@ -1,11 +1,11 @@
 ﻿using System;
 using BugsnagUnity;
 
-public class NotifySmokeTest : Scenario
+public class UncaughtExceptionSmokeTest : Scenario
 {
     public override void Run()
     {
         AddTestingMetadata();
-        Bugsnag.Notify(new Exception("NotifySmokeTest"));
+        throw new Exception("UncaughtExceptionSmokeTest");
     }
 }
