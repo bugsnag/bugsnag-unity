@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BugsnagUnity;
@@ -9,6 +8,7 @@ public class Scenario : MonoBehaviour
 
     public Configuration Configuration;
 
+    [HideInInspector]
     public string CustomStacktrace = "Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)\nMain.CUSTOM2 () (at Assets/Scripts/Main.cs:123)";
 
     public virtual void PrepareConfig(string apiKey, string host)
@@ -29,7 +29,6 @@ public class Scenario : MonoBehaviour
     {
 
     }
-
 
     private static string FindScriptingBackend()
     {
@@ -80,5 +79,10 @@ public class Scenario : MonoBehaviour
         });
         Bugsnag.ClearMetadata("init");
         Bugsnag.ClearMetadata("test", "test2");
+    }
+
+    public void SetInvalidEndpoints()
+    {
+        Configuration.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
     }
 }
