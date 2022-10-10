@@ -7,7 +7,7 @@ public class PersistSession : Scenario
         SetInvalidEndpoints();
         Configuration.AddOnSession((session) =>
         {
-            session.App.ReleaseStage = "First Session";
+            session.App.ReleaseStage = "Session 1";
             return true;
         });
     }

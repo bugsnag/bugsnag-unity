@@ -4,11 +4,11 @@
     {
         base.PrepareConfig(apiKey, host);
         SetInvalidEndpoints();
-        Configuration.Context = "First Error";
+        Configuration.Context = "Error 1";
     }
 
     public override void Run()
     {
-        throw new System.Exception("First Error");
+        throw new System.Exception("Error 1");
     }
 }

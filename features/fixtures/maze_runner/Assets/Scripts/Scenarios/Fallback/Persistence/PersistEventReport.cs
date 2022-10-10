@@ -3,11 +3,11 @@
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.Context = "Second Error";
+        Configuration.Context = "Error 2";
     }
 
     public override void Run()
     {
-        throw new System.Exception("Second Error");
+        throw new System.Exception("Error 2");
     }
 }

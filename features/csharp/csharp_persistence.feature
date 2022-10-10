@@ -2,21 +2,22 @@ Feature: Unity Persistence
 
   Scenario: Receive a persisted session mac and windows
     When I clear the Bugsnag cache
-    And I wait for 5 seconds
+    And I wait for 3 seconds
     And I close the Unity app
     And I run the game in the "PersistSession" state
     And I wait for 5 seconds
     And I close the Unity app
     And I run the game in the "PersistSessionReport" state
     And I wait to receive 2 sessions
+    And I sort the sessions by the payload field "app.releaseStage"
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-    And the session payload field "app.releaseStage" equals "Second Session"
+    And the session payload field "app.releaseStage" equals "Session 1"
     And I discard the oldest session
-    And the session payload field "app.releaseStage" equals "First Session"
+    And the session payload field "app.releaseStage" equals "Session 2"
 
   Scenario: Receive a persisted event
     When I clear the Bugsnag cache
-    And I wait for 5 seconds
+    And I wait for 3 seconds
     And I close the Unity app
     And I run the game in the "PersistEvent" state
     And I wait for 5 seconds
@@ -24,15 +25,15 @@ Feature: Unity Persistence
     And I run the game in the "PersistEventReport" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
-    And the event "context" equals "Second Error"
-    And the exception "message" equals "Second Error"
+    And the event "context" equals "Error 1"
+    And the exception "message" equals "Error 1"
     And I discard the oldest error
-    And the event "context" equals "First Error"
-    And the exception "message" equals "First Error"
+    And the event "context" equals "Error 2"
+    And the exception "message" equals "Error 2"
 
   Scenario: Receive a persisted event with on send callback
     When I clear the Bugsnag cache
-    And I wait for 5 seconds
+    And I wait for 3 seconds
     And I close the Unity app
     And I run the game in the "PersistEvent" state
     And I wait for 5 seconds
@@ -40,9 +41,8 @@ Feature: Unity Persistence
     And I run the game in the "PersistEventReportCallback" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
-    And I discard the oldest error
-    And the event "context" equals "First Error"
-    And the exception "message" equals "First Error"
+    And the event "context" equals "Error 1"
+    And the exception "message" equals "Error 1"
     And the event "device.id" equals "Persist Id"
     And the event "app.binaryArch" equals "Persist BinaryArch"
     And the event "exceptions.0.errorClass" equals "Persist ErrorClass"
