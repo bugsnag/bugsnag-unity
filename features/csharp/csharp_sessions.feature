@@ -10,19 +10,19 @@ Scenario Outline: Automatically receiving a session
       | macos   | MacOS   |
       | windows | Windows |
       | switch | nintendo-switch |
-      | webgl | WebGL |
+      | browser | WebGL |
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
       | switch | Nintendo Switch |
-      | webgl | Unix |
+      | browser | Unix |
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
       | windows | PC    |
       | switch | Nintendo |
-      | webgl |  |
+      | browser |  |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -39,20 +39,20 @@ Scenario Outline: Automatically receiving a session
       | macos   | MacOS   |
       | windows | Windows |
       | switch | nintendo-switch |
-      | webgl | WebGL |
+      | browser | WebGL |
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
       | switch | Nintendo Switch |
-      | webgl | Unix |
+      | browser | Unix |
 
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
       | windows | PC    |
       | switch | Nintendo |
-      | webgl |  |
+      | browser |  |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
