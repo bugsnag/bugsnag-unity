@@ -95,15 +95,12 @@ Scenario Outline: Automatically receiving a session
       | Handled Error 2              | 2       | 0         |
       | Unhandled Error 1            | 2       | 1         |
 
-  # Scenario Outline: Launching the app but the current release stage is not in "notify release stages"
-  #   When I run the game in the "<scenario>" state
-  #   And I wait for 5 seconds
-  #   Then I should receive no sessions
+  Scenario Outline: No Auto session when not in enabled release stage
+    When I run the game in the "SessionNotInReleaseStage" state
+    And I wait for 5 seconds
+    Then I should receive no sessions
 
-  #   Examples:
-  #     | scenario                              |
-  #     | ManualSessionNotInNotifyReleaseStages |
-  #     | AutoSessionNotInNotifyReleaseStages   |
+
 
   #  Scenario: When a session is stopped the error has no session information
   #   When I run the game in the "StoppedSession" state
