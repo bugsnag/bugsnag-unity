@@ -3707,9 +3707,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 052cea8564f554e36879d176e45c4b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
-
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &2042256587
 GameObject:
   m_ObjectHideFlags: 0
