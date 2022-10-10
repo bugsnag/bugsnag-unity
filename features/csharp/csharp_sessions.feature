@@ -10,90 +10,55 @@ Scenario Outline: Automatically receiving a session
       | macos   | MacOS   |
       | windows | Windows |
       | switch | nintendo-switch |
-    # TODO Reported as 0.0.0.0 on our SDEV
+      | webgl | WebGL |
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
       | switch | Nintendo Switch |
+      | webgl | Unix |
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
       | windows | PC    |
       | switch | Nintendo |
+      | webgl |  |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
 
+  Scenario Outline: Manually logging a session
+    When I run the game in the "ManualSession" state
+    And I wait to receive a session
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the session payload field "app.version" is not null
+    And the session payload field "app.releaseStage" equals "production"
+    And the session payload field "app.type" equals the platform-dependent string:
+      | macos   | MacOS   |
+      | windows | Windows |
+      | switch | nintendo-switch |
+      | webgl | WebGL |
+    And the session payload field "device.osVersion" is not null
+    And the session payload field "device.osName" equals the platform-dependent string:
+      | macos   | Mac OS               |
+      | windows | Microsoft Windows NT |
+      | switch | Nintendo Switch |
+      | webgl | Unix |
 
-  # @macos_only
-  # Scenario: Automatically receiving a session before a native crash
-  #   When I run the game in the "AutoSessionNativeCrash" state
-  #   And I wait for 5 seconds
-  #   And I run the game in the "(noop)" state
-  #   And I wait to receive a session
-  #   And I wait to receive an error
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the error is valid for the error reporting API sent by the native Unity notifier
-  #   And the event "session.events.handled" equals 0
-  #   And the event "session.events.unhandled" equals 1
-  #   And the error payload field "events.0.session.id" is stored as the value "session_id"
-  #   And the session payload field "sessions.0.id" equals the stored value "session_id"
+    And the session payload field "device.model" is not null
+    And the session payload field "device.manufacturer" equals the platform-dependent string:
+      | macos   | Apple |
+      | windows | PC    |
+      | switch | Nintendo |
+      | webgl |  |
+    And the session "id" is not null
+    And the session "startedAt" is not null
+    And the session "user.id" is not null
+    And the session "user.email" is null
+    And the session "user.name" is null
 
-  # @skip_webgl
-  # Scenario Outline: Manually logging a session
-  #   When I run the game in the "<scenario>" state
-  #   And I wait to receive a session
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the session payload field "app.version" is not null
-  #   And the session payload field "app.releaseStage" equals "production"
-  #   # TODO On our Switch SDEV this is 0.0.0.0
-  #   And the session payload field "device.osVersion" is not null
-  #   And the session payload field "device.osName" equals the platform-dependent string:
-  #     | macos   | Mac OS               |
-  #     | windows | Microsoft Windows NT |
-  #     | switch | Nintendo Switch |
-  #   And the session payload field "device.model" is not null
-  #   And the session payload field "device.manufacturer" equals the platform-dependent string:
-  #     | macos   | Apple |
-  #     | windows | PC    |
-  #     | switch | Nintendo |
-
-  #   And the session "id" is not null
-  #   And the session "startedAt" is not null
-  #   And the session "user.id" is not null
-  #   And the session "user.email" is null
-  #   And the session "user.name" is null
-
-  #   Examples:
-  #     | scenario                           |
-  #     | ManualSession                      |
-  #     | ManualSessionInNotifyReleaseStages |
-
-  # @webgl_only
-  # Scenario Outline: Manually logging a session
-  #   When I run the game in the "<scenario>" state
-  #   And I wait to receive a session
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the session payload field "app.version" is not null
-  #   And the session payload field "app.releaseStage" equals "production"
-  #   And the session payload field "app.type" equals "WebGL"
-  #   And the session payload field "device.osVersion" is not null
-  #   And the session payload field "device.osName" equals "Unix"
-  #   And the session payload field "device.model" is not null
-  #   And the session payload field "device.manufacturer" is null
-  #   And the session "id" is not null
-  #   And the session "startedAt" is not null
-  #   And the session "user.id" is not null
-  #   And the session "user.email" is null
-  #   And the session "user.name" is null
-
-  #   Examples:
-  #     | scenario                           |
-  #     | ManualSession                      |
-  #     | ManualSessionInNotifyReleaseStages |
 
   # Scenario: Manually logging a session before unhandled event
   #   When I run the game in the "ManualSessionCrash" state
