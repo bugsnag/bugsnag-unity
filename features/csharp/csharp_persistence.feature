@@ -23,30 +23,32 @@ Feature: Unity Persistence
     And I close the Unity app
     And I run the game in the "PersistEventReport" state
     And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
     And the event "context" equals "Second Error"
     And the exception "message" equals "Second Error"
     And I discard the oldest error
     And the event "context" equals "First Error"
     And the exception "message" equals "First Error"
 
-  # Scenario: Receive a persisted event with on send callback
-  #   When I clear the Bugsnag cache
-  #   And I wait for 5 seconds
-  #   And I close the Unity app
-  #   And I run the game in the "PersistEvent" state
-  #   And I wait for 5 seconds
-  #   And I close the Unity app
-  #   And I run the game in the "PersistEventReportCallback" state
-  #   And I wait to receive 2 errors
-  #   And I discard the oldest error
-  #   And the event "context" equals "First Error"
-  #   And the exception "message" equals "First Event"
-  #   And the event "device.id" equals "Persist Id"
-  #   And the event "app.binaryArch" equals "Persist BinaryArch"
-  #   And the event "exceptions.0.errorClass" equals "Persist ErrorClass"
-  #   And the event "exceptions.0.stacktrace.0.method" equals "Persist Method"
-  #   And the event "breadcrumbs.0.name" equals "Persist Message"
-  #   And the event "metaData.Persist Section.Persist Key" equals "Persist Value"
+  Scenario: Receive a persisted event with on send callback
+    When I clear the Bugsnag cache
+    And I wait for 5 seconds
+    And I close the Unity app
+    And I run the game in the "PersistEvent" state
+    And I wait for 5 seconds
+    And I close the Unity app
+    And I run the game in the "PersistEventReportCallback" state
+    And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
+    And I discard the oldest error
+    And the event "context" equals "First Error"
+    And the exception "message" equals "First Error"
+    And the event "device.id" equals "Persist Id"
+    And the event "app.binaryArch" equals "Persist BinaryArch"
+    And the event "exceptions.0.errorClass" equals "Persist ErrorClass"
+    And the event "exceptions.0.stacktrace.0.method" equals "Persist Method"
+    And the event "breadcrumbs.0.name" equals "Persist Message"
+    And the event "metaData.Persist Section.Persist Key" equals "Persist Value"
 
   # Scenario: Persist Device Id
   #   When I clear the Bugsnag cache
