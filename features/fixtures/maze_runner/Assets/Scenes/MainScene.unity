@@ -2380,6 +2380,8 @@ GameObject:
   - component: {fileID: 1523264806}
   - component: {fileID: 1523264805}
   - component: {fileID: 1523264807}
+  - component: {fileID: 1523264808}
+  - component: {fileID: 1523264809}
   m_Layer: 0
   m_Name: Persistence
   m_TagString: Untagged
@@ -2471,6 +2473,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e3344205535c42c998d4b6402dc6669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1523264808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523264801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8dcbb695b040d43c7a47143cdc02fde5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1523264809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523264801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d88c2243beb794fd5b98acdd719cecac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
@@ -2594,6 +2626,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1419179097}
+  - {fileID: 2059449698}
   m_Father: {fileID: 1789907206}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3835,6 +3868,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2042256587}
   m_CullTransparentMesh: 0
+--- !u!1 &2059449697
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2059449698}
+  - component: {fileID: 2059449699}
+  m_Layer: 0
+  m_Name: Util
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2059449698
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059449697}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1754371141}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2059449699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059449697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aee116be7bb6b462bb026a88d6f457e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &2145423573
 GameObject:
   m_ObjectHideFlags: 0
