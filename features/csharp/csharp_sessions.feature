@@ -126,25 +126,27 @@ Scenario Outline: Automatically receiving a session
     And the error payload field "session.id" equals the stored value "session_id"
     And the error payload field "session.startedAt" equals the stored value "session_startedAt"
 
-  # Scenario: When a new session is started the error uses different session information
-  #   When I run the game in the "NewSession" state
-  #   And I wait to receive 2 sessions
-  #   And I wait to receive 2 errors
-  #   # Session 1
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the session payload field "sessions.0.id" is stored as the value "session_id_1"
-  #   And I discard the oldest session
-  #   # Session 2
-  #   And the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the session payload field "sessions.0.id" does not equal the stored value "session_id_1"
-  #   And the session payload field "sessions.0.id" is stored as the value "session_id_2"
-  #   # Error 1
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And the event "session.events.handled" equals 1
-  #   And the error payload field "events.0.session.id" equals the stored value "session_id_1" ignoring case
-  #   And I discard the oldest error
-  #   # Error 2
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And the event "session.events.handled" equals 1
-  #   And the error payload field "events.0.session.id" equals the stored value "session_id_2" ignoring case
-  #   And the error payload field "events.0.session.id" does not equal the stored value "session_id_1"
+  Scenario: When a new session is started the error uses different session information
+    When I run the game in the "NewSession" state
+    And I wait to receive 2 sessions
+    And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
+    And I sort the errors by the payload field "session.startedAt"
+    # Session 1
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the session payload field "sessions.0.id" is stored as the value "session_id_1"
+    And I discard the oldest session
+    # Session 2
+    And the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the session payload field "sessions.0.id" does not equal the stored value "session_id_1"
+    And the session payload field "sessions.0.id" is stored as the value "session_id_2"
+    # Error 1
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the event "session.events.handled" equals 1
+    And the error payload field "events.0.session.id" equals the stored value "session_id_1" ignoring case
+    And I discard the oldest error
+    # Error 2
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the event "session.events.handled" equals 1
+    And the error payload field "events.0.session.id" equals the stored value "session_id_2" ignoring case
+    And the error payload field "events.0.session.id" does not equal the stored value "session_id_1"
