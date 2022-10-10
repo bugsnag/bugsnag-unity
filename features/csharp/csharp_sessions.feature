@@ -60,16 +60,29 @@ Scenario Outline: Automatically receiving a session
     And the session "user.name" is null
 
 
-  # Scenario: Manually logging a session before unhandled event
-  #   When I run the game in the "ManualSessionCrash" state
-  #   And I wait to receive a session
-  #   And I wait to receive an error
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And the event "session.events.handled" equals 0
-  #   And the event "session.events.unhandled" equals 1
-  #   And the error payload field "events.0.session.id" is stored as the value "session_id"
-  #   And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
+  Scenario: Unhandled error in session
+    When I run the game in the "UnhandledErrorInSession" state
+    And I wait to receive a session
+    And I wait to receive an error
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "UnhandledErrorInSession"
+    And the event "session.events.handled" equals 0
+    And the event "session.events.unhandled" equals 1
+    And the error payload field "events.0.session.id" is stored as the value "session_id"
+    And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
+
+  Scenario: Handled error in session
+    When I run the game in the "HandledErrorInSession" state
+    And I wait to receive a session
+    And I wait to receive an error
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "HandledErrorInSession"
+    And the event "session.events.handled" equals 1
+    And the event "session.events.unhandled" equals 0
+    And the error payload field "events.0.session.id" is stored as the value "session_id"
+    And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
 
   # Scenario: Manually logging a session before handled events
   #   When I run the game in the "ManualSessionNotify" state
