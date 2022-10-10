@@ -109,22 +109,22 @@ Scenario Outline: Automatically receiving a session
     And the exception "message" equals "StoppedSessionEvent"
     And the event "session" is null
 
-  # Scenario: When a session is resumed the error uses the previous session information
-  #   When I run the game in the "ResumedSession" state
-  #   And I wait to receive a session
-  #   And I wait to receive 2 errors
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the current error request events match one of:
-  #     | message      | handled | unhandled |
-  #     | First Error  | 1       | 0         |
-  #     | Second Error | 2       | 0         |
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And the error payload field "session.id" is stored as the value "session_id"
-  #   And the error payload field "session.startedAt" is stored as the value "session_startedAt"
-  #   And I discard the oldest error
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And the error payload field "session.id" equals the stored value "session_id"
-  #   And the error payload field "session.startedAt" equals the stored value "session_startedAt"
+  Scenario: When a session is resumed the error uses the previous session information
+    When I run the game in the "ResumedSession" state
+    And I wait to receive a session
+    And I wait to receive 2 errors
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the current error request events match one of:
+      | message      | handled | unhandled |
+      | Error 1      | 1       | 0         |
+      | Error 2      | 2       | 0         |
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the error payload field "session.id" is stored as the value "session_id"
+    And the error payload field "session.startedAt" is stored as the value "session_startedAt"
+    And I discard the oldest error
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the error payload field "session.id" equals the stored value "session_id"
+    And the error payload field "session.startedAt" equals the stored value "session_startedAt"
 
   # Scenario: When a new session is started the error uses different session information
   #   When I run the game in the "NewSession" state

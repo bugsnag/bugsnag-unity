@@ -2601,6 +2601,7 @@ GameObject:
   - component: {fileID: 1746155643}
   - component: {fileID: 1746155644}
   - component: {fileID: 1746155645}
+  - component: {fileID: 1746155646}
   m_Layer: 0
   m_Name: Sessions
   m_TagString: Untagged
@@ -2712,6 +2713,18 @@ MonoBehaviour:
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
     Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1746155646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746155638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ae3ccbdb981a4dd58cef3d5993bd137, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1754371139
 GameObject:
   m_ObjectHideFlags: 0
