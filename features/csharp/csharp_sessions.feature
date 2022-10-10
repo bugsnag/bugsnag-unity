@@ -100,15 +100,14 @@ Scenario Outline: Automatically receiving a session
     And I wait for 5 seconds
     Then I should receive no sessions
 
-
-
-  #  Scenario: When a session is stopped the error has no session information
-  #   When I run the game in the "StoppedSession" state
-  #   And I wait to receive a session
-  #   And I wait to receive an error
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And the event "session" is null
+  Scenario: When a session is stopped the error has no session information
+    When I run the game in the "StoppedSessionEvent" state
+    And I wait to receive a session
+    And I wait to receive an error
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "StoppedSessionEvent"
+    And the event "session" is null
 
   # Scenario: When a session is resumed the error uses the previous session information
   #   When I run the game in the "ResumedSession" state
