@@ -22,7 +22,7 @@ Scenario Outline: Automatically receiving a session
       | macos   | Apple |
       | windows | PC    |
       | switch | Nintendo |
-      | browser |  |
+      | browser | @skip |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -52,7 +52,7 @@ Scenario Outline: Automatically receiving a session
       | macos   | Apple |
       | windows | PC    |
       | switch | Nintendo |
-      | browser |  |
+      | browser | @skip |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -84,32 +84,16 @@ Scenario Outline: Automatically receiving a session
     And the error payload field "events.0.session.id" is stored as the value "session_id"
     And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
 
-  # Scenario: Manually logging a session before handled events
-  #   When I run the game in the "ManualSessionNotify" state
-  #   And I wait to receive a session
-  #   And I wait to receive an error
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And the event "session.events.handled" equals 1
-  #   And the event "session.events.unhandled" equals 0
-  #   And the error payload field "events.0.session.id" is stored as the value "session_id"
-  #   And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
-
-  # Scenario: Manually logging a session before different types of events
-  #   When I run the game in the "ManualSessionMixedEvents" state
-  #   And I wait to receive a session
-  #   And I wait to receive 3 errors
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the current error request events match one of:
-  #     | message                      | handled | unhandled |
-  #     | blorb                        | 1       | 0         |
-  #     | Something went terribly awry | 2       | 0         |
-  #     | Invariant state failure      | 2       | 1         |
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And I discard the oldest error
-  #   And the error is valid for the error reporting API sent by the Unity notifier
-  #   And I discard the oldest error
-  #   And the error is valid for the error reporting API sent by the Unity notifier
+  Scenario: Multiple event counts in one session
+    When I run the game in the "MultipleEventCounts" state
+    And I wait to receive a session
+    And I wait to receive 3 errors
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the current error request events match one of:
+      | message                      | handled | unhandled |
+      | Handled Error 1              | 1       | 0         |
+      | Handled Error 2              | 2       | 0         |
+      | Unhandled Error 1            | 2       | 1         |
 
   # Scenario Outline: Launching the app but the current release stage is not in "notify release stages"
   #   When I run the game in the "<scenario>" state
