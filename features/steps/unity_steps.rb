@@ -349,7 +349,7 @@ Then("all possible parameters have been edited in a callback") do
     And the event "device.orientation" equals "Orientation"
     And the event "device.manufacturer" equals "Manufacturer"
     And the event "device.freeDisk" equals 123
-    And the event "device.freeMemory" equals 123
+    And the event "device.freeMemory" equals 456
     And the event "device.jailbroken" is true
     And the event "device.locale" equals "Locale"
 
@@ -368,7 +368,7 @@ Then("all possible parameters have been edited in a callback") do
     # Exception data
     And the event "exceptions.0.errorClass" equals "ErrorClass"
     And the event "exceptions.0.stacktrace.0.method" equals "Method"
-    And the event "exceptions.0.stacktrace.0.lineNumber" equals 0
+    And the event "exceptions.0.stacktrace.0.lineNumber" equals 22
 
     # Breadcrumbs
     And the event "breadcrumbs.0.type" equals "request"

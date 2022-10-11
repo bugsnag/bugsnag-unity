@@ -108,14 +108,14 @@ public class Scenario : MonoBehaviour
         @event.Device.OsName = "OsName";
         @event.Device.OsVersion = "OsVersion";
         @event.Device.FreeDisk = 123;
-        @event.Device.FreeMemory = 123;
+        @event.Device.FreeMemory = 456;
         @event.Device.Orientation = "Orientation";
 
         @event.Errors[0].ErrorClass = "ErrorClass";
 
         @event.Errors[0].Stacktrace[0].Method = "Method";
 
-        @event.Errors[0].Stacktrace[0].LineNumber = 0;
+        @event.Errors[0].Stacktrace[0].LineNumber = 22;
 
         foreach (var crumb in @event.Breadcrumbs)
         {
