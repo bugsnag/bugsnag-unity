@@ -1,5 +1,0 @@
-# Callbacks
-
-1: Check that every possible section of a callback can be modified. The existing desktop/callbacks feature is a good reference
-NOTE: This should be for callbacks set in all possible places, including calling Notify and passing a callback
-
