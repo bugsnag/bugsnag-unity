@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using BugsnagUnity;
-using UnityEngine;
+﻿using BugsnagUnity;
 
-public class StoppedSessionEvent : Scenario
+public class PausedSessionEvent : Scenario
 {
     public override void PrepareConfig(string apiKey, string host)
     {
@@ -15,6 +12,6 @@ public class StoppedSessionEvent : Scenario
     {
         Bugsnag.StartSession();
         Bugsnag.PauseSession();
-        Bugsnag.Notify(new System.Exception("StoppedSessionEvent"));
+        Bugsnag.Notify(new System.Exception("PausedSessionEvent"));
     }
 }

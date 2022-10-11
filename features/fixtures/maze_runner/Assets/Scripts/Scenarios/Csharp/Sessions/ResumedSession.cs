@@ -17,8 +17,9 @@ public class ResumedSession : Scenario
         Bugsnag.StartSession();
         Bugsnag.Notify(new System.Exception( "Error 1"));
         Bugsnag.PauseSession();
-        Bugsnag.ResumeSession();
         Bugsnag.Notify(new System.Exception("Error 2"));
+        Bugsnag.ResumeSession();
+        Bugsnag.Notify(new System.Exception("Error 3"));
     }
 
 }

@@ -2600,9 +2600,9 @@ GameObject:
   - component: {fileID: 1746155642}
   - component: {fileID: 1746155643}
   - component: {fileID: 1746155644}
-  - component: {fileID: 1746155645}
   - component: {fileID: 1746155646}
   - component: {fileID: 1746155647}
+  - component: {fileID: 1746155645}
   m_Layer: 0
   m_Name: Sessions
   m_TagString: Untagged
@@ -2708,7 +2708,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1746155638}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64e35e44f264c4047b435ed88daa40dc, type: 3}
+  m_Script: {fileID: 11500000, guid: 3724f3f14a2bd40f2b052c956ecc8c36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
@@ -2741,6 +2741,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7ed205bb3c444688a66507cc2cfa9af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1754371139
 GameObject:
   m_ObjectHideFlags: 0
