@@ -167,7 +167,10 @@ namespace BugsnagUnity
         {
             if (ShouldManageSessions())
             {
-                _currentSession?.AddException(report);
+                if (_currentSession != null && !_currentSession.Stopped)
+                {
+                    _currentSession.AddException(report);
+                }
             }
             else
             {
