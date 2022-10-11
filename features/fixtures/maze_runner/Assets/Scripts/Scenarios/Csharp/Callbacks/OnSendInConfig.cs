@@ -1,12 +1,12 @@
 ﻿using System;
 using BugsnagUnity;
 
-public class OnErrorInConfig : Scenario
+public class OnSendInConfig : Scenario
 {
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AddOnError(SimpleCallback);
+        Configuration.AddOnSendError(SimpleCallback);
     }
 
     public override void Run()
