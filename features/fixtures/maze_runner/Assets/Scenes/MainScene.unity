@@ -2635,6 +2635,9 @@ GameObject:
   - component: {fileID: 1677283224}
   - component: {fileID: 1677283223}
   - component: {fileID: 1677283222}
+  - component: {fileID: 1677283227}
+  - component: {fileID: 1677283226}
+  - component: {fileID: 1677283225}
   m_Layer: 0
   m_Name: Config
   m_TagString: Untagged
@@ -2743,6 +2746,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1190088ccd1804664ae45119906c4d10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1677283223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2755,6 +2761,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e06559c787f34950b9dbf354921d119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1677283224
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2767,6 +2776,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6039b3fc7c248a795d570d2da0f784, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1677283225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677283215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a8443dfec8b14ecd906e9135e3f9056, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1677283226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677283215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9c524025a3144ba59f4ff4c17509fd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1677283227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1677283215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed8591b2f471946e8ba08a28de0b4538, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1732403860
 GameObject:
   m_ObjectHideFlags: 0

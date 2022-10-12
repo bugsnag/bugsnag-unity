@@ -7,14 +7,14 @@ Feature: csharp events
     And the exception "message" equals "InfiniteLaunchDuration"
     And the event "app.isLaunching" equals "true"
 
-Scenario: Call mark launch complete
+  Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "MarkLaunchComplete"
     And the event "app.isLaunching" equals "false"
 
-Scenario: Set long launch time
+  Scenario: Set long launch time
     When I run the game in the "LongLaunchTime" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
@@ -25,7 +25,7 @@ Scenario: Set long launch time
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" equals "false"
 
-Scenario: Set short launch time
+  Scenario: Set short launch time
     When I run the game in the "ShortLaunchTime" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
@@ -36,24 +36,48 @@ Scenario: Set short launch time
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" equals "false"
 
-Scenario: Auto notify false
+  Scenario: Auto notify false
     When I run the game in the "AutoNotifyFalse" state
     And I should receive no errors
 
-Scenario: Release Stage
+  Scenario: Release Stage
     When I run the game in the "ReleaseStage" state
     And I should receive no errors
 
- Scenario: Set Uncaught As Unhandled
+  Scenario: Set Uncaught As Unhandled
     When I run the game in the "SetUncaughtAsUnhandled" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "SetUncaughtAsUnhandled"
     And the event "unhandled" is true
 
- Scenario: Discard Error Class
+  Scenario: Discard Error Class
     When I run the game in the "DiscardErrorClass" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Error 2"
+
+  Scenario: App Type
+    When I run the game in the "AppType" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "AppType"
+    And the event "app.type" equals "custom"
+
+  Scenario: Redacted Keys
+    When I run the game in the "RedactedKeys" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "RedactedKeys"
+    And the event "metaData.testSection.testKey" equals "[REDACTED]"
+
+  Scenario: Context
+    When I run the game in the "Context" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "Context"
+    And the event "context" equals "test"
+
+
+    
 
