@@ -132,4 +132,9 @@ public class Scenario : MonoBehaviour
 
         return true;
     }
+
+    public void DoSimpleNotify(string msg)
+    {
+        Bugsnag.Notify(new System.Exception(msg));
+    }
 }
