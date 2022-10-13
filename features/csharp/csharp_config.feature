@@ -3,7 +3,7 @@ Feature: csharp events
 #IS LAUNCHING SECTION --------------------------------------------------------------------
 # These duplicate isLaunching tests will be merged after the bug PLAT-9060 is fixed
  
-  #macos tests to accomodate bug
+  #macos tests to accommodate bug
   @macos_only
   Scenario: Launch duration set to 0
     When I run the game in the "InfiniteLaunchDuration" state
