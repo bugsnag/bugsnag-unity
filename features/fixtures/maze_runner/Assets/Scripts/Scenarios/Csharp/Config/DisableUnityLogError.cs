@@ -1,4 +1,6 @@
-﻿public class DisableUnityLogError : Scenario
+﻿using UnityEngine;
+
+public class DisableUnityLogError : Scenario
 {
     public override void PrepareConfig(string apiKey, string host)
     {
@@ -8,6 +10,6 @@
 
     public override void Run()
     {
-        throw new System.Exception("error 2");
+        Debug.LogException(new System.Exception("Error 1"));
     }
 }
