@@ -15,7 +15,8 @@ public class MarkLaunchComplete : Scenario
 
     private void DoException()
     {
+        Bugsnag.Notify(new System.Exception("Error 1"));
         Bugsnag.MarkLaunchCompleted();
-        Bugsnag.Notify(new System.Exception("MarkLaunchComplete"));
+        Bugsnag.Notify(new System.Exception("Error 2"));
     }
 }

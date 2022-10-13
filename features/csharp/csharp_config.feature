@@ -15,9 +15,13 @@ Feature: csharp events
   @macos_only
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
-    And I wait to receive an error
+    And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "MarkLaunchComplete"
+    And the exception "message" equals "Error 1"
+    And the event "app.isLaunching" equals "true"
+    And I discard the oldest error
+    And the exception "message" equals "Error 2"
     And the event "app.isLaunching" equals "false"
   
   @macos_only
@@ -58,9 +62,13 @@ Feature: csharp events
   @skip_macos
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
-    And I wait to receive an error
+    And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "MarkLaunchComplete"
+    And the exception "message" equals "Error 1"
+    And the event "app.isLaunching" is true
+    And I discard the oldest error
+    And the exception "message" equals "Error 2"
     And the event "app.isLaunching" is false
   
   # @skip_macos
