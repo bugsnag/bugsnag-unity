@@ -106,6 +106,10 @@ Feature: csharp events
     When I run the game in the "ReleaseStage" state
     And I should receive no errors
 
+  Scenario: Disable UnityLog Error type
+    When I run the game in the "DisableUnityLogError" state
+    And I should receive no errors
+
   Scenario: Set Uncaught As Unhandled
     When I run the game in the "SetUncaughtAsUnhandled" state
     And I wait to receive an error
