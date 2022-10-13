@@ -6,10 +6,12 @@ public class DisableUnityLogError : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.EnabledErrorTypes.UnityLog = false;
+        Configuration.NotifyLogLevel = LogType.Log;
     }
 
     public override void Run()
     {
-        Debug.LogException(new System.Exception("Error 1"));
+        Debug.Log("Log");
+        Debug.LogWarning("Log");
     }
 }
