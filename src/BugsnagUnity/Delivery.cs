@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using BugsnagUnity.Payload;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -91,7 +92,28 @@ namespace BugsnagUnity
         // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload, byte[] body)
         {
-            if (!_client.NativeClient.ShouldAttemptDelivery())
+
+            var shouldDeliver = false;
+
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
+            }
+            else
+            {
+                var networkCheckDone = false;
+                new Thread(() => {
+                    shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
+                    networkCheckDone = true;
+                }).Start();
+
+                while (!networkCheckDone)
+                {
+                    yield return null;
+                }
+            }
+
+            if (!shouldDeliver)
             {
                 _payloadManager.SendPayloadFailed(payload);
                 _finishedCacheDeliveries.Add(payload.Id);
@@ -119,6 +141,7 @@ namespace BugsnagUnity
                 {
                     // success!
                     _payloadManager.PayloadSendSuccess(payload);
+                    StartDeliveringCachedPayloads();
                 }
                 else if (req.isNetworkError || code == 0 || code == 408 || code == 429 || code >= 500)
                 {
@@ -150,11 +173,15 @@ namespace BugsnagUnity
         private IEnumerator DeliverCachedPayloads()
         {
             var cachedSessionIds = _cacheManager.GetCachedSessionIds();
-            foreach (var sessionId in cachedSessionIds)
+            if (cachedSessionIds != null)
             {
-                var sessionJson = _cacheManager.GetCachedSession(sessionId);
-                if (!string.IsNullOrEmpty(sessionJson))
+                foreach (var sessionId in cachedSessionIds)
                 {
+                    var sessionJson = _cacheManager.GetCachedSession(sessionId);
+                    if (string.IsNullOrEmpty(sessionJson))
+                    {
+                        continue;
+                    }
                     var sessionReport = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(sessionJson)).GetDictionary());
                     Deliver(sessionReport);
                     yield return new WaitUntil(() => CachedPayloadProcessed(sessionReport.Id));
@@ -162,11 +189,15 @@ namespace BugsnagUnity
             }
 
             var cachedEvents = _cacheManager.GetCachedEventIds();
-            foreach (var eventId in cachedEvents)
+            if (cachedEvents != null)
             {
-                var eventJson = _cacheManager.GetCachedEvent(eventId);
-                if (!string.IsNullOrEmpty(eventJson))
+                foreach (var eventId in cachedEvents)
                 {
+                    var eventJson = _cacheManager.GetCachedEvent(eventId);
+                    if (string.IsNullOrEmpty(eventJson))
+                    {
+                        continue;
+                    }
                     var eventReport = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(eventJson)).GetDictionary());
                     Deliver(eventReport);
                     yield return new WaitUntil(() => CachedPayloadProcessed(eventReport.Id));
@@ -174,7 +205,7 @@ namespace BugsnagUnity
             }
 
             _cacheDeliveryInProcess = false;
-        }     
+        }
 
         private bool CachedPayloadProcessed(string id)
         {

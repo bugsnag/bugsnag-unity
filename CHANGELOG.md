@@ -1,5 +1,19 @@
 # Changelog
 
+## 7.3.0 (2022-10-17)
+
+### Enhancements
+
+* Added Nintendo Switch specific configuration values to the Bugsnag configuration tool [#626](https://github.com/bugsnag/bugsnag-unity/pull/626)
+
+### Bug fixes
+
+* Removed `device.freeDisk` and `device.freeMemory` metadata from events sent in [UWP](https://docs.unity3d.com/Manual/windowsstore-buildsettings.html) builds as accessing the data can cause an exception. [#648](https://github.com/bugsnag/bugsnag-unity/pull/648)
+
+### Dependency updates
+
+- Update bugsnag-cocoa from v6.22.3 to [v6.24.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6240-2022-10-05)
+
 ## 7.2.0 (2022-09-12)
 
 ### Enhancements

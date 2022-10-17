@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using UnityEngine;
 
@@ -8,7 +10,7 @@ namespace BugsnagUnity.Payload
     public class Event : PayloadContainer, IEvent
     {
 
-        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey, List<FeatureFlag> featureFlags,LogType? logType = null)
+        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey, OrderedDictionary featureFlags, LogType? logType = null)
         {
             ApiKey = apiKey;
             OriginalSeverity = handledState;
@@ -62,13 +64,14 @@ namespace BugsnagUnity.Payload
 
             _deviceWithState = new DeviceWithState((Dictionary<string, object>)eventObject["device"]);
 
-            _featureFlags = new List<FeatureFlag>();
+            _featureFlags = new OrderedDictionary();
             if (eventObject.ContainsKey("featureFlags"))
             {
                 var flagsArray = (JsonArray)eventObject["featureFlags"];
                 foreach (JsonObject flag in flagsArray)
                 {
-                    _featureFlags.Add(new FeatureFlag(flag.GetDictionary()));
+                    var featureFlag = new FeatureFlag(flag.GetDictionary());
+                    _featureFlags[featureFlag.Name] = featureFlag.Variant;
                 }
             }
 
@@ -141,7 +144,7 @@ namespace BugsnagUnity.Payload
             _androidProjectPackages = packages;
         }
 
-        private List<FeatureFlag> _featureFlags;
+        private OrderedDictionary _featureFlags;
 
         HandledState _handledState;
 
@@ -297,9 +300,10 @@ namespace BugsnagUnity.Payload
             if (_featureFlags.Count > 0)
             {
                 var featureFlagPayloads = new List<Dictionary<string, object>>();
-                foreach (var item in _featureFlags)
+                foreach (DictionaryEntry entry in _featureFlags)
                 {
-                    featureFlagPayloads.Add(item.Payload);
+                    var flag = new FeatureFlag((string)entry.Key, (string)entry.Value);
+                    featureFlagPayloads.Add(flag.Payload);
                 }
                 Add("featureFlags", featureFlagPayloads.ToArray());
             }
@@ -313,15 +317,7 @@ namespace BugsnagUnity.Payload
 
         public void AddFeatureFlag(string name, string variant = null)
         {
-            foreach (var flag in _featureFlags)
-            {
-                if (flag.Name.Equals(name))
-                {
-                    flag.Variant = variant;
-                    return;
-                }
-            }
-            _featureFlags.Add(new FeatureFlag(name, variant));
+            _featureFlags[name] = variant;
         }
 
         public void AddFeatureFlags(FeatureFlag[] featureFlags)
@@ -334,7 +330,7 @@ namespace BugsnagUnity.Payload
 
         public void ClearFeatureFlag(string name)
         {
-            _featureFlags.RemoveAll(item => item.Name == name);
+            _featureFlags.Remove(name);
         }
 
         public void ClearFeatureFlags()
@@ -344,7 +340,15 @@ namespace BugsnagUnity.Payload
 
         public ReadOnlyCollection<FeatureFlag> FeatureFlags
         {
-            get => new ReadOnlyCollection<FeatureFlag>(_featureFlags);
+            get
+            {
+                List<FeatureFlag> list = new List<FeatureFlag>();
+                foreach (DictionaryEntry entry in _featureFlags)
+                {
+                    list.Add(new FeatureFlag((string)entry.Key, (string)entry.Value));
+                }
+                return new ReadOnlyCollection<FeatureFlag>(list);
+            }
         }
     }
 }

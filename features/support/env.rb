@@ -29,9 +29,15 @@ Before('@windows_only') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.os == 'windows'
 end
 
+Before('@switch_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze.config.os == 'switch'
+end
+
 Before('@skip_windows') do |_scenario|
   skip_this_scenario("Skipping scenario") if Maze.config.os == 'windows'
 end
+
+
 
 BeforeAll do
   $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
@@ -47,7 +53,23 @@ BeforeAll do
   elsif Maze.config.browser != nil # WebGL
     Maze.config.document_server_root = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
   elsif Maze.config.os&.downcase == 'switch'
-    # Placeholder for Switch
+    maze_ip = ENV['SWITCH_MAZE_IP']
+    raise 'SWITCH_MAZE_IP must be set' unless maze_ip
+
+    cache_type = ENV['SWITCH_CACHE_TYPE']
+    case cache_type
+    when nil, 'r'
+      $logger.info 'Running tests for regular cache'
+    when 'i'
+      $logger.info 'Running tests for indexed cache'
+      $switch_cache_type = 'i'
+      $switch_cache_index = 3
+      $switch_cache_mount_name = 'BugsnagCache'
+    else
+      raise "SWITCH_CACHE_TYPE must be 'r', or 'i', given: #{cache_type}"
+    end
+
+
   elsif Maze.config.device.nil?
     raise '--browser (WebGL), --device (for Android/iOS) or --os (for desktop or switch) option must be set'
   end

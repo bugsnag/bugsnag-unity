@@ -39,7 +39,7 @@ Feature: Reporting unhandled events
     And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | Main+<DoAsyncTest>d__51.MoveNext() | Main+<DoAsyncTest>d__49.MoveNext() | Main.DoAsyncTest() |
+      | Main+<DoAsyncTest>d__54.MoveNext() | Main+<DoAsyncTest>d__52.MoveNext() | Main.DoAsyncTest() |
 
   Scenario: Session is present in exception called directly after start
     When I run the game in the "ExceptionWithSessionAfterStart" state
@@ -47,6 +47,17 @@ Feature: Reporting unhandled events
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "ExceptionWithSessionAfterStart"
     And the event "session" is not null
+
+  @switch_only
+  Scenario: Switch Metadata
+    When I run the game in the "UncaughtException" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "errorClass" equals "ExecutionEngineException"
+    And the event "app.type" equals "nintendo-switch"
+    And the event "device.osName" equals "Nintendo Switch"
+    And the event "device.model" equals "Switch"
+    And the event "device.manufacturer" equals "Nintendo"
 
   @windows_only
   Scenario: Windows device and app data

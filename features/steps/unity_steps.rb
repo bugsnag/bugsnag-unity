@@ -41,9 +41,7 @@ When('I clear the Bugsnag cache') do
     execute_command('clear_cache')
 
   when 'switch'
-
-    `ControlTarget.exe launch-application #{Maze.config.app}`
-
+    switch_run_on_target
     execute_command('clear_cache')
 
   else
@@ -90,8 +88,7 @@ When('I run the game in the {string} state') do |state|
 
   when 'switch'
 
-    `ControlTarget.exe launch-application #{Maze.config.app}`
-
+    switch_run_on_target
     execute_command('run_scenario', state)
 
   else
@@ -355,4 +352,18 @@ def click_if_present(element)
 rescue Selenium::WebDriver::Error::UnknownError
   # Ignore Appium errors (e.g. during an ANR)
   return false
+end
+
+def switch_run_on_target
+  # Maze IP must always be provided
+  maze_ip_arg = "--mazeIp #{ENV['SWITCH_MAZE_IP']}"
+
+  # Other args are optional
+  cache_type_arg = $switch_cache_type ? "--cacheType #{$switch_cache_type}" : ''
+  cache_index_arg = $switch_cache_index ? "--cacheIndex #{$switch_cache_index}" : ''
+  cache_mount_name_arg = $switch_cache_mount_name ? "--cacheMountName #{$switch_cache_mount_name}" : ''
+
+  command = "RunOnTarget.exe #{Maze.config.app} --no-wait -- #{maze_ip_arg} #{cache_type_arg} #{cache_index_arg} " \
+              "#{cache_mount_name_arg}"
+  Maze::Runner.run_command(command)
 end

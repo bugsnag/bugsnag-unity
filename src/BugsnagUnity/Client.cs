@@ -1,5 +1,6 @@
 ﻿using BugsnagUnity.Payload;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using System.Collections;
 
 namespace BugsnagUnity
 {
@@ -50,7 +52,7 @@ namespace BugsnagUnity
 
         private static object autoSessionLock = new object();
 
-        private List<FeatureFlag> _featureFlags;
+        private OrderedDictionary _featureFlags;
 
         private bool _isUnity2019OrHigher;
 
@@ -151,7 +153,7 @@ namespace BugsnagUnity
             }
             else
             {
-                _featureFlags = new List<FeatureFlag>();
+                _featureFlags = new OrderedDictionary();
             }
         }
 
@@ -447,6 +449,12 @@ namespace BugsnagUnity
 
             eventMetadata.MergeMetadata(_storedMetadata.Payload);
 
+            var featureFlags = new OrderedDictionary();
+            foreach (DictionaryEntry entry in _featureFlags)
+            {
+                featureFlags[entry.Key] = entry.Value;
+            }
+
             var @event = new Payload.Event(
               Configuration.Context,
               eventMetadata,
@@ -458,7 +466,7 @@ namespace BugsnagUnity
               Breadcrumbs.Retrieve(),
               SessionTracking.CurrentSession,
               Configuration.ApiKey,
-              _featureFlags);
+              featureFlags);
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))
@@ -627,15 +635,7 @@ namespace BugsnagUnity
         public void AddFeatureFlag(string name, string variant = null)
         {
             NativeClient.AddFeatureFlag(name, variant);
-            foreach (var flag in _featureFlags)
-            {
-                if (flag.Name.Equals(name))
-                {
-                    flag.Variant = variant;
-                    return;
-                }
-            }
-            _featureFlags.Add(new FeatureFlag(name, variant));
+            _featureFlags[name] = variant;
         }
 
         public void AddFeatureFlags(FeatureFlag[] featureFlags)
@@ -648,7 +648,7 @@ namespace BugsnagUnity
 
         public void ClearFeatureFlag(string name)
         {
-            _featureFlags.RemoveAll(item => item.Name == name);
+            _featureFlags.Remove(name);
             NativeClient.ClearFeatureFlag(name);
         }
 

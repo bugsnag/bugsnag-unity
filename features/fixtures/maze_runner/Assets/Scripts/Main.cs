@@ -36,6 +36,19 @@ public class Main : MonoBehaviour
 
 #endif
 
+#if UNITY_SWITCH
+
+    [DllImport("__Internal")]
+    private static extern int bugsnag_getArgsCount();
+
+    [DllImport("__Internal")]
+    private static extern string bugsnag_getArg(int index);
+
+    private SwitchCacheType _switchCacheType = SwitchCacheType.R;
+    private int _switchCacheIndex = 0;
+    private string _switchCacheMountName = "BugsnagCache";
+#endif
+
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private Dictionary<string, string> _webGlArguments;
 
@@ -45,19 +58,15 @@ public class Main : MonoBehaviour
     public void Start()
     {
         Debug.Log("Maze Runner app started");
-
-        // Detemine the MAze Runner endpoint based on platform
+        // Determine the Maze Runner endpoint based on platform
 #if UNITY_STANDALONE || UNITY_WEBGL
         _mazeHost = "http://localhost:9339";
+#elif UNITY_ANDROID || UNITY_IOS
+        return;
 #elif UNITY_SWITCH
-        _mazeHost = "http://UPDATE_ME:9339";
+    GetSwitchArguments();
 #else
     _mazeHost = "http://bs-local.com:9339";
-#endif
-
-
-#if UNITY_ANDROID || UNITY_IOS
-        return;
 #endif
 
 #if UNITY_STANDALONE_OSX
@@ -65,6 +74,64 @@ public class Main : MonoBehaviour
 #endif
 
         InvokeRepeating("DoRunNextMazeCommand",0,1);
+    }
+
+    // example command: RunOnTarget.exe 0x01004B9000490000 --no-wait -- --mazeIp 192.168.0.whatever --cacheType i --cacheIndex 3 --cacheMountName BugsnagCache
+    private void GetSwitchArguments()
+    {
+#if UNITY_SWITCH
+        int count = bugsnag_getArgsCount();
+        Debug.Log("args count: " + count);
+
+        for (int i = 0; i < count; i++)
+        {
+            var arg = bugsnag_getArg(i);
+            if (!arg.Contains("--"))
+            {
+                Debug.Log("Ignoring arg: " + arg);
+                continue;
+            }
+            Debug.Log("CHECKING ARG: " + arg);
+            switch (arg)
+            {
+                case "--mazeIp":
+                    var ip = bugsnag_getArg(i + 1);
+                    _mazeHost = "http://" + ip + ":9339";
+                    Debug.Log("SET MAZE HOST TO: " + _mazeHost);
+                    break;
+
+                case "--cacheType":
+                    var cacheType = bugsnag_getArg(i + 1);
+                    switch (cacheType)
+                    {
+                        case "r":
+                            _switchCacheType = SwitchCacheType.R;
+                            break;
+                        case "i":
+                            _switchCacheType = SwitchCacheType.I;
+                            break;
+                        case "n":
+                            _switchCacheType = SwitchCacheType.None;
+                            break;
+                        default:
+                            var msg = ("Unknown cacheType option: " + cacheType);
+                            throw new Exception(msg);
+                    }
+                    Debug.Log("Switch Cache Type set to: " + _switchCacheType);
+                    break;
+
+                case "--cacheIndex":
+                    _switchCacheIndex = int.Parse(bugsnag_getArg(i + 1));
+                    Debug.Log("Switch cache index set to: " + _switchCacheIndex);
+                    break;
+
+                case "--cacheMountName":
+                    _switchCacheMountName = bugsnag_getArg(i + 1);
+                    Debug.Log("Switch cache mount name set to: " + _switchCacheMountName);
+                    break;
+            }
+        }
+#endif
     }
 
     private void DoRunNextMazeCommand()
@@ -160,10 +227,15 @@ public class Main : MonoBehaviour
         var config = new Configuration(API_KEY);
         config.Endpoints = new EndpointConfiguration(_mazeHost + "/notify", _mazeHost + "/sessions");
         config.AutoTrackSessions = scenario.Contains("AutoSession");
-
         config.ScriptingBackend = FindScriptingBackend();
         config.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         config.DotnetApiCompatibility = FindDotnetApiCompatibility();
+
+#if UNITY_SWITCH
+        config.SwitchCacheIndex = _switchCacheIndex;
+        config.SwitchCacheType = _switchCacheType;
+        config.SwitchCacheMountName = _switchCacheMountName;
+#endif
 
         PrepareConfigForScenario(config, scenario);
         return config;
@@ -193,11 +265,19 @@ public class Main : MonoBehaviour
         Bugsnag.ClearMetadata("init");
         Bugsnag.ClearMetadata("test", "test2");
     }
-
+   
     void PrepareConfigForScenario(Configuration config, string scenario)
     {
         switch (scenario)
         {
+            case "MaxSwitchCacheSize":
+            config.SwitchCacheMaxSize = 2097155;
+            config.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
+            config.AutoTrackSessions = false;
+            break;
+            case "SwitchCacheNone":
+                config.SwitchCacheType = SwitchCacheType.None;
+                break;
             case "ExceptionWithSessionAfterStart":
                 config.AutoTrackSessions = true;
                 break;
@@ -493,6 +573,11 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+        case "MaxSwitchCacheSize":
+                StartCoroutine(DoMaxSwitchCacheTest());
+                break;
+            case "SwitchCacheNone":
+                throw new Exception("SwitchCacheNone");
             case "AsyncException":
                 DoAsyncTest();
                 break;
@@ -750,7 +835,24 @@ public class Main : MonoBehaviour
         }
     }
 
+    private IEnumerator DoMaxSwitchCacheTest()
+    {
+        CacheLargePayload(1);
+        yield return new WaitForSeconds(1);
+        CacheLargePayload(2);
+    }
 
+    private void CacheLargePayload(int index)
+    {
+        Bugsnag.Notify(new System.Exception("LARGE PAYLOAD " + index), report =>
+        {
+            for (int i = 0; i < 100000; i++)
+            {
+                report.AddMetadata("test", "test" + i, "test");
+            }
+            return true;
+        });
+    }
     private void DoInnerException()
     {
         throw new Exception("Outer",new Exception("Inner"));

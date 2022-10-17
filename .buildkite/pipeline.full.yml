@@ -10,7 +10,10 @@ steps:
     key: 'cocoa-webgl-2018-fixtures'
     depends_on: 'build-artifacts'
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2018.4.36f1"
+      # Python2 needed for WebGL to build
+      EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -31,7 +34,10 @@ steps:
     key: 'cocoa-webgl-2019-fixtures'
     depends_on: 'build-artifacts'
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2019.4.35f1"
+      # Python2 needed for WebGL to build
+      EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -52,6 +58,7 @@ steps:
     key: 'cocoa-webgl-2021-fixtures'
     depends_on: 'build-artifacts'
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2021.3.3f1"
     plugins:
       artifacts#v1.5.0:
@@ -391,6 +398,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2018.4.36f1"
     plugins:
       artifacts#v1.5.0:
@@ -436,6 +444,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.5.0:
@@ -481,6 +490,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2021.3.3f1"
     plugins:
       artifacts#v1.5.0:
