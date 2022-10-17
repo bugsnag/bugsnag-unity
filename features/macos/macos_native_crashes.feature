@@ -2,6 +2,7 @@ Feature: MacOS native crashes
 
   Scenario: Reporting a MacOS native crash
     When I run the game in the "MacOSNativeCrash" state
+    And I wait for 2 seconds
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the native Unity notifier
