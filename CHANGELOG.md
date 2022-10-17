@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 7.3.0 (2022-10-17)
 
 ### Enhancements
 
