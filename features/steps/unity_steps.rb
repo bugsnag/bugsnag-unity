@@ -338,6 +338,16 @@ Then("custom metadata is included in the event") do
   }
 end
 
+Then("feature flags are included in the event") do
+  steps %Q{
+    And the event "featureFlags.0.featureFlag" equals "flag1"
+    And the event "featureFlags.0.variant" equals "variant1"
+    And the event "featureFlags.1.featureFlag" equals "flag3"
+    And the event "featureFlags.1.variant" equals "variant3"
+    And the event "featureFlags.2" is null
+  }
+end
+
 Then("all possible parameters have been edited in a callback") do
   steps %Q{
 

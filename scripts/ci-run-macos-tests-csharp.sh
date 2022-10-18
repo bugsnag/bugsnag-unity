@@ -4,4 +4,4 @@ pushd features/fixtures/maze_runner/build
 popd
 
 bundle install
-bundle exec maze-runner --app=features/fixtures/maze_runner/build/MacOS/Mazerunner.app --os=macos features/csharp
+bundle exec maze-runner --app=features/fixtures/maze_runner/build/MacOS/Mazerunner.app --os=macos features/macos features/csharp

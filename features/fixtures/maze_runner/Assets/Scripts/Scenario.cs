@@ -2,10 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
+using System.Runtime.InteropServices;
 
 public class Scenario : MonoBehaviour
 {
 
+#if UNITY_STANDALONE_OSX
+
+    [DllImport("NativeCrashy")]
+    private static extern void crashy_signal_runner(float num);
+
+#endif
 
     public Configuration Configuration;
 
@@ -82,6 +89,14 @@ public class Scenario : MonoBehaviour
         Bugsnag.ClearMetadata("test", "test2");
     }
 
+    public void AddTestingFeatureFlags()
+    {
+        Bugsnag.AddFeatureFlag("flag1","variant1");
+        Bugsnag.AddFeatureFlag("flag2", "variant2");
+        Bugsnag.AddFeatureFlag("flag3", "variant3");
+        Bugsnag.ClearFeatureFlag("flag2");
+    }
+
     public void SetInvalidEndpoints()
     {
         Configuration.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
@@ -89,27 +104,8 @@ public class Scenario : MonoBehaviour
 
     public bool SimpleCallback(IEvent @event)
     {
-        @event.App.BinaryArch = "BinaryArch";
-        @event.App.BundleVersion = "BundleVersion";
-        @event.App.CodeBundleId = "CodeBundleId";
-        @event.App.DsymUuid = "DsymUuid";
-        @event.App.Id = "Id";
-        @event.App.ReleaseStage = "ReleaseStage";
-        @event.App.Type = "Type";
-        @event.App.Version = "Version";
-        @event.App.InForeground = false;
-        @event.App.IsLaunching = false;
-
-        @event.Device.Id = "Id";
-        @event.Device.Jailbroken = true;
-        @event.Device.Locale = "Locale";
-        @event.Device.Manufacturer = "Manufacturer";
-        @event.Device.Model = "Model";
-        @event.Device.OsName = "OsName";
-        @event.Device.OsVersion = "OsVersion";
-        @event.Device.FreeDisk = 123;
-        @event.Device.FreeMemory = 456;
-        @event.Device.Orientation = "Orientation";
+        EditAllAppData(@event);
+        EditAllDeviceData(@event);
 
         @event.Errors[0].ErrorClass = "ErrorClass";
 
@@ -133,8 +129,87 @@ public class Scenario : MonoBehaviour
         return true;
     }
 
+    public bool CocoaNativeEventCallback(IEvent @event)
+    {
+        EditAllAppData(@event);
+        EditAllDeviceData(@event);
+
+        @event.Errors[0].ErrorClass = "ErrorClass";
+
+        @event.Errors[0].Stacktrace[0].Method = "Method";
+
+        //@event.Errors[0].Stacktrace[0].FrameAddress = "FrameAddress";
+
+        @event.Errors[0].Stacktrace[0].IsLr = true;
+
+        @event.Errors[0].Stacktrace[0].IsPc = true;
+
+        @event.Errors[0].Stacktrace[0].MachoFile = "MachoFile";
+
+        //@event.Errors[0].Stacktrace[0].MachoLoadAddress = "MachoLoadAddress";
+
+        @event.Errors[0].Stacktrace[0].MachoUuid = "MachoUuid";
+
+        //@event.Errors[0].Stacktrace[0].MachoVmAddress = "MachoVmAddress";
+
+        //@event.Errors[0].Stacktrace[0].SymbolAddress = "SymbolAddress";
+
+
+        foreach (var crumb in @event.Breadcrumbs)
+        {
+            crumb.Message = "Custom Message";
+            crumb.Type = BreadcrumbType.Request;
+            crumb.Metadata = new Dictionary<string, object> { { "test", "test" } };
+        }
+
+        @event.AddMetadata("test1", new Dictionary<string, object> { { "test", "test" } });
+        @event.AddMetadata("test2", new Dictionary<string, object> { { "test", "test" } });
+        @event.ClearMetadata("test2");
+
+        @event.AddFeatureFlag("fromCallback", "a");
+
+        @event.SetUser("4", "5", "6");
+
+        return true;
+    }
+
+    private void EditAllAppData(IEvent @event)
+    {
+        @event.App.BinaryArch = "BinaryArch";
+        @event.App.BundleVersion = "BundleVersion";
+        @event.App.CodeBundleId = "CodeBundleId";
+        @event.App.DsymUuid = "DsymUuid";
+        @event.App.Id = "Id";
+        @event.App.ReleaseStage = "ReleaseStage";
+        @event.App.Type = "Type";
+        @event.App.Version = "Version";
+        @event.App.InForeground = false;
+        @event.App.IsLaunching = false;
+    }
+
+    private void EditAllDeviceData(IEvent @event)
+    {
+        @event.Device.Id = "Id";
+        @event.Device.Jailbroken = true;
+        @event.Device.Locale = "Locale";
+        @event.Device.Manufacturer = "Manufacturer";
+        @event.Device.Model = "Model";
+        @event.Device.OsName = "OsName";
+        @event.Device.OsVersion = "OsVersion";
+        @event.Device.FreeDisk = 123;
+        @event.Device.FreeMemory = 456;
+        @event.Device.Orientation = "Orientation";
+    }
+
     public void DoSimpleNotify(string msg)
     {
         Bugsnag.Notify(new System.Exception(msg));
+    }
+
+    public void MacOSNativeCrash()
+    {
+#if UNITY_STANDALONE_OSX
+        crashy_signal_runner(8);
+#endif
     }
 }
