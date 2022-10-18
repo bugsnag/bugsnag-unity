@@ -168,6 +168,8 @@ public class Scenario : MonoBehaviour
 
         @event.AddFeatureFlag("fromCallback", "a");
 
+        @event.SetUser("4", "5", "6");
+
         return true;
     }
 

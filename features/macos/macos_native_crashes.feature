@@ -1,5 +1,6 @@
 Feature: MacOS native crashes
 
+  @macos_only
   Scenario: Reporting a MacOS native crash
     When I run the game in the "MacOSNativeCrash" state
     And I wait for 2 seconds
@@ -18,9 +19,15 @@ Feature: MacOS native crashes
     And feature flags are included in the event
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "test"
+    And the event "user.id" equals "1"
+    And the event "user.email" equals "2"
+    And the event "user.name" equals "3"
 
-Scenario: Reporting a MacOS native crash with an onsend callback
+
+  @macos_only
+  Scenario: Reporting a MacOS native crash with an onsend callback
     When I run the game in the "MacOSNativeCrash" state
+    And I wait for 2 seconds
     And I run the game in the "MacOSNativeCrashCallback" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the native Unity notifier
@@ -64,15 +71,56 @@ Scenario: Reporting a MacOS native crash with an onsend callback
     #And the event "exceptions.0.stacktrace.0.machoVmAddress" equals "MachoVmAddress"
     #And the event "exceptions.0.stacktrace.0.symbolAddress" equals "SymbolAddress"
 
- # Breadcrumbs
+    # Breadcrumbs
     And the event "breadcrumbs.0.type" equals "request"
     And the event "breadcrumbs.0.name" equals "Custom Message"
     And the event "breadcrumbs.0.metaData.test" equals "test"
 
-  # Feature flags
+    # Feature flags
     And the event "featureFlags.2.featureFlag" equals "fromCallback"
     And the event "featureFlags.2.variant" equals "a"
 
     # Metadata
     And the event "metaData.test1.test" equals "test"
     And the event "metaData.test2" is null
+
+    # User
+    And the event "user.id" equals "4"
+    And the event "user.email" equals "5"
+    And the event "user.name" equals "6"
+
+  @macos_only
+  Scenario: Set User After Init Native Error
+    When I run the game in the "MacOSSetUserAfterInitNativeCrash" state
+    And I wait for 2 seconds
+    And I run the game in the "StartSDKDefault" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the native Unity notifier
+    And the exception "errorClass" equals "SIGABRT"
+
+    # User
+    And the event "user.id" equals "1"
+    And the event "user.email" equals "2"
+    And the event "user.name" equals "3"
+
+  @macos_only
+  Scenario: Native crash outside of release stage
+    When I run the game in the "MacOSNativeCrashOutsideReleaseStages" state
+    And I wait for 2 seconds
+    And I run the game in the "StartSDKDefault" state
+    Then I should receive no errors
+
+  @macos_only
+  Scenario: Reporting a native crash when AutoDetectErrors = false
+    When I run the game in the "MacOSNativeCrashAutoDetectErrorsFalse" state
+    And I wait for 2 seconds
+    And I run the game in the "StartSDKDefault" state
+    Then I should receive no errors
+
+   @macos_only
+  Scenario: Reporting a native crash when EnabledErrorTypes.Crashes = false
+    When I run the game in the "MacOSNativeCrashEnabledErrorTypes" state
+    And I wait for 2 seconds
+    And I run the game in the "StartSDKDefault" state
+    Then I should receive no errors
+

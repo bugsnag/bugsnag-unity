@@ -840,6 +840,10 @@ GameObject:
   - component: {fileID: 425821759}
   - component: {fileID: 425821761}
   - component: {fileID: 425821760}
+  - component: {fileID: 425821762}
+  - component: {fileID: 425821763}
+  - component: {fileID: 425821764}
+  - component: {fileID: 425821765}
   m_Layer: 0
   m_Name: MacOS
   m_TagString: Untagged
@@ -873,6 +877,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dc100132eb6e482c8ba12df3da883db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &425821761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -883,6 +890,66 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9ab26d7a70fc54951ab0ee9cec618b52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &425821762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425821758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1359596039b1545a48c96bce459e0a6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &425821763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425821758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8d5bb00c825346729ecfff0c7b91098, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &425821764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425821758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1725db6e50b34f2283ce6df6bb897d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &425821765
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425821758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2a97f1dd73dd4eda8661b80e0f53165, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
@@ -2238,7 +2305,6 @@ GameObject:
   - component: {fileID: 1160627404}
   - component: {fileID: 1160627405}
   - component: {fileID: 1160627408}
-  - component: {fileID: 1160627407}
   - component: {fileID: 1160627406}
   m_Layer: 0
   m_Name: Callbacks
@@ -2306,18 +2372,6 @@ MonoBehaviour:
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
     Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
---- !u!114 &1160627407
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1160627402}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5009108c49bf4b9ca00afe56675326b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1160627408
 MonoBehaviour:
   m_ObjectHideFlags: 0
