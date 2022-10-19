@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Dependency updates
+
+- * Update bugsnag-android from v5.26.0 to [v5.28.1](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5281-2022-10-19)
+
 ## 7.3.0 (2022-10-17)
 
 ### Enhancements
