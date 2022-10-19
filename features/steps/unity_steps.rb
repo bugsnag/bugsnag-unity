@@ -32,7 +32,7 @@ When('I clear the Bugsnag cache') do
     execute_command('clear_cache')
 
   when 'android', 'ios'
-    # TODO: Come back to this
+    execute_command('clear_cache')
 
   when 'browser'
     url = "http://localhost:#{Maze.config.document_server_port}/index.html"
@@ -50,12 +50,7 @@ When('I clear the Bugsnag cache') do
 end
 
 When('I close the Unity app') do
-  case Maze::Helper.get_current_platform
-  when 'macos','webgl','windows','switch'
-    execute_command('close_application')
-  when 'android', 'ios'
-    # TODO: Come back to this
-  end
+  execute_command('close_application')
 end
 
 When('I run the game in the {string} state') do |state|
@@ -77,7 +72,7 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'android', 'ios'
-    # TODO: Come back to this
+    execute_command('run_scenario', state)
 
   when 'browser'
     # WebGL in a browser

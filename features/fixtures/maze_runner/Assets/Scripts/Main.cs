@@ -63,8 +63,6 @@ public class Main : MonoBehaviour
         // Determine the Maze Runner endpoint based on platform
 #if UNITY_STANDALONE || UNITY_WEBGL
         _mazeHost = "http://localhost:9339";
-#elif UNITY_ANDROID || UNITY_IOS
-        return;
 #elif UNITY_SWITCH
     GetSwitchArguments();
 #else
@@ -187,29 +185,7 @@ public class Main : MonoBehaviour
                         }
                         else if ("run_scenario".Equals(command.action))
                         {
-
                             ScenarioRunner.RunScenario(command.scenarioName, API_KEY, _mazeHost);
-                    
-//#if UNITY_STANDALONE_OSX
-//                                // some scenarios may need to start after a delay because starting an application via command line on macos launches it in the background 
-//                                if (command.scenarioName.Equals("ExceptionWithSessionAfterStart"))
-//                                {
-//                                    StartCoroutine(StartScenarioAfterDelay(command.scenarioName, 1));
-//                                }
-//                                else
-//                                {
-//                                    // Start Bugsnag and run the scenario
-//                                    StartBugsnag(command.scenarioName);
-//                                    RunScenario(command.scenarioName);
-//                                }
-
-//#else
-//                            // Start Bugsnag and run the scenario
-//                            StartBugsnag(command.scenarioName);
-//                            RunScenario(command.scenarioName);
-//#endif
-                            
-
                         }
                         else if ("close_application".Equals(command.action))
                         {

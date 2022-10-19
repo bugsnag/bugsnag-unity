@@ -11,18 +11,22 @@ Feature: Session Tracking
       | windows | Windows |
       | switch | nintendo-switch |
       | browser | WebGL |
+      | android | android |
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
       | switch | Nintendo Switch |
       | browser | Unix |
+      | android | android |
+
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
       | windows | PC    |
       | switch | Nintendo |
       | browser | @skip |
+      | android | @skip |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -40,12 +44,15 @@ Feature: Session Tracking
       | windows | Windows |
       | switch | nintendo-switch |
       | browser | WebGL |
+      | android | android |
+
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
       | switch | Nintendo Switch |
       | browser | Unix |
+      | android | android |
 
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
@@ -53,6 +60,8 @@ Feature: Session Tracking
       | windows | PC    |
       | switch | Nintendo |
       | browser | @skip |
+      | android | @skip |
+
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
