@@ -20,9 +20,11 @@ Feature: Unity Persistence
     When I clear the Bugsnag cache
     And I wait for 3 seconds
     And I close the Unity app
+    And On Mobile I relaunch the app
     And I run the game in the "PersistEvent" state
     And I wait for 5 seconds
     And I close the Unity app
+    And On Mobile I relaunch the app
     And I run the game in the "PersistEventReport" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
@@ -36,9 +38,11 @@ Feature: Unity Persistence
     When I clear the Bugsnag cache
     And I wait for 3 seconds
     And I close the Unity app
+    And On Mobile I relaunch the app
     And I run the game in the "PersistEvent" state
     And I wait for 3 seconds
     And I close the Unity app
+    And On Mobile I relaunch the app
     And I run the game in the "PersistEventReportCallback" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
@@ -55,6 +59,7 @@ Feature: Unity Persistence
     When I clear the Bugsnag cache
     And I wait for 3 seconds
     And I close the Unity app
+    And On Mobile I relaunch the app
     And I run the game in the "PersistDeviceId" state
     And I wait to receive an error
     And the exception "message" equals "PersistDeviceId"
@@ -62,6 +67,7 @@ Feature: Unity Persistence
     And I discard the oldest error
     And I wait for 3 seconds
     And I close the Unity app
+    And On Mobile I relaunch the app
     And I run the game in the "PersistDeviceId" state
     And I wait to receive an error
     And the exception "message" equals "PersistDeviceId"
@@ -73,9 +79,11 @@ Feature: Unity Persistence
     When I clear the Bugsnag cache
     And I wait for 3 seconds
     And I close the Unity app
+    And On Mobile I relaunch the app
     And I run the game in the "MaxPersistEvents" state
     And I wait for 15 seconds
     And I close the Unity app
+    And On Mobile I relaunch the app
     And I run the game in the "StartSDKDefault" state
     # And I wait for 3 seconds
     And I wait to receive 3 errors

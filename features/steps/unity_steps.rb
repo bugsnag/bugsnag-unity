@@ -3,6 +3,13 @@ require 'cgi'
 #
 # Common steps
 #
+
+When('On Mobile I relaunch the app') do
+  next unless %w[android ios].include? Maze::Helper.get_current_platform 
+  Maze.driver.launch_app
+  sleep 3
+end
+
 def execute_command(action, scenario_name = '')
   command = {
     action: action,

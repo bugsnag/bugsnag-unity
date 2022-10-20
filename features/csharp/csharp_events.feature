@@ -23,8 +23,8 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | UncaughtExceptionSmokeTest.Run() | 
-      | ScenarioRunner.RunScenario(System.String scenarioName, System.String apiKey, System.String host) | 
+      | UncaughtExceptionSmokeTest.Run() | |
+      | ScenarioRunner.RunScenario(System.String scenarioName, System.String apiKey, System.String host) | Main+<RunNextMazeCommand>d__6.MoveNext() |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
