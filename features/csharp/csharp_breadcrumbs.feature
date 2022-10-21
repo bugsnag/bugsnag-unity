@@ -30,9 +30,6 @@ Feature: Fallback Breadcrumbs
     And the event "breadcrumbs.3.name" equals "Crumb 8"
     And the event "breadcrumbs.4.name" equals "Crumb 9"
 
-
-  # skip android pending PLAT-9087
-  @skip_android
   Scenario: Manual and Automatic Breadcrumbs
     When I run the game in the "ManualAndAutoBreadcrumbs" state
     And I wait to receive 3 errors

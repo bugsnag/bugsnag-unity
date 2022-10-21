@@ -38,7 +38,7 @@ Before('@skip_windows') do |_scenario|
 end
 
 Before('@skip_android') do |_scenario|
-  skip_this_scenario("Skipping scenario") if Maze.config.os == 'android'
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == 'android'
 end
 
 BeforeAll do

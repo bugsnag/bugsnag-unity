@@ -42,6 +42,8 @@ Feature: Callbacks
     And the exception "message" equals "Error 2"
     And all possible parameters have been edited in a callback
 
+  # skip android pending PLAT-9092
+  @skip_android
   Scenario: Callback passed directly to Notify
     When I run the game in the "CallbackInNotify" state
     And I wait to receive 1 error

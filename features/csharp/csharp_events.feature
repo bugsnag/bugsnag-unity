@@ -1,5 +1,6 @@
 Feature: csharp events
 
+  @skip_android #pending PLAT-9092
   Scenario: Notify smoke test
     When I run the game in the "NotifySmokeTest" state
     And I wait to receive an error
