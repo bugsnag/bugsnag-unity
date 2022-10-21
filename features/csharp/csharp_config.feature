@@ -2,7 +2,6 @@ Feature: csharp events
 
 #IS LAUNCHING SECTION --------------------------------------------------------------------
 # These duplicate isLaunching tests will be merged after the bug PLAT-9060 is fixed
- 
   #macos tests to accommodate bug
   @macos_only
   Scenario: Launch duration set to 0

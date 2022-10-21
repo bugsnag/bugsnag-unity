@@ -1,20 +1,22 @@
 Feature: Unity Persistence
 
-  # Skipped unitl PLAT-8632 is fixed 
-  # Scenario: Receive a persisted session mac and windows
-  #   When I clear the Bugsnag cache
-  #   And I wait for 3 seconds
-  #   And I close the Unity app
-  #   And I run the game in the "PersistSession" state
-  #   And I wait for 5 seconds
-  #   And I close the Unity app
-  #   And I run the game in the "PersistSessionReport" state
-  #   And I wait to receive 2 sessions
-  #   And I sort the sessions by the payload field "app.releaseStage"
-  #   Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-  #   And the session payload field "app.releaseStage" equals "Session 1"
-  #   And I discard the oldest session
-  #   And the session payload field "app.releaseStage" equals "Session 2"
+  @skip_windows @skip_macos @skip_webgl #pending PLAT-8632
+  Scenario: Receive a persisted session
+    When I clear the Bugsnag cache
+    And I wait for 3 seconds
+    And I close the Unity app
+    And On Mobile I relaunch the app
+    And I run the game in the "PersistSession" state
+    And I wait for 5 seconds
+    And I close the Unity app
+    And On Mobile I relaunch the app
+    And I run the game in the "PersistSessionReport" state
+    And I wait to receive 2 sessions
+    And I sort the sessions by the payload field "app.releaseStage"
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the session payload field "app.releaseStage" equals "Session 1"
+    And I discard the oldest session
+    And the session payload field "app.releaseStage" equals "Session 2"
 
   Scenario: Receive a persisted event
     When I clear the Bugsnag cache
@@ -73,8 +75,7 @@ Feature: Unity Persistence
     And the exception "message" equals "PersistDeviceId"
     And the error payload field "events.0.device.id" equals the stored value "device_id"
 
-  # TODO: Currently failing on WebGL
-  # @skip_webgl
+
   Scenario: Max Persisted Events
     When I clear the Bugsnag cache
     And I wait for 3 seconds
@@ -85,7 +86,6 @@ Feature: Unity Persistence
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "StartSDKDefault" state
-    # And I wait for 3 seconds
     And I wait to receive 3 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     And the exception "message" equals "Error 2"
