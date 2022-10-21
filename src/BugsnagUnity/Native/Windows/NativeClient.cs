@@ -58,6 +58,10 @@ namespace BugsnagUnity
         public void PopulateDeviceWithState(DeviceWithState device)
         {
             PopulateDevice(device);
+            if (Application.platform != RuntimePlatform.WindowsPlayer)
+            {
+                return;
+            }
             MEMORYSTATUSEX memStatus = new MEMORYSTATUSEX();
             if (GlobalMemoryStatusEx(memStatus))
             {
