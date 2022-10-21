@@ -52,7 +52,7 @@ Feature: csharp events
 #Correct tests to be enabled when PLAT-9061 is fixed
 #skip android pending PLAT-9087
 
-  @skip_macos @skip_android
+  @skip_macos 
   Scenario: Launch duration set to 0
     When I run the game in the "InfiniteLaunchDuration" state
     And I wait to receive an error
@@ -60,7 +60,7 @@ Feature: csharp events
     And the exception "message" equals "InfiniteLaunchDuration"
     And the event "app.isLaunching" is true
   
-  @skip_macos @skip_android
+  @skip_macos 
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
     And I wait to receive 2 errors
