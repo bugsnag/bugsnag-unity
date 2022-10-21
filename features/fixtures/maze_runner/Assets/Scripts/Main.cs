@@ -54,7 +54,16 @@ public class Main : MonoBehaviour
     public void Start()
     {
         Debug.Log("Maze Runner app started");
+
+
         _mazeHost = "http://localhost:9339";
+
+        if (Application.platform == RuntimePlatform.IPhonePlayer ||
+            Application.platform == RuntimePlatform.Android)
+        {
+            _mazeHost = "bs-local.com:9339";
+        }
+
         GetSwitchArguments();
 #if UNITY_STANDALONE_OSX
         PreventCrashPopups();
