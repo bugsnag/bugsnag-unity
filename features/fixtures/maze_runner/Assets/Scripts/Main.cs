@@ -61,7 +61,7 @@ public class Main : MonoBehaviour
         if (Application.platform == RuntimePlatform.IPhonePlayer ||
             Application.platform == RuntimePlatform.Android)
         {
-            _mazeHost = "bs-local.com:9339";
+            _mazeHost = "http://bs-local.com:9339";
         }
 
         GetSwitchArguments();
