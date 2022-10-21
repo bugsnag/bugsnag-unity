@@ -1030,7 +1030,15 @@ namespace BugsnagUnity
                         }
                         else // last case, cast to string
                         {
-                            dict.AddToPayload(key, AndroidJNI.CallStringMethod(value, ObjectToString, new jvalue[] { }));
+                            var stringValue = AndroidJNI.CallStringMethod(value, ObjectToString, new jvalue[] { });
+                            if (!string.IsNullOrEmpty(stringValue) && stringValue == "null")
+                            {
+                                dict.AddToPayload(key, null);
+                            }
+                            else
+                            {
+                                dict.AddToPayload(key, stringValue);
+                            }
                         }
                     }
                     AndroidJNI.DeleteLocalRef(valueClass);
