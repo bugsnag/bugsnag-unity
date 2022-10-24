@@ -38,8 +38,8 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | DebugLogExceptionSmokeTest:Run()| DebugLogExceptionSmokeTest.Run() | <RunNextMazeCommand>d__6:MoveNext() |
-      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) |
+      | DebugLogExceptionSmokeTest:Run()| DebugLogExceptionSmokeTest.Run() | <RunNextMazeCommand>d__6:MoveNext() | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
+      | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) ||
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 

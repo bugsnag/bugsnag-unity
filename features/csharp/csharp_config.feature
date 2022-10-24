@@ -69,7 +69,7 @@ Feature: csharp events
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" is false
   
-  @skip_macos 
+  @skip_macos @skip_windows @skip_webgl # PLAT-9061
   Scenario: Set long launch time
     When I run the game in the "LongLaunchTime" state
     And I wait to receive 2 errors
@@ -81,7 +81,7 @@ Feature: csharp events
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" is false
   
-  @skip_macos 
+  @skip_macos @skip_windows @skip_webgl # PLAT-9061
   Scenario: Set short launch time
     When I run the game in the "ShortLaunchTime" state
     And I wait to receive 2 errors
