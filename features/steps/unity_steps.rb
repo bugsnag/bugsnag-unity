@@ -289,9 +289,9 @@ Then('the stack frame methods should match:') do |expected_values|
   flunk('The stacktrace is empty') if stacktrace.length == 0
 
   methods = stacktrace.map { |item| item['method'] }
-  method_index = 0
 
   expected_frame_values.each do |expected_frames|
+    method_index = 0
     frame_matches = false
     until frame_matches || method_index.eql?(methods.size)
       method = methods[method_index]
