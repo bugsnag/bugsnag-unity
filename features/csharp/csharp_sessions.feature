@@ -1,5 +1,8 @@
 Feature: Session Tracking
 
+    Background:
+    Given I clear the Bugsnag cache
+
   Scenario: Automatically receiving a session
     When I run the game in the "StartSDKDefault" state
     And I wait to receive a session
@@ -9,9 +12,10 @@ Feature: Session Tracking
     And the session payload field "app.type" equals the platform-dependent string:
       | macos   | MacOS   |
       | windows | Windows |
-      | switch | nintendo-switch |
-      | browser | WebGL |
+      | switch  | nintendo-switch |
+      | browser | WebGL   |
       | android | android |
+      | ios     | iOS     |
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
@@ -19,7 +23,7 @@ Feature: Session Tracking
       | switch | Nintendo Switch |
       | browser | Unix |
       | android | android |
-
+      | ios     | iOS     |
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
@@ -27,6 +31,7 @@ Feature: Session Tracking
       | switch | Nintendo |
       | browser | @skip |
       | android | @skip |
+      | ios     | Apple |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -45,6 +50,7 @@ Feature: Session Tracking
       | switch | nintendo-switch |
       | browser | WebGL |
       | android | android |
+      | ios     | iOS     |
 
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
@@ -53,6 +59,7 @@ Feature: Session Tracking
       | switch | Nintendo Switch |
       | browser | Unix |
       | android | android |
+      | ios     | iOS     |
 
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
@@ -61,6 +68,7 @@ Feature: Session Tracking
       | switch | Nintendo |
       | browser | @skip |
       | android | @skip |
+      | ios     | Apple     |
 
     And the session "id" is not null
     And the session "startedAt" is not null

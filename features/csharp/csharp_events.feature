@@ -1,5 +1,8 @@
 Feature: csharp events
 
+  Background:
+    Given I clear the Bugsnag cache
+
   @skip_android #pending PLAT-9092
   Scenario: Notify smoke test
     When I run the game in the "NotifySmokeTest" state

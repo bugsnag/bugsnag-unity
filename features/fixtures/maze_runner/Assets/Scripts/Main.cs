@@ -172,8 +172,8 @@ public class Main : MonoBehaviour
 
                         if ("clear_cache".Equals(command.action))
                         {
-                            ClearUnityCache();
                             DebugText.text = command.action;
+                            ClearUnityCache();
                         }
                         else if ("run_scenario".Equals(command.action))
                         {
@@ -197,7 +197,7 @@ public class Main : MonoBehaviour
 #endif
         if (Directory.Exists(Application.persistentDataPath + "/Bugsnag"))
         {
-            Directory.Delete(Application.persistentDataPath + "/Bugsnag");
+            Directory.Delete(Application.persistentDataPath + "/Bugsnag",true);
         }
         if (Application.platform == RuntimePlatform.IPhonePlayer)
         {

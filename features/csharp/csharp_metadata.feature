@@ -1,5 +1,8 @@
 Feature: Metadata
 
+  Background:
+    Given I clear the Bugsnag cache
+
   Scenario: Metadata in config
     When I run the game in the "MetadataInConfig" state
     And I wait to receive an error

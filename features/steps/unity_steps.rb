@@ -46,6 +46,7 @@ When('I clear the Bugsnag cache') do
 
   when 'android', 'ios'
     execute_command('clear_cache')
+      sleep 2
 
   when 'browser'
     url = "http://localhost:#{Maze.config.document_server_port}/index.html"
@@ -103,19 +104,6 @@ When('I run the game in the {string} state') do |state|
     raise "Platform #{platform} has not been considered"
   end
 end
-
-
-#
-# Mobile steps
-#
-
-When('I close and relaunch the Unity mobile app') do
-  Maze.driver.terminate_app Maze.driver.app_id
-  Maze.driver.activate_app Maze.driver.app_id
-  # Wait for a fixed time period
-  sleep 3
-end
-
 
 #
 # Desktop steps

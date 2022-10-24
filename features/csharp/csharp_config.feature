@@ -1,9 +1,12 @@
 Feature: csharp events
 
+  Background:
+    Given I clear the Bugsnag cache
+
 #IS LAUNCHING SECTION --------------------------------------------------------------------
 # These duplicate isLaunching tests will be merged after the bug PLAT-9060 is fixed
   #macos tests to accommodate bug
-  @macos_only
+  @cocoa_only
   Scenario: Launch duration set to 0
     When I run the game in the "InfiniteLaunchDuration" state
     And I wait to receive an error
@@ -11,7 +14,7 @@ Feature: csharp events
     And the exception "message" equals "InfiniteLaunchDuration"
     And the event "app.isLaunching" equals "true"
   
-  @macos_only
+  @cocoa_only
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
     And I wait to receive 2 errors
@@ -23,7 +26,7 @@ Feature: csharp events
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" equals "false"
   
-  @macos_only
+  @cocoa_only
   Scenario: Set long launch time
     When I run the game in the "LongLaunchTime" state
     And I wait to receive 2 errors
@@ -35,7 +38,7 @@ Feature: csharp events
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" equals "false"
   
-  @macos_only
+  @cocoa_only
   Scenario: Set short launch time
     When I run the game in the "ShortLaunchTime" state
     And I wait to receive 2 errors
@@ -49,7 +52,7 @@ Feature: csharp events
 
 
 #Correct tests to be enabled when PLAT-9061 is fixed
-  @skip_macos 
+  @skip_cocoa 
   Scenario: Launch duration set to 0
     When I run the game in the "InfiniteLaunchDuration" state
     And I wait to receive an error
@@ -57,7 +60,7 @@ Feature: csharp events
     And the exception "message" equals "InfiniteLaunchDuration"
     And the event "app.isLaunching" is true
   
-  @skip_macos 
+  @skip_cocoa 
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
     And I wait to receive 2 errors
@@ -69,7 +72,7 @@ Feature: csharp events
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" is false
   
-  @skip_macos @skip_windows @skip_webgl # PLAT-9061
+  @skip_cocoa @skip_windows @skip_webgl # PLAT-9061
   Scenario: Set long launch time
     When I run the game in the "LongLaunchTime" state
     And I wait to receive 2 errors
@@ -81,7 +84,7 @@ Feature: csharp events
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" is false
   
-  @skip_macos @skip_windows @skip_webgl # PLAT-9061
+  @skip_cocoa @skip_windows @skip_webgl # PLAT-9061
   Scenario: Set short launch time
     When I run the game in the "ShortLaunchTime" state
     And I wait to receive 2 errors

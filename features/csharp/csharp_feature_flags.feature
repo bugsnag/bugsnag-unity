@@ -1,5 +1,8 @@
 Feature: Feature Flags
 
+  Background:
+    Given I clear the Bugsnag cache
+
   Scenario: Add Feature Flags in config
     When I run the game in the "FeatureFlagsInConfig" state
     And I wait to receive an error

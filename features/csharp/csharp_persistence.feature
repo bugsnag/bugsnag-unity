@@ -1,5 +1,8 @@
 Feature: Unity Persistence
 
+  Background:
+    Given I clear the Bugsnag cache
+
   @skip_windows @skip_macos @skip_webgl #pending PLAT-8632
   Scenario: Receive a persisted session
     When I clear the Bugsnag cache

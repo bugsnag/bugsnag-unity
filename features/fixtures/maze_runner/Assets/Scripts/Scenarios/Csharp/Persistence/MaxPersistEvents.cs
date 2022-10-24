@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using BugsnagUnity;
 using UnityEngine;
 
@@ -11,6 +10,10 @@ public class MaxPersistEvents : Scenario
         base.PrepareConfig(apiKey, host);
         SetInvalidEndpoints();
         Configuration.MaxPersistedEvents = 3;
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            Configuration.EnabledErrorTypes.OOMs = false;
+        }
     }
 
     public override void Run()

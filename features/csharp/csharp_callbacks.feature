@@ -1,5 +1,8 @@
 Feature: Callbacks
 
+  Background:
+    Given I clear the Bugsnag cache
+
   Scenario: OnError callbacks in config
     When I run the game in the "OnErrorInConfig" state
     And I wait to receive 2 errors
