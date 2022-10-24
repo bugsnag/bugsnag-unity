@@ -1,4 +1,7 @@
-Feature: Fallback Breadcrumbs
+Feature: Csharp Breadcrumbs
+
+  Background:
+    Given I clear the Bugsnag cache
 
   Scenario: Disabling Breadcrumbs
     When I run the game in the "DisableBreadcrumbs" state

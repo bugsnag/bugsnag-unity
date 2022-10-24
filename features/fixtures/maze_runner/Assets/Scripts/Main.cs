@@ -10,6 +10,7 @@ using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Threading.Tasks;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -45,6 +46,8 @@ public class Main : MonoBehaviour
     private int _switchCacheIndex = 0;
     private string _switchCacheMountName = "BugsnagCache";
 #endif
+
+    public Text DebugText;
 
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private string _mazeHost;
@@ -170,9 +173,11 @@ public class Main : MonoBehaviour
                         if ("clear_cache".Equals(command.action))
                         {
                             ClearUnityCache();
+                            DebugText.text = command.action;
                         }
                         else if ("run_scenario".Equals(command.action))
                         {
+                            DebugText.text = command.scenarioName;
                             ScenarioRunner.RunScenario(command.scenarioName, API_KEY, _mazeHost);
                         }
                         else if ("close_application".Equals(command.action))
@@ -193,6 +198,10 @@ public class Main : MonoBehaviour
         if (Directory.Exists(Application.persistentDataPath + "/Bugsnag"))
         {
             Directory.Delete(Application.persistentDataPath + "/Bugsnag");
+        }
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            MobileNative.ClearIOSData();
         }
     }
 
