@@ -287,7 +287,6 @@ Then('the stack frame methods should match:') do |expected_values|
   expected_frame_values = expected_values.raw
 
   flunk('The stacktrace is empty') if stacktrace.length == 0
-  flunk('The stacktrace is not long enough') if stacktrace.length < expected_frame_values.length
 
   methods = stacktrace.map { |item| item['method'] }
   method_index = 0
