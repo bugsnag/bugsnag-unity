@@ -51,7 +51,6 @@ Feature: Session Tracking
       | browser | WebGL |
       | android | android |
       | ios     | iOS     |
-
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
@@ -60,7 +59,6 @@ Feature: Session Tracking
       | browser | Unix |
       | android | android |
       | ios     | iOS     |
-
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
@@ -69,7 +67,6 @@ Feature: Session Tracking
       | browser | @skip |
       | android | @skip |
       | ios     | Apple     |
-
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
