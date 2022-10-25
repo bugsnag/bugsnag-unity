@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Fixed an issue where the Bugsnag CacheManager class raised exceptions on some android devices. [#653](https://github.com/bugsnag/bugsnag-unity/pull/653)
+
 ## 7.3.0 (2022-10-17)
 
 ### Enhancements
