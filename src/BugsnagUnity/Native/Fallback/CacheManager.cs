@@ -27,30 +27,44 @@ namespace BugsnagUnity
             get { return _cacheDirectory + "/Events"; }
         }
 
-        private static string[] _cachedSessions => Directory.GetFiles(_sessionsDirectory, "*" + SESSION_FILE_PREFIX);
-
-        private static string[] _cachedEvents => Directory.GetFiles(_eventsDirectory, "*" + EVENT_FILE_PREFIX);
-
         private static string _deviceIdFile = _cacheDirectory + "/deviceId.txt";
 
-        private const string SESSION_FILE_PREFIX = ".session";
+        private const string SESSION_FILE_SUFFIX = ".session";
 
-        private const string EVENT_FILE_PREFIX = ".event";
+        private const string EVENT_FILE_SUFFIX = ".event";
 
         private const int MAX_CACHED_DAYS = 60;
+
 
 
         public CacheManager(Configuration configuration)
         {
             _configuration = configuration;
             CheckForDirectoryCreation();
+            RemoveExpiredPayloads();
+        }
+
+        private string[] GetCachedEventFiles()
+        {
+            return GetFilesBySuffix(_eventsDirectory, EVENT_FILE_SUFFIX);
+        }
+
+        private string[] GetCachedSessionFiles()
+        {
+
+            return GetFilesBySuffix(_sessionsDirectory,SESSION_FILE_SUFFIX);
+        }
+
+        private string[] GetFilesBySuffix(string path, string suffix)
+        {
             try
             {
-                RemoveExpiredPayloads();
+                var files = Directory.GetFiles(path, "*" + suffix);
+                return files;
             }
             catch
             {
-                //not avaliable in unit tests
+                return new string[] { };
             }
         }
 
@@ -89,8 +103,8 @@ namespace BugsnagUnity
 
         private void RemoveExpiredPayloads()
         {
-            var files = _cachedEvents.ToList();
-            files.AddRange(_cachedSessions);
+            var files = GetCachedEventFiles().ToList();
+            files.AddRange(GetCachedSessionFiles());
             foreach (var file in files)
             {
                 try
@@ -108,16 +122,16 @@ namespace BugsnagUnity
 
         public void SaveSessionToCache(string id,string json)
         {
-            var path = _sessionsDirectory + "/" + id + SESSION_FILE_PREFIX;
+            var path = _sessionsDirectory + "/" + id + SESSION_FILE_SUFFIX;
             WritePayloadToDisk(json, path);
-            CheckForMaxCachedPayloads(_cachedSessions, _configuration.MaxPersistedSessions);
+            CheckForMaxCachedPayloads(GetCachedSessionFiles(), _configuration.MaxPersistedSessions);
         }
 
         public void SaveEventToCache(string id, string json)
         {
-            var path = _eventsDirectory + "/" + id + EVENT_FILE_PREFIX;
+            var path = _eventsDirectory + "/" + id + EVENT_FILE_SUFFIX;
             WritePayloadToDisk(json, path);
-            CheckForMaxCachedPayloads(_cachedEvents, _configuration.MaxPersistedEvents);
+            CheckForMaxCachedPayloads(GetCachedEventFiles(), _configuration.MaxPersistedEvents);
         }
 
         private void WritePayloadToDisk(string jsonData, string path)
@@ -154,7 +168,7 @@ namespace BugsnagUnity
         {
             try
             {
-                foreach (var cachedEventPath in _cachedEvents)
+                foreach (var cachedEventPath in GetCachedEventFiles())
                 {
                     if (cachedEventPath.Contains(id))
                     {
@@ -169,7 +183,7 @@ namespace BugsnagUnity
         {
             try
             {
-                foreach (var cachedSessionPath in _cachedSessions)
+                foreach (var cachedSessionPath in GetCachedSessionFiles())
                 {
                     if (cachedSessionPath.Contains(id))
                     {
@@ -217,12 +231,12 @@ namespace BugsnagUnity
 
         public List<string> GetCachedEventIds()
         {
-            return GetPayloadIDsFromDirectory(_cachedEvents);
+            return GetPayloadIDsFromDirectory(GetCachedEventFiles());
         }
 
         public List<string> GetCachedSessionIds()
         {
-            return GetPayloadIDsFromDirectory(_cachedSessions);
+            return GetPayloadIDsFromDirectory(GetCachedSessionFiles());
         }
 
         private List<string> GetPayloadIDsFromDirectory(string[] files)
@@ -255,7 +269,7 @@ namespace BugsnagUnity
 
         public string GetCachedEvent(string id)
         {
-            foreach (var path in _cachedEvents)
+            foreach (var path in GetCachedEventFiles())
             {
                 if (path.Contains(id))
                 {
@@ -267,7 +281,7 @@ namespace BugsnagUnity
 
         public string GetCachedSession(string id)
         {
-            foreach (var path in _cachedSessions)
+            foreach (var path in GetCachedSessionFiles())
             {
                 if (path.Contains(id))
                 {
