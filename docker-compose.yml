@@ -2,7 +2,7 @@ version: '3.6'
 services:
 
   maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:tms-android-repo-fixes-cli
     environment:
       DEBUG:
       BUILDKITE:
