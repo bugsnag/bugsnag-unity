@@ -44,7 +44,14 @@ namespace BugsnagUnity
         {
             _configuration = configuration;
             CheckForDirectoryCreation();
-            RemoveExpiredPayloads();
+            try
+            {
+                RemoveExpiredPayloads();
+            }
+            catch
+            {
+                //not avaliable in unit tests
+            }
         }
 
         public string GetCachedDeviceId()
@@ -82,11 +89,11 @@ namespace BugsnagUnity
 
         private void RemoveExpiredPayloads()
         {
-            try
+            var files = _cachedEvents.ToList();
+            files.AddRange(_cachedSessions);
+            foreach (var file in files)
             {
-                var files = _cachedEvents.ToList();
-                files.AddRange(_cachedSessions);
-                foreach (var file in files)
+                try
                 {
                     var creationTime = File.GetCreationTimeUtc(file);
                     if ((DateTime.UtcNow - creationTime).TotalDays > MAX_CACHED_DAYS)
@@ -95,8 +102,8 @@ namespace BugsnagUnity
                         File.Delete(file);
                     }
                 }
+                catch { }
             }
-            catch { }
         }
 
         public void SaveSessionToCache(string id,string json)
@@ -132,16 +139,15 @@ namespace BugsnagUnity
 
         private void RemoveOldestFiles(string[] filePaths, int numToRemove)
         {
-            try
+            var ordered = filePaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+            foreach (var file in ordered.Take(numToRemove))
             {
-                var ordered = filePaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
-                foreach (var file in ordered.Take(numToRemove))
+                try
                 {
                     File.Delete(file);
                 }
-            }
-            catch { }
-            
+                catch { }
+            }            
         }
 
         public void RemoveCachedEvent(string id)
@@ -211,32 +217,40 @@ namespace BugsnagUnity
 
         public List<string> GetCachedEventIds()
         {
-            var cachedEventIds = new List<string>();
-            try
-            {
-                var ordered = _cachedEvents.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
-                foreach (var path in ordered)
-                {
-                    cachedEventIds.Add(Path.GetFileNameWithoutExtension(path));
-                }
-            }
-            catch { }
-            return cachedEventIds;
+            return GetPayloadIDsFromDirectory(_cachedEvents);
         }
 
         public List<string> GetCachedSessionIds()
         {
-            var cachedSessionIds = new List<string>();
+            return GetPayloadIDsFromDirectory(_cachedSessions);
+        }
+
+        private List<string> GetPayloadIDsFromDirectory(string[] files)
+        {
+            var names = new List<string>();
+            var ordered = GetCreationOrderedFiles(files);
+            foreach (var path in ordered)
+            {
+                try
+                {
+                    names.Add(Path.GetFileNameWithoutExtension(path));
+                }
+                catch { }
+            }
+            return names;
+        }
+
+        private string[] GetCreationOrderedFiles(string[] files)
+        {
             try
             {
-                var ordered = _cachedSessions.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
-                foreach (var path in ordered)
-                {
-                    cachedSessionIds.Add(Path.GetFileNameWithoutExtension(path));
-                }
+                var orderedFiles = files.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+                return orderedFiles;
             }
-            catch { }
-            return cachedSessionIds;
+            catch
+            {
+                return new string[] { };
+            }
         }
 
         public string GetCachedEvent(string id)
