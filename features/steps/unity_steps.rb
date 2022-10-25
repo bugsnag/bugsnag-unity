@@ -10,12 +10,6 @@ When('On Mobile I relaunch the app') do
   sleep 3
 end
 
-When('I wait for the mobile game to start') do
-  next unless %w[android ios].include? Maze::Helper.get_current_platform 
-  # Wait for a fixed time period
-  sleep 3
-end
-
 def execute_command(action, scenario_name = '')
   command = {
     action: action,
