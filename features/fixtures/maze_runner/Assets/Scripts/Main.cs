@@ -47,8 +47,6 @@ public class Main : MonoBehaviour
     private string _switchCacheMountName = "BugsnagCache";
 #endif
 
-    public Text DebugText;
-
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private string _mazeHost;
 
@@ -172,12 +170,10 @@ public class Main : MonoBehaviour
 
                         if ("clear_cache".Equals(command.action))
                         {
-                            DebugText.text = command.action;
                             ClearUnityCache();
                         }
                         else if ("run_scenario".Equals(command.action))
                         {
-                            DebugText.text = command.scenarioName;
                             ScenarioRunner.RunScenario(command.scenarioName, API_KEY, _mazeHost);
                         }
                         else if ("close_application".Equals(command.action))
