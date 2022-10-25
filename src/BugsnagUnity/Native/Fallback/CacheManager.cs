@@ -166,32 +166,32 @@ namespace BugsnagUnity
 
         public void RemoveCachedEvent(string id)
         {
-            try
-            {
-                foreach (var cachedEventPath in GetCachedEventFiles())
-                {
-                    if (cachedEventPath.Contains(id))
-                    {
-                        File.Delete(cachedEventPath);
-                    }
-                }
-            }
-            catch { }
+            RemovePayloadWithID(GetCachedEventFiles(), id);
         }
 
         public void RemoveCachedSession(string id)
         {
-            try
+            RemovePayloadWithID(GetCachedSessionFiles(), id);
+        }
+
+        private void RemovePayloadWithID(string[] files, string id)
+        {
+            foreach (var path in files)
             {
-                foreach (var cachedSessionPath in GetCachedSessionFiles())
+                if (path.Contains(id))
                 {
-                    if (cachedSessionPath.Contains(id))
-                    {
-                        File.Delete(cachedSessionPath);
-                    }
+                    DeleteFile(path);
+                    return;
                 }
             }
-            catch { }
+        }
+
+        private void DeleteFile(string path)
+        {
+            try
+            {
+                File.Delete(path);
+            }catch{}
         }
 
         private string GetJsonFromCachePath(string path)
