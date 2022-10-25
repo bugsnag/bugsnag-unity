@@ -12,11 +12,9 @@ Feature: Fallback Breadcrumbs
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     And I discard the oldest error
-
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Error2"
     And the event "breadcrumbs.0.name" equals "Debug.Log"
-
 
   Scenario: Setting max breadcrumbs
     When I run the game in the "MaxBreadcrumbs" state
@@ -36,13 +34,11 @@ Feature: Fallback Breadcrumbs
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     And I discard the oldest error
     And I discard the oldest error
-
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Error3"
 
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.0.type" equals "state"
-
 
     And the event "breadcrumbs.1.name" equals "Manual"
     And the event "breadcrumbs.1.type" equals "manual"
@@ -68,6 +64,3 @@ Feature: Fallback Breadcrumbs
     And the event "breadcrumbs.7.type" equals "manual"
     And the event "breadcrumbs.7.metaData.test" equals "value"
     And the event "breadcrumbs.7.metaData.nullTest" is null
-
-
-

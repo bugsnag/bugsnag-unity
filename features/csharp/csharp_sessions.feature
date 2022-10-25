@@ -11,18 +11,22 @@ Feature: Session Tracking
       | windows | Windows |
       | switch | nintendo-switch |
       | browser | WebGL |
+      | android | android |
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
       | switch | Nintendo Switch |
       | browser | Unix |
+      | android | android |
+
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple |
       | windows | PC    |
       | switch | Nintendo |
       | browser | @skip |
+      | android | @skip |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -40,12 +44,15 @@ Feature: Session Tracking
       | windows | Windows |
       | switch | nintendo-switch |
       | browser | WebGL |
+      | android | android |
+
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
       | switch | Nintendo Switch |
       | browser | Unix |
+      | android | android |
 
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
@@ -53,6 +60,8 @@ Feature: Session Tracking
       | windows | PC    |
       | switch | Nintendo |
       | browser | @skip |
+      | android | @skip |
+
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -84,6 +93,8 @@ Feature: Session Tracking
     And the error payload field "events.0.session.id" is stored as the value "session_id"
     And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
 
+  
+  @skip_android #pending PLAT-9086
   Scenario: Multiple event counts in one session
     When I run the game in the "MultipleEventCounts" state
     And I wait to receive a session
@@ -109,6 +120,7 @@ Feature: Session Tracking
     And the exception "message" equals "PausedSessionEvent"
     And the event "session" is null
 
+  @skip_android   #pending PLAT-9086
   Scenario: When a session is resumed the error uses the previous session information
     When I run the game in the "ResumedSession" state
     And I wait to receive a session
@@ -130,7 +142,7 @@ Feature: Session Tracking
     And the error payload field "session.startedAt" equals the stored value "session_startedAt"
     And the error payload field "events.0.session.events.handled" equals 2
 
-
+  @skip_android   #pending PLAT-9086
   Scenario: When a new session is started the error uses different session information
     When I run the game in the "NewSession" state
     And I wait to receive 2 sessions

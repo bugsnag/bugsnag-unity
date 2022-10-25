@@ -605,7 +605,8 @@ PlayerSettings:
   webGLCompressionFormat: 2
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    7: UNITY_ASSERTIONS
   platformArchitecture: {}
   scriptingBackend:
     Android: 1

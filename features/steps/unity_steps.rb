@@ -3,6 +3,13 @@ require 'cgi'
 #
 # Common steps
 #
+
+When('On Mobile I relaunch the app') do
+  next unless %w[android ios].include? Maze::Helper.get_current_platform 
+  Maze.driver.launch_app
+  sleep 3
+end
+
 def execute_command(action, scenario_name = '')
   command = {
     action: action,
@@ -32,7 +39,7 @@ When('I clear the Bugsnag cache') do
     execute_command('clear_cache')
 
   when 'android', 'ios'
-    # TODO: Come back to this
+    execute_command('clear_cache')
 
   when 'browser'
     url = "http://localhost:#{Maze.config.document_server_port}/index.html"
@@ -50,12 +57,7 @@ When('I clear the Bugsnag cache') do
 end
 
 When('I close the Unity app') do
-  case Maze::Helper.get_current_platform
-  when 'macos','webgl','windows','switch'
-    execute_command('close_application')
-  when 'android', 'ios'
-    # TODO: Come back to this
-  end
+  execute_command('close_application')
 end
 
 When('I run the game in the {string} state') do |state|
@@ -77,7 +79,7 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'android', 'ios'
-    # TODO: Come back to this
+    execute_command('run_scenario', state)
 
   when 'browser'
     # WebGL in a browser
@@ -285,12 +287,11 @@ Then('the stack frame methods should match:') do |expected_values|
   expected_frame_values = expected_values.raw
 
   flunk('The stacktrace is empty') if stacktrace.length == 0
-  flunk('The stacktrace is not long enough') if stacktrace.length < expected_frame_values.length
 
   methods = stacktrace.map { |item| item['method'] }
-  method_index = 0
 
   expected_frame_values.each do |expected_frames|
+    method_index = 0
     frame_matches = false
     until frame_matches || method_index.eql?(methods.size)
       method = methods[method_index]

@@ -68,28 +68,10 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  #
-  # Run desktop tests
-  #
-  # - label: Run MacOS e2e tests for Unity 2020
-  #   timeout_in_minutes: 60
-  #   depends_on: 'cocoa-webgl-2020-fixtures'
-  #   agents:
-  #     queue: macos-12-arm-unity
-  #   env:
-  #     UNITY_VERSION: "2020.3.32f1"
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       download:
-  #         - features/fixtures/maze_runner/build/MacOS-2020.3.32f1.zip
-  #       upload:
-  #         - maze_output/**/*
-  #         - Mazerunner.log
-  #   commands:
-  #     - scripts/ci-run-macos-tests.sh
 
-       #
-  # Run macos csharp tests
+
+  #
+  # Run macos tests
   #
   - label: Run MacOS e2e csharp tests
     timeout_in_minutes: 60
@@ -130,28 +112,28 @@ steps:
     commands:
       - scripts/ci-run-webgl-tests.sh
 
-  #
+  
   # Build Android test fixtures
-  #
-  # - label: ':android: Build Android test fixture for Unity 2020'
-  #   timeout_in_minutes: 30
-  #   key: 'build-android-fixture-2020'
-  #   depends_on: 'build-artifacts'
-  #   env:
-  #     UNITY_VERSION: "2020.3.32f1"
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       download:
-  #         - Bugsnag.unitypackage
-  #       upload:
-  #         - features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk
-  #         - features/fixtures/unity.log
-  #   commands:
-  #     - rake test:android:build
-  #   retry:
-  #     automatic:
-  #       - exit_status: "*"
-  #         limit: 1
+  
+  - label: ':android: Build Android test fixture for Unity 2020'
+    timeout_in_minutes: 30
+    key: 'build-android-fixture-2020'
+    depends_on: 'build-artifacts'
+    env:
+      UNITY_VERSION: "2020.3.32f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk
+          - features/fixtures/unity.log
+    commands:
+      - rake test:android:build
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   # - label: ':android: Build Android EDM test fixture for Unity 2020'
   #   timeout_in_minutes: 30
@@ -178,30 +160,33 @@ steps:
   #
   # Run Android tests
   #
-  # - label: ':android: Run Android e2e tests for Unity 2020'
-  #   timeout_in_minutes: 30
-  #   depends_on: 'build-android-fixture-2020'
-  #   agents:
-  #     queue: opensource
-  #   env:
-  #     UNITY_VERSION: "2020.3.32f1"
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       download:
-  #         - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
-  #       upload:
-  #         - "maze_output/**/*"
-  #     docker-compose#v3.7.0:
-  #       pull: maze-runner
-  #       run: maze-runner
-  #       command:
-  #         - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
-  #         - "--farm=bs"
-  #         - "--device=ANDROID_9_0"
-  #         - "features/android"
-  #   concurrency: 24
-  #   concurrency_group: browserstack-app
-  #   concurrency_method: eager
+  - label: ':android: Run Android e2e tests for Unity 2020'
+    timeout_in_minutes: 30
+    depends_on: 'build-android-fixture-2020'
+    agents:
+      queue: opensource
+    env:
+      UNITY_VERSION: "2020.3.32f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
+        upload:
+          - "maze_output/**/*"
+      docker-compose#v3.7.0:
+        pull: maze-runner
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
+          - "--farm=bs"
+          - "--device=ANDROID_9_0"
+          - "features/csharp"
+    concurrency: 24
+    concurrency_group: browserstack-app
+    concurrency_method: eager
+
+
+  # Run Android EDM tests
 
   # - label: ':android: Run Android EDM e2e tests for Unity 2020'
   #   timeout_in_minutes: 30

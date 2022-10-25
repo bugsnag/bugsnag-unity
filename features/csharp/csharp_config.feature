@@ -2,7 +2,6 @@ Feature: csharp events
 
 #IS LAUNCHING SECTION --------------------------------------------------------------------
 # These duplicate isLaunching tests will be merged after the bug PLAT-9060 is fixed
- 
   #macos tests to accommodate bug
   @macos_only
   Scenario: Launch duration set to 0
@@ -50,8 +49,7 @@ Feature: csharp events
 
 
 #Correct tests to be enabled when PLAT-9061 is fixed
-
-  @skip_macos
+  @skip_macos 
   Scenario: Launch duration set to 0
     When I run the game in the "InfiniteLaunchDuration" state
     And I wait to receive an error
@@ -59,7 +57,7 @@ Feature: csharp events
     And the exception "message" equals "InfiniteLaunchDuration"
     And the event "app.isLaunching" is true
   
-  @skip_macos
+  @skip_macos 
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
     And I wait to receive 2 errors
@@ -71,29 +69,29 @@ Feature: csharp events
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" is false
   
-  # @skip_macos
-  # Scenario: Set long launch time
-  #   When I run the game in the "LongLaunchTime" state
-  #   And I wait to receive 2 errors
-  #   And I sort the errors by the payload field "events.0.exceptions.0.message"
-  #   Then the error is valid for the error reporting API sent by the Unity notifier
-  #   And the exception "message" equals "Error 1"
-  #   And the event "app.isLaunching" is true
-  #   And I discard the oldest error
-  #   And the exception "message" equals "Error 2"
-  #   And the event "app.isLaunching" is false
+  @skip_macos @skip_windows @skip_webgl # PLAT-9061
+  Scenario: Set long launch time
+    When I run the game in the "LongLaunchTime" state
+    And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "Error 1"
+    And the event "app.isLaunching" is true
+    And I discard the oldest error
+    And the exception "message" equals "Error 2"
+    And the event "app.isLaunching" is false
   
-  # @skip_macos
-  # Scenario: Set short launch time
-  #   When I run the game in the "ShortLaunchTime" state
-  #   And I wait to receive 2 errors
-  #   And I sort the errors by the payload field "events.0.exceptions.0.message"
-  #   Then the error is valid for the error reporting API sent by the Unity notifier
-  #   And the exception "message" equals "Error 1"
-  #   And the event "app.isLaunching" is true
-  #   And I discard the oldest error
-  #   And the exception "message" equals "Error 2"
-  #   And the event "app.isLaunching" is false
+  @skip_macos @skip_windows @skip_webgl # PLAT-9061
+  Scenario: Set short launch time
+    When I run the game in the "ShortLaunchTime" state
+    And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "Error 1"
+    And the event "app.isLaunching" is true
+    And I discard the oldest error
+    And the exception "message" equals "Error 2"
+    And the event "app.isLaunching" is false
 
 
 #END SECTION -----------------------------------------------------------------------------
