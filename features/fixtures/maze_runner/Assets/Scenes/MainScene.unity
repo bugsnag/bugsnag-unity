@@ -1126,6 +1126,7 @@ GameObject:
   - component: {fileID: 1523264807}
   - component: {fileID: 1523264808}
   - component: {fileID: 1523264809}
+  - component: {fileID: 1523264810}
   m_Layer: 0
   m_Name: Persistence
   m_TagString: Untagged
@@ -1247,6 +1248,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d88c2243beb794fd5b98acdd719cecac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1523264810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1523264801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bba5b8a0a434b1a8385e1f33a02a80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
@@ -1485,7 +1501,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 509cef171c6ce46beb143297400bf1c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DebugText: {fileID: 0}
   ScenarioRunner: {fileID: 1754371140}
 --- !u!4 &1789907206
 Transform:

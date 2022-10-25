@@ -199,6 +199,11 @@ public class Main : MonoBehaviour
         {
             MobileNative.ClearIOSData();
         }
+        if (Application.platform != RuntimePlatform.Android &&
+            Application.platform != RuntimePlatform.IPhonePlayer)
+        {
+            Application.Quit();
+        }
     }
 
 }
