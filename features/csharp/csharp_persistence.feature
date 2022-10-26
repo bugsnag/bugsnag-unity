@@ -64,9 +64,10 @@ Feature: Unity Persistence
 
   Scenario: Max Persisted Events
     When I run the game in the "MaxPersistEvents" state
-    And I wait for 45 seconds
+    And I wait for event requests to fail
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "ReportMaxPersistedEvents" state
-    And I wait to receive 3 errors
+    And I wait to receive an error
+    And the exception "message" equals "true"
 

@@ -55,6 +55,15 @@ When('I clear the Bugsnag cache') do
   end
 end
 
+When('I wait for event requests to fail') do
+  case Maze::Helper.get_current_platform
+  when 'ios'
+      sleep 45
+  else
+      sleep 10
+  end
+end
+
 When('I close the Unity app') do
   execute_command('close_application')
 end
@@ -97,9 +106,6 @@ When('I run the game in the {string} state') do |state|
   end
 end
 
-#
-# Desktop steps
-#
 def check_error_reporting_api(notifier_name)
   steps %(
     Then the error "Bugsnag-Api-Key" header equals "#{$api_key}"
