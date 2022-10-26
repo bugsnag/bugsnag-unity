@@ -93,7 +93,7 @@ steps:
           - maze_output/**/*
           - Mazerunner.log
     commands:
-      - scripts/ci-run-macos-tests.sh
+      - scripts/ci-run-macos-tests-csharp.sh
 
   - label: Run MacOS e2e tests for Unity 2019
     timeout_in_minutes: 60
@@ -110,7 +110,7 @@ steps:
           - maze_output/**/*
           - Mazerunner.log
     commands:
-      - scripts/ci-run-macos-tests.sh
+      - scripts/ci-run-macos-tests-csharp.sh
 
   - label: Run MacOS e2e tests for Unity 2021
     timeout_in_minutes: 60
@@ -127,7 +127,7 @@ steps:
           - maze_output/**/*
           - Mazerunner.log
     commands:
-      - scripts/ci-run-macos-tests.sh
+      - scripts/ci-run-macos-tests-csharp.sh
 
   #
   # Run WebGL tests
@@ -246,27 +246,27 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: ':android: Build Android EDM test fixture for Unity 2021'
-    timeout_in_minutes: 30
-    key: 'build-edm-fixture-2021'
-    depends_on: 'build-artifacts'
-    env:
-      UNITY_VERSION: "2021.3.3f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - Bugsnag.unitypackage
-        upload:
-          - features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk
-          - features/scripts/mobile/buildEdmFixture.log
-          - features/scripts/mobile/edmImport.log
-          - features/scripts/mobile/enableEdm.log
-    commands:
-      - rake test:edm:build
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+  # - label: ':android: Build Android EDM test fixture for Unity 2021'
+  #   timeout_in_minutes: 30
+  #   key: 'build-edm-fixture-2021'
+  #   depends_on: 'build-artifacts'
+  #   env:
+  #     UNITY_VERSION: "2021.3.3f1"
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - Bugsnag.unitypackage
+  #       upload:
+  #         - features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk
+  #         - features/scripts/mobile/buildEdmFixture.log
+  #         - features/scripts/mobile/edmImport.log
+  #         - features/scripts/mobile/enableEdm.log
+  #   commands:
+  #     - rake test:edm:build
+  #   retry:
+  #     automatic:
+  #       - exit_status: "*"
+  #         limit: 1
 
   #
   # Run Android tests
@@ -289,7 +289,7 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "features/android"
+          - "features/csharp"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -312,7 +312,7 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2019.4.35f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "features/android"
+          - "features/csharp"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -337,35 +337,35 @@ steps:
           - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.3.3f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
-          - "features/android"
+          - "features/csharp"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
 
-  - label: ':android: Run Android EDM e2e tests for Unity 2021'
-    timeout_in_minutes: 30
-    depends_on: 'build-edm-fixture-2021'
-    agents:
-      queue: opensource
-    env:
-      UNITY_VERSION: "2021.3.3f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - "features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk"
-        upload:
-          - "maze_output/**/*"
-      docker-compose#v3.7.0:
-        pull: maze-runner
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk"
-          - "--farm=bs"
-          - "--device=ANDROID_9_0"
-          - "features/edm"
-    concurrency: 24
-    concurrency_group: browserstack-app
-    concurrency_method: eager
+  # - label: ':android: Run Android EDM e2e tests for Unity 2021'
+  #   timeout_in_minutes: 30
+  #   depends_on: 'build-edm-fixture-2021'
+  #   agents:
+  #     queue: opensource
+  #   env:
+  #     UNITY_VERSION: "2021.3.3f1"
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - "features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk"
+  #       upload:
+  #         - "maze_output/**/*"
+  #     docker-compose#v3.7.0:
+  #       pull: maze-runner
+  #       run: maze-runner
+  #       command:
+  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk"
+  #         - "--farm=bs"
+  #         - "--device=ANDROID_9_0"
+  #         - "features/edm"
+  #   concurrency: 24
+  #   concurrency_group: browserstack-app
+  #   concurrency_method: eager
 
   #
   # Build iOS test fixtures
@@ -530,7 +530,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
-          - "features/ios"
+          - "features/csharp"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -554,7 +554,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
-          - "features/ios"
+          - "features/csharp"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -578,7 +578,7 @@ steps:
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
-          - "features/ios"
+          - "features/csharp"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
