@@ -216,76 +216,76 @@ steps:
   #
   # Build iOS test fixtures
   #
-  # - label: ':ios: Generate Xcode project - Unity 2020'
-  #   timeout_in_minutes: 30
-  #   key: 'generate-fixture-project-2020'
-  #   depends_on: 'build-artifacts'
-  #   env:
-  #     UNITY_VERSION: "2020.3.32f1"
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       download:
-  #         - Bugsnag.unitypackage
-  #       upload:
-  #         - features/fixtures/unity.log
-  #         - project_2020.tgz
-  #   commands:
-  #     - rake test:ios:generate_xcode
-  #     - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
-  #   retry:
-  #     automatic:
-  #       - exit_status: "*"
-  #         limit: 1
+  - label: ':ios: Generate Xcode project - Unity 2020'
+    timeout_in_minutes: 30
+    key: 'generate-fixture-project-2020'
+    depends_on: 'build-artifacts'
+    env:
+      UNITY_VERSION: "2020.3.32f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/unity.log
+          - project_2020.tgz
+    commands:
+      - rake test:ios:generate_xcode
+      - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
-  # - label: ':ios: Build iOS test fixture for Unity 2020'
-  #   timeout_in_minutes: 30
-  #   key: 'build-ios-fixture-2020'
-  #   depends_on: 'generate-fixture-project-2020'
-  #   env:
-  #     DEVELOPER_DIR: "/Applications/Xcode13.4.app"
-  #     UNITY_VERSION: "2020.3.32f1"
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       download:
-  #         - Bugsnag.unitypackage
-  #         - project_2020.tgz
-  #       upload:
-  #         - features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa
-  #         - features/fixtures/unity.log
-  #   commands:
-  #     - tar -zxf project_2020.tgz features/fixtures/maze_runner
-  #     - rake test:ios:build_xcode
-  #   retry:
-  #     automatic:
-  #       - exit_status: "*"
-  #         limit: 1
+  - label: ':ios: Build iOS test fixture for Unity 2020'
+    timeout_in_minutes: 30
+    key: 'build-ios-fixture-2020'
+    depends_on: 'generate-fixture-project-2020'
+    env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      UNITY_VERSION: "2020.3.32f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+          - project_2020.tgz
+        upload:
+          - features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa
+          - features/fixtures/unity.log
+    commands:
+      - tar -zxf project_2020.tgz features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Run iOS tests
   #
-  # - label: ':ios: Run iOS e2e tests for Unity 2020'
-  #   timeout_in_minutes: 30
-  #   depends_on: 'build-ios-fixture-2020'
-  #   agents:
-  #     queue: opensource
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       download:
-  #         - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
-  #       upload:
-  #         - "maze_output/**/*"
-  #     docker-compose#v3.7.0:
-  #       pull: maze-runner
-  #       run: maze-runner
-  #       command:
-  #         - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
-  #         - "--farm=bs"
-  #         - "--device=IOS_14"
-  #         - "--fail-fast"
-  #         - "features/ios"
-  #   concurrency: 24
-  #   concurrency_group: browserstack-app
-  #   concurrency_method: eager
+  - label: ':ios: Run iOS e2e tests for Unity 2020'
+    timeout_in_minutes: 30
+    depends_on: 'build-ios-fixture-2020'
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
+        upload:
+          - "maze_output/**/*"
+      docker-compose#v3.7.0:
+        pull: maze-runner
+        run: maze-runner
+        command:
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
+          - "--farm=bs"
+          - "--device=IOS_14"
+          - "--fail-fast"
+          - "features/csharp"
+    concurrency: 24
+    concurrency_group: browserstack-app
+    concurrency_method: eager
 
   #
   # Build Windows test fixture

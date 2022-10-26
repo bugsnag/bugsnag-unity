@@ -1,5 +1,8 @@
 Feature: User operations tests
 
+  Background:
+    Given I clear the Bugsnag cache
+
   Scenario: Set User In Config Csharp error
     When I run the game in the "SetUserInConfig" state
     And I wait to receive an error

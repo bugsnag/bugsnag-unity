@@ -10,6 +10,7 @@ using BugsnagUnity.Payload;
 using UnityEngine.SceneManagement;
 using System.IO;
 using System.Threading.Tasks;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -192,7 +193,16 @@ public class Main : MonoBehaviour
 #endif
         if (Directory.Exists(Application.persistentDataPath + "/Bugsnag"))
         {
-            Directory.Delete(Application.persistentDataPath + "/Bugsnag");
+            Directory.Delete(Application.persistentDataPath + "/Bugsnag",true);
+        }
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            MobileNative.ClearIOSData();
+        }
+        if (Application.platform != RuntimePlatform.Android &&
+            Application.platform != RuntimePlatform.IPhonePlayer)
+        {
+            Application.Quit();
         }
     }
 

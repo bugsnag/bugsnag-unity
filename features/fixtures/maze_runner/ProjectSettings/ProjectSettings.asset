@@ -606,6 +606,7 @@ PlayerSettings:
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
+    4: UNITY_ASSERTIONS
     7: UNITY_ASSERTIONS
   platformArchitecture: {}
   scriptingBackend:

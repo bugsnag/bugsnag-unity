@@ -1,5 +1,8 @@
 Feature: csharp events
 
+  Background:
+    Given I clear the Bugsnag cache
+
   @skip_android #pending PLAT-9092
   Scenario: Notify smoke test
     When I run the game in the "NotifySmokeTest" state
@@ -128,6 +131,7 @@ Feature: csharp events
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "NotifyFromBackgroundThread"
 
+  @skip_macos #impossible to reliably start the fixture in the foreground
   Scenario: Session present after start
     When I run the game in the "SessionAfterStart" state
     And I wait to receive an error
