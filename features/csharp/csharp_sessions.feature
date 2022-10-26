@@ -3,6 +3,7 @@ Feature: Session Tracking
     Background:
     Given I clear the Bugsnag cache
 
+  @skip_macos #Unable to reliably get the in focus notification from macos
   Scenario: Automatically receiving a session
     When I run the game in the "StartSDKDefault" state
     And I wait to receive a session
