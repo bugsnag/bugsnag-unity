@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Dependency updates
+
+- * Update bugsnag-android from v5.26.0 to [v5.28.1](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5281-2022-10-19)
+
 ### Bug fixes
 
 * Fixed an issue where the Bugsnag CacheManager class raised exceptions on some android devices. [#653](https://github.com/bugsnag/bugsnag-unity/pull/653)
