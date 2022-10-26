@@ -6,18 +6,6 @@ public class SessionAfterStart : Scenario
 {
     public override void Run()
     {
-        if (Application.platform.Equals(RuntimePlatform.OSXPlayer))
-        {
-            Invoke("DoException",10);
-        }
-        else
-        {
-            DoException();
-        }
-    }
-
-    private void DoException()
-    {
         throw new System.Exception("SessionAfterStart");
-    }
+    } 
 }
