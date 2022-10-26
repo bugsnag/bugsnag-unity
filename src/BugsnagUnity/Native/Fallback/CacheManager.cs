@@ -27,17 +27,14 @@ namespace BugsnagUnity
             get { return _cacheDirectory + "/Events"; }
         }
 
-        private static string[] _cachedSessions => Directory.GetFiles(_sessionsDirectory, "*" + SESSION_FILE_PREFIX);
-
-        private static string[] _cachedEvents => Directory.GetFiles(_eventsDirectory, "*" + EVENT_FILE_PREFIX);
-
         private static string _deviceIdFile = _cacheDirectory + "/deviceId.txt";
 
-        private const string SESSION_FILE_PREFIX = ".session";
+        private const string SESSION_FILE_SUFFIX = ".session";
 
-        private const string EVENT_FILE_PREFIX = ".event";
+        private const string EVENT_FILE_SUFFIX = ".event";
 
         private const int MAX_CACHED_DAYS = 60;
+
 
 
         public CacheManager(Configuration configuration)
@@ -45,6 +42,30 @@ namespace BugsnagUnity
             _configuration = configuration;
             CheckForDirectoryCreation();
             RemoveExpiredPayloads();
+        }
+
+        private string[] GetCachedEventFiles()
+        {
+            return GetFilesBySuffix(_eventsDirectory, EVENT_FILE_SUFFIX);
+        }
+
+        private string[] GetCachedSessionFiles()
+        {
+
+            return GetFilesBySuffix(_sessionsDirectory,SESSION_FILE_SUFFIX);
+        }
+
+        private string[] GetFilesBySuffix(string path, string suffix)
+        {
+            try
+            {
+                var files = Directory.GetFiles(path, "*" + suffix);
+                return files;
+            }
+            catch
+            {
+                return new string[] { };
+            }
         }
 
         public string GetCachedDeviceId()
@@ -73,16 +94,16 @@ namespace BugsnagUnity
 
         public void SaveDeviceIdToCache(string deviceId)
         {
-            File.WriteAllText(_deviceIdFile, deviceId);
+            WriteFile(_deviceIdFile, deviceId);
         }
 
         private void RemoveExpiredPayloads()
         {
-            try
+            var files = GetCachedEventFiles().ToList();
+            files.AddRange(GetCachedSessionFiles());
+            foreach (var file in files)
             {
-                var files = _cachedEvents.ToList();
-                files.AddRange(_cachedSessions);
-                foreach (var file in files)
+                try
                 {
                     var creationTime = File.GetCreationTimeUtc(file);
                     if ((DateTime.UtcNow - creationTime).TotalDays > MAX_CACHED_DAYS)
@@ -91,27 +112,27 @@ namespace BugsnagUnity
                         File.Delete(file);
                     }
                 }
+                catch { }
             }
-            catch { }
         }
 
         public void SaveSessionToCache(string id,string json)
         {
-            var path = _sessionsDirectory + "/" + id + SESSION_FILE_PREFIX;
+            var path = _sessionsDirectory + "/" + id + SESSION_FILE_SUFFIX;
             WritePayloadToDisk(json, path);
-            CheckForMaxCachedPayloads(_cachedSessions, _configuration.MaxPersistedSessions);
+            CheckForMaxCachedPayloads(GetCachedSessionFiles(), _configuration.MaxPersistedSessions);
         }
 
         public void SaveEventToCache(string id, string json)
         {
-            var path = _eventsDirectory + "/" + id + EVENT_FILE_PREFIX;
+            var path = _eventsDirectory + "/" + id + EVENT_FILE_SUFFIX;
             WritePayloadToDisk(json, path);
-            CheckForMaxCachedPayloads(_cachedEvents, _configuration.MaxPersistedEvents);
+            CheckForMaxCachedPayloads(GetCachedEventFiles(), _configuration.MaxPersistedEvents);
         }
 
         private void WritePayloadToDisk(string jsonData, string path)
         {
-            File.WriteAllText(path, jsonData);
+            WriteFile(path, jsonData);
         }
 
         private void CheckForMaxCachedPayloads(string[] payloads, int maxPayloads)
@@ -127,38 +148,56 @@ namespace BugsnagUnity
             var ordered = filePaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
             foreach (var file in ordered.Take(numToRemove))
             {
-                File.Delete(file);
-            }
+                DeleteFile(file);
+            }            
         }
 
         public void RemoveCachedEvent(string id)
         {
-            foreach (var cachedEventPath in _cachedEvents)
-            {
-                if (cachedEventPath.Contains(id))
-                {
-                    File.Delete(cachedEventPath);
-                }
-            }
+            RemovePayloadWithID(GetCachedEventFiles(), id);
         }
 
         public void RemoveCachedSession(string id)
         {
-            foreach (var cachedSessionPath in _cachedSessions)
+            RemovePayloadWithID(GetCachedSessionFiles(), id);
+        }
+
+        private void RemovePayloadWithID(string[] files, string id)
+        {
+            foreach (var path in files)
             {
-                if (cachedSessionPath.Contains(id))
+                if (path.Contains(id))
                 {
-                    File.Delete(cachedSessionPath);
+                    DeleteFile(path);
+                    return;
                 }
             }
         }
 
+        private void DeleteFile(string path)
+        {
+            try
+            {
+                File.Delete(path);
+            }catch{}
+        }
+
+        private void WriteFile(string path, string data)
+        {
+            try
+            {
+                File.WriteAllText(path, data);
+            }catch { }
+        }
+
         private string GetJsonFromCachePath(string path)
         {
-            if (File.Exists(path))
-            {
-                return File.ReadAllText(path);
-            }
+            try {
+                if (File.Exists(path))
+                {
+                    return File.ReadAllText(path);
+                }
+            } catch { }
             return null;
         }
        
@@ -188,29 +227,45 @@ namespace BugsnagUnity
 
         public List<string> GetCachedEventIds()
         {
-            var cachedEventIds = new List<string>();
-            var ordered = _cachedEvents.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
-            foreach (var path in ordered)
-            {
-                cachedEventIds.Add(Path.GetFileNameWithoutExtension(path));
-            }
-            return cachedEventIds;
+            return GetPayloadIDsFromDirectory(GetCachedEventFiles());
         }
 
         public List<string> GetCachedSessionIds()
         {
-            var cachedSessionIds = new List<string>();
-            var ordered = _cachedSessions.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+            return GetPayloadIDsFromDirectory(GetCachedSessionFiles());
+        }
+
+        private List<string> GetPayloadIDsFromDirectory(string[] files)
+        {
+            var names = new List<string>();
+            var ordered = GetCreationOrderedFiles(files);
             foreach (var path in ordered)
             {
-                cachedSessionIds.Add(Path.GetFileNameWithoutExtension(path));
+                try
+                {
+                    names.Add(Path.GetFileNameWithoutExtension(path));
+                }
+                catch { }
             }
-            return cachedSessionIds;
+            return names;
+        }
+
+        private string[] GetCreationOrderedFiles(string[] files)
+        {
+            try
+            {
+                var orderedFiles = files.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
+                return orderedFiles;
+            }
+            catch
+            {
+                return new string[] { };
+            }
         }
 
         public string GetCachedEvent(string id)
         {
-            foreach (var path in _cachedEvents)
+            foreach (var path in GetCachedEventFiles())
             {
                 if (path.Contains(id))
                 {
@@ -222,7 +277,7 @@ namespace BugsnagUnity
 
         public string GetCachedSession(string id)
         {
-            foreach (var path in _cachedSessions)
+            foreach (var path in GetCachedSessionFiles())
             {
                 if (path.Contains(id))
                 {
