@@ -94,11 +94,7 @@ namespace BugsnagUnity
 
         public void SaveDeviceIdToCache(string deviceId)
         {
-            try
-            {
-                File.WriteAllText(_deviceIdFile, deviceId);
-            }
-            catch { }
+            WriteFile(_deviceIdFile, deviceId);
         }
 
         private void RemoveExpiredPayloads()
@@ -136,11 +132,7 @@ namespace BugsnagUnity
 
         private void WritePayloadToDisk(string jsonData, string path)
         {
-            try
-            {
-                File.WriteAllText(path, jsonData);
-            }
-            catch{ }
+            WriteFile(path, jsonData);
         }
 
         private void CheckForMaxCachedPayloads(string[] payloads, int maxPayloads)
@@ -156,11 +148,7 @@ namespace BugsnagUnity
             var ordered = filePaths.OrderBy(file => File.GetCreationTimeUtc(file)).ToArray();
             foreach (var file in ordered.Take(numToRemove))
             {
-                try
-                {
-                    File.Delete(file);
-                }
-                catch { }
+                DeleteFile(file);
             }            
         }
 
@@ -192,6 +180,14 @@ namespace BugsnagUnity
             {
                 File.Delete(path);
             }catch{}
+        }
+
+        private void WriteFile(string path, string data)
+        {
+            try
+            {
+                File.WriteAllText(path, data);
+            }catch { }
         }
 
         private string GetJsonFromCachePath(string path)
