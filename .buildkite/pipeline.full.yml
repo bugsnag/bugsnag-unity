@@ -276,6 +276,8 @@ steps:
     depends_on: 'build-android-fixture-2018'
     agents:
       queue: opensource
+    env:
+      UNITY_VERSION: "2018.4.36f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -516,6 +518,8 @@ steps:
     depends_on: 'build-ios-fixture-2018'
     agents:
       queue: opensource
+    env:
+      UNITY_VERSION: "2018.4.36f1"
     plugins:
       artifacts#v1.5.0:
         download:
