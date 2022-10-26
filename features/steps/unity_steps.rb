@@ -55,7 +55,7 @@ When('I clear the Bugsnag cache') do
   end
 end
 
-When('I wait for event requests to fail') do
+When('I wait for requests to fail') do
   case Maze::Helper.get_current_platform
   when 'ios'
       sleep 45

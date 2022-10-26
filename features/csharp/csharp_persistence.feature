@@ -64,10 +64,20 @@ Feature: Unity Persistence
 
   Scenario: Max Persisted Events
     When I run the game in the "MaxPersistEvents" state
-    And I wait for event requests to fail
+    And I wait for requests to fail
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "ReportMaxPersistedEvents" state
+    And I wait to receive an error
+    And the exception "message" equals "true"
+
+  @skip_cocoa @skip_android #These platforms handle sessions separately and will have separate tests
+  Scenario: Max Persisted Sessions
+    When I run the game in the "MaxPersistSessions" state
+    And I wait for requests to fail
+    And I close the Unity app
+    And On Mobile I relaunch the app
+    And I run the game in the "ReportMaxPersistedSessions" state
     And I wait to receive an error
     And the exception "message" equals "true"
 
