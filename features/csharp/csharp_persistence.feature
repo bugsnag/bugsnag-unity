@@ -19,7 +19,7 @@ Feature: Unity Persistence
 
   Scenario: Receive a persisted event
     When I run the game in the "PersistEvent" state
-    And I wait for 10 seconds
+    And I wait for 30 seconds
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "PersistEventReport" state
