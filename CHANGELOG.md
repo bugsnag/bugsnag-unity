@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 7.4.0 (2022-10-26)
 
 ### Dependency updates
 
