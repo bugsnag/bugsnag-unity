@@ -8,7 +8,7 @@ public class SessionAfterStart : Scenario
     {
         if (Application.platform.Equals(RuntimePlatform.OSXPlayer))
         {
-            Invoke("DoException",1);
+            Invoke("DoException",3);
         }
         else
         {
