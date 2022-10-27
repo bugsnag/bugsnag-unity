@@ -573,6 +573,9 @@ public class Main : MonoBehaviour
     {
         switch (scenario)
         {
+            case "SwitchCrash":
+                var crashIt = Application.persistentDataPath;
+                break;
         case "MaxSwitchCacheSize":
                 StartCoroutine(DoMaxSwitchCacheTest());
                 break;
