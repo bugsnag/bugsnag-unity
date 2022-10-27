@@ -976,6 +976,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 529b0ac0e4cbf49ab8118dd9b41d1e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1160627408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1003,6 +1006,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a756a4d7da0a427d831bccd258bc970, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1338701864
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,6 +1118,7 @@ GameObject:
   - component: {fileID: 1388241500}
   - component: {fileID: 1388241502}
   - component: {fileID: 1388241503}
+  - component: {fileID: 1388241504}
   m_Layer: 0
   m_Name: Android
   m_TagString: Untagged
@@ -1223,6 +1230,18 @@ MonoBehaviour:
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
     Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1388241504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388241496}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b9fe89cc44fd455d9810d0f7183b32f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1419179096
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,11 +1,13 @@
 Feature: Callbacks
 
      Scenario: On Send Native Callback
-        When I run the "Java Background Crash" mobile scenario
-        And I wait for 4 seconds
-        And I relaunch the Unity mobile app
-        When I run the "On Send Native Callback" mobile scenario
-        Then I wait to receive an error
+
+        When I run the game in the "AndroidBackgroundJVMSmokeTest" state
+        And I wait for 2 seconds
+        And I clear any error dialogue
+        And On Mobile I relaunch the app
+        And I run the game in the "AndroidOnSendCallback" state
+        And I wait to receive an error
 
         And the error payload field "apiKey" equals "Custom ApiKey"
 
@@ -58,10 +60,13 @@ Feature: Callbacks
         And the event "breadcrumbs.0.metaData.Custom" equals "Metadata"
 
         # Feature flags
-        And the event "featureFlags.0.featureFlag" equals "fromStartup"
-        And the event "featureFlags.0.variant" equals "a"
-        And the event "featureFlags.1.featureFlag" equals "fromCallback"
-        And the event "featureFlags.1.variant" equals "a"
+        And the event "featureFlags.0.featureFlag" equals "flag1"
+        And the event "featureFlags.0.variant" equals "variant1"
+        And the event "featureFlags.2.featureFlag" equals "test"
+        And the event "featureFlags.2.variant" equals "variant"
+        And the event "featureFlags.3" is null
+
+
 
         # threads
         And the event "threads.0.name" equals "Custom Name"
