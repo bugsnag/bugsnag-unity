@@ -292,6 +292,8 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/csharp"
+          - "features/android"
+
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -315,6 +317,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/csharp"
+          - "features/android"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -340,6 +343,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/csharp"
+          - "features/android"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager

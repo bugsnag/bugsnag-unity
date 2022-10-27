@@ -268,6 +268,35 @@ Then("all possible parameters have been edited in a callback") do
   }
 end
 
+Then("all possible parameters have been edited in a session callback") do
+  steps %Q{
+
+    And the session payload field "sessions.0.id" equals "Custom Id"
+    And the session payload field "sessions.0.startedAt" equals "1985-08-21T01:01:01.000Z"
+    And the session payload field "sessions.0.user.id" equals "1"
+    And the session payload field "sessions.0.user.email" equals "2"
+    And the session payload field "sessions.0.user.name" equals "3"
+
+
+    # Device metadata
+    And the session payload field "device.osName" equals "OsName"
+    And the session payload field "device.osVersion" equals "OsVersion"
+    And the session payload field "device.id" equals "Id"
+    And the session payload field "device.model" equals "Model"
+    And the session payload field "device.manufacturer" equals "Manufacturer"
+    And the session payload field "device.jailbroken" is true
+    And the session payload field "device.locale" equals "Locale"
+
+    # App metadata
+    And the session payload field "app.id" equals "Id"
+    And the session payload field "app.releaseStage" equals "ReleaseStage"
+    And the session payload field "app.type" equals "Type"
+    And the session payload field "app.version" equals "Version"
+    And the session payload field "app.binaryArch" equals "BinaryArch"
+    And the session payload field "app.codeBundleId" equals "CodeBundleId"
+  }
+end
+
 Then("expected device metadata is included in the event") do
 
   puts Maze::Helper.get_current_platform

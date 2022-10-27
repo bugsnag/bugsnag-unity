@@ -1,14 +1,13 @@
-Feature: Android manual smoke tests
+Feature: Android NDK crash
 
-    Background:
-        Given I wait for the mobile game to start
+    #NOTE: Metadata testing will be improved in this scenario after PLAT-9127
 
     Scenario: NDK Signal raised
-        When I run the "NDK signal" mobile scenario
-        And I wait for 8 seconds
-        And I relaunch the Unity mobile app
-        When I clear any error dialogue
-        When I run the "Start SDK" mobile scenario
+        When I run the game in the "AndroidNDKSignal" state
+        And I wait for 3 seconds
+        And I clear any error dialogue
+        And On Mobile I relaunch the app
+        And I run the game in the "StartSDKDefault" state
         # Intentionally adding long wait times here - a core component of this
         # feature is ensuring that only a SINGLE event is sent. Unity includes
         # a handler for NDK events which are delivered immediately and should
@@ -27,55 +26,25 @@ Feature: Android manual smoke tests
         And the event "severityReason.type" equals "signal"
         And the event "severityReason.attributes.signalType" equals "SIGSEGV"
         And the event "severityReason.unhandledOverridden" is false
-
+        And expected app metadata is included in the event
         # Stacktrace validation
         And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
         And the event "exceptions.0.stacktrace.0.method" is not null
         And the error payload field "events.0.exceptions.0.stacktrace.0.frameAddress" starts with "0x"
 
-        # App data
-        And the event "app.id" equals "com.bugsnag.mazerunner"
-        And the event "app.releaseStage" equals "production"
-        And the event "app.type" equals "android"
-        And the event "app.version" equals "1.2.3"
-        And the event "app.versionCode" equals 123
-        And the error payload field "events.0.app.duration" is not null
-        And the error payload field "events.0.app.durationInForeground" is not null
-        And the event "app.inForeground" is true
-        And the event "app.isLaunching" is not null
-        And the event "app.binaryArch" is not null
-
-        # Device data
-        And the error payload field "events.0.device.cpuAbi" is a non-empty array
-        And the event "device.jailbroken" is false
-        And the event "device.id" is not null
-        And the event "device.locale" is not null
-        And the event "device.manufacturer" is not null
-        And the event "device.model" is not null
-        And the event "device.osName" equals "android"
-        And the event "device.osVersion" is not null
-        And the event "device.runtimeVersions" is not null
-        And the error payload field "events.0.device.totalMemory" is not null
-        And the event "device.orientation" equals "portrait"
-        And the event "device.time" is not null
+        #breadcrumbs
+        And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
+        And the event "breadcrumbs.1.name" equals "test"
 
         # User
         And the event "user.id" is not null
 
         # Native context override
-        And the event "context" equals "My context"
+        And the event "context" equals "My Context"
 
         # Metadata
-        And the event "metaData.app.activeScreen" equals "UnityPlayerActivity"
-        And the event "metaData.app.name" equals "Mazerunner"
-        And the event "metaData.device.brand" equals "google"
-        And the event "metaData.device.dpi" equals 440
-        And the event "metaData.device.emulator" is false
-        And the event "metaData.device.locationStatus" is not null
-        And the event "metaData.device.networkAccess" is not null
-        And the event "metaData.device.screenDensity" is not null
-        And the event "metaData.device.screenResolution" is not null
-        And the event "metaData.device.osLanguage" is not null
-        And the event "app.type" equals "android"
-        And the event "metaData.app.companyName" equals "bugsnag"
-        And the event "metaData.app.name" equals "Mazerunner"
+        And the event "metaData.init" is null
+        And the event "metaData.custom.letter" equals "QX"
+        And the event "metaData.custom.better" equals "400"
+        And the event "metaData.test.test1" equals "test1"
+        And the event "metaData.test.test2" is null

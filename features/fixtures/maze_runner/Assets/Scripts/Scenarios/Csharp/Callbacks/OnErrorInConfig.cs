@@ -6,7 +6,7 @@ public class OnErrorInConfig : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AddOnError(SimpleCallback);
+        Configuration.AddOnError(SimpleEventCallback);
     }
 
     public override void Run()

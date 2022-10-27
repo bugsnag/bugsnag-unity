@@ -6,7 +6,7 @@ public class OnSendInConfig : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AddOnSendError(SimpleCallback);
+        Configuration.AddOnSendError(SimpleEventCallback);
     }
 
     public override void Run()

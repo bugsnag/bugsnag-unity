@@ -17,7 +17,6 @@ public class ReportMaxPersistedSessions : Scenario
     private bool CheckForSessions()
     {
         var numSessions = Directory.GetFiles(Application.persistentDataPath + "/Bugsnag/Sessions", "*.session").Length;
-        Debug.Log("FOUND SESSIONS: " + numSessions);
         var foundSessions = numSessions == 3;
         if (Directory.Exists(Application.persistentDataPath + "/Bugsnag"))
         {
