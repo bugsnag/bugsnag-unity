@@ -6,7 +6,7 @@ Feature: Unity Persistence
   @skip_windows @skip_macos @skip_webgl #pending PLAT-8632
   Scenario: Receive a persisted session
     When I run the game in the "PersistSession" state
-    And I wait for 10 seconds
+    And I wait for requests to fail
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "PersistSessionReport" state
