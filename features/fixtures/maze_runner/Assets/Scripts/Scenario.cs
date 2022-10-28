@@ -15,6 +15,16 @@ public class Scenario : MonoBehaviour
 
 #endif
 
+#if UNITY_IOS || UNITY_TVOS
+
+    [DllImport("__Internal")]
+    private static extern void RaiseCocoaSignal();
+
+    [DllImport("__Internal")]
+    private static extern void TriggerCocoaCppException();
+
+#endif
+
     public Configuration Configuration;
 
     [HideInInspector]
@@ -237,7 +247,7 @@ public class Scenario : MonoBehaviour
 #endif
     }
 
-    public void TriggerJvmException()
+    public void JvmException()
     {
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -246,7 +256,7 @@ public class Scenario : MonoBehaviour
         }
     }
 
-    public void TriggerBackgroundJVMException()
+    public void BackgroundJVMException()
     {
         if (Application.platform == RuntimePlatform.Android)
         {
@@ -255,13 +265,27 @@ public class Scenario : MonoBehaviour
         }
     }
 
-    public void RaiseNdkSignal()
+    public void NdkSignal()
     {
         if (Application.platform == RuntimePlatform.Android)
         {
             AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
             crashClass.CallStatic("raiseNdkSignal");
         }
+    }
+
+    public void IosException()
+    {
+#if UNITY_IOS || UNITY_TVOS
+        TriggerCocoaCppException();
+#endif
+    }
+
+    public void IosSignal()
+    {
+#if UNITY_IOS || UNITY_TVOS
+        RaiseCocoaSignal();
+#endif
     }
 
 }

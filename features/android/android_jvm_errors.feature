@@ -1,6 +1,7 @@
 Feature: Android JVM Exceptions
 
-
+Background:
+        Given I clear the Bugsnag cache
 
     Scenario: Android JVM Smoke Test
         When I run the game in the "AndroidJVMSmokeTest" state

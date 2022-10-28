@@ -1,18 +1,19 @@
 ﻿using BugsnagUnity;
 
-public class AndroidNDKSignal : Scenario
+public class IosSignal : Scenario
 {
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.Context = "My Context";
+        Configuration.AutoTrackSessions = false;
     }
 
     public override void Run()
     {
-        Bugsnag.LeaveBreadcrumb("test");
-        AddTestingMetadata();
         AddTestingFeatureFlags();
-        NdkSignal();
+        AddTestingMetadata();
+        Bugsnag.LeaveBreadcrumb("test");
+        Bugsnag.SetUser("1", "2", "3");
+        IosSignal();
     }
 }

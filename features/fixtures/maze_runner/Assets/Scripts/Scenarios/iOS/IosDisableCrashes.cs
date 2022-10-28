@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AndroidDisableCrashes : Scenario
+public class IosDisableCrashes : Scenario
 {
     public override void PrepareConfig(string apiKey, string host)
     {
-
         base.PrepareConfig(apiKey, host);
         Configuration.EnabledErrorTypes.Crashes = false;
+        Configuration.AutoTrackSessions = false;
     }
 
     public override void Run()
     {
-        BackgroundJVMException();
+        IosException();
     }
 }

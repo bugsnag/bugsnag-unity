@@ -1,5 +1,8 @@
 Feature: Android NDK crash
 
+    Background:
+        Given I clear the Bugsnag cache
+
     #NOTE: Metadata testing will be improved in this scenario after PLAT-9127
 
     Scenario: NDK Signal raised

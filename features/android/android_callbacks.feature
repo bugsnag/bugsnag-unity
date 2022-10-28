@@ -1,5 +1,8 @@
 Feature: Callbacks
 
+   Background:
+        Given I clear the Bugsnag cache
+
      Scenario: On Send Native Callback
 
         When I run the game in the "AndroidBackgroundJVMSmokeTest" state

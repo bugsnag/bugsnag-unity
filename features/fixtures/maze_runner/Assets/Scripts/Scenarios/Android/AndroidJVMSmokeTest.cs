@@ -14,6 +14,6 @@ public class AndroidJVMSmokeTest : Scenario
         Bugsnag.LeaveBreadcrumb("test");
         AddTestingMetadata();
         AddTestingFeatureFlags();
-        TriggerJvmException();
+        JvmException();
     }
 }
