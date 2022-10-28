@@ -39,6 +39,13 @@ public class Scenario : MonoBehaviour
         Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
     }
 
+    public void AddSwitchConfigValues(SwitchCacheType switchCacheType, int switchCacheIndex, string switchMountName)
+    {
+        Configuration.SwitchCacheType = switchCacheType;
+        Configuration.SwitchCacheIndex = switchCacheIndex;
+        Configuration.SwitchCacheMountName = switchMountName;
+    }
+
     public virtual void StartBugsnag()
     {
         Bugsnag.Start(Configuration);

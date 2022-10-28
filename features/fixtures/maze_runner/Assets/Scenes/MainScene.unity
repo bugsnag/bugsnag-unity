@@ -883,6 +883,100 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1105517631
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1105517632}
+  - component: {fileID: 1105517636}
+  - component: {fileID: 1105517635}
+  - component: {fileID: 1105517634}
+  - component: {fileID: 1105517633}
+  m_Layer: 0
+  m_Name: Switch
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1105517632
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105517631}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1754371141}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1105517633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105517631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b3e3ed23947246a6a870a949fd38633, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1105517634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105517631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1f2a957475664c938a1b5abc2d9a67c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1105517635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105517631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e93ca43bfe04470be8fd9e0e49db13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1105517636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1105517631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e017dbbe548946338fe06f8e85d6781, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1160627402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1677,6 +1771,7 @@ Transform:
   - {fileID: 2059449698}
   - {fileID: 1388241497}
   - {fileID: 1947744086}
+  - {fileID: 1105517632}
   m_Father: {fileID: 1789907206}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
