@@ -272,7 +272,7 @@ Then("all possible parameters have been edited in a session callback") do
   steps %Q{
 
     And the session payload field "sessions.0.id" equals "Custom Id"
-    And the session payload field "sessions.0.startedAt" equals "1985-08-21T01:01:01.000Z"
+    And the session payload field "sessions.0.startedAt" matches the regex "1985-08-21T01:01:01(.000)?Z"
     And the session payload field "sessions.0.user.id" equals "1"
     And the session payload field "sessions.0.user.email" equals "2"
     And the session payload field "sessions.0.user.name" equals "3"

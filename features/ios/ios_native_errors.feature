@@ -48,7 +48,7 @@ Feature: iOS Native Errors
         And the event "app.type" is not null
         And the event "app.version" is not null
         And the event "metaData.app.companyName" equals "bugsnag"
-        And the event "metaData.app.name" equals "mazerunner"
+        And the event "metaData.app.name" equals "Mazerunner"
         And the event "metaData.app.buildno" is not null
 
         # Exception details
@@ -90,7 +90,7 @@ Feature: iOS Native Errors
         And the event "app.type" is not null
         And the event "app.version" is not null
         And the event "metaData.app.companyName" equals "bugsnag"
-        And the event "metaData.app.name" equals "mazerunner"
+        And the event "metaData.app.name" equals "Mazerunner"
         And the event "metaData.app.buildno" is not null
 
         # Exception details
