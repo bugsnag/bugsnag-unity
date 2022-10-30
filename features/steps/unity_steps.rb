@@ -268,52 +268,52 @@ Then("all possible parameters have been edited in a callback") do
   }
 end
 
+Then("all possible parameters have been edited in a session callback") do
+  steps %Q{
+
+    And the session payload field "sessions.0.id" equals "Custom Id"
+    And the session payload field "sessions.0.startedAt" matches the regex "1985-08-21T01:01:01(.000)?Z"
+    And the session payload field "sessions.0.user.id" equals "1"
+    And the session payload field "sessions.0.user.email" equals "2"
+    And the session payload field "sessions.0.user.name" equals "3"
+
+
+    # Device metadata
+    And the session payload field "device.osName" equals "OsName"
+    And the session payload field "device.osVersion" equals "OsVersion"
+    And the session payload field "device.id" equals "Id"
+    And the session payload field "device.model" equals "Model"
+    And the session payload field "device.manufacturer" equals "Manufacturer"
+    And the session payload field "device.jailbroken" is true
+    And the session payload field "device.locale" equals "Locale"
+
+    # App metadata
+    And the session payload field "app.id" equals "Id"
+    And the session payload field "app.releaseStage" equals "ReleaseStage"
+    And the session payload field "app.type" equals "Type"
+    And the session payload field "app.version" equals "Version"
+    And the session payload field "app.binaryArch" equals "BinaryArch"
+    And the session payload field "app.codeBundleId" equals "CodeBundleId"
+  }
+end
+
 Then("expected device metadata is included in the event") do
-
-  puts Maze::Helper.get_current_platform
-
-  case Maze::Helper.get_current_platform
-    when 'browser'
-        steps %Q{
-        And the event "device.id" is not null
-        And the event "device.locale" is not null
-        And the event "device.model" is not null
-        And the event "device.osName" is not null
-        And the event "device.osVersion" is not null
-        And the event "device.runtimeVersions" is not null
-        And the event "device.time" is a timestamp
-        And the event "device.totalMemory" is not null
-        And the event "metaData.device.screenDensity" is not null
-        And the event "metaData.device.screenResolution" is not null
-        And the event "metaData.device.osLanguage" equals "English"
-        And the event "metaData.device.graphicsDeviceVersion" is not null
-        And the event "metaData.device.graphicsMemorySize" is not null
-        And the event "metaData.device.processorType" is not null
-      }
-    else
-      steps %Q{
-        And the event "device.freeDisk" is not null
-        And the event "device.freeMemory" is not null
-        And the event "device.id" is not null
-        And the event "device.locale" is not null
-        And the event "device.manufacturer" is not null
-        And the event "device.model" is not null
-        And the event "device.osName" is not null
-        And the event "device.osVersion" is not null
-        And the event "device.runtimeVersions" is not null
-        And the event "device.time" is a timestamp
-        And the event "device.totalMemory" is not null
-        And the event "metaData.device.screenDensity" is not null
-        And the event "metaData.device.screenResolution" is not null
-        And the event "metaData.device.osLanguage" equals "English"
-        And the event "metaData.device.graphicsDeviceVersion" is not null
-        And the event "metaData.device.graphicsMemorySize" is not null
-        And the event "metaData.device.processorType" is not null
-      }
-    end
-
-
-  
+  steps %Q{
+    And the event "device.id" is not null
+    And the event "device.locale" is not null
+    And the event "device.model" is not null
+    And the event "device.osName" is not null
+    And the event "device.osVersion" is not null
+    And the event "device.runtimeVersions" is not null
+    And the event "device.time" is a timestamp
+    And the event "device.totalMemory" is not null
+    And the event "metaData.device.screenDensity" is not null
+    And the event "metaData.device.screenResolution" is not null
+    And the event "metaData.device.osLanguage" equals "English"
+    And the event "metaData.device.graphicsDeviceVersion" is not null
+    And the event "metaData.device.graphicsMemorySize" is not null
+    And the event "metaData.device.processorType" is not null
+  }
 end
 
 Then("expected app metadata is included in the event") do

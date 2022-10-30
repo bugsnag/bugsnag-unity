@@ -3,6 +3,7 @@ using UnityEngine;
 using BugsnagUnity;
 using BugsnagUnity.Payload;
 using System.Runtime.InteropServices;
+using System;
 
 public class Scenario : MonoBehaviour
 {
@@ -11,6 +12,16 @@ public class Scenario : MonoBehaviour
 
     [DllImport("NativeCrashy")]
     private static extern void crashy_signal_runner(float num);
+
+#endif
+
+#if UNITY_IOS || UNITY_TVOS
+
+    [DllImport("__Internal")]
+    private static extern void RaiseCocoaSignal();
+
+    [DllImport("__Internal")]
+    private static extern void TriggerCocoaCppException();
 
 #endif
 
@@ -26,6 +37,13 @@ public class Scenario : MonoBehaviour
         Configuration.ScriptingBackend = FindScriptingBackend();
         Configuration.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
+    }
+
+    public void AddSwitchConfigValues(SwitchCacheType switchCacheType, int switchCacheIndex, string switchMountName)
+    {
+        Configuration.SwitchCacheType = switchCacheType;
+        Configuration.SwitchCacheIndex = switchCacheIndex;
+        Configuration.SwitchCacheMountName = switchMountName;
     }
 
     public virtual void StartBugsnag()
@@ -102,7 +120,7 @@ public class Scenario : MonoBehaviour
         Configuration.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
     }
 
-    public bool SimpleCallback(IEvent @event)
+    public bool SimpleEventCallback(IEvent @event)
     {
         EditAllAppData(@event);
         EditAllDeviceData(@event);
@@ -126,6 +144,29 @@ public class Scenario : MonoBehaviour
 
         @event.AddFeatureFlag("fromCallback", "a");
 
+        return true;
+    }
+
+    public bool SimpleSessionCallback(ISession session)
+    {
+        session.Id = "Custom Id";
+        session.StartedAt = new DateTimeOffset(1985, 08, 21, 01, 01, 01, TimeSpan.Zero);
+        session.SetUser("1","2","3");
+        session.App.BinaryArch = "BinaryArch";
+        session.App.BundleVersion = "BundleVersion";
+        session.App.CodeBundleId = "CodeBundleId";
+        session.App.DsymUuid = "DsymUuid";
+        session.App.Id = "Id";
+        session.App.ReleaseStage = "ReleaseStage";
+        session.App.Type = "Type";
+        session.App.Version = "Version";
+        session.Device.Id = "Id";
+        session.Device.Jailbroken = true;
+        session.Device.Locale = "Locale";
+        session.Device.Manufacturer = "Manufacturer";
+        session.Device.Model = "Model";
+        session.Device.OsName = "OsName";
+        session.Device.OsVersion = "OsVersion";
         return true;
     }
 
@@ -212,4 +253,46 @@ public class Scenario : MonoBehaviour
         crashy_signal_runner(8);
 #endif
     }
+
+    public void JvmException()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("triggerJvmException");
+        }
+    }
+
+    public void BackgroundJVMException()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("triggerBackgroundJvmException");
+        }
+    }
+
+    public void NdkSignal()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            AndroidJavaClass crashClass = new AndroidJavaClass("com.example.bugsnagcrashplugin.CrashHelper");
+            crashClass.CallStatic("raiseNdkSignal");
+        }
+    }
+
+    public void IosException()
+    {
+#if UNITY_IOS || UNITY_TVOS
+        TriggerCocoaCppException();
+#endif
+    }
+
+    public void IosSignal()
+    {
+#if UNITY_IOS || UNITY_TVOS
+        RaiseCocoaSignal();
+#endif
+    }
+
 }

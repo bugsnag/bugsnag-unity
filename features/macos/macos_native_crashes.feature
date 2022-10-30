@@ -23,6 +23,7 @@ Feature: MacOS native crashes
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"
 
+#NOTE to be improved in PLAT-9129
 
   @macos_only
   Scenario: Reporting a MacOS native crash with an onsend callback

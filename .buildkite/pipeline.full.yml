@@ -292,6 +292,8 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_11_0"
           - "features/csharp"
+          - "features/android"
+
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -315,6 +317,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_11_0"
           - "features/csharp"
+          - "features/android"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -340,6 +343,7 @@ steps:
           - "--farm=bs"
           - "--device=ANDROID_11_0"
           - "features/csharp"
+          - "features/android"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -535,6 +539,7 @@ steps:
           - "--device=IOS_15"
           - "--fail-fast"
           - "features/csharp"
+          - "features/ios"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -559,6 +564,7 @@ steps:
           - "--device=IOS_15"
           - "--fail-fast"
           - "features/csharp"
+          - "features/ios"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager
@@ -583,6 +589,7 @@ steps:
           - "--device=IOS_15"
           - "--fail-fast"
           - "features/csharp"
+          - "features/ios"
     concurrency: 24
     concurrency_group: browserstack-app
     concurrency_method: eager

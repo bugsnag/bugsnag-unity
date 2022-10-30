@@ -52,3 +52,16 @@ Feature: Callbacks
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "Error 1"
     And all possible parameters have been edited in a callback
+
+  @skip_windows @skip_webgl #Pending PLAT-9130
+  Scenario: Session callbacks in config
+    When I run the game in the "OnSessionInConfig" state
+    And I wait to receive 1 session
+    And all possible parameters have been edited in a session callback
+
+  @skip_windows @skip_webgl #Pending PLAT-9130
+  Scenario: Session callbacks in config
+    When I run the game in the "OnSessionAfterStart" state
+    And I wait to receive 1 session
+    And all possible parameters have been edited in a session callback
+

@@ -1,50 +1,16 @@
 Feature: Callbacks
 
-    Background:
-        Given I wait for the mobile game to start
-        And I clear all persistent data
-
-    Scenario: Session Callback
-        When I run the "Session Callback" mobile scenario
-        And I wait to receive a session
-
-        # Session data
-        And the session payload field "sessions.0.id" equals "Custom Id"
-        And the session payload field "sessions.0.startedAt" equals "1985-08-21T01:01:01.000Z"
-        And the session payload field "sessions.0.user.id" equals "1"
-        And the session payload field "sessions.0.user.email" equals "2"
-        And the session payload field "sessions.0.user.name" equals "3"
-
-
-        # App Data
-        And the session payload field "app.binaryArch" equals "Custom BinaryArch"
-        And the session payload field "app.buildUUID" equals "Custom BuildUuid"
-        And the session payload field "app.codeBundleId" equals "Custom CodeBundleId" 
-        And the session payload field "app.id" equals "Custom Id"
-        And the session payload field "app.releaseStage" equals "Custom ReleaseStage"
-        And the session payload field "app.type" equals "Custom Type"
-        And the session payload field "app.version" equals "Custom Version"
-        And the session payload field "app.versionCode" equals 999
-
-
-        # Device data
-        And the session payload field "device.cpuAbi" is a non-empty array
-        And the session payload field "device.jailbroken" is true
-        And the session payload field "device.id" equals "Custom Device Id"
-        And the session payload field "device.locale" equals "Custom Locale"
-        And the session payload field "device.manufacturer" equals "Custom Manufacturer"
-        And the session payload field "device.model" equals "Custom Model"
-        And the session payload field "device.osName" equals "Custom OsName"
-        And the session payload field "device.osVersion" equals "Custom OsVersion"
-        And the session payload field "device.runtimeVersions" is not null
-        And the session payload field "device.totalMemory" equals 999
+   Background:
+        Given I clear the Bugsnag cache
 
      Scenario: On Send Native Callback
-        When I run the "Java Background Crash" mobile scenario
-        And I wait for 4 seconds
-        And I relaunch the Unity mobile app
-        When I run the "On Send Native Callback" mobile scenario
-        Then I wait to receive an error
+
+        When I run the game in the "AndroidBackgroundJVMSmokeTest" state
+        And I wait for 2 seconds
+        And I clear any error dialogue
+        And On Mobile I relaunch the app
+        And I run the game in the "AndroidOnSendCallback" state
+        And I wait to receive an error
 
         And the error payload field "apiKey" equals "Custom ApiKey"
 
@@ -97,10 +63,13 @@ Feature: Callbacks
         And the event "breadcrumbs.0.metaData.Custom" equals "Metadata"
 
         # Feature flags
-        And the event "featureFlags.0.featureFlag" equals "fromStartup"
-        And the event "featureFlags.0.variant" equals "a"
-        And the event "featureFlags.1.featureFlag" equals "fromCallback"
-        And the event "featureFlags.1.variant" equals "a"
+        And the event "featureFlags.0.featureFlag" equals "flag1"
+        And the event "featureFlags.0.variant" equals "variant1"
+        And the event "featureFlags.2.featureFlag" equals "test"
+        And the event "featureFlags.2.variant" equals "variant"
+        And the event "featureFlags.3" is null
+
+
 
         # threads
         And the event "threads.0.name" equals "Custom Name"
