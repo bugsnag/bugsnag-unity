@@ -8,8 +8,7 @@ Feature: iOS Native Errors
         And I wait for 2 seconds
         And On Mobile I relaunch the app
         And I run the game in the "StartSDKDefault" state
-        And I wait for 3 seconds
-        And I wait to receive 1 error
+        And I wait to receive an error
         And the exception "message" equals "The app was likely terminated by the operating system while in the foreground"
 
     Scenario: Last Run Info
@@ -29,7 +28,6 @@ Feature: iOS Native Errors
         And I clear any error dialogue
         And On Mobile I relaunch the app
         And I run the game in the "StartSDKDefault" state
-        And I wait for 3 seconds
         And I wait to receive an error
         And expected device metadata is included in the event
         And feature flags are included in the event
@@ -71,7 +69,6 @@ Feature: iOS Native Errors
         And I clear any error dialogue
         And On Mobile I relaunch the app
         And I run the game in the "StartSDKDefault" state
-        And I wait for 3 seconds
         And I wait to receive an error
         And expected device metadata is included in the event
         And feature flags are included in the event
