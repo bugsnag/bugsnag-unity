@@ -53,8 +53,6 @@ Feature: Unity Persistence
     And I wait to receive an error
     And the exception "message" equals "PersistDeviceId"
     And the error payload field "events.0.device.id" is stored as the value "device_id"
-    And I discard the oldest error
-    And I wait for 3 seconds
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "PersistDeviceId" state
