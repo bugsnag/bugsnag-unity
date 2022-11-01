@@ -28,6 +28,7 @@ namespace BugsnagUnity
         public int MaxPersistedEvents = 32;
         public int MaxPersistedSessions = 128;
         public int MaxReportedThreads = 200;
+        public int MaxStringValueLength = 10000;
         public string NotifyEndpoint = "https://notify.bugsnag.com";
         public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
         public bool PersistUser = true;
@@ -90,6 +91,7 @@ namespace BugsnagUnity
             config.MaxPersistedEvents = MaxPersistedEvents;
             config.MaxPersistedSessions = MaxPersistedSessions;
             config.MaxReportedThreads = MaxReportedThreads;
+            config.MaxStringValueLength = MaxStringValueLength;
             config.NotifyLogLevel = GetLogTypeFromLogLevel( NotifyLogLevel );
             config.SendThreads = SendThreads;
             if (!string.IsNullOrEmpty(NotifyEndpoint) && !string.IsNullOrEmpty(SessionEndpoint))

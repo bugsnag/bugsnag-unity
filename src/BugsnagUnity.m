@@ -497,6 +497,10 @@ void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEv
   ((__bridge BugsnagConfiguration *)configuration).maxPersistedEvents = maxPersistedEvents;
 }
 
+void bugsnag_setMaxStringValueLength(const void *configuration, int maxStringValueLength) {
+  ((__bridge BugsnagConfiguration *)configuration).maxStringValueLength = maxStringValueLength;
+}
+
 void bugsnag_setMaxPersistedSessions(const void *configuration, int maxPersistedSessions) {
   ((__bridge BugsnagConfiguration *)configuration).maxPersistedSessions = maxPersistedSessions;
 }
