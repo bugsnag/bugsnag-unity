@@ -93,6 +93,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setMaxPersistedEvents(IntPtr configuration, int maxPersistedEvents);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setMaxStringValueLength(IntPtr configuration, int maxStringValueLength);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setMaxPersistedSessions(IntPtr configuration, int maxPersistedSessions);
 
         [DllImport(Import)]
