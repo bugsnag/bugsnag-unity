@@ -1,9 +1,5 @@
 require 'cgi'
 
-#
-# Common steps
-#
-
 When('On Mobile I relaunch the app') do
   next unless %w[android ios].include? Maze::Helper.get_current_platform 
   Maze.driver.launch_app
@@ -188,12 +184,6 @@ Then('the current error request events match one of:') do |table|
         message == values['message']
     end, "No event matches the following values: #{values}")
   end
-end
-
-Then('the event {string} matches one of:') do |path, table|
-  payload_value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{path}")
-  valid_values = table.raw.flat_map { |e| e }
-  Maze.check.true(valid_values.any? { |frame| frame == payload_value }, "Value #{payload_value} did not match any of the expected values")
 end
 
 Then("custom metadata is included in the event") do
