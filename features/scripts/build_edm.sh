@@ -12,7 +12,7 @@ pushd "${0%/*}"
   script_path=`pwd`
 popd
 
-pushd "$script_path/../../fixtures"
+pushd "$script_path/../fixtures"
 
 DEFAULT_CLI_ARGS="-quit -batchmode -nographics"
 project_path=`pwd`/EDM_Fixture
@@ -23,7 +23,7 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
                   -projectPath $project_path \
                   -ignoreCompilerErrors \
                   -logFile $script_path/edmImport.log\
-                  -importPackage $script_path/../../../Bugsnag.unitypackage
+                  -importPackage $script_path/../../Bugsnag.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
