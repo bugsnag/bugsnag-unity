@@ -1,6 +1,6 @@
 Feature: Session Tracking
 
-    Background:
+  Background:
     Given I clear the Bugsnag cache
 
   @skip_macos #Unable to reliably get the in focus notification from macos
@@ -11,28 +11,28 @@ Feature: Session Tracking
     And the session payload field "app.version" is not null
     And the session payload field "app.releaseStage" equals "production"
     And the session payload field "app.type" equals the platform-dependent string:
-      | macos   | MacOS   |
-      | windows | Windows |
+      | macos   | MacOS           |
+      | windows | Windows         |
       | switch  | nintendo-switch |
-      | browser | WebGL   |
-      | android | android |
-      | ios     | iOS     |
+      | browser | WebGL           |
+      | android | android         |
+      | ios     | iOS             |
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
-      | switch | Nintendo Switch |
-      | browser | Unix |
-      | android | android |
-      | ios     | iOS     |
+      | switch  | Nintendo Switch      |
+      | browser | Unix                 |
+      | android | android              |
+      | ios     | iOS                  |
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
-      | macos   | Apple |
-      | windows | PC    |
-      | switch | Nintendo |
-      | browser | @skip |
-      | android | @skip |
-      | ios     | Apple |
+      | macos   | Apple    |
+      | windows | PC       |
+      | switch  | Nintendo |
+      | browser | @skip    |
+      | android | @skip    |
+      | ios     | Apple    |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -46,28 +46,28 @@ Feature: Session Tracking
     And the session payload field "app.version" is not null
     And the session payload field "app.releaseStage" equals "production"
     And the session payload field "app.type" equals the platform-dependent string:
-      | macos   | MacOS   |
-      | windows | Windows |
-      | switch | nintendo-switch |
-      | browser | WebGL |
-      | android | android |
-      | ios     | iOS     |
+      | macos   | MacOS           |
+      | windows | Windows         |
+      | switch  | nintendo-switch |
+      | browser | WebGL           |
+      | android | android         |
+      | ios     | iOS             |
     And the session payload field "device.osVersion" is not null
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
-      | switch | Nintendo Switch |
-      | browser | Unix |
-      | android | android |
-      | ios     | iOS     |
+      | switch  | Nintendo Switch      |
+      | browser | Unix                 |
+      | android | android              |
+      | ios     | iOS                  |
     And the session payload field "device.model" is not null
     And the session payload field "device.manufacturer" equals the platform-dependent string:
-      | macos   | Apple |
-      | windows | PC    |
-      | switch | Nintendo |
-      | browser | @skip |
-      | android | @skip |
-      | ios     | Apple     |
+      | macos   | Apple    |
+      | windows | PC       |
+      | switch  | Nintendo |
+      | browser | @skip    |
+      | android | @skip    |
+      | ios     | Apple    |
     And the session "id" is not null
     And the session "startedAt" is not null
     And the session "user.id" is not null
@@ -99,7 +99,7 @@ Feature: Session Tracking
     And the error payload field "events.0.session.id" is stored as the value "session_id"
     And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
 
-  
+
   @skip_android #pending PLAT-9086
   Scenario: Multiple event counts in one session
     When I run the game in the "MultipleEventCounts" state
@@ -107,10 +107,10 @@ Feature: Session Tracking
     And I wait to receive 3 errors
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
     And the current error request events match one of:
-      | message                      | handled | unhandled |
-      | Handled Error 1              | 1       | 0         |
-      | Handled Error 2              | 2       | 0         |
-      | Unhandled Error 1            | 2       | 1         |
+      | message           | handled | unhandled |
+      | Handled Error 1   | 1       | 0         |
+      | Handled Error 2   | 2       | 0         |
+      | Unhandled Error 1 | 2       | 1         |
 
   Scenario: No Auto session when not in enabled release stage
     When I run the game in the "SessionNotInReleaseStage" state

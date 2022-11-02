@@ -13,7 +13,7 @@ Feature: csharp events
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "InfiniteLaunchDuration"
     And the event "app.isLaunching" equals "true"
-  
+
   @cocoa_only
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
@@ -25,7 +25,7 @@ Feature: csharp events
     And I discard the oldest error
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" equals "false"
-  
+
   @cocoa_only
   Scenario: Set long launch time
     When I run the game in the "LongLaunchTime" state
@@ -37,7 +37,7 @@ Feature: csharp events
     And I discard the oldest error
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" equals "false"
-  
+
   @cocoa_only
   Scenario: Set short launch time
     When I run the game in the "ShortLaunchTime" state
@@ -52,15 +52,15 @@ Feature: csharp events
 
 
 #Correct tests to be enabled when PLAT-9061 is fixed
-  @skip_cocoa 
+  @skip_cocoa
   Scenario: Launch duration set to 0
     When I run the game in the "InfiniteLaunchDuration" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "InfiniteLaunchDuration"
     And the event "app.isLaunching" is true
-  
-  @skip_cocoa 
+
+  @skip_cocoa
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state
     And I wait to receive 2 errors
@@ -71,7 +71,7 @@ Feature: csharp events
     And I discard the oldest error
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" is false
-  
+
   @skip_cocoa @skip_windows @skip_webgl # PLAT-9061
   Scenario: Set long launch time
     When I run the game in the "LongLaunchTime" state
@@ -83,7 +83,7 @@ Feature: csharp events
     And I discard the oldest error
     And the exception "message" equals "Error 2"
     And the event "app.isLaunching" is false
-  
+
   @skip_cocoa @skip_windows @skip_webgl # PLAT-9061
   Scenario: Set short launch time
     When I run the game in the "ShortLaunchTime" state
