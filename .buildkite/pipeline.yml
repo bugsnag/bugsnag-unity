@@ -147,9 +147,9 @@ steps:
   #         - Bugsnag.unitypackage
   #       upload:
   #         - features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk
-  #         - features/scripts/mobile/buildEdmFixture.log
-  #         - features/scripts/mobile/edmImport.log
-  #         - features/scripts/mobile/enableEdm.log
+  #         - features/scripts/buildEdmFixture.log
+  #         - features/scripts/edmImport.log
+  #         - features/scripts/enableEdm.log
   #   commands:
   #     - rake test:edm:build
   #   retry:

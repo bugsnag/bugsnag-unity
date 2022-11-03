@@ -12,7 +12,7 @@ pushd "${0%/*}"
   script_path=`pwd`
 popd
 
-pushd "$script_path/../../fixtures"
+pushd "$script_path/../fixtures"
 
 # Assemble the Android AAR and copy it into the Unity plugins directory
 echo "Assembling Android mazerunner code into AAR"
@@ -37,6 +37,6 @@ echo "Importing Bugsnag.unitypackage into $project_path"
 $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
                   -projectPath $project_path \
                   -ignoreCompilerErrors \
-                  -importPackage $script_path/../../../Bugsnag.unitypackage
+                  -importPackage $script_path/../../Bugsnag.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi

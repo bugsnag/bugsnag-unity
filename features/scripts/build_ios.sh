@@ -3,7 +3,7 @@
 pushd "${0%/*}"
   script_path=`pwd`
 popd
-pushd "$script_path/../../fixtures"
+pushd "$script_path/../fixtures"
 project_path=`pwd`/maze_runner
 
 # Clean any previous builds
