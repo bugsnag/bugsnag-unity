@@ -48,18 +48,6 @@ Feature: Unity Persistence
     And the event "breadcrumbs.0.name" equals "Persist Message"
     And the event "metaData.Persist Section.Persist Key" equals "Persist Value"
 
-  Scenario: Persist Device Id
-    When I run the game in the "PersistDeviceId" state
-    And I wait to receive an error
-    And the exception "message" equals "PersistDeviceId"
-    And the error payload field "events.0.device.id" is stored as the value "device_id"
-    And I close the Unity app
-    And On Mobile I relaunch the app
-    And I run the game in the "PersistDeviceId" state
-    And I wait to receive an error
-    And the exception "message" equals "PersistDeviceId"
-    And the error payload field "events.0.device.id" equals the stored value "device_id"
-
   Scenario: Max Persisted Events
     When I run the game in the "MaxPersistEvents" state
     And I wait for requests to fail
@@ -78,4 +66,16 @@ Feature: Unity Persistence
     And I run the game in the "ReportMaxPersistedSessions" state
     And I wait to receive an error
     And the exception "message" equals "true"
+
+  Scenario: Persist Device Id
+    When I run the game in the "PersistDeviceId" state
+    And I wait to receive an error
+    And the exception "message" equals "PersistDeviceId"
+    And the error payload field "events.0.device.id" is stored as the value "device_id"
+    And I close the Unity app
+    And On Mobile I relaunch the app
+    And I run the game in the "PersistDeviceId" state
+    And I wait to receive an error
+    And the exception "message" equals "PersistDeviceId"
+    And the error payload field "events.0.device.id" equals the stored value "device_id"
 
