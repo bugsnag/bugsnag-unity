@@ -92,13 +92,19 @@ public class Main : MonoBehaviour
                         }
                         else if ("close_application".Equals(command.action))
                         {
-                            Application.Quit();
+                            CloseFixture();
                         }
                     }
                 }
             }
         }
     }
+
+    private void CloseFixture()
+    {
+        Application.Quit();
+    }
+
 
     private void ClearUnityCache()
     {
@@ -116,9 +122,11 @@ public class Main : MonoBehaviour
         if (Application.platform != RuntimePlatform.Android &&
             Application.platform != RuntimePlatform.IPhonePlayer)
         {
-            Application.Quit();
+            Invoke("CloseFixture", 0.25f);
         }
     }
+
+    
 
 }
 

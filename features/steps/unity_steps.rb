@@ -49,6 +49,9 @@ When('I clear the Bugsnag cache') do
   else
     raise "Platform #{platform} has not been considered"
   end
+
+  sleep 2
+
 end
 
 When('I wait for requests to fail') do
