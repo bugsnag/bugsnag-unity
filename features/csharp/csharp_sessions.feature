@@ -3,6 +3,30 @@ Feature: Session Tracking
   Background:
     Given I clear the Bugsnag cache
 
+  Scenario: Unhandled error in session
+    When I run the game in the "UnhandledErrorInSession" state
+    And I wait to receive an error
+    And I wait to receive a session
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "UnhandledErrorInSession"
+    And the event "session.events.handled" equals 0
+    And the event "session.events.unhandled" equals 1
+    And the error payload field "events.0.session.id" is stored as the value "session_id"
+    And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
+
+  Scenario: Handled error in session
+    When I run the game in the "HandledErrorInSession" state
+    And I wait to receive an error
+    And I wait to receive a session
+    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "HandledErrorInSession"
+    And the event "session.events.handled" equals 1
+    And the event "session.events.unhandled" equals 0
+    And the error payload field "events.0.session.id" is stored as the value "session_id"
+    And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
+
   @skip_macos #Unable to reliably get the in focus notification from macos
   Scenario: Automatically receiving a session
     When I run the game in the "StartSDKDefault" state
@@ -73,32 +97,6 @@ Feature: Session Tracking
     And the session "user.id" is not null
     And the session "user.email" is null
     And the session "user.name" is null
-
-
-  Scenario: Unhandled error in session
-    When I run the game in the "UnhandledErrorInSession" state
-    And I wait to receive a session
-    And I wait to receive an error
-    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-    And the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "UnhandledErrorInSession"
-    And the event "session.events.handled" equals 0
-    And the event "session.events.unhandled" equals 1
-    And the error payload field "events.0.session.id" is stored as the value "session_id"
-    And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
-
-  Scenario: Handled error in session
-    When I run the game in the "HandledErrorInSession" state
-    And I wait to receive a session
-    And I wait to receive an error
-    Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-    And the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "HandledErrorInSession"
-    And the event "session.events.handled" equals 1
-    And the event "session.events.unhandled" equals 0
-    And the error payload field "events.0.session.id" is stored as the value "session_id"
-    And the session payload field "sessions.0.id" equals the stored value "session_id" ignoring case
-
 
   @skip_android #pending PLAT-9086
   Scenario: Multiple event counts in one session
