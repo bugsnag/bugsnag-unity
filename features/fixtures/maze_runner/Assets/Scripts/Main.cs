@@ -20,6 +20,11 @@ public class Main : MonoBehaviour
     private static extern void PreventCrashPopups();
 #endif
 
+#if UNITY_IOS || UNITY_TVOS
+    [DllImport("__Internal")]
+    private static extern void ClearPersistentData();
+#endif
+
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private string _mazeHost;
 
@@ -117,7 +122,7 @@ public class Main : MonoBehaviour
         }
         if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
-            MobileNative.ClearIOSData();
+            ClearIOSData();
         }
         if (Application.platform != RuntimePlatform.Android &&
             Application.platform != RuntimePlatform.IPhonePlayer)
@@ -126,7 +131,12 @@ public class Main : MonoBehaviour
         }
     }
 
-    
+    public static void ClearIOSData()
+    {
+#if UNITY_IOS
+        ClearPersistentData();
+#endif
+    }
 
 }
 
