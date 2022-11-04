@@ -1,11 +1,10 @@
 Feature: Android EDM smoke test
 
-    Background:
-        Given I wait for the mobile game to start
+  Background:
+    Given I clear the Bugsnag cache
 
-    Scenario: Android EDM Smoke test
-        When I wait to receive an error
+  Scenario: Android EDM smoke test
+    When I run the game in the "UncaughtExceptionSmokeTest" state
+    And I wait to receive an error
+    And the exception "message" equals "UncaughtExceptionSmokeTest"
 
-        # Exception details
-        And the error payload field "events" is an array with 1 elements
-        And the exception "message" equals "EDM"

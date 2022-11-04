@@ -128,7 +128,7 @@ namespace BugsnagUnity
         {
             foreach (var pair in data)
             {
-                NativeInterface.AddMetadata(section,pair.Key,pair.Value.ToString());
+                NativeInterface.AddMetadata(section,pair.Key,pair.Value == null ? "null" : pair.Value.ToString());
             }
         }
 

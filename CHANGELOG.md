@@ -2,7 +2,15 @@
 
 ## TBD
 
-- Update bugsnag-cocoa from v6.24.0 to [v6.25.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6240-2022-10-05)
+### Dependency updates
+
+* Update bugsnag-cocoa from v6.24.0 to [v6.25.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6240-2022-10-05)
+
+### Bug fixes
+
+* Fix an issue where a null value in metadata could cause an exception. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
+
+* Fix an issue where android metadata was not deserialised as the correct type, which could cause exceptions when processing metadata. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
 
 ## 7.4.0 (2022-10-26)
 

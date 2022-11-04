@@ -9,6 +9,7 @@ Before('@skip_unity_2018') do |_scenario|
   end
 end
 
+
 Before('@skip_webgl') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.browser.nil?
 end
@@ -17,26 +18,40 @@ Before('@webgl_only') do |_scenario|
   skip_this_scenario('Skipping scenario') if Maze.config.browser.nil?
 end
 
-Before('@macos_only') do |_scenario|
-  skip_this_scenario('Skipping scenario') unless Maze.config.os == 'macos'
-end
 
 Before('@skip_macos') do |_scenario|
   skip_this_scenario("Skipping scenario") if Maze.config.os == 'macos'
 end
 
+Before('@macos_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze.config.os == 'macos'
+end
+
+
+Before('@cocoa_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze.config.os == 'macos' || Maze::Helper.get_current_platform == 'ios'
+end
+
+Before('@skip_cocoa') do |_scenario|
+  skip_this_scenario("Skipping scenario") if Maze.config.os == 'macos' || Maze::Helper.get_current_platform == 'ios'
+end
+
+
 Before('@windows_only') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.os == 'windows'
 end
+Before('@skip_windows') do |_scenario|
+  skip_this_scenario("Skipping scenario") if Maze.config.os == 'windows'
+end
+
 
 Before('@switch_only') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.os == 'switch'
 end
 
-Before('@skip_windows') do |_scenario|
-  skip_this_scenario("Skipping scenario") if Maze.config.os == 'windows'
+Before('@skip_android') do |_scenario|
+  skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == 'android'
 end
-
 
 
 BeforeAll do
@@ -87,8 +102,6 @@ Maze.hooks.before do
     # This is to get around a strange macos bug where clearing prefs does not work 
     $logger.info 'Killing defaults service'
     Maze::Runner.run_command("killall -u #{ENV['USER']} cfprefsd")
-
-   
   end
 end
 
