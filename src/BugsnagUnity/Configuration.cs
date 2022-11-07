@@ -259,7 +259,7 @@ namespace BugsnagUnity
             return _onSessionCallbacks;
         }
 
-        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors };
+        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors, TelemetryType.Usage };
 
         public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
 

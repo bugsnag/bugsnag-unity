@@ -93,7 +93,8 @@ namespace BugsnagUnity
                             return false;
                         }
                     }
-                    catch {
+                    catch
+                    {
                         // If the callback causes an exception, ignore it and execute the next one
                     }
 
@@ -123,7 +124,8 @@ namespace BugsnagUnity
                             return false;
                         }
                     }
-                    catch {
+                    catch
+                    {
                         // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
@@ -372,25 +374,29 @@ namespace BugsnagUnity
                 }
             }
 
+            // set enabled telemetry types
             if (config.Telemetry != null)
             {
-                using (AndroidJavaObject enabledTelemetry = new AndroidJavaObject("java.util.HashSet"))
+                using AndroidJavaObject enabledTelemetry = new AndroidJavaObject("java.util.HashSet");
+                AndroidJavaClass androidTelemetryEnumClass = new AndroidJavaClass("com.bugsnag.android.Telemetry");
+                foreach (var telemtryType in config.Telemetry)
                 {
-                    AndroidJavaClass androidTelemetryEnumClass = new AndroidJavaClass("com.bugsnag.android.Telemetry");
-                    for (int i = 0; i < config.Telemetry.Count; i++)
+                    var javaName = "";
+                    switch (telemtryType)
                     {
-                        if (config.Telemetry[i] == TelemetryType.InternalErrors)
-                        {
-                            using (AndroidJavaObject telemetryType = androidTelemetryEnumClass.CallStatic<AndroidJavaObject>("valueOf", "INTERNAL_ERRORS"))
-                            {
-                                enabledTelemetry.Call<Boolean>("add", telemetryType);
-                            }
-                        }
-                       
+                        case TelemetryType.InternalErrors:
+                            javaName = "INTERNAL_ERRORS";
+                            break;
+                        case TelemetryType.Usage:
+                            javaName = "USAGE";
+                            break;
                     }
-                    obj.Call("setTelemetry", enabledTelemetry);
+                    using AndroidJavaObject telemetryType = androidTelemetryEnumClass.CallStatic<AndroidJavaObject>("valueOf", javaName);
+                    enabledTelemetry.Call<bool>("add", telemetryType);
                 }
+                obj.Call("setTelemetry", enabledTelemetry);
             }
+
 
             // set feature flags
             if (config.FeatureFlags != null && config.FeatureFlags.Count > 0)
@@ -941,7 +947,7 @@ namespace BugsnagUnity
                 }
             }
             return map;
-        }       
+        }
 
         internal static bool IsUnity2019OrNewer()
         {
@@ -1013,17 +1019,17 @@ namespace BugsnagUnity
                             var intValue = AndroidJNI.CallIntMethod(value, IntValueMethod, new jvalue[] { });
                             dict.AddToPayload(key, intValue);
                         }
-                        else if(AndroidJNI.IsInstanceOf(value, LongClass))
+                        else if (AndroidJNI.IsInstanceOf(value, LongClass))
                         {
                             var longValue = AndroidJNI.CallLongMethod(value, LongValueMethod, new jvalue[] { });
                             dict.AddToPayload(key, longValue);
                         }
-                        else if(AndroidJNI.IsInstanceOf(value, FloatClass))
+                        else if (AndroidJNI.IsInstanceOf(value, FloatClass))
                         {
                             var floatValue = AndroidJNI.CallFloatMethod(value, FloatValueMethod, new jvalue[] { });
                             dict.AddToPayload(key, floatValue);
                         }
-                        else if(AndroidJNI.IsInstanceOf(value, DoubleClass))
+                        else if (AndroidJNI.IsInstanceOf(value, DoubleClass))
                         {
                             var doubleValue = AndroidJNI.CallDoubleMethod(value, DoubleValueMethod, new jvalue[] { });
                             dict.AddToPayload(key, doubleValue);

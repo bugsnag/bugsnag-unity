@@ -3,6 +3,7 @@ namespace BugsnagUnity
 {
     public enum TelemetryType
     {
-        InternalErrors
+        InternalErrors,
+        Usage
     }
 }

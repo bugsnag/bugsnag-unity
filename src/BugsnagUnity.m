@@ -563,6 +563,10 @@ void bugsnag_setEnabledTelemetryTypes(const void *configuration, const char *typ
             {
                 ((__bridge BugsnagConfiguration *)configuration).telemetry |= BSGTelemetryInternalErrors;
             }
+            if([typeString isEqualToString:@"Usage"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).telemetry |= BSGTelemetryUsage;
+            }
         }
     }
 }

@@ -38,7 +38,7 @@ namespace BugsnagUnity
         public bool ReportExceptionLogsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
         public double SecondsPerUniqueLog = 5;
-        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors };
+        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors, TelemetryType.Usage };
         public int VersionCode;
 
         public SwitchCacheType SwitchCacheType = SwitchCacheType.R;

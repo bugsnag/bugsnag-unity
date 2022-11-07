@@ -1,15 +1,10 @@
-Feature: Android Config
+Feature: iOS Config
 
   Background:
     Given I clear the Bugsnag cache
 
-  Scenario: Android Persistence Directory
-    When I run the game in the "AndroidPersistenceDirectory" state
-    And I wait to receive an error
-    And the exception "message" equals "Directory Found"
-
   Scenario: Telemetry
-    When I run the game in the "AndroidBackgroundJVMSmokeTest" state
+    When I run the game in the "IosNativeException" state
     And I wait for 2 seconds
     And I clear any error dialogue
     And On Mobile I relaunch the app
