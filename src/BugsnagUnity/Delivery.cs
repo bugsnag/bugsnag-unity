@@ -29,7 +29,7 @@ namespace BugsnagUnity
 
         private bool _cacheDeliveryInProcess;
 
-        private const int MAX_PAYLOAD_BYTES = 100;
+        private const int MAX_PAYLOAD_BYTES = 1000000;
 
         private const string STRING_TRUNCATION_MESSAGE = "*** {0} CHARS TRUNCATED***";
 
@@ -74,14 +74,9 @@ namespace BugsnagUnity
             try
             {
                 var serialisedPayload = SerializePayload(payload);
-                if (payload.PayloadType == PayloadType.Event)
+                if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
                 {
-                    // Operate on cloned data so that the original unedited data will be persisted if sending fails
-                    payload = (IPayload)payload.Clone();
-                    if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
-                    {
-                        serialisedPayload = TruncateMetadata(payload);
-                    }
+                    serialisedPayload = TruncateMetadata(payload);
                 }
                 MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, serialisedPayload));
             }
