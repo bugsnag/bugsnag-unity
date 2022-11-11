@@ -61,5 +61,9 @@ namespace BugsnagUnity.Payload
             return serialisableSessionReport;
         }
 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

@@ -79,5 +79,9 @@ namespace BugsnagUnity.Payload
             Ignored = true;
         }
 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }
