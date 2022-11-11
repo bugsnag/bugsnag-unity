@@ -49,6 +49,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
             NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
             NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
+            NativeCode.bugsnag_setMaxStringValueLength(obj, config.MaxStringValueLength);
             AddFeatureFlagsToConfig(obj,config);
             if (config.GetUser() != null)
             {
