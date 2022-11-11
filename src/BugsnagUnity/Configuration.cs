@@ -194,6 +194,7 @@ namespace BugsnagUnity
 
         public int MaxPersistedSessions = 128;
 
+        public int MaxStringValueLength = 10000;
 
         internal bool ErrorClassIsDiscarded(string className)
         {
@@ -206,7 +207,6 @@ namespace BugsnagUnity
                 || Application.platform == RuntimePlatform.WindowsEditor
                 || Application.platform == RuntimePlatform.LinuxEditor;
         }
-
 
         private List<Func<IEvent, bool>> _onErrorCallbacks = new List<Func<IEvent, bool>>();
 
