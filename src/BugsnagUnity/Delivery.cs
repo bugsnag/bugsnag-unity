@@ -115,17 +115,54 @@ namespace BugsnagUnity
                 if (section[key].GetType() == typeof(string))
                 {
                     var originalValue = section[key] as string;
-                    if (originalValue.Length > _configuration.MaxStringValueLength)
+                    section[key] = CheckStringForTruncation(originalValue);
+                }
+                else if (section[key].GetType() == typeof(string[]))
+                {
+                    var stringArray = section[key] as string[];
+                    for (int i = 0; i < stringArray.Length; i++)
                     {
-                        var numStringsToTruncate = originalValue.Length - _configuration.MaxStringValueLength;
-                        var truncationMessage = GetTruncationMessage(numStringsToTruncate);
-                        if (numStringsToTruncate >= truncationMessage.Length)
+                        stringArray[i] = CheckStringForTruncation(stringArray[i]);
+                    }
+                }
+                else if (section[key].GetType() == typeof(List<string>))
+                {
+                    var stringArray = section[key] as List<string>;
+                    for (int i = 0; i < stringArray.Count; i++)
+                    {
+                        stringArray[i] = CheckStringForTruncation(stringArray[i]);
+                    }
+                }
+                else if (section[key].GetType() == typeof(Dictionary<string, object>))
+                {
+                    TruncateStringsInMetadataSection(section[key] as Dictionary<string, object>);
+                }
+                else if (section[key].GetType() == typeof(JsonArray))
+                {
+                    var array = ((JsonArray)section[key]);
+                    for (int i = 0; i < array.Count;i ++)
+                    {
+                        if (array[i].GetType() == typeof(string))
                         {
-                            section[key] = TruncateString(originalValue, truncationMessage);
+                            array[i] = CheckStringForTruncation((string)array[i]);
                         }
                     }
                 }
             }
+        }
+
+        private string CheckStringForTruncation(string originalValue)
+        {
+            if (originalValue.Length > _configuration.MaxStringValueLength)
+            {
+                var numStringsToTruncate = originalValue.Length - _configuration.MaxStringValueLength;
+                var truncationMessage = GetTruncationMessage(numStringsToTruncate);
+                if (numStringsToTruncate >= truncationMessage.Length)
+                {
+                    return TruncateString(originalValue, truncationMessage);
+                }
+            }
+            return originalValue;
         }
 
         private string TruncateString(string stringToTruncate, string truncationMessage)

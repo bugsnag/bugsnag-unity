@@ -1,4 +1,5 @@
-﻿using BugsnagUnity;
+﻿using System.Collections.Generic;
+using BugsnagUnity;
 
 public class MaxStringValueLength : Scenario
 {
@@ -13,13 +14,19 @@ public class MaxStringValueLength : Scenario
         {
             Configuration.AddMetadata("test", "key-" + i.ToString(), _oneHundredCharacters);
         }
+        Configuration.AddMetadata("test", "stringArray", new string[] { _oneHundredCharacters });
+        Configuration.AddMetadata("test", "stringList", new List<string>() { _oneHundredCharacters });
+
+
     }
 
     public override void Run()
     {
-        Bugsnag.LeaveBreadcrumb("truncated",new System.Collections.Generic.Dictionary<string, object>()
+        Bugsnag.LeaveBreadcrumb("truncated",new Dictionary<string, object>()
         {
-            {"testKey", _oneHundredCharacters }
+            {"testKey", _oneHundredCharacters },
+            {"stringArray", new string[] { _oneHundredCharacters }},
+            {"stringList", new List<string>() { _oneHundredCharacters }}
         });
         DoSimpleNotify("MaxStringValueLength");
     }
