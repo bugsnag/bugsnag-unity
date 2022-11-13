@@ -112,12 +112,13 @@ namespace BugsnagUnity
         {
             foreach (var key in section.Keys.ToList())
             {
-                if (section[key].GetType() == typeof(string))
+                var valueType = section[key].GetType();
+                if (valueType == typeof(string))
                 {
                     var originalValue = section[key] as string;
                     section[key] = CheckStringForTruncation(originalValue);
                 }
-                else if (section[key].GetType() == typeof(string[]))
+                else if (valueType == typeof(string[]))
                 {
                     var stringArray = section[key] as string[];
                     for (int i = 0; i < stringArray.Length; i++)
@@ -125,7 +126,7 @@ namespace BugsnagUnity
                         stringArray[i] = CheckStringForTruncation(stringArray[i]);
                     }
                 }
-                else if (section[key].GetType() == typeof(List<string>))
+                else if (valueType == typeof(List<string>))
                 {
                     var stringArray = section[key] as List<string>;
                     for (int i = 0; i < stringArray.Count; i++)
@@ -133,11 +134,11 @@ namespace BugsnagUnity
                         stringArray[i] = CheckStringForTruncation(stringArray[i]);
                     }
                 }
-                else if (section[key].GetType() == typeof(Dictionary<string, object>))
+                else if (valueType == typeof(Dictionary<string, object>))
                 {
                     TruncateStringsInMetadataSection(section[key] as Dictionary<string, object>);
                 }
-                else if (section[key].GetType() == typeof(JsonArray))
+                else if (valueType == typeof(JsonArray))
                 {
                     var array = ((JsonArray)section[key]);
                     for (int i = 0; i < array.Count;i ++)
