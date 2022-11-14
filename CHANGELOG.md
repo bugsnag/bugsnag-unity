@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Enhancements
+
+* Added `Telemetry.Usage` configuration option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#telemetry) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#telemetry) [#666](https://github.com/bugsnag/bugsnag-unity/pull/666)
+
 ### Dependency updates
 
 * Update bugsnag-cocoa from v6.24.0 to [v6.25.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6240-2022-10-05)

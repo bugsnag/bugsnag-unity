@@ -63,6 +63,10 @@ Feature: iOS Native Errors
     And the event "metaData.test.test1" equals "test1"
     And the event "metaData.test.test2" is null
 
+    # Telemetry
+    And the error payload field "events.0.usage.config.maxBreadcrumbs" equals 50
+    And the error payload field "events.0.usage.callbacks.onSession" equals 1
+
   Scenario: iOS signal Smoke Test
     When I run the game in the "IosSignal" state
     And I wait for 2 seconds
