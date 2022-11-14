@@ -31,7 +31,7 @@ namespace BugsnagUnity
 
         private const int MAX_PAYLOAD_BYTES = 1000000;
 
-        private const string STRING_TRUNCATION_MESSAGE = "*** {0} CHARS TRUNCATED***";
+        private const string STRING_TRUNCATION_MESSAGE = "***{0} CHARS TRUNCATED***";
 
 
         internal Delivery(Client client, Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
@@ -92,23 +92,20 @@ namespace BugsnagUnity
             var metadata = @event["metaData"] as PayloadDictionary;
             foreach (var section in metadata)
             {
-                if (section.Key != "app" && section.Key != "device")
-                {
-                    TruncateStringsInMetadataSection(section.Value as Dictionary<string,object>);
-                }
+                TruncateStringsInDictionary(section.Value as Dictionary<string,object>);
             }
 
             var breadcrumbs = @event["breadcrumbs"] as Dictionary<string, object>[];
             foreach (var crumb in breadcrumbs)
             {
                 var crumbMetadata = crumb["metaData"] as Dictionary<string, object>;
-                TruncateStringsInMetadataSection(crumbMetadata);
+                TruncateStringsInDictionary(crumbMetadata);
             }
 
             return SerializePayload(payload);
         }
 
-        private void TruncateStringsInMetadataSection(Dictionary<string, object> section)
+        private void TruncateStringsInDictionary(Dictionary<string, object> section)
         {
             foreach (var key in section.Keys.ToList())
             {
@@ -116,14 +113,14 @@ namespace BugsnagUnity
                 if (valueType == typeof(string))
                 {
                     var originalValue = section[key] as string;
-                    section[key] = CheckStringForTruncation(originalValue);
+                    section[key] = TruncateStringIfNecessary(originalValue);
                 }
                 else if (valueType == typeof(string[]))
                 {
                     var stringArray = section[key] as string[];
                     for (int i = 0; i < stringArray.Length; i++)
                     {
-                        stringArray[i] = CheckStringForTruncation(stringArray[i]);
+                        stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
                     }
                 }
                 else if (valueType == typeof(List<string>))
@@ -131,12 +128,12 @@ namespace BugsnagUnity
                     var stringArray = section[key] as List<string>;
                     for (int i = 0; i < stringArray.Count; i++)
                     {
-                        stringArray[i] = CheckStringForTruncation(stringArray[i]);
+                        stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
                     }
                 }
                 else if (valueType == typeof(Dictionary<string, object>))
                 {
-                    TruncateStringsInMetadataSection(section[key] as Dictionary<string, object>);
+                    TruncateStringsInDictionary(section[key] as Dictionary<string, object>);
                 }
                 else if (valueType == typeof(JsonArray))
                 {
@@ -145,14 +142,14 @@ namespace BugsnagUnity
                     {
                         if (array[i].GetType() == typeof(string))
                         {
-                            array[i] = CheckStringForTruncation((string)array[i]);
+                            array[i] = TruncateStringIfNecessary((string)array[i]);
                         }
                     }
                 }
             }
         }
 
-        private string CheckStringForTruncation(string originalValue)
+        private string TruncateStringIfNecessary(string originalValue)
         {
             if (originalValue.Length > _configuration.MaxStringValueLength)
             {

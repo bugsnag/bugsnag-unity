@@ -145,6 +145,7 @@ Feature: csharp events
     And the exception "message" equals "Context"
     And the event "context" equals "test"
 
+  @skip_android #Pending PLAT-9210
   Scenario: Max String Value Length
     When I run the game in the "MaxStringValueLength" state
     And I wait to receive an error
