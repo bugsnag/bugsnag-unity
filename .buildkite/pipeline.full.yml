@@ -59,7 +59,7 @@ steps:
     depends_on: 'build-artifacts'
     env:
       DEVELOPER_DIR: "/Applications/Xcode13.4.app"
-      UNITY_VERSION: "2021.3.3f1"
+      UNITY_VERSION: "2021.3.13f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -68,8 +68,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2021.3.3f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2021.3.3f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2021.3.13f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2021.3.13f1.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -119,11 +119,11 @@ steps:
   #   agents:
   #     queue: macos-12-arm-unity
   #   env:
-  #     UNITY_VERSION: "2021.3.3f1"
+  #     UNITY_VERSION: "2021.3.13f1"
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - features/fixtures/maze_runner/build/MacOS-2021.3.3f1.zip
+  #         - features/fixtures/maze_runner/build/MacOS-2021.3.13f1.zip
   #       upload:
   #         - maze_output/**/*
   #         - Mazerunner.log
@@ -174,11 +174,11 @@ steps:
   #   timeout_in_minutes: 30
   #   depends_on: 'cocoa-webgl-2021-fixtures'
   #   env:
-  #     UNITY_VERSION: "2021.3.3f1"
+  #     UNITY_VERSION: "2021.3.13f1"
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - features/fixtures/maze_runner/build/WebGL-2021.3.3f1.zip
+  #         - features/fixtures/maze_runner/build/WebGL-2021.3.13f1.zip
   #       upload:
   #         - maze_output/**/*
   #   # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
@@ -233,13 +233,13 @@ steps:
     key: 'build-android-fixture-2021'
     depends_on: 'build-artifacts'
     env:
-      UNITY_VERSION: "2021.3.3f1"
+      UNITY_VERSION: "2021.3.13f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2021.3.3f1.apk
+          - features/fixtures/maze_runner/mazerunner_2021.3.13f1.apk
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
@@ -253,13 +253,13 @@ steps:
   #   key: 'build-edm-fixture-2021'
   #   depends_on: 'build-artifacts'
   #   env:
-  #     UNITY_VERSION: "2021.3.3f1"
+  #     UNITY_VERSION: "2021.3.13f1"
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
   #         - Bugsnag.unitypackage
   #       upload:
-  #         - features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk
+  #         - features/fixtures/EDM_Fixture/edm_2021.3.13f1.apk
   #         - features/scripts/buildEdmFixture.log
   #         - features/scripts/edmImport.log
   #         - features/scripts/enableEdm.log
@@ -332,14 +332,14 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2021.3.3f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2021.3.13f1.apk"
         upload:
           - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.3.3f1.apk"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.3.13f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_11_0"
           - "features/csharp"
@@ -354,18 +354,18 @@ steps:
   #   agents:
   #     queue: opensource
   #   env:
-  #     UNITY_VERSION: "2021.3.3f1"
+  #     UNITY_VERSION: "2021.3.13f1"
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - "features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk"
+  #         - "features/fixtures/EDM_Fixture/edm_2021.3.13f1.apk"
   #       upload:
   #         - "maze_output/**/*"
   #     docker-compose#v3.7.0:
   #       pull: maze-runner
   #       run: maze-runner
   #       command:
-  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2021.3.3f1.apk"
+  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2021.3.13f1.apk"
   #         - "--farm=bs"
   #         - "--device=ANDROID_11_0"
   #         - "features/edm"
@@ -473,7 +473,7 @@ steps:
     key: 'generate-fixture-project-2021'
     depends_on: 'build-artifacts'
     env:
-      UNITY_VERSION: "2021.3.3f1"
+      UNITY_VERSION: "2021.3.13f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -497,14 +497,14 @@ steps:
       queue: macos-12-arm-unity
     env:
       DEVELOPER_DIR: "/Applications/Xcode13.4.app"
-      UNITY_VERSION: "2021.3.3f1"
+      UNITY_VERSION: "2021.3.13f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2021.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2021.3.3f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2021.3.13f1.ipa
           - features/fixtures/unity.log
     commands:
       - tar -zxf project_2021.tgz features/fixtures/maze_runner
@@ -577,14 +577,14 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2021.3.3f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2021.3.13f1.ipa"
         upload:
           - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.3.3f1.ipa"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2021.3.13f1.ipa"
           - "--farm=bs"
           - "--device=IOS_15"
           - "--fail-fast"
