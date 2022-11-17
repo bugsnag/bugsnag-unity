@@ -154,9 +154,14 @@ Feature: csharp events
     And the event "metaData.test.key-9483" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "metaData.test.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "metaData.test.stringList.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "metaData.test.dictionary.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "metaData.test.stringDictionary.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
+
     And the event "breadcrumbs.1.metaData.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "breadcrumbs.1.metaData.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "breadcrumbs.1.metaData.stringList.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "breadcrumbs.1.metaData.dictionary.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "breadcrumbs.1.metaData.stringDictionary.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
 
 
 

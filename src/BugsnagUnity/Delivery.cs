@@ -131,6 +131,14 @@ namespace BugsnagUnity
                         stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
                     }
                 }
+                else if (valueType == typeof(Dictionary<string, string>))
+                {
+                    var stringDict = section[key] as Dictionary<string, string>;
+                    foreach (var stringKey in stringDict.Keys.ToList())
+                    {
+                        stringDict[stringKey] = TruncateStringIfNecessary(stringDict[stringKey]);
+                    }
+                }
                 else if (valueType == typeof(Dictionary<string, object>))
                 {
                     TruncateStringsInDictionary(section[key] as Dictionary<string, object>);
@@ -138,7 +146,7 @@ namespace BugsnagUnity
                 else if (valueType == typeof(JsonArray))
                 {
                     var array = ((JsonArray)section[key]);
-                    for (int i = 0; i < array.Count;i ++)
+                    for (int i = 0; i < array.Count; i++)
                     {
                         if (array[i].GetType() == typeof(string))
                         {

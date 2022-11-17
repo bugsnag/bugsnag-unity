@@ -16,7 +16,8 @@ public class MaxStringValueLength : Scenario
         }
         Configuration.AddMetadata("test", "stringArray", new string[] { _oneHundredCharacters });
         Configuration.AddMetadata("test", "stringList", new List<string>() { _oneHundredCharacters });
-
+        Configuration.AddMetadata("test", "stringDictionary", new Dictionary<string, string>() { { "testKey", _oneHundredCharacters } });
+        Configuration.AddMetadata("test", "dictionary", new Dictionary<string, object>() { { "stringArray", new string[] { _oneHundredCharacters } } });
 
     }
 
@@ -26,7 +27,9 @@ public class MaxStringValueLength : Scenario
         {
             {"testKey", _oneHundredCharacters },
             {"stringArray", new string[] { _oneHundredCharacters }},
-            {"stringList", new List<string>() { _oneHundredCharacters }}
+            {"stringList", new List<string>() { _oneHundredCharacters }},
+            {"stringDictionary", new Dictionary<string, string>() { { "testKey", _oneHundredCharacters } } },
+            { "dictionary", new Dictionary<string, object>() { { "stringArray", new string[] { _oneHundredCharacters } } } }
         });
         DoSimpleNotify("MaxStringValueLength");
     }
