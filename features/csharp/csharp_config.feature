@@ -145,8 +145,25 @@ Feature: csharp events
     And the exception "message" equals "Context"
     And the event "context" equals "test"
 
+  @skip_android #Pending PLAT-9210
+  Scenario: Max String Value Length
+    When I run the game in the "MaxStringValueLength" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "MaxStringValueLength"
+    And the event "metaData.test.key-9483" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "metaData.test.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "metaData.test.stringList.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "metaData.test.dictionary.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "metaData.test.stringDictionary.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
 
-    
+    And the event "breadcrumbs.1.metaData.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "breadcrumbs.1.metaData.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "breadcrumbs.1.metaData.stringList.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "breadcrumbs.1.metaData.dictionary.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
+    And the event "breadcrumbs.1.metaData.stringDictionary.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
+
+
 
 
 

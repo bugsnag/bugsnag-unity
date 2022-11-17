@@ -493,6 +493,10 @@ void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs) {
   ((__bridge BugsnagConfiguration *)configuration).maxBreadcrumbs = maxBreadcrumbs;
 }
 
+void bugsnag_setMaxStringValueLength(const void *configuration, int maxStringValueLength) {
+  ((__bridge BugsnagConfiguration *)configuration).maxStringValueLength = maxStringValueLength;
+}
+
 void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents) {
   ((__bridge BugsnagConfiguration *)configuration).maxPersistedEvents = maxPersistedEvents;
 }

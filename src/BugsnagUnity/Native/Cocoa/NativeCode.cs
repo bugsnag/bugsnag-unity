@@ -84,6 +84,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setMaxStringValueLength(IntPtr configuration, int maxStringValueLength);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_setLaunchDurationMillis(IntPtr configuration, ulong launchDurationMillis);
 
         [DllImport(Import)]

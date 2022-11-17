@@ -4,6 +4,7 @@
 
 ### Enhancements
 
+* Add `Configuration.MaxStringValueLength` config option. [#668](https://github.com/bugsnag/bugsnag-unity/pull/668)
 * Added `Telemetry.Usage` configuration option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#telemetry) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#telemetry) [#666](https://github.com/bugsnag/bugsnag-unity/pull/666)
 
 ### Dependency updates

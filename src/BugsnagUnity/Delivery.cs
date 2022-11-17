@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using BugsnagUnity.Payload;
@@ -28,7 +29,9 @@ namespace BugsnagUnity
 
         private bool _cacheDeliveryInProcess;
 
+        private const int MAX_PAYLOAD_BYTES = 1000000;
 
+        private const string STRING_TRUNCATION_MESSAGE = "***{0} CHARS TRUNCATED***";
 
 
         internal Delivery(Client client, Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
@@ -70,10 +73,112 @@ namespace BugsnagUnity
             }
             try
             {
-                // not avaliable in unit tests
-                MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, SerializePayload(payload)));
+                var serialisedPayload = SerializePayload(payload);
+                if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+                {
+                    serialisedPayload = TruncateMetadata(payload);
+                }
+                MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, serialisedPayload));
             }
-            catch { }
+            catch 
+            {
+                // not avaliable in unit tests
+            }
+        }
+
+        private byte[] TruncateMetadata(IPayload payload)
+        {
+            var @event = payload.GetSerialisablePayload()["event"] as PayloadDictionary;
+            var metadata = @event["metaData"] as PayloadDictionary;
+            foreach (var section in metadata)
+            {
+                TruncateStringsInDictionary(section.Value as Dictionary<string,object>);
+            }
+
+            var breadcrumbs = @event["breadcrumbs"] as Dictionary<string, object>[];
+            foreach (var crumb in breadcrumbs)
+            {
+                var crumbMetadata = crumb["metaData"] as Dictionary<string, object>;
+                TruncateStringsInDictionary(crumbMetadata);
+            }
+
+            return SerializePayload(payload);
+        }
+
+        private void TruncateStringsInDictionary(Dictionary<string, object> section)
+        {
+            foreach (var key in section.Keys.ToList())
+            {
+                var valueType = section[key].GetType();
+                if (valueType == typeof(string))
+                {
+                    var originalValue = section[key] as string;
+                    section[key] = TruncateStringIfNecessary(originalValue);
+                }
+                else if (valueType == typeof(string[]))
+                {
+                    var stringArray = section[key] as string[];
+                    for (int i = 0; i < stringArray.Length; i++)
+                    {
+                        stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
+                    }
+                }
+                else if (valueType == typeof(List<string>))
+                {
+                    var stringArray = section[key] as List<string>;
+                    for (int i = 0; i < stringArray.Count; i++)
+                    {
+                        stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
+                    }
+                }
+                else if (valueType == typeof(Dictionary<string, string>))
+                {
+                    var stringDict = section[key] as Dictionary<string, string>;
+                    foreach (var stringKey in stringDict.Keys.ToList())
+                    {
+                        stringDict[stringKey] = TruncateStringIfNecessary(stringDict[stringKey]);
+                    }
+                }
+                else if (valueType == typeof(Dictionary<string, object>))
+                {
+                    TruncateStringsInDictionary(section[key] as Dictionary<string, object>);
+                }
+                else if (valueType == typeof(JsonArray))
+                {
+                    var array = ((JsonArray)section[key]);
+                    for (int i = 0; i < array.Count; i++)
+                    {
+                        if (array[i].GetType() == typeof(string))
+                        {
+                            array[i] = TruncateStringIfNecessary((string)array[i]);
+                        }
+                    }
+                }
+            }
+        }
+
+        private string TruncateStringIfNecessary(string originalValue)
+        {
+            if (originalValue.Length > _configuration.MaxStringValueLength)
+            {
+                var numStringsToTruncate = originalValue.Length - _configuration.MaxStringValueLength;
+                var truncationMessage = GetTruncationMessage(numStringsToTruncate);
+                if (numStringsToTruncate >= truncationMessage.Length)
+                {
+                    return TruncateString(originalValue, truncationMessage);
+                }
+            }
+            return originalValue;
+        }
+
+        private string TruncateString(string stringToTruncate, string truncationMessage)
+        {
+            return stringToTruncate.Substring(0, _configuration.MaxStringValueLength) + truncationMessage;
+        }
+
+        private string GetTruncationMessage(int numCharactersToRemove)
+        {
+            return string.Format(STRING_TRUNCATION_MESSAGE, numCharactersToRemove);
         }
 
         byte[] SerializePayload(IPayload payload)
@@ -92,9 +197,7 @@ namespace BugsnagUnity
         // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload, byte[] body)
         {
-
             var shouldDeliver = false;
-
             if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
@@ -112,7 +215,6 @@ namespace BugsnagUnity
                     yield return null;
                 }
             }
-
             if (!shouldDeliver)
             {
                 _payloadManager.SendPayloadFailed(payload);
