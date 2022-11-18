@@ -72,7 +72,7 @@ Feature: Android JVM Exceptions
     And the event "metaData.test.test1" equals "test1"
     And the event "metaData.test.test2" is null
 
-    And the error payload field "events.0.usage.config.maxBreadcrumbs" equals 50
+    And the error payload field "events.0.usage.config" is not null
     And the error payload field "events.0.usage.callbacks.onSession" equals 1
 
   Scenario: Last Run Info

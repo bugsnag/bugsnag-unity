@@ -67,3 +67,12 @@ Feature: Csharp Breadcrumbs
     And the event "breadcrumbs.7.type" equals "manual"
     And the event "breadcrumbs.7.metaData.test" equals "value"
     And the event "breadcrumbs.7.metaData.nullTest" is null
+
+  Scenario: Breadcrumb Truncation
+    When I run the game in the "BreadcrumbTruncation" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "BreadcrumbTruncation"
+    And the error payload field "events.0.breadcrumbs" is an array with 99 elements
+    And the event "breadcrumbs.98.name" equals "Removed, along with 2 older breadcrumbs, to reduce payload size"
+    And the event "breadcrumbs.98.type" equals "manual"

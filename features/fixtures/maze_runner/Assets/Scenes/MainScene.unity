@@ -1132,6 +1132,7 @@ GameObject:
   - component: {fileID: 1338701867}
   - component: {fileID: 1338701868}
   - component: {fileID: 1338701869}
+  - component: {fileID: 1338701870}
   m_Layer: 0
   m_Name: Breadcrumbs
   m_TagString: Untagged
@@ -1213,6 +1214,21 @@ MonoBehaviour:
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
     Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1338701870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338701864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e212851ed37b45559b76b0c6c959121, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1388241496
 GameObject:
   m_ObjectHideFlags: 0

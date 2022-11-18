@@ -24,7 +24,7 @@ namespace BugsnagUnity
         public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
         public EditorBreadcrumbTypes EnabledBreadcrumbTypes = new EditorBreadcrumbTypes();
         public long LaunchDurationMillis = 5000;
-        public int MaximumBreadcrumbs = 50;
+        public int MaximumBreadcrumbs = 100;
         public int MaxPersistedEvents = 32;
         public int MaxPersistedSessions = 128;
         public int MaxReportedThreads = 200;
