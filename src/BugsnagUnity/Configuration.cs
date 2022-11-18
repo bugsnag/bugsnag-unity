@@ -110,18 +110,18 @@ namespace BugsnagUnity
 
         public string ApiKey { get; set; }
 
-        private int _maximumBreadcrumbs = 50;
+        private int _maximumBreadcrumbs = 100;
 
         public int MaximumBreadcrumbs
         {
             get { return _maximumBreadcrumbs; }
             set
             {
-                if (value < 0 || value > 100)
+                if (value < 0 || value > 500)
                 {
                     if (IsRunningInEditor())
                     {
-                        Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-100. Supplied value is " + value);
+                        Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-500. Supplied value is " + value);
                     }
                     return;
                 }

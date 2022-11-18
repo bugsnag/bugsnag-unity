@@ -26,10 +26,10 @@ namespace BugsnagUnity.Payload.Tests
         public void MaxBreadcrumbsLimit()
         {
             var config = new Configuration("foo");
-            config.MaximumBreadcrumbs = 101;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 50);
+            config.MaximumBreadcrumbs = 501;
+            Assert.AreEqual(config.MaximumBreadcrumbs, 100);
             config.MaximumBreadcrumbs = -1;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 50);
+            Assert.AreEqual(config.MaximumBreadcrumbs, 100);
             config.MaximumBreadcrumbs = 20;
             Assert.AreEqual(config.MaximumBreadcrumbs, 20);
         }
