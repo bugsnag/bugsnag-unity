@@ -4,7 +4,10 @@
 
 ### Enhancements
 
+* Raised `Configuration.MaxBreadcrumbs` default from 50 to 100, raised the limit from 100 to 500 and added a check to truncate breadcrumbs from oversized payloads. [#671](https://github.com/bugsnag/bugsnag-unity/pull/671)
+
 * Add `Configuration.MaxStringValueLength` config option. [#668](https://github.com/bugsnag/bugsnag-unity/pull/668)
+
 * Added `Telemetry.Usage` configuration option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#telemetry) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#telemetry) [#666](https://github.com/bugsnag/bugsnag-unity/pull/666)
 
 ### Dependency updates
