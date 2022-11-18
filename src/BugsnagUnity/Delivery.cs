@@ -35,16 +35,17 @@ namespace BugsnagUnity
 
         private const string BREADCRUMB_TRUNCATION_MESSAGE = "Removed, along with {0} older breadcrumbs, to reduce payload size";
 
-        private const string EVENT_KEY = "event";
+        private const string EVENT_KEY_EVENT = "event";
 
-        private const string BREADCRUMBS_KEY = "breadcrumbs";
+        private const string EVENT_KEY_BREADCRUMBS = "breadcrumbs";
 
-        private const string METADATA_KEY = "metaData";
+        private const string EVENT_KEY_METADATA = "metaData";
 
-        private const string TYPE_KEY = "type";
+        private const string EVENT_KEY_BREADCRUMB_TYPE = "type";
 
-        private const string NAME_KEY = "name";
+        private const string EVENT_KEY_BREADCRUMB_MESSAGE = "name";
 
+        private const string EVENT_KEY_BREADCRUMB_METADATA = "metaData";
 
 
         internal Delivery(Client client, Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
@@ -108,8 +109,8 @@ namespace BugsnagUnity
 
         private byte[] TruncateBreadcrumbs(IPayload payload, byte[] serialisedPayload)
         {
-            var @event = payload.GetSerialisablePayload()[EVENT_KEY] as PayloadDictionary;
-            var breadcrumbsList = (@event[BREADCRUMBS_KEY] as Dictionary<string, object>[]).ToList();
+            var @event = payload.GetSerialisablePayload()[EVENT_KEY_EVENT] as PayloadDictionary;
+            var breadcrumbsList = (@event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[]).ToList();
 
             if (breadcrumbsList.Count == 0)
             {
@@ -124,7 +125,7 @@ namespace BugsnagUnity
             for (int i = breadcrumbsList.Count - 1; i >= 0; i--)
             {
                 numBytesTruncated += GetBreadcrumbSize(breadcrumbsList[i]);
-                lastRemovedCrumbType = breadcrumbsList[i][TYPE_KEY] as string;
+                lastRemovedCrumbType = breadcrumbsList[i][EVENT_KEY_BREADCRUMB_TYPE] as string;
                 breadcrumbsList.RemoveAt(i);
                 numBreadcrumbsRemoved++;
                 if (numBytesTruncated >= bytesToRemove)
@@ -137,11 +138,11 @@ namespace BugsnagUnity
             {
                 var truncationBreadcrumb = new Dictionary<string, object>
                 {
-                    { TYPE_KEY, lastRemovedCrumbType },
-                    { NAME_KEY, string.Format(BREADCRUMB_TRUNCATION_MESSAGE, numBreadcrumbsRemoved) }
+                    { EVENT_KEY_BREADCRUMB_TYPE, lastRemovedCrumbType },
+                    { EVENT_KEY_BREADCRUMB_MESSAGE, string.Format(BREADCRUMB_TRUNCATION_MESSAGE, numBreadcrumbsRemoved) }
                 };
                 breadcrumbsList.Add(truncationBreadcrumb);
-                @event[BREADCRUMBS_KEY] = breadcrumbsList.ToArray();
+                @event[EVENT_KEY_BREADCRUMBS] = breadcrumbsList.ToArray();
                 return SerializePayload(payload);
             }
             else
@@ -165,17 +166,17 @@ namespace BugsnagUnity
 
         private byte[] TruncateMetadata(IPayload payload)
         {
-            var @event = payload.GetSerialisablePayload()[EVENT_KEY] as PayloadDictionary;
-            var metadata = @event[METADATA_KEY] as PayloadDictionary;
+            var @event = payload.GetSerialisablePayload()[EVENT_KEY_EVENT] as PayloadDictionary;
+            var metadata = @event[EVENT_KEY_METADATA] as PayloadDictionary;
             foreach (var section in metadata)
             {
                 TruncateStringsInDictionary(section.Value as Dictionary<string,object>);
             }
 
-            var breadcrumbs = @event[BREADCRUMBS_KEY] as Dictionary<string, object>[];
+            var breadcrumbs = @event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[];
             foreach (var crumb in breadcrumbs)
             {
-                var crumbMetadata = crumb[METADATA_KEY] as Dictionary<string, object>;
+                var crumbMetadata = crumb[EVENT_KEY_BREADCRUMB_METADATA] as Dictionary<string, object>;
                 TruncateStringsInDictionary(crumbMetadata);
             }
 
