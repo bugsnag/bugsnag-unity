@@ -37,7 +37,10 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
             NativeCode.bugsnag_setEndpoints(obj, config.Endpoints.Notify.ToString(), config.Endpoints.Session.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
-            NativeCode.bugsnag_setBundleVersion(obj, config.BundleVersion);
+            if (!string.IsNullOrEmpty(config.BundleVersion))
+            {
+                NativeCode.bugsnag_setBundleVersion(obj, config.BundleVersion);
+            }
             NativeCode.bugsnag_setAppType(obj, GetAppType(config));
             NativeCode.bugsnag_setPersistUser(obj,config.PersistUser);
             NativeCode.bugsnag_setMaxPersistedEvents(obj, config.MaxPersistedEvents);

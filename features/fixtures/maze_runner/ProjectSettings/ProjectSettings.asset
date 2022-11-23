@@ -161,7 +161,10 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.bugsnag.mazerunner
     iOS: com.bugsnag.unity.mazerunner
-  buildNumber: {}
+    iPhone: com.bugsnag.unity.mazerunner
+  buildNumber:
+    Standalone: 111
+    iOS: 111
   AndroidBundleVersionCode: 1
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
