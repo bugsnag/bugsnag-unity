@@ -165,7 +165,7 @@ PlayerSettings:
   buildNumber:
     Standalone: 111
     iOS: 111
-  AndroidBundleVersionCode: 1
+  AndroidBundleVersionCode: 111
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
