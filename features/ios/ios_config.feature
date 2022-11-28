@@ -8,7 +8,7 @@ Feature: Config
     When I run the game in the "IosBundleVersionFromPlayerSettings" state
     And I wait to receive an error
     And the exception "message" equals "IosBundleVersionFromPlayerSettings"
-    And the event "app.bundleVersion" equals "111"
+    And the event "app.bundleVersion" equals "333"
 
   Scenario: Bundle Version From Config
 

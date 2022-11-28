@@ -12,11 +12,11 @@ Feature: Android Config
     When I run the game in the "AndroidVersionCodeInPlayerSettings" state
     And I wait to receive an error
     And the exception "message" equals "AndroidVersionCodeInPlayerSettings"
-    And the event "app.versionCode" equals 111
+    And the event "app.versionCode" equals 444
 
   Scenario: Version code From Config
     When I run the game in the "AndroidVersionCodeInConfig" state
     And I wait to receive an error
     And the exception "message" equals "AndroidVersionCodeInConfig"
-    And the event "app.versionCode" equals 222
+    And the event "app.versionCode" equals 555
 

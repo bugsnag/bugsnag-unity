@@ -164,8 +164,8 @@ PlayerSettings:
     iPhone: com.bugsnag.unity.mazerunner
   buildNumber:
     Standalone: 111
-    iOS: 111
-  AndroidBundleVersionCode: 111
+    iOS: 333
+  AndroidBundleVersionCode: 444
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
