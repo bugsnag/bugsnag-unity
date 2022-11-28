@@ -17,6 +17,8 @@
 
 ### Bug fixes
 
+* Fix an issue where bundle version was not reported correctly on iOS and MacOS. [#672](https://github.com/bugsnag/bugsnag-unity/pull/672)
+
 * Fix an issue where a null value in metadata could cause an exception. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
 
 * Fix an issue where android metadata was not deserialised as the correct type, which could cause exceptions when processing metadata. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
