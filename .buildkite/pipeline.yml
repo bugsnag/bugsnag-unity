@@ -29,7 +29,7 @@ steps:
     env:
 #      UNITY_VERSION: "2018.4.36f1"
       UNITY_DIR: "F:\\unity\\2018.4.36f1"
-      WSLENV: UNITY_VERSION
+      WSLENV: UNITY_DIR
     command:
       - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
     plugins:
