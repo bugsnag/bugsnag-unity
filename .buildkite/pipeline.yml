@@ -135,27 +135,27 @@ steps:
         - exit_status: "*"
           limit: 1
 
-   - label: ':android: Build Android EDM test fixture for Unity 2020'
-     timeout_in_minutes: 30
-     key: 'build-edm-fixture-2020'
-     depends_on: 'build-artifacts'
-     env:
-       UNITY_VERSION: "2020.3.32f1"
-     plugins:
-       artifacts#v1.5.0:
-         download:
-           - Bugsnag.unitypackage
-         upload:
-           - features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk
-           - features/scripts/buildEdmFixture.log
-           - features/scripts/edmImport.log
-           - features/scripts/enableEdm.log
-     commands:
-       - rake test:edm:build
-     retry:
-       automatic:
-         - exit_status: "*"
-           limit: 1
+  - label: ':android: Build Android EDM test fixture for Unity 2020'
+    timeout_in_minutes: 30
+    key: 'build-edm-fixture-2020'
+    depends_on: 'build-artifacts'
+    env:
+      UNITY_VERSION: "2020.3.32f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk
+          - features/scripts/buildEdmFixture.log
+          - features/scripts/edmImport.log
+          - features/scripts/enableEdm.log
+    commands:
+      - rake test:edm:build
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   #
   # Run Android tests
