@@ -87,19 +87,7 @@ namespace BugsnagUnity
             }
             try
             {
-                var serialisedPayload = SerializePayload(payload);
-                // If payload is oversized, trim string values in all metadata
-                if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
-                {
-                    serialisedPayload = TruncateMetadata(payload);
-                }
-                // If still oversized, truncate the breadcrumbs
-                if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
-                {
-                    serialisedPayload = TruncateBreadcrumbs(payload, serialisedPayload);
-                }
-
-                MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload, serialisedPayload));
+                MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload));
             }
             catch
             {
@@ -272,10 +260,25 @@ namespace BugsnagUnity
             }
         }
 
+        private byte[] PreaparePayloadBody(IPayload payload)
+        {
+            var serialisedPayload = SerializePayload(payload);
+            //// If payload is oversized, trim string values in all metadata
+            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+            {
+                serialisedPayload = TruncateMetadata(payload);
+            }
+            // If still oversized, truncate the breadcrumbs
+            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+            {
+                serialisedPayload = TruncateBreadcrumbs(payload, serialisedPayload);
+            }
+            return serialisedPayload;
+        }
         
 
         // Push to the server and handle the result
-        IEnumerator PushToServer(IPayload payload, byte[] body)
+        IEnumerator PushToServer(IPayload payload)
         {
             var shouldDeliver = false;
             if (Application.platform == RuntimePlatform.WebGLPlayer)
@@ -301,6 +304,26 @@ namespace BugsnagUnity
                 _finishedCacheDeliveries.Add(payload.Id);
                 yield break;
             }
+
+            byte[] body = new byte[] { };
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                body = PreaparePayloadBody(payload);
+            }
+            else
+            {
+                var bodyReady = false;
+                new Thread(() => {
+                    body = PreaparePayloadBody(payload);
+                    bodyReady = true;
+                }).Start();
+
+                while (!bodyReady)
+                {
+                    yield return null;
+                }
+            }
+
             using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
             {
                 req.SetRequestHeader("Content-Type", "application/json");
