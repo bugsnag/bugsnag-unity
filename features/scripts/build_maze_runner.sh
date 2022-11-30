@@ -1,8 +1,8 @@
 #!/bin/bash -e
 
 if [ -z "$UNITY_VERSION" ]; then
-  if [ -z "$UNITY_PATH" ]; then
-    echo "UNITY_VERSION or UNITY_PATH must be set."
+  if [ -z "$UNITY_DIR" ]; then
+    echo "UNITY_VERSION or UNITY_DIR must be set."
     exit 1
   fi
 fi
@@ -14,30 +14,38 @@ fi
 
 if [ "$1" == "macos" ]; then
   PLATFORM="MacOS"
-  if [ -z "$UNITY_PATH" ]; then
+  if [ -z "$UNITY_DIR" ]; then
     UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
+  else
+    UNITY_PATH="$UNITY_DIR/Unity.app/Contents/MacOS/Unity"
   fi
 elif [ "$1" == "windows" ]; then
   PLATFORM="Win64"
   set -m
-  if [ -z "$UNITY_PATH" ]; then
+  if [ -z "$UNITY_DIR" ]; then
     UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+  else
+    UNITY_PATH="$UNITY_DIR/Editor/Unity.exe"
   fi
 elif [ "$1" == "wsl" ]; then
   PLATFORM="Win64"
   set -m
-  if [ -z "$UNITY_PATH" ]; then
+  if [ -z "$UNITY_DIR" ]; then
     UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+  else
+    UNITY_PATH="$UNITY_DIR/Editor/Unity.exe"
   fi
 elif [ "$1" == "webgl" ]; then
   PLATFORM="WebGL"
   if [ "$(uname)" == "Darwin" ]; then
-    if [ -z "$UNITY_PATH" ]; then
+    if [ -z "$UNITY_DIR" ]; then
      UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
     fi
   else
-    if [ -z "$UNITY_PATH" ]; then
+    if [ -z "$UNITY_DIR" ]; then
       UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+    else
+      UNITY_PATH="$UNITY_DIR/Editor/Unity.exe"
     fi
   fi
 else
@@ -67,7 +75,7 @@ pushd $SCRIPT_DIR
       if [ ! -f "$log_file" ]; then
         touch $log_file
       fi
-      
+
       import_log_file=`wslpath -w "$import_log_file"`
       log_file=`wslpath -w "$log_file"`
       package_path=`wslpath -w "$package_path"`
