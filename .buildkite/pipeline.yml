@@ -27,7 +27,7 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_VERSION: "2018.4.36f1"
+#      UNITY_VERSION: "2018.4.36f1"
       UNITY_DIR: "F:\\unity\\2018.4.36f1"
       WSLENV: UNITY_VERSION
     command:
