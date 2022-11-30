@@ -1,8 +1,10 @@
 #!/bin/bash -e
 
-if [ -z "$UNITY_VERSION" ] || [ -z "$UNITY_PATH" ]; then
-  echo "UNITY_VERSION or UNITY_PATH must be set."
-  exit 1
+if [ -z "$UNITY_VERSION" ]; then
+  if [ -z "$UNITY_PATH" ]; then
+    echo "UNITY_VERSION or UNITY_PATH must be set."
+    exit 1
+  fi
 fi
 
 if [[ $# != 1 ]]; then
