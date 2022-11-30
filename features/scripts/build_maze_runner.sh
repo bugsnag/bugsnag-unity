@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-if [ -z "$UNITY_VERSION" ]; then
-  echo "UNITY_VERSION must be set, to e.g. 2018.4.36f1"
+if [ -z "$UNITY_VERSION" ] || [ -z "$UNITY_PATH" ]; then
+  echo "UNITY_VERSION or UNITY_PATH must be set."
   exit 1
 fi
 
