@@ -16,17 +16,17 @@ if [ "$1" == "macos" ]; then
 elif [ "$1" == "windows" ]; then
   PLATFORM="Win64"
   set -m
-  UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+  UNITY_PATH="/f/unity/$UNITY_VERSION/Editor/Unity.exe"
 elif [ "$1" == "wsl" ]; then
   PLATFORM="Win64"
   set -m
-  UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+  UNITY_PATH="/mnt/f/unity/$UNITY_VERSION/Editor/Unity.exe"
 elif [ "$1" == "webgl" ]; then
   PLATFORM="WebGL"
   if [ "$(uname)" == "Darwin" ]; then
     UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
   else
-    UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+    UNITY_PATH="/f/unity/$UNITY_VERSION/Editor/Unity.exe"
   fi
 else
   echo "Unsupported platform: $1"
