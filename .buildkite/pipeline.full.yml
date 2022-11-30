@@ -602,7 +602,7 @@ steps:
     key: 'windows-2018-fixture'
     depends_on: 'build-artifacts'
     agents:
-      queue: win-general-1-wsl
+      queue: win-general-1
     env:
       UNITY_VERSION: "2018.4.36f1"
     command:
@@ -624,7 +624,7 @@ steps:
     key: 'windows-2019-fixture'
     depends_on: 'build-artifacts'
     agents:
-      queue: win-general-1-wsl
+      queue: win-general-1
     env:
       UNITY_VERSION: "2019.4.35f1"
     command:
@@ -646,7 +646,7 @@ steps:
     key: 'windows-2021-fixture'
     depends_on: 'build-artifacts'
     agents:
-      queue: win-general-1-wsl
+      queue: win-general-1
     env:
       UNITY_VERSION: "2021.3.13f1"
     commands:
@@ -702,7 +702,7 @@ steps:
     timeout_in_minutes: 30
     depends_on: 'windows-2021-fixture'
     agents:
-      queue: win-general-1-wsl
+      queue: win-general-1
     env:
       UNITY_VERSION: "2021.3.13f1"
     plugins:
