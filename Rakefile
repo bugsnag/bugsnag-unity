@@ -19,7 +19,7 @@ def unity_directory
     if is_mac?
     "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
     elsif is_windows?
-      "F:\\unity\\#{ENV['UNITY_VERSION']}"
+      "C:\\Program Files\\Unity\\Hub\\Editor\\#{ENV['UNITY_VERSION']}"
     end
 
   elsif ENV.has_key? "UNITY_DIR"
