@@ -302,6 +302,7 @@ steps:
       queue: win-general-1
     env:
       UNITY_DIR: "/mnt/f/unity/2020.3.32f1"
+      UNITY_VERSION: "2020.3.32f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -326,6 +327,7 @@ steps:
       queue: win-general-1
     env:
       UNITY_DIR: "/mnt/f/unity/2020.3.32f1"
+      UNITY_VERSION: "2020.3.32f1"
     plugins:
       artifacts#v1.5.0:
         download:
