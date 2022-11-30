@@ -1,10 +1,8 @@
 #!/bin/bash -e
 
 if [ -z "$UNITY_VERSION" ]; then
-  if [ -z "$UNITY_DIR" ]; then
-    echo "UNITY_VERSION or UNITY_DIR must be set."
-    exit 1
-  fi
+  echo "UNITY_VERSION must be set e.g. 2020.3.32f1"
+  exit 1
 fi
 
 if [[ $# != 1 ]]; then
