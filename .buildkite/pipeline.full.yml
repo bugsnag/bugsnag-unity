@@ -604,7 +604,7 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_VERSION: "2018.4.36f1"
+      UNITY_DIR: "F:\\unity\\2018.4.36f1"
     command:
       - scripts/ci-build-windows-fixture-wsl.sh
     plugins:
@@ -626,7 +626,7 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_VERSION: "2019.4.35f1"
+      UNITY_DIR: "F:\\unity\\2019.4.35f1"
     command:
       - scripts/ci-build-windows-fixture-wsl.sh
     plugins:
@@ -648,7 +648,7 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_VERSION: "2021.3.13f1"
+      UNITY_DIR: "F:\\unity\\2021.3.13f1"
     commands:
       - scripts/ci-build-windows-fixture-wsl.sh
     plugins:
@@ -672,7 +672,7 @@ steps:
     agents:
       queue: windows-general-wsl
     env:
-      UNITY_VERSION: "2018.4.36f1"
+      UNITY_DIR: "F:\\unity\2018.4.36f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -688,7 +688,7 @@ steps:
     agents:
       queue: windows-general-wsl
     env:
-      UNITY_VERSION: "2019.4.35f1"
+      UNITY_DIR: "F:\\unity\2019.4.35f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -704,7 +704,7 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_VERSION: "2021.3.13f1"
+      UNITY_DIR: "F:\\unity\2021.3.13f1"
     plugins:
       artifacts#v1.5.0:
         download:
