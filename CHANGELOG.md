@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 7.5.0 (2022-11-30)
 
 ### Enhancements
 
