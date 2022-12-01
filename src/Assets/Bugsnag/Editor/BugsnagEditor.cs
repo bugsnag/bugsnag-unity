@@ -175,6 +175,7 @@ namespace BugsnagUnity.Editor
             EditorGUILayout.PropertyField(so.FindProperty("MaxPersistedEvents"));
             EditorGUILayout.PropertyField(so.FindProperty("MaxPersistedSessions"));
             settings.MaxReportedThreads = EditorGUILayout.IntField(new GUIContent("Max Reported Threads ⓘ", "Android devices only"), settings.MaxReportedThreads);
+            EditorGUILayout.PropertyField(so.FindProperty("MaxStringValueLength"));
             EditorGUILayout.PropertyField(so.FindProperty("NotifyLogLevel"));
             EditorGUILayout.PropertyField(so.FindProperty("PersistUser"));
             EditorGUILayout.PropertyField(so.FindProperty("RedactedKeys"));

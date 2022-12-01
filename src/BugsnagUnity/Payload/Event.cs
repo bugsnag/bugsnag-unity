@@ -55,7 +55,8 @@ namespace BugsnagUnity.Payload
         {        
             ApiKey = serialisedEvent["apiKey"].ToString();
 
-            var eventObject = (Dictionary<string, object>)serialisedEvent["event"];
+            var eventsArray = (JsonArray)serialisedEvent["events"];
+            var eventObject = ((JsonObject)eventsArray[0]).GetDictionary();
 
             _metadata = new Metadata();
             _metadata.MergeMetadata((Dictionary<string, object>)eventObject["metaData"]);

@@ -35,7 +35,7 @@ namespace BugsnagUnity
 
         private const string BREADCRUMB_TRUNCATION_MESSAGE = "Removed, along with {0} older breadcrumbs, to reduce payload size";
 
-        private const string EVENT_KEY_EVENT = "event";
+        private const string EVENT_KEY_EVENTS = "events";
 
         private const string EVENT_KEY_BREADCRUMBS = "breadcrumbs";
 
@@ -95,9 +95,124 @@ namespace BugsnagUnity
             }
         }
 
-        private byte[] TruncateBreadcrumbs(IPayload payload, byte[] serialisedPayload)
+        // Push to the server and handle the result
+        IEnumerator PushToServer(IPayload payload)
         {
-            var @event = payload.GetSerialisablePayload()[EVENT_KEY_EVENT] as PayloadDictionary;
+            var shouldDeliver = false;
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
+            }
+            else
+            {
+                var networkCheckDone = false;
+                new Thread(() => {
+                    shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
+                    networkCheckDone = true;
+                }).Start();
+
+                while (!networkCheckDone)
+                {
+                    yield return null;
+                }
+            }
+            if (!shouldDeliver)
+            {
+                _payloadManager.SendPayloadFailed(payload);
+                _finishedCacheDeliveries.Add(payload.Id);
+                yield break;
+            }
+
+            byte[] body = new byte[] { };
+            // There is no threading on webgl, so we treat the payload differently
+            //if (Application.platform == RuntimePlatform.WebGLPlayer)
+            if (true)
+            {
+                body = PreapareWebglPayloadBody(payload.GetSerialisablePayload());
+            }
+            else
+            {
+                var bodyReady = false;
+                new Thread(() => {
+                    body = PreaparePayloadBody(payload.GetSerialisablePayload());
+                    bodyReady = true;
+                }).Start();
+
+                while (!bodyReady)
+                {
+                    yield return null;
+                }
+            }
+
+            using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
+            {
+                req.SetRequestHeader("Content-Type", "application/json");
+                req.SetRequestHeader("Bugsnag-Sent-At", DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture));
+                foreach (var header in payload.Headers)
+                {
+                    req.SetRequestHeader(header.Key, header.Value);
+                }
+                req.uploadHandler = new UploadHandlerRaw(body);
+                req.downloadHandler = new DownloadHandlerBuffer();
+                req.method = UnityWebRequest.kHttpVerbPOST;
+                yield return req.SendWebRequest();
+
+                while (!req.isDone)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+                var code = req.responseCode;
+                if (code == 200 || code == 202)
+                {
+                    // success!
+                    _payloadManager.PayloadSendSuccess(payload);
+                    StartDeliveringCachedPayloads();
+                }
+                else if (req.isNetworkError || code == 0 || code == 408 || code == 429 || code >= 500)
+                {
+                    // sending failed with no network or retryable error, cache payload to disk
+                    _payloadManager.SendPayloadFailed(payload);
+                }
+                _finishedCacheDeliveries.Add(payload.Id);
+            }
+        }
+
+        private byte[] PreaparePayloadBody(Dictionary<string, object> payload)
+        {
+            var serialisedPayload = SerializeDictionary(payload);
+
+            // If payload is oversized, trim string values in all metadata
+            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+            {
+                serialisedPayload = TruncateMetadata(payload);
+            }
+            //If still oversized, truncate the breadcrumbs
+            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+            {
+                serialisedPayload = TruncateBreadcrumbs(payload, serialisedPayload);
+            }
+            return serialisedPayload;
+        }
+
+        private byte[] PreapareWebglPayloadBody(Dictionary<string, object> payload)
+        {
+            var serialisedPayload = SerializeDictionary(payload);
+            // If payload is oversized, remove all breadcrumbs
+            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+            {
+                serialisedPayload = RemoveAllBreadcrumbs(payload, serialisedPayload);
+            }
+            //If still oversized, clear out all metadata
+            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+            {
+                serialisedPayload = RemoveUserMetadata(payload);
+            }
+            return serialisedPayload;
+        }
+
+        private byte[] TruncateBreadcrumbs(Dictionary<string, object> payload, byte[] serialisedPayload)
+        {
+            var @event = payload[EVENT_KEY_EVENTS] as PayloadDictionary;
             var breadcrumbsList = (@event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[]).ToList();
 
             if (breadcrumbsList.Count == 0)
@@ -112,7 +227,7 @@ namespace BugsnagUnity
 
             for (int i = breadcrumbsList.Count - 1; i >= 0; i--)
             {
-                numBytesTruncated += GetBreadcrumbSize(breadcrumbsList[i]);
+                numBytesTruncated += SerializeDictionary(breadcrumbsList[i]).Length;
                 lastRemovedCrumbType = breadcrumbsList[i][EVENT_KEY_BREADCRUMB_TYPE] as string;
                 breadcrumbsList.RemoveAt(i);
                 numBreadcrumbsRemoved++;
@@ -131,7 +246,7 @@ namespace BugsnagUnity
                 };
                 breadcrumbsList.Add(truncationBreadcrumb);
                 @event[EVENT_KEY_BREADCRUMBS] = breadcrumbsList.ToArray();
-                return SerializePayload(payload);
+                return SerializeDictionary(payload);
             }
             else
             {
@@ -139,23 +254,34 @@ namespace BugsnagUnity
             }
         }
 
-        private int GetBreadcrumbSize(Dictionary<string, object> data)
+        private byte[] RemoveAllBreadcrumbs(Dictionary<string, object> payload, byte[] serialisedPayload)
         {
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+            var @event = ((Dictionary<string,object>[])payload[EVENT_KEY_EVENTS])[0];
+            
+            var breadcrumbsList = (@event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[]).ToList();
+
+            if (breadcrumbsList.Count == 0)
             {
-                SimpleJson.SerializeObject(data, writer);
-                writer.Flush();
-                stream.Position = 0;
-                return Encoding.UTF8.GetBytes(reader.ReadToEnd()).Length;
+                return serialisedPayload;
             }
+
+            var truncationBreadcrumb = new Dictionary<string, object>
+            {
+                { "timestamp", DateTime.UtcNow.ToString() },
+                { EVENT_KEY_BREADCRUMB_TYPE, "state" },
+                { EVENT_KEY_BREADCRUMB_MESSAGE, string.Format(BREADCRUMB_TRUNCATION_MESSAGE, breadcrumbsList.Count) }
+            };
+            breadcrumbsList.Clear();
+            breadcrumbsList.Add(truncationBreadcrumb);
+            @event[EVENT_KEY_BREADCRUMBS] = breadcrumbsList.ToArray();
+            return SerializeDictionary(payload);
+         
         }
 
-        private byte[] TruncateMetadata(IPayload payload)
+        private byte[] TruncateMetadata(Dictionary<string, object> payload)
         {
-            var @event = payload.GetSerialisablePayload()[EVENT_KEY_EVENT] as PayloadDictionary;
-            var metadata = @event[EVENT_KEY_METADATA] as PayloadDictionary;
+            var @event = ((Dictionary<string, object>[])payload[EVENT_KEY_EVENTS])[0];
+            var metadata = @event[EVENT_KEY_METADATA] as Dictionary<string, object>;
             foreach (var section in metadata)
             {
                 TruncateStringsInDictionary(section.Value as Dictionary<string,object>);
@@ -168,7 +294,21 @@ namespace BugsnagUnity
                 TruncateStringsInDictionary(crumbMetadata);
             }
 
-            return SerializePayload(payload);
+            return SerializeDictionary(payload);
+        }
+
+        private byte[] RemoveUserMetadata(Dictionary<string, object> payload)
+        {
+            var @event = ((Dictionary<string, object>[])payload[EVENT_KEY_EVENTS])[0];
+            var metadata = @event[EVENT_KEY_METADATA] as Dictionary<string, object>;
+            foreach (var key in metadata.Keys.ToList())
+            {
+                if (key != "app" && key != "device")
+                {
+                    metadata.Remove(key);
+                }
+            }
+            return SerializeDictionary(payload);
         }
 
         private void TruncateStringsInDictionary(Dictionary<string, object> section)
@@ -247,7 +387,7 @@ namespace BugsnagUnity
             return string.Format(STRING_TRUNCATION_MESSAGE, numCharactersToRemove);
         }
 
-        byte[] SerializePayload(IPayload payload)
+        byte[] SerializeDictionary(Dictionary<string, object> payload)
         {
             using (var stream = new MemoryStream())
             using (var reader = new StreamReader(stream))
@@ -260,102 +400,9 @@ namespace BugsnagUnity
             }
         }
 
-        private byte[] PreaparePayloadBody(IPayload payload)
-        {
-            var serialisedPayload = SerializePayload(payload);
-            //// If payload is oversized, trim string values in all metadata
-            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
-            {
-                serialisedPayload = TruncateMetadata(payload);
-            }
-            // If still oversized, truncate the breadcrumbs
-            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
-            {
-                serialisedPayload = TruncateBreadcrumbs(payload, serialisedPayload);
-            }
-            return serialisedPayload;
-        }
-        
+    
 
-        // Push to the server and handle the result
-        IEnumerator PushToServer(IPayload payload)
-        {
-            var shouldDeliver = false;
-            if (Application.platform == RuntimePlatform.WebGLPlayer)
-            {
-                shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
-            }
-            else
-            {
-                var networkCheckDone = false;
-                new Thread(() => {
-                    shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
-                    networkCheckDone = true;
-                }).Start();
-
-                while (!networkCheckDone)
-                {
-                    yield return null;
-                }
-            }
-            if (!shouldDeliver)
-            {
-                _payloadManager.SendPayloadFailed(payload);
-                _finishedCacheDeliveries.Add(payload.Id);
-                yield break;
-            }
-
-            byte[] body = new byte[] { };
-            if (Application.platform == RuntimePlatform.WebGLPlayer)
-            {
-                body = PreaparePayloadBody(payload);
-            }
-            else
-            {
-                var bodyReady = false;
-                new Thread(() => {
-                    body = PreaparePayloadBody(payload);
-                    bodyReady = true;
-                }).Start();
-
-                while (!bodyReady)
-                {
-                    yield return null;
-                }
-            }
-
-            using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
-            {
-                req.SetRequestHeader("Content-Type", "application/json");
-                req.SetRequestHeader("Bugsnag-Sent-At", DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture));
-                foreach (var header in payload.Headers)
-                {
-                    req.SetRequestHeader(header.Key, header.Value);
-                }
-                req.uploadHandler = new UploadHandlerRaw(body);
-                req.downloadHandler = new DownloadHandlerBuffer();
-                req.method = UnityWebRequest.kHttpVerbPOST;
-                yield return req.SendWebRequest();
-
-                while (!req.isDone)
-                {
-                    yield return new WaitForEndOfFrame();
-                }
-                var code = req.responseCode;
-                if (code == 200 || code == 202)
-                {
-                    // success!
-                    _payloadManager.PayloadSendSuccess(payload);
-                    StartDeliveringCachedPayloads();
-                }
-                else if (req.isNetworkError || code == 0 || code == 408 || code == 429 || code >= 500)
-                {
-                    // sending failed with no network or retryable error, cache payload to disk
-                    _payloadManager.SendPayloadFailed(payload);
-                }
-                _finishedCacheDeliveries.Add(payload.Id);
-            }
-        }
+       
 
         public void StartDeliveringCachedPayloads()
         {

@@ -51,7 +51,7 @@ namespace BugsnagUnity.Payload
             serialisableReport["id"] = Id;
             serialisableReport["apiKey"] = Event.ApiKey;
             serialisableReport["notifier"] = NotifierInfo.Instance;
-            serialisableReport["event"] = Event.GetEventPayload();
+            serialisableReport["events"] = new [] { Event.GetEventPayload() };
             return serialisableReport;
         }
 
