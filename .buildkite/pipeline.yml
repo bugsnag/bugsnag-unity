@@ -27,8 +27,9 @@ steps:
     agents:
       queue: windows-unity-wsl
     env:
-      UNITY_VERSION: "2018.4.36f1"
-      WSLENV: UNITY_VERSION
+#      UNITY_VERSION: "2018.4.36f1"
+      UNITY_DIR: "F:\\unity\\2018.4.36f1"
+      WSLENV: UNITY_DIR
     command:
       - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
     plugins:
@@ -114,7 +115,6 @@ steps:
 
   
   # Build Android test fixtures
-  
   - label: ':android: Build Android test fixture for Unity 2020'
     timeout_in_minutes: 30
     key: 'build-android-fixture-2020'
@@ -188,7 +188,6 @@ steps:
 
 
   # Run Android EDM tests
-
   # - label: ':android: Run Android EDM e2e tests for Unity 2020'
   #   timeout_in_minutes: 30
   #   depends_on: 'build-edm-fixture-2020'
@@ -300,6 +299,7 @@ steps:
     agents:
       queue: windows-unity-wsl
     env:
+      UNITY_DIR: "/mnt/f/unity/2020.3.32f1"
       UNITY_VERSION: "2020.3.32f1"
     plugins:
       artifacts#v1.5.0:
@@ -324,6 +324,7 @@ steps:
     agents:
       queue: windows-general-wsl
     env:
+      UNITY_DIR: "/mnt/f/unity/2020.3.32f1"
       UNITY_VERSION: "2020.3.32f1"
     plugins:
       artifacts#v1.5.0:
