@@ -15,11 +15,6 @@ public class NewSession : Scenario
     {
         Bugsnag.StartSession();
         Bugsnag.Notify(new System.Exception("Error 1"));
-        Invoke("DoSecondSession",5);
-    }
-
-    private void DoSecondSession()
-    {
         Bugsnag.StartSession();
         Bugsnag.Notify(new System.Exception("Error 2"));
     }
