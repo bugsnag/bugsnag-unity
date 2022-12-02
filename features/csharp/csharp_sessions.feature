@@ -152,6 +152,7 @@ Feature: Session Tracking
     And I wait to receive 2 sessions
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
+    And I sort the sessions by the payload field "sessions.0.startedAt"
     # Session 1
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
     And the session payload field "sessions.0.id" is stored as the value "session_id_1"
