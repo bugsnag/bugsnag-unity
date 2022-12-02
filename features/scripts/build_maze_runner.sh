@@ -12,39 +12,21 @@ fi
 
 if [ "$1" == "macos" ]; then
   PLATFORM="MacOS"
-  if [ -z "$UNITY_DIR" ]; then
-    UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
-  else
-    UNITY_PATH="$UNITY_DIR/Unity.app/Contents/MacOS/Unity"
-  fi
+  UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
 elif [ "$1" == "windows" ]; then
   PLATFORM="Win64"
   set -m
-  if [ -z "$UNITY_DIR" ]; then
-    UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-  else
-    UNITY_PATH="$UNITY_DIR/Editor/Unity.exe"
-  fi
+  UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
 elif [ "$1" == "wsl" ]; then
   PLATFORM="Win64"
   set -m
-  if [ -z "$UNITY_DIR" ]; then
-    UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-  else
-    UNITY_PATH="$UNITY_DIR/Editor/Unity.exe"
-  fi
+  UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
 elif [ "$1" == "webgl" ]; then
   PLATFORM="WebGL"
   if [ "$(uname)" == "Darwin" ]; then
-    if [ -z "$UNITY_DIR" ]; then
-     UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
-    fi
+    UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
   else
-    if [ -z "$UNITY_DIR" ]; then
-      UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-    else
-      UNITY_PATH="$UNITY_DIR/Editor/Unity.exe"
-    fi
+    UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
   fi
 else
   echo "Unsupported platform: $1"

@@ -169,7 +169,7 @@ steps:
     commands:
       - scripts/ci-run-webgl-tests.sh
 
-  # DISABLED Pending PLAT-9177
+      # DISABLED Pending PLAT-9177
   # - label: Run WebGL e2e tests for Unity 2021
   #   timeout_in_minutes: 30
   #   depends_on: 'cocoa-webgl-2021-fixtures'
@@ -604,7 +604,6 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_DIR: "/mnt/f/unity/2018.4.36f1"
       UNITY_VERSION: "2018.4.36f1"
     command:
       - scripts/ci-build-windows-fixture-wsl.sh
@@ -627,7 +626,6 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_DIR: "/mnt/f/unity/2019.4.35f1"
       UNITY_VERSION: "2019.4.35f1"
     command:
       - scripts/ci-build-windows-fixture-wsl.sh
@@ -650,7 +648,6 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_DIR: "/mnt/f/unity/2021.3.13f1"
       UNITY_VERSION: "2021.3.13f1"
     commands:
       - scripts/ci-build-windows-fixture-wsl.sh
@@ -675,7 +672,6 @@ steps:
     agents:
       queue: windows-general-wsl
     env:
-      UNITY_DIR: "/mnt/f/unity/2018.4.36f1"
       UNITY_VERSION: "2018.4.36f1"
     plugins:
       artifacts#v1.5.0:
@@ -692,7 +688,6 @@ steps:
     agents:
       queue: windows-general-wsl
     env:
-      UNITY_DIR: "/mnt/f/unity/2019.4.35f1"
       UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.5.0:
@@ -707,9 +702,8 @@ steps:
     timeout_in_minutes: 30
     depends_on: 'windows-2021-fixture'
     agents:
-      queue: windows-unity-wsl
+      queue: windows-general-wsl
     env:
-      UNITY_DIR: "/mnt/f/unity/2021.3.13f1"
       UNITY_VERSION: "2021.3.13f1"
     plugins:
       artifacts#v1.5.0:

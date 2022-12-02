@@ -27,9 +27,8 @@ steps:
     agents:
       queue: win-general-1
     env:
-#      UNITY_VERSION: "2018.4.36f1"
-      UNITY_DIR: "F:\\unity\\2018.4.36f1"
-      WSLENV: UNITY_DIR
+      UNITY_VERSION: "2018.4.36f1"
+      WSLENV: UNITY_VERSION
     command:
       - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
     plugins:
@@ -95,7 +94,7 @@ steps:
   # Run WebGL tests
   #
   # Note: These are run on Intel due to an issue with persistence with Firefox on ARM.
-  
+
   - label: Run WebGL e2e tests for Unity 2020
     timeout_in_minutes: 30
     depends_on: 'cocoa-webgl-2020-fixtures'
@@ -113,8 +112,9 @@ steps:
     commands:
       - scripts/ci-run-webgl-tests.sh
 
-  
+
   # Build Android test fixtures
+
   - label: ':android: Build Android test fixture for Unity 2020'
     timeout_in_minutes: 30
     key: 'build-android-fixture-2020'
@@ -188,6 +188,7 @@ steps:
 
 
   # Run Android EDM tests
+
   # - label: ':android: Run Android EDM e2e tests for Unity 2020'
   #   timeout_in_minutes: 30
   #   depends_on: 'build-edm-fixture-2020'
@@ -291,7 +292,7 @@ steps:
 
   #
   # Build Windows test fixture
-  
+
   - label: Build Unity 2020 Windows test fixture
     timeout_in_minutes: 30
     key: 'windows-2020-fixture'
@@ -299,7 +300,6 @@ steps:
     agents:
       queue: win-general-1
     env:
-      UNITY_DIR: "/mnt/f/unity/2020.3.32f1"
       UNITY_VERSION: "2020.3.32f1"
     plugins:
       artifacts#v1.5.0:
@@ -317,14 +317,13 @@ steps:
 
   #
   # Run Windows e2e tests
-  
+
   - label: Run Windows e2e tests for Unity 2020
     timeout_in_minutes: 30
     depends_on: 'windows-2020-fixture'
     agents:
       queue: windows-general-wsl
     env:
-      UNITY_DIR: "/mnt/f/unity/2020.3.32f1"
       UNITY_VERSION: "2020.3.32f1"
     plugins:
       artifacts#v1.5.0:
