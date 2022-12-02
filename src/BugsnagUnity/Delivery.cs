@@ -214,7 +214,7 @@ namespace BugsnagUnity
 
         private byte[] TruncateBreadcrumbs(Dictionary<string, object> payload, byte[] serialisedPayload)
         {
-            var @event = payload[EVENT_KEY_EVENTS] as PayloadDictionary;
+            var @event = ((Dictionary<string, object>[])payload[EVENT_KEY_EVENTS])[0];
             var breadcrumbsList = (@event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[]).ToList();
 
             if (breadcrumbsList.Count == 0)
@@ -259,7 +259,6 @@ namespace BugsnagUnity
         private byte[] RemoveAllBreadcrumbs(Dictionary<string, object> payload, byte[] serialisedPayload)
         {
             var @event = ((Dictionary<string,object>[])payload[EVENT_KEY_EVENTS])[0];
-            
             var breadcrumbsList = (@event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[]).ToList();
 
             if (breadcrumbsList.Count == 0)
@@ -273,11 +272,11 @@ namespace BugsnagUnity
                 { EVENT_KEY_BREADCRUMB_TYPE, "state" },
                 { EVENT_KEY_BREADCRUMB_MESSAGE, string.Format(BREADCRUMB_TRUNCATION_MESSAGE, breadcrumbsList.Count) }
             };
+
             breadcrumbsList.Clear();
             breadcrumbsList.Add(truncationBreadcrumb);
             @event[EVENT_KEY_BREADCRUMBS] = breadcrumbsList.ToArray();
             return SerializeDictionary(payload);
-         
         }
 
         private byte[] TruncateMetadata(Dictionary<string, object> payload)
