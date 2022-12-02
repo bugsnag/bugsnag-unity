@@ -47,6 +47,9 @@ namespace BugsnagUnity
 
         private const string EVENT_KEY_BREADCRUMB_METADATA = "metaData";
 
+        private const string EVENT_KEY_BREADCRUMB_TIMESTAMP = "timestamp";
+
+
 
         internal Delivery(Client client, Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
         {
@@ -125,8 +128,7 @@ namespace BugsnagUnity
 
             byte[] body = new byte[] { };
             // There is no threading on webgl, so we treat the payload differently
-            //if (Application.platform == RuntimePlatform.WebGLPlayer)
-            if (true)
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 body = PreapareWebglPayloadBody(payload.GetSerialisablePayload());
             }
@@ -267,7 +269,7 @@ namespace BugsnagUnity
 
             var truncationBreadcrumb = new Dictionary<string, object>
             {
-                { "timestamp", DateTime.UtcNow.ToString() },
+                { EVENT_KEY_BREADCRUMB_TIMESTAMP, DateTime.UtcNow.ToString() },
                 { EVENT_KEY_BREADCRUMB_TYPE, "state" },
                 { EVENT_KEY_BREADCRUMB_MESSAGE, string.Format(BREADCRUMB_TRUNCATION_MESSAGE, breadcrumbsList.Count) }
             };
@@ -399,10 +401,6 @@ namespace BugsnagUnity
                 return Encoding.UTF8.GetBytes(reader.ReadToEnd());
             }
         }
-
-    
-
-       
 
         public void StartDeliveringCachedPayloads()
         {
