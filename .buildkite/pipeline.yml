@@ -25,7 +25,7 @@ steps:
   - label: Ensure notifier builds on Windows (for development)
     timeout_in_minutes: 30
     agents:
-      queue: win-general-1
+      queue: windows-unity-wsl
     env:
       UNITY_VERSION: "2018.4.36f1"
       WSLENV: UNITY_VERSION
@@ -298,7 +298,7 @@ steps:
     key: 'windows-2020-fixture'
     depends_on: 'build-artifacts'
     agents:
-      queue: win-general-1
+      queue: windows-unity-wsl
     env:
       UNITY_VERSION: "2020.3.32f1"
     plugins:
