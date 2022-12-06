@@ -31,18 +31,18 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("notifier", NotifierInfo.Instance);
         }
 
-        internal Report(Configuration configuration, Dictionary<string, object> data)
+        internal Report(Configuration configuration, Dictionary<string, object> serialisedPayload)
         {
-            Id = data["id"].ToString();
+            Id = serialisedPayload["id"].ToString();
             Endpoint = configuration.Endpoints.Notify;
-            var apiKey = data["apiKey"].ToString();
+            var apiKey = serialisedPayload["apiKey"].ToString();
             Headers = new[] {
                 new KeyValuePair<string, string>("Bugsnag-Api-Key", apiKey),
                 new KeyValuePair<string, string>("Bugsnag-Payload-Version", configuration.PayloadVersion),
             };
             this.AddToPayload("apiKey", apiKey);
-            this.AddToPayload("notifier", data["notifier"]);
-            Event = new Event(data);
+            this.AddToPayload("notifier", serialisedPayload["notifier"]);
+            Event = new Event(serialisedPayload);
         }
 
         public Dictionary<string, object> GetSerialisablePayload()
@@ -51,11 +51,11 @@ namespace BugsnagUnity.Payload
             serialisableReport["id"] = Id;
             serialisableReport["apiKey"] = Event.ApiKey;
             serialisableReport["notifier"] = NotifierInfo.Instance;
-            serialisableReport["events"] = new [] { Event.GetEventPayload() };
+            serialisableReport["event"] = Event.GetEventPayload();
             return serialisableReport;
         }
 
-        internal void ApplyEventPayload()
+        internal void ApplyEventsArray()
         {
             this.AddToPayload("events", new[] { Event.GetEventPayload() });
         }

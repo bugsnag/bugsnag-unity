@@ -51,12 +51,16 @@ namespace BugsnagUnity.Payload
             _featureFlags = featureFlags;
         }
 
-        internal Event(Dictionary<string, object> serialisedEvent)
-        {        
-            ApiKey = serialisedEvent["apiKey"].ToString();
+        private Dictionary<string, object> GetEventFromSerialisedPayload(Dictionary<string, object> serialisedPayload)
+        {
+            return (Dictionary<string, object>)serialisedPayload["event"];
+        }
 
-            var eventsArray = (JsonArray)serialisedEvent["events"];
-            var eventObject = ((JsonObject)eventsArray[0]).GetDictionary();
+        internal Event(Dictionary<string, object> serialisedPayload)
+        {        
+            ApiKey = serialisedPayload["apiKey"].ToString();
+
+            var eventObject = GetEventFromSerialisedPayload(serialisedPayload);
 
             _metadata = new Metadata();
             _metadata.MergeMetadata((Dictionary<string, object>)eventObject["metaData"]);
