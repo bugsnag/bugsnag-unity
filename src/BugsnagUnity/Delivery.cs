@@ -126,7 +126,7 @@ namespace BugsnagUnity
                 yield break;
             }
 
-            byte[] body = new byte[] { };
+            byte[] body = null;
 
             if (payload.PayloadType == PayloadType.Session)
             {
@@ -199,8 +199,10 @@ namespace BugsnagUnity
             if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
             {
                 var @event = GetEventFromPayload(payload.GetSerialisablePayload());
-                TruncateMetadata(@event);
-                serialisedPayload = SerializeObject(payload);
+                if (TruncateMetadata(@event))
+                {
+                    serialisedPayload = SerializeObject(payload);
+                }
 
                 //If still oversized, truncate the breadcrumbs
                 if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
@@ -232,8 +234,10 @@ namespace BugsnagUnity
                 //If still oversized, clear out all metadata
                 if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
                 {
-                    RemoveUserMetadata(@event);
-                    serialisedPayload = SerializeObject(payload);
+                    if (RemoveUserMetadata(@event))
+                    {
+                        serialisedPayload = SerializeObject(payload);
+                    }
                 }
             }
            
@@ -303,58 +307,82 @@ namespace BugsnagUnity
             return true;
         }
 
-        private void TruncateMetadata(Dictionary<string, object> @event)
+        private bool TruncateMetadata(Dictionary<string, object> @event)
         {
+            var dataTruncated = false;
             var metadata = @event[EVENT_KEY_METADATA] as Dictionary<string, object>;
             foreach (var section in metadata)
             {
-                TruncateStringsInDictionary(section.Value as Dictionary<string,object>);
+                if (TruncateStringsInDictionary(section.Value as Dictionary<string, object>))
+                {
+                    dataTruncated = true;
+                }
             }
 
             var breadcrumbs = @event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[];
             foreach (var crumb in breadcrumbs)
             {
                 var crumbMetadata = crumb[EVENT_KEY_BREADCRUMB_METADATA] as Dictionary<string, object>;
-                TruncateStringsInDictionary(crumbMetadata);
+                if (TruncateStringsInDictionary(crumbMetadata))
+                {
+                    dataTruncated = true;
+                }
             }
+            return dataTruncated;
         }
 
-        private void RemoveUserMetadata(Dictionary<string, object> @event)
+        private bool RemoveUserMetadata(Dictionary<string, object> @event)
         {
+            var dataRemoved = false;
             var metadata = @event[EVENT_KEY_METADATA] as Dictionary<string, object>;
             foreach (var key in metadata.Keys.ToList())
             {
                 if (key != "app" && key != "device")
                 {
+                    dataRemoved = true;
                     metadata.Remove(key);
                 }
             }
+            return dataRemoved;
         }
 
-        private void TruncateStringsInDictionary(Dictionary<string, object> section)
+        private bool TruncateStringsInDictionary(Dictionary<string, object> section)
         {
+            var stringTruncated = false;
             foreach (var key in section.Keys.ToList())
             {
                 var valueType = section[key].GetType();
                 if (valueType == typeof(string))
                 {
                     var originalValue = section[key] as string;
-                    section[key] = TruncateStringIfNecessary(originalValue);
+                    if (ShouldTruncateString(originalValue))
+                    {
+                        section[key] = TruncateString(originalValue);
+                        stringTruncated = true;
+                    }
                 }
                 else if (valueType == typeof(string[]))
                 {
                     var stringArray = section[key] as string[];
                     for (int i = 0; i < stringArray.Length; i++)
                     {
-                        stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
+                        if (ShouldTruncateString(stringArray[i]))
+                        {
+                            stringArray[i] = TruncateString(stringArray[i]);
+                            stringTruncated = true;
+                        }
                     }
                 }
                 else if (valueType == typeof(List<string>))
                 {
-                    var stringArray = section[key] as List<string>;
-                    for (int i = 0; i < stringArray.Count; i++)
+                    var stringList = section[key] as List<string>;
+                    for (int i = 0; i < stringList.Count; i++)
                     {
-                        stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
+                        if (ShouldTruncateString(stringList[i]))
+                        {
+                            stringList[i] = TruncateString(stringList[i]);
+                            stringTruncated = true;
+                        }
                     }
                 }
                 else if (valueType == typeof(Dictionary<string, string>))
@@ -362,7 +390,11 @@ namespace BugsnagUnity
                     var stringDict = section[key] as Dictionary<string, string>;
                     foreach (var stringKey in stringDict.Keys.ToList())
                     {
-                        stringDict[stringKey] = TruncateStringIfNecessary(stringDict[stringKey]);
+                        if (ShouldTruncateString(stringDict[stringKey]))
+                        {
+                            stringTruncated = true;
+                            stringDict[stringKey] = TruncateString(stringDict[stringKey]);
+                        }
                     }
                 }
                 else if (valueType == typeof(Dictionary<string, object>))
@@ -371,28 +403,36 @@ namespace BugsnagUnity
                 }
                 else if (valueType == typeof(JsonArray))
                 {
-                    var array = ((JsonArray)section[key]);
-                    for (int i = 0; i < array.Count; i++)
+                    var jsonArray = ((JsonArray)section[key]);
+                    for (int i = 0; i < jsonArray.Count; i++)
                     {
-                        if (array[i].GetType() == typeof(string))
+                        if (jsonArray[i].GetType() == typeof(string))
                         {
-                            array[i] = TruncateStringIfNecessary((string)array[i]);
+                            var originalValue = jsonArray[i] as string;
+                            if (ShouldTruncateString(originalValue))
+                            {
+                                jsonArray[i] = TruncateString(originalValue);
+                                stringTruncated = true;
+                            }
                         }
                     }
                 }
             }
+            return stringTruncated;
         }
 
-        private string TruncateStringIfNecessary(string originalValue)
+        private bool ShouldTruncateString(string stringValue)
         {
-            if (originalValue.Length > _configuration.MaxStringValueLength)
+            return stringValue.Length > _configuration.MaxStringValueLength;
+        }
+
+        private string TruncateString(string originalValue)
+        {
+            var numStringsToTruncate = originalValue.Length - _configuration.MaxStringValueLength;
+            var truncationMessage = GetTruncationMessage(numStringsToTruncate);
+            if (numStringsToTruncate >= truncationMessage.Length)
             {
-                var numStringsToTruncate = originalValue.Length - _configuration.MaxStringValueLength;
-                var truncationMessage = GetTruncationMessage(numStringsToTruncate);
-                if (numStringsToTruncate >= truncationMessage.Length)
-                {
-                    return TruncateString(originalValue, truncationMessage);
-                }
+                return TruncateString(originalValue, truncationMessage);
             }
             return originalValue;
         }
