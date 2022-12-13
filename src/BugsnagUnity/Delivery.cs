@@ -47,6 +47,8 @@ namespace BugsnagUnity
 
         private const string EVENT_KEY_BREADCRUMB_METADATA = "metaData";
 
+        private const string EVENT_KEY_BREADCRUMB_TIMESTAMP = "timestamp";
+
 
         internal Delivery(Client client, Configuration configuration, CacheManager cacheManager, PayloadManager payloadManager)
         {
@@ -83,7 +85,8 @@ namespace BugsnagUnity
                     }
                 }
                 report.Event.RedactMetadata(_configuration);
-                report.ApplyEventPayload();
+                //pipeline expects and array of events even though we only ever report 1
+                report.ApplyEventsArray();
             }
             try
             {
@@ -94,188 +97,6 @@ namespace BugsnagUnity
                 // not avaliable in unit tests
             }
         }
-
-        private byte[] TruncateBreadcrumbs(IPayload payload, byte[] serialisedPayload)
-        {
-            var @event = payload.GetSerialisablePayload()[EVENT_KEY_EVENT] as PayloadDictionary;
-            var breadcrumbsList = (@event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[]).ToList();
-
-            if (breadcrumbsList.Count == 0)
-            {
-                return serialisedPayload;
-            }
-
-            var bytesToRemove = serialisedPayload.Length - MAX_PAYLOAD_BYTES;
-            var numBreadcrumbsRemoved = 0;
-            var numBytesTruncated = 0;
-            var lastRemovedCrumbType = string.Empty;
-
-            for (int i = breadcrumbsList.Count - 1; i >= 0; i--)
-            {
-                numBytesTruncated += GetBreadcrumbSize(breadcrumbsList[i]);
-                lastRemovedCrumbType = breadcrumbsList[i][EVENT_KEY_BREADCRUMB_TYPE] as string;
-                breadcrumbsList.RemoveAt(i);
-                numBreadcrumbsRemoved++;
-                if (numBytesTruncated >= bytesToRemove)
-                {
-                    break;
-                }
-            }
-
-            if (numBreadcrumbsRemoved > 0)
-            {
-                var truncationBreadcrumb = new Dictionary<string, object>
-                {
-                    { EVENT_KEY_BREADCRUMB_TYPE, lastRemovedCrumbType },
-                    { EVENT_KEY_BREADCRUMB_MESSAGE, string.Format(BREADCRUMB_TRUNCATION_MESSAGE, numBreadcrumbsRemoved) }
-                };
-                breadcrumbsList.Add(truncationBreadcrumb);
-                @event[EVENT_KEY_BREADCRUMBS] = breadcrumbsList.ToArray();
-                return SerializePayload(payload);
-            }
-            else
-            {
-                return serialisedPayload;
-            }
-        }
-
-        private int GetBreadcrumbSize(Dictionary<string, object> data)
-        {
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
-            {
-                SimpleJson.SerializeObject(data, writer);
-                writer.Flush();
-                stream.Position = 0;
-                return Encoding.UTF8.GetBytes(reader.ReadToEnd()).Length;
-            }
-        }
-
-        private byte[] TruncateMetadata(IPayload payload)
-        {
-            var @event = payload.GetSerialisablePayload()[EVENT_KEY_EVENT] as PayloadDictionary;
-            var metadata = @event[EVENT_KEY_METADATA] as PayloadDictionary;
-            foreach (var section in metadata)
-            {
-                TruncateStringsInDictionary(section.Value as Dictionary<string,object>);
-            }
-
-            var breadcrumbs = @event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[];
-            foreach (var crumb in breadcrumbs)
-            {
-                var crumbMetadata = crumb[EVENT_KEY_BREADCRUMB_METADATA] as Dictionary<string, object>;
-                TruncateStringsInDictionary(crumbMetadata);
-            }
-
-            return SerializePayload(payload);
-        }
-
-        private void TruncateStringsInDictionary(Dictionary<string, object> section)
-        {
-            foreach (var key in section.Keys.ToList())
-            {
-                var valueType = section[key].GetType();
-                if (valueType == typeof(string))
-                {
-                    var originalValue = section[key] as string;
-                    section[key] = TruncateStringIfNecessary(originalValue);
-                }
-                else if (valueType == typeof(string[]))
-                {
-                    var stringArray = section[key] as string[];
-                    for (int i = 0; i < stringArray.Length; i++)
-                    {
-                        stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
-                    }
-                }
-                else if (valueType == typeof(List<string>))
-                {
-                    var stringArray = section[key] as List<string>;
-                    for (int i = 0; i < stringArray.Count; i++)
-                    {
-                        stringArray[i] = TruncateStringIfNecessary(stringArray[i]);
-                    }
-                }
-                else if (valueType == typeof(Dictionary<string, string>))
-                {
-                    var stringDict = section[key] as Dictionary<string, string>;
-                    foreach (var stringKey in stringDict.Keys.ToList())
-                    {
-                        stringDict[stringKey] = TruncateStringIfNecessary(stringDict[stringKey]);
-                    }
-                }
-                else if (valueType == typeof(Dictionary<string, object>))
-                {
-                    TruncateStringsInDictionary(section[key] as Dictionary<string, object>);
-                }
-                else if (valueType == typeof(JsonArray))
-                {
-                    var array = ((JsonArray)section[key]);
-                    for (int i = 0; i < array.Count; i++)
-                    {
-                        if (array[i].GetType() == typeof(string))
-                        {
-                            array[i] = TruncateStringIfNecessary((string)array[i]);
-                        }
-                    }
-                }
-            }
-        }
-
-        private string TruncateStringIfNecessary(string originalValue)
-        {
-            if (originalValue.Length > _configuration.MaxStringValueLength)
-            {
-                var numStringsToTruncate = originalValue.Length - _configuration.MaxStringValueLength;
-                var truncationMessage = GetTruncationMessage(numStringsToTruncate);
-                if (numStringsToTruncate >= truncationMessage.Length)
-                {
-                    return TruncateString(originalValue, truncationMessage);
-                }
-            }
-            return originalValue;
-        }
-
-        private string TruncateString(string stringToTruncate, string truncationMessage)
-        {
-            return stringToTruncate.Substring(0, _configuration.MaxStringValueLength) + truncationMessage;
-        }
-
-        private string GetTruncationMessage(int numCharactersToRemove)
-        {
-            return string.Format(STRING_TRUNCATION_MESSAGE, numCharactersToRemove);
-        }
-
-        byte[] SerializePayload(IPayload payload)
-        {
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
-            {
-                SimpleJson.SerializeObject(payload, writer);
-                writer.Flush();
-                stream.Position = 0;
-                return Encoding.UTF8.GetBytes(reader.ReadToEnd());
-            }
-        }
-
-        private byte[] PreaparePayloadBody(IPayload payload)
-        {
-            var serialisedPayload = SerializePayload(payload);
-            //// If payload is oversized, trim string values in all metadata
-            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
-            {
-                serialisedPayload = TruncateMetadata(payload);
-            }
-            // If still oversized, truncate the breadcrumbs
-            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
-            {
-                serialisedPayload = TruncateBreadcrumbs(payload, serialisedPayload);
-            }
-            return serialisedPayload;
-        }
-        
 
         // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload)
@@ -305,24 +126,33 @@ namespace BugsnagUnity
                 yield break;
             }
 
-            byte[] body = new byte[] { };
-            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            byte[] body = null;
+
+            if (payload.PayloadType == PayloadType.Session)
             {
-                body = PreaparePayloadBody(payload);
+                body = SerializeObject(payload);
             }
             else
             {
-                var bodyReady = false;
-                new Thread(() => {
-                    body = PreaparePayloadBody(payload);
-                    bodyReady = true;
-                }).Start();
-
-                while (!bodyReady)
+                // There is no threading on webgl, so we treat the payload differently
+                if (Application.platform == RuntimePlatform.WebGLPlayer)
                 {
-                    yield return null;
+                    body = PrepareEventBodySimple(payload);
                 }
-            }
+                else
+                {
+                    var bodyReady = false;
+                    new Thread(() => {
+                        body = PrepareEventBody(payload);
+                        bodyReady = true;
+                    }).Start();
+
+                    while (!bodyReady)
+                    {
+                        yield return null;
+                    }
+                }
+            }           
 
             using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
             {
@@ -355,6 +185,266 @@ namespace BugsnagUnity
                 }
                 _finishedCacheDeliveries.Add(payload.Id);
             }
+        }
+
+        private Dictionary<string, object> GetEventFromPayload(Dictionary<string, object> payloadAsDictionary)
+        {
+            return payloadAsDictionary[EVENT_KEY_EVENT] as Dictionary<string, object>;
+        }
+
+        private byte[] PrepareEventBody(IPayload payload)
+        {
+            var serialisedPayload = SerializeObject(payload);
+            // If payload is oversized, trim string values in all metadata
+            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+            {
+                var @event = GetEventFromPayload(payload.GetSerialisablePayload());
+                if (TruncateMetadata(@event))
+                {
+                    serialisedPayload = SerializeObject(payload);
+                }
+
+                //If still oversized, truncate the breadcrumbs
+                if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+                {
+                    if (TruncateBreadcrumbs(@event, serialisedPayload.Length - MAX_PAYLOAD_BYTES))
+                    {
+                        serialisedPayload = SerializeObject(payload);
+                    }
+                }
+            }
+           
+            return serialisedPayload;
+        }
+
+        private byte[] PrepareEventBodySimple(IPayload payload)
+        {
+            var serialisedPayload = SerializeObject(payload);
+
+            // If payload is oversized, remove all breadcrumbs
+            if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+            {
+                var @event = payload.GetSerialisablePayload();
+
+                if (RemoveAllBreadcrumbs(@event))
+                {
+                    serialisedPayload = SerializeObject(payload);
+                }
+
+                //If still oversized, clear out all metadata
+                if (serialisedPayload.Length > MAX_PAYLOAD_BYTES)
+                {
+                    if (RemoveUserMetadata(@event))
+                    {
+                        serialisedPayload = SerializeObject(payload);
+                    }
+                }
+            }
+           
+            return serialisedPayload;
+        }
+
+        private bool TruncateBreadcrumbs(Dictionary<string, object> @event, int bytesToRemove)
+        {
+            var breadcrumbsList = (@event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[]).ToList();
+
+            if (breadcrumbsList.Count == 0)
+            {
+                return false;
+            }
+
+            var numBreadcrumbsRemoved = 0;
+            var numBytesTruncated = 0;
+            var lastRemovedCrumbType = string.Empty;
+
+            for (int i = breadcrumbsList.Count - 1; i >= 0; i--)
+            {
+                numBytesTruncated += SerializeObject(breadcrumbsList[i]).Length;
+                lastRemovedCrumbType = breadcrumbsList[i][EVENT_KEY_BREADCRUMB_TYPE] as string;
+                breadcrumbsList.RemoveAt(i);
+                numBreadcrumbsRemoved++;
+                if (numBytesTruncated >= bytesToRemove)
+                {
+                    break;
+                }
+            }
+
+            if (numBreadcrumbsRemoved > 0)
+            {
+                var truncationBreadcrumb = new Dictionary<string, object>
+                {
+                    { EVENT_KEY_BREADCRUMB_TYPE, lastRemovedCrumbType },
+                    { EVENT_KEY_BREADCRUMB_MESSAGE, string.Format(BREADCRUMB_TRUNCATION_MESSAGE, numBreadcrumbsRemoved) }
+                };
+                breadcrumbsList.Add(truncationBreadcrumb);
+                @event[EVENT_KEY_BREADCRUMBS] = breadcrumbsList.ToArray();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool RemoveAllBreadcrumbs(Dictionary<string, object> @event)
+        {
+            var numExistingCrumbs = (@event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[]).Length;
+
+            if (numExistingCrumbs == 0)
+            {
+                return false;
+            }
+
+            var truncationBreadcrumb = new Dictionary<string, object>
+            {
+                { EVENT_KEY_BREADCRUMB_TIMESTAMP, DateTime.UtcNow.ToString() },
+                { EVENT_KEY_BREADCRUMB_TYPE, "state" },
+                { EVENT_KEY_BREADCRUMB_MESSAGE, string.Format(BREADCRUMB_TRUNCATION_MESSAGE, numExistingCrumbs) }
+            };
+
+            @event[EVENT_KEY_BREADCRUMBS] = new[] { truncationBreadcrumb };
+
+            return true;
+        }
+
+        private bool TruncateMetadata(Dictionary<string, object> @event)
+        {
+            var dataTruncated = false;
+            var metadata = @event[EVENT_KEY_METADATA] as Dictionary<string, object>;
+            foreach (var section in metadata)
+            {
+                if (TruncateStringsInDictionary(section.Value as Dictionary<string, object>))
+                {
+                    dataTruncated = true;
+                }
+            }
+
+            var breadcrumbs = @event[EVENT_KEY_BREADCRUMBS] as Dictionary<string, object>[];
+            foreach (var crumb in breadcrumbs)
+            {
+                var crumbMetadata = crumb[EVENT_KEY_BREADCRUMB_METADATA] as Dictionary<string, object>;
+                if (TruncateStringsInDictionary(crumbMetadata))
+                {
+                    dataTruncated = true;
+                }
+            }
+            return dataTruncated;
+        }
+
+        private bool RemoveUserMetadata(Dictionary<string, object> @event)
+        {
+            var dataRemoved = false;
+            var metadata = @event[EVENT_KEY_METADATA] as Dictionary<string, object>;
+            foreach (var key in metadata.Keys.ToList())
+            {
+                if (key != "app" && key != "device")
+                {
+                    dataRemoved = true;
+                    metadata.Remove(key);
+                }
+            }
+            return dataRemoved;
+        }
+
+        private bool TruncateStringsInDictionary(Dictionary<string, object> section)
+        {
+            var stringTruncated = false;
+            foreach (var key in section.Keys.ToList())
+            {
+                var valueType = section[key].GetType();
+                if (valueType == typeof(string))
+                {
+                    var originalValue = section[key] as string;
+                    if (ShouldTruncateString(originalValue))
+                    {
+                        section[key] = TruncateString(originalValue);
+                        stringTruncated = true;
+                    }
+                }
+                else if (valueType == typeof(string[]))
+                {
+                    var stringArray = section[key] as string[];
+                    for (int i = 0; i < stringArray.Length; i++)
+                    {
+                        if (ShouldTruncateString(stringArray[i]))
+                        {
+                            stringArray[i] = TruncateString(stringArray[i]);
+                            stringTruncated = true;
+                        }
+                    }
+                }
+                else if (valueType == typeof(List<string>))
+                {
+                    var stringList = section[key] as List<string>;
+                    for (int i = 0; i < stringList.Count; i++)
+                    {
+                        if (ShouldTruncateString(stringList[i]))
+                        {
+                            stringList[i] = TruncateString(stringList[i]);
+                            stringTruncated = true;
+                        }
+                    }
+                }
+                else if (valueType == typeof(Dictionary<string, string>))
+                {
+                    var stringDict = section[key] as Dictionary<string, string>;
+                    foreach (var stringKey in stringDict.Keys.ToList())
+                    {
+                        if (ShouldTruncateString(stringDict[stringKey]))
+                        {
+                            stringTruncated = true;
+                            stringDict[stringKey] = TruncateString(stringDict[stringKey]);
+                        }
+                    }
+                }
+                else if (valueType == typeof(Dictionary<string, object>))
+                {
+                    TruncateStringsInDictionary(section[key] as Dictionary<string, object>);
+                }
+                else if (valueType == typeof(JsonArray))
+                {
+                    var jsonArray = ((JsonArray)section[key]);
+                    for (int i = 0; i < jsonArray.Count; i++)
+                    {
+                        if (jsonArray[i].GetType() == typeof(string))
+                        {
+                            var originalValue = jsonArray[i] as string;
+                            if (ShouldTruncateString(originalValue))
+                            {
+                                jsonArray[i] = TruncateString(originalValue);
+                                stringTruncated = true;
+                            }
+                        }
+                    }
+                }
+            }
+            return stringTruncated;
+        }
+
+        private bool ShouldTruncateString(string stringValue)
+        {
+            return stringValue.Length > _configuration.MaxStringValueLength;
+        }
+
+        private string TruncateString(string originalValue)
+        {
+            var numStringsToTruncate = originalValue.Length - _configuration.MaxStringValueLength;
+            var truncationMessage = GetTruncationMessage(numStringsToTruncate);
+            if (numStringsToTruncate >= truncationMessage.Length)
+            {
+                return TruncateString(originalValue, truncationMessage);
+            }
+            return originalValue;
+        }
+
+        private string TruncateString(string stringToTruncate, string truncationMessage)
+        {
+            return stringToTruncate.Substring(0, _configuration.MaxStringValueLength) + truncationMessage;
+        }
+
+        private string GetTruncationMessage(int numCharactersToRemove)
+        {
+            return string.Format(STRING_TRUNCATION_MESSAGE, numCharactersToRemove);
         }
 
         public void StartDeliveringCachedPayloads()
@@ -422,6 +512,19 @@ namespace BugsnagUnity
                 }
             }
             return false;
+        }
+
+        private byte[] SerializeObject(object @object)
+        {
+            using (var stream = new MemoryStream())
+            using (var reader = new StreamReader(stream))
+            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+            {
+                SimpleJson.SerializeObject(@object, writer);
+                writer.Flush();
+                stream.Position = 0;
+                return Encoding.UTF8.GetBytes(reader.ReadToEnd());
+            }
         }
 
     }

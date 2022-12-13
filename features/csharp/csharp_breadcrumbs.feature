@@ -68,6 +68,7 @@ Feature: Csharp Breadcrumbs
     And the event "breadcrumbs.7.metaData.test" equals "value"
     And the event "breadcrumbs.7.metaData.nullTest" is null
 
+  @skip_webgl
   Scenario: Breadcrumb Truncation
     When I run the game in the "BreadcrumbTruncation" state
     And I wait to receive an error

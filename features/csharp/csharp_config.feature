@@ -145,7 +145,7 @@ Feature: csharp events
     And the exception "message" equals "Context"
     And the event "context" equals "test"
 
-  @skip_android #Pending PLAT-9210
+  @skip_webgl @skip_android #Android Pending PLAT-9210, Webgl has different behaviour
   Scenario: Max String Value Length
     When I run the game in the "MaxStringValueLength" state
     And I wait to receive an error
@@ -162,8 +162,3 @@ Feature: csharp events
     And the event "breadcrumbs.1.metaData.stringList.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "breadcrumbs.1.metaData.dictionary.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "breadcrumbs.1.metaData.stringDictionary.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
-
-
-
-
-
