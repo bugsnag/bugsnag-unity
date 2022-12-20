@@ -725,12 +725,17 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
 }
 
 void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
-  BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
-  callback(appData, "bundleVersion", app.bundleVersion.UTF8String);
-  callback(appData, "id", app.id.UTF8String);
-  callback(appData, "isLaunching", strdup(app.isLaunching ? "true" : "false"));
-  callback(appData, "type", app.type.UTF8String);
-  callback(appData, "version", app.version.UTF8String);
+    BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
+
+    NSDictionary *appDictionary = @{
+        "bundleVersion" : app.bundleVersion,
+        "id" : app.id,
+        "isLaunching" : app.isLaunching,
+        "type" : app.type,
+        "version" : app.version
+    };
+
+    return getJson(appDictionary);
 }
 
 void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)) {

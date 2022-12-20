@@ -23,7 +23,7 @@ namespace BugsnagUnity
         internal static extern void bugsnag_removeMetadata(IntPtr configuration, string tab);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_retrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
+        internal static extern string bugsnag_retrieveAppData();
 
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveLastRunInfo(IntPtr instance, Action<IntPtr, bool, bool, int> populate);

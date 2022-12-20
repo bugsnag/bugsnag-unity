@@ -224,35 +224,18 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            GCHandle handle = GCHandle.Alloc(app);
-
-            try
+            var result = NativeCode.bugsnag_retrieveAppData();
+            var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
+            foreach (var pair in dictionary)
             {
-                NativeCode.bugsnag_retrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
-            }
-            finally
-            {
-                if (handle != null)
-                {
-                    handle.Free();
-                }
+                app.Payload.AddToPayload(pair.Key,pair.Value);
             }
         }
 
         public void PopulateAppWithState(AppWithState app)
         {
             PopulateApp(app);
-        }
-
-        [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
-        static void PopulateAppData(IntPtr instance, string key, string value)
-        {
-            var handle = GCHandle.FromIntPtr(instance);
-            if (handle.Target is App app)
-            {
-                app.Add(key, value);
-            }
-        }
+        }     
 
         public void PopulateDevice(Device device)
         {
