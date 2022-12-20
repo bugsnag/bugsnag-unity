@@ -726,15 +726,13 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
 
 char * bugsnag_retrieveAppData() {
     BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
-
-    NSDictionary *appDictionary = @{
-        @"bundleVersion" : app.bundleVersion,
-        @"id" : app.id,
-        @"isLaunching" : app.isLaunching ? @"true" : @"false",
-        @"type" : app.type,
-        @"version" : app.version
-    };
-
+     NSDictionary *appDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+        app.bundleVersion, @"bundleVersion",
+        app.id, @"id",
+        app.isLaunching ? @"true" : @"false", @"isLaunching",
+        app.type, @"type",
+        app.version, @"version",
+        nil];
     return getJson(appDictionary);
 }
 
@@ -750,20 +748,19 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
 
 char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
     BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
-    NSDictionary *deviceDictionary = @{
-        @"freeDisk" : device.freeDisk,
-        @"freeMemory" : device.freeMemory,
-        @"id" : device.id,
-        @"jailbroken" : device.jailbroken ? @"true" : @"false",
-        @"locale" : device.locale,
-        @"manufacturer" : device.manufacturer,
-        @"model" : device.model,
-        @"modelNumber" : device.modelNumber,
-        @"osBuild" : device.runtimeVersions[@"osBuild"],
-        @"osName" : device.osName,
-        @"osVersion" : device.osVersion,
-    };
-
+    NSDictionary *deviceDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+        device.freeDisk, @"freeDisk",
+        device.freeMemory, @"freeMemory",
+        device.id, @"id",
+        device.jailbroken ? @"true" : @"false", @"jailbroken",
+        device.locale, @"locale",
+        device.manufacturer, @"manufacturer",
+        device.model, @"model",
+        device.modelNumber, @"modelNumber",
+        device.runtimeVersions[@"osBuild"], @"osBuild",
+        device.osName, @"osName",
+        device.osVersion,@ "osVersion",
+        nil];
     return getJson(deviceDictionary);
 }
 
