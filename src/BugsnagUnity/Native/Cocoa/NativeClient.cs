@@ -228,7 +228,20 @@ namespace BugsnagUnity
             var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
             foreach (var pair in dictionary)
             {
-                app.Payload.AddToPayload(pair.Key,pair.Value);
+                if (pair.Key == "isLaunching")
+                {
+                    if (pair.Value != null)
+                    {
+                        var stringValue = (pair.Value as string).ToLower();
+                        app.Payload.AddToPayload(pair.Key, stringValue == "true");
+
+                    }
+
+                }
+                else
+                {
+                    app.Payload.AddToPayload(pair.Key, pair.Value);
+                }
             }
         }
 

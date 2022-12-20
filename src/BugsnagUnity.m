@@ -724,15 +724,15 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
   }];
 }
 
-void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
+char * bugsnag_retrieveAppData() {
     BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
 
     NSDictionary *appDictionary = @{
-        "bundleVersion" : app.bundleVersion,
-        "id" : app.id,
-        "isLaunching" : app.isLaunching,
-        "type" : app.type,
-        "version" : app.version
+        @"bundleVersion" : app.bundleVersion,
+        @"id" : app.id,
+        @"isLaunching" : app.isLaunching ? @"true" : @"false",
+        @"type" : app.type,
+        @"version" : app.version
     };
 
     return getJson(appDictionary);
