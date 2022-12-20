@@ -748,19 +748,23 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
 
 }
 
-void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
-  BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
-  callback(deviceData, "freeDisk", device.freeDisk.stringValue.UTF8String);
-  callback(deviceData, "freeMemory", device.freeMemory.stringValue.UTF8String);
-  callback(deviceData, "id", device.id.UTF8String);
-  callback(deviceData, "jailbroken", strdup(device.jailbroken ? "1" : "0"));
-  callback(deviceData, "locale", device.locale.UTF8String);
-  callback(deviceData, "manufacturer", device.manufacturer.UTF8String);
-  callback(deviceData, "model", device.model.UTF8String);
-  callback(deviceData, "modelNumber", device.modelNumber.UTF8String);
-  callback(deviceData, "osBuild", device.runtimeVersions[@"osBuild"].UTF8String);
-  callback(deviceData, "osName", device.osName.UTF8String);
-  callback(deviceData, "osVersion", device.osVersion.UTF8String);
+char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
+    BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
+    NSDictionary *deviceDictionary = @{
+        @"freeDisk" : device.freeDisk,
+        @"freeMemory" : device.freeMemory,
+        @"id" : device.id,
+        @"jailbroken" : device.jailbroken ? @"true" : @"false",
+        @"locale" : device.locale,
+        @"manufacturer" : device.manufacturer,
+        @"model" : device.model,
+        @"modelNumber" : device.modelNumber,
+        @"osBuild" : device.runtimeVersions[@"osBuild"],
+        @"osName" : device.osName,
+        @"osVersion" : device.osVersion,
+    };
+
+    return getJson(deviceDictionary);
 }
 
 void bugsnag_populateUser(struct bugsnag_user *user) {
