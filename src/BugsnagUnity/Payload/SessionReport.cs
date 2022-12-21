@@ -24,16 +24,16 @@ namespace BugsnagUnity.Payload
             };
         }
 
-        public SessionReport(Configuration configuration, App app, Device device, User user, Session session)
+        public SessionReport(Configuration configuration, Session session)
         {
             SetRequestInfo(configuration);
             this.AddToPayload("notifier", NotifierInfo.Instance);
-            this.AddToPayload("app", app.Payload);
-            this.AddToPayload("device", device.Payload);
+            this.AddToPayload("app", ((App)session.App).Payload);
+            this.AddToPayload("device", ((Device)session.Device).Payload);
             var sessionObject = new Dictionary<string,object>();
             sessionObject.AddToPayload("id", session.Id);
             sessionObject.AddToPayload("startedAt", session.StartedAt);
-            sessionObject.AddToPayload("user", user.Payload);
+            sessionObject.AddToPayload("user", session.User.Payload);
             this.AddToPayload("sessions", new [] { sessionObject });
             Id = session.Id;
         }
