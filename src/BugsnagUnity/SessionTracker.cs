@@ -100,7 +100,7 @@ namespace BugsnagUnity
 
             if (Client.Configuration.Endpoints.IsValid)
             {
-                var payload = new SessionReport(Client.Configuration, app, device, Client.GetUser().Clone(), session);
+                var payload = new SessionReport(Client.Configuration, session);
                 Client.PayloadManager.AddPendingPayload(payload);               
                 Client.Send(payload);
             }
