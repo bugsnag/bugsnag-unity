@@ -212,11 +212,6 @@ namespace BugsnagUnity
                     // sending failed with no network or retryable error, cache payload to disk
                     _payloadManager.SendPayloadFailed(payload);
                 }
-                else if (req.isNetworkError)
-                {
-                    // unity detected a non http related error, remove payload from cache and pending payloads
-                    _payloadManager.RemovePayload(payload);
-                }
                 else
                 {
                     // sending failed with an uacceptable status code, remove payload from cache and pending payloads
