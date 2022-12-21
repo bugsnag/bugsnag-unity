@@ -7,6 +7,7 @@ public class PersistEventReportCallback : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.Context = "Error 2";
+        Configuration.AutoTrackSessions = false;
         Configuration.AddOnSendError((@event) => {
 
             @event.App.BinaryArch = "Persist BinaryArch";

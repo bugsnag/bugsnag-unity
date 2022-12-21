@@ -5,8 +5,8 @@ public class PersistEvent : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        SetInvalidEndpoints();
         Configuration.Context = "Error 1";
+        Configuration.AutoTrackSessions = false;
         if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
             Configuration.EnabledErrorTypes.OOMs = false;
