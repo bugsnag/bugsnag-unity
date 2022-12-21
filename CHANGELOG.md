@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+* Added checks in delivery to ensure payloads cann't get stuck in a retry loop. [#683](https://github.com/bugsnag/bugsnag-unity/pull/683)
+
 ## 7.5.0 (2022-11-30)
 
 ### Enhancements
