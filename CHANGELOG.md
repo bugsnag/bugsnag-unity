@@ -1,5 +1,14 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Fix an issue where Cocoa Device and App data was serialised incorectly causing invalid cast exceptions in callbacks [#680](https://github.com/bugsnag/bugsnag-unity/pull/680)
+
+
+
+
 ## 7.5.0 (2022-11-30)
 
 ### Enhancements
