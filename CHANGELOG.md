@@ -1,5 +1,10 @@
 # Changelog
 
+
+### Bug fixes
+
+* Fixed an issue where user changes made in OnSession callbacks did not make it to the generated payload [#681](https://github.com/bugsnag/bugsnag-unity/pull/681)
+
 ## 7.5.0 (2022-11-30)
 
 ### Enhancements
