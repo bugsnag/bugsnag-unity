@@ -6,7 +6,9 @@ Feature: Unity Persistence
   @skip_windows @skip_macos @skip_webgl #pending PLAT-8632
   Scenario: Receive a persisted session
     When I run the game in the "PersistSession" state
+    And I set the HTTP status code for the next requests to "408"
     And I wait for requests to fail
+    And I discard the oldest session
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "PersistSessionReport" state
@@ -19,7 +21,9 @@ Feature: Unity Persistence
 
   Scenario: Receive a persisted event
     When I run the game in the "PersistEvent" state
+    And I set the HTTP status code for the next requests to "408"
     And I wait for requests to fail
+    And I discard the oldest error
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "PersistEventReport" state
@@ -33,7 +37,9 @@ Feature: Unity Persistence
 
   Scenario: Receive a persisted event with on send callback
     When I run the game in the "PersistEvent" state
+    And I set the HTTP status code for the next requests to "408"
     And I wait for requests to fail
+    And I discard the oldest error
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "PersistEventReportCallback" state
@@ -50,7 +56,12 @@ Feature: Unity Persistence
 
   Scenario: Max Persisted Events
     When I run the game in the "MaxPersistEvents" state
+    And I set the HTTP status code for the next requests to "408,408,408,408"
     And I wait for requests to fail
+    And I discard the oldest error
+    And I discard the oldest error
+    And I discard the oldest error
+    And I discard the oldest error
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "ReportMaxPersistedEvents" state
@@ -60,7 +71,12 @@ Feature: Unity Persistence
   @skip_cocoa @skip_android #These platforms handle sessions separately and will have separate tests
   Scenario: Max Persisted Sessions
     When I run the game in the "MaxPersistSessions" state
+    And I set the HTTP status code for the next requests to "408,408,408,408"
     And I wait for requests to fail
+    And I discard the oldest session
+    And I discard the oldest session
+    And I discard the oldest session
+    And I discard the oldest session
     And I close the Unity app
     And On Mobile I relaunch the app
     And I run the game in the "ReportMaxPersistedSessions" state

@@ -115,11 +115,6 @@ public class Scenario : MonoBehaviour
         Bugsnag.ClearFeatureFlag("flag2");
     }
 
-    public void SetInvalidEndpoints()
-    {
-        Configuration.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
-    }
-
     public bool SimpleEventCallback(IEvent @event)
     {
         EditAllAppData(@event);

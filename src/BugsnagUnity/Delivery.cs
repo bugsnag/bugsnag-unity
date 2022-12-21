@@ -127,23 +127,45 @@ namespace BugsnagUnity
             }
 
             byte[] body = null;
-
+            // It's not possible to yield from a try catch block, so we use this flag bool instead
+            var errorDuringSerialisation = false;
             if (payload.PayloadType == PayloadType.Session)
             {
-                body = SerializeObject(payload);
+                try
+                {
+                    body = SerializeObject(payload);
+                }
+                catch
+                {
+                    errorDuringSerialisation = true;
+                }
             }
             else
             {
                 // There is no threading on webgl, so we treat the payload differently
                 if (Application.platform == RuntimePlatform.WebGLPlayer)
                 {
-                    body = PrepareEventBodySimple(payload);
+                    try
+                    {
+                        body = PrepareEventBodySimple(payload);
+                    }
+                    catch
+                    {
+                        errorDuringSerialisation = true;
+                    }
                 }
                 else
                 {
                     var bodyReady = false;
                     new Thread(() => {
-                        body = PrepareEventBody(payload);
+                        try
+                        {
+                            body = PrepareEventBody(payload);
+                        }
+                        catch
+                        {
+                            errorDuringSerialisation = true;
+                        }
                         bodyReady = true;
                     }).Start();
 
@@ -152,7 +174,14 @@ namespace BugsnagUnity
                         yield return null;
                     }
                 }
-            }           
+            }
+
+            if (errorDuringSerialisation)
+            {
+                _payloadManager.RemovePayload(payload);
+                _finishedCacheDeliveries.Add(payload.Id);
+                yield break;
+            }
 
             using (var req = new UnityWebRequest(payload.Endpoint.ToString()))
             {
@@ -175,13 +204,23 @@ namespace BugsnagUnity
                 if (code == 200 || code == 202)
                 {
                     // success!
-                    _payloadManager.PayloadSendSuccess(payload);
+                    _payloadManager.RemovePayload(payload);
                     StartDeliveringCachedPayloads();
                 }
-                else if (req.isNetworkError || code == 0 || code == 408 || code == 429 || code >= 500)
+                else if ( code == 0 || code == 408 || code == 429 || code >= 500)
                 {
                     // sending failed with no network or retryable error, cache payload to disk
                     _payloadManager.SendPayloadFailed(payload);
+                }
+                else if (req.isNetworkError)
+                {
+                    // unity detected a non http related error, remove payload from cache and pending payloads
+                    _payloadManager.RemovePayload(payload);
+                }
+                else
+                {
+                    // sending failed with an uacceptable status code, remove payload from cache and pending payloads
+                    _payloadManager.RemovePayload(payload);
                 }
                 _finishedCacheDeliveries.Add(payload.Id);
             }
