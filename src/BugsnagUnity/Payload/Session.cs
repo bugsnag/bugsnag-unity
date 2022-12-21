@@ -33,7 +33,7 @@ namespace BugsnagUnity.Payload
 
         public void SetUser(string id, string email, string name)
         {
-            User = new User(id,name,email);
+            User = new User(id, email, name);
         }
 
         internal int HandledCount()
