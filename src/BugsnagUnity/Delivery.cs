@@ -219,7 +219,7 @@ namespace BugsnagUnity
                 }
                 else
                 {
-                    // sending failed with an uacceptable status code, remove payload from cache and pending payloads
+                    // sending failed with an unacceptable status code, remove payload from cache and pending payloads
                     _payloadManager.RemovePayload(payload);
                 }
                 _finishedCacheDeliveries.Add(payload.Id);
