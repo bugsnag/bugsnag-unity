@@ -26,8 +26,12 @@ namespace BugsnagUnity
 
         internal bool? GetNativeBool(string key)
         {
-            var result = NativeCode.bugsnag_getValueAsString(NativePointer, key);
-            return result == null ? null : (bool?)bool.Parse(result);
+            var result = NativeCode.bugsnag_getValueAsString(NativePointer, key).ToLower();
+            if (result == null)
+            {
+                return null;
+            }
+            return result == "1" || result == "true";
         }
 
         internal void SetNativeBool(string name, bool? value)

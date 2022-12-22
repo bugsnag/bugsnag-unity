@@ -8,6 +8,7 @@
 
 ### Bug fixes
 
+* Fix an issue where Cocoa Device and App data was serialized incorrectly causing invalid cast exceptions in callbacks [#680](https://github.com/bugsnag/bugsnag-unity/pull/680)
 * Fixed an issue where user changes made in OnSession callbacks did not make it to the generated payload [#681](https://github.com/bugsnag/bugsnag-unity/pull/681)
 
 ## 7.5.0 (2022-11-30)
