@@ -1,8 +1,11 @@
 Feature: Switch Specific Tests
 
   Scenario: SwitchCacheType set to None
-    When I run the game in the "SwitchPersistEvent" state
-    And I wait for requests to fail
+    When I set the HTTP status code for the next requests to "408"
+    And I run the game in the "SwitchPersistEvent" state
+    And I wait to receive an error
+    And I wait for requests to persist
+    And I discard the oldest error
     And I close the Unity app
     And I run the game in the "SwitchCacheNone" state
     And I wait to receive an error
@@ -12,8 +15,12 @@ Feature: Switch Specific Tests
     Then I should receive no requests
 
   Scenario: Max Cache Size
-    When I run the game in the "MaxSwitchCacheSize" state
-    And I wait for requests to fail
+    When I set the HTTP status code for the next requests to "408"
+    And I run the game in the "MaxSwitchCacheSize" state
+    And I wait to receive 2 errors
+    And I wait for requests to persist
+    And I discard the oldest error
+    And I discard the oldest error
     And I close the Unity app
     And I run the game in the "StartSDKDefault" state
     And I wait to receive 1 errors

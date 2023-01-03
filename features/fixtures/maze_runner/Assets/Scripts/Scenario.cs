@@ -115,11 +115,6 @@ public class Scenario : MonoBehaviour
         Bugsnag.ClearFeatureFlag("flag2");
     }
 
-    public void SetInvalidEndpoints()
-    {
-        Configuration.Endpoints = new EndpointConfiguration("https://notify.def-not-bugsnag.com", "https://notify.def-not-bugsnag.com");
-    }
-
     public bool SimpleEventCallback(IEvent @event)
     {
         EditAllAppData(@event);
@@ -216,29 +211,71 @@ public class Scenario : MonoBehaviour
 
     private void EditAllAppData(IEvent @event)
     {
+
+        // the unused vars for each property and there to check that the stored payload (retrieved from the native layers) contains the correct types
+        // if the incorrect type is stored then we will get an InvalidCast Exception
+
+        string binaryArch = @event.App.BinaryArch;
         @event.App.BinaryArch = "BinaryArch";
+
+        string bundleVersion = @event.App.BundleVersion;
         @event.App.BundleVersion = "BundleVersion";
+
+        string codeBundleId = @event.App.CodeBundleId;
         @event.App.CodeBundleId = "CodeBundleId";
+
+        string dsymUuid = @event.App.DsymUuid;
         @event.App.DsymUuid = "DsymUuid";
+
+        string id = @event.App.Id;
         @event.App.Id = "Id";
+
+        string releaseStage = @event.App.ReleaseStage;
         @event.App.ReleaseStage = "ReleaseStage";
+
+        string type = @event.App.Type;
         @event.App.Type = "Type";
+
+        string version = @event.App.Version;
         @event.App.Version = "Version";
+
+        bool? inForeground = @event.App.InForeground;
         @event.App.InForeground = false;
+
+        bool? isLaunching = @event.App.IsLaunching;
         @event.App.IsLaunching = false;
     }
 
     private void EditAllDeviceData(IEvent @event)
     {
+        string version = @event.Device.Id;
         @event.Device.Id = "Id";
+
+        bool? jailBroken = @event.Device.Jailbroken;
         @event.Device.Jailbroken = true;
+
+        string locale = @event.Device.Locale;
         @event.Device.Locale = "Locale";
+
+        string manufacturer = @event.Device.Manufacturer;
         @event.Device.Manufacturer = "Manufacturer";
+
+        string model = @event.Device.Model;
         @event.Device.Model = "Model";
+
+        string osName = @event.Device.OsName;
         @event.Device.OsName = "OsName";
+
+        string osVersion = @event.Device.OsVersion;
         @event.Device.OsVersion = "OsVersion";
+
+        long? freeDisk = @event.Device.FreeDisk;
         @event.Device.FreeDisk = 123;
+
+        long? freeMemory = @event.Device.FreeMemory;
         @event.Device.FreeMemory = 456;
+
+        string orientation = @event.Device.Orientation;
         @event.Device.Orientation = "Orientation";
     }
 

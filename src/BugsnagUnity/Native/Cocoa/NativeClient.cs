@@ -224,17 +224,21 @@ namespace BugsnagUnity
 
         public void PopulateApp(App app)
         {
-            GCHandle handle = GCHandle.Alloc(app);
-
-            try
+            var result = NativeCode.bugsnag_retrieveAppData();
+            var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
+            foreach (var pair in dictionary)
             {
-                NativeCode.bugsnag_retrieveAppData(GCHandle.ToIntPtr(handle), PopulateAppData);
-            }
-            finally
-            {
-                if (handle != null)
+                if (pair.Key == "isLaunching")
                 {
-                    handle.Free();
+                    if (pair.Value != null)
+                    {
+                        var stringValue = (pair.Value as string).ToLower();
+                        app.Add(pair.Key, stringValue == "true");
+                    }
+                }
+                else
+                {
+                    app.Add(pair.Key, pair.Value);
                 }
             }
         }
@@ -242,67 +246,36 @@ namespace BugsnagUnity
         public void PopulateAppWithState(AppWithState app)
         {
             PopulateApp(app);
-        }
-
-        [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
-        static void PopulateAppData(IntPtr instance, string key, string value)
-        {
-            var handle = GCHandle.FromIntPtr(instance);
-            if (handle.Target is App app)
-            {
-                app.Add(key, value);
-            }
-        }
+        }     
 
         public void PopulateDevice(Device device)
         {
-            var handle = GCHandle.Alloc(device);
-
-            try
+            var result = NativeCode.bugsnag_retrieveDeviceData();
+            var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
+            foreach (var pair in dictionary)
             {
-                NativeCode.bugsnag_retrieveDeviceData(GCHandle.ToIntPtr(handle), PopulateDeviceData);
-            }
-            finally
-            {
-                handle.Free();
+                if (pair.Key == "jailbroken")
+                {
+                    if (pair.Value != null)
+                    {
+                        var stringValue = (pair.Value as string).ToLower();
+                        device.Add(pair.Key, stringValue == "true");
+                    }
+                }
+                else if (pair.Key == "osBuild")
+                {
+                    device.RuntimeVersions.AddToPayload(pair.Key, pair.Value);
+                }
+                else
+                {
+                    device.Add(pair.Key, pair.Value);
+                }
             }
         }
 
         public void PopulateDeviceWithState(DeviceWithState device)
         {
             PopulateDevice(device);
-        }
-
-        [MonoPInvokeCallback(typeof(Action<IntPtr, string, string>))]
-        static void PopulateDeviceData(IntPtr instance, string key, string value)
-        {
-            var handle = GCHandle.FromIntPtr(instance);
-            if (handle.Target is Device device)
-            {
-                switch (key)
-                {
-                    case "jailbroken":
-                        switch (value)
-                        {
-                            case "0":
-                                device.Add(key, false);
-                                break;
-                            case "1":
-                                device.Add(key, true);
-                                break;
-                            default:
-                                device.Add(key, value);
-                                break;
-                        }
-                        break;
-                    case "osBuild": // add to nested runtimeVersions dictionary
-                        device.RuntimeVersions.AddToPayload(key, value);
-                        break;
-                    default:
-                        device.Add(key, value);
-                        break;
-                }
-            }
         }
 
         public void PopulateUser(User user)

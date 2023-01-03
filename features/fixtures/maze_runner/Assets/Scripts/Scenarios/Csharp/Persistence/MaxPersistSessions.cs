@@ -8,7 +8,6 @@ public class MaxPersistSessions : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        SetInvalidEndpoints();
         Configuration.MaxPersistedSessions = 3;
         Configuration.AutoTrackSessions = false;
     }
