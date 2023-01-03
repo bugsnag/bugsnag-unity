@@ -616,7 +616,17 @@ namespace BugsnagUnity
 
         public Dictionary<string, object> GetMetadata()
         {
-            return GetJavaMapData("getMetadata");
+            Debug.Log("Getting native metadata");
+            var metadata = GetJavaMapData("getMetadata");
+            foreach (var pair in metadata)
+            {
+                var theSection = metadata[pair.Key] as Dictionary<string, object>;
+                foreach (var item in theSection)
+                {
+                    Debug.Log("Getting native metadata " + string.Format("section: {0} key: {1} value: {2} valueType: {3}", pair.Key, item.Key, item.Value, item.Value.GetType().Name));
+                }
+            }
+            return metadata;
         }
 
         public Dictionary<string, object> GetUser()
@@ -642,14 +652,70 @@ namespace BugsnagUnity
             CallNativeVoidMethod("clearMetadata", "(Ljava/lang/String;Ljava/lang/String;)V", new object[] { tab, key });
         }
 
-        public void AddMetadata(string tab, string key, string value)
+        public void AddMetadata(string section, IDictionary<string,object> metadata)
         {
-            if (tab == null || key == null)
+            if (section == null || metadata == null)
             {
                 return;
             }
-            CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V",
-                new object[] { tab, key, value });
+
+            CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/HashMap;)V",
+            new object[] { section, BuildJavaMapDisposable(metadata) });           
+        }
+
+        internal static AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, object> src)
+        {
+            AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
+            if (src != null)
+            {
+                foreach (var entry in src)
+                {
+                    using (AndroidJavaObject key = new AndroidJavaObject("java.lang.String", entry.Key))
+                    using (AndroidJavaObject value = GetAndroidObjectFromBasicObject(entry.Value))
+                    {
+                        map.Call<AndroidJavaObject>("put", key, value);
+                    }
+                }
+            }
+            return map;
+        }
+
+        private static AndroidJavaObject GetAndroidObjectFromBasicObject(object theObject)
+        {
+            Debug.Log("GetAndroidObjectFromBasicObject: " + theObject.ToString());
+            Debug.Log("GetAndroidObjectFromBasicObject: " + theObject.GetType().Name);
+            string nativeClass;
+            if (theObject.GetType() == typeof(string))
+            {
+                nativeClass = "java.lang.String";
+            }
+            else if (theObject.GetType() == typeof(bool))
+            {
+                nativeClass = "java.lang.Boolean";
+            }
+            else if (theObject.GetType() == typeof(int))
+            {
+                nativeClass = "java.lang.Integer";
+            }
+            else if (theObject.GetType() == typeof(double))
+            {
+                nativeClass = "java.lang.Double";
+            }
+            else if (theObject.GetType() == typeof(float))
+            {
+                nativeClass = "java.lang.Float";
+            }
+            else if (theObject.GetType() == typeof(long))
+            {
+                nativeClass = "java.lang.Long";
+            }
+            else
+            {
+                return new AndroidJavaObject("java.lang.String", theObject.ToString());
+            }
+
+            return new AndroidJavaObject(nativeClass, theObject);
+            
         }
 
         public void LeaveBreadcrumb(string name, string type, IDictionary<string, object> metadata)
@@ -931,23 +997,6 @@ namespace BugsnagUnity
 
             string timestamp = AndroidJNI.CallStringMethod(javaBreadcrumb, BreadcrumbGetTimestamp, new jvalue[] { });
             return new Breadcrumb(message, timestamp, typeName, metadata);
-        }
-
-        internal static AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, object> src)
-        {
-            AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
-            if (src != null)
-            {
-                foreach (var entry in src)
-                {
-                    using (AndroidJavaObject key = new AndroidJavaObject("java.lang.String", entry.Key))
-                    using (AndroidJavaObject value = new AndroidJavaObject("java.lang.String", entry.Value == null ? "null" : entry.Value.ToString()))
-                    {
-                        map.Call<AndroidJavaObject>("put", key, value);
-                    }
-                }
-            }
-            return map;
         }
 
         internal static bool IsUnity2019OrNewer()
