@@ -8,7 +8,6 @@ public class SwitchMaxCacheSize : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        SetInvalidEndpoints();
         Configuration.SwitchCacheMaxSize = 2097155;
         Configuration.AutoTrackSessions = false;
     }

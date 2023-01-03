@@ -98,7 +98,6 @@ Feature: Session Tracking
     And the session "user.email" is null
     And the session "user.name" is null
 
-  @skip_android #pending PLAT-9086
   Scenario: Multiple event counts in one session
     When I run the game in the "MultipleEventCounts" state
     And I wait to receive a session
@@ -124,7 +123,6 @@ Feature: Session Tracking
     And the exception "message" equals "PausedSessionEvent"
     And the event "session" is null
 
-  @skip_android   #pending PLAT-9086
   Scenario: When a session is resumed the error uses the previous session information
     When I run the game in the "ResumedSession" state
     And I wait to receive a session
@@ -146,7 +144,6 @@ Feature: Session Tracking
     And the error payload field "session.startedAt" equals the stored value "session_startedAt"
     And the error payload field "events.0.session.events.handled" equals 2
 
-  @skip_android   #pending PLAT-9086
   Scenario: When a new session is started the error uses different session information
     When I run the game in the "NewSession" state
     And I wait to receive 2 sessions

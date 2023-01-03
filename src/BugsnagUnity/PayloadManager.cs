@@ -92,17 +92,16 @@ namespace BugsnagUnity
             RemovePendingPayload(reportId);
         }
 
-        internal void PayloadSendSuccess(IPayload payload)
+        internal void RemovePayload(IPayload payload)
         {
             RemovePendingPayload(payload.Id);
-            switch (payload.PayloadType)
+            if (payload.PayloadType == PayloadType.Session)
             {
-                case PayloadType.Session:
-                    RemoveCachedSession(payload.Id);
-                    break;
-                case PayloadType.Event:
-                    RemoveCachedEvent(payload.Id);
-                    break;
+                RemoveCachedSession(payload.Id);
+            }
+            else
+            {
+                RemoveCachedEvent(payload.Id);
             }
         }
 
