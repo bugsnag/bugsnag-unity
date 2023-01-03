@@ -595,7 +595,7 @@ namespace BugsnagUnity
             var timeLong = AndroidJNI.CallLongMethod(javaStartedAt, AndroidJNIHelper.GetMethodID(DateClass, "getTime"), new jvalue[] { });
             var unityDateTime = new DateTime(1970, 1, 1).AddMilliseconds(timeLong);
 
-            return new Session(id, unityDateTime, unhandledCount, handledCount);
+            return new Session(id, unityDateTime, handledCount, unhandledCount );
 
         }
 
