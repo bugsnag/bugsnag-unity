@@ -23,6 +23,8 @@
 
 * Fix an issue where android metadata was not deserialised as the correct type, which could cause exceptions when processing metadata. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
 
+* Fix an issue where android sessions had inaccurate Session.Handled and Unhandled counts. [#684](https://github.com/bugsnag/bugsnag-unity/pull/684)
+
 ## 7.4.0 (2022-10-26)
 
 ### Dependency updates
