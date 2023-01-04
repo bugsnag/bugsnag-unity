@@ -55,7 +55,7 @@ pushd $SCRIPT_DIR
       if [ ! -f "$log_file" ]; then
         touch $log_file
       fi
-      
+
       import_log_file=`wslpath -w "$import_log_file"`
       log_file=`wslpath -w "$log_file"`
       package_path=`wslpath -w "$package_path"`

@@ -389,13 +389,13 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("features", "scripts", "mobile", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "prepare_fixture.sh")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end
 
       # Build the Android APK
-      script = File.join("features", "scripts", "mobile", "build_android.sh")
+      script = File.join("features", "scripts", "build_android.sh")
       unless system env, script
         raise 'Android APK build failed'
       end
@@ -409,7 +409,7 @@ namespace :test do
 
       # Build the Android APK
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("features", "scripts", "mobile", "build_edm.sh")
+      script = File.join("features", "scripts", "build_edm.sh")
       unless system env, script
         raise 'EDM APK build failed'
       end
@@ -423,14 +423,14 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("features", "scripts", "mobile", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "prepare_fixture.sh")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end
 
       # Generate the Xcode project
       cd "features" do
-        script = File.join("scripts", "mobile", "generate_xcode_project.sh")
+        script = File.join("scripts", "generate_xcode_project.sh")
         unless system env, script
           raise 'IPA build failed'
         end
@@ -440,7 +440,7 @@ namespace :test do
     task :build_xcode do
       # Build and archive from the Xcode project
       cd "features" do
-        script = File.join("scripts", "mobile", "build_ios.sh")
+        script = File.join("scripts", "build_ios.sh")
         unless system script
           raise 'IPA build failed'
         end

@@ -6,4 +6,4 @@ popd
 
 bundle install
 # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-bundle exec maze-runner --farm=local --browser=firefox -e features/desktop/persistence.feature features/desktop
+bundle exec maze-runner --farm=local --browser=firefox -e features/csharp/csharp_persistence.feature features/csharp

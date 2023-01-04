@@ -1,8 +1,11 @@
 require 'cgi'
 
-#
-# Common steps
-#
+When('On Mobile I relaunch the app') do
+  next unless %w[android ios].include? Maze::Helper.get_current_platform 
+  Maze.driver.launch_app
+  sleep 3
+end
+
 def execute_command(action, scenario_name = '')
   command = {
     action: action,
@@ -32,9 +35,8 @@ When('I clear the Bugsnag cache') do
     execute_command('clear_cache')
 
   when 'android', 'ios'
-    # TODO: Come back to this
-
-  when 'webgl'
+    execute_command('clear_cache')
+  when 'browser'
     url = "http://localhost:#{Maze.config.document_server_port}/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
@@ -47,15 +49,17 @@ When('I clear the Bugsnag cache') do
   else
     raise "Platform #{platform} has not been considered"
   end
+
+  sleep 2
+
+end
+
+When('I wait for requests to persist') do
+  sleep 1
 end
 
 When('I close the Unity app') do
-  case Maze::Helper.get_current_platform
-  when 'macos','webgl','windows','switch'
-    execute_command('close_application')
-  when 'android', 'ios'
-    # TODO: Come back to this
-  end
+  execute_command('close_application')
 end
 
 When('I run the game in the {string} state') do |state|
@@ -77,7 +81,7 @@ When('I run the game in the {string} state') do |state|
     execute_command('run_scenario', state)
 
   when 'android', 'ios'
-    # TODO: Come back to this
+    execute_command('run_scenario', state)
 
   when 'browser'
     # WebGL in a browser
@@ -96,143 +100,6 @@ When('I run the game in the {string} state') do |state|
   end
 end
 
-
-#
-# Mobile steps
-#
-
-When('I wait for the mobile game to start') do
-  # Wait for a fixed time period
-  sleep 3
-end
-
-When('I clear all persistent data') do
-  step('I run the "Clear iOS Data" command')
-end
-
-When('I relaunch the Unity mobile app') do
-  Maze.driver.launch_app
-  # Wait for a fixed time period
-  sleep 3
-end
-
-When('I close and relaunch the Unity mobile app') do
-  Maze.driver.close_app
-  Maze.driver.launch_app
-  # Wait for a fixed time period
-  sleep 3
-end
-
-def dial_number_for(name)
-  lookup = {
-      # Scenarios
-      "throw Exception" => 1,
-      "Log error" => 2,
-      "Native exception" => 3,
-      "Log caught exception" => 4,
-      "NDK signal" => 5,
-      "Notify caught exception" => 6,
-      "Notify with callback" => 7,
-      "Change scene" => 8,
-      "Disable Breadcrumbs" => 9,
-      "Start SDK" => 10,
-      "Max Breadcrumbs" => 11,
-      "Disable Native Errors" => 12,
-      "throw Exception with breadcrumbs" => 13,
-      "Start SDK no errors" => 14,
-      "Discard Error Class" => 15,
-      "Java Background Crash" => 16,
-      "Custom App Type" => 17,
-      "Android Persistence Directory" => 18,
-      "Disabled Release Stage" => 19,
-      "Enabled Release Stage" => 20,
-      "Java Background Crash No Threads" => 21,
-      "iOS Native Error" => 22,
-      "iOS Native Error No Threads" => 23,
-      "Mark Launch Complete" => 24,
-      "Check Last Run Info" => 25,
-      "Native Event Callback" => 26,
-      "Ios Signal" => 27,
-      "Session Callback" => 28,
-      "On Send Native Callback" => 29,
-      "Inf Launch Duration" => 30,
-      "Clear Metadata" => 31,
-      "Set User In Config Csharp error" => 32,
-      "Set User In Config Native Crash" => 33,
-      "Set User After Init Csharp Error" => 34,
-      "Set User After Init Native Error" => 35,
-      "Set User After Init NDK Error" => 36,
-      "Feature Flags In Config" => 37,
-      "Feature Flags After Init" => 38,
-      "Feature Flags After Init Clear All" => 39,
-      "Feature Flags In Callback" => 40,
-      "Clear Feature Flags In Callback" => 41,
-      "Max Reported Threads" => 42,
-      "Persist" => 43,
-      "Persist Report" => 44,
-      "Breadcrumb Null Metadata Value" => 45,
-      "Launch Exception Session" => 46,
-
-      # Commands
-      "Clear iOS Data" => 90
-
-  }
-  number = lookup[name]
-  $logger.debug "Command/scenario '#{name}' has dial-in code #{number}"
-
-  step("I dial #{number / 10}")
-  sleep 1
-  step("I dial #{number % 10}")
-  sleep 1
-end
-
-When('I run the {string} command') do |command|
-  dial_number_for command
-  step('I press Run Command')
-end
-
-When('I run the {string} mobile scenario') do |scenario|
-  dial_number_for scenario
-  step('I press Run Scenario')
-end
-
-When('I dial {int}') do |number|
-  $logger.debug "Dialling #{number}"
-  press_at 40 + (number * 80)
-  sleep 1
-end
-
-When('I press Run Scenario') do
-  press_at 840
-end
-
-When('I press Run Command') do
-  press_at 920
-end
-
-def press_at(y)
-
-  # Ensure we tap in the button
-  viewport = Maze.driver.session_capabilities['viewportRect']
-  x = viewport['width'] / 2
-
-  $logger.debug "Press at: #{x},#{y}"
-
-  # TODO: PLAT-6654 Figure out why the scale is different on iOS
-  factor = if Maze.driver.capabilities['os'] == 'ios'
-             0.5
-           else
-             1
-           end
-
-  touch_action = Appium::TouchAction.new
-  touch_action.tap({:x => x * factor, :y => y * factor})
-  touch_action.perform
-end
-
-#
-# Desktop steps
-#
 def check_error_reporting_api(notifier_name)
   steps %(
     Then the error "Bugsnag-Api-Key" header equals "#{$api_key}"
@@ -286,12 +153,11 @@ Then('the stack frame methods should match:') do |expected_values|
   expected_frame_values = expected_values.raw
 
   flunk('The stacktrace is empty') if stacktrace.length == 0
-  flunk('The stacktrace is not long enough') if stacktrace.length < expected_frame_values.length
 
   methods = stacktrace.map { |item| item['method'] }
-  method_index = 0
 
   expected_frame_values.each do |expected_frames|
+    method_index = 0
     frame_matches = false
     until frame_matches || method_index.eql?(methods.size)
       method = methods[method_index]
@@ -318,12 +184,6 @@ Then('the current error request events match one of:') do |table|
   end
 end
 
-Then('the event {string} matches one of:') do |path, table|
-  payload_value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{path}")
-  valid_values = table.raw.flat_map { |e| e }
-  Maze.check.true(valid_values.any? { |frame| frame == payload_value }, "Value #{payload_value} did not match any of the expected values")
-end
-
 Then("custom metadata is included in the event") do
   steps %Q{
     Then the event "metaData.app.buildno" equals "0.1"
@@ -336,6 +196,126 @@ Then("custom metadata is included in the event") do
     And the error payload field "events.0.metaData.custom.int-array" is a non-empty array
     And the error payload field "events.0.metaData.custom.string-array" is a non-empty array
     And the error payload field "events.0.metaData.custom.dict" is not null
+  }
+end
+
+Then("feature flags are included in the event") do
+  steps %Q{
+    And the event "featureFlags.0.featureFlag" equals "flag1"
+    And the event "featureFlags.0.variant" equals "variant1"
+    And the event "featureFlags.1.featureFlag" equals "flag3"
+    And the event "featureFlags.1.variant" equals "variant3"
+    And the event "featureFlags.2" is null
+  }
+end
+
+Then("all possible parameters have been edited in a callback") do
+  steps %Q{
+
+    # Device metadata
+    And the event "device.osName" equals "OsName"
+    And the event "device.osVersion" equals "OsVersion"
+    And the event "device.id" equals "Id"
+    And the event "device.model" equals "Model"
+    And the event "device.orientation" equals "Orientation"
+    And the event "device.manufacturer" equals "Manufacturer"
+    And the event "device.freeDisk" equals 123
+    And the event "device.freeMemory" equals 456
+    And the event "device.jailbroken" is true
+    And the event "device.locale" equals "Locale"
+
+    # App metadata
+    And the event "app.id" equals "Id"
+    And the event "app.releaseStage" equals "ReleaseStage"
+    And the event "app.type" equals "Type"
+    And the event "app.version" equals "Version"
+    And the event "app.bundleVersion" equals "BundleVersion"
+    And the event "app.binaryArch" equals "BinaryArch"
+    And the event "app.codeBundleId" equals "CodeBundleId"
+    And the event "app.dsymUuid" equals "DsymUuid"
+    And the event "app.inForeground" is false
+    And the event "app.isLaunching" is false
+
+    # Exception data
+    And the event "exceptions.0.errorClass" equals "ErrorClass"
+    And the event "exceptions.0.stacktrace.0.method" equals "Method"
+    And the event "exceptions.0.stacktrace.0.lineNumber" equals 22
+
+    # Breadcrumbs
+    And the event "breadcrumbs.0.type" equals "request"
+    And the event "breadcrumbs.0.name" equals "Custom Message"
+    And the event "breadcrumbs.0.metaData.test" equals "test"
+
+  # Feature flags
+    And the event "featureFlags.0.featureFlag" equals "fromCallback"
+    And the event "featureFlags.0.variant" equals "a"
+
+    # Metadata
+    And the event "metaData.test1.test" equals "test"
+    And the event "metaData.test2" is null
+  }
+end
+
+Then("all possible parameters have been edited in a session callback") do
+  steps %Q{
+
+    And the session payload field "sessions.0.id" equals "Custom Id"
+    And the session payload field "sessions.0.startedAt" matches the regex "1985-08-21T01:01:01(.000)?Z"
+    And the session payload field "sessions.0.user.id" equals "1"
+    And the session payload field "sessions.0.user.email" equals "2"
+    And the session payload field "sessions.0.user.name" equals "3"
+
+
+    # Device metadata
+    And the session payload field "device.osName" equals "OsName"
+    And the session payload field "device.osVersion" equals "OsVersion"
+    And the session payload field "device.id" equals "Id"
+    And the session payload field "device.model" equals "Model"
+    And the session payload field "device.manufacturer" equals "Manufacturer"
+    And the session payload field "device.jailbroken" is true
+    And the session payload field "device.locale" equals "Locale"
+
+    # App metadata
+    And the session payload field "app.id" equals "Id"
+    And the session payload field "app.releaseStage" equals "ReleaseStage"
+    And the session payload field "app.type" equals "Type"
+    And the session payload field "app.version" equals "Version"
+    And the session payload field "app.binaryArch" equals "BinaryArch"
+    And the session payload field "app.codeBundleId" equals "CodeBundleId"
+  }
+end
+
+Then("expected device metadata is included in the event") do
+  steps %Q{
+    And the event "device.id" is not null
+    And the event "device.locale" is not null
+    And the event "device.model" is not null
+    And the event "device.osName" is not null
+    And the event "device.osVersion" is not null
+    And the event "device.runtimeVersions" is not null
+    And the event "device.time" is a timestamp
+    And the event "device.totalMemory" is not null
+    And the event "metaData.device.screenDensity" is not null
+    And the event "metaData.device.screenResolution" is not null
+    And the event "metaData.device.osLanguage" equals "English"
+    And the event "metaData.device.graphicsDeviceVersion" is not null
+    And the event "metaData.device.graphicsMemorySize" is not null
+    And the event "metaData.device.processorType" is not null
+  }
+end
+
+Then("expected app metadata is included in the event") do
+  steps %Q{
+    And the event "app.duration" is greater than 0
+    And the event "app.durationInForeground" is not null
+    And the event "app.inForeground" is not null
+    And the event "app.isLaunching" is not null
+    And the event "app.releaseStage" is not null
+    And the event "app.type" is not null
+    And the event "app.version" is not null
+    And the event "metaData.app.companyName" equals "bugsnag"
+    And the event "metaData.app.name" equals "Mazerunner"
+    And the event "metaData.app.buildno" is not null
   }
 end
 

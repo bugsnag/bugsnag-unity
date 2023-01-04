@@ -1,5 +1,36 @@
 # Changelog
 
+## 7.5.0 (2023-01-04)
+
+### Enhancements
+
+* Added checks in delivery to ensure payloads can't get stuck in a retry loop. [#683](https://github.com/bugsnag/bugsnag-unity/pull/683)
+
+* Raised `Configuration.MaxBreadcrumbs` default from 50 to 100, raised the limit from 100 to 500 and added a check to truncate breadcrumbs from oversized payloads. [#671](https://github.com/bugsnag/bugsnag-unity/pull/671)
+
+* Add `Configuration.MaxStringValueLength` config option. [#668](https://github.com/bugsnag/bugsnag-unity/pull/668)
+
+* Added `Telemetry.Usage` configuration option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#telemetry) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#telemetry) [#666](https://github.com/bugsnag/bugsnag-unity/pull/666)
+
+### Dependency updates
+
+* Update bugsnag-cocoa from v6.25.0 to [v6.25.1](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6251-2022-12-07)
+* Update bugsnag-android from v5.28.1 to [v5.28.3](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5283-2022-11-16)
+
+### Bug fixes
+
+* Fix an issue where bundle version was not reported correctly on iOS and MacOS. [#672](https://github.com/bugsnag/bugsnag-unity/pull/672)
+
+* Fix an issue where a null value in metadata could cause an exception. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
+
+* Fix an issue where android metadata was not deserialised as the correct type, which could cause exceptions when processing metadata. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
+
+* Fix an issue where android sessions had inaccurate Session.Handled and Unhandled counts. [#684](https://github.com/bugsnag/bugsnag-unity/pull/684)
+
+* Fix an issue where Cocoa Device and App data was serialized incorrectly causing invalid cast exceptions in callbacks [#680](https://github.com/bugsnag/bugsnag-unity/pull/680)
+
+* Fixed an issue where user changes made in OnSession callbacks did not make it to the generated payload [#681](https://github.com/bugsnag/bugsnag-unity/pull/681)
+
 ## 7.4.0 (2022-10-26)
 
 ### Dependency updates

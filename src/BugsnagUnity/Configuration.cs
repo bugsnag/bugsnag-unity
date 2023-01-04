@@ -110,18 +110,18 @@ namespace BugsnagUnity
 
         public string ApiKey { get; set; }
 
-        private int _maximumBreadcrumbs = 50;
+        private int _maximumBreadcrumbs = 100;
 
         public int MaximumBreadcrumbs
         {
             get { return _maximumBreadcrumbs; }
             set
             {
-                if (value < 0 || value > 100)
+                if (value < 0 || value > 500)
                 {
                     if (IsRunningInEditor())
                     {
-                        Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-100. Supplied value is " + value);
+                        Debug.LogError("Invalid configuration value detected. Option maxBreadcrumbs should be an integer between 0-500. Supplied value is " + value);
                     }
                     return;
                 }
@@ -194,6 +194,7 @@ namespace BugsnagUnity
 
         public int MaxPersistedSessions = 128;
 
+        public int MaxStringValueLength = 10000;
 
         internal bool ErrorClassIsDiscarded(string className)
         {
@@ -206,7 +207,6 @@ namespace BugsnagUnity
                 || Application.platform == RuntimePlatform.WindowsEditor
                 || Application.platform == RuntimePlatform.LinuxEditor;
         }
-
 
         private List<Func<IEvent, bool>> _onErrorCallbacks = new List<Func<IEvent, bool>>();
 
@@ -259,7 +259,7 @@ namespace BugsnagUnity
             return _onSessionCallbacks;
         }
 
-        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors };
+        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors, TelemetryType.Usage };
 
         public void AddMetadata(string section, string key, object value) => Metadata.AddMetadata(section, key, value);
 

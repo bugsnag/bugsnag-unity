@@ -23,13 +23,13 @@ namespace BugsnagUnity
         internal static extern void bugsnag_removeMetadata(IntPtr configuration, string tab);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_retrieveAppData(IntPtr instance, Action<IntPtr, string, string> populate);
+        internal static extern string bugsnag_retrieveAppData();
 
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveLastRunInfo(IntPtr instance, Action<IntPtr, bool, bool, int> populate);
 
         [DllImport(Import)]
-        internal static extern void bugsnag_retrieveDeviceData(IntPtr instance, Action<IntPtr, string, string> populate);
+        internal static extern string bugsnag_retrieveDeviceData();
 
         [DllImport(Import)]
         internal static extern void bugsnag_registerForOnSendCallbacks(IntPtr configuration, Func<IntPtr, bool> callback);
@@ -82,6 +82,9 @@ namespace BugsnagUnity
 
         [DllImport(Import)]
         internal static extern void bugsnag_setMaxBreadcrumbs(IntPtr configuration, int maxBreadcrumbs);
+
+        [DllImport(Import)]
+        internal static extern void bugsnag_setMaxStringValueLength(IntPtr configuration, int maxStringValueLength);
 
         [DllImport(Import)]
         internal static extern void bugsnag_setLaunchDurationMillis(IntPtr configuration, ulong launchDurationMillis);

@@ -1,65 +1,115 @@
-Feature: Native Errors
+Feature: iOS Native Errors
 
-    Background:
-        Given I wait for the mobile game to start
-        And I clear all persistent data
+  Background:
+    Given I clear the Bugsnag cache
 
-    Scenario: Discard Native Errors
-        When I run the "Discard Error Class" mobile scenario
-        And I wait for 2 seconds
-        And I relaunch the Unity mobile app
-        When I run the "Start SDK no errors" mobile scenario
-        Then I should receive no errors
+  Scenario: Disable Crashes
+    When I run the game in the "IosDisableCrashes" state
+    And I wait for 2 seconds
+    And On Mobile I relaunch the app
+    And I run the game in the "StartSDKDefault" state
+    And I wait to receive an error
+    And the exception "message" equals "The app was likely terminated by the operating system while in the foreground"
 
-    Scenario: Native Error With Threads
-        When I run the "iOS Native Error" mobile scenario
-        And I wait for 2 seconds
-        And I relaunch the Unity mobile app
-        When I run the "Start SDK" mobile scenario
-        Then I wait to receive an error
-        And the error payload field "events.0.threads" is a non-empty array
+  Scenario: Last Run Info
+    When I run the game in the "IosNativeException" state
+    And I wait for 2 seconds
+    And I clear any error dialogue
+    And On Mobile I relaunch the app
+    And I run the game in the "IosLastRunInfo" state
+    And I wait for 3 seconds
+    And I wait to receive 2 errors
+    And I discard the oldest error
+    And the exception "message" equals "Last Run Info Correct"
 
-    Scenario: Native Error Without Threads
-        When I run the "iOS Native Error No Threads" mobile scenario
-        And I wait for 2 seconds
-        And I relaunch the Unity mobile app
-        When I run the "Start SDK" mobile scenario
-        Then I wait to receive an error
-        And the error payload field "events.0.threads.0" is null
-        And the error payload field "notifier.dependencies.0.name" equals "iOS Bugsnag Notifier"
+  Scenario: iOS native exception Smoke Test
+    When I run the game in the "IosNativeException" state
+    And I wait for 2 seconds
+    And I clear any error dialogue
+    And On Mobile I relaunch the app
+    And I run the game in the "StartSDKDefault" state
+    And I wait to receive an error
+    And expected device metadata is included in the event
+    And feature flags are included in the event
+    And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
+    And the event "breadcrumbs.1.name" equals "test"
+    And the event "user.id" equals "1"
+    And the event "user.email" equals "2"
+    And the event "user.name" equals "3"
 
-        # App data
-        And the event "app.id" equals "com.bugsnag.unity.mazerunner"
-        And the event "app.releaseStage" equals "production"
-        And the event "app.type" equals "iOS"
-        And the event "app.version" equals "1.2.3"
-        And the event "app.bundleVersion" equals "1.2.3"
-        And the event "app.isLaunching" is true
-        And the event "app.inForeground" is true
-        And the event "app.durationInForeground" is greater than 0
-        And the event "app.duration" is greater than 0
-        And the event "app.binaryArch" is not null
+    #App metadata
+    And the event "app.duration" is greater than 0
+    And the event "app.durationInForeground" is not null
+    And the event "app.inForeground" is not null
+    And the event "app.isLaunching" is not null
+    And the event "app.releaseStage" is not null
+    And the event "app.type" is not null
+    And the event "app.version" is not null
+    And the event "metaData.app.companyName" equals "bugsnag"
+    And the event "metaData.app.name" matches ".azerunner"
+    And the event "metaData.app.buildno" is not null
 
-        # Device data
-        And the event "device.jailbroken" is false
-        And the event "device.id" is not null
-        And the event "device.locale" is not null
-        And the event "device.manufacturer" is not null
-        And the event "device.model" is not null
-        And the event "device.osName" equals "iOS"
-        And the event "device.osVersion" is not null
-        And the event "device.runtimeVersions" is not null
-        And the event "device.totalMemory" is not null
-        And the event "device.freeDisk" is not null
-        And the event "device.freeMemory" is not null
-        And the event "device.time" is not null
+    # Exception details
+    And the error payload field "events" is an array with 1 elements
+    And the exception "errorClass" equals "St13runtime_error"
+    And the exception "message" equals "CocoaCppException"
+    And the event "unhandled" is true
+    And the event "severity" equals "error"
+
+    # Metadata
+    And the event "metaData.init" is null
+    And the event "metaData.custom.letter" equals "QX"
+    And the event "metaData.custom.better" equals 400
+    And the event "metaData.test.test1" equals "test1"
+    And the event "metaData.test.test2" is null
+
+    # Telemetry
+    And the error payload field "events.0.usage.config" is not null
+    And the error payload field "events.0.usage.callbacks.onSession" equals 1
+
+  Scenario: iOS signal Smoke Test
+    When I run the game in the "IosSignal" state
+    And I wait for 2 seconds
+    And I clear any error dialogue
+    And On Mobile I relaunch the app
+    And I run the game in the "StartSDKDefault" state
+    And I wait to receive an error
+    And expected device metadata is included in the event
+    And feature flags are included in the event
+    And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
+    And the event "breadcrumbs.1.name" equals "test"
+    And the event "user.id" equals "1"
+    And the event "user.email" equals "2"
+    And the event "user.name" equals "3"
+
+    #App metadata
+    And the event "app.duration" is greater than 0
+    And the event "app.durationInForeground" is not null
+    And the event "app.inForeground" is not null
+    And the event "app.isLaunching" is not null
+    And the event "app.releaseStage" is not null
+    And the event "app.type" is not null
+    And the event "app.version" is not null
+    And the event "metaData.app.companyName" equals "bugsnag"
+    And the event "metaData.app.name" matches ".azerunner"
+    And the event "metaData.app.buildno" is not null
+
+    # Exception details
+    And the error payload field "events" is an array with 1 elements
+    And the exception "errorClass" equals "SIGABRT"
+    And the exception "message" equals ""
+    And the event "unhandled" is true
+    And the event "severity" equals "error"
+    And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
+    And the event "exceptions.0.stacktrace.0.method" equals "__pthread_kill"
+
+    # Metadata
+    And the event "metaData.init" is null
+    And the event "metaData.custom.letter" equals "QX"
+    And the event "metaData.custom.better" equals 400
+    And the event "metaData.test.test1" equals "test1"
+    And the event "metaData.test.test2" is null
 
 
-    Scenario: Last Run Info
-        When I run the "iOS Native Error" mobile scenario
-        And I wait for 2 seconds
-        And I relaunch the Unity mobile app
-        When I run the "Check Last Run Info" mobile scenario
-        Then I wait to receive 2 errors
-        And I discard the oldest error
-        And the exception "message" equals "Last Run Info Correct"
+
+

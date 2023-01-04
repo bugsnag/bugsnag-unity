@@ -161,8 +161,11 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.bugsnag.mazerunner
     iOS: com.bugsnag.unity.mazerunner
-  buildNumber: {}
-  AndroidBundleVersionCode: 1
+    iPhone: com.bugsnag.unity.mazerunner
+  buildNumber:
+    Standalone: 111
+    iOS: 333
+  AndroidBundleVersionCode: 444
   AndroidMinSdkVersion: 16
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
@@ -592,7 +595,7 @@ PlayerSettings:
   splashScreenBackgroundSourceLandscape: {fileID: 0}
   splashScreenBackgroundSourcePortrait: {fileID: 0}
   spritePackerPolicy: 
-  webGLMemorySize: 512
+  webGLMemorySize: 256
   webGLExceptionSupport: 3
   webGLNameFilesAsHashes: 0
   webGLDataCaching: 0
@@ -605,7 +608,9 @@ PlayerSettings:
   webGLCompressionFormat: 2
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    4: UNITY_ASSERTIONS
+    7: UNITY_ASSERTIONS
   platformArchitecture: {}
   scriptingBackend:
     Android: 1

@@ -21,6 +21,13 @@ namespace BugsnagUnity
         private IntPtr IteratorClass;
         private IntPtr ListClass;
         private IntPtr MapClass;
+        private IntPtr BooleanClass;
+        private IntPtr IntClass;
+        private IntPtr LongClass;
+        private IntPtr DoubleClass;
+        private IntPtr FloatClass;
+
+
         private IntPtr DateClass;
         private IntPtr DateUtilsClass;
         private IntPtr MapEntryClass;
@@ -43,6 +50,12 @@ namespace BugsnagUnity
         private IntPtr MapEntrySet;
         private IntPtr ObjectGetClass;
         private IntPtr ObjectToString;
+        private IntPtr BooleanValueMethod;
+        private IntPtr IntValueMethod;
+        private IntPtr LongValueMethod;
+        private IntPtr DoubleValueMethod;
+        private IntPtr FloatValueMethod;
+
         private IntPtr ToIso8601;
         private IntPtr AddFeatureFlagMethod;
         private IntPtr ClearFeatureFlagMethod;
@@ -80,7 +93,8 @@ namespace BugsnagUnity
                             return false;
                         }
                     }
-                    catch {
+                    catch
+                    {
                         // If the callback causes an exception, ignore it and execute the next one
                     }
 
@@ -110,7 +124,8 @@ namespace BugsnagUnity
                             return false;
                         }
                     }
-                    catch {
+                    catch
+                    {
                         // If the callback causes an exception, ignore it and execute the next one
                     }
                 }
@@ -179,6 +194,31 @@ namespace BugsnagUnity
                 IntPtr mapRef = AndroidJNI.FindClass("java/util/Map");
                 MapClass = AndroidJNI.NewGlobalRef(mapRef);
                 AndroidJNI.DeleteLocalRef(mapRef);
+
+                IntPtr booleanRef = AndroidJNI.FindClass("java/lang/Boolean");
+                BooleanClass = AndroidJNI.NewGlobalRef(booleanRef);
+                BooleanValueMethod = AndroidJNI.GetMethodID(booleanRef, "booleanValue", "()Z");
+                AndroidJNI.DeleteLocalRef(booleanRef);
+
+                IntPtr intRef = AndroidJNI.FindClass("java/lang/Integer");
+                IntClass = AndroidJNI.NewGlobalRef(intRef);
+                IntValueMethod = AndroidJNI.GetMethodID(intRef, "intValue", "()I");
+                AndroidJNI.DeleteLocalRef(intRef);
+
+                IntPtr longRef = AndroidJNI.FindClass("java/lang/Long");
+                LongClass = AndroidJNI.NewGlobalRef(longRef);
+                LongValueMethod = AndroidJNI.GetMethodID(longRef, "longValue", "()J");
+                AndroidJNI.DeleteLocalRef(longRef);
+
+                IntPtr floatRef = AndroidJNI.FindClass("java/lang/Float");
+                FloatClass = AndroidJNI.NewGlobalRef(floatRef);
+                FloatValueMethod = AndroidJNI.GetMethodID(floatRef, "floatValue", "()F");
+                AndroidJNI.DeleteLocalRef(floatRef);
+
+                IntPtr doubleRef = AndroidJNI.FindClass("java/lang/Double");
+                DoubleClass = AndroidJNI.NewGlobalRef(doubleRef);
+                DoubleValueMethod = AndroidJNI.GetMethodID(doubleRef, "doubleValue", "()D");
+                AndroidJNI.DeleteLocalRef(doubleRef);
 
                 IntPtr dateRef = AndroidJNI.FindClass("java/util/Date");
                 DateClass = AndroidJNI.NewGlobalRef(dateRef);
@@ -281,6 +321,7 @@ namespace BugsnagUnity
             obj.Call("setLaunchDurationMillis", config.LaunchDurationMillis);
             obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
             obj.Call("setMaxReportedThreads", config.MaxReportedThreads);
+            obj.Call("setMaxStringValueLength", config.MaxStringValueLength);
 
 
             if (config.GetUser() != null)
@@ -334,25 +375,29 @@ namespace BugsnagUnity
                 }
             }
 
+            // set enabled telemetry types
             if (config.Telemetry != null)
             {
-                using (AndroidJavaObject enabledTelemetry = new AndroidJavaObject("java.util.HashSet"))
+                using AndroidJavaObject enabledTelemetry = new AndroidJavaObject("java.util.HashSet");
+                AndroidJavaClass androidTelemetryEnumClass = new AndroidJavaClass("com.bugsnag.android.Telemetry");
+                foreach (var telemtryType in config.Telemetry)
                 {
-                    AndroidJavaClass androidTelemetryEnumClass = new AndroidJavaClass("com.bugsnag.android.Telemetry");
-                    for (int i = 0; i < config.Telemetry.Count; i++)
+                    var javaName = "";
+                    switch (telemtryType)
                     {
-                        if (config.Telemetry[i] == TelemetryType.InternalErrors)
-                        {
-                            using (AndroidJavaObject telemetryType = androidTelemetryEnumClass.CallStatic<AndroidJavaObject>("valueOf", "INTERNAL_ERRORS"))
-                            {
-                                enabledTelemetry.Call<Boolean>("add", telemetryType);
-                            }
-                        }
-                       
+                        case TelemetryType.InternalErrors:
+                            javaName = "INTERNAL_ERRORS";
+                            break;
+                        case TelemetryType.Usage:
+                            javaName = "USAGE";
+                            break;
                     }
-                    obj.Call("setTelemetry", enabledTelemetry);
+                    using AndroidJavaObject telemetryType = androidTelemetryEnumClass.CallStatic<AndroidJavaObject>("valueOf", javaName);
+                    enabledTelemetry.Call<bool>("add", telemetryType);
                 }
+                obj.Call("setTelemetry", enabledTelemetry);
             }
+
 
             // set feature flags
             if (config.FeatureFlags != null && config.FeatureFlags.Count > 0)
@@ -550,7 +595,7 @@ namespace BugsnagUnity
             var timeLong = AndroidJNI.CallLongMethod(javaStartedAt, AndroidJNIHelper.GetMethodID(DateClass, "getTime"), new jvalue[] { });
             var unityDateTime = new DateTime(1970, 1, 1).AddMilliseconds(timeLong);
 
-            return new Session(id, unityDateTime, unhandledCount, handledCount);
+            return new Session(id, unityDateTime, handledCount, unhandledCount );
 
         }
 
@@ -866,31 +911,11 @@ namespace BugsnagUnity
 
         private Breadcrumb ConvertToBreadcrumb(IntPtr javaBreadcrumb)
         {
-            var metadata = new Dictionary<string, object>();
 
             IntPtr javaMetadata = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetMetadata, new jvalue[] { });
-            IntPtr entries = AndroidJNI.CallObjectMethod(javaMetadata, MapEntrySet, new jvalue[] { });
+            var metadata = DictionaryFromJavaMap(javaMetadata);
             AndroidJNI.DeleteLocalRef(javaMetadata);
 
-            IntPtr iterator = AndroidJNI.CallObjectMethod(entries, CollectionIterator, new jvalue[] { });
-            AndroidJNI.DeleteLocalRef(entries);
-
-            while (AndroidJNI.CallBooleanMethod(iterator, IteratorHasNext, new jvalue[] { }))
-            {
-                IntPtr entry = AndroidJNI.CallObjectMethod(iterator, IteratorNext, new jvalue[] { });
-                IntPtr key = AndroidJNI.CallObjectMethod(entry, MapEntryGetKey, new jvalue[] { });
-                IntPtr value = AndroidJNI.CallObjectMethod(entry, MapEntryGetValue, new jvalue[] { });
-                AndroidJNI.DeleteLocalRef(entry);
-
-                if (key != IntPtr.Zero && value != IntPtr.Zero)
-                {
-                    var obj = AndroidJNI.CallStringMethod(value, ObjectToString, new jvalue[] { });
-                    metadata.Add(AndroidJNI.GetStringUTFChars(key), obj);
-                }
-                AndroidJNI.DeleteLocalRef(key);
-                AndroidJNI.DeleteLocalRef(value);
-            }
-            AndroidJNI.DeleteLocalRef(iterator);
 
             IntPtr type = AndroidJNI.CallObjectMethod(javaBreadcrumb, BreadcrumbGetType, new jvalue[] { });
             string typeName = AndroidJNI.CallStringMethod(type, ObjectToString, new jvalue[] { });
@@ -923,7 +948,7 @@ namespace BugsnagUnity
                 }
             }
             return map;
-        }       
+        }
 
         internal static bool IsUnity2019OrNewer()
         {
@@ -983,10 +1008,45 @@ namespace BugsnagUnity
                         var time = AndroidJNI.CallStaticStringMethod(DateUtilsClass, ToIso8601, args);
                         dict.AddToPayload(key, time);
                     }
-                    else
+                    else // parse for basic data types
                     {
-                        // FUTURE(dm): check if Integer, Long, Double, or Float before calling toString
-                        dict.AddToPayload(key, AndroidJNI.CallStringMethod(value, ObjectToString, new jvalue[] { }));
+                        if (AndroidJNI.IsInstanceOf(value, BooleanClass))
+                        {
+                            var boolValue = AndroidJNI.CallBooleanMethod(value, BooleanValueMethod, new jvalue[] { });
+                            dict.AddToPayload(key, boolValue);
+                        }
+                        else if (AndroidJNI.IsInstanceOf(value, IntClass))
+                        {
+                            var intValue = AndroidJNI.CallIntMethod(value, IntValueMethod, new jvalue[] { });
+                            dict.AddToPayload(key, intValue);
+                        }
+                        else if (AndroidJNI.IsInstanceOf(value, LongClass))
+                        {
+                            var longValue = AndroidJNI.CallLongMethod(value, LongValueMethod, new jvalue[] { });
+                            dict.AddToPayload(key, longValue);
+                        }
+                        else if (AndroidJNI.IsInstanceOf(value, FloatClass))
+                        {
+                            var floatValue = AndroidJNI.CallFloatMethod(value, FloatValueMethod, new jvalue[] { });
+                            dict.AddToPayload(key, floatValue);
+                        }
+                        else if (AndroidJNI.IsInstanceOf(value, DoubleClass))
+                        {
+                            var doubleValue = AndroidJNI.CallDoubleMethod(value, DoubleValueMethod, new jvalue[] { });
+                            dict.AddToPayload(key, doubleValue);
+                        }
+                        else // last case, cast to string
+                        {
+                            var stringValue = AndroidJNI.CallStringMethod(value, ObjectToString, new jvalue[] { });
+                            if (!string.IsNullOrEmpty(stringValue) && stringValue == "null")
+                            {
+                                dict.AddToPayload(key, null);
+                            }
+                            else
+                            {
+                                dict.AddToPayload(key, stringValue);
+                            }
+                        }
                     }
                     AndroidJNI.DeleteLocalRef(valueClass);
                 }

@@ -24,10 +24,11 @@ namespace BugsnagUnity
         public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
         public EditorBreadcrumbTypes EnabledBreadcrumbTypes = new EditorBreadcrumbTypes();
         public long LaunchDurationMillis = 5000;
-        public int MaximumBreadcrumbs = 50;
+        public int MaximumBreadcrumbs = 100;
         public int MaxPersistedEvents = 32;
         public int MaxPersistedSessions = 128;
         public int MaxReportedThreads = 200;
+        public int MaxStringValueLength = 10000;
         public string NotifyEndpoint = "https://notify.bugsnag.com";
         public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
         public bool PersistUser = true;
@@ -38,8 +39,8 @@ namespace BugsnagUnity
         public bool ReportExceptionLogsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
         public double SecondsPerUniqueLog = 5;
-        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors };
-        public int VersionCode;
+        public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors, TelemetryType.Usage };
+        public int VersionCode = -1;
 
         public SwitchCacheType SwitchCacheType = SwitchCacheType.R;
         public string SwitchCacheMountName = "BugsnagCache";
@@ -90,6 +91,7 @@ namespace BugsnagUnity
             config.MaxPersistedEvents = MaxPersistedEvents;
             config.MaxPersistedSessions = MaxPersistedSessions;
             config.MaxReportedThreads = MaxReportedThreads;
+            config.MaxStringValueLength = MaxStringValueLength;
             config.NotifyLogLevel = GetLogTypeFromLogLevel( NotifyLogLevel );
             config.SendThreads = SendThreads;
             if (!string.IsNullOrEmpty(NotifyEndpoint) && !string.IsNullOrEmpty(SessionEndpoint))
