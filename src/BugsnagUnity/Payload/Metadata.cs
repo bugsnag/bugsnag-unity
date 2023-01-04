@@ -21,7 +21,6 @@ namespace BugsnagUnity.Payload
 
         public void AddMetadata(string section, string key, object value)
         {
-            Debug.Log("Adding metadata " + string.Format("section: {0} key: {1} value: {2} valueType: {3}",section, key, value, value.GetType().Name));
             AddMetadata(section, new Dictionary<string, object>{{ key, value }});
         }
 

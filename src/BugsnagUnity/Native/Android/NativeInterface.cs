@@ -616,16 +616,7 @@ namespace BugsnagUnity
 
         public Dictionary<string, object> GetMetadata()
         {
-            Debug.Log("Getting native metadata");
             var metadata = GetJavaMapData("getMetadata");
-            foreach (var pair in metadata)
-            {
-                var theSection = metadata[pair.Key] as Dictionary<string, object>;
-                foreach (var item in theSection)
-                {
-                    Debug.Log("Getting native metadata " + string.Format("section: {0} key: {1} value: {2} valueType: {3}", pair.Key, item.Key, item.Value, item.Value.GetType().Name));
-                }
-            }
             return metadata;
         }
 
@@ -658,32 +649,96 @@ namespace BugsnagUnity
             {
                 return;
             }
-
             CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/HashMap;)V",
-            new object[] { section, BuildJavaMapDisposable(metadata) });           
+            new object[] { section, DictionaryToJavaMap(metadata) });           
         }
 
-        internal static AndroidJavaObject BuildJavaMapDisposable(IDictionary<string, object> src)
+        internal static AndroidJavaObject DictionaryToJavaMap(IDictionary<string, object> inputDict)
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
-            if (src != null)
+            if (inputDict != null)
             {
-                foreach (var entry in src)
+                foreach (var entry in inputDict)
                 {
-                    using (AndroidJavaObject key = new AndroidJavaObject("java.lang.String", entry.Key))
-                    using (AndroidJavaObject value = GetAndroidObjectFromBasicObject(entry.Value))
+                    var key = new AndroidJavaObject("java.lang.String", entry.Key);
+
+                    if (entry.Value == null)
                     {
-                        map.Call<AndroidJavaObject>("put", key, value);
+                        map.Call<AndroidJavaObject>("put", key, null);
+                    }
+                    else if (entry.Value is IDictionary)
+                    {
+                        if (entry.Value is IDictionary<string, object> dictionary)
+                        {
+                            map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(dictionary));
+                        }
+                        else
+                        {
+                            var convertedDictionary = ConvertIfPoss(entry.Value);
+                            if (convertedDictionary != null)
+                            {
+                                map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(convertedDictionary));
+                            }
+                        }
+                    }
+                    else if (IsListOrArray(entry.Value))
+                    {
+                        map.Call<AndroidJavaObject>("put", key, GetJavaArrayListFromCollection(entry.Value));
+                    }
+                    else
+                    {
+                        map.Call<AndroidJavaObject>("put", key, GetAndroidObjectFromBasicObject(entry.Value));
                     }
                 }
             }
             return map;
         }
 
+        private static IDictionary<string, object> ConvertIfPoss(object o)
+        {
+            var stringDict = o as IDictionary<string, object>;
+            if (stringDict != null)
+            {
+                return stringDict;
+            }
+
+            var dict = o as IDictionary;
+
+            if (dict != null)
+            {
+                stringDict = new Dictionary<string, object>();
+                foreach (var key in dict.Keys)
+                {
+                    stringDict[key?.ToString() ?? ""] = dict[key];
+                }
+                return stringDict;
+            }
+            return null;
+        }
+
+        private static bool IsListOrArray(object theObject)
+        {
+            var oType = theObject.GetType();
+            return (oType.IsGenericType && oType.GetGenericTypeDefinition() == typeof(List<>)) || oType.IsArray;
+        }
+
+        private static AndroidJavaObject GetJavaArrayListFromCollection(object theObject)
+        {
+            var collection = (IEnumerable)theObject;
+            var arrayList = new AndroidJavaObject("java.util.ArrayList");
+            foreach (var item in collection)
+            {
+                arrayList.Call<Boolean>("add", GetAndroidObjectFromBasicObject(item));
+            }
+            return arrayList;
+        }
+
         private static AndroidJavaObject GetAndroidObjectFromBasicObject(object theObject)
         {
-            Debug.Log("GetAndroidObjectFromBasicObject: " + theObject.ToString());
-            Debug.Log("GetAndroidObjectFromBasicObject: " + theObject.GetType().Name);
+            if (theObject == null)
+            {
+                return null;
+            }
             string nativeClass;
             if (theObject.GetType() == typeof(string))
             {
@@ -731,7 +786,7 @@ namespace BugsnagUnity
             }
             if (PushLocalFrame())
             {
-                using (AndroidJavaObject map = BuildJavaMapDisposable(metadata))
+                using (AndroidJavaObject map = DictionaryToJavaMap(metadata))
                 {
                     CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
                         new object[] { name, type, map });
