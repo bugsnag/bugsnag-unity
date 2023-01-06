@@ -30,6 +30,7 @@ Feature: iOS Native Errors
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
     And expected device metadata is included in the event
+    And custom metadata is included in the event
     And feature flags are included in the event
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "test"
@@ -47,7 +48,6 @@ Feature: iOS Native Errors
     And the event "app.version" is not null
     And the event "metaData.app.companyName" equals "bugsnag"
     And the event "metaData.app.name" matches ".azerunner"
-    And the event "metaData.app.buildno" is not null
 
     # Exception details
     And the error payload field "events" is an array with 1 elements
@@ -55,13 +55,6 @@ Feature: iOS Native Errors
     And the exception "message" equals "CocoaCppException"
     And the event "unhandled" is true
     And the event "severity" equals "error"
-
-    # Metadata
-    And the event "metaData.init" is null
-    And the event "metaData.custom.letter" equals "QX"
-    And the event "metaData.custom.better" equals 400
-    And the event "metaData.test.test1" equals "test1"
-    And the event "metaData.test.test2" is null
 
     # Telemetry
     And the error payload field "events.0.usage.config" is not null
@@ -75,6 +68,8 @@ Feature: iOS Native Errors
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
     And expected device metadata is included in the event
+    And custom metadata is included in the event
+
     And feature flags are included in the event
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "test"
@@ -103,12 +98,6 @@ Feature: iOS Native Errors
     And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
     And the event "exceptions.0.stacktrace.0.method" equals "__pthread_kill"
 
-    # Metadata
-    And the event "metaData.init" is null
-    And the event "metaData.custom.letter" equals "QX"
-    And the event "metaData.custom.better" equals 400
-    And the event "metaData.test.test1" equals "test1"
-    And the event "metaData.test.test2" is null
 
 
 

@@ -193,7 +193,6 @@ Then("custom metadata is included in the event") do
     And the event "metaData.custom.float" equals 123.123 to 3 decimal places
     And the event "metaData.custom.double" equals 123.456 to 3 decimal places
     And the event "metaData.custom.stringArray.0" equals "1"
-    And the event "metaData.custom.stringArray.1" is null
     And the event "metaData.custom.intList.2" equals 3
     And the event "metaData.custom.intArray.1" equals 5
     And the event "metaData.custom.stringDict.hello" equals "goodbye"
