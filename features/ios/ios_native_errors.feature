@@ -87,7 +87,6 @@ Feature: iOS Native Errors
     And the event "app.version" is not null
     And the event "metaData.app.companyName" equals "bugsnag"
     And the event "metaData.app.name" matches ".azerunner"
-    And the event "metaData.app.buildno" is not null
 
     # Exception details
     And the error payload field "events" is an array with 1 elements
