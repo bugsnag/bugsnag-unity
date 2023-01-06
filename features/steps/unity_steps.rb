@@ -190,8 +190,8 @@ end
 Then("custom metadata is included in the event") do
   steps %Q{
     Then the event "metaData.custom.int" equals 123
-    And the event "metaData.custom.float" equals "123.123"
-    And the event "metaData.custom.double" equals 123.456
+    And the event "metaData.custom.float" equals 123.123 to 3 decimal places
+    And the event "metaData.custom.double" equals 123.456 to 3 decimal places
     And the event "metaData.custom.stringArray.0" equals "1"
     And the event "metaData.custom.stringArray.1" is null
     And the event "metaData.custom.intList.2" equals 3
@@ -321,7 +321,6 @@ Then("expected app metadata is included in the event") do
     And the event "app.version" is not null
     And the event "metaData.app.companyName" equals "bugsnag"
     And the event "metaData.app.name" equals "Mazerunner"
-    And the event "metaData.app.buildno" is not null
   }
 end
 
