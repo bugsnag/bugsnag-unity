@@ -40,10 +40,7 @@ namespace BugsnagUnity.Payload
                     var value = metadataSection[key];
                     if (value == null)
                     {
-                        if (existingSection.ContainsKey(key))
-                        {
-                            existingSection.Remove(key);
-                        }
+                        ClearMetadata(section, key);
                     }
                     else
                     {
