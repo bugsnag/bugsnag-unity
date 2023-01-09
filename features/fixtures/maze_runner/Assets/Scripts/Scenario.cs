@@ -94,6 +94,7 @@ public class Scenario : MonoBehaviour
           //  {"long", 12345678901234567890 }, pending PLAT-9426
             {"double", 123.456 },
             {"stringArray", new []{"1",null,"3"} },
+            {"emptyStringArray", new string[]{} },
             {"intList", new List<int>(){1,2,3} },
             {"intArray", new []{4,5,6} },
             {"stringDict", new Dictionary<string,string>(){ {"hello","goodbye"} } }
