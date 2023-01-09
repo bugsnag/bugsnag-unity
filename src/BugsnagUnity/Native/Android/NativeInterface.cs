@@ -649,7 +649,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/HashMap;)V",
+            CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/Map;)V",
             new object[] { section, DictionaryToJavaMap(metadata) });           
         }
 
