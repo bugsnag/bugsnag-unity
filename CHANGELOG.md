@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Fix an issue where collections in metadata were not present in native Android crashes. [#685](https://github.com/bugsnag/bugsnag-unity/pull/685)
+
+
 ## 7.5.0 (2023-01-04)
 
 ### Enhancements
