@@ -33,7 +33,6 @@ Feature: Android JVM Exceptions
     And the event "exceptions.0.stacktrace.0.lineNumber" equals 13
     And the error payload field "events.0.threads" is null
 
-    #NOTE: Metadata testing will be improved in this scenario after PLAT-9127
   Scenario: Android JVM Background Thread Smoke Test
     When I run the game in the "AndroidBackgroundJVMSmokeTest" state
     And I wait for 2 seconds
@@ -44,6 +43,7 @@ Feature: Android JVM Exceptions
     And expected device metadata is included in the event
     And expected app metadata is included in the event
     And feature flags are included in the event
+    And custom metadata is included in the event
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "test"
     And the event "user.id" equals "1"
@@ -64,13 +64,6 @@ Feature: Android JVM Exceptions
     And the exception "stacktrace.0.file" equals "CrashHelper.java"
     And the event "exceptions.0.stacktrace.0.lineNumber" equals 19
     And the error payload field "events.0.threads" is not null
-
-        # Metadata
-    And the event "metaData.init" is null
-    And the event "metaData.custom.letter" equals "QX"
-    And the event "metaData.custom.better" equals "400"
-    And the event "metaData.test.test1" equals "test1"
-    And the event "metaData.test.test2" is null
 
     And the error payload field "events.0.usage.config" is not null
     And the error payload field "events.0.usage.callbacks.onSession" equals 1

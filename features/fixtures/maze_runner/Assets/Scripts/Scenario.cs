@@ -87,24 +87,38 @@ public class Scenario : MonoBehaviour
 
     public void AddTestingMetadata()
     {
-        Bugsnag.AddMetadata("init", new Dictionary<string, object>(){
-            {"foo", "bar" },
-        });
-        Bugsnag.AddMetadata("test", "test1", "test1");
-        Bugsnag.AddMetadata("test", "test2", "test2");
+
         Bugsnag.AddMetadata("custom", new Dictionary<string, object>(){
-            {"letter", "QX" },
-            {"better", 400 },
-            {"string-array", new string []{"1","2","3"} },
-            {"int-array", new int []{1,2,3} },
-            {"dict", new Dictionary<string,object>(){ {"test" , 123 } } }
+            {"int", 123 },
+            {"float", 123.123f },
+          //  {"long", 12345678901234567890 }, pending PLAT-9426
+            {"double", 123.456 },
+            {"stringArray", new []{"1",null,"3"} },
+            {"emptyStringArray", new string[]{} },
+            {"intList", new List<int>(){1,2,3} },
+            {"intArray", new []{4,5,6} },
+            {"stringDict", new Dictionary<string,string>(){ {"hello","goodbye"} } }
         });
+
+        Bugsnag.AddMetadata("clearMe", new Dictionary<string, object>(){
+            {"test", "test" },
+        });
+
+        Bugsnag.ClearMetadata("clearMe");
+
+        Bugsnag.AddMetadata("test", "test1", "test1");
+        Bugsnag.AddMetadata("test", "test1", "test2");
+        Bugsnag.AddMetadata("test", "nullMe", "notNull");
+        Bugsnag.AddMetadata("test", "nullMe", null);
+
         Bugsnag.AddMetadata("app", new Dictionary<string, object>(){
-            {"buildno", "0.1" },
-            {"cache", null },
+            {"extra", "inApp" }
         });
-        Bugsnag.ClearMetadata("init");
-        Bugsnag.ClearMetadata("test", "test2");
+
+        Bugsnag.AddMetadata("device", new Dictionary<string, object>(){
+            {"extra", "inDevice" }
+        });
+
     }
 
     public void AddTestingFeatureFlags()
