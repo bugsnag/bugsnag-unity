@@ -126,6 +126,7 @@ steps:
           - features/fixtures/maze_runner/build/MacOS-2021.3.13f1.zip
         upload:
           - maze_output/**/*
+          - maze_player_logs/*
           - Mazerunner.log
     commands:
       - scripts/ci-run-macos-tests-csharp.sh

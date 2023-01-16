@@ -23,7 +23,8 @@ When('I clear the Bugsnag cache') do
   case Maze::Helper.get_current_platform
   when 'macos', 'webgl'
     # Call executable directly rather than use open, which flakes on CI
-    log = File.join(Dir.pwd, 'mazerunner.log')
+    FileUtils.mkdir_p File.join(Dir.pwd, "maze_player_logs")
+    log = File.join(Dir.pwd,'maze_player_logs', 'clear_cache.log')
     command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
     execute_command('clear_cache')
@@ -72,8 +73,9 @@ When('I run the game in the {string} state') do |state|
   case platform
   when 'macos'
     # Call executable directly rather than use open, which flakes on CI
-    log = File.join(Dir.pwd, 'mazerunner.log')
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner"
+    FileUtils.mkdir_p File.join(Dir.pwd, "maze_player_logs")
+    log = File.join(Dir.pwd, "maze_player_logs", "#{state}-player.log")
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log}"
     Maze::Runner.run_command(command, blocking: false)
 
     execute_command('run_scenario', state)
