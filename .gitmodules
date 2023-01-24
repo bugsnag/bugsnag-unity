@@ -4,3 +4,6 @@
 [submodule "bugsnag-android"]
 	path = bugsnag-android
 	url = https://github.com/bugsnag/bugsnag-android
+[submodule "example/Assets/bugsnag-unity-upm"]
+	path = example/Assets/bugsnag-unity-upm
+	url = https://github.com/bugsnag/bugsnag-unity-upm.git
