@@ -9,4 +9,12 @@
     <Compile Remove="Native/**/*.cs" />
     <Compile Include="Native/Fallback/**/*.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="UnityEngine" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

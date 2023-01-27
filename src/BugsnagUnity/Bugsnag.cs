@@ -31,7 +31,13 @@ namespace BugsnagUnity
                 {
                     UnityEngine.Debug.LogWarning(INIT_WARNING);
                 }
+
             }
+        }
+
+        public static bool HasStarted()
+        {
+            return InternalClient != null;
         }
 
         private static Client InternalClient { get; set; }
