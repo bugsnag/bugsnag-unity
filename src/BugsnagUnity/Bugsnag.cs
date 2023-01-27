@@ -35,7 +35,7 @@ namespace BugsnagUnity
             }
         }
 
-        public static bool HasStarted()
+        public static bool IsStarted()
         {
             return InternalClient != null;
         }

@@ -37,5 +37,11 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
+  },
+  "lock": {
+    "com.bugsnag.unitynotifier": {
+      "revision": "HEAD",
+      "hash": "d47e595b02c9c37d989ee0ce4b7e0b34be15de7f"
+    }
   }
 }

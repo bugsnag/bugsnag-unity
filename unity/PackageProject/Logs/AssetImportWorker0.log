@@ -1,0 +1,541 @@
+Unity Editor version:    2021.3.11f1 (0a5ca18544bf)
+Branch:                  2021.3/staging
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 12.6.1 (Build 21G217)
+Darwin version:          21.6.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        65536 MB
+Using pre-set license
+Pro License: YES
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/2021.3.11f1/Unity.app/Contents/MacOS/Unity
+-adb2
+-batchMode
+-noUpm
+-name
+AssetImportWorker0
+-projectPath
+/Applications/DeveloperTools/Repos/bugsnag-unity/unity/PackageProject
+-logFile
+Logs/AssetImportWorker0.log
+-srvPort
+54520
+Successfully changed project path to: /Applications/DeveloperTools/Repos/bugsnag-unity/unity/PackageProject
+/Applications/DeveloperTools/Repos/bugsnag-unity/unity/PackageProject
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gfx=262144"
+Refreshing native plugins compatible for Editor in 66.57 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 2021.3.11f1 (0a5ca18544bf)
+[Subsystems] Discovering subsystems at path /Applications/Unity/Hub/Editor/2021.3.11f1/Unity.app/Contents/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path /Applications/DeveloperTools/Repos/bugsnag-unity/unity/PackageProject/Assets
+GfxDevice: creating device client; threaded=0; jobified=0
+ preferred device: Apple M1 Max (high power)
+Metal devices available: 1
+0: Apple M1 Max (high power)
+Using device Apple M1 Max (high power)
+Initializing Metal device caps: Apple M1 Max
+Initialize mono
+Mono path[0] = '/Applications/Unity/Hub/Editor/2021.3.11f1/Unity.app/Contents/Managed'
+Mono path[1] = '/Applications/Unity/Hub/Editor/2021.3.11f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityjit-macos'
+Mono config path = '/Applications/Unity/Hub/Editor/2021.3.11f1/Unity.app/Contents/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56385
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.11f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.11f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.11f1/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.11f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Register platform support module: /Applications/Unity/Hub/Editor/2021.3.11f1/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.003262 seconds.
+Native extension for WindowsStandalone target not found
+[usbmuxd] Start listen thread
+[usbmuxd] Listen thread started
+[usbmuxd] Send listen message
+Native extension for iOS target not found
+[usbmuxd] Attached: 8 00008110-001A28C91191401E
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 31.94 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.520 seconds
+Domain Reload Profiling:
+	ReloadAssembly (520ms)
+		BeginReloadAssembly (125ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (0ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (0ms)
+		EndReloadAssembly (319ms)
+			LoadAssemblies (132ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (77ms)
+			ReleaseScriptCaches (0ms)
+			RebuildScriptCaches (19ms)
+			SetupLoadedEditorAssemblies (190ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (78ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (32ms)
+				BeforeProcessingInitializeOnLoad (1ms)
+				ProcessInitializeOnLoadAttributes (49ms)
+				ProcessInitializeOnLoadMethodAttributes (30ms)
+				AfterProcessingInitializeOnLoad (0ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (0ms)
+Platform modules already initialized, skipping
+Registering precompiled user dll's ...
+Registered in 0.058088 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+Refreshing native plugins compatible for Editor in 0.53 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Package Manager log level set to [2]
+Mono: successfully reloaded assembly
+- Completed reload, in  1.684 seconds
+Domain Reload Profiling:
+	ReloadAssembly (1684ms)
+		BeginReloadAssembly (277ms)
+			ExecutionOrderSort (0ms)
+			DisableScriptedObjects (3ms)
+			BackupInstance (0ms)
+			ReleaseScriptingObjects (0ms)
+			CreateAndSetChildDomain (118ms)
+		EndReloadAssembly (1325ms)
+			LoadAssemblies (213ms)
+			RebuildTransferFunctionScriptingTraits (0ms)
+			SetupTypeCache (128ms)
+			ReleaseScriptCaches (2ms)
+			RebuildScriptCaches (32ms)
+			SetupLoadedEditorAssemblies (1034ms)
+				LogAssemblyErrors (0ms)
+				InitializePlatformSupportModulesInManaged (753ms)
+				SetLoadedEditorAssemblies (0ms)
+				RefreshPlugins (1ms)
+				BeforeProcessingInitializeOnLoad (59ms)
+				ProcessInitializeOnLoadAttributes (137ms)
+				ProcessInitializeOnLoadMethodAttributes (84ms)
+				AfterProcessingInitializeOnLoad (1ms)
+				EditorAssembliesLoaded (0ms)
+			ExecutionOrderSort2 (0ms)
+			AwakeInstancesAfterBackupRestoration (2ms)
+Platform modules already initialized, skipping
+========================================================================
+Worker process is ready to serve import requests
+Launching external process: /Applications/Unity/Hub/Editor/2021.3.11f1/Unity.app/Contents/Tools/UnityShaderCompiler
+Launched and connected shader compiler UnityShaderCompiler after 0.06 seconds
+Refreshing native plugins compatible for Editor in 0.44 ms, found 2 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2443 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 77 unused Assets / (74.4 KB). Loaded Objects now: 2874.
+Memory consumption went from 190.5 MB to 190.4 MB.
+Total: 5.105917 ms (FindLiveObjects: 0.084000 ms CreateObjectMapping: 0.030250 ms MarkObjects: 4.901125 ms  DeleteObjects: 0.089959 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:video-decoder-ogg-theora: a1e56fd34408186e4bbccfd4996cb3dc -> 
+  custom:container-muxer-webm: aa71ff27fc2769a1b78a27578f13a17b -> 
+  custom:container-demuxer-webm: 4f35f7cbe854078d1ac9338744f61a02 -> 
+  custom:video-encoder-webm-vp8: eb34c28f22e8b96e1ab97ce403110664 -> 
+  custom:framework-osx-AVFoundation: e770b220cccbd017edd2c1fefb359320 -> 
+  custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+  custom:container-demuxer-ogg: 62fdf1f143b41e24485cea50d1cbac27 -> 
+  custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
+  custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 161968.281254 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/MacOS/bugsnag-osx
+  artifactKey: Guid(81f08e8490a67498db41703d26bec229) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/MacOS/bugsnag-osx using Guid(81f08e8490a67498db41703d26bec229) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e84327f8e4a651afd0f4530f0e4cf8f5') in 0.019190 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.005821 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagClient.h
+  artifactKey: Guid(c4cc761dcf66641cd88f2886790bcd5c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagClient.h using Guid(c4cc761dcf66641cd88f2886790bcd5c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e7ed8518c6988330464ea4c5f7b64c45') in 0.047772 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.007151 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagPlugin.h
+  artifactKey: Guid(a0c5c84e6ca714931893d8824d1680d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagPlugin.h using Guid(a0c5c84e6ca714931893d8824d1680d2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4154d1c2939c66ef28112c02a98ad262') in 0.006178 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.003935 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/BugsnagUnity.MacOS.dll
+  artifactKey: Guid(b917a7705dd6f4b129fd8a352bc92f32) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/BugsnagUnity.MacOS.dll using Guid(b917a7705dd6f4b129fd8a352bc92f32) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '987be8259b94f9d918611b28e960de06') in 0.042625 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004476 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagFeatureFlagStore.h
+  artifactKey: Guid(4ea19e482d809468c99919b7f2427b0a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagFeatureFlagStore.h using Guid(4ea19e482d809468c99919b7f2427b0a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '226d433e59f7311150760d724e525d17') in 0.006492 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004653 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagErrorTypes.h
+  artifactKey: Guid(75828343cabd548dcbe1733d190d1505) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagErrorTypes.h using Guid(75828343cabd548dcbe1733d190d1505) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '96cd46c600e497dfa739f7bf579d662e') in 0.005386 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004644 seconds.
+  path: Assets/Bugsnag/Plugins/tvOS/libbugsnag-tvos.a
+  artifactKey: Guid(a5b5ec5450db94916ab3839c4c9ce61a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/tvOS/libbugsnag-tvos.a using Guid(a5b5ec5450db94916ab3839c4c9ce61a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8ffda751b4c6a437126f4d679ccd4689') in 0.042140 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004141 seconds.
+  path: Assets/Bugsnag/Editor/icon-light.png
+  artifactKey: Guid(7ee8345965a96421e8a7b46a262d3567) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Editor/icon-light.png using Guid(7ee8345965a96421e8a7b46a262d3567) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a694b9b838de6bb31304ebe620bc0142') in 0.087161 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.009755 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle
+  artifactKey: Guid(bb5f436bc6f4a462cb5beb09c5b2d9d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle using Guid(bb5f436bc6f4a462cb5beb09c5b2d9d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '073bffb68eb46e79b87a9ab660923be8') in 0.064805 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.008934 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagMetadataStore.h
+  artifactKey: Guid(20a02b448030d4eb0a8fc5d9a954a4ae) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagMetadataStore.h using Guid(20a02b448030d4eb0a8fc5d9a954a4ae) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c799591d4d78032253a4efc7b60922de') in 0.005735 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.003798 seconds.
+  path: Assets/Bugsnag/Plugins/iOS/libbugsnag-ios.a
+  artifactKey: Guid(5bd304f475517404bbeb8f50c81abe73) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/iOS/libbugsnag-ios.a using Guid(5bd304f475517404bbeb8f50c81abe73) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e0e6d8695c4ccbb61f838dbfd3447fb2') in 0.010105 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.003909 seconds.
+  path: Assets/Bugsnag/Scripts/BugsnagSettingsObject.cs
+  artifactKey: Guid(3e0efee821abb422baf5bb3728925f09) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Scripts/BugsnagSettingsObject.cs using Guid(3e0efee821abb422baf5bb3728925f09) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f271fbc32a70856bf4ef65aad96e6d14') in 0.097318 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.005840 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagConfiguration.h
+  artifactKey: Guid(f03c6a1dfd38b412fbee65f36cb09195) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagConfiguration.h using Guid(f03c6a1dfd38b412fbee65f36cb09195) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '861986fe954ce4b1367c63cce7770216') in 0.005362 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004298 seconds.
+  path: Assets/Bugsnag/Plugins/Android/bugsnag-android-release.aar
+  artifactKey: Guid(2c1e7acf0ab5a44299e88f5194b361a6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/bugsnag-android-release.aar using Guid(2c1e7acf0ab5a44299e88f5194b361a6) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b7861012a27b3949944fab9e1a889015') in 0.066409 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.005488 seconds.
+  path: Assets/Bugsnag/Plugins/Windows/BugsnagUnity.Windows.dll
+  artifactKey: Guid(985672bb978624e548cfe578ccf27093) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Windows/BugsnagUnity.Windows.dll using Guid(985672bb978624e548cfe578ccf27093) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9f31e9cad06f4ad8942b16c9f2c537dd') in 0.005684 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004365 seconds.
+  path: Assets/Bugsnag/Plugins/Android/Kotlin/kotlin-stdlib.jar
+  artifactKey: Guid(ad0bb5240658541aea8724f93b5cd03e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/Kotlin/kotlin-stdlib.jar using Guid(ad0bb5240658541aea8724f93b5cd03e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '591615bbd99dbf599196377bdcf2fac3') in 0.061837 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.006034 seconds.
+  path: Assets/Bugsnag/Plugins/Android/bugsnag-android-unity-release.aar
+  artifactKey: Guid(c7bebfa0de5b84ff7824336b58d038d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/bugsnag-android-unity-release.aar using Guid(c7bebfa0de5b84ff7824336b58d038d0) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8c5cfbee58d7d2c6f4d47dc317544061') in 0.019249 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.006803 seconds.
+  path: Assets/Bugsnag/Plugins/Android/Kotlin/kotlin-annotations.jar
+  artifactKey: Guid(a055834fbcef74823bab4942aa10d5f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/Kotlin/kotlin-annotations.jar using Guid(a055834fbcef74823bab4942aa10d5f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a6fa27b3bd42680f0d771820848e61db') in 0.012857 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.007740 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagApp.h
+  artifactKey: Guid(dbff8d630c56c4f738b160ca8309adcf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagApp.h using Guid(dbff8d630c56c4f738b160ca8309adcf) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f6dbb1bcdbc82c3a422cd3d8c8250420') in 0.009981 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.010579 seconds.
+  path: Assets/Bugsnag/Plugins/Android/Kotlin
+  artifactKey: Guid(e4d2be78eb4454fb58d343a6a56ba195) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/Kotlin using Guid(e4d2be78eb4454fb58d343a6a56ba195) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7146c1e5d572335e0f479ca039497493') in 0.009037 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.006293 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents
+  artifactKey: Guid(1de6c0742e4764d22930d104a71547a2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents using Guid(1de6c0742e4764d22930d104a71547a2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c818206b3e7ee1a0b7d1f43ee3c5fe8a') in 0.004357 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.002012 seconds.
+  path: Assets/Bugsnag/Editor/BugsnagEditor.EDM.cs
+  artifactKey: Guid(55fc4b302697348259084ed568410d50) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Editor/BugsnagEditor.EDM.cs using Guid(55fc4b302697348259084ed568410d50) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd5d3e4cc21f4e80c90c31e6c227a6aa6') in 0.005221 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.006602 seconds.
+  path: Assets/Bugsnag/Plugins/tvOS/BugsnagUnity.iOS.dll
+  artifactKey: Guid(480b1f139af8c411f877ac86886fd547) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/tvOS/BugsnagUnity.iOS.dll using Guid(480b1f139af8c411f877ac86886fd547) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3144085548e0c77b54c2a696aa8a8f0e') in 0.005990 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004893 seconds.
+  path: Assets/Bugsnag/Plugins
+  artifactKey: Guid(c2133bde5df284cb286e886053296ffa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins using Guid(c2133bde5df284cb286e886053296ffa) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '453bb5ffa48250d29414d8321416bc5d') in 0.008573 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.005252 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers
+  artifactKey: Guid(cf389a5a88a6f472b9e15c2919fbb683) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers using Guid(cf389a5a88a6f472b9e15c2919fbb683) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'af7e57378e411b0bc3827d16610c097b') in 0.003975 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.001816 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagBreadcrumb.h
+  artifactKey: Guid(87cad67052a8c4a0e830ad0122aacec2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagBreadcrumb.h using Guid(87cad67052a8c4a0e830ad0122aacec2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd650c47b452d5946d0c82d274571f96b') in 0.005407 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.012952 seconds.
+  path: Assets/Bugsnag/Editor/BugsnagEditor.cs
+  artifactKey: Guid(935253df38ee5445abc731056be30899) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Editor/BugsnagEditor.cs using Guid(935253df38ee5445abc731056be30899) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7e6c89f841ce4491c090eae1a6477c56') in 0.004022 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.001869 seconds.
+  path: Assets/Bugsnag/Plugins/Windows
+  artifactKey: Guid(eb33f08d2df47470cbd072f9bcec2db1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Windows using Guid(eb33f08d2df47470cbd072f9bcec2db1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '41bd1b89efcd33fb213353b16c4ba0c6') in 0.006632 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004518 seconds.
+  path: Assets/Bugsnag/Plugins/Android/Kotlin/kotlin-stdlib-common.jar
+  artifactKey: Guid(8751e769da8b74098a77c30dc7cd9c59) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/Kotlin/kotlin-stdlib-common.jar using Guid(8751e769da8b74098a77c30dc7cd9c59) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '265675273c1291836d02abf30a68e0de') in 0.005164 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.001777 seconds.
+  path: Assets/Bugsnag/Scripts
+  artifactKey: Guid(07772d6b511624fd6bc0ba35591d47da) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Scripts using Guid(07772d6b511624fd6bc0ba35591d47da) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ff7f98c65570b58306721f5a2354f4b9') in 0.004357 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.005454 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BSG_KSCrashReportWriter.h
+  artifactKey: Guid(1cdf54203a3dc497ea1bd1c6d60fdc31) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BSG_KSCrashReportWriter.h using Guid(1cdf54203a3dc497ea1bd1c6d60fdc31) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7ec0a9a41ec4330578ca57b99d6585e9') in 0.006094 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.002862 seconds.
+  path: Assets/Bugsnag/Plugins/Android/bugsnag-plugin-android-anr-release.aar
+  artifactKey: Guid(eb3ceb4f974684673b437d47863f559e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/bugsnag-plugin-android-anr-release.aar using Guid(eb3ceb4f974684673b437d47863f559e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '97f4c4c671c5effa3245f6d286bab3f2') in 0.009773 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.005120 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagSession.h
+  artifactKey: Guid(823ef505f4fd54a068c5402597bd13bb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagSession.h using Guid(823ef505f4fd54a068c5402597bd13bb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b5fb939112364cadebbb1661657d0d73') in 0.015848 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.020214 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagStackframe.h
+  artifactKey: Guid(c1161c066c024488099684d49561528d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagStackframe.h using Guid(c1161c066c024488099684d49561528d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dad0aaad5d8061681006a63c86ce526a') in 0.018202 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.025740 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/MacOS
+  artifactKey: Guid(3e70451587e74414fb23e7b87055ae2a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/MacOS using Guid(3e70451587e74414fb23e7b87055ae2a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2f6ed35610e2f18d0a2d119c53a43e0d') in 0.027350 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.009746 seconds.
+  path: Assets/Bugsnag
+  artifactKey: Guid(b0a07e52b41074d3ea1038ab3f2d684c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag using Guid(b0a07e52b41074d3ea1038ab3f2d684c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9b326b40deabbea20cca81f433dc5354') in 0.008357 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.009874 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagDevice.h
+  artifactKey: Guid(d68d34aec8c234113a7ff576ee96c2ac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagDevice.h using Guid(d68d34aec8c234113a7ff576ee96c2ac) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a33065b1428e2256da935e746521ad2e') in 0.021856 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004817 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagDeviceWithState.h
+  artifactKey: Guid(d94e0c4ad7bf3491abc1455505a20b25) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagDeviceWithState.h using Guid(d94e0c4ad7bf3491abc1455505a20b25) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '117f4b35ef02dbd198b0ad791ba4fb04') in 0.014013 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.010029 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagFeatureFlag.h
+  artifactKey: Guid(512a39af60eeb4e9cb7096e752c63071) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagFeatureFlag.h using Guid(512a39af60eeb4e9cb7096e752c63071) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6fb0bcd7c0f8bc4799c0fa2a24b7b356') in 0.010046 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.006903 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagUser.h
+  artifactKey: Guid(22691bb9a27664dd9b82db1e686c536c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagUser.h using Guid(22691bb9a27664dd9b82db1e686c536c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '43ed478d2da4a300bd9842e6e0b7b710') in 0.010064 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.003913 seconds.
+  path: Assets/Bugsnag/Plugins/BugsnagUnity.dll
+  artifactKey: Guid(3dbda165f19cc4f68bb72d68e81f89d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/BugsnagUnity.dll using Guid(3dbda165f19cc4f68bb72d68e81f89d1) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a92db67d6e28efd5aa8f6e5fabd1bfb6') in 0.005827 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.006593 seconds.
+  path: Assets/Bugsnag/Plugins/OSX
+  artifactKey: Guid(f7ace0c8d1a68422799c1b4323bf4951) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX using Guid(f7ace0c8d1a68422799c1b4323bf4951) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4c14518c04080a702aaabdc17e306e33') in 0.010927 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.016565 seconds.
+  path: Assets/Bugsnag/Scripts/BugsnagAutoInit.cs
+  artifactKey: Guid(ed73a8b9e01584d74a763fdd2bb3d73e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Scripts/BugsnagAutoInit.cs using Guid(ed73a8b9e01584d74a763fdd2bb3d73e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c85e8c75cdc41b9180543c91367d81f2') in 0.012599 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.005976 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagDefines.h
+  artifactKey: Guid(8ba400bef32d94e338aef1d4259e8491) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagDefines.h using Guid(8ba400bef32d94e338aef1d4259e8491) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'db00f2d7d2568bf8303c586b549f8247') in 0.013363 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.010077 seconds.
+  path: Assets/Bugsnag/Plugins/Android
+  artifactKey: Guid(01c58a14cbe5448d3864ee993b273f28) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android using Guid(01c58a14cbe5448d3864ee993b273f28) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a91c53c4f451885f6b1af6164ae04472') in 0.010980 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.010753 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagThread.h
+  artifactKey: Guid(1b233d78eac964678a6baee9bf21dbf8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagThread.h using Guid(1b233d78eac964678a6baee9bf21dbf8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'fbb1488e3504a1a113a9002331eb7af8') in 0.006889 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004468 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagEvent.h
+  artifactKey: Guid(4fee5a36555084c74963f06ed63ab80c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagEvent.h using Guid(4fee5a36555084c74963f06ed63ab80c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '48b21d8a89783335b117fa071319ce30') in 0.007849 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.007123 seconds.
+  path: Assets/Bugsnag/Plugins/Android/BugsnagUnity.Android.dll
+  artifactKey: Guid(3fd5fac7a2f44416b96d254e4383456c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/BugsnagUnity.Android.dll using Guid(3fd5fac7a2f44416b96d254e4383456c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'dab7e24a24c70b2f8ad7a38f7eec27d5') in 0.013450 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.006465 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/Bugsnag.h
+  artifactKey: Guid(fd82fc22dfef54846abab4745e5995fc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/Bugsnag.h using Guid(fd82fc22dfef54846abab4745e5995fc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0ba0a99cea229edc96b8ca8481205818') in 0.013026 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.006679 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagMetadata.h
+  artifactKey: Guid(774a54ef921584907b9760302799d523) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagMetadata.h using Guid(774a54ef921584907b9760302799d523) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '760946c1c1761737f633b685fcaa14e6') in 0.009894 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.012285 seconds.
+  path: Assets/Bugsnag/Plugins/iOS
+  artifactKey: Guid(8e4f198065b6f4718ace5f78dd8344c3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/iOS using Guid(8e4f198065b6f4718ace5f78dd8344c3) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '988f55adf1d5a4200b8f1bfaa0a96fe3') in 0.015210 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.021429 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagAppWithState.h
+  artifactKey: Guid(051f08a5c3f1e44a18a7a34c168dd134) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagAppWithState.h using Guid(051f08a5c3f1e44a18a7a34c168dd134) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '66a63d24d69f103b331f30f078a3df18') in 0.031433 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.015471 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagError.h
+  artifactKey: Guid(444d3b4c2c6c3407680e61a01fdbdd73) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagError.h using Guid(444d3b4c2c6c3407680e61a01fdbdd73) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ce7c31639b92b1e9a83bcca235314a6d') in 0.019145 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.018475 seconds.
+  path: Assets/Bugsnag/Plugins/tvOS
+  artifactKey: Guid(dce9e1d7fca9542a9afbe5572133950e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/tvOS using Guid(dce9e1d7fca9542a9afbe5572133950e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ee0d203f6bb4d719a024f21ec2d38f43') in 0.016081 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.011499 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagEndpointConfiguration.h
+  artifactKey: Guid(68fd4b4eb25774a3c97ed4c3fa949417) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagEndpointConfiguration.h using Guid(68fd4b4eb25774a3c97ed4c3fa949417) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4796e00fa9f62ff7f889f03712a07171') in 0.015143 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.010214 seconds.
+  path: Assets/Bugsnag/Editor/icon-dark.png
+  artifactKey: Guid(2785e0366c7a34c068497d1bb94c6cb2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Editor/icon-dark.png using Guid(2785e0366c7a34c068497d1bb94c6cb2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '16760ce4fe19fae62907c39c8dafbacb') in 0.047775 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.019273 seconds.
+  path: Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagLastRunInfo.h
+  artifactKey: Guid(bfe1fae0a4bb54714b4e53cfb5f4eb9c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/OSX/bugsnag-osx.bundle/Contents/Headers/BugsnagLastRunInfo.h using Guid(bfe1fae0a4bb54714b4e53cfb5f4eb9c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2a9400bbf732e015b67d3960f9e7dd19') in 0.016714 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.073572 seconds.
+  path: Assets/Bugsnag/Plugins/Android/bugsnag-android-ndk-release.aar
+  artifactKey: Guid(63cf6336cdaef4c75991adea998955f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/Android/bugsnag-android-ndk-release.aar using Guid(63cf6336cdaef4c75991adea998955f4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7413c984691bc7a45166ce26c595fe1e') in 0.012919 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.024132 seconds.
+  path: Assets/Bugsnag/Plugins/iOS/BugsnagUnity.iOS.dll
+  artifactKey: Guid(d39840dd049ac42948d73361a95a1a32) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Plugins/iOS/BugsnagUnity.iOS.dll using Guid(d39840dd049ac42948d73361a95a1a32) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '788e29a9afe9c473b9973ac3f4c38279') in 0.016381 seconds 
+========================================================================
+Received Import Request.
+  Time since last request: 0.004403 seconds.
+  path: Assets/Bugsnag/Editor
+  artifactKey: Guid(7e8e8ae1c37e94f9c9efb3289a03f9ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Bugsnag/Editor using Guid(7e8e8ae1c37e94f9c9efb3289a03f9ad) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '871570a2694d515bd9964a875cc3f35c') in 0.017515 seconds 
