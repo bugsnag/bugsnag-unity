@@ -83,7 +83,7 @@ public class Main : MonoBehaviour
                     var command = JsonUtility.FromJson<Command>(response);
                     if (command != null)
                     {
-                        Console.WriteLine("Received Maze Runner command:");
+                        Console.WriteLine("Received Maze Runner command after " + Time.realtimeSinceStartup + " seconds");
                         Console.WriteLine("Action: " + command.action);
                         Console.WriteLine("Scenario: " + command.scenarioName);
 
