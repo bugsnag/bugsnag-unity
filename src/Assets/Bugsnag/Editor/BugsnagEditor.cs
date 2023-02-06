@@ -24,11 +24,11 @@ namespace BugsnagUnity.Editor
 
         private void OnEnable()
         {
-            titleContent.text = "Bugsnag";
+            titleContent.text = "BugSnag";
             CheckForSettingsCreation();
         }
 
-        [MenuItem("Window/Bugsnag/Configuration", false, 0)]
+        [MenuItem("Window/BugSnag/Configuration", false, 0)]
         public static void ShowWindow()
         {
             CheckForSettingsCreation();
