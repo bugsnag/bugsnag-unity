@@ -167,4 +167,10 @@ Feature: csharp events
     And the event "severityReason.type" equals "userSpecifiedSeverity"
     And the event "unhandled" is false
 
+  Scenario: Discard event after serialisation error
+    When I run the game in the "SerialisationError" state
+    And I wait to receive 1 error
+    And the exception "message" equals "SerialisationError"
+
+
 
