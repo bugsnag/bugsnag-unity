@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.6.0 (2023-02-08)
+## 7.5.1 (2023-02-08)
 
 ### Dependency updates
 
