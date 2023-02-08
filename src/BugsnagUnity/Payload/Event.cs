@@ -57,6 +57,18 @@ namespace BugsnagUnity.Payload
 
             var eventObject = (Dictionary<string, object>)serialisedPayload["event"];
 
+            if (eventObject["unhandled"] != null)
+            {
+                Add("unhandled", eventObject["unhandled"]);
+            }
+            if (eventObject["severity"] != null)
+            {
+                Add("severity", eventObject["severity"]);
+            }
+            if (eventObject["severityReason"] != null)
+            {
+                Add("severityReason", eventObject["severityReason"]);
+            }
             _metadata = new Metadata();
             _metadata.MergeMetadata((Dictionary<string, object>)eventObject["metaData"]);
 
