@@ -8,6 +8,8 @@
 
 * Fix an issue where errors in serialisation threw exceptions. [#693](https://github.com/bugsnag/bugsnag-unity/pull/693)
 
+* Fix an issue where persisted events had 'unhandled' set to null [#695](https://github.com/bugsnag/bugsnag-unity/pull/695)
+
 
 ### Dependency updates
 
