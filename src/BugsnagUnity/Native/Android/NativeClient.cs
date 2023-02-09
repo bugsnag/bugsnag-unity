@@ -126,10 +126,7 @@ namespace BugsnagUnity
 
         public void AddNativeMetadata(string section, IDictionary<string, object> data)
         {
-            foreach (var pair in data)
-            {
-                NativeInterface.AddMetadata(section,pair.Key,pair.Value == null ? "null" : pair.Value.ToString());
-            }
+            NativeInterface.AddMetadata(section,data);   
         }
 
         public void AddFeatureFlag(string name, string variant = null)

@@ -29,6 +29,7 @@ Feature: Android NDK crash
     And the event "severityReason.type" equals "signal"
     And the event "severityReason.attributes.signalType" equals "SIGSEGV"
     And the event "severityReason.unhandledOverridden" is false
+    And custom metadata is included in the event
     And expected app metadata is included in the event
         # Stacktrace validation
     And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
@@ -45,9 +46,4 @@ Feature: Android NDK crash
         # Native context override
     And the event "context" equals "My Context"
 
-        # Metadata
-    And the event "metaData.init" is null
-    And the event "metaData.custom.letter" equals "QX"
-    And the event "metaData.custom.better" equals "400"
-    And the event "metaData.test.test1" equals "test1"
-    And the event "metaData.test.test2" is null
+    

@@ -3,7 +3,7 @@ Feature: Unity Persistence
   Background:
     Given I clear the Bugsnag cache
 
-  @skip_windows @skip_macos @skip_webgl #pending PLAT-8632
+  @skip_windows @skip_webgl @skip_cocoa @skip_android #pending PLAT-8632
   Scenario: Receive a persisted session
     When I set the HTTP status code for the next requests to "408"
     And I run the game in the "PersistSession" state
@@ -31,9 +31,11 @@ Feature: Unity Persistence
     And I run the game in the "PersistEventReport" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
+    And the error is valid for the error reporting API sent by the Unity notifier
     And the event "context" equals "Error 1"
     And the exception "message" equals "Error 1"
     And I discard the oldest error
+    And the error is valid for the error reporting API sent by the Unity notifier
     And the event "context" equals "Error 2"
     And the exception "message" equals "Error 2"
 

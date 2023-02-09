@@ -510,13 +510,16 @@ namespace BugsnagUnity
             var report = new Report(Configuration, @event);
             if (!report.Ignored)
             {
-                PayloadManager.AddPendingPayload(report);
-                Send(report);
-                if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
+                //if serialisation fails, then we ignore the event
+                if (PayloadManager.AddPendingPayload(report)) 
                 {
-                    Breadcrumbs.Leave(Breadcrumb.FromReport(report));
+                    Send(report);
+                    if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
+                    {
+                        Breadcrumbs.Leave(Breadcrumb.FromReport(report));
+                    }
+                    SessionTracking.AddException(report);
                 }
-                SessionTracking.AddException(report);
             }
         }
 

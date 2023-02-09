@@ -1,5 +1,19 @@
 # Changelog
 
+## 7.5.1 (2023-02-08)
+
+### Dependency updates
+
+- Update bugsnag-cocoa from v6.25.1 to [v6.25.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6252-2023-01-18)
+
+### Bug fixes
+
+* Fix an issue where collections in metadata were not present in native Android crashes. [#685](https://github.com/bugsnag/bugsnag-unity/pull/685)
+
+* Fix an issue where errors in serialisation threw exceptions. [#693](https://github.com/bugsnag/bugsnag-unity/pull/693)
+
+* Fix an issue where persisted events had 'unhandled' set to null [#695](https://github.com/bugsnag/bugsnag-unity/pull/695)
+
 ## 7.5.0 (2023-01-04)
 
 ### Enhancements

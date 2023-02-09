@@ -184,18 +184,24 @@ Then('the current error request events match one of:') do |table|
   end
 end
 
+
+#    And the event "metaData.custom.long" equals 12345678901234567890 should be readded after PLAT-9426
+
 Then("custom metadata is included in the event") do
   steps %Q{
-    Then the event "metaData.app.buildno" equals "0.1"
-    And the event "metaData.app.cache" is null
-    And the event "metaData.init" is null
-    And the event "metaData.custom.letter" equals "QX"
-    And the event "metaData.custom.better" equals 400
-    And the event "metaData.test.test1" equals "test1"
-    And the event "metaData.test.test2" is null
-    And the error payload field "events.0.metaData.custom.int-array" is a non-empty array
-    And the error payload field "events.0.metaData.custom.string-array" is a non-empty array
-    And the error payload field "events.0.metaData.custom.dict" is not null
+    Then the event "metaData.custom.int" equals 123
+    And the event "metaData.custom.float" equals 123.123 to 3 decimal places
+    And the event "metaData.custom.double" equals 123.456 to 3 decimal places
+    And the event "metaData.custom.stringArray.0" equals "1"
+    And the event "metaData.custom.emptyStringArray.0" is null
+    And the event "metaData.custom.intList.2" equals 3
+    And the event "metaData.custom.intArray.1" equals 5
+    And the event "metaData.custom.stringDict.hello" equals "goodbye"
+    And the event "metaData.clearMe" is null
+    And the event "metaData.test.test1" equals "test2"
+    And the event "metaData.test.nullMe" is null
+    And the event "metaData.app.extra" equals "inApp"
+    And the event "metaData.device.extra" equals "inDevice"
   }
 end
 
@@ -315,7 +321,6 @@ Then("expected app metadata is included in the event") do
     And the event "app.version" is not null
     And the event "metaData.app.companyName" equals "bugsnag"
     And the event "metaData.app.name" equals "Mazerunner"
-    And the event "metaData.app.buildno" is not null
   }
 end
 
