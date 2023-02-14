@@ -23,19 +23,12 @@ then
   exit 1
 fi
 
-#Build the plugin
-echo "Building the sdk"
-
-cd ..
-
-rake plugin:export
-
-cd upm-tools
-
+#Check for the release package
+echo "Checking for the release package"
 
 # make sure the package of the release is present after building
 if [ ! -f "$PACKAGE_FILE" ]; then
-    echo "$PACKAGE_FILE not found, please check for build errors."
+    echo "$PACKAGE_FILE not found, please provide a release package."
     exit 1
 fi
 
