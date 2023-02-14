@@ -133,7 +133,7 @@ bundle exec maze-runner features/handled_errors.feature
 
 Once the UnityPackage release is confirmed a UPM release should be deployed
 
-1. Make sure that the released package used in the github release is present in the root of the repo.
+1. Make sure that the package used in the github release is present in the root of the repo.
 
 2. Build the upm package by running the `build-upm-package.sh` script in the upm-tools directory. You should pass the version number of the release like so `./build-upm-package.sh 7.x.x`. You must run the script from within the upm-tools folder. This will build the upm package in a directory called `upm-package`
 
