@@ -15,3 +15,4 @@ cp EDM/BugsnagAndroidDependencies.xml.meta "$PACKAGE_DIR/Editor"
 
 # Change the readme title to reference EDM4U
 sed -i '' "s/Bugsnag SDK for Unity/Bugsnag SDK for Unity Including EDM4U Support/g" "$PACKAGE_DIR/README.md"
+sed -i '' "s/bugsnag-unity-upm.git/bugsnag-unity-upm-edm4u.git/g" "$PACKAGE_DIR/README.md"
