@@ -108,6 +108,7 @@ namespace BugsnagUnity
 
         public Client(INativeClient nativeClient)
         {
+            InitMainthreadDispatcher();
             NativeClient = nativeClient;
             CacheManager = new CacheManager(Configuration);
             PayloadManager = new PayloadManager(CacheManager);
@@ -120,8 +121,6 @@ namespace BugsnagUnity
             InitMetadata();
             InitFeatureFlags();
             InitCounters();
-            ListenForSceneLoad();
-            InitLogHandlers();
             if (_isUnity2019OrHigher)
             {
                 SetupAdvancedExceptionInterceptor();
@@ -131,6 +130,13 @@ namespace BugsnagUnity
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
+            ListenForSceneLoad();
+            InitLogHandlers();
+        }
+
+        private void InitMainthreadDispatcher()
+        {
+            MainThreadDispatchBehaviour.Instance();
         }
 
         private bool IsUnity2019OrHigher()

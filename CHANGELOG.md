@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Bug fixes
+
+* Fix a race condition in Bugsnag.Start involving creation of gameobjects outside of the main Unity thread. [#699](https://github.com/bugsnag/bugsnag-unity/pull/699)
+
 ## 7.5.1 (2023-02-08)
 
 ### Dependency updates
