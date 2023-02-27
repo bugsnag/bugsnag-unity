@@ -38,21 +38,21 @@ namespace BugsnagUnity
 
         private static IClient Client => InternalClient;
 
-        public static void Notify(string name, string message, string stackTrace) => InternalClient.Notify(name, message, stackTrace, null);
+        public static void Notify(string name, string message, string stackTrace) => Notify(name, message, stackTrace, null);
 
-        public static void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback) => InternalClient.Notify(name, message, stackTrace, callback);
+        public static void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback) => InternalClient.NotifyWithStrings(name, message, stackTrace, callback);
 
-        public static void Notify(System.Exception exception) => InternalClient.Notify(exception, 3);
+        public static void Notify(Exception exception) => InternalClient.NotifyWithException(exception);
 
-        public static void Notify(System.Exception exception, string stacktrace) => InternalClient.Notify(exception, stacktrace, null);
+        public static void Notify(Exception exception, string stacktrace) => Notify(exception, stacktrace, null);
 
-        public static void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback) => InternalClient.Notify(exception, stacktrace, callback);
+        public static void Notify(Exception exception, string stacktrace, Func<IEvent, bool> callback) => InternalClient.NotifyWithStacktrace(exception, stacktrace, callback);
 
-        public static void Notify(System.Exception exception, Func<IEvent, bool> callback) => InternalClient.Notify(exception, callback, 3);
+        public static void Notify(Exception exception, Func<IEvent, bool> callback) => InternalClient.NotifyWithExceptionCallback(exception, callback);
 
-        public static void Notify(System.Exception exception, Severity severity) => InternalClient.Notify(exception, severity, 3);
+        public static void Notify(Exception exception, Severity severity) => Notify(exception, severity, null);
 
-        public static void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback) => InternalClient.Notify(exception, severity, callback, 3);
+        public static void Notify(Exception exception, Severity severity, Func<IEvent, bool> callback) => InternalClient.NotifyWithExceptionSeverityCallback(exception, severity, callback);
 
         public static List<Breadcrumb> Breadcrumbs => Client.Breadcrumbs.Retrieve();
 
