@@ -302,7 +302,7 @@ namespace BugsnagUnity
                     var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
                     var forceUnhandled = logType == LogType.Exception && !Configuration.ReportExceptionLogsAsHandled;
                     var exception = Error.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
-                    FinalNotify(new Error[] { exception }, exception.HandledState, null, logType);
+                    Notify(new Error[] { exception }, exception.HandledState, null, logType);
                 }
             }
             else if (Configuration.ShouldLeaveLogBreadcrumb(logType))
@@ -315,39 +315,29 @@ namespace BugsnagUnity
             }
         }
 
-        public void NotifyWithStrings(string name, string message, string stackTrace, Func<IEvent, bool> callback)
+        public void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback)
         {
             var exceptions = new Error[] { Error.FromStringInfo(name, message, stackTrace) };
-            FinalNotify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
+            Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
-        public void NotifyWithStacktrace(Exception exception, string stacktrace, Func<IEvent, bool> callback)
+        public void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback)
         {
             var exceptions = new Errors(exception, stacktrace).ToArray();
-            FinalNotify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
+            Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
-        public void NotifyWithException(Exception exception)
-        {
-            Notify(exception, HandledState.ForHandledException(), null);
-        }
-
-        public void NotifyWithExceptionCallback(Exception exception, Func<IEvent, bool> callback)
+        public void Notify(System.Exception exception, Func<IEvent, bool> callback)
         {
             Notify(exception, HandledState.ForHandledException(), callback);
         }
 
-        public void NotifyWithExceptionSeverity(Exception exception, Severity severity)
-        {
-            Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null);
-        }
-
-        public void NotifyWithExceptionSeverityCallback(Exception exception, Severity severity, Func<IEvent, bool> callback)
+        public void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback)
         {
             Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback);
         }
 
-        void Notify(Exception exception, HandledState handledState, Func<IEvent, bool> callback)
+        void Notify(System.Exception exception, HandledState handledState, Func<IEvent, bool> callback)
         {
             // we need to generate a substitute stacktrace here as if we are not able
             // to generate one from the exception that we are given then we are not able
@@ -361,10 +351,10 @@ namespace BugsnagUnity
                     handledState = HandledState.ForUnhandledException();
                 }
             }
-            FinalNotify(errors, handledState, callback, null);
+            Notify(errors, handledState, callback, null);
         }
 
-        private void FinalNotify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
+        private void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {

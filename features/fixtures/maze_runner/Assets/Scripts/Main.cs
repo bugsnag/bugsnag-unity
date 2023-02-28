@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
+using BugsnagUnity;
 
 [Serializable]
 public class Command
@@ -136,6 +137,35 @@ public class Main : MonoBehaviour
 #if UNITY_IOS
         ClearPersistentData();
 #endif
+    }
+
+
+
+    // this method never runs and is just used to check that no notify overides are accidentally broken during refactoring
+    // if one is broken then the fixture will not compile
+    private void OverloadCheck()
+    {
+
+        Bugsnag.Notify("name", "message", "stacktrace");
+
+        Bugsnag.Notify("name", "message", "stacktrace", CallBack);
+
+        Bugsnag.Notify(new Exception());
+
+        Bugsnag.Notify(new Exception(), "stacktrace");
+
+        Bugsnag.Notify(new Exception(), "stacktrace", CallBack);
+
+        Bugsnag.Notify(new Exception(), CallBack);
+
+        Bugsnag.Notify(new Exception(), Severity.Error);
+
+        Bugsnag.Notify(new Exception(), Severity.Error, CallBack);
+    }
+
+    private bool CallBack(IEvent e)
+    {
+        return true;
     }
 
 }

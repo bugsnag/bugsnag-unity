@@ -17,17 +17,13 @@ namespace BugsnagUnity
 
         void Send(IPayload payload);
 
-        void NotifyWithException(System.Exception exception);
+        void Notify(System.Exception exception, Func<IEvent, bool> callback);
 
-        void NotifyWithExceptionCallback(System.Exception exception, Func<IEvent, bool> callback);
+        void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback);
 
-        void NotifyWithExceptionSeverity(System.Exception exception, Severity severity);
+        void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback);
 
-        void NotifyWithExceptionSeverityCallback(System.Exception exception, Severity severity, Func<IEvent, bool> callback);
-
-        void NotifyWithStacktrace(System.Exception exception, string stacktrace, Func<IEvent, bool> callback);
-
-        void NotifyWithStrings(string name, string message, string stackTrace, Func<IEvent, bool> callback);
+        void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback);
 
         /// <summary>
         /// Used to signal to the Bugsnag client that the focused state of the
