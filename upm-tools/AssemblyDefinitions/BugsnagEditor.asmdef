@@ -1,7 +1,7 @@
 {
-    "name": "BugsnagEditor",
+    "name": "BugSnagEditor",
     "references": [
-        "Bugsnag"
+        "BugSnag"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [

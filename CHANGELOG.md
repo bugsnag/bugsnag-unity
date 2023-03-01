@@ -2,6 +2,8 @@
 
 ## TBD
 
+- Updated BugSnag UI branding
+
 ### Bug fixes
 
 * Fix a race condition in Bugsnag.Start involving creation of gameobjects outside of the main Unity thread. [#699](https://github.com/bugsnag/bugsnag-unity/pull/699)
