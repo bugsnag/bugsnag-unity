@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.ComponentModel;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -82,7 +81,7 @@ namespace BugsnagUnity
                     if (shouldSend)
                     {
                         var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();
-                        _client.Notify(exception, handledState, null, 3);
+                        _client.Notify(exception, handledState, null);
                     }
                 }
                 if (_oldLogHandler != null)
@@ -180,7 +179,7 @@ namespace BugsnagUnity
         private void InitLogHandlers()
         {
             Application.logMessageReceivedThreaded += MultiThreadedNotify;
-            Application.logMessageReceived += Notify;
+            Application.logMessageReceived += NotifyFromUnityLog;
         }
 
         private void InitCounters()
@@ -277,19 +276,11 @@ namespace BugsnagUnity
             // Discard messages from the main thread as they will be reported separately
             if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
-                Notify(condition, stackTrace, logType);
+                NotifyFromUnityLog(condition, stackTrace, logType);
             }
         }
 
-        /// <summary>
-        /// Notify a Unity log message if it the client has been configured to
-        /// notify at the specified level, if not leave a breadcrumb with the log
-        /// message.
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="stackTrace"></param>
-        /// <param name="logType"></param>
-        void Notify(string condition, string stackTrace, LogType logType)
+        private void NotifyFromUnityLog(string condition, string stackTrace, LogType logType)
         {
             if (!Configuration.EnabledErrorTypes.UnityLog)
             {
@@ -336,52 +327,22 @@ namespace BugsnagUnity
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
-        public void Notify(System.Exception exception)
-        {
-            Notify(exception, 3);
-        }
-
-        internal void Notify(System.Exception exception, int level)
-        {
-            Notify(exception, HandledState.ForHandledException(), null, level);
-        }
-
         public void Notify(System.Exception exception, Func<IEvent, bool> callback)
         {
-            Notify(exception, callback, 3);
-        }
-
-        internal void Notify(System.Exception exception, Func<IEvent, bool> callback, int level)
-        {
-            Notify(exception, HandledState.ForHandledException(), callback, level);
-        }
-
-        public void Notify(System.Exception exception, Severity severity)
-        {
-            Notify(exception, severity, 3);
-        }
-
-        internal void Notify(System.Exception exception, Severity severity, int level)
-        {
-            Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, level);
+            Notify(exception, HandledState.ForHandledException(), callback);
         }
 
         public void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback)
         {
-            Notify(exception, severity, callback, 3);
+            Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback);
         }
 
-        internal void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback, int level)
-        {
-            Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, level);
-        }
-
-        void Notify(System.Exception exception, HandledState handledState, Func<IEvent, bool> callback, int level)
+        void Notify(System.Exception exception, HandledState handledState, Func<IEvent, bool> callback)
         {
             // we need to generate a substitute stacktrace here as if we are not able
             // to generate one from the exception that we are given then we are not able
             // to do this inside of the IEnumerator generator code
-            var substitute = new System.Diagnostics.StackTrace(level, true).GetFrames();
+            var substitute = new System.Diagnostics.StackTrace(true).GetFrames();
             var errors = new Errors(exception, substitute).ToArray();
             foreach (var error in errors)
             {
@@ -393,7 +354,7 @@ namespace BugsnagUnity
             Notify(errors, handledState, callback, null);
         }
 
-        void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
+        private void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -401,7 +362,7 @@ namespace BugsnagUnity
             }
 
 
-            if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
+            if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
                 try
                 {
