@@ -11,7 +11,7 @@
 
 - Update bugsnag-cocoa from v6.25.1 to [v6.25.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6252-2023-01-18)
 
-- Added `ifStarted` check method that returns false if start has not been called on the Bugsnag client.
+- Added `IsStarted` check method that returns false if start has not been called on the Bugsnag client.
 
 ## 7.5.0 (2023-01-04)
 
