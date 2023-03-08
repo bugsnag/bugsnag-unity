@@ -8,12 +8,15 @@
 
 * Fix an issue causing empty stacktraces in some Android events. [#700](https://github.com/bugsnag/bugsnag-unity/pull/700)
 
+### Dependency updates
+
+* Update bugsnag-android from v5.28.3 to [v5.28.4](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5284-2023-02-08)
+
 ## 7.5.1 (2023-02-08)
 
 ### Dependency updates
 
 - Update bugsnag-cocoa from v6.25.1 to [v6.25.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6252-2023-01-18)
-* Update bugsnag-android from v5.28.3 to [v5.28.4](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5284-2023-02-08)
 
 ### Bug fixes
 
