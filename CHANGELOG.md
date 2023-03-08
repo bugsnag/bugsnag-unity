@@ -1,5 +1,17 @@
 # Changelog
 
+## 7.5.2 (2023-03-08)
+
+### Bug fixes
+
+* Fix a race condition in Bugsnag.Start involving creation of gameobjects outside of the main Unity thread. [#699](https://github.com/bugsnag/bugsnag-unity/pull/699)
+
+* Fix an issue causing empty stacktraces in some Android events. [#700](https://github.com/bugsnag/bugsnag-unity/pull/700)
+
+### Dependency updates
+
+* Update bugsnag-android from v5.28.3 to [v5.28.4](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5284-2023-02-08)
+
 ## 7.5.1 (2023-02-08)
 
 ### Dependency updates
