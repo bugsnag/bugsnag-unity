@@ -4,6 +4,10 @@
 
 - Update bugsnag-cocoa from v6.25.2 to [v6.26.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6260-2023-03-08)
 
+### Bug fixes
+
+* Fix an issue where Config.GenerateAnonymousId was not respected. [#704](https://github.com/bugsnag/bugsnag-unity/pull/704)
+
 ## 7.5.2 (2023-03-08)
 
 ### Bug fixes
