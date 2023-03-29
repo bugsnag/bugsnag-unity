@@ -2,14 +2,37 @@
 
 ## TBD
 
+- Update bugsnag-cocoa from v6.25.2 to [v6.26.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6260-2023-03-08)
+
+### Bug fixes
+
+* Fix an issue where Config.GenerateAnonymousId was not respected. [#704](https://github.com/bugsnag/bugsnag-unity/pull/704)
+
+## 7.5.2 (2023-03-08)
+
+### Bug fixes
+
+* Fix a race condition in Bugsnag.Start involving creation of gameobjects outside of the main Unity thread. [#699](https://github.com/bugsnag/bugsnag-unity/pull/699)
+
+* Fix an issue causing empty stacktraces in some Android events. [#700](https://github.com/bugsnag/bugsnag-unity/pull/700)
+
+### Dependency updates
+
+* Update bugsnag-android from v5.28.3 to [v5.28.4](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5284-2023-02-08)
+
+## 7.5.1 (2023-02-08)
+
+### Dependency updates
+
+- Update bugsnag-cocoa from v6.25.1 to [v6.25.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6252-2023-01-18)
+
 ### Bug fixes
 
 * Fix an issue where collections in metadata were not present in native Android crashes. [#685](https://github.com/bugsnag/bugsnag-unity/pull/685)
 
+* Fix an issue where errors in serialisation threw exceptions. [#693](https://github.com/bugsnag/bugsnag-unity/pull/693)
 
-## TBD
-
-- Update bugsnag-cocoa from v6.25.1 to [v6.25.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6252-2023-01-18)
+* Fix an issue where persisted events had 'unhandled' set to null [#695](https://github.com/bugsnag/bugsnag-unity/pull/695)
 
 - Added `IsStarted` check method that returns false if start has not been called on the Bugsnag client.
 

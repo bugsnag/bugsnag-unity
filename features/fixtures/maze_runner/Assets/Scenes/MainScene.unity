@@ -360,7 +360,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 355371092}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85462eb007bda4825ae6f1c537d0a6f5, type: 3}
+  m_Script: {fileID: 11500000, guid: baf1eed2267d34714a6a95342c863cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
@@ -2113,6 +2113,7 @@ GameObject:
   - component: {fileID: 2039813473}
   - component: {fileID: 2039813475}
   - component: {fileID: 2039813474}
+  - component: {fileID: 2039813477}
   m_Layer: 0
   m_Name: Events
   m_TagString: Untagged
@@ -2354,6 +2355,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 052cea8564f554e36879d176e45c4b8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &2039813477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039813460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0623c2806d68426e86c8fc6ba822dd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)

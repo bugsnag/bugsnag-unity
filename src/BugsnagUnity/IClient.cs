@@ -17,11 +17,7 @@ namespace BugsnagUnity
 
         void Send(IPayload payload);
 
-        void Notify(System.Exception exception);
-
         void Notify(System.Exception exception, Func<IEvent, bool> callback);
-
-        void Notify(System.Exception exception, Severity severity);
 
         void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback);
 

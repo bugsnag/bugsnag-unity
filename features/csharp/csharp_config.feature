@@ -114,3 +114,11 @@ Feature: csharp events
     And the event "breadcrumbs.1.metaData.stringList.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "breadcrumbs.1.metaData.dictionary.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "breadcrumbs.1.metaData.stringDictionary.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
+
+  @skip_cocoa @skip_android #not supported on these platforms
+  Scenario: GenerateAnonymousId
+    When I run the game in the "GenerateAnonymousId" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "GenerateAnonymousId"
+    And the event "device.id" is null

@@ -3,7 +3,6 @@ Feature: csharp events
   Background:
     Given I clear the Bugsnag cache
 
-  @skip_android #pending PLAT-9092
   Scenario: Notify smoke test
     When I run the game in the "NotifySmokeTest" state
     And I wait to receive an error
@@ -13,8 +12,7 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | NotifySmokeTest.Run()                                                       |
-      | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) |
+      | NotifySmokeTest.Run()                                                       | Main+<RunNextMazeCommand>d__5.MoveNext() |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
@@ -166,5 +164,11 @@ Feature: csharp events
     And the event "severity" equals "info"
     And the event "severityReason.type" equals "userSpecifiedSeverity"
     And the event "unhandled" is false
+
+  Scenario: Discard event after serialisation error
+    When I run the game in the "SerialisationError" state
+    And I wait to receive 1 error
+    And the exception "message" equals "SerialisationError"
+
 
 

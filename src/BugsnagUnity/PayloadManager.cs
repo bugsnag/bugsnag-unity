@@ -31,17 +31,26 @@ namespace BugsnagUnity
             _cacheManager = cacheManager;
         }
 
-        internal void AddPendingPayload(IPayload payload)
+        internal bool AddPendingPayload(IPayload payload)
         {
-            using (var stream = new MemoryStream())
-            using (var reader = new StreamReader(stream))
-            using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+            try
             {
-                SimpleJson.SerializeObject(payload.GetSerialisablePayload(), writer);
-                writer.Flush();
-                stream.Position = 0;
-                var jsonString = reader.ReadToEnd();
-                _pendingPayloads.Add(new PendingPayload(jsonString,payload.Id));
+                using (var stream = new MemoryStream())
+                using (var reader = new StreamReader(stream))
+                using (var writer = new StreamWriter(stream, new UTF8Encoding(false)) { AutoFlush = false })
+                {
+                    SimpleJson.SerializeObject(payload.GetSerialisablePayload(), writer);
+                    writer.Flush();
+                    stream.Position = 0;
+                    var jsonString = reader.ReadToEnd();
+                    _pendingPayloads.Add(new PendingPayload(jsonString, payload.Id));
+                }
+                return true;
+            }
+            catch
+            {
+                // If payload serialisation fails ignore the payload
+                return false;
             }
         }
 
