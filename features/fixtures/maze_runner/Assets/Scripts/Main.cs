@@ -12,6 +12,12 @@ public class Command
     public string scenarioName;
 }
 
+[Serializable]
+public class FixtureConfig
+{
+    public string maze_address;
+}
+
 public class Main : MonoBehaviour
 {
 
@@ -25,28 +31,56 @@ public class Main : MonoBehaviour
     private static extern void ClearPersistentData();
 #endif
 
+    private string _fixtureConfigPath = Application.persistentDataPath + "/fixture_config.json";
+
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private string _mazeHost;
 
     public ScenarioRunner ScenarioRunner;
 
-    public void Start()
+    public IEnumerator Start()
     {
         Debug.Log("Maze Runner app started");
 
-
-        _mazeHost = "http://localhost:9339";
-
-        if (Application.platform == RuntimePlatform.IPhonePlayer ||
-            Application.platform == RuntimePlatform.Android)
-        {
-            _mazeHost = "http://bs-local.com:9339";
-        }
+        yield return GetFixtureConfig();
 
 #if UNITY_STANDALONE_OSX
         PreventCrashPopups();
 #endif
         InvokeRepeating("DoRunNextMazeCommand",0,1);
+    }
+
+    private IEnumerator GetFixtureConfig()
+    {
+        var numTries = 0;
+        while (numTries < 5)
+        {
+            if (File.Exists(_fixtureConfigPath))
+            {
+                var configJson = File.ReadAllText(_fixtureConfigPath);
+                Debug.Log("Mazerunner got fixture config json: " + configJson);
+                var config = JsonUtility.FromJson<FixtureConfig>(configJson);
+                _mazeHost = "http://" + config.maze_address;
+            }
+            else
+            {
+                Debug.Log("Mazerunner no fixture config found at path: " + _fixtureConfigPath);
+                numTries++;
+                yield return new WaitForSeconds(1);
+            }
+        }
+
+        if (string.IsNullOrEmpty(_mazeHost))
+        {
+            _mazeHost = "http://localhost:9339";
+
+            if (Application.platform == RuntimePlatform.IPhonePlayer ||
+                Application.platform == RuntimePlatform.Android)
+            {
+                _mazeHost = "http://bs-local.com:9339";
+            }
+        }
+        Debug.Log("Mazerunner host set to: " + _mazeHost);
     }
 
     private void DoRunNextMazeCommand()
