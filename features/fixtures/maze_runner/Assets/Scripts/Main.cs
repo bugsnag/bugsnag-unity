@@ -31,7 +31,7 @@ public class Main : MonoBehaviour
     private static extern void ClearPersistentData();
 #endif
 
-    private string _fixtureConfigPath = Application.persistentDataPath + "/fixture_config.json";
+    private string _fixtureConfigFileName = "/fixture_config.json";
 
     private const string API_KEY = "a35a2a72bd230ac0aa0f52715bbdc6aa";
     private string _mazeHost;
@@ -52,21 +52,27 @@ public class Main : MonoBehaviour
 
     private IEnumerator GetFixtureConfig()
     {
-        var numTries = 0;
-        while (numTries < 5)
+        if (Application.platform == RuntimePlatform.Android ||
+            Application.platform == RuntimePlatform.IPhonePlayer)
         {
-            if (File.Exists(_fixtureConfigPath))
+            var numTries = 0;
+            while (numTries < 5)
             {
-                var configJson = File.ReadAllText(_fixtureConfigPath);
-                Debug.Log("Mazerunner got fixture config json: " + configJson);
-                var config = JsonUtility.FromJson<FixtureConfig>(configJson);
-                _mazeHost = "http://" + config.maze_address;
-            }
-            else
-            {
-                Debug.Log("Mazerunner no fixture config found at path: " + _fixtureConfigPath);
-                numTries++;
-                yield return new WaitForSeconds(1);
+                var configPath = Application.persistentDataPath + _fixtureConfigFileName;
+                if (File.Exists(configPath))
+                {
+                    var configJson = File.ReadAllText(configPath);
+                    Debug.Log("Mazerunner got fixture config json: " + configJson);
+                    var config = JsonUtility.FromJson<FixtureConfig>(configJson);
+                    _mazeHost = "http://" + config.maze_address;
+                    break;
+                }
+                else
+                {
+                    Debug.Log("Mazerunner no fixture config found at path: " + configPath);
+                    numTries++;
+                    yield return new WaitForSeconds(1);
+                }
             }
         }
 
