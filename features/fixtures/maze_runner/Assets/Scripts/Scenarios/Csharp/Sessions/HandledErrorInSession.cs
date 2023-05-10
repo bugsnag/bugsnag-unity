@@ -5,7 +5,6 @@ public class HandledErrorInSession : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AutoTrackSessions = true;
     }
 
     public override void Run()
