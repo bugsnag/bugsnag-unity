@@ -8,7 +8,6 @@ public class IosDisableCrashes : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.EnabledErrorTypes.Crashes = false;
-        Configuration.AutoTrackSessions = false;
     }
 
     public override void Run()
