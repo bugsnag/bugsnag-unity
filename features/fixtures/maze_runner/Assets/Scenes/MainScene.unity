@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731316, g: 0.38074902, b: 0.3587254, a: 1}
+  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -54,7 +54,7 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 10
+    serializedVersion: 12
     m_Resolution: 2
     m_BakeResolution: 40
     m_AtlasSize: 1024
@@ -62,6 +62,7 @@ LightmapSettings:
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
     m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
     m_Padding: 2
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
@@ -76,10 +77,16 @@ LightmapSettings:
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 500
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 2
+    m_PVRDenoiserTypeDirect: 0
+    m_PVRDenoiserTypeIndirect: 0
+    m_PVRDenoiserTypeAO: 0
     m_PVRFilterTypeDirect: 0
     m_PVRFilterTypeIndirect: 0
     m_PVRFilterTypeAO: 0
-    m_PVRFilteringMode: 1
+    m_PVREnvironmentMIS: 0
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
@@ -87,7 +94,9 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaDirect: 0.5
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -170,7 +179,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371095
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,7 +195,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -200,7 +211,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,7 +227,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,7 +243,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,7 +259,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,7 +275,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,7 +291,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371102
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,7 +307,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371103
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,7 +323,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371104
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -320,7 +339,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,7 +355,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,7 +371,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &355371107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -365,7 +387,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &372057234
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,9 +436,10 @@ Camera:
   m_ClearFlags: 2
   m_BackGroundColor: {r: 0.6281589, g: 0.30449826, b: 0.64705884, a: 0}
   m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
-  m_GateFitMode: 2
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -507,7 +531,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &425821761
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -522,7 +547,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &425821762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,7 +563,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &425821763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -552,7 +579,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &425821764
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,7 +595,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &425821765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -582,7 +611,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &547010188
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,7 +660,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &547010191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -645,7 +676,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &547010192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -660,7 +692,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &555502126
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,7 +740,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &555502129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -722,7 +756,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &700367034
 GameObject:
   m_ObjectHideFlags: 0
@@ -773,7 +808,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &700367037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -788,7 +824,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &700367038
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -803,7 +840,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &700367039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -818,7 +856,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &700367040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -833,7 +872,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &700367041
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -848,7 +888,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &992980886
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,7 +917,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 992980886}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1077351063, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalAxis: Horizontal
@@ -895,7 +936,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 992980886}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -619905303, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_FirstSelected: {fileID: 0}
@@ -963,7 +1004,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1105517634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -978,7 +1020,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1105517635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -993,7 +1036,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1105517636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1008,7 +1052,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1114049719
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,7 +1099,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1160627402
 GameObject:
   m_ObjectHideFlags: 0
@@ -1105,7 +1151,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1160627405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1120,7 +1167,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1160627406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1135,7 +1183,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1160627407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1150,7 +1199,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1160627408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1165,7 +1215,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1160627409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1180,7 +1231,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1338701864
 GameObject:
   m_ObjectHideFlags: 0
@@ -1230,7 +1282,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1338701867
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1245,7 +1298,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1338701868
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1260,7 +1314,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1338701869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1275,7 +1330,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1338701870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1290,7 +1346,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1388241496
 GameObject:
   m_ObjectHideFlags: 0
@@ -1344,7 +1401,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1388241499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1359,7 +1417,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1388241500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1374,7 +1433,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1388241501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1389,7 +1449,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1388241502
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1404,7 +1465,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1388241503
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1419,7 +1481,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1388241504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1434,7 +1497,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1388241505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1449,7 +1513,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1388241506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1464,7 +1529,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1419179096
 GameObject:
   m_ObjectHideFlags: 0
@@ -1556,7 +1622,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1523264804
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1571,7 +1638,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1523264805
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1586,7 +1654,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1523264806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1601,7 +1670,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1523264807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1616,7 +1686,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1523264808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1631,7 +1702,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1523264809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1646,7 +1718,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1523264810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1661,7 +1734,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1746155638
 GameObject:
   m_ObjectHideFlags: 0
@@ -1681,6 +1755,7 @@ GameObject:
   - component: {fileID: 1746155645}
   - component: {fileID: 1746155649}
   - component: {fileID: 1746155648}
+  - component: {fileID: 1746155650}
   m_Layer: 0
   m_Name: Sessions
   m_TagString: Untagged
@@ -1716,7 +1791,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1731,7 +1807,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1746,7 +1823,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1761,7 +1839,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1776,7 +1855,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1791,7 +1871,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155646
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1806,7 +1887,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1821,7 +1903,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155648
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1836,7 +1919,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1746155649
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1851,7 +1935,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1746155650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746155638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d02b26eecba248eabc16ab8aa86040c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1754371139
 GameObject:
   m_ObjectHideFlags: 0
@@ -1998,7 +2095,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1947744088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2013,7 +2111,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1947744089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2028,7 +2127,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1947744090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2043,7 +2143,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1947744091
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2058,7 +2159,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1947744092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2073,7 +2175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1947744093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2088,7 +2191,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &2039813460
 GameObject:
   m_ObjectHideFlags: 0
@@ -2149,7 +2253,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2164,7 +2269,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2179,7 +2285,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2194,7 +2301,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2209,7 +2317,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2224,7 +2333,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2239,7 +2349,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2254,7 +2365,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2269,7 +2381,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2284,7 +2397,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2299,7 +2413,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2314,7 +2429,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813474
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2329,7 +2445,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2344,7 +2461,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2359,7 +2477,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &2039813477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2374,7 +2493,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &2059449697
 GameObject:
   m_ObjectHideFlags: 0
@@ -2420,4 +2540,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
 
-    Main.CUSTOM2 () (at Assets/Scripts/Main.cs:123)'
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
