@@ -173,9 +173,9 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
         upload:
           - "maze_output/**/*"
-      docker-compose#v3.7.0:
-        pull: maze-runner
-        run: maze-runner
+      docker-compose#v4.7.0:
+        pull: android-maze-runner-bitbar
+        run: android-maze-runner-bitbar
         command:
           - "features/csharp"
           - "features/android"
