@@ -177,13 +177,16 @@ steps:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
-          - "--farm=bs"
-          - "--device=ANDROID_11_0"
           - "features/csharp"
           - "features/android"
-    concurrency: 5
-    concurrency_group: browserstack-app
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
+          - "--farm=bb"
+          - "--device=ANDROID_11_0"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
     concurrency_method: eager
 
 
