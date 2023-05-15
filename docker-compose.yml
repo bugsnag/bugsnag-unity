@@ -1,6 +1,23 @@
 version: '3.6'
-services:
 
+x-common-environment: &common-environment
+  DEBUG:
+  BUILDKITE:
+  BUILDKITE_BRANCH:
+  BUILDKITE_BUILD_CREATOR:
+  BUILDKITE_BUILD_NUMBER:
+  BUILDKITE_BUILD_URL:
+  BUILDKITE_LABEL:
+  BUILDKITE_MESSAGE:
+  BUILDKITE_PIPELINE_NAME:
+  BUILDKITE_PIPELINE_SLUG:
+  BUILDKITE_REPO:
+  BUILDKITE_RETRY_COUNT:
+  BUILDKITE_STEP_KEY:
+  MAZE_BUGSNAG_API_KEY:
+  TEST_FIXTURE_SYMBOL_DIR:
+
+services:
   maze-runner:
     image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli
     environment:
@@ -14,3 +31,17 @@ services:
       - ./test:/app/test
       - ./features/:/app/features
       - ./maze_output:/app/maze_output
+
+  android-maze-runner-bitbar:
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli
+    environment:
+      <<: *common-environment
+      BITBAR_USERNAME:
+      BITBAR_ACCESS_KEY:
+    ports:
+      - "9000-9499:9339"
+    volumes:
+      - ./test:/app/test
+      - ./features/:/app/features
+      - ./maze_output:/app/maze_output
+      - /var/run/docker.sock:/var/run/docker.sock
