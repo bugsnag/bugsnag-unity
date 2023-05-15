@@ -179,7 +179,7 @@ steps:
         command:
           - "features/csharp"
           - "features/android"
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
           - "--farm=bb"
           - "--device=ANDROID_11_0"
           - "--no-tunnel"
