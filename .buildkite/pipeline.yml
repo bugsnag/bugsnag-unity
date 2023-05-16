@@ -273,25 +273,29 @@ steps:
     depends_on: 'build-ios-fixture-2020'
     agents:
       queue: opensource
+    env:
+      UNITY_VERSION: "2020.3.32f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
         upload:
           - "maze_output/**/*"
-      docker-compose#v3.7.0:
-        pull: maze-runner
-        run: maze-runner
+      docker-compose#v4.7.0:
+        pull: android-maze-runner-bitbar
+        run: android-maze-runner-bitbar
+        service-ports: true
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
-          - "--farm=bs"
-          - "--device=IOS_15"
-          - "--fail-fast"
           - "features/csharp"
           - "features/ios"
-
-    concurrency: 5
-    concurrency_group: browserstack-app
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
+          - "--farm=bb"
+          - "--device=IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
     concurrency_method: eager
 
   #
