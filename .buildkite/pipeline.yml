@@ -159,7 +159,7 @@ steps:
 
   #
   # Run Android tests
-  # 
+  #
   - label: ':android: Run Android e2e tests for Unity 2020'
     timeout_in_minutes: 60
     depends_on: 'build-android-fixture-2020'
