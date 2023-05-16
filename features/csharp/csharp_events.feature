@@ -105,8 +105,8 @@ Feature: csharp events
     When I run the game in the "InnerException" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the event "exceptions.0.message" equals "Outer"
-    And the event "exceptions.1.message" equals "Inner"
+    And the event "exceptions.0.message" equals "Inner"
+    And the event "exceptions.1.message" equals "Outer"
     And the event "exceptions.2" is null
 
   Scenario: Reporting an uncaught exception in an async method
