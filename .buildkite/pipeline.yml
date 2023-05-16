@@ -176,6 +176,7 @@ steps:
       docker-compose#v4.7.0:
         pull: android-maze-runner-bitbar
         run: android-maze-runner-bitbar
+        service-ports: true
         command:
           - "features/csharp"
           - "features/android"
