@@ -181,7 +181,7 @@ steps:
           - "features/android"
           - "--app=features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
           - "--farm=bb"
-          - "--device=ANDROID_11_0"
+          - "--device=ANDROID_11"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
