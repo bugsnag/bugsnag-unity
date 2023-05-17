@@ -273,8 +273,6 @@ steps:
     depends_on: 'build-ios-fixture-2020'
     agents:
       queue: opensource
-    env:
-      UNITY_VERSION: "2020.3.32f1"
     plugins:
       artifacts#v1.5.0:
         download:
