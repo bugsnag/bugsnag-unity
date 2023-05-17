@@ -174,8 +174,8 @@ steps:
         upload:
           - "maze_output/**/*"
       docker-compose#v4.7.0:
-        pull: android-maze-runner-bitbar
-        run: android-maze-runner-bitbar
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
         service-ports: true
         command:
           - "features/csharp"
@@ -280,8 +280,8 @@ steps:
         upload:
           - "maze_output/**/*"
       docker-compose#v4.7.0:
-        pull: android-maze-runner-bitbar
-        run: android-maze-runner-bitbar
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
         service-ports: true
         command:
           - "features/csharp"
