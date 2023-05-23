@@ -7,6 +7,16 @@ namespace BugsnagUnity.Payload.Tests
     [TestFixture]
     class StackFrameParsingTests
     {
+
+        [Test]
+        public void ParseMethodWithAt()
+        {
+            var stackframe = Payload.StackTraceLine.FromLogMessage(
+              "at UnityEngine.Events.InvokableCall.Invoke () [0x00010] in /Users/bokken/build/output/unity/unity/Runtime/Export/UnityEvent/UnityEvent.cs:178"
+            );
+            Assert.AreEqual("UnityEngine.Events.InvokableCall.Invoke()", stackframe.Method);
+        }
+
         [Test]
         public void ParseMethodNameWithColon()
         {

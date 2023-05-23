@@ -71,15 +71,15 @@ namespace BugsnagUnity.Payload
     /// </summary>
     public class StackTraceLine : Dictionary<string, object>, IStackframe
     {
-        private static Regex StackTraceLineRegex { get; } = new Regex(@"(?:at\s)?(?<method>(?:\(.*\)\s)?[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
+        private static Regex StackTraceLineRegex { get; } = new Regex(@"(?:\s*at\s)?(?<method>(?:\(.*\)\s)?[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
         private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
 
 
         public static StackTraceLine FromLogMessage(string message)
-        {          
+        {
             Match match = StackTraceLineRegex.Match(message);
             if (match.Success)
-            {              
+            {
                 int? lineNumber = null;
                 int parsedValue;
                 if (System.Int32.TryParse(match.Groups["linenumber"].Value, out parsedValue))
