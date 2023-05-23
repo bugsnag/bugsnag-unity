@@ -46,10 +46,6 @@ namespace BugsnagUnity.Payload
 
                 if (frame != null)
                 {
-                    if (frame.Method.StartsWith("at "))
-                    {
-                        frame.Method = frame.Method.Remove(0, 3);
-                    }
                     frames.Add(frame);
                 }
             }
@@ -75,21 +71,13 @@ namespace BugsnagUnity.Payload
     /// </summary>
     public class StackTraceLine : Dictionary<string, object>, IStackframe
     {
-        private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
+        private static Regex StackTraceLineRegex { get; } = new Regex(@"(?:at\s)?(?<method>(?:\(.*\)\s)?[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
         private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
 
 
         public static StackTraceLine FromLogMessage(string message)
-        {
-
-            var wrapperMatch = new Regex(@"at \(wrapper \S+\)").Match(message);
-            if (wrapperMatch.Success)
-            {
-                message = message.Replace(wrapperMatch.Value, string.Empty);
-            }
-
+        {          
             Match match = StackTraceLineRegex.Match(message);
-
             if (match.Success)
             {              
                 int? lineNumber = null;
@@ -100,10 +88,6 @@ namespace BugsnagUnity.Payload
                 }
                 string method = string.Join("", new string[]{match.Groups["method"].Value.Trim(),
                                                      match.Groups["methodargs"].Value});
-                if (wrapperMatch.Success)
-                {
-                    method = wrapperMatch.Value + method;
-                }
                 return new StackTraceLine(match.Groups["file"].Value,
                                           lineNumber, method);
             }
