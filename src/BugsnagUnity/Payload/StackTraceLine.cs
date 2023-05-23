@@ -43,11 +43,12 @@ namespace BugsnagUnity.Payload
                 var frame = format == StackTraceFormat.AndroidJava
                   ? StackTraceLine.FromAndroidJavaMessage(lines[i])
                   : StackTraceLine.FromLogMessage(lines[i]);
+
                 if (frame != null)
                 {
                     if (frame.Method.StartsWith("at "))
                     {
-                        frame.Method = frame.Method.TrimStart('a', 't', ' ');
+                        frame.Method = frame.Method.Remove(0, 3);
                     }
                     frames.Add(frame);
                 }
@@ -77,11 +78,20 @@ namespace BugsnagUnity.Payload
         private static Regex StackTraceLineRegex { get; } = new Regex(@"(?<method>[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
         private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
 
+
         public static StackTraceLine FromLogMessage(string message)
         {
-            Match match = StackTraceLineRegex.Match(message);
-            if (match.Success)
+
+            var wrapperMatch = new Regex(@"at \(wrapper \S+\)").Match(message);
+            if (wrapperMatch.Success)
             {
+                message = message.Replace(wrapperMatch.Value, string.Empty);
+            }
+
+            Match match = StackTraceLineRegex.Match(message);
+
+            if (match.Success)
+            {              
                 int? lineNumber = null;
                 int parsedValue;
                 if (System.Int32.TryParse(match.Groups["linenumber"].Value, out parsedValue))
@@ -90,6 +100,10 @@ namespace BugsnagUnity.Payload
                 }
                 string method = string.Join("", new string[]{match.Groups["method"].Value.Trim(),
                                                      match.Groups["methodargs"].Value});
+                if (wrapperMatch.Success)
+                {
+                    method = wrapperMatch.Value + method;
+                }
                 return new StackTraceLine(match.Groups["file"].Value,
                                           lineNumber, method);
             }

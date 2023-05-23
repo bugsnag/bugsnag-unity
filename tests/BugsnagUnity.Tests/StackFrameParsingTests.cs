@@ -94,5 +94,16 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual(null, stackframe.LineNumber);
             Assert.AreEqual(null, stackframe.File);
         }
+
+        [Test]
+        public void ParseUnknownManagedToNative()
+        {
+            var stackframe = Payload.StackTraceLine.FromLogMessage("at (wrapper managed-to-native) Program.NativeMethod(Program/StructToMarshal)");
+            Assert.AreEqual("(wrapper managed-to-native)Program.NativeMethod(Program/StructToMarshal)", stackframe.Method);
+
+            stackframe = Payload.StackTraceLine.FromLogMessage("at (wrapper scoop - de - woop) SomeClass.SomeMethod(Program / Something else)");
+            Assert.AreEqual("(wrapper scoop - de - woop)SomeClass.SomeMethod(Program / Something else)", stackframe.Method);
+
+        }
     }
 }
