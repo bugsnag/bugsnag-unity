@@ -174,15 +174,15 @@ steps:
         upload:
           - "maze_output/**/*"
       docker-compose#v4.7.0:
-        pull: android-maze-runner-bitbar
-        run: android-maze-runner-bitbar
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
         service-ports: true
         command:
           - "features/csharp"
           - "features/android"
           - "--app=features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
           - "--farm=bb"
-          - "--device=ANDROID_11"
+          - "--device=ANDROID_9|ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
@@ -279,19 +279,21 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
         upload:
           - "maze_output/**/*"
-      docker-compose#v3.7.0:
-        pull: maze-runner
-        run: maze-runner
+      docker-compose#v4.7.0:
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
+        service-ports: true
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
-          - "--farm=bs"
-          - "--device=IOS_15"
-          - "--fail-fast"
           - "features/csharp"
           - "features/ios"
-
-    concurrency: 5
-    concurrency_group: browserstack-app
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
+          - "--farm=bb"
+          - "--device=IOS_12|IOS_13|IOS_14|IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
     concurrency_method: eager
 
   #
