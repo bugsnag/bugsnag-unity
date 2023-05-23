@@ -9,8 +9,6 @@
 
 * Fix an issue where stack frames containing (wrapper some/wrapper) entries were incorrectly formatted. [#713](https://github.com/bugsnag/bugsnag-unity/pull/713)
 
-### Bug fixes
-
 * Fix an issue where Config.GenerateAnonymousId was not respected. [#704](https://github.com/bugsnag/bugsnag-unity/pull/704)
 
 ## 7.5.2 (2023-03-08)
