@@ -7,6 +7,16 @@ namespace BugsnagUnity.Payload.Tests
     [TestFixture]
     class StackFrameParsingTests
     {
+
+        [Test]
+        public void ParseMethodWithAt()
+        {
+            var stackframe = Payload.StackTraceLine.FromLogMessage(
+              "at UnityEngine.Events.InvokableCall.Invoke () [0x00010] in /Users/bokken/build/output/unity/unity/Runtime/Export/UnityEvent/UnityEvent.cs:178"
+            );
+            Assert.AreEqual("UnityEngine.Events.InvokableCall.Invoke()", stackframe.Method);
+        }
+
         [Test]
         public void ParseMethodNameWithColon()
         {
@@ -93,6 +103,26 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1].Invoke(.T1 handler, UnityEngine.EventSystems.BaseEventData eventData)", stackframe.Method);
             Assert.AreEqual(null, stackframe.LineNumber);
             Assert.AreEqual(null, stackframe.File);
+        }
+
+        [Test]
+        public void ParseUnknownManagedToNative()
+        {
+            var stackframe = Payload.StackTraceLine.FromLogMessage("at (wrapper managed-to-native) Program.NativeMethod(Program/StructToMarshal)");
+            Assert.AreEqual("(wrapper managed-to-native) Program.NativeMethod(Program/StructToMarshal)", stackframe.Method);
+
+            stackframe = Payload.StackTraceLine.FromLogMessage("at (wrapper scoop-de-woop) SomeClass.SomeMethod(Program / Something else)");
+            Assert.AreEqual("(wrapper scoop-de-woop) SomeClass.SomeMethod(Program / Something else)", stackframe.Method);
+
+        }
+
+        [Test]
+        public void ParseAndroidMethod()
+        {
+            var stackframe = Payload.StackTraceLine.FromAndroidJavaMessage("at com.example.lib.BugsnagCrash.throwJvmException(BugsnagCrash.java:14)");
+            Assert.AreEqual("com.example.lib.BugsnagCrash.throwJvmException()", stackframe.Method);
+            Assert.AreEqual("BugsnagCrash.java",stackframe.File);
+            Assert.AreEqual(14, stackframe.LineNumber);
         }
     }
 }
