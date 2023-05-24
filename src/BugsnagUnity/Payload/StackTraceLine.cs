@@ -72,7 +72,7 @@ namespace BugsnagUnity.Payload
     public class StackTraceLine : Dictionary<string, object>, IStackframe
     {
         private static Regex StackTraceLineRegex { get; } = new Regex(@"(?:\s*at\s)?(?<method>(?:\(.*\)\s)?[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
-        private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
+        private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?:at\s)?(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
 
 
         public static StackTraceLine FromLogMessage(string message)

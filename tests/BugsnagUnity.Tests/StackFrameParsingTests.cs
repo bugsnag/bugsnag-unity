@@ -115,5 +115,14 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("(wrapper scoop-de-woop) SomeClass.SomeMethod(Program / Something else)", stackframe.Method);
 
         }
+
+        [Test]
+        public void ParseAndroidMethod()
+        {
+            var stackframe = Payload.StackTraceLine.FromAndroidJavaMessage("at com.example.lib.BugsnagCrash.throwJvmException(BugsnagCrash.java:14)");
+            Assert.AreEqual("com.example.lib.BugsnagCrash.throwJvmException()", stackframe.Method);
+            Assert.AreEqual("BugsnagCrash.java",stackframe.File);
+            Assert.AreEqual(14, stackframe.LineNumber);
+        }
     }
 }
