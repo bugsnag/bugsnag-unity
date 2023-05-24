@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IosDisableCrashes : Scenario
+public class GenerateAnonymousId : Scenario
 {
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.EnabledErrorTypes.Crashes = false;
+        Configuration.GenerateAnonymousId = false;
     }
 
     public override void Run()
     {
-        IosException();
+        DoSimpleNotify("GenerateAnonymousId");
     }
 }

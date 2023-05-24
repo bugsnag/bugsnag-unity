@@ -70,19 +70,23 @@ namespace BugsnagUnity
 
         public string GetCachedDeviceId()
         {
+
+            if (!_configuration.GenerateAnonymousId)
+            {
+                return string.Empty;
+            }
             try
             {
-                var deviceId = string.Empty;
                 if (File.Exists(_deviceIdFile))
                 {
-                    deviceId = File.ReadAllText(_deviceIdFile);
+                    // return existing cached device id
+                    return File.ReadAllText(_deviceIdFile);
                 }
-                if (string.IsNullOrEmpty(deviceId) && _configuration.GenerateAnonymousId)
-                {
-                    deviceId = Guid.NewGuid().ToString();
-                    SaveDeviceIdToCache(deviceId);
-                }
-                return deviceId;
+
+                // create and cache new random device id
+                var newDeviceId = Guid.NewGuid().ToString();
+                SaveDeviceIdToCache(newDeviceId);
+                return newDeviceId;
             }
             catch
             {

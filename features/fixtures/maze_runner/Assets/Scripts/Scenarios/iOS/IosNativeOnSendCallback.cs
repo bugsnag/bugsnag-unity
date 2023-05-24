@@ -10,7 +10,6 @@ public class IosNativeOnSendCallback : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AutoTrackSessions = false;
         Configuration.AddOnSendError((@event) => {
             try
             {

@@ -29,7 +29,7 @@ Feature: Session Tracking
 
   @skip_macos #Unable to reliably get the in focus notification from macos
   Scenario: Automatically receiving a session
-    When I run the game in the "StartSDKDefault" state
+    When I run the game in the "AutoTrackSessions" state
     And I wait to receive a session
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
     And the session payload field "app.version" is not null
