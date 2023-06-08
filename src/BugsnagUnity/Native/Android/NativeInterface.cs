@@ -64,12 +64,14 @@ namespace BugsnagUnity
 
 
 
-
+        private Configuration _configuration;
 
         private bool CanRunOnBackgroundThread;
 
         private static bool Unity2019OrNewer;
         private Thread MainThread;
+
+        private bool _registeredForSessionCallbacks;
 
         private class OnSessionCallback : AndroidJavaProxy
         {
@@ -135,6 +137,7 @@ namespace BugsnagUnity
 
         public NativeInterface(Configuration cfg)
         {
+            _configuration = cfg;
             AndroidJavaObject config = CreateNativeConfig(cfg);
             Unity2019OrNewer = IsUnity2019OrNewer();
             MainThread = Thread.CurrentThread;
@@ -331,9 +334,15 @@ namespace BugsnagUnity
             }
 
             //Register for callbacks
-            obj.Call("addOnSession", new OnSessionCallback(config));
-            obj.Call("addOnSend", new OnSendErrorCallback(config));
-
+            if (config.GetOnSessionCallbacks() != null && config.GetOnSessionCallbacks().Count > 0)
+            {
+                obj.Call("addOnSession", new OnSessionCallback(config));
+                _registeredForSessionCallbacks = true;
+            }
+            if (config.GetOnSendErrorCallbacks() != null && config.GetOnSendErrorCallbacks().Count > 0)
+            {
+                obj.Call("addOnSend", new OnSendErrorCallback(config));
+            }
 
             // set endpoints
             var notify = config.Endpoints.Notify.ToString();
@@ -1198,6 +1207,21 @@ namespace BugsnagUnity
         public void ClearFeatureFlags()
         {
             AndroidJNI.CallVoidMethod(GetClientRef(), ClearFeatureFlagsMethod, null);
+        }
+
+        public void RegisterForOnSessionCallbacks()
+        {
+            if (_registeredForSessionCallbacks || _configuration == null)
+            {
+                return;
+            }
+
+            var addOnSessionmethodId = AndroidJNI.GetMethodID(ClientClass, "addOnSession", "(Lcom/bugsnag/android/OnSessionCallback;)V");
+            var callback = new OnSessionCallback(_configuration);
+            object[] args = new object[] { callback };
+            jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+            AndroidJNI.CallVoidMethod(GetClientRef(), addOnSessionmethodId, jargs);
+            _registeredForSessionCallbacks = true;
         }
 
     }
