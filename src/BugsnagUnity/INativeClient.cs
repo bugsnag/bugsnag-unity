@@ -104,5 +104,7 @@ namespace BugsnagUnity
 
         bool ShouldAttemptDelivery();
 
+        void AddOnSession();
+
     }
 }

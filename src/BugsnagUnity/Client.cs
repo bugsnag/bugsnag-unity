@@ -575,7 +575,11 @@ namespace BugsnagUnity
 
         public void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
 
-        public void AddOnSession(Func<ISession, bool> callback) => Configuration.AddOnSession(callback);
+        public void AddOnSession(Func<ISession, bool> callback)
+        {
+            Configuration.AddOnSession(callback);
+            NativeClient.AddOnSession();
+        }
 
         public void RemoveOnSession(Func<ISession, bool> callback) => Configuration.RemoveOnSession(callback);
 

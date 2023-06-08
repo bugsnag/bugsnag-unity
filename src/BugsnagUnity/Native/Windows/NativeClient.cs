@@ -211,5 +211,9 @@ namespace BugsnagUnity
         {
             return true;
         }
+
+        public void AddOnSession()
+        {
+        }
     }
 }
