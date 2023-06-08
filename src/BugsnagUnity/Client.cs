@@ -290,6 +290,10 @@ namespace BugsnagUnity
             {
                 return;
             }
+            if (condition.StartsWith("BUGSNAG_MAZERUNNER_LOG"))
+            {
+                return;
+            }
             if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel))
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
