@@ -4,7 +4,7 @@
 
 ## Bug Fixes
 
-- Prevent JNI call for session and event callbacks if not used. [#717](https://github.com/bugsnag/bugsnag-unity/pull/717)
+- Prevent callback to Unity from native layers for session and event callbacks if not used. [#717](https://github.com/bugsnag/bugsnag-unity/pull/717)
 
 ## 7.6.0 (2023-05-25)
 
