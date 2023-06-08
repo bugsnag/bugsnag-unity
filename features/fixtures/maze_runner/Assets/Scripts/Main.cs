@@ -72,7 +72,7 @@ public class Main : MonoBehaviour
                 else
                 {
                     numTries++;
-                    Log(string.Format("Mazerunner didnt not find the config file at path {0}  try number {1}", configPath, numTries));
+                    Log(string.Format("Maze Runner did not find the config file at path {0}  try number {1}", configPath, numTries));
                     yield return new WaitForSeconds(1);
                 }
             }
