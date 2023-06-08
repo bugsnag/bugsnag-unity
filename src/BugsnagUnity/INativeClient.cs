@@ -104,9 +104,9 @@ namespace BugsnagUnity
 
         bool ShouldAttemptDelivery();
 
-        // This was initially added because we suspect session callbacks might be causing ANRs.
-        // Not many users use session callbacks, so we are only subscribing to the native side if necessary
-        // as an optimisation
+        /// <summary>
+        /// Subscribes the Unity layer for session callbacks. Not many users use session callbacks, so we are only subscribing to the native side if necessary as an optimisation.
+        /// </summary>
         void RegisterForOnSessionCallbacks();
 
     }
