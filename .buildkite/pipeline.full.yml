@@ -200,7 +200,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk
-          - features/fixtures/unity.log
+          - features/fixtures/build_android_apk.log
     commands:
       - rake test:android:build
     retry:
@@ -220,7 +220,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - features/fixtures/maze_runner/mazerunner_2019.4.35f1.apk
-          - features/fixtures/unity.log
+          - features/fixtures/build_android_apk.log
     commands:
       - rake test:android:build
     retry:
@@ -240,7 +240,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - features/fixtures/maze_runner/mazerunner_2021.3.13f1.apk
-          - features/fixtures/unity.log
+          - features/fixtures/build_android_apk.log
     commands:
       - rake test:android:build
     retry:
