@@ -157,9 +157,9 @@ namespace BugsnagUnity
             return true;
         }
 
-        public void AddOnSession()
+        public void RegisterForOnSessionCallbacks()
         {
-            NativeInterface.AddOnSession();
+            NativeInterface.RegisterForOnSessionCallbacks();
         }
     }
 

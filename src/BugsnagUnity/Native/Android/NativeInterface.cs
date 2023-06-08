@@ -1211,7 +1211,7 @@ namespace BugsnagUnity
             AndroidJNI.CallVoidMethod(GetClientRef(), ClearFeatureFlagsMethod, null);
         }
 
-        public void AddOnSession()
+        public void RegisterForOnSessionCallbacks()
         {
             // This was added to android only because we suspect session callbacks might be causing ANRs.
             // Not many users use session callbacks, so we are only subscribing to the native side if necessary 

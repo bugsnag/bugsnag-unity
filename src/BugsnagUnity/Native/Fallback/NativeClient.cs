@@ -165,8 +165,9 @@ namespace BugsnagUnity
             return true;
         }
 
-        public void AddOnSession()
+        public void RegisterForOnSessionCallbacks()
         {
+            // Not Used on this platform
         }
     }
 }
