@@ -102,5 +102,10 @@ namespace BugsnagUnity
 
         IDictionary<string, object> GetNativeMetadata();
 
+        /// <summary>
+        /// Subscribes the Unity layer for session callbacks. Not many users use session callbacks, so we are only subscribing to the native side if necessary as an optimisation.
+        /// </summary>
+        void RegisterForOnSessionCallbacks();
+
     }
 }
