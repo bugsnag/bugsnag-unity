@@ -16,6 +16,8 @@ namespace BugsnagUnity
         IntPtr NativeConfiguration { get; }
         private static NativeClient _instance;
 
+        private bool _registeredForSessionCallbacks;
+
         public NativeClient(Configuration configuration)
         {
             _instance = this;
@@ -45,8 +47,19 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
             NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);
             NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
-            NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
-            NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
+
+
+            if (config.GetOnSendErrorCallbacks() != null && config.GetOnSendErrorCallbacks().Count > 0)
+            {
+                NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
+            }
+
+            if (config.GetOnSessionCallbacks() != null && config.GetOnSessionCallbacks().Count > 0)
+            {
+                _registeredForSessionCallbacks = true;
+                NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
+            }
+
             NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
             AddFeatureFlagsToConfig(obj,config);
             if (config.GetUser() != null)
@@ -448,6 +461,16 @@ namespace BugsnagUnity
         public void ClearFeatureFlags()
         {
             NativeCode.bugsnag_clearFeatureFlags();
+        }
+
+        public void RegisterForOnSessionCallbacks()
+        {
+            if (_registeredForSessionCallbacks)
+            {
+                return;
+            }
+            _registeredForSessionCallbacks = true;
+            NativeCode.bugsnag_registerForSessionCallbacksAfterStart(HandleSessionCallbacks);
         }
     }
 }

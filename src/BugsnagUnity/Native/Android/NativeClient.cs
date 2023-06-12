@@ -154,6 +154,11 @@ namespace BugsnagUnity
         {
             NativeInterface.ClearFeatureFlags();
         }
+
+        public void RegisterForOnSessionCallbacks()
+        {
+            NativeInterface.RegisterForOnSessionCallbacks();
+        }
     }
 
 }

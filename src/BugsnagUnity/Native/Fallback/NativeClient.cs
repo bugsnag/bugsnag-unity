@@ -163,7 +163,11 @@ namespace BugsnagUnity
         {
             return _featureFlags;
         }
-       
+
+        public void RegisterForOnSessionCallbacks()
+        {
+            // Not Used on this platform
+        }
 
     }
 }

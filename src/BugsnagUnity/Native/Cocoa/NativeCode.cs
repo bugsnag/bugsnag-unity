@@ -37,6 +37,9 @@ namespace BugsnagUnity
         [DllImport(Import)]
         internal static extern void bugsnag_registerForSessionCallbacks(IntPtr configuration, Func<IntPtr, bool> callback);
 
+        [DllImport(Import)]
+        internal static extern void bugsnag_registerForSessionCallbacksAfterStart(Func<IntPtr, bool> callback);
+
         internal delegate void SessionInformation(IntPtr instance, string sessionId, string startedAt, int handled, int unhandled);
         [DllImport(Import)]
         internal static extern void bugsnag_retrieveCurrentSession(IntPtr instance, SessionInformation callback);
