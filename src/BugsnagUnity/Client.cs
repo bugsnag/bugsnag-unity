@@ -290,6 +290,10 @@ namespace BugsnagUnity
             {
                 return;
             }
+            if (condition.StartsWith("BUGSNAG_MAZERUNNER_LOG"))
+            {
+                return;
+            }
             if (Configuration.AutoDetectErrors && logType.IsGreaterThanOrEqualTo(Configuration.NotifyLogLevel))
             {
                 var logMessage = new UnityLogMessage(condition, stackTrace, logType);
@@ -575,7 +579,11 @@ namespace BugsnagUnity
 
         public void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
 
-        public void AddOnSession(Func<ISession, bool> callback) => Configuration.AddOnSession(callback);
+        public void AddOnSession(Func<ISession, bool> callback)
+        {
+            Configuration.AddOnSession(callback);
+            NativeClient.RegisterForOnSessionCallbacks();
+        }
 
         public void RemoveOnSession(Func<ISession, bool> callback) => Configuration.RemoveOnSession(callback);
 

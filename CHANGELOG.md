@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.6.1 (2023-06-13)
+
+## Bug Fixes
+
+- Prevent callback to Unity from native layers for session and event callbacks if not used to avoid potential ANRs and improve performance. [#717](https://github.com/bugsnag/bugsnag-unity/pull/717)
+
 ## 7.6.0 (2023-05-25)
 
 - Update bugsnag-cocoa from v6.25.2 to [v6.26.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6262-2023-04-20)

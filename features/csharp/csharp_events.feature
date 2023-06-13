@@ -12,7 +12,7 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | NotifySmokeTest.Run()                                                       | Main+<RunNextMazeCommand>d__7.MoveNext() |
+      | NotifySmokeTest.Run()                                                       | Main+<RunNextMazeCommand>d__8.MoveNext() |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
@@ -26,7 +26,7 @@ Feature: csharp events
     And custom metadata is included in the event
     And the stack frame methods should match:
       | UncaughtExceptionSmokeTest.Run()                                                                 |                                          |
-      | ScenarioRunner.RunScenario(System.String scenarioName, System.String apiKey, System.String host) | Main+<RunNextMazeCommand>d__7.MoveNext() |
+      | ScenarioRunner.RunScenario(System.String scenarioName, System.String apiKey, System.String host) | Main+<RunNextMazeCommand>d__8.MoveNext() |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
@@ -39,7 +39,7 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | DebugLogExceptionSmokeTest:Run()                   | DebugLogExceptionSmokeTest.Run()                                            | <RunNextMazeCommand>d__7:MoveNext()                            | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
+      | DebugLogExceptionSmokeTest:Run()                   | DebugLogExceptionSmokeTest.Run()                                            | <RunNextMazeCommand>d__8:MoveNext()                            | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
       | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) | UnityEngine.SetupCoroutine.InvokeMoveNext(IEnumerator enumerator, IntPtr returnValueAddress) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
@@ -53,7 +53,7 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | DebugLogErrorSmokeTest:Run()                       | DebugLogErrorSmokeTest.Run()                                                | <RunNextMazeCommand>d__7:MoveNext()              |                                                                |
+      | DebugLogErrorSmokeTest:Run()                       | DebugLogErrorSmokeTest.Run()                                                | <RunNextMazeCommand>d__8:MoveNext()              |                                                                |
       | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | ScenarioRunner:RunScenario(string,string,string) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
@@ -67,7 +67,7 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | DebugLogWarningSmokeTest:Run()                     | DebugLogWarningSmokeTest.Run()                                              | <RunNextMazeCommand>d__7:MoveNext()              |                                                                |
+      | DebugLogWarningSmokeTest:Run()                     | DebugLogWarningSmokeTest.Run()                                              | <RunNextMazeCommand>d__8:MoveNext()              |                                                                |
       | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | ScenarioRunner:RunScenario(string,string,string) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
@@ -81,7 +81,7 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | DebugLogSmokeTest:Run()                            | DebugLogSmokeTest.Run()                                                     | <RunNextMazeCommand>d__7:MoveNext()              |                                                                |
+      | DebugLogSmokeTest:Run()                            | DebugLogSmokeTest.Run()                                                     | <RunNextMazeCommand>d__8:MoveNext()              |                                                                |
       | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | ScenarioRunner:RunScenario(string,string,string) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
@@ -95,7 +95,7 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | DebugLogAssertSmokeTest:Run()                      | DebugLogAssertSmokeTest.Run()                                               | <RunNextMazeCommand>d__7:MoveNext()              |                                                                |
+      | DebugLogAssertSmokeTest:Run()                      | DebugLogAssertSmokeTest.Run()                                               | <RunNextMazeCommand>d__8:MoveNext()              |                                                                |
       | ScenarioRunner:RunScenario(String, String, String) | ScenarioRunner.RunScenario(string scenarioName, string apiKey, string host) | ScenarioRunner:RunScenario(string,string,string) | UnityEngine.SetupCoroutine:InvokeMoveNext(IEnumerator, IntPtr) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
