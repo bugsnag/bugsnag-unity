@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.3.3 (2023-06-13)
+
+## Bug Fixes
+
+- Prevent callback to Unity from native layers for session and event callbacks if not used to avoid potential ANRs and improve performance. [#717](https://github.com/bugsnag/bugsnag-unity/pull/717)
+
 ## 6.3.2 (2022-05-27)
 
 ### Bug fixes
