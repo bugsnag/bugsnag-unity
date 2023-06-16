@@ -21,7 +21,7 @@ x-common-environment: &common-environment
 
 services:
   maze-runner:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:tms-trace-logging-cli
     environment:
       DEBUG:
       BUILDKITE:
@@ -35,7 +35,7 @@ services:
       - ./maze_output:/app/maze_output
 
   maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v7-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:tms-trace-logging-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
