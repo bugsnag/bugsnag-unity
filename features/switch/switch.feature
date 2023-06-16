@@ -1,7 +1,7 @@
 Feature: Switch Specific Tests
 
   Scenario: SwitchCacheType set to None
-    When I set the HTTP status code for the next requests to "408"
+    When I set the HTTP status code for the next requests to 408
     And I run the game in the "SwitchPersistEvent" state
     And I wait to receive an error
     And I wait for requests to persist
@@ -15,7 +15,7 @@ Feature: Switch Specific Tests
     Then I should receive no requests
 
   Scenario: Max Cache Size
-    When I set the HTTP status code for the next requests to "408"
+    When I set the HTTP status code for the next requests to 408
     And I run the game in the "MaxSwitchCacheSize" state
     And I wait to receive 2 errors
     And I wait for requests to persist
