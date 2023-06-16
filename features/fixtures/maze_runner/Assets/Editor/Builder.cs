@@ -51,7 +51,7 @@ public class Builder : MonoBehaviour {
     {
         Debug.Log("Building iOS app...");
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.unity.mazerunner");
-        PlayerSettings.iOS.appleDeveloperTeamID = "372ZUL2ZB7";
+        PlayerSettings.iOS.appleDeveloperTeamID = "7W9PZ27Y5F";
         PlayerSettings.iOS.appleEnableAutomaticSigning = true;
         PlayerSettings.iOS.allowHTTPDownload = true;
 
