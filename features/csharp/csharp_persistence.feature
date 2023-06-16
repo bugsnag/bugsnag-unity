@@ -62,7 +62,7 @@ Feature: Unity Persistence
   Scenario: Max Persisted Events
     When I set the HTTP status code for the next requests to "408,408,408,408"
     When I run the game in the "MaxPersistEvents" state
-    And I wait to receive 4 errors
+    And I wait to receive 2 errors
     And I wait for requests to persist
     And I discard the oldest error
     And I discard the oldest error

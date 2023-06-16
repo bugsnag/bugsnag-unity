@@ -17,6 +17,6 @@ Feature: User operations tests
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "SetUserAfterStart"
-    And the event "user.id" equals "1"
+    And the event "user.id" equals "1w"
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"

@@ -38,7 +38,7 @@ Feature: Session Tracking
       | macos   | MacOS           |
       | windows | Windows         |
       | switch  | nintendo-switch |
-      | browser | WebGL           |
+      | browser | Wrong           |
       | android | android         |
       | ios     | iOS             |
     And the session payload field "device.osVersion" is not null
