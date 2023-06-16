@@ -159,9 +159,9 @@ PlayerSettings:
   androidSupportedAspectRatio: 1
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
-    Android: com.bugsnag.mazerunner
-    iOS: com.bugsnag.unity.mazerunner
-    iPhone: com.bugsnag.unity.mazerunner
+    Android: com.bugsnag.fixtures.unity.notifier.android
+    iOS: com.bugsnag.fixtures.unity.notifier.ios
+    iPhone: com.bugsnag.fixtures.unity.notifier.ios
   buildNumber:
     Standalone: 111
     iOS: 333

@@ -38,7 +38,7 @@ public class Builder : MonoBehaviour {
     public static void AndroidBuild()
     {
         Debug.Log("Building Android app...");
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.mazerunner");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.fixtures.unity.notifier.android");
         var opts = CommonOptions("mazerunner.apk");
         opts.target = BuildTarget.Android;
 
@@ -50,7 +50,7 @@ public class Builder : MonoBehaviour {
     public static void IosBuild()
     {
         Debug.Log("Building iOS app...");
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.unity.mazerunner");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.fixtures.unity.notifier.ios");
         PlayerSettings.iOS.appleDeveloperTeamID = "7W9PZ27Y5F";
         PlayerSettings.iOS.appleEnableAutomaticSigning = true;
         PlayerSettings.iOS.allowHTTPDownload = true;
@@ -65,7 +65,7 @@ public class Builder : MonoBehaviour {
     public static void SwitchBuild()
     {
         Debug.Log("Building Switch app...");
-        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Switch, "com.bugsnag.mazerunner");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Switch, "com.bugsnag.fixtures.unity.notifier.ios");
         var opts = CommonOptions("mazerunner.nspd");
         opts.target = BuildTarget.Switch;
         opts.options = BuildOptions.Development;
