@@ -1,10 +1,19 @@
 # Changelog
 
-## TBD
+## 7.6.1 (2023-06-13)
 
-- Update bugsnag-cocoa from v6.25.2 to [v6.26.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6260-2023-03-08)
+## Bug Fixes
+
+- Prevent callback to Unity from native layers for session and event callbacks if not used to avoid potential ANRs and improve performance. [#717](https://github.com/bugsnag/bugsnag-unity/pull/717)
+
+## 7.6.0 (2023-05-25)
+
+- Update bugsnag-cocoa from v6.25.2 to [v6.26.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6262-2023-04-20)
+- Update bugsnag-android from v5.28.4 to [v5.30.0](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5300-2023-05-11)
 
 ### Bug fixes
+
+* Fix an issue where stack frames containing (wrapper some/wrapper) entries were incorrectly formatted. [#713](https://github.com/bugsnag/bugsnag-unity/pull/713)
 
 * Fix an issue where Config.GenerateAnonymousId was not respected. [#704](https://github.com/bugsnag/bugsnag-unity/pull/704)
 

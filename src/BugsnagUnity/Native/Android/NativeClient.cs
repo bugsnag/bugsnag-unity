@@ -156,6 +156,11 @@ namespace BugsnagUnity
         {
             return true;
         }
+
+        public void RegisterForOnSessionCallbacks()
+        {
+            NativeInterface.RegisterForOnSessionCallbacks();
+        }
     }
 
 }

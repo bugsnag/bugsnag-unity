@@ -37,6 +37,7 @@ public class Scenario : MonoBehaviour
         Configuration.ScriptingBackend = FindScriptingBackend();
         Configuration.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
+        Configuration.AutoTrackSessions = false;
     }
 
     public void AddSwitchConfigValues(SwitchCacheType switchCacheType, int switchCacheIndex, string switchMountName)

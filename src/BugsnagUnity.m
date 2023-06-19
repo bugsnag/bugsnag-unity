@@ -390,6 +390,12 @@ void bugsnag_markLaunchCompleted() {
   [Bugsnag markLaunchCompleted];
 }
 
+void bugsnag_registerForSessionCallbacksAfterStart(bool (*callback)(void *session)){
+    [Bugsnag addOnSessionBlock:^BOOL (BugsnagSession *session) {    
+        return callback((__bridge void *)session);
+    }];
+}
+
 void *bugsnag_createConfiguration(char *apiKey) {
     return (void *)CFBridgingRetain([[BugsnagConfiguration alloc] initWithApiKey:@(apiKey)]);
 }

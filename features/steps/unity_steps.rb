@@ -1,7 +1,7 @@
 require 'cgi'
 
 When('On Mobile I relaunch the app') do
-  next unless %w[android ios].include? Maze::Helper.get_current_platform 
+  next unless %w[android ios].include? Maze::Helper.get_current_platform
   Maze.driver.launch_app
   sleep 3
 end
@@ -136,14 +136,7 @@ Then('the error is valid for the error reporting API sent by the Unity notifier'
     Maze.config.os
   end
 
-  notifier_name = case os
-                  when 'ios'
-                    'Unity Bugsnag Notifier'
-                  when 'android'
-                    'Android Bugsnag Notifier'
-                  else
-                    'Unity Bugsnag Notifier'
-                  end
+  notifier_name = 'Unity Bugsnag Notifier'
 
   check_error_reporting_api notifier_name
 end

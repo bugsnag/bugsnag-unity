@@ -16,6 +16,7 @@ namespace BugsnagUnity
         private static Session _nativeSession;
         IntPtr NativeConfiguration { get; }
         private static NativeClient _instance;
+        private bool _registeredForSessionCallbacks;
 
         public NativeClient(Configuration configuration)
         {
@@ -49,8 +50,21 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoTrackSessions(obj, config.AutoTrackSessions);
             NativeCode.bugsnag_setLaunchDurationMillis(obj, (ulong)config.LaunchDurationMillis);
             NativeCode.bugsnag_setSendLaunchCrashesSynchronously(obj,config.SendLaunchCrashesSynchronously);
-            NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
-            NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
+
+            if (config.GetOnSendErrorCallbacks() != null && config.GetOnSendErrorCallbacks().Count > 0)
+            {
+                NativeCode.bugsnag_registerForOnSendCallbacks(obj, HandleOnSendCallbacks);
+            }
+
+            if (config.GetOnSessionCallbacks() != null && config.GetOnSessionCallbacks().Count > 0)
+            {
+                _registeredForSessionCallbacks = true;
+                NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
+            }
+
+            
+
+
             NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
             NativeCode.bugsnag_setMaxStringValueLength(obj, config.MaxStringValueLength);
             AddFeatureFlagsToConfig(obj,config);
@@ -448,6 +462,16 @@ namespace BugsnagUnity
         public bool ShouldAttemptDelivery()
         {
             return true;
+        }
+
+        public void RegisterForOnSessionCallbacks()
+        {
+            if (_registeredForSessionCallbacks)
+            {
+                return;
+            }
+            _registeredForSessionCallbacks = true;
+            NativeCode.bugsnag_registerForSessionCallbacksAfterStart(HandleSessionCallbacks);
         }
     }
 }

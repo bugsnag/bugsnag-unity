@@ -9,7 +9,6 @@ public class SwitchMaxCacheSize : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.SwitchCacheMaxSize = 2097155;
-        Configuration.AutoTrackSessions = false;
     }
 
     public override void Run()

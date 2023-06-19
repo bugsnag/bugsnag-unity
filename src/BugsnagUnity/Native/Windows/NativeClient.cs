@@ -211,5 +211,10 @@ namespace BugsnagUnity
         {
             return true;
         }
+
+        public void RegisterForOnSessionCallbacks()
+        {
+            // Not Used on this platform
+        }
     }
 }

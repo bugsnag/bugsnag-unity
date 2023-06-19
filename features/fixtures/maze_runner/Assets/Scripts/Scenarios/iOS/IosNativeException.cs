@@ -5,7 +5,7 @@ public class IosNativeException : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AutoTrackSessions = false;
+        Configuration.AddOnSession((s) => { return true; });
     }
 
     public override void Run()
