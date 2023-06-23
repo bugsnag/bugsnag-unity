@@ -273,7 +273,7 @@ steps:
   #
   # Run Android tests
   #
-  - label: ':android: Run Android e2e tests for Unity 2018'
+  - label: ':bitbar: :android: Run Android e2e tests for Unity 2018'
     timeout_in_minutes: 60
     depends_on: 'build-android-fixture-2018'
     agents:
@@ -303,7 +303,7 @@ steps:
     concurrency_group: 'bitbar-app'
     concurrency_method: eager
 
-  - label: ':android: Run Android e2e tests for Unity 2019'
+  - label: ':bitbar: :android: Run Android e2e tests for Unity 2019'
     timeout_in_minutes: 60
     depends_on: 'build-android-fixture-2019'
     agents:
@@ -333,7 +333,7 @@ steps:
     concurrency_group: 'bitbar-app'
     concurrency_method: eager
 
-  - label: ':android: Run Android e2e tests for Unity 2021'
+  - label: ':bitbar: :android: Run Android e2e tests for Unity 2021'
     timeout_in_minutes: 60
     depends_on: 'build-android-fixture-2021'
     agents:
@@ -532,7 +532,7 @@ steps:
   #
   # Run iOS tests
   #
-  - label: ':ios: Run iOS e2e tests for Unity 2018'
+  - label: ':bitbar: :ios: Run iOS e2e tests for Unity 2018'
     timeout_in_minutes: 60
     depends_on: 'build-ios-fixture-2018'
     agents:
@@ -562,7 +562,7 @@ steps:
     concurrency_group: 'bitbar-app'
     concurrency_method: eager
 
-  - label: ':ios: Run iOS e2e tests for Unity 2019'
+  - label: ':bitbar: :ios: Run iOS e2e tests for Unity 2019'
     timeout_in_minutes: 60
     depends_on: 'build-ios-fixture-2019'
     agents:
@@ -590,7 +590,7 @@ steps:
     concurrency_group: 'bitbar-app'
     concurrency_method: eager
 
-  - label: ':ios: Run iOS e2e tests for Unity 2021'
+  - label: ':bitbar: :ios: Run iOS e2e tests for Unity 2021'
     timeout_in_minutes: 60
     depends_on: 'build-ios-fixture-2021'
     agents:
