@@ -2,8 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using BugsnagUnity;
+using BugsnagUnity.Payload;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Text;
 
 public class ScenarioRunner : MonoBehaviour
 {
@@ -25,7 +29,7 @@ public class ScenarioRunner : MonoBehaviour
     {
 
         var scenario = GetScenario(scenarioName);
-        scenario.PrepareConfig(apiKey,host);
+        scenario.PrepareConfig(apiKey, host);
 #if UNITY_SWITCH
 
         GetSwitchArguments();
@@ -43,12 +47,19 @@ public class ScenarioRunner : MonoBehaviour
     private class StartupTimeReport
     {
         public long StartupTimeMill;
+        public string Platform = Application.platform.ToString();
+        public string UnityVersion = Application.unityVersion;
     }
 
-    private void ReportStartTime( string host,long mill)
+    private void ReportStartTime(string host, long mill)
     {
         var data = new StartupTimeReport { StartupTimeMill = mill };
-        UnityWebRequest.Post(host + "/metrics",JsonUtility.ToJson(data)).SendWebRequest();
+        var req = new UnityWebRequest(host + "/metrics");
+        req.SetRequestHeader("Content-Type", "application/json");
+        req.SetRequestHeader("Bugsnag-Sent-At", DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture));
+        req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonUtility.ToJson(data)));
+        req.method = UnityWebRequest.kHttpVerbPOST;
+        req.SendWebRequest();
     }
 
     private Scenario GetScenario(string scenarioName)
