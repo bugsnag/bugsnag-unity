@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class ScenarioRunner : MonoBehaviour
 {
@@ -29,8 +31,24 @@ public class ScenarioRunner : MonoBehaviour
         GetSwitchArguments();
         scenario.AddSwitchConfigValues(_switchCacheType, _switchCacheIndex, _switchCacheMountName);
 #endif
+        var sw = new Stopwatch();
+        sw.Start();
         scenario.StartBugsnag();
+        sw.Stop();
+        ReportStartTime(host, sw.ElapsedMilliseconds);
         scenario.Run();
+    }
+
+    [Serializable]
+    private class StartupTimeReport
+    {
+        public long StartupTimeMill;
+    }
+
+    private void ReportStartTime( string host,long mill)
+    {
+        var data = new StartupTimeReport { StartupTimeMill = mill };
+        UnityWebRequest.Post(host + "/metrics",JsonUtility.ToJson(data)).SendWebRequest();
     }
 
     private Scenario GetScenario(string scenarioName)
