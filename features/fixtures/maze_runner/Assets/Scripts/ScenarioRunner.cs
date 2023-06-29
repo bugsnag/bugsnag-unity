@@ -39,21 +39,32 @@ public class ScenarioRunner : MonoBehaviour
         sw.Start();
         scenario.StartBugsnag();
         sw.Stop();
-        ReportStartTime(host, sw.ElapsedMilliseconds);
+        ReportStartTime(host, sw.ElapsedMilliseconds, scenarioName);
         scenario.Run();
     }
 
     [Serializable]
     private class StartupTimeReport
     {
+
+        public StartupTimeReport(long startupTimeMill, string scenarioName)
+        {
+            StartupTimeMill = startupTimeMill;
+            ScenarioName = scenarioName;
+        }
+
         public long StartupTimeMill;
+        public string ScenarioName;
         public string Platform = Application.platform.ToString();
         public string UnityVersion = Application.unityVersion;
+        public string DeviceModel = SystemInfo.deviceModel;
+        public string DeviceName = SystemInfo.deviceName;
+                
     }
 
-    private void ReportStartTime(string host, long mill)
+    private void ReportStartTime(string host, long mill, string scenarioName)
     {
-        var data = new StartupTimeReport { StartupTimeMill = mill };
+        var data = new StartupTimeReport(mill, scenarioName);
         var req = new UnityWebRequest(host + "/metrics");
         req.SetRequestHeader("Content-Type", "application/json");
         req.SetRequestHeader("Bugsnag-Sent-At", DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture));
