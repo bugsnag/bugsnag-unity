@@ -91,7 +91,7 @@ Feature: csharp events
     And the exception "message" equals "Context"
     And the event "context" equals "test"
 
-  @skip_webgl @skip_android #Android Pending PLAT-9210, Webgl has different behaviour
+  @skip_webgl 
   Scenario: Max String Value Length
     When I run the game in the "MaxStringValueLength" state
     And I wait to receive an error
