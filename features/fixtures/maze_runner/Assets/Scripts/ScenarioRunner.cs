@@ -49,11 +49,11 @@ public class ScenarioRunner : MonoBehaviour
 
         public StartupTimeReport(long startupTimeMill, string scenarioName)
         {
-            StartupTimeMill = startupTimeMill;
+            bugsnagStartTime = startupTimeMill;
             ScenarioName = scenarioName;
         }
 
-        public long StartupTimeMill;
+        public long bugsnagStartTime;
         public string ScenarioName;
         public string Platform = Application.platform.ToString();
         public string UnityVersion = Application.unityVersion;
