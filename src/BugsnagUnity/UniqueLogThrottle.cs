@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BugsnagUnity
 {
@@ -18,20 +19,20 @@ namespace BugsnagUnity
         /// <summary>
         /// Used to track when the counter should be flushed next
         /// </summary>
-        private DateTime FlushAt { get; set; }
+        private float FlushAt { get; set; }
 
         /// <summary>
         /// The configuration for unique log counts and times
         /// </summary>
         private Configuration Configuration { get; }
 
-        private TimeSpan UniqueLogsTimePeriod => Configuration.SecondsPerUniqueLog;
+        private float UniqueLogsTimePeriod => (float)Configuration.SecondsPerUniqueLog.TotalSeconds;
 
         public UniqueLogThrottle(Configuration configuration)
         {
             Configuration = configuration;
             Counter = new Dictionary<UnityLogMessage, int>(new UnityLogMessageEqualityComparer());
-            FlushAt = DateTime.UtcNow.Add(Configuration.SecondsPerUniqueLog);
+            FlushAt = Time.time + UniqueLogsTimePeriod;
         }
 
         /// <summary>
@@ -43,7 +44,6 @@ namespace BugsnagUnity
         public bool ShouldSend(UnityLogMessage unityLogMessage)
         {
             bool shouldSend;
-
             lock (_lock)
             {
                 shouldSend = !Counter.ContainsKey(unityLogMessage);
@@ -57,7 +57,7 @@ namespace BugsnagUnity
                     if (unityLogMessage.CreatedAt > FlushAt)
                     {
                         Counter.Clear();
-                        FlushAt = DateTime.UtcNow.Add(UniqueLogsTimePeriod);
+                        FlushAt = Time.time + UniqueLogsTimePeriod;
                         shouldSend = true;
                     }
                 }
