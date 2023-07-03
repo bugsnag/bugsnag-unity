@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD ()
+
+## Bug Fixes
+
+- Remove unnecessary usages of DateTimeOffset.Now to prevent iOS app hangs resulting from Unity native code accessing non-thread safe methods. [#725](https://github.com/bugsnag/bugsnag-unity/pull/725)
+
+
 ## 7.6.1 (2023-06-13)
 
 ## Bug Fixes

@@ -22,7 +22,7 @@ namespace BugsnagUnity
         {
             Configuration = configuration;
             CurrentCounts = new Dictionary<LogType, int>();
-            FlushAt = Time.time + MaximumLogsTimePeriod;
+            FlushAt = Time.realtimeSinceStartup + MaximumLogsTimePeriod;
         }
 
         public bool ShouldSend(UnityLogMessage unityLogMessage)
@@ -47,7 +47,7 @@ namespace BugsnagUnity
                         if (unityLogMessage.CreatedAt > FlushAt)
                         {
                             CurrentCounts.Clear();
-                            FlushAt = Time.time + MaximumLogsTimePeriod;
+                            FlushAt = Time.realtimeSinceStartup + MaximumLogsTimePeriod;
                             return true;
                         }
                         return false;

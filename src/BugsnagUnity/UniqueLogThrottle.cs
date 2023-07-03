@@ -32,7 +32,7 @@ namespace BugsnagUnity
         {
             Configuration = configuration;
             Counter = new Dictionary<UnityLogMessage, int>(new UnityLogMessageEqualityComparer());
-            FlushAt = Time.time + UniqueLogsTimePeriod;
+            FlushAt = Time.realtimeSinceStartup + UniqueLogsTimePeriod;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace BugsnagUnity
                     if (unityLogMessage.CreatedAt > FlushAt)
                     {
                         Counter.Clear();
-                        FlushAt = Time.time + UniqueLogsTimePeriod;
+                        FlushAt = Time.realtimeSinceStartup + UniqueLogsTimePeriod;
                         shouldSend = true;
                     }
                 }
