@@ -74,15 +74,18 @@ namespace BugsnagUnity
             {
                 if (_config.AutoDetectErrors && LogType.Exception.IsGreaterThanOrEqualTo(_config.NotifyLogLevel))
                 {
-                    var unityLogMessage = new UnityLogMessage(exception);
-                    var shouldSend = Error.ShouldSend(exception)
-                      && _client._uniqueCounter.ShouldSend(unityLogMessage)
-                      && _client._logTypeCounter.ShouldSend(unityLogMessage);
-                    if (shouldSend)
+                    MainThreadDispatchBehaviour.Instance().Enqueue(() =>
                     {
-                        var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();
-                        _client.Notify(exception, handledState, null);
-                    }
+                        var unityLogMessage = new UnityLogMessage(exception);
+                        var shouldSend = Error.ShouldSend(exception)
+                          && _client._uniqueCounter.ShouldSend(unityLogMessage)
+                          && _client._logTypeCounter.ShouldSend(unityLogMessage);
+                        if (shouldSend)
+                        {
+                            var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();
+                            _client.Notify(exception, handledState, null);
+                        }
+                    });
                 }
                 if (_oldLogHandler != null)
                 {
@@ -276,7 +279,7 @@ namespace BugsnagUnity
             // Discard messages from the main thread as they will be reported separately
             if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
-                NotifyFromUnityLog(condition, stackTrace, logType);
+                MainThreadDispatchBehaviour.Instance().Enqueue(()=>NotifyFromUnityLog(condition, stackTrace, logType));
             }
         }
 
