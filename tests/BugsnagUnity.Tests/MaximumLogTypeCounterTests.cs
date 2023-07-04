@@ -110,7 +110,7 @@ namespace BugsnagUnity.Tests
 
             counter.ShouldSend(message);
 
-            Thread.Sleep(configuration.MaximumLogsTimePeriod);
+            Thread.Sleep(configuration.MaximumLogsTimePeriod + TimeSpan.FromSeconds(0.1));
 
             message = new UnityLogMessage("", "", LogType.Error);
 

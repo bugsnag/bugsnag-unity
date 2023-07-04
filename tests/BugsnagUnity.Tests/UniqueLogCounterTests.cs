@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Threading;
 using UnityEngine;
 
@@ -39,7 +40,7 @@ namespace BugsnagUnity.Tests
 
             counter.ShouldSend(message);
 
-            Thread.Sleep(configuration.SecondsPerUniqueLog);
+            Thread.Sleep(configuration.SecondsPerUniqueLog + TimeSpan.FromSeconds(0.1f));
 
             message = new UnityLogMessage("", "", LogType.Error);
 
