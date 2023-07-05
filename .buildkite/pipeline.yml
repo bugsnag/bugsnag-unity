@@ -87,6 +87,7 @@ steps:
         upload:
           - maze_output/**/*
           - Mazerunner.log
+          - maze_output/metrics.csv
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
 
@@ -108,6 +109,8 @@ steps:
           - features/fixtures/maze_runner/build/WebGL-2020.3.48f1.zip
         upload:
           - maze_output/**/*
+          - maze_output/metrics.csv
+
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
@@ -173,6 +176,7 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk"
         upload:
           - "maze_output/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: maze-runner-bitbar
         run: maze-runner-bitbar
@@ -279,6 +283,8 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa"
         upload:
           - "maze_output/**/*"
+          - "maze_output/metrics.csv"
+
       docker-compose#v4.7.0:
         pull: maze-runner-bitbar
         run: maze-runner-bitbar
@@ -337,6 +343,8 @@ steps:
           - features/fixtures/maze_runner/build/Windows-2020.3.48f1.zip
         upload:
           - maze_output/**/*
+          - maze_output/metrics.csv
+
     command:
       - scripts/ci-run-windows-tests-wsl.sh
 

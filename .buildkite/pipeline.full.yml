@@ -92,6 +92,7 @@ steps:
         upload:
           - maze_output/**/*
           - Mazerunner.log
+          - maze_output/metrics.csv
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
 
@@ -109,6 +110,7 @@ steps:
         upload:
           - maze_output/**/*
           - Mazerunner.log
+          - maze_output/metrics.csv
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
 
@@ -148,6 +150,7 @@ steps:
           - features/fixtures/maze_runner/build/WebGL-2018.4.36f1.zip
         upload:
           - maze_output/**/*
+          - maze_output/metrics.csv
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
@@ -165,6 +168,7 @@ steps:
           - features/fixtures/maze_runner/build/WebGL-2019.4.35f1.zip
         upload:
           - maze_output/**/*
+          - maze_output/metrics.csv
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
@@ -286,6 +290,7 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.apk"
         upload:
           - "maze_output/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: maze-runner-bitbar
         run: maze-runner-bitbar
@@ -316,6 +321,7 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2019.4.35f1.apk"
         upload:
           - "maze_output/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: maze-runner-bitbar
         run: maze-runner-bitbar
@@ -346,6 +352,7 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2021.3.13f1.apk"
         upload:
           - "maze_output/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: maze-runner-bitbar
         run: maze-runner-bitbar
@@ -545,6 +552,7 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2018.4.36f1.ipa"
         upload:
           - "maze_output/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: maze-runner-bitbar
         run: maze-runner-bitbar
@@ -573,6 +581,7 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2019.4.35f1.ipa"
         upload:
           - "maze_output/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: maze-runner-bitbar
         run: maze-runner-bitbar
@@ -601,6 +610,7 @@ steps:
           - "features/fixtures/maze_runner/mazerunner_2021.3.13f1.ipa"
         upload:
           - "maze_output/**/*"
+          - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
         pull: maze-runner-bitbar
         run: maze-runner-bitbar
@@ -703,6 +713,7 @@ steps:
           - features/fixtures/maze_runner/build/Windows-2018.4.36f1.zip
         upload:
           - maze_output/**/*
+          - maze_output/metrics.csv
     commands:
       - scripts/ci-run-windows-tests-wsl.sh
 
@@ -719,6 +730,7 @@ steps:
           - features/fixtures/maze_runner/build/Windows-2019.4.35f1.zip
         upload:
           - maze_output/**/*
+          - maze_output/metrics.csv
     commands:
       - scripts/ci-run-windows-tests-wsl.sh
 
@@ -735,5 +747,6 @@ steps:
           - features/fixtures/maze_runner/build/Windows-2021.3.13f1.zip
         upload:
           - maze_output/**/*
+          - maze_output/metrics.csv
     commands:
       - scripts/ci-run-windows-tests-wsl.sh

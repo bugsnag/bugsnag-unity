@@ -1,7 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using BugsnagUnity;
+using BugsnagUnity.Payload;
+using System.Globalization;
 using UnityEngine;
+using UnityEngine.Networking;
+using System.Text;
 
 public class ScenarioRunner : MonoBehaviour
 {
@@ -23,14 +29,48 @@ public class ScenarioRunner : MonoBehaviour
     {
 
         var scenario = GetScenario(scenarioName);
-        scenario.PrepareConfig(apiKey,host);
+        scenario.PrepareConfig(apiKey, host);
 #if UNITY_SWITCH
 
         GetSwitchArguments();
         scenario.AddSwitchConfigValues(_switchCacheType, _switchCacheIndex, _switchCacheMountName);
 #endif
+        var sw = new Stopwatch();
+        sw.Start();
         scenario.StartBugsnag();
+        sw.Stop();
+        ReportStartTime(host, sw.ElapsedMilliseconds, scenarioName);
         scenario.Run();
+    }
+
+    [Serializable]
+    private class StartupTimeReport
+    {
+
+        public StartupTimeReport(long startupTimeMill, string scenarioName)
+        {
+            bugsnagStartTime = startupTimeMill;
+            ScenarioName = scenarioName;
+        }
+
+        public long bugsnagStartTime;
+        public string ScenarioName;
+        public string Platform = Application.platform.ToString();
+        public string UnityVersion = Application.unityVersion;
+        public string DeviceModel = SystemInfo.deviceModel;
+        public string DeviceName = SystemInfo.deviceName;
+                
+    }
+
+    private void ReportStartTime(string host, long mill, string scenarioName)
+    {
+        var data = new StartupTimeReport(mill, scenarioName);
+        var req = new UnityWebRequest(host + "/metrics");
+        req.SetRequestHeader("Content-Type", "application/json");
+        req.SetRequestHeader("Bugsnag-Sent-At", DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture));
+        req.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonUtility.ToJson(data)));
+        req.method = UnityWebRequest.kHttpVerbPOST;
+        req.SendWebRequest();
     }
 
     private Scenario GetScenario(string scenarioName)
