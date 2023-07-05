@@ -21,8 +21,7 @@ namespace BugsnagUnity
                     {
                         if (_sw == null)
                         {
-                            _sw = new Stopwatch();
-                            _sw.Start();
+                            _sw = Stopwatch.StartNew();
                         }
                     }
                 }
