@@ -55,21 +55,7 @@ namespace BugsnagUnity
 
         private bool _isUnity2019OrHigher;
 
-        private static Stopwatch _bsTimeStopwatch;
-        // A simple timer used internally to avoid thread complications when using the unity Time API
-        internal static double BSTime
-        {
-            get
-            {
-                if (_bsTimeStopwatch == null)
-                {
-                    _bsTimeStopwatch = new Stopwatch();
-                    _bsTimeStopwatch.Start();
-                }
-                return _bsTimeStopwatch.Elapsed.TotalSeconds;
-            }
-        }
-
+       
         private class BugsnagLogHandler : ILogHandler
         {
 

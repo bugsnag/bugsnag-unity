@@ -29,7 +29,7 @@ namespace BugsnagUnity
 
         private void SetFlushTime()
         {
-            FlushAt = Client.BSTime + UniqueLogsTimePeriod;
+            FlushAt = Time.ElapsedSeconds + UniqueLogsTimePeriod;
         }
 
         public UniqueLogThrottle(Configuration configuration)

@@ -10,7 +10,7 @@ namespace BugsnagUnity
     {
         public UnityLogMessage(string condition, string stackTrace, LogType type)
         {
-            CreatedAt = Client.BSTime;
+            CreatedAt = Time.ElapsedSeconds;
             Condition = condition;
             StackTrace = stackTrace;
             Type = type;
@@ -18,7 +18,7 @@ namespace BugsnagUnity
 
         public UnityLogMessage(Exception exception)
         {
-            CreatedAt = Client.BSTime;
+            CreatedAt = Time.ElapsedSeconds;
             Condition = exception.Message == null ? string.Empty : exception.Message;
             StackTrace = exception.StackTrace == null ? string.Empty : exception.StackTrace;
             Type = LogType.Exception;

@@ -20,7 +20,7 @@ namespace BugsnagUnity
 
         private void SetFlushTime()
         {
-            FlushAt = Client.BSTime + MaximumLogsTimePeriod;
+            FlushAt = Time.ElapsedSeconds + MaximumLogsTimePeriod;
         }
 
         public MaximumLogTypeCounter(Configuration configuration)
