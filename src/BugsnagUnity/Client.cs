@@ -55,7 +55,6 @@ namespace BugsnagUnity
 
         private bool _isUnity2019OrHigher;
 
-       
         private class BugsnagLogHandler : ILogHandler
         {
 

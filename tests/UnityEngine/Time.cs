@@ -1,5 +1,4 @@
-﻿using System;
-namespace UnityEngine
+﻿namespace UnityEngine
 {
     public class Time
     {
