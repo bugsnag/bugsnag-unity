@@ -91,8 +91,8 @@ namespace BugsnagUnity
                 {
                     var unityLogMessage = new UnityLogMessage(exception);
                     var shouldSend = Error.ShouldSend(exception)
-                        && _client._uniqueCounter.ShouldSend(unityLogMessage)
-                        && _client._logTypeCounter.ShouldSend(unityLogMessage);
+                      && _client._uniqueCounter.ShouldSend(unityLogMessage)
+                      && _client._logTypeCounter.ShouldSend(unityLogMessage);
                     if (shouldSend)
                     {
                         var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();

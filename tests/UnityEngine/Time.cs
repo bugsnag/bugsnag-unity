@@ -3,6 +3,8 @@ namespace UnityEngine
 {
     public class Time
     {
-        public static float realtimeSinceStartup;
+
+        public static float realtimeSinceStartup { get; set; }
+
     }
 }
