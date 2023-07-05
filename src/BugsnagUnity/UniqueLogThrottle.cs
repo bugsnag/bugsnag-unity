@@ -19,20 +19,25 @@ namespace BugsnagUnity
         /// <summary>
         /// Used to track when the counter should be flushed next
         /// </summary>
-        private float FlushAt { get; set; }
+        private double FlushAt { get; set; }
 
         /// <summary>
         /// The configuration for unique log counts and times
         /// </summary>
         private Configuration Configuration { get; }
 
-        private float UniqueLogsTimePeriod => (float)Configuration.SecondsPerUniqueLog.TotalSeconds;
+        private double UniqueLogsTimePeriod => Configuration.SecondsPerUniqueLog.TotalSeconds;
+
+        private void SetFlushTime()
+        {
+            FlushAt = Client.BSTime + UniqueLogsTimePeriod;
+        }
 
         public UniqueLogThrottle(Configuration configuration)
         {
             Configuration = configuration;
             Counter = new Dictionary<UnityLogMessage, int>(new UnityLogMessageEqualityComparer());
-            FlushAt = Time.realtimeSinceStartup + UniqueLogsTimePeriod;
+            SetFlushTime();
         }
 
         /// <summary>
@@ -57,7 +62,7 @@ namespace BugsnagUnity
                     if (unityLogMessage.CreatedAt > FlushAt)
                     {
                         Counter.Clear();
-                        FlushAt = Time.realtimeSinceStartup + UniqueLogsTimePeriod;
+                        SetFlushTime();
                         shouldSend = true;
                     }
                 }

@@ -55,6 +55,21 @@ namespace BugsnagUnity
 
         private bool _isUnity2019OrHigher;
 
+        private static Stopwatch _bsTimeStopwatch;
+        // A simple timer used internally to avoid thread complications when using the unity Time API
+        internal static double BSTime
+        {
+            get
+            {
+                if (_bsTimeStopwatch == null)
+                {
+                    _bsTimeStopwatch = new Stopwatch();
+                    _bsTimeStopwatch.Start();
+                }
+                return _bsTimeStopwatch.Elapsed.TotalSeconds;
+            }
+        }
+
         private class BugsnagLogHandler : ILogHandler
         {
 
@@ -74,18 +89,15 @@ namespace BugsnagUnity
             {
                 if (_config.AutoDetectErrors && LogType.Exception.IsGreaterThanOrEqualTo(_config.NotifyLogLevel))
                 {
-                    MainThreadDispatchBehaviour.Instance().Enqueue(() =>
+                    var unityLogMessage = new UnityLogMessage(exception);
+                    var shouldSend = Error.ShouldSend(exception)
+                        && _client._uniqueCounter.ShouldSend(unityLogMessage)
+                        && _client._logTypeCounter.ShouldSend(unityLogMessage);
+                    if (shouldSend)
                     {
-                        var unityLogMessage = new UnityLogMessage(exception);
-                        var shouldSend = Error.ShouldSend(exception)
-                          && _client._uniqueCounter.ShouldSend(unityLogMessage)
-                          && _client._logTypeCounter.ShouldSend(unityLogMessage);
-                        if (shouldSend)
-                        {
-                            var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();
-                            _client.Notify(exception, handledState, null);
-                        }
-                    });
+                        var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();
+                        _client.Notify(exception, handledState, null);
+                    }
                 }
                 if (_oldLogHandler != null)
                 {
@@ -279,7 +291,7 @@ namespace BugsnagUnity
             // Discard messages from the main thread as they will be reported separately
             if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
-                MainThreadDispatchBehaviour.Instance().Enqueue(()=>NotifyFromUnityLog(condition, stackTrace, logType));
+                NotifyFromUnityLog(condition, stackTrace, logType);
             }
         }
 
