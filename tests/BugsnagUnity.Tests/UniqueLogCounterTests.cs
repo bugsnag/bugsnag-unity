@@ -40,7 +40,7 @@ namespace BugsnagUnity.Tests
 
             counter.ShouldSend(message);
 
-            Thread.Sleep(configuration.SecondsPerUniqueLog + TimeSpan.FromSeconds(0.1f));
+            Thread.Sleep(configuration.SecondsPerUniqueLog);
 
             message = new UnityLogMessage("", "", LogType.Error);
 
