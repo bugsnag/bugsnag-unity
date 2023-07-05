@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD ()
+## 7.6.2 (2023-07-06)
 
 ## Bug Fixes
 
