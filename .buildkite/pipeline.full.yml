@@ -3,6 +3,10 @@ agents:
 
 steps:
 
+  # Note:
+  #  The basic pipeline handles Unity 2020, but doesn't include the building of test fixtures for WebGL, macOS and
+  #  Windows.  They are included here instead.
+
   # Build MacOS and WebGL test fixtures
   #
   - label: Build Unity 2018 MacOS and WebGL test fixtures
@@ -48,6 +52,30 @@ steps:
       - unity.log
       - features/fixtures/maze_runner/build/MacOS-2019.4.35f1.zip
       - features/fixtures/maze_runner/build/WebGL-2019.4.35f1.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2020 MacOS and WebGL test fixtures
+    timeout_in_minutes: 30
+    key: 'cocoa-webgl-2020-fixtures'
+    depends_on: 'build-artifacts'
+    env:
+      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      UNITY_VERSION: "2020.3.48f1"
+      # Python2 needed for WebGL to build
+      EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-macos-packages.sh
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/MacOS-2020.3.48f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2020.3.48f1.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -114,6 +142,24 @@ steps:
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
 
+  - label: Run MacOS e2e csharp tests
+    timeout_in_minutes: 60
+    depends_on: 'cocoa-webgl-2020-fixtures'
+    agents:
+      queue: macos-12-arm-unity
+    env:
+      UNITY_VERSION: "2020.3.48f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/MacOS-2020.3.48f1.zip
+        upload:
+          - maze_output/**/*
+          - Mazerunner.log
+          - maze_output/metrics.csv
+    commands:
+      - scripts/ci-run-macos-tests-csharp.sh
+
       # DISABLED Pending PLAT-9177
   # - label: Run MacOS e2e tests for Unity 2021
   #   timeout_in_minutes: 60
@@ -169,6 +215,25 @@ steps:
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e tests for Unity 2020
+    timeout_in_minutes: 30
+    depends_on: 'cocoa-webgl-2020-fixtures'
+    agents:
+      queue: opensource-mac-cocoa-11
+    env:
+      UNITY_VERSION: "2020.3.48f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2020.3.48f1.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh
@@ -675,6 +740,28 @@ steps:
         - exit_status: "*"
           limit: 1
 
+  - label: Build Unity 2020 Windows test fixture
+    timeout_in_minutes: 30
+    key: 'windows-2020-fixture'
+    depends_on: 'build-artifacts'
+    agents:
+      queue: windows-unity-wsl
+    env:
+      UNITY_VERSION: "2020.3.48f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - features/fixtures/maze_runner/build/Windows-2020.3.48f1.zip
+    commands:
+      - scripts/ci-build-windows-fixture-wsl.sh
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
   - label: Build Unity 2021 Windows test fixture
     timeout_in_minutes: 30
     key: 'windows-2021-fixture'
@@ -732,6 +819,24 @@ steps:
           - maze_output/**/*
           - maze_output/metrics.csv
     commands:
+      - scripts/ci-run-windows-tests-wsl.sh
+
+  - label: Run Windows e2e tests for Unity 2020
+    timeout_in_minutes: 30
+    depends_on: 'windows-2020-fixture'
+    agents:
+      queue: windows-general-wsl
+    env:
+      UNITY_VERSION: "2020.3.48f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2020.3.48f1.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+
+    command:
       - scripts/ci-run-windows-tests-wsl.sh
 
   - label: Run Windows e2e tests for Unity 2021
