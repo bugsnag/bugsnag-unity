@@ -56,7 +56,7 @@ namespace BugsnagUnity.Payload
 
         internal AppWithState(Configuration configuration) : base(configuration)
         {
-            Duration = TimeSpan.FromSeconds(Time.realtimeSinceStartup);
+            Duration = TimeSpan.FromSeconds(UnityEngine.Time.realtimeSinceStartup);
         }
 
     }
