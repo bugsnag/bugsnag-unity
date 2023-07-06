@@ -10,10 +10,19 @@ namespace BugsnagUnity
     {
         public UnityLogMessage(string condition, string stackTrace, LogType type)
         {
-            CreatedAt = DateTime.UtcNow;
+            CreatedAt = Time.ElapsedSeconds;
             Condition = condition;
             StackTrace = stackTrace;
             Type = type;
+        }
+
+
+        public UnityLogMessage(Exception exception)
+        {
+            CreatedAt = Time.ElapsedSeconds;
+            Condition = exception.Message == null ? string.Empty : exception.Message;
+            StackTrace = exception.StackTrace == null ? string.Empty : exception.StackTrace;
+            Type = LogType.Exception;
         }
 
         public string Condition { get; }
@@ -22,6 +31,8 @@ namespace BugsnagUnity
 
         public LogType Type { get; }
 
-        public DateTime CreatedAt { get; }
+        public double CreatedAt { get; }
+
+        
     }
 }
