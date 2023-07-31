@@ -511,7 +511,19 @@ namespace BugsnagUnity
                     {
                         continue;
                     }
-                    var sessionReport = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(sessionJson)).GetDictionary());
+
+                    Dictionary<string, object> payloadDictionary = null;
+
+                    try
+                    {
+                        payloadDictionary = ((JsonObject)SimpleJson.DeserializeObject(sessionJson)).GetDictionary();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(new Exception("Bugsnag Error. Deserialising a cached session for delivery failed: " + e.Message + " Cached json: " + sessionJson));
+                        continue;
+                    }
+                    var sessionReport = new SessionReport(_configuration, payloadDictionary);
                     Deliver(sessionReport);
                     yield return new WaitUntil(() => CachedPayloadProcessed(sessionReport.Id));
                 }
@@ -527,7 +539,20 @@ namespace BugsnagUnity
                     {
                         continue;
                     }
-                    var eventReport = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(eventJson)).GetDictionary());
+
+                    Dictionary<string, object> payloadDictionary = null;
+
+                    try
+                    {
+                        payloadDictionary = ((JsonObject)SimpleJson.DeserializeObject(eventJson)).GetDictionary();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(new Exception("Bugsnag Error. Deserialising a cached event for delivery failed: " + e.Message + " Cached json: " + eventJson));
+                        continue;
+                    }
+
+                    var eventReport = new Report(_configuration, payloadDictionary);
                     Deliver(eventReport);
                     yield return new WaitUntil(() => CachedPayloadProcessed(eventReport.Id));
                 }
