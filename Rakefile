@@ -313,7 +313,7 @@ namespace :plugin do
         end
       end
 
-      cd File.join("src", "BugsnagUnity", "bin", "Release", "net48") do
+      cd File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
         cp File.realpath("BugsnagUnity.dll"), assets_path
         windows_dir = File.join(assets_path, "Windows")        
         cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
