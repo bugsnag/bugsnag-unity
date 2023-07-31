@@ -15,17 +15,13 @@ def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
 def unity_directory
 
   if ENV.has_key? 'UNITY_VERSION'
-
     if is_mac?
     "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
     elsif is_windows?
       "C:\\Program Files\\Unity\\Hub\\Editor\\#{ENV['UNITY_VERSION']}"
     end
-
-  elsif ENV.has_key? "UNITY_DIR"
-    ENV["UNITY_DIR"]
   else
-    raise 'No unity directory set - use $UNITY_DIR or $UNITY_VERSION'
+    raise 'No unity version set - use $UNITY_VERSION'
   end
 end
 
@@ -194,7 +190,7 @@ namespace :plugin do
           # Define TARGET_OS* macros since they aren't added for static targets.
           case project_name
           when "bugsnag-tvos"
-            target = project.new_target(:static_library, "bugsnag-tvos", :tvos, "9.0")
+            target = project.new_target(:static_library, "bugsnag-tvos", :tvos, "9.2")
             target_macro = "-DTARGET_OS_TV"
 
             # Link UIKit during compilation
@@ -203,7 +199,7 @@ namespace :plugin do
               phase.add_file_reference file_ref
             end
           when "bugsnag-ios"
-            target = project.new_target(:static_library, "bugsnag-ios", :ios, "8.0")
+            target = project.new_target(:static_library, "bugsnag-ios", :ios, "9.0")
             target_macro = "-DTARGET_OS_IPHONE"
 
             # Link UIKit during compilation
@@ -212,7 +208,7 @@ namespace :plugin do
               phase.add_file_reference file_ref
             end
           when "bugsnag-osx"
-            target = project.new_target(:bundle, "bugsnag-osx", :osx, "10.8")
+            target = project.new_target(:bundle, "bugsnag-osx", :osx, "10.11")
             target_macro = "-DTARGET_OS_MAC"
           end
 
@@ -231,9 +227,12 @@ namespace :plugin do
 
           project.build_configurations.each do |build_configuration|
             build_configuration.build_settings["HEADER_SEARCH_PATHS"] = " $(SRCROOT)/Bugsnag/include/"
+
+            build_configuration.build_settings["GENERATE_INFOPLIST_FILE"] = "YES"
+
             if ["bugsnag-ios", "bugsnag-tvos"].include? project_name
               build_configuration.build_settings["ONLY_ACTIVE_ARCH"] = "NO"
-              build_configuration.build_settings["VALID_ARCHS"] = ["x86_64", "i386", "armv7", "arm64"]
+              build_configuration.build_settings["VALID_ARCHS"] = ["x86_64", "armv7", "arm64"]
             end
             case build_configuration.type
             when :debug
@@ -277,7 +276,6 @@ namespace :plugin do
             device_library = File.join("#{build_type}-#{long_name}os", library)
             simulator_dir = "#{build_type}-#{long_name}simulator"
             simulator_library = File.join(simulator_dir, library)
-            simulator_x86 = File.join(simulator_dir, "libBugsnagStatic-x86.a")
             simulator_x64 = File.join(simulator_dir, "libBugsnagStatic-x64.a")
             output_library = File.join(directory, library)
 
@@ -286,12 +284,9 @@ namespace :plugin do
             else
               simulator_x64 = simulator_library
             end
-            if short_name == "ios"
-              sh "lipo", "-extract", "i386", simulator_library, "-output", simulator_x86
-              sh "lipo", "-create", device_library, simulator_x86, simulator_x64, "-output", output_library
-            else
-              sh "lipo", "-create", device_library, simulator_x64, "-output", output_library
-            end
+       
+            sh "lipo", "-create", device_library, simulator_x64, "-output", output_library
+            
           end
         end
       end
