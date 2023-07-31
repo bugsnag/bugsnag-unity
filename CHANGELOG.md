@@ -4,16 +4,20 @@
 
 - Update bugsnag-cocoa from v6.26.2 to [v6.27.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6272-2023-07-24)
 
+### Bug Fixes
+
+- Handle exceptions thrown during deserialisation of a cached events and sessions and log the problematic json. [#731](https://github.com/bugsnag/bugsnag-unity/pull/731)
+
 ## 7.6.2 (2023-07-06)
 
-## Bug Fixes
+### Bug Fixes
 
 - Remove unnecessary usages of DateTimeOffset.Now to prevent iOS app hangs resulting from Unity native code accessing non-thread safe methods. [#725](https://github.com/bugsnag/bugsnag-unity/pull/725)
 
 
 ## 7.6.1 (2023-06-13)
 
-## Bug Fixes
+### Bug Fixes
 
 - Prevent callback to Unity from native layers for session and event callbacks if not used to avoid potential ANRs and improve performance. [#717](https://github.com/bugsnag/bugsnag-unity/pull/717)
 
