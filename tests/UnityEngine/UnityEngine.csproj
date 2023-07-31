@@ -10,7 +10,5 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <LangVersion>8.0</LangVersion>
-    <IntermediateOutputPath></IntermediateOutputPath>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
 </Project>
