@@ -501,39 +501,49 @@ namespace BugsnagUnity
 
         private IEnumerator DeliverCachedPayloads()
         {
-            var cachedSessionIds = _cacheManager.GetCachedSessionIds();
-            if (cachedSessionIds != null)
-            {
-                foreach (var sessionId in cachedSessionIds)
-                {
-                    var sessionJson = _cacheManager.GetCachedSession(sessionId);
-                    if (string.IsNullOrEmpty(sessionJson))
-                    {
-                        continue;
-                    }
-                    var sessionReport = new SessionReport(_configuration, ((JsonObject)SimpleJson.DeserializeObject(sessionJson)).GetDictionary());
-                    Deliver(sessionReport);
-                    yield return new WaitUntil(() => CachedPayloadProcessed(sessionReport.Id));
-                }
-            }
-
-            var cachedEvents = _cacheManager.GetCachedEventIds();
-            if (cachedEvents != null)
-            {
-                foreach (var eventId in cachedEvents)
-                {
-                    var eventJson = _cacheManager.GetCachedEvent(eventId);
-                    if (string.IsNullOrEmpty(eventJson))
-                    {
-                        continue;
-                    }
-                    var eventReport = new Report(_configuration, ((JsonObject)SimpleJson.DeserializeObject(eventJson)).GetDictionary());
-                    Deliver(eventReport);
-                    yield return new WaitUntil(() => CachedPayloadProcessed(eventReport.Id));
-                }
-            }
-
+            yield return ProcessCachedItems(typeof(SessionReport));
+            yield return ProcessCachedItems(typeof(Report));
             _cacheDeliveryInProcess = false;
+        }
+
+        private IEnumerator ProcessCachedItems(Type t)
+        {
+            bool isSession = t.Equals(typeof(SessionReport));
+            var cachedPayloads = isSession ? _cacheManager.GetCachedSessionIds() : _cacheManager.GetCachedEventIds();
+            if (cachedPayloads != null)
+            {
+                foreach (var id in cachedPayloads)
+                {
+                    var payloadJson = isSession ? _cacheManager.GetCachedSession(id) : _cacheManager.GetCachedEvent(id);
+                    if (string.IsNullOrEmpty(payloadJson))
+                    {
+                        continue;
+                    }
+
+                    Dictionary<string, object> payloadDictionary = null;
+
+                    try
+                    {
+                        payloadDictionary = ((JsonObject)SimpleJson.DeserializeObject(payloadJson)).GetDictionary();
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(new Exception("Bugsnag Error. Deserialising a cached payload for delivery failed: " + e.Message + " Cached json: " + payloadJson));
+                        continue;
+                    }
+
+                    if (isSession)
+                    {
+                        Deliver(new SessionReport(_configuration, payloadDictionary));
+                    }
+                    else
+                    {
+                        Deliver(new Report(_configuration, payloadDictionary));
+                    }
+                    
+                    yield return new WaitUntil(() => CachedPayloadProcessed(id));
+                }
+            }
         }
 
         private bool CachedPayloadProcessed(string id)
