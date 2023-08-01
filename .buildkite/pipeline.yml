@@ -12,7 +12,6 @@ steps:
     env:
       DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2018.4.36f1"
-      UNITY
     commands:
       - bundle install
       - bundle exec rake plugin:export
