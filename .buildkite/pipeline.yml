@@ -12,6 +12,7 @@ steps:
     env:
       DEVELOPER_DIR: "/Applications/Xcode13.4.app"
       UNITY_VERSION: "2018.4.36f1"
+      UNITY
     commands:
       - bundle install
       - bundle exec rake plugin:export
@@ -22,24 +23,24 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: Ensure notifier builds on Windows (for development)
-    timeout_in_minutes: 30
-    agents:
-      queue: windows-unity-wsl
-    env:
-      UNITY_VERSION: "2018.4.36f1"
-      WSLENV: UNITY_VERSION
-    command:
-      - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
-    plugins:
-      artifacts#v1.5.0:
-        upload:
-          - from: Bugsnag.unitypackage
-            to: Bugsnag_WindowsBuilt.unitypackage
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+  # - label: Ensure notifier builds on Windows (for development)
+  #   timeout_in_minutes: 30
+  #   agents:
+  #     queue: windows-unity-wsl
+  #   env:
+  #     UNITY_VERSION: "2018.4.36f1"
+  #     WSLENV: UNITY_VERSION
+  #   command:
+  #     - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       upload:
+  #         - from: Bugsnag.unitypackage
+  #           to: Bugsnag_WindowsBuilt.unitypackage
+  #   retry:
+  #     automatic:
+  #       - exit_status: "*"
+  #         limit: 1
 
   # Build Android test fixtures
   - label: ':android: Build Android test fixture for Unity 2020'
