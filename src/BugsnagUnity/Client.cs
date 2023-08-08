@@ -72,6 +72,10 @@ namespace BugsnagUnity
 
             public void LogException(System.Exception exception, UnityEngine.Object context)
             {
+                if (exception == null)
+                {
+                    return;
+                }
                 if (_config.AutoDetectErrors && LogType.Exception.IsGreaterThanOrEqualTo(_config.NotifyLogLevel))
                 {
                     var unityLogMessage = new UnityLogMessage(exception);

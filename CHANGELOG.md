@@ -2,6 +2,13 @@
 
 ## 7.6.3 (2023-08-03)
 
+### Bug Fixes
+
+- Add null guard in the Bugsnag exception handler. [#734](https://github.com/bugsnag/bugsnag-unity/pull/734)
+
+
+## 7.6.3 (2023-08-03)
+
 - Update bugsnag-cocoa from v6.26.2 to [v6.27.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6272-2023-07-24)
 
 ### Bug Fixes
