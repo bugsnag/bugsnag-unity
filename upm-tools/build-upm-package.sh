@@ -7,7 +7,7 @@ PROJECT_PATH=`pwd`/UPMImportProject
 SCRIPT_PATH=`pwd`
 PACKAGE_DIR=../upm-package
 
-# Check for unity version
+# Check for release version
 if [ -z "$1" ]
 then
   echo "ERROR: No Version Set, please pass a version string as the first argument"
@@ -16,12 +16,15 @@ fi
 
 VERSION=$1
 
-#check for the unity path
-if [ -z "$UNITY_PATH" ]
+if [ -z "$UNITY_VERSION" ]
 then
-  echo "UNITY_PATH must be set, to e.g. /Applications/Unity/Hub/Editor/2018.4.36f1/Unity.app/Contents/MacOS"
+  echo "UNITY_VERSION must be set"
   exit 1
 fi
+
+UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS"
+
+
 
 #Check for the release package
 echo "Checking for the release package"
