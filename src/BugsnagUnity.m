@@ -1,9 +1,9 @@
 #import "BugsnagInternals.h"
 
  struct bugsnag_user {
+        const char *user_email;
         const char *user_id;
         const char *user_name;
-        const char *user_email;
     };
 
 void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
