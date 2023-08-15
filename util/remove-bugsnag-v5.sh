@@ -12,7 +12,7 @@ cd $PROJECT_PATH
 
 find . -iname "*bugsnag*" -delete
 
-rm -f "Assets/Plugins/Android/kotlin-annotations.jar"
 rm -f "Assets/Plugins/Android/kotlin-stdlib-common.jar"
+rm -f "Assets/Plugins/Android/kotlin-annotations.jar"
 rm -f "Assets/Plugins/Android/kotlin-stdlib.jar"
 rm -r -f "Assets/Plugins/OSX/Bugsnag"
