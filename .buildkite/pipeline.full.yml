@@ -317,6 +317,26 @@ steps:
         - exit_status: "*"
           limit: 1
 
+  - label: ':android: Build Android test fixture for Unity 2022'
+    timeout_in_minutes: 30
+    key: 'build-android-fixture-2022'
+    depends_on: 'build-artifacts'
+    env:
+      UNITY_VERSION: "2022.3.2f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/maze_runner/mazerunner_2022.3.2f1.apk
+          - features/fixtures/build_android_apk.log
+    commands:
+      - rake test:android:build
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
   # - label: ':android: Build Android EDM test fixture for Unity 2021'
   #   timeout_in_minutes: 30
   #   key: 'build-edm-fixture-2021'
@@ -435,6 +455,37 @@ steps:
     concurrency_group: 'bitbar-app'
     concurrency_method: eager
 
+  - label: ':bitbar: :android: Run Android e2e tests for Unity 2022'
+    timeout_in_minutes: 60
+    depends_on: 'build-android-fixture-2022'
+    agents:
+      queue: opensource
+    env:
+      UNITY_VERSION: "2022.3.2f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_2022.3.2f1.apk"
+        upload:
+          - "maze_output/**/*"
+          - "maze_output/metrics.csv"
+      docker-compose#v4.7.0:
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
+        service-ports: true
+        command:
+          - "features/csharp"
+          - "features/android"
+          - "--app=features/fixtures/maze_runner/mazerunner_2022.3.2f1.apk"
+          - "--farm=bb"
+          - "--device=ANDROID_9|ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
+    concurrency_method: eager
+
   # - label: ':android: Run Android EDM e2e tests for Unity 2021'
   #   timeout_in_minutes: 60
   #   depends_on: 'build-edm-fixture-2021'
@@ -491,7 +542,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
-      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2018.4.36f1"
     plugins:
       artifacts#v1.5.0:
@@ -537,7 +588,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
-      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.5.0:
@@ -583,7 +634,7 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
-      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2021.3.27f1"
     plugins:
       artifacts#v1.5.0:
@@ -595,6 +646,52 @@ steps:
           - features/fixtures/unity.log
     commands:
       - tar -zxf project_2021.tgz features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ':ios: Generate Xcode project - Unity 2022'
+    timeout_in_minutes: 30
+    key: 'generate-fixture-project-2022'
+    depends_on: 'build-artifacts'
+    env:
+      UNITY_VERSION: "2022.3.2f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/unity.log
+          - project_2022.tgz
+    commands:
+      - rake test:ios:generate_xcode
+      - tar -zvcf project_2022.tgz features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ':ios: Build iOS test fixture for Unity 2022'
+    timeout_in_minutes: 30
+    key: 'build-ios-fixture-2022'
+    depends_on: 'generate-fixture-project-2022'
+    agents:
+      queue: macos-12-arm-unity
+    env:
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
+      UNITY_VERSION: "2022.3.2f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+          - project_2022.tgz
+        upload:
+          - features/fixtures/maze_runner/mazerunner_2022.3.2f1.ipa
+          - features/fixtures/unity.log
+    commands:
+      - tar -zxf project_2022.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
     retry:
       automatic:
@@ -684,6 +781,35 @@ steps:
           - "features/csharp"
           - "features/ios"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.3.27f1.ipa"
+          - "--farm=bb"
+          - "--device=IOS_12|IOS_13|IOS_14|IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: 'bitbar-app'
+    concurrency_method: eager
+
+- label: ':bitbar: :ios: Run iOS e2e tests for Unity 2022'
+    timeout_in_minutes: 60
+    depends_on: 'build-ios-fixture-2022'
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_2022.3.2f1.ipa"
+        upload:
+          - "maze_output/**/*"
+          - "maze_output/metrics.csv"
+      docker-compose#v4.7.0:
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
+        service-ports: true
+        command:
+          - "features/csharp"
+          - "features/ios"
+          - "--app=features/fixtures/maze_runner/mazerunner_2022.3.2f1.ipa"
           - "--farm=bb"
           - "--device=IOS_12|IOS_13|IOS_14|IOS_15"
           - "--no-tunnel"

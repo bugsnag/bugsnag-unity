@@ -1,12 +1,15 @@
+#if UNITY_IOS
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Callbacks;
+using UnityEditor.iOS.Xcode;
 
 public class DisablingBitcodeiOS
 {
-#if UNITY_IOS
+
     [PostProcessBuild(1000)]
     public static void PostProcessBuildAttribute(BuildTarget target, string pathToBuildProject)
     {
@@ -32,5 +35,7 @@ public class DisablingBitcodeiOS
             File.WriteAllText(projectPath, projectInString);
         }
     }
-#endif
+
 }
+
+#endif
