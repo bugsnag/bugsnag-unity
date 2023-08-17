@@ -9,7 +9,7 @@ using System.Text;
 
 namespace BugsnagUnity
 {
-    internal class DisposableContainer
+    internal class DisposableContainer : IDisposable
     {
         private List<IDisposable> _disposables = new List<IDisposable>();
 
@@ -679,25 +679,24 @@ namespace BugsnagUnity
             {
                 return;
             }
-            var disposableContainer = new DisposableContainer();
+            using var disposableContainer = new DisposableContainer();
             CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/Map;)V",
-            new object[] { section, DictionaryToJavaMap(metadata, ref disposableContainer) });
-            disposableContainer.Dispose();
+            new object[] { section, DictionaryToJavaMap(metadata, disposableContainer) });
         }
 
 
 
-        internal static AndroidJavaObject DictionaryToJavaMap(IDictionary<string, object> inputDict, ref DisposableContainer disposable)
+        internal static AndroidJavaObject DictionaryToJavaMap(IDictionary<string, object> inputDict, DisposableContainer disposables)
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
-            disposable.Add(map);
+            disposables.Add(map);
             if (inputDict != null)
             {
                 foreach (var entry in inputDict)
                 {
                     
                     var key = new AndroidJavaObject("java.lang.String", entry.Key);
-                    disposable.Add(key);
+                    disposables.Add(key);
                     if (entry.Value == null)
                     {
                         map.Call<AndroidJavaObject>("put", key, null);
@@ -706,24 +705,24 @@ namespace BugsnagUnity
                     {
                         if (entry.Value is IDictionary<string, object> dictionary)
                         {
-                            map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(dictionary, ref disposable));
+                            map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(dictionary, disposables));
                         }
                         else
                         {
                             var convertedDictionary = ConvertIfPoss(entry.Value);
                             if (convertedDictionary != null)
                             {
-                                map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(convertedDictionary, ref disposable));
+                                map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(convertedDictionary, disposables));
                             }
                         }
                     }
                     else if (IsListOrArray(entry.Value))
                     {
-                        map.Call<AndroidJavaObject>("put", key, GetJavaArrayListFromCollection(entry.Value, ref disposable));
+                        map.Call<AndroidJavaObject>("put", key, GetJavaArrayListFromCollection(entry.Value, disposables));
                     }
                     else
                     {
-                        map.Call<AndroidJavaObject>("put", key, GetAndroidObjectFromBasicObject(entry.Value, ref disposable));
+                        map.Call<AndroidJavaObject>("put", key, GetAndroidObjectFromBasicObject(entry.Value, disposables));
                     }
                 }
             }
@@ -758,19 +757,19 @@ namespace BugsnagUnity
             return (oType.IsGenericType && oType.GetGenericTypeDefinition() == typeof(List<>)) || oType.IsArray;
         }
 
-        private static AndroidJavaObject GetJavaArrayListFromCollection(object theObject, ref DisposableContainer disposableContainer)
+        private static AndroidJavaObject GetJavaArrayListFromCollection(object theObject, DisposableContainer disposableContainer)
         {
             var collection = (IEnumerable)theObject;
             var arrayList = new AndroidJavaObject("java.util.ArrayList");
             disposableContainer.Add(arrayList);
             foreach (var item in collection)
             {
-                arrayList.Call<Boolean>("add", GetAndroidObjectFromBasicObject(item, ref disposableContainer));
+                arrayList.Call<Boolean>("add", GetAndroidObjectFromBasicObject(item, disposableContainer));
             }
             return arrayList;
         }
 
-        private static AndroidJavaObject GetAndroidObjectFromBasicObject(object theObject, ref DisposableContainer disposableContainer)
+        private static AndroidJavaObject GetAndroidObjectFromBasicObject(object theObject, DisposableContainer disposableContainer)
         {
             if (theObject == null)
             {
@@ -825,11 +824,10 @@ namespace BugsnagUnity
             }
             if (PushLocalFrame())
             {
-                var disposableContrainer = new DisposableContainer();
-                var map = DictionaryToJavaMap(metadata, ref disposableContrainer);
+                using var disposableContrainer = new DisposableContainer();
+                var map = DictionaryToJavaMap(metadata, disposableContrainer);
                 CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
                         new object[] { name, type, map });
-                disposableContrainer.Dispose();                
                 PopLocalFrame();
             }
             if (!isAttached)
