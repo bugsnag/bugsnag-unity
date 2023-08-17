@@ -9,6 +9,27 @@ using System.Text;
 
 namespace BugsnagUnity
 {
+    internal class DisposableContainer : IDisposable
+    {
+        private List<IDisposable> _disposables = new List<IDisposable>();
+
+        public void Add(IDisposable disposable)
+        {
+            _disposables.Add(disposable);
+        }
+
+        public void Dispose()
+        {
+            for (int i = _disposables.Count - 1; i >= 0; i--)
+            {
+                if (_disposables[i] != null)
+                {
+                    _disposables[i].Dispose();
+                }
+            }
+        }
+    }
+
     class NativeInterface
     {
         private IntPtr BugsnagNativeInterface;
@@ -658,19 +679,26 @@ namespace BugsnagUnity
             {
                 return;
             }
-            CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/Map;)V",
-            new object[] { section, DictionaryToJavaMap(metadata) });           
+            using (var disposableContainer = new DisposableContainer())
+            {
+                CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/Map;)V",
+                new object[] { section, DictionaryToJavaMap(metadata, disposableContainer) });
+            }
         }
 
-        internal static AndroidJavaObject DictionaryToJavaMap(IDictionary<string, object> inputDict)
+
+
+        internal static AndroidJavaObject DictionaryToJavaMap(IDictionary<string, object> inputDict, DisposableContainer disposables)
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
+            disposables.Add(map);
             if (inputDict != null)
             {
                 foreach (var entry in inputDict)
                 {
+                    
                     var key = new AndroidJavaObject("java.lang.String", entry.Key);
-
+                    disposables.Add(key);
                     if (entry.Value == null)
                     {
                         map.Call<AndroidJavaObject>("put", key, null);
@@ -679,24 +707,24 @@ namespace BugsnagUnity
                     {
                         if (entry.Value is IDictionary<string, object> dictionary)
                         {
-                            map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(dictionary));
+                            map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(dictionary, disposables));
                         }
                         else
                         {
                             var convertedDictionary = ConvertIfPoss(entry.Value);
                             if (convertedDictionary != null)
                             {
-                                map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(convertedDictionary));
+                                map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(convertedDictionary, disposables));
                             }
                         }
                     }
                     else if (IsListOrArray(entry.Value))
                     {
-                        map.Call<AndroidJavaObject>("put", key, GetJavaArrayListFromCollection(entry.Value));
+                        map.Call<AndroidJavaObject>("put", key, GetJavaArrayListFromCollection(entry.Value, disposables));
                     }
                     else
                     {
-                        map.Call<AndroidJavaObject>("put", key, GetAndroidObjectFromBasicObject(entry.Value));
+                        map.Call<AndroidJavaObject>("put", key, GetAndroidObjectFromBasicObject(entry.Value, disposables));
                     }
                 }
             }
@@ -731,18 +759,19 @@ namespace BugsnagUnity
             return (oType.IsGenericType && oType.GetGenericTypeDefinition() == typeof(List<>)) || oType.IsArray;
         }
 
-        private static AndroidJavaObject GetJavaArrayListFromCollection(object theObject)
+        private static AndroidJavaObject GetJavaArrayListFromCollection(object theObject, DisposableContainer disposableContainer)
         {
             var collection = (IEnumerable)theObject;
             var arrayList = new AndroidJavaObject("java.util.ArrayList");
+            disposableContainer.Add(arrayList);
             foreach (var item in collection)
             {
-                arrayList.Call<Boolean>("add", GetAndroidObjectFromBasicObject(item));
+                arrayList.Call<Boolean>("add", GetAndroidObjectFromBasicObject(item, disposableContainer));
             }
             return arrayList;
         }
 
-        private static AndroidJavaObject GetAndroidObjectFromBasicObject(object theObject)
+        private static AndroidJavaObject GetAndroidObjectFromBasicObject(object theObject, DisposableContainer disposableContainer)
         {
             if (theObject == null)
             {
@@ -775,11 +804,13 @@ namespace BugsnagUnity
             }
             else
             {
-                return new AndroidJavaObject("java.lang.String", theObject.ToString());
+                var stringObj = new AndroidJavaObject("java.lang.String", theObject.ToString());
+                disposableContainer.Add(stringObj);
+                return stringObj;
             }
-
-            return new AndroidJavaObject(nativeClass, theObject);
-            
+            var androidObj = new AndroidJavaObject(nativeClass, theObject);
+            disposableContainer.Add(androidObj);
+            return androidObj;
         }
 
         public void LeaveBreadcrumb(string name, string type, IDictionary<string, object> metadata)
@@ -795,10 +826,11 @@ namespace BugsnagUnity
             }
             if (PushLocalFrame())
             {
-                using (AndroidJavaObject map = DictionaryToJavaMap(metadata))
+                using (var disposableContainer = new DisposableContainer())
                 {
+                    var map = DictionaryToJavaMap(metadata, disposableContainer);
                     CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
-                        new object[] { name, type, map });
+                            new object[] { name, type, map });
                 }
                 PopLocalFrame();
             }

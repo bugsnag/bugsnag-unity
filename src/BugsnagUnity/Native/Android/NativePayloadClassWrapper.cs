@@ -237,16 +237,18 @@ namespace BugsnagUnity
 
         public void SetNativeDictionary(string key,IDictionary<string, object> dict)
         {
-            using (var map = NativeInterface.DictionaryToJavaMap(dict))
+            using (var disposeableContainer = new DisposableContainer())
             {
-                NativePointer.Call(key,map);
+                var map = NativeInterface.DictionaryToJavaMap(dict, disposeableContainer);
+                NativePointer.Call(key, map);
             }
         }
 
         public void SetNativeMetadataSection(string key, string section, IDictionary<string, object> dict)
         {
-            using (var map = NativeInterface.DictionaryToJavaMap(dict))
+            using (var disposeableContainer = new DisposableContainer())
             {
+                var map = NativeInterface.DictionaryToJavaMap(dict, disposeableContainer);
                 NativePointer.Call(key, section, map);
             }
         }
