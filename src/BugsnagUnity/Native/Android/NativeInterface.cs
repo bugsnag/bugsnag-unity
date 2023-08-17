@@ -679,9 +679,11 @@ namespace BugsnagUnity
             {
                 return;
             }
-            using var disposableContainer = new DisposableContainer();
-            CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/Map;)V",
-            new object[] { section, DictionaryToJavaMap(metadata, disposableContainer) });
+            using (var disposableContainer = new DisposableContainer())
+            {
+                CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/Map;)V",
+                new object[] { section, DictionaryToJavaMap(metadata, disposableContainer) });
+            }
         }
 
 
@@ -824,10 +826,12 @@ namespace BugsnagUnity
             }
             if (PushLocalFrame())
             {
-                using var disposableContrainer = new DisposableContainer();
-                var map = DictionaryToJavaMap(metadata, disposableContrainer);
-                CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
-                        new object[] { name, type, map });
+                using (var disposableContainer = new DisposableContainer())
+                {
+                    var map = DictionaryToJavaMap(metadata, disposableContainer);
+                    CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
+                            new object[] { name, type, map });
+                }
                 PopLocalFrame();
             }
             if (!isAttached)
