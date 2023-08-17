@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.6.5 (2023-08-17)
+
+### Bug Fixes
+
+- Fix for Android memory leak. [#738](https://github.com/bugsnag/bugsnag-unity/pull/738)
+
+
 ## 7.6.4 (2023-08-09)
 
 ### Bug Fixes
