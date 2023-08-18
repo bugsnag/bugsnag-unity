@@ -102,6 +102,28 @@ steps:
         - exit_status: "*"
           limit: 1
 
+  - label: Build Unity 2022 MacOS and WebGL test fixtures
+    timeout_in_minutes: 30
+    key: "cocoa-webgl-2022-fixtures"
+    depends_on: "build-artifacts"
+    env:
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
+      UNITY_VERSION: "2022.3.2f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-macos-packages.sh
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/MacOS-2022.3.2f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2022.3.2f1.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
   #
   # Run macOS desktop tests
   #
@@ -159,23 +181,39 @@ steps:
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
 
-      # DISABLED Pending PLAT-9177
-  # - label: Run MacOS e2e tests for Unity 2021
-  #   timeout_in_minutes: 60
-  #   depends_on: 'cocoa-webgl-2021-fixtures'
-  #   agents:
-  #     queue: macos-12-arm-unity
-  #   env:
-  #     UNITY_VERSION: "2021.3.27f1"
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       download:
-  #         - features/fixtures/maze_runner/build/MacOS-2021.3.27f1.zip
-  #       upload:
-  #         - maze_output/**/*
-  #         - Mazerunner.log
-  #   commands:
-  #     - scripts/ci-run-macos-tests-csharp.sh
+  - label: Run MacOS e2e tests for Unity 2021
+    timeout_in_minutes: 60
+    depends_on: 'cocoa-webgl-2021-fixtures'
+    agents:
+      queue: macos-12-arm-unity
+    env:
+      UNITY_VERSION: "2021.3.27f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/MacOS-2021.3.27f1.zip
+        upload:
+          - maze_output/**/*
+          - Mazerunner.log
+    commands:
+      - scripts/ci-run-macos-tests-csharp.sh
+
+  - label: Run MacOS e2e tests for Unity 2022
+    timeout_in_minutes: 60
+    depends_on: 'cocoa-webgl-2022-fixtures'
+    agents:
+      queue: macos-12-arm-unity
+    env:
+      UNITY_VERSION: "2022.3.2f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/MacOS-2022.3.2f1.zip
+        upload:
+          - maze_output/**/*
+          - Mazerunner.log
+    commands:
+      - scripts/ci-run-macos-tests-csharp.sh
 
   #
   # Run WebGL tests
@@ -237,21 +275,35 @@ steps:
     commands:
       - scripts/ci-run-webgl-tests.sh
 
-      # DISABLED Pending PLAT-9177
-  # - label: Run WebGL e2e tests for Unity 2021
-  #   timeout_in_minutes: 30
-  #   depends_on: 'cocoa-webgl-2021-fixtures'
-  #   env:
-  #     UNITY_VERSION: "2021.3.27f1"
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       download:
-  #         - features/fixtures/maze_runner/build/WebGL-2021.3.27f1.zip
-  #       upload:
-  #         - maze_output/**/*
-  #   # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-  #   commands:
-  #     - scripts/ci-run-webgl-tests.sh
+  - label: Run WebGL e2e tests for Unity 2021
+    timeout_in_minutes: 30
+    depends_on: 'cocoa-webgl-2021-fixtures'
+    env:
+      UNITY_VERSION: "2021.3.27f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2021.3.27f1.zip
+        upload:
+          - maze_output/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e tests for Unity 2022
+    timeout_in_minutes: 30
+    depends_on: 'cocoa-webgl-2022-fixtures'
+    env:
+      UNITY_VERSION: "2022.3.2f1"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2022.3.2f1.zip
+        upload:
+          - maze_output/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh
 
   #
   # Build Android test fixtures
