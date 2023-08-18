@@ -163,7 +163,7 @@ steps:
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
 
-  - label: Run MacOS e2e csharp tests
+  - label: Run MacOS e2e tests for Unity 2020
     timeout_in_minutes: 60
     depends_on: "cocoa-webgl-2020-fixtures"
     agents:
