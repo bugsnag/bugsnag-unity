@@ -140,7 +140,7 @@ steps:
           - features/fixtures/maze_runner/build/MacOS-2018.4.36f1.zip
         upload:
           - maze_output/**/*
-          - Mazerunner.log
+          - '*-mazerunner.log'
           - maze_output/metrics.csv
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
@@ -158,7 +158,7 @@ steps:
           - features/fixtures/maze_runner/build/MacOS-2019.4.35f1.zip
         upload:
           - maze_output/**/*
-          - Mazerunner.log
+          - '*-mazerunner.log'
           - maze_output/metrics.csv
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
@@ -176,7 +176,7 @@ steps:
           - features/fixtures/maze_runner/build/MacOS-2020.3.48f1.zip
         upload:
           - maze_output/**/*
-          - Mazerunner.log
+          - '*-mazerunner.log'
           - maze_output/metrics.csv
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
@@ -212,7 +212,7 @@ steps:
           - features/fixtures/maze_runner/build/MacOS-2022.3.2f1.zip
         upload:
           - maze_output/**/*
-          - Mazerunner.log
+          - '*-mazerunner.log'
     commands:
       - scripts/ci-run-macos-tests-csharp.sh
 

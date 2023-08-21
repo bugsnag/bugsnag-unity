@@ -9,7 +9,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2018.4.36f1"
     commands:
       - bundle install
@@ -173,7 +173,7 @@ steps:
     key: "build-ios-fixture-2020"
     depends_on: "generate-fixture-project-2020"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
