@@ -7,6 +7,10 @@
 - Fix for Android memory leak. [#738](https://github.com/bugsnag/bugsnag-unity/pull/738)
 
 
+### Enhancements
+
+* Added `IsStarted` check method that returns false if start has not been called on the BugSnag client.
+
 ## 7.6.4 (2023-08-09)
 
 ### Bug Fixes
