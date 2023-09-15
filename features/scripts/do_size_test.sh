@@ -55,7 +55,7 @@ ls
 
 source ./features/scripts/build_xcode_project.sh features/fixtures/minimalapp/minimal_with_xcode with_bugsnag
 
-# cd features/fixtures/minimalapp
+cd features/fixtures/minimalapp
 
-# bundle install
-# bundle exec danger
+bundle install
+bundle exec danger
