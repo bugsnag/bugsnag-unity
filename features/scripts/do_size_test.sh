@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-if [ -z "$UNITY_PERFORMANCE_VERSION" ]
+if [ -z "$UNITY_VERSION" ]
 then
   echo "UNITY_PERFORMANCE_VERSION must be set"
   exit 1
 fi
 
-UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_PERFORMANCE_VERSION/Unity.app/Contents/MacOS"
+UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS"
 
 DEFAULT_CLI_ARGS="-quit -batchmode -nographics"
 
