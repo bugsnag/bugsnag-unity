@@ -10,11 +10,11 @@ Feature: csharp events
     And the exception "message" equals "InfiniteLaunchDuration"
     And the event "app.isLaunching" is true
 
-  Scenario: Check if IsStarted equals false
+  Scenario: Check if IsStarted equals true
     When I run the game in the "IsStarted" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "HasNotStarted"
+    And the exception "message" equals "IsStarted"
 
   Scenario: Call mark launch complete
     When I run the game in the "MarkLaunchComplete" state

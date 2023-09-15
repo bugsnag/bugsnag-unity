@@ -5,7 +5,6 @@ using BugsnagUnity;
 
 public class IsStarted : Scenario
 {
-
     public override void Run()
     {
         if (Bugsnag.IsStarted())
