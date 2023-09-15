@@ -34,6 +34,11 @@ namespace BugsnagUnity
             }
         }
 
+        public static bool IsStarted()
+        {
+            return InternalClient != null;
+        }
+
         private static Client InternalClient { get; set; }
 
         private static IClient Client => InternalClient;
