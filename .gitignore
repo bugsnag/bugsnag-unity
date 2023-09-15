@@ -43,3 +43,8 @@ Bugsnag.meta
 unity/PackageProject/Assets/Bugsnag
 nunit-agent*.log
 features/fixtures/maze_runner/Assets/Bugsnag
+*.log
+features/fixtures/minimalapp/Assets/Bugsnag
+features/fixtures/minimalapp/minimal_with_xcode
+features/fixtures/minimalapp/minimal_without_xcode
+features/fixtures/minimalapp/Packages
