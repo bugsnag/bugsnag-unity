@@ -4,7 +4,7 @@ gem 'rake'
 gem 'xcpretty'
 gem 'xcodeproj'
 
-gem 'bumpsnag', path: '/Users/amoinet/Desktop/bugsnag-tools/dep-updater'
+gem 'bumpsnag', git: 'https://github.com/bugsnag/bumpsnag', branch: 'initial-release'
 
 unless Gem.win_platform?
   # Use official Maze Runner release
