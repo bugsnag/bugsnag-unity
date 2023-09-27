@@ -467,20 +467,21 @@ namespace :dependencies do
       current_version = local_info[:parsed_latest_release]
       release_version = "#{current_version[:major]}.#{current_version[:minor] + 1}.0"
 
-      target_pr = local_info[:latest_pr] + 1
-      origin_repo = "https://github.com/#{local_info[:owner]}/#{local_info[:repo]}"
-      `sed -i '' "s/^var version = \".*\";/var version = \"$(#{release_version})\";/" build.cake`
+      `VERSION=#{release_version} make bump_cake`
 
+      target_pr = local_info[:latest_pr] + 1
+      origin_repo = local_info[:github_url]
       message = "Updated submodule: #{target_submodule} to release version: v#{release_version} [##{target_pr}](#{origin_repo}/pull/#{target_pr})"
 
       Bumpsnag.add_changelog_entry(message)
-
 
       release_branch = "bumpsnag-release-v#{release_version}"
 
       Bumpsnag.change_branch(release_branch, true)
       Bumpsnag.commit_changes(message, "v#{release_version}")
       Bumpsnag.push_changes(release_branch)
+    else
+      pp "Nothing was updated"
     end
   end
 end
