@@ -1,6 +1,7 @@
 require "open3"
 require "xcodeproj"
 require "rbconfig"
+require "bumpsnag"
 
 HOST_OS = RbConfig::CONFIG['host_os']
 def is_mac?; HOST_OS =~ /darwin/i; end
@@ -443,6 +444,43 @@ namespace :test do
     end
 
     task build: %w[test:ios:generate_xcode test:ios:build_xcode] do
+    end
+  end
+end
+
+namespace :dependencies do
+  task :update do
+    target_submodule = ENV['TARGET_SUBMODULE']
+    target_version = ENV['TARGET_VERSION']
+
+    local_info = Bumpsnag.get_git_info
+
+    if target_submodule.nil? || target_version.nil?
+      raise 'Submodule or version targets not provided, exiting'
+      exit(1)
+    end
+
+    pp "Updating submodule: #{target_submodule} to version: #{target_version}"
+    updated = Bumpsnag.update_submodule(target_submodule, target_version)
+
+    if updated
+      current_version = local_info[:parsed_latest_release]
+      release_version = "#{current_version[:major]}.#{current_version[:minor] + 1}.0"
+
+      target_pr = local_info[:latest_pr] + 1
+      origin_repo = "https://github.com/#{local_info[:owner]}/#{local_info[:repo]}"
+      `sed -i '' "s/^var version = \".*\";/var version = \"$(#{release_version})\";/" build.cake`
+
+      message = "Updated submodule: #{target_submodule} to release version: v#{release_version} [##{target_pr}](#{origin_repo}/pull/#{target_pr})"
+
+      Bumpsnag.add_changelog_entry(message)
+
+
+      release_branch = "bumpsnag-release-v#{release_version}"
+
+      Bumpsnag.change_branch(release_branch, true)
+      Bumpsnag.commit_changes(message, "v#{release_version}")
+      Bumpsnag.push_changes(release_branch)
     end
   end
 end
