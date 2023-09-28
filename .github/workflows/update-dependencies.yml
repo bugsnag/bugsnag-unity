@@ -1,0 +1,24 @@
+name: update-dependencies
+
+on:
+  repository_dispatch:
+    types: [update-dependencies]
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dep-updater
+
+      - name: Install ruby
+        uses: ruby/setup-ruby@v1
+          with:
+            ruby-version: 2.7
+            bundler-cache: true
+
+      - run: bundle exec rake dependencies:update
+        env:
+          TARGET_SUBMODULE: ${{ github.event.client_payload.target_submodule }}
+          TARGET_VERSION: ${{ github.event.client_payload.target_version }}
