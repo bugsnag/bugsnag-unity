@@ -443,7 +443,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: "bitbar-app"
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2019"
@@ -474,7 +474,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: "bitbar-app"
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
@@ -505,7 +505,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: "bitbar-app"
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2022"
@@ -536,7 +536,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: "bitbar-app"
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   # - label: ':android: Run Android EDM e2e tests for Unity 2021'
@@ -782,7 +782,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: "bitbar-app"
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2019"
@@ -811,7 +811,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: "bitbar-app"
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2021"
@@ -840,7 +840,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: "bitbar-app"
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2022"
@@ -869,7 +869,7 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: "bitbar-app"
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   #
