@@ -475,7 +475,7 @@ namespace :dependencies do
 
       Bumpsnag.add_changelog_entry(message)
 
-      release_branch = "bumpsnag-release-v#{release_version}"
+      release_branch = "bumpsnag-#{target_submodule}-#{target_version}"
 
       Bumpsnag.change_branch(release_branch, true)
       Bumpsnag.commit_changes(message, "v#{release_version}")

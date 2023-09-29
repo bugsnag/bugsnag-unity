@@ -7,6 +7,9 @@ on:
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest
+    env:
+      TARGET_SUBMODULE: ${{ github.event.client_payload.target_submodule }}
+      TARGET_VERSION: ${{ github.event.client_payload.target_version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -19,6 +22,13 @@ jobs:
           bundler-cache: true
 
       - run: bundle exec rake dependencies:update
+
+      - name: Create pull request
+        if: ${{ github.ref != 'refs/heads/dep-updater'}}
+        run: gh pr create -B dep_updater |
+         -H bumpsnag-${{ github.event.client_payload.target_submodule }}-${{ github.event.client_payload.target_version }} |
+         --title 'Update ${{github.event.client_payload.target_submodule }} to version ${{ github.event.client_payload.target_version }}'
+         --body 'Created by bumpsnag'
         env:
-          TARGET_SUBMODULE: ${{ github.event.client_payload.target_submodule }}
-          TARGET_VERSION: ${{ github.event.client_payload.target_version }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
