@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TARGET_SUBMODULE: bugsnag-cocoa
-      TARGET_VERSION: v6.0.1
+      TARGET_VERSION: v6.1.0
       BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
