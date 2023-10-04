@@ -29,8 +29,8 @@ jobs:
           bundler-cache: true
 
       - name: Setup git config
-        run: git config user.name "GitHub Actions Bot" |
-          git config user.email "<>"
+        run: git config --global user.name "GitHub Actions Bot" |
+          git config --global user.email "<>"
 
       - run: bundle exec rake dependencies:update
 
