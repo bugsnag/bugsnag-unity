@@ -19,6 +19,8 @@ jobs:
 
       - run: git fetch --prune --unshallow
 
+      - run: git submodule update --init --recursive
+
       - name: Install ruby
         uses: ruby/setup-ruby@v1
         with:
