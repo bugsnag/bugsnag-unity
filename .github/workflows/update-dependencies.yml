@@ -11,6 +11,7 @@ jobs:
     env:
       TARGET_SUBMODULE: bugsnag-cocoa
       TARGET_VERSION: v6.0.1
+      BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,9 +27,9 @@ jobs:
 
       - name: Create pull request
         if: ${{ github.ref != 'refs/heads/dep-updater'}}
-        run: gh pr create -B next |
-         -H bumpsnag-${{ github.event.client_payload.target_submodule }}-${{ github.event.client_payload.target_version }} |
-         --title 'Update ${{github.event.client_payload.target_submodule }} to version ${{ github.event.client_payload.target_version }}' |
+        run: gh pr create -B dep-updater |
+         -H bumpsnag-$TARGET_SUBMODULE-$TARGET_VERSION |
+         --title 'Update $TARGET_SUBMODULE to version $TARGET_VERSION' |
          --body 'Created by bumpsnag' |
          --reviewer cawllec
         env:
