@@ -17,6 +17,8 @@ jobs:
         with:
           ref: dep-updater
 
+      - run: git fetch --prune --unshallow
+
       - name: Install ruby
         uses: ruby/setup-ruby@v1
         with:
