@@ -18,6 +18,10 @@ jobs:
         with:
           ref: dep-updater
 
+      - run: |
+          git config --global user.name 'Bumpsnag bot'
+          git config --global user.email ''
+
       - run: git fetch --prune --unshallow
 
       - run: git submodule update --init --recursive
