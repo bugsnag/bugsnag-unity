@@ -480,6 +480,8 @@ namespace :dependencies do
       Bumpsnag.change_branch(release_branch, true)
       Bumpsnag.commit_changes(message, "v#{release_version}")
       Bumpsnag.push_changes(release_branch)
+
+      pp 'Update complete'
     else
       pp "Nothing was updated"
     end
