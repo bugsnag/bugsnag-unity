@@ -34,8 +34,12 @@ jobs:
 
       - run: bundle exec rake dependencies:update
 
+      - name: List current branch name
+        id: current-branch
+        run: git rev-parse --abbrev-ref HEAD >> $GITHUB_OUTPUT
+
       - name: Create pull request
-        if: ${{ git rev-parse --abbrev-ref HEAD != 'dep-updater'}}
+        if: ${{ steps.current-branch.outputs != 'dep-updater'}}
         run: gh pr create -B dep-updater |
          -H bumpsnag-$TARGET_SUBMODULE-$TARGET_VERSION |
          --title 'Update $TARGET_SUBMODULE to version $TARGET_VERSION' |
