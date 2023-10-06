@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/bugsnag/platforms-bumpsnag
-  revision: cbab06dc33bad9545688d86d744ad9915eb071bd
+  revision: 0454e1726b283f6f32c8d31b08d6b1659d792417
   branch: initial-release
   specs:
     bumpsnag (0.1.0)
