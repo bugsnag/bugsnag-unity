@@ -10,8 +10,8 @@ bump_cake:
 ifeq ($(VERSION),)
 		@$(error VERSION is not defined. Run with `make VERSION=number bump_cake`)
 endif
-	if [[ "$OSTYPE" == "darwin"* ]]; then
-		@sed -i '' "s/^var version = \".*\";/var version = \"$(VERSION)\";/" build.cake
-	else
-		@sed -i "s/^var version = \".*\";/var version = \"$(VERSION)\";/" build.cake
-	fi
+ifeq ($(OSTYPE), $(wildcard darwin*))
+	@sed -i '' "s/^var version = \".*\";/var version = \"$(VERSION)\";/" build.cake
+else
+	@sed -i "s/^var version = \".*\";/var version = \"$(VERSION)\";/" build.cake
+endif
