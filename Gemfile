@@ -4,11 +4,11 @@ gem 'rake'
 gem 'xcpretty'
 gem 'xcodeproj'
 
-gem 'bumpsnag', git: 'https://github.com/bugsnag/platforms-bumpsnag', branch: 'initial-release'
+gem 'bumpsnag', git: 'https://github.com/bugsnag/platforms-bumpsnag', branch: 'main'
 
 unless Gem.win_platform?
   # Use official Maze Runner release
-  # gem 'bugsnag-maze-runner', '~>8.0'
+  gem 'bugsnag-maze-runner', '~>8.0'
 
   # Use a specific Maze Runner branch
   # gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'master'
