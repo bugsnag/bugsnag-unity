@@ -43,6 +43,6 @@ jobs:
         run: >
          gh pr create -B dep-updater
          -H bumpsnag-$TARGET_SUBMODULE-$TARGET_VERSION
-         --title 'Update $TARGET_SUBMODULE to version $TARGET_VERSION'
+         --title "Update $(TARGET_SUBMODULE) to version $(TARGET_VERSION)"
          --body 'Created by bumpsnag'
          --reviewer cawllec
