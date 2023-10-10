@@ -465,20 +465,16 @@ namespace :dependencies do
 
     if updated
       current_version = local_info[:parsed_latest_release]
-      release_version = "#{current_version[:major]}.#{current_version[:minor] + 1}.0"
-
-      `VERSION=#{release_version} make bump_cake`
-
       target_pr = local_info[:latest_pr] + 1
       origin_repo = local_info[:github_url]
-      message = "Updated submodule: #{target_submodule} to release version: v#{release_version} [##{target_pr}](#{origin_repo}/pull/#{target_pr})"
+      message = "Updated submodule: #{target_submodule} to release version: v#{target_version} [##{target_pr}](#{origin_repo}/pull/#{target_pr})"
 
       Bumpsnag.add_changelog_entry(message)
 
       release_branch = "bumpsnag-#{target_submodule}-#{target_version}"
 
       Bumpsnag.change_branch(release_branch, true)
-      Bumpsnag.commit_changes(message, "v#{release_version}")
+      Bumpsnag.commit_changes(message)
       Bumpsnag.push_changes(release_branch)
 
       pp 'Update complete'
