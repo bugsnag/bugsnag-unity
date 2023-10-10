@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/bugsnag/platforms-bumpsnag
+  revision: 6c841f3e065584b7e3fb370229d58493e55555fc
+  branch: main
+  specs:
+    bumpsnag (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -141,6 +148,7 @@ PLATFORMS
 
 DEPENDENCIES
   bugsnag-maze-runner (~> 8.0)
+  bumpsnag!
   rake
   xcodeproj
   xcpretty
