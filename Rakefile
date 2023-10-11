@@ -464,17 +464,18 @@ namespace :dependencies do
     updated = Bumpsnag.update_submodule(target_submodule, target_version)
 
     if updated
-      current_version = local_info[:parsed_latest_release]
       target_pr = local_info[:latest_pr] + 1
-      origin_repo = local_info[:github_url]
-      message = "Updated submodule: #{target_submodule} to release version: v#{target_version} [##{target_pr}](#{origin_repo}/pull/#{target_pr})"
+      origin_repo = 'https://github.com/bugsnag/bugsnag-unity'
+      changelog_message = "Update #{target_submodule} to [##{target_version}](#{origin_repo}/pull/#{target_pr})"
 
-      Bumpsnag.add_changelog_entry(message)
+      Bumpsnag.add_changelog_entry(message, 'Dependencies')
 
       release_branch = "bumpsnag-#{target_submodule}-#{target_version}"
 
+      commit_message = "Update #{target_submodule} to #{target_version}"
+
       Bumpsnag.change_branch(release_branch, true)
-      Bumpsnag.commit_changes(message)
+      Bumpsnag.commit_changes(message, [target_submodule, 'CHANGELOG.md'])
       Bumpsnag.push_changes(release_branch)
 
       pp 'Update complete'
