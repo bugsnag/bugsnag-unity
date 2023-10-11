@@ -475,7 +475,7 @@ namespace :dependencies do
       commit_message = "Update #{target_submodule} to #{target_version}"
 
       Bumpsnag.change_branch(release_branch, true)
-      Bumpsnag.commit_changes(message, [target_submodule, 'CHANGELOG.md'])
+      Bumpsnag.commit_changes(commit_message, [target_submodule, 'CHANGELOG.md'])
       Bumpsnag.push_changes(release_branch)
 
       pp 'Update complete'
