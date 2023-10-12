@@ -1,16 +1,16 @@
 name: update-dependencies
 
 on:
-  push:
-    branches:
-      - 'dep-updater'
+  repository_dispatch:
+    types: [update-dependency]
+
 
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest
     env:
-      TARGET_SUBMODULE: bugsnag-cocoa
-      TARGET_VERSION: v6.1.0
+      TARGET_SUBMODULE: ${{ github.event.client_payload.target_submodule }}
+      TARGET_VERSION: ${{ github.event.client_payload.target_version }}
       BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_ACCESS_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -38,7 +38,7 @@ jobs:
           ruby-version: 2.7
 
       - name: Install dependencies
-        run: bundle install
+        run: bundle install --gemfile=.github/Gemfiles/update-dependencies.Gemfile
 
       - run: bundle exec rake dependencies:update
 
