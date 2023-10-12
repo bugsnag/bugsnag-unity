@@ -468,7 +468,7 @@ namespace :dependencies do
       origin_repo = 'https://github.com/bugsnag/bugsnag-unity'
       changelog_message = "Update #{target_submodule} to [##{target_version}](#{origin_repo}/pull/#{target_pr})"
 
-      Bumpsnag.add_changelog_entry(message, 'Dependencies')
+      Bumpsnag.add_changelog_entry(changelog_message, 'Dependencies')
 
       release_branch = "bumpsnag-#{target_submodule}-#{target_version}"
 
