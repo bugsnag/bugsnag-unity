@@ -38,7 +38,7 @@ jobs:
           ruby-version: 2.7
 
       - name: Install dependencies
-        run: bundle install --gemfile=.github/Gemfiles/update-dependencies.Gemfile
+        run: bundle install
 
       - run: bundle exec rake dependencies:update
 
