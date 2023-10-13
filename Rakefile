@@ -456,9 +456,6 @@ namespace :dependencies do
     target_submodule = ENV['TARGET_SUBMODULE']
     target_version = ENV['TARGET_VERSION']
 
-    local_info = Bumpsnag.get_git_info
-    target_info = Bumpsnag.get_git_info(target_submodule)
-
     if target_submodule.nil? || target_version.nil?
       raise 'Submodule or version targets not provided, exiting'
       exit(1)
@@ -468,6 +465,9 @@ namespace :dependencies do
     updated = Bumpsnag.update_submodule(target_submodule, target_version)
 
     if updated
+      local_info = Bumpsnag.get_git_info
+      target_info = Bumpsnag.get_git_info(target_submodule)
+
       target_pr = local_info[:latest_pr] + 1
       origin_repo = 'https://github.com/bugsnag/bugsnag-unity'
       target_repo = target_info[:origin]
@@ -478,7 +478,7 @@ namespace :dependencies do
 
       release_branch = "bumpsnag-#{target_submodule}-#{target_version}"
 
-      commit_message = "[full ci] Update #{target_submodule} to #{target_version}"
+      commit_message = "Update #{target_submodule} to #{target_version} [full ci]"
 
       Bumpsnag.change_branch(release_branch, true)
       Bumpsnag.commit_changes(commit_message, [target_submodule, 'CHANGELOG.md'])

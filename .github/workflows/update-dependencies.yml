@@ -3,14 +3,23 @@ name: update-dependencies
 on:
   repository_dispatch:
     types: [update-dependency]
-
+  workflow_dispatch:
+    inputs:
+      target_submodule:
+        description: 'Submodule to update'
+        required: true
+        type: string
+      target_version:
+        description: 'Version of the submodule to update to'
+        required: true
+        type: string
 
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest
     env:
-      TARGET_SUBMODULE: ${{ github.event.client_payload.target_submodule }}
-      TARGET_VERSION: ${{ github.event.client_payload.target_version }}
+      TARGET_SUBMODULE: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_submodule || inputs.target_submodule }}
+      TARGET_VERSION: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_version || inputs.target_submodule }}
       BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_ACCESS_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -47,10 +56,10 @@ jobs:
         run: echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_OUTPUT
 
       - name: Create pull request
-        if: ${{ steps.current-branch.outputs.branch != 'dep-updater'}}
+        if: ${{ steps.current-branch.outputs.branch != 'next'}}
         run: >
-         gh pr create -B dep-updater
+         gh pr create -B next
          -H bumpsnag-$TARGET_SUBMODULE-$TARGET_VERSION
          --title "Update $TARGET_SUBMODULE to version $TARGET_VERSION"
          --body 'Created by bumpsnag'
-         --reviewer cawllec
+         --reviewer rich-bugsnag
