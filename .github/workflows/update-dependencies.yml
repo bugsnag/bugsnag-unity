@@ -1,0 +1,65 @@
+name: update-dependencies
+
+on:
+  repository_dispatch:
+    types: [update-dependency]
+  workflow_dispatch:
+    inputs:
+      target_submodule:
+        description: 'Submodule to update'
+        required: true
+        type: string
+      target_version:
+        description: 'Version of the submodule to update to'
+        required: true
+        type: string
+
+jobs:
+  update-dependencies:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_SUBMODULE: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_submodule || inputs.target_submodule }}
+      TARGET_VERSION: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_version || inputs.target_submodule }}
+      BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_ACCESS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: next
+
+      - run: |
+          git config --global user.name 'Bumpsnag bot'
+          git config --global user.email ''
+
+      - run: git fetch --prune --unshallow
+
+      - run: git submodule update --init --recursive
+
+      - name: Install libcurl4-openssl-dev and net-tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install libcurl4-openssl-dev net-tools
+
+
+      - name: Install ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Install dependencies
+        run: bundle install
+
+      - run: bundle exec rake dependencies:update
+
+      - name: List current branch name
+        id: current-branch
+        run: echo "branch=$(git rev-parse --abbrev-ref HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Create pull request
+        if: ${{ steps.current-branch.outputs.branch != 'next'}}
+        run: >
+         gh pr create -B next
+         -H bumpsnag-$TARGET_SUBMODULE-$TARGET_VERSION
+         --title "Update $TARGET_SUBMODULE to version $TARGET_VERSION"
+         --body 'Created by bumpsnag'
+         --reviewer rich-bugsnag

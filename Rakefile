@@ -2,6 +2,10 @@ require "open3"
 require "xcodeproj"
 require "rbconfig"
 
+unless ENV['GITHUB_ACTIONS'].nil?
+  require "bumpsnag"
+end
+
 HOST_OS = RbConfig::CONFIG['host_os']
 def is_mac?; HOST_OS =~ /darwin/i; end
 def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
@@ -443,6 +447,46 @@ namespace :test do
     end
 
     task build: %w[test:ios:generate_xcode test:ios:build_xcode] do
+    end
+  end
+end
+
+namespace :dependencies do
+  task :update do
+    target_submodule = ENV['TARGET_SUBMODULE']
+    target_version = ENV['TARGET_VERSION']
+
+    if target_submodule.nil? || target_version.nil?
+      raise 'Submodule or version targets not provided, exiting'
+      exit(1)
+    end
+
+    pp "Updating submodule: #{target_submodule} to version: #{target_version}"
+    updated = Bumpsnag.update_submodule(target_submodule, target_version)
+
+    if updated
+      local_info = Bumpsnag.get_git_info
+      target_info = Bumpsnag.get_git_info(target_submodule)
+
+      target_pr = local_info[:latest_pr] + 1
+      origin_repo = 'https://github.com/bugsnag/bugsnag-unity'
+      target_repo = target_info[:origin]
+
+      changelog_message = "Update #{target_submodule} to [#{target_version}](#{target_repo}/releases/tag/#{target_version}) [##{target_pr}](#{origin_repo}/pull/#{target_pr})"
+
+      Bumpsnag.add_changelog_entry(changelog_message, 'Dependencies')
+
+      release_branch = "bumpsnag-#{target_submodule}-#{target_version}"
+
+      commit_message = "Update #{target_submodule} to #{target_version} [full ci]"
+
+      Bumpsnag.change_branch(release_branch, true)
+      Bumpsnag.commit_changes(commit_message, [target_submodule, 'CHANGELOG.md'])
+      Bumpsnag.push_changes(release_branch)
+
+      pp 'Update complete'
+    else
+      pp "Nothing was updated"
     end
   end
 end
