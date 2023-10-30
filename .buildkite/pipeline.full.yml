@@ -1,5 +1,5 @@
 agents:
-  queue: macos-12-arm-unity
+  queue: ms-arm-12-1
 
 steps:
   # Note:
