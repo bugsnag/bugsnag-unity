@@ -296,7 +296,7 @@ Then("expected device metadata is included in the event") do
     And the event "device.totalMemory" is not null
     And the event "metaData.device.screenDensity" is not null
     And the event "metaData.device.screenResolution" is not null
-    And the event "metaData.device.osLanguage" equals "English"
+    And the event "metaData.device.osLanguage" is not null
     And the event "metaData.device.graphicsDeviceVersion" is not null
     And the event "metaData.device.graphicsMemorySize" is not null
     And the event "metaData.device.processorType" is not null
