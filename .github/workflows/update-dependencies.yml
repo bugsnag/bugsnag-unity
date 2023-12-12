@@ -18,8 +18,8 @@ jobs:
   update-dependencies:
     runs-on: ubuntu-latest
     env:
-      TARGET_SUBMODULE: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_submodule || inputs.target_submodule }}
-      TARGET_VERSION: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_version || inputs.target_version }}
+      SUBMODULE: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_submodule || inputs.target_submodule }}
+      VERSION: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.target_version || inputs.target_version }}
       BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_ACCESS_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -62,4 +62,4 @@ jobs:
          -H bumpsnag-$TARGET_SUBMODULE-$TARGET_VERSION
          --title "Update $TARGET_SUBMODULE to version $TARGET_VERSION"
          --body 'Created by bumpsnag'
-         --reviewer rich-bugsnag
+         --reviewer richardelms
