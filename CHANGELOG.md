@@ -1,5 +1,8 @@
 # Changelog
 
+## 6.3.5 (2023-07-06)
+
+- Update bugsnag-cocoa from v6.16.1 to [v6.28.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6280-2023-12-13) (includes compliance with Apple's Required Reasons API  – see [online docs](https://docs.bugsnag.com/platforms/ios/appstore-privacy/#declaring-required-reasons-for-api-usage))
 
 ## 6.3.4 (2023-07-06)
 
