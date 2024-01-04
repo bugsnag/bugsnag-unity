@@ -1,0 +1,27 @@
+require 'fileutils'
+
+apk_size = `stat -f "%z" minimal_without_bugsnag.apk`.to_i
+
+apk_bugsnag_size = `stat -f "%z" minimal_with_bugsnag.apk`.to_i
+
+ipa_size = `stat -f "%z" without_bugsnag.ipa`.to_i
+
+ipa_bugsnag_size = `stat -f "%z" with_bugsnag.ipa`.to_i
+
+calculated_sizes = {
+  :apk => apk_bugsnag_size - apk_size,
+  :ipa => ipa_bugsnag_size - ipa_size
+}
+
+def format_kbs(size)
+  (size/1000.0).round(2)
+end
+
+markdown(%Q{
+  ### Build size impact
+
+  | Format           | Size impact of Bugsnag (kB)                   |
+  |------------------|-----------------------------------------------|
+  | IL2CPP APK       | #{format_kbs(calculated_sizes[:apk])}         |
+  | IL2CPP IPA       | #{format_kbs(calculated_sizes[:ipa])}         |
+})

@@ -1,11 +1,18 @@
 # Changelog
 
+## 7.7.0 (2024-01-04)
+
+### Enhancements
+
+- Added `IsStarted` check method that returns false if start has not been called on the BugSnag client.
+
+- Update bugsnag-cocoa from v6.27.2 to [v6.28.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6280-2023-12-13)
+
 ## 7.6.5 (2023-08-17)
 
 ### Bug Fixes
 
 - Fix for Android memory leak. [#738](https://github.com/bugsnag/bugsnag-unity/pull/738)
-
 
 ## 7.6.4 (2023-08-09)
 

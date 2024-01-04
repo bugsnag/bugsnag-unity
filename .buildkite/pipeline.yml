@@ -2,15 +2,14 @@ agents:
   queue: macos-12-arm-unity
 
 steps:
-
   #
   # Build notifier.  We run tests for all Unity versions with the 2018 artifacts, as that is what we ship.
   #
   - label: Build released notifier artifact
     timeout_in_minutes: 30
-    key: 'build-artifacts'
+    key: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2018.4.36f1"
     commands:
       - bundle install
@@ -41,11 +40,26 @@ steps:
   #       - exit_status: "*"
   #         limit: 1
 
+  - label: 'build size impact reporting'
+    timeout_in_minutes: 10
+    depends_on: build-artifacts
+    env:
+      UNITY_VERSION: "2020.3.48f1"
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
+    plugins:
+      'artifacts#v1.9.0':
+        download:
+          - Bugsnag.unitypackage
+    agents:
+      queue: macos-12-arm
+    commands:
+      features/scripts/do_size_test.sh
+
   # Build Android test fixtures
-  - label: ':android: Build Android test fixture for Unity 2020'
+  - label: ":android: Build Android test fixture for Unity 2020"
     timeout_in_minutes: 30
-    key: 'build-android-fixture-2020'
-    depends_on: 'build-artifacts'
+    key: "build-android-fixture-2020"
+    depends_on: "build-artifacts"
     env:
       UNITY_VERSION: "2020.3.48f1"
     plugins:
@@ -87,9 +101,9 @@ steps:
   #
   # Run Android tests
   #
-  - label: ':bitbar: :android: Run Android e2e tests for Unity 2020'
+  - label: ":bitbar: :android: Run Android e2e tests for Unity 2020"
     timeout_in_minutes: 60
-    depends_on: 'build-android-fixture-2020'
+    depends_on: "build-android-fixture-2020"
     agents:
       queue: opensource
     env:
@@ -115,9 +129,8 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: "bitbar"
     concurrency_method: eager
-
 
   # Run Android EDM tests
 
@@ -149,10 +162,10 @@ steps:
   #
   # Build iOS test fixtures
   #
-  - label: ':ios: Generate Xcode project - Unity 2020'
+  - label: ":ios: Generate Xcode project - Unity 2020"
     timeout_in_minutes: 30
-    key: 'generate-fixture-project-2020'
-    depends_on: 'build-artifacts'
+    key: "generate-fixture-project-2020"
+    depends_on: "build-artifacts"
     env:
       UNITY_VERSION: "2020.3.48f1"
     plugins:
@@ -170,12 +183,12 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: ':ios: Build iOS test fixture for Unity 2020'
+  - label: ":ios: Build iOS test fixture for Unity 2020"
     timeout_in_minutes: 30
-    key: 'build-ios-fixture-2020'
-    depends_on: 'generate-fixture-project-2020'
+    key: "build-ios-fixture-2020"
+    depends_on: "generate-fixture-project-2020"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode13.4.app"
+      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
@@ -196,9 +209,9 @@ steps:
   #
   # Run iOS tests
   #
-  - label: ':bitbar: :ios: Run iOS e2e tests for Unity 2020'
+  - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2020"
     timeout_in_minutes: 60
-    depends_on: 'build-ios-fixture-2020'
+    depends_on: "build-ios-fixture-2020"
     agents:
       queue: opensource
     plugins:
@@ -223,13 +236,12 @@ steps:
           - "--aws-public-ip"
           - "--fail-fast"
     concurrency: 25
-    concurrency_group: 'bitbar-app'
+    concurrency_group: "bitbar"
     concurrency_method: eager
 
   #
   # Conditionally trigger full pipeline
   #
-  - label: 'Conditionally trigger full set of tests'
+  - label: "Conditionally trigger full set of tests"
     timeout_in_minutes: 30
     command: sh -c .buildkite/pipeline_trigger.sh
-

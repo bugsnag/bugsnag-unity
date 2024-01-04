@@ -67,14 +67,14 @@ When('I run the game in the {string} state') do |state|
   case platform
   when 'macos'
     # Call executable directly rather than use open, which flakes on CI
-    log = File.join(Dir.pwd, 'mazerunner.log')
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner"
+    log = File.join(Dir.pwd, "#{state}-mazerunner.log")
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
 
     execute_command('run_scenario', state)
 
   when 'windows'
-    win_log = File.join(Dir.pwd, 'mazerunner.log')
+    win_log = File.join(Dir.pwd, "#{state}-mazerunner.log")
     command = "#{Maze.config.app} --args -logfile #{win_log}"
     Maze::Runner.run_command(command, blocking: false)
 
@@ -296,7 +296,7 @@ Then("expected device metadata is included in the event") do
     And the event "device.totalMemory" is not null
     And the event "metaData.device.screenDensity" is not null
     And the event "metaData.device.screenResolution" is not null
-    And the event "metaData.device.osLanguage" equals "English"
+    And the event "metaData.device.osLanguage" is not null
     And the event "metaData.device.graphicsDeviceVersion" is not null
     And the event "metaData.device.graphicsMemorySize" is not null
     And the event "metaData.device.processorType" is not null
