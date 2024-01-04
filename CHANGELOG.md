@@ -1,6 +1,6 @@
 # Changelog
 
-## 7.7.0
+## 7.7.0 (2024-01-04)
 
 ### Enhancements
 
