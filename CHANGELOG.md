@@ -1,12 +1,10 @@
 # Changelog
 
-## TBD
+## 7.7.0
 
 ### Enhancements
 
-* Added `IsStarted` check method that returns false if start has not been called on the BugSnag client.
-
-## TBD
+- Added `IsStarted` check method that returns false if start has not been called on the BugSnag client.
 
 - Update bugsnag-cocoa from v6.27.2 to [v6.28.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6280-2023-12-13)
 
