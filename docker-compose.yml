@@ -36,7 +36,7 @@ services:
       - ./maze_output:/app/maze_output
 
   maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v8-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:appium-pull-file-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
