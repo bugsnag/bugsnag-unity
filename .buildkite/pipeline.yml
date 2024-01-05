@@ -29,7 +29,7 @@ steps:
     key: 'cocoa-webgl-2020-fixtures'
     depends_on: 'build-artifacts'
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -38,8 +38,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2020.3.32f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2020.3.32f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2020.3.48f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2020.3.48f1.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -54,11 +54,11 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2020.3.32f1.zip
+          - features/fixtures/maze_runner/build/MacOS-2020.3.48f1.zip
         upload:
           - maze_output/**/*
           - Mazerunner.log
@@ -76,11 +76,11 @@ steps:
     agents:
       queue: opensource-mac-cocoa-11
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2020.3.32f1.zip
+          - features/fixtures/maze_runner/build/WebGL-2020.3.48f1.zip
         upload:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
@@ -95,38 +95,16 @@ steps:
     key: 'build-android-fixture-2020'
     depends_on: 'build-artifacts'
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk
+          - features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk
           - features/fixtures/unity.log
     commands:
       - rake test:android:build
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
-
-  - label: ':android: Build Android EDM test fixture for Unity 2020'
-    timeout_in_minutes: 30
-    key: 'build-edm-fixture-2020'
-    depends_on: 'build-artifacts'
-    env:
-      UNITY_VERSION: "2020.3.32f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - Bugsnag.unitypackage
-        upload:
-          - features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk
-          - features/scripts/mobile/buildEdmFixture.log
-          - features/scripts/mobile/edmImport.log
-          - features/scripts/mobile/enableEdm.log
-    commands:
-      - rake test:edm:build
     retry:
       automatic:
         - exit_status: "*"
@@ -141,18 +119,18 @@ steps:
     agents:
       queue: opensource
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk"
         upload:
           - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.apk"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk"
           - "--farm=bs"
           - "--device=ANDROID_9_0"
           - "features/android"
@@ -160,30 +138,7 @@ steps:
     concurrency_group: browserstack-app
     concurrency_method: eager
 
-  - label: ':android: Run Android EDM e2e tests for Unity 2020'
-    timeout_in_minutes: 30
-    depends_on: 'build-edm-fixture-2020'
-    agents:
-      queue: opensource
-    env:
-      UNITY_VERSION: "2020.3.32f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - "features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk"
-        upload:
-          - "maze_output/**/*"
-      docker-compose#v3.7.0:
-        pull: maze-runner
-        run: maze-runner
-        command:
-          - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.3.32f1.apk"
-          - "--farm=bs"
-          - "--device=ANDROID_9_0"
-          - "features/edm"
-    concurrency: 9
-    concurrency_group: browserstack-app
-    concurrency_method: eager
+  
 
   #
   # Build iOS test fixtures
@@ -193,7 +148,7 @@ steps:
     key: 'generate-fixture-project-2020'
     depends_on: 'build-artifacts'
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -214,14 +169,14 @@ steps:
     key: 'build-ios-fixture-2020'
     depends_on: 'generate-fixture-project-2020'
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2020.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa
           - features/fixtures/unity.log
     commands:
       - tar -zxf project_2020.tgz features/fixtures/maze_runner
@@ -242,14 +197,14 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa"
         upload:
           - "maze_output/**/*"
       docker-compose#v3.7.0:
         pull: maze-runner
         run: maze-runner
         command:
-          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.32f1.ipa"
+          - "--app=/app/features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa"
           - "--farm=bs"
           - "--device=IOS_14"
           - "--fail-fast"
@@ -268,12 +223,12 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
     commands:
       - scripts/ci-build-windows-package.bat
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/Windows-2020.3.32f1.zip
+      - features/fixtures/maze_runner/build/Windows-2020.3.48f1.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -288,7 +243,7 @@ steps:
     agents:
       queue: opensource-windows-unity
     env:
-      UNITY_VERSION: "2020.3.32f1"
+      UNITY_VERSION: "2020.3.48f1"
       WSLENV: "UNITY_VERSION"
     command:
       - scripts/ci-run-windows-tests.bat
