@@ -1,17 +1,4 @@
-#import "Bugsnag.h"
-#import "BugsnagConfiguration+Private.h"
-#import "BugsnagLogger.h"
-#import "BugsnagUser.h"
-#import "BugsnagNotifier.h"
-#import "BugsnagSessionTracker.h"
-#import "Bugsnag+Private.h"
-#import "BugsnagClient+Private.h"
-#import "BSG_KSSystemInfo.h"
-#import "BSG_KSMach.h"
-#import "BSG_KSCrash.h"
-#import "BSG_RFC3339DateTool.h"
-#import "BugsnagBreadcrumb+Private.h"
-#import "BugsnagSession+Private.h"
+#import "BugsnagInternals.h"
 
  struct bugsnag_user {
         const char *user_id;
@@ -19,15 +6,25 @@
         const char *user_email;
     };
 
-const char * getMetadataJson(NSDictionary* dictionary){
+void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
+  if (notifierVersion) {
+    ((__bridge BugsnagConfiguration *)configuration).notifier =
+      [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
+                                    version:@(notifierVersion)
+                                        url:@"https://github.com/bugsnag/bugsnag-unity"
+                               dependencies:@[[[BugsnagNotifier alloc] init]]];
+  }
+  [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
+  // Memory introspection is unused in a C/C++ context
+}
 
-    if (!dictionary) {
+static const char * getJson(id obj) {
+    if (!obj) {
         return NULL;
     }
-
     @try {
         NSError *error = nil;
-        NSData *data = [NSJSONSerialization dataWithJSONObject:dictionary options:0 error:&error];
+        NSData *data = [NSJSONSerialization dataWithJSONObject:obj options:0 error:&error];
         if (data) {
             return strndup((const char *)data.bytes, data.length);
         } else {
@@ -69,9 +66,21 @@ NSDictionary * getDictionaryFromMetadataJson(const char * jsonString){
     return nil;
 }
 
+static NSString * stringFromDate(NSDate *date) {
+  static NSDateFormatter *dateFormatter;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    dateFormatter = [NSDateFormatter new];
+    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'";
+  });
+  return [date isKindOfClass:[NSDate class]] ? [dateFormatter stringFromDate:date] : nil;
+}
+
 const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
     NSDictionary* sectionDictionary = [((__bridge BugsnagEvent *)event) getMetadataFromSection:@(tab)];
-    return getMetadataJson(sectionDictionary);
+    return getJson(sectionDictionary);
 }
 
 void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key){
@@ -196,9 +205,20 @@ void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, voi
     free(c_array);
 }
 
+const char * bugsnag_getFeatureFlagsFromEvent(BugsnagEvent *event) {
+    NSMutableArray *array = [NSMutableArray array];
+    for (BugsnagFeatureFlag *flag in event.featureFlags) {
+        [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                          flag.name, @"featureFlag",
+                          flag.variant, @"variant",
+                          nil]];
+    }
+    return getJson(array);
+}
+
 const char * bugsnag_getBreadcrumbMetadata(const void *breadcrumb) {
     NSDictionary* sectionDictionary = ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata;
-    return getMetadataJson(sectionDictionary);
+    return getJson(sectionDictionary);
 }
 
 void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonString) {
@@ -351,37 +371,23 @@ void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callba
     }];
 }
 
+// Called when a C# error is reported in order to keep handledCount and unhandledCount in sync
 void bugsnag_registerSession(char *sessionId, long startedAt, int unhandledCount, int handledCount) {
-    BugsnagSessionTracker *tracker = Bugsnag.client.sessionTracker;
-    [tracker registerExistingSession:sessionId == NULL ? nil : [NSString stringWithUTF8String:sessionId]
-                           startedAt:[NSDate dateWithTimeIntervalSince1970:(NSTimeInterval)startedAt]
-                                user:Bugsnag.user
-                        handledCount:(NSUInteger)handledCount
-                      unhandledCount:(NSUInteger)unhandledCount];
+    [Bugsnag.client updateSession:^(BugsnagSession * _Nullable session) {
+        session.handledCount = (NSUInteger)handledCount;
+        session.unhandledCount = (NSUInteger)unhandledCount;
+        return session;
+    }];
 }
 
-void bugsnag_retrieveCurrentSession(const void *session, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
-    if([Bugsnag client].sessionTracker.runningSession == NULL)
-    {
-      callback(session, NULL, NULL, 0, 0);
-      return;
-    }
-    NSDictionary * sessionDict = [[Bugsnag client].sessionTracker.runningSession toDictionary];
-    const char *sessionId = [[sessionDict objectForKey:@"id"] UTF8String];
-    const char *timeString = [[sessionDict objectForKey:@"startedAt"] UTF8String];
-    int handled = [sessionDict[@"handledCount"] integerValue];
-    int unhandled = [sessionDict[@"unhandledCount"] integerValue];
-    callback(session, sessionId, timeString, handled, unhandled);
+void bugsnag_retrieveCurrentSession(const void *ptr, void (*callback)(const void *instance, const char *sessionId, const char *startedAt, int handled, int unhandled)) {
+    BugsnagSession *session = Bugsnag.client.session;
+    NSString *startedAt = stringFromDate(session.startedAt);
+    callback(ptr, session.id.UTF8String, startedAt.UTF8String, (int)session.handledCount, (int)session.unhandledCount);
 }
 
 void bugsnag_markLaunchCompleted() {
   [Bugsnag markLaunchCompleted];
-}
-
-void bugsnag_registerForSessionCallbacksAfterStart(bool (*callback)(void *session)){
-    [Bugsnag addOnSessionBlock:^BOOL (BugsnagSession *session) {    
-        return callback((__bridge void *)session);
-    }];
 }
 
 void *bugsnag_createConfiguration(char *apiKey) {
@@ -508,7 +514,7 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
         const char *enabledType = types[i];
         if (enabledType != nil) {
 
-			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
+            NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"Navigation"])
             {
@@ -542,6 +548,25 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
       }
 }
 
+void bugsnag_setEnabledTelemetryTypes(const void *configuration, const char *types[], int count){
+    if(types == NULL)
+    {
+        return;
+    }
+
+    ((__bridge BugsnagConfiguration *)configuration).telemetry = 0;
+    for (int i = 0; i < count; i++) {
+        const char *enabledType = types[i];
+        if (enabledType != nil) {
+            NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
+            if([typeString isEqualToString:@"InternalErrors"])
+            {
+                ((__bridge BugsnagConfiguration *)configuration).telemetry |= BSGTelemetryInternalErrors;
+            }
+        }
+    }
+}
+
 void bugsnag_setThreadSendPolicy(const void *configuration, char *threadSendPolicy){
     NSString *ns_threadSendPolicy = [[NSString alloc] initWithUTF8String:threadSendPolicy];
     if([ns_threadSendPolicy isEqualToString:@"Always"])
@@ -573,7 +598,7 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
         const char *enabledType = types[i];
         if (enabledType != nil) {
 
-			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
+            NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"AppHangs"])
             {
@@ -662,7 +687,7 @@ void bugsnag_setMetadata(const char *section, const char *jsonString) {
 }
 
 const char * bugsnag_retrieveMetaData() {
-    return getMetadataJson([Bugsnag.client metadata].dictionary);
+    return getJson([Bugsnag.client metadata].dictionary);
 }
 
 void bugsnag_removeMetadata(const void *configuration, const char *tab) {
@@ -673,59 +698,31 @@ void bugsnag_removeMetadata(const void *configuration, const char *tab) {
   [Bugsnag.client clearMetadataFromSection:tabName];
 }
 
-void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
-  if (notifierVersion) {
-    ((__bridge BugsnagConfiguration *)configuration).notifier =
-      [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
-                                    version:@(notifierVersion)
-                                        url:@"https://github.com/bugsnag/bugsnag-unity"
-                               dependencies:@[[[BugsnagNotifier alloc] init]]];
-  }
-  [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
-  // Memory introspection is unused in a C/C++ context
-}
-
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadataJson) {
-  NSString *ns_message = [NSString stringWithUTF8String: message == NULL ? "<empty>" : message];
-  [Bugsnag.client addBreadcrumbWithBlock:^(BugsnagBreadcrumb *crumb) {
-      crumb.message = ns_message;
-      crumb.type = BSGBreadcrumbTypeFromString([NSString stringWithUTF8String:type]);
-      if (metadataJson != NULL) {
-        crumb.metadata = getDictionaryFromMetadataJson(metadataJson);
-      }
-  }];
+  [Bugsnag leaveBreadcrumbWithMessage:message ? @(message) : @"<empty>"
+                             metadata:metadataJson ? getDictionaryFromMetadataJson(metadataJson) : nil
+                              andType:BSGBreadcrumbTypeFromString(@(type))];
 }
 
 void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *metadataJson)) {
   [Bugsnag.breadcrumbs enumerateObjectsUsingBlock:^(BugsnagBreadcrumb *crumb, __unused NSUInteger index, __unused BOOL *stop){
     const char *message = [crumb.message UTF8String];
-    const char *timestamp = [[BSG_RFC3339DateTool stringFromDate:crumb.timestamp] UTF8String];
+    const char *timestamp = stringFromDate(crumb.timestamp).UTF8String;
     const char *type = [BSGBreadcrumbTypeValue(crumb.type) UTF8String];
 
     NSDictionary *metadata = crumb.metadata;
-    breadcrumb(managedBreadcrumbs, message, timestamp, type, getMetadataJson(metadata));
+    breadcrumb(managedBreadcrumbs, message, timestamp, type, getJson(metadata));
 
   }];
 }
 
 void bugsnag_retrieveAppData(const void *appData, void (*callback)(const void *instance, const char *key, const char *value)) {
-  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
-
-  NSString *bundleVersion = [Bugsnag configuration].bundleVersion ?: sysInfo[@BSG_KSSystemField_BundleVersion];
-  callback(appData, "bundleVersion", [bundleVersion UTF8String]);
-
-  callback(appData, "id", [sysInfo[@BSG_KSSystemField_BundleID] UTF8String]);
-
-  NSString *appType = [Bugsnag configuration].appType ?: sysInfo[@BSG_KSSystemField_SystemName];
-  callback(appData, "type", [appType UTF8String]);
-
-  NSString *version = [Bugsnag configuration].appVersion ?: sysInfo[@BSG_KSSystemField_BundleShortVersion];
-  callback(appData, "version", [version UTF8String]);
-
-  BugsnagAppWithState *app = [[Bugsnag client] generateAppWithState:sysInfo];
-  NSString *isLaunching = app.isLaunching ? @"true" : @"false";
-  callback(appData, "isLaunching", [isLaunching UTF8String]);
-
+  BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
+  callback(appData, "bundleVersion", app.bundleVersion.UTF8String);
+  callback(appData, "id", app.id.UTF8String);
+  callback(appData, "isLaunching", strdup(app.isLaunching ? "true" : "false"));
+  callback(appData, "type", app.type.UTF8String);
+  callback(appData, "version", app.version.UTF8String);
 }
 
 void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)) {
@@ -739,39 +736,22 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
 }
 
 void bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
-  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
-
-  NSFileManager *fileManager = [NSFileManager defaultManager];
-
-  NSError *error;
-  NSDictionary *fileSystemAttrs = [fileManager attributesOfFileSystemForPath:NSHomeDirectory() error:&error];
-
-  if (error) {
-      bsg_log_warn(@"Failed to read free disk space: %@", error);
-  }
-
-  NSNumber *freeBytes = [fileSystemAttrs objectForKey:NSFileSystemFreeSize];
-  callback(deviceData, "freeDisk", [[freeBytes stringValue] UTF8String]);
-
-  uint64_t freeMemory = bsg_ksmachfreeMemory();
-  char buff[30];
-  sprintf(buff, "%lld", freeMemory);
-  callback(deviceData, "freeMemory", buff);
-
-  callback(deviceData, "id", [sysInfo[@BSG_KSSystemField_DeviceAppHash] UTF8String]);
-  callback(deviceData, "jailbroken", [[sysInfo[@BSG_KSSystemField_Jailbroken] stringValue] UTF8String]);
-  callback(deviceData, "locale", [[[NSLocale currentLocale] localeIdentifier] UTF8String]);
-  callback(deviceData, "manufacturer", "Apple");
-  callback(deviceData, "model", [sysInfo[@BSG_KSSystemField_Machine] UTF8String]);
-  callback(deviceData, "modelNumber", [sysInfo[@BSG_KSSystemField_Model] UTF8String]);
-  callback(deviceData, "osName", [sysInfo[@BSG_KSSystemField_SystemName] UTF8String]);
-  callback(deviceData, "osVersion", [sysInfo[@BSG_KSSystemField_SystemVersion] UTF8String]);
-  callback(deviceData, "osBuild", [sysInfo[@BSG_KSSystemField_OSVersion] UTF8String]);
+  BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
+  callback(deviceData, "freeDisk", device.freeDisk.stringValue.UTF8String);
+  callback(deviceData, "freeMemory", device.freeMemory.stringValue.UTF8String);
+  callback(deviceData, "id", device.id.UTF8String);
+  callback(deviceData, "jailbroken", strdup(device.jailbroken ? "1" : "0"));
+  callback(deviceData, "locale", device.locale.UTF8String);
+  callback(deviceData, "manufacturer", device.manufacturer.UTF8String);
+  callback(deviceData, "model", device.model.UTF8String);
+  callback(deviceData, "modelNumber", device.modelNumber.UTF8String);
+  callback(deviceData, "osBuild", device.runtimeVersions[@"osBuild"].UTF8String);
+  callback(deviceData, "osName", device.osName.UTF8String);
+  callback(deviceData, "osVersion", device.osVersion.UTF8String);
 }
 
 void bugsnag_populateUser(struct bugsnag_user *user) {
-  NSDictionary *sysInfo = [BSG_KSSystemInfo systemInfo];
-  user->user_id = [sysInfo[@BSG_KSSystemField_DeviceAppHash] UTF8String];
+  user->user_id = BSGGetDefaultDeviceId().UTF8String;
 }
 
 void bugsnag_setUser(char *userId, char *userEmail, char *userName) {
