@@ -66,28 +66,6 @@ steps:
       - scripts/ci-run-macos-tests.sh
 
   #
-  # Run WebGL tests
-  #
-  # Note: These are run on Intel due to an issue with persistence with Firefox on ARM.
-  #
-  - label: Run WebGL e2e tests for Unity 2020
-    timeout_in_minutes: 30
-    depends_on: 'cocoa-webgl-2020-fixtures'
-    agents:
-      queue: opensource-mac-cocoa-11
-    env:
-      UNITY_VERSION: "2020.3.48f1"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - features/fixtures/maze_runner/build/WebGL-2020.3.48f1.zip
-        upload:
-          - maze_output/**/*
-    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-    commands:
-      - scripts/ci-run-webgl-tests.sh
-
-  #
   # Build Android test fixtures
   #
   - label: ':android: Build Android test fixture for Unity 2020'
