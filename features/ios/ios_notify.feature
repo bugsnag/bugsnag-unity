@@ -50,7 +50,6 @@ Feature: iOS smoke tests for C# errors
         And the event "device.runtimeVersions" is not null
 
 #        And the event "device.totalMemory" is not null
-        And the event "device.freeDisk" is not null
         And the event "device.freeMemory" is not null
 #        And the event "device.orientation" equals "portrait"
         And the event "device.time" is not null

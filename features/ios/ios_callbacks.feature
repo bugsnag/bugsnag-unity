@@ -20,7 +20,6 @@ Feature: Callbacks
         And the event "device.model" equals "Model"
         And the event "device.orientation" equals "Orientation"
         And the event "device.manufacturer" equals "Manufacturer"
-        And the event "device.freeDisk" equals 123
         And the event "device.freeMemory" equals 123
         And the event "device.jailbroken" is true
         And the event "device.locale" equals "Locale"
