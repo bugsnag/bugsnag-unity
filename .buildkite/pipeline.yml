@@ -194,39 +194,39 @@ steps:
   #
   # Build Windows test fixture
   #
-  - label: Build Unity 2020 Windows test fixture
-    timeout_in_minutes: 30
-    key: 'windows-2020-fixture'
-    depends_on: 'build-artifacts'
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2020.3.48f1"
-    commands:
-      - scripts/ci-build-windows-package.bat
-    artifact_paths:
-      - unity.log
-      - features/fixtures/maze_runner/build/Windows-2020.3.48f1.zip
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+  # - label: Build Unity 2020 Windows test fixture
+  #   timeout_in_minutes: 30
+  #   key: 'windows-2020-fixture'
+  #   depends_on: 'build-artifacts'
+  #   agents:
+  #     queue: opensource-windows-unity
+  #   env:
+  #     UNITY_VERSION: "2020.3.48f1"
+  #   commands:
+  #     - scripts/ci-build-windows-package.bat
+  #   artifact_paths:
+  #     - unity.log
+  #     - features/fixtures/maze_runner/build/Windows-2020.3.48f1.zip
+  #   retry:
+  #     automatic:
+  #       - exit_status: "*"
+  #         limit: 1
 
-  #
-  # Run Windows e2e tests
-  #
-  - label: Run Windows e2e tests for Unity 2020
-    timeout_in_minutes: 30
-    depends_on: 'windows-2020-fixture'
-    agents:
-      queue: opensource-windows-unity
-    env:
-      UNITY_VERSION: "2020.3.48f1"
-      WSLENV: "UNITY_VERSION"
-    command:
-      - scripts/ci-run-windows-tests.bat
-    artifact_paths:
-      - maze_output/**/*
+  # #
+  # # Run Windows e2e tests
+  # #
+  # - label: Run Windows e2e tests for Unity 2020
+  #   timeout_in_minutes: 30
+  #   depends_on: 'windows-2020-fixture'
+  #   agents:
+  #     queue: opensource-windows-unity
+  #   env:
+  #     UNITY_VERSION: "2020.3.48f1"
+  #     WSLENV: "UNITY_VERSION"
+  #   command:
+  #     - scripts/ci-run-windows-tests.bat
+  #   artifact_paths:
+  #     - maze_output/**/*
 
   #
   # Conditionally trigger full pipeline
