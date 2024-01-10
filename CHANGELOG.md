@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.7.1 (2024-01-10)
+
+### Enhancements
+
+- Update bugsnag-android from v5.30.0 to [v6.1.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.1.0)
+
 ## 7.7.0 (2024-01-04)
 
 ### Enhancements
@@ -7,10 +13,6 @@
 - Added `IsStarted` check method that returns false if start has not been called on the BugSnag client.
 
 - Update bugsnag-cocoa from v6.27.2 to [v6.28.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6280-2023-12-13)
-
-### Dependencies
-
-Update bugsnag-android to [v6.1.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.1.0) [#759](https://github.com/bugsnag/bugsnag-unity/pull/759)
 
 ## 7.6.5 (2023-08-17)
 
