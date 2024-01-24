@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Bug Fixes
+
+- Copy the xprivacy api usage file from bugsnag-cocoa on build [#768](https://github.com/bugsnag/bugsnag-unity/pull/768)
+
 ## 7.7.0 (2024-01-04)
 
 ### Enhancements
