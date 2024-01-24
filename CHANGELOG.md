@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 7.7.1 (2024-01-25)
 
 ### Bug Fixes
 
