@@ -5,7 +5,7 @@ gem 'xcpretty'
 gem 'xcodeproj'
 
 # Use official Maze Runner release
-gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', tag: 'v6.27.0'
+gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', tag: 'v8.15.0'
 
 # Use a specific Maze Runner branch
 #gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'master'
