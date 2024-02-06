@@ -1,10 +1,11 @@
 # Changelog
 
-## 7.7.1 (2024-01-10)
 
-### Enhancements
+## 7.7.1 (2024-01-25)
 
-- Update bugsnag-android from v5.30.0 to [v6.1.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.1.0)
+### Bug Fixes
+
+- Copy the xprivacy api usage file from bugsnag-cocoa on build [#768](https://github.com/bugsnag/bugsnag-unity/pull/768)
 
 ## 7.7.0 (2024-01-04)
 
