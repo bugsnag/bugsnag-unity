@@ -312,7 +312,7 @@ namespace BugsnagUnity
                             activityName = AndroidJNI.GetStringUTFChars(activityNameObject.GetRawObject());
                         }
                     }
-                    sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
+                    sessionTracker.Call("updateContext", activityName, true);
                 }
 
                 ConfigureNotifierInfo(client);
