@@ -4,7 +4,7 @@
 
 - ## Bug Fixes
 
-- Fix issue where the Bugsnag MacOS bundle plugin was missing from the released package.
+- Fix issue where the Bugsnag MacOS bundle plugin was missing from the released package. [770](https://github.com/bugsnag/bugsnag-unity/pull/770)
 
 ## 6.3.5 (2024-01-30)
 
