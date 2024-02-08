@@ -160,6 +160,7 @@ namespace BugsnagUnity
         {
             _configuration = cfg;
             AndroidJavaObject config = CreateNativeConfig(cfg);
+            ConfigureNotifierInfo(config);
             Unity2019OrNewer = IsUnity2019OrNewer();
             MainThread = Thread.CurrentThread;
             using (AndroidJavaClass system = new AndroidJavaClass("java.lang.System"))
@@ -312,10 +313,9 @@ namespace BugsnagUnity
                             activityName = AndroidJNI.GetStringUTFChars(activityNameObject.GetRawObject());
                         }
                     }
-                    sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
+                    sessionTracker.Call("updateContext", activityName, true);
                 }
 
-                ConfigureNotifierInfo(client);
             }
         }
 
@@ -508,11 +508,10 @@ namespace BugsnagUnity
             return set;
         }
 
-        private void ConfigureNotifierInfo(AndroidJavaObject client)
+        private void ConfigureNotifierInfo(AndroidJavaObject config)
         {
-            using (AndroidJavaObject notifier = client.Get<AndroidJavaObject>("notifier"))
+            using (AndroidJavaObject notifier = config.Call<AndroidJavaObject>("getNotifier"))
             {
-
                 AndroidJavaObject androidNotifier = new AndroidJavaObject("com.bugsnag.android.Notifier");
                 androidNotifier.Call("setUrl", androidNotifier.Get<string>("url"));
                 androidNotifier.Call("setName", androidNotifier.Get<string>("name"));

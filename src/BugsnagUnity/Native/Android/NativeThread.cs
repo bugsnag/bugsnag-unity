@@ -9,7 +9,7 @@ namespace BugsnagUnity
     {
         public NativeThread(AndroidJavaObject androidJavaObject) : base(androidJavaObject){}
 
-        public string Id { get => GetNativeLong("getId").ToString(); set => SetNativeLong("setId",long.Parse(value)); }
+        public string Id { get => GetNativeString("getId"); set => SetNativeString("setId",value); }
 
         public bool? ErrorReportingThread => GetNativeBool("getErrorReportingThread");
 

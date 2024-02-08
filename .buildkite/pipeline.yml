@@ -127,7 +127,6 @@ steps:
           - "--device=ANDROID_9|ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
-          - "--fail-fast"
     concurrency: 25
     concurrency_group: "bitbar"
     concurrency_method: eager
