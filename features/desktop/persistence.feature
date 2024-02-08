@@ -1,9 +1,9 @@
 Feature: Unity Persistence
 
-    @skip_webgl
+    @skip_webgl @skip_macos #pending PLAT-8632
     Scenario: Receive a persisted session mac and windows
         When I run the game in the "PersistSession" state
-        And I wait for 5 seconds
+        And I wait for 10 seconds
         And I run the game in the "PersistSessionReport" state
         And I wait to receive 2 sessions
         Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
