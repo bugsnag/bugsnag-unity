@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'rake'
 gem 'xcpretty'
 gem 'xcodeproj'
+gem 'cocoapods'
 
 unless Gem.win_platform?
   # Use official Maze Runner release
