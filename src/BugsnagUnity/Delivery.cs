@@ -528,7 +528,11 @@ namespace BugsnagUnity
                     }
                     catch (Exception e)
                     {
-                        Debug.LogException(new Exception("Bugsnag Error. Deserialising a cached payload for delivery failed: " + e.Message + " Cached json: " + payloadJson));
+                        Bugsnag.Notify(new Exception("Bugsnag Error. Deserialising a cached payload for delivery failed"),(@event)=>{
+                            @event.AddMetadata("Bugsnag","failedJson",payloadJson);
+                            return true;
+                        });
+                        _cacheManager.RemoveCachedEvent(id);
                         continue;
                     }
 
