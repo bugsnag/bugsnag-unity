@@ -524,25 +524,54 @@ namespace BugsnagUnity
 
                     try
                     {
+                        // if something goes wrong at this stage then we silently discard the file as it's most likley an io error at some point
                         payloadDictionary = ((JsonObject)SimpleJson.DeserializeObject(payloadJson)).GetDictionary();
                     }
                     catch (Exception e)
                     {
-                        Bugsnag.Notify(new Exception("Bugsnag Error. Deserialising a cached payload for delivery failed"),(@event)=>{
-                            @event.AddMetadata("Bugsnag","failedJson",payloadJson);
-                            return true;
-                        });
                         _cacheManager.RemoveCachedEvent(id);
                         continue;
                     }
 
+
+                    // if something goes wrong at this stage then we discard the file and report the error as it might be a bug in the sdk
                     if (isSession)
                     {
-                        Deliver(new SessionReport(_configuration, payloadDictionary));
+                        try
+                        {
+                            var sessionReport = new SessionReport(_configuration, payloadDictionary);
+                            Deliver(sessionReport);
+                        }
+                        catch (Exception e)
+                        {
+                            Bugsnag.Notify(e,(@event)=>
+                            {
+                                @event.Context = "BugSnag Session Cache Error";
+                                @event.AddMetadata("BugsnagSessionData",payloadDictionary);
+                                return true;
+                            });
+                            _cacheManager.RemoveCachedSession(id);
+                            continue;
+                        }
                     }
                     else
                     {
-                        Deliver(new Report(_configuration, payloadDictionary));
+                        try
+                        {
+                            var report = new Report(_configuration, payloadDictionary);
+                            Deliver(report);
+                        }
+                        catch (Exception e)
+                        {
+                            Bugsnag.Notify(e,(@event)=>
+                            {
+                                @event.Context = "BugSnag Event Cache Error";
+                                @event.AddMetadata("BugsnagEventData",payloadDictionary);
+                                return true;
+                            });
+                            _cacheManager.RemoveCachedEvent(id);
+                            continue;
+                        }
                     }
                     
                     yield return new WaitUntil(() => CachedPayloadProcessed(id));
