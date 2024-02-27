@@ -524,7 +524,7 @@ namespace BugsnagUnity
 
                     try
                     {
-                        // if something goes wrong at this stage then we silently discard the file as it's most likley an io error at some point
+                        // if something goes wrong at this stage then we silently discard the file as it's most likely that the file wasn't fully serialised to disk
                         payloadDictionary = ((JsonObject)SimpleJson.DeserializeObject(payloadJson)).GetDictionary();
                     }
                     catch (Exception e)
