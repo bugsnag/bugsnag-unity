@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD ()
+
+### Enhancements
+
+- Improved handling of serialisation errors when flushing the event cache [#773](https://github.com/bugsnag/bugsnag-unity/pull/773)
+
 ## 7.7.1 (2024-01-25)
 
 ### Bug Fixes
