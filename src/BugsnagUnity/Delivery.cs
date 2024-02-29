@@ -527,9 +527,16 @@ namespace BugsnagUnity
                         // if something goes wrong at this stage then we silently discard the file as it's most likely that the file wasn't fully serialised to disk
                         payloadDictionary = ((JsonObject)SimpleJson.DeserializeObject(payloadJson)).GetDictionary();
                     }
-                    catch (Exception e)
+                    catch
                     {
-                        _cacheManager.RemoveCachedEvent(id);
+                        if (isSession)
+                        {
+                            _cacheManager.RemoveCachedSession(id);
+                        }
+                        else
+                        {
+                            _cacheManager.RemoveCachedEvent(id);
+                        }
                         continue;
                     }
 
@@ -542,14 +549,8 @@ namespace BugsnagUnity
                             var sessionReport = new SessionReport(_configuration, payloadDictionary);
                             Deliver(sessionReport);
                         }
-                        catch (Exception e)
+                        catch
                         {
-                            Bugsnag.Notify(e,(@event)=>
-                            {
-                                @event.Context = "BugSnag Session Cache Error";
-                                @event.AddMetadata("BugsnagSessionData",payloadDictionary);
-                                return true;
-                            });
                             _cacheManager.RemoveCachedSession(id);
                             continue;
                         }
@@ -561,14 +562,8 @@ namespace BugsnagUnity
                             var report = new Report(_configuration, payloadDictionary);
                             Deliver(report);
                         }
-                        catch (Exception e)
+                        catch
                         {
-                            Bugsnag.Notify(e,(@event)=>
-                            {
-                                @event.Context = "BugSnag Event Cache Error";
-                                @event.AddMetadata("BugsnagEventData",payloadDictionary);
-                                return true;
-                            });
                             _cacheManager.RemoveCachedEvent(id);
                             continue;
                         }
