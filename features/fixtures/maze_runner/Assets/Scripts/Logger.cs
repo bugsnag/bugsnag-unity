@@ -15,7 +15,7 @@ public class Logger : MonoBehaviour
     public static void I(string msg)
     {
         Debug.Log(LOG_PREFIX + msg);
-        _currentLog = msg + "\n";
+        _currentLog += msg + "\n";
         WriteLogFile();
     }
 
