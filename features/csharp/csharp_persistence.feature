@@ -108,10 +108,10 @@ Feature: Unity Persistence
     And I wait for requests to persist
     And I close the Unity app
     And On Mobile I relaunch the app
-    And I run the game in the "NotifyWithStrings" state
+    And I run the game in the "PersistEventReport" state
     And I wait for requests to persist
     And I wait to receive 1 errors
     And the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "NotifyWithStrings"
+    And the exception "message" equals "Error 2"
 
 
