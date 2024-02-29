@@ -14,7 +14,7 @@ namespace BugsnagUnity.Editor
         // The kotlin Version here needs to match the one in the rake build file. Both should reflect what the android notifier is using.
         private const string ANDROID_DEPS_XML = "<dependencies><androidPackages><repositories><repository>https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib</repository></repositories><androidPackage spec=\"org.jetbrains.kotlin:kotlin-stdlib:1.4.32\"></androidPackage></androidPackages></dependencies>";
 
-        private const string EDM_MENU_ITEM = "Window/Bugsnag/Enable EDM4U Support";
+        private const string EDM_MENU_ITEM = "Window/BugSnag/Enable EDM4U Support";
 
         private static string EDMDepsFilePath = "/Bugsnag/Editor/BugsnagAndroidDependencies.xml";
 
@@ -50,16 +50,16 @@ namespace BugsnagUnity.Editor
             }
             catch (Exception e)
             {
-                Debug.LogError("Error enabling Bugsnag EDM4U support: " + e.Message);
+                Debug.LogError("Error enabling BugSnag EDM4U support: " + e.Message);
             }
 
             if (IsEDMEnabled())
             {
-                ReportEDMSuccess("Bugsnag EDM4U support successfully enabled.\n\nPlease restart Unity before building.");
+                ReportEDMSuccess("BugSnag EDM4U support successfully enabled.\n\nPlease restart Unity before building.");
             }
             else
             {
-                ReportEDMError("Error enabling Bugsnag EDM4U support.\n\nPlease check the console for error messages");
+                ReportEDMError("Error enabling BugSnag EDM4U support.\n\nPlease check the console for error messages");
             }
         }
 
@@ -73,16 +73,16 @@ namespace BugsnagUnity.Editor
             }
             catch (Exception e)
             {
-                Debug.LogError("Error disabling Bugsnag EDM4U support: " + e.Message);
+                Debug.LogError("Error disabling BugSnag EDM4U support: " + e.Message);
             }
 
             if (!IsEDMEnabled())
             {
-                ReportEDMSuccess("Bugsnag EDM4U support successfully disabled.\n\nPlease restart Unity before building.");
+                ReportEDMSuccess("BugSnag EDM4U support successfully disabled.\n\nPlease restart Unity before building.");
             }
             else
             {
-                ReportEDMError("Error disabling Bugsnag EDM4U support.\n\nPlease check the console for error messages");
+                ReportEDMError("Error disabling BugSnag EDM4U support.\n\nPlease check the console for error messages");
             }
         }
 
