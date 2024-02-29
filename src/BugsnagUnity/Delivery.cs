@@ -544,29 +544,33 @@ namespace BugsnagUnity
                     // if something goes wrong at this stage then we discard the file and report the error as it might be a bug in the sdk
                     if (isSession)
                     {
+                        SessionReport sessionReport = null;
                         try
                         {
-                            var sessionReport = new SessionReport(_configuration, payloadDictionary);
-                            Deliver(sessionReport);
+                            sessionReport = new SessionReport(_configuration, payloadDictionary);
                         }
                         catch
                         {
+                            // this will be internally reported in a future update
                             _cacheManager.RemoveCachedSession(id);
                             continue;
                         }
+                        Deliver(sessionReport);
                     }
                     else
                     {
+                        Report report = null;
                         try
                         {
-                            var report = new Report(_configuration, payloadDictionary);
-                            Deliver(report);
+                            report = new Report(_configuration, payloadDictionary);
                         }
                         catch
                         {
+                            // this will be internally reported in a future update
                             _cacheManager.RemoveCachedEvent(id);
                             continue;
                         }
+                        Deliver(report);
                     }
                     
                     yield return new WaitUntil(() => CachedPayloadProcessed(id));
