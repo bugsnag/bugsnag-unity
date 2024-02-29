@@ -540,8 +540,6 @@ namespace BugsnagUnity
                         continue;
                     }
 
-
-                    // if something goes wrong at this stage then we discard the file and report the error as it might be a bug in the sdk
                     if (isSession)
                     {
                         SessionReport sessionReport = null;
