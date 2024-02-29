@@ -103,3 +103,15 @@ Feature: Unity Persistence
     And the exception "message" equals "PersistDeviceId"
     And the error payload field "events.0.device.id" equals the stored value "device_id"
 
+  Scenario: Handle Corrupt Json
+    And I run the game in the "CorruptedCacheFile" state
+    And I wait for requests to persist
+    And I close the Unity app
+    And On Mobile I relaunch the app
+    And I run the game in the "NotifyWithStrings" state
+    And I wait for requests to persist
+    And I wait to receive 1 errors
+    And the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "NotifyWithStrings"
+
+
