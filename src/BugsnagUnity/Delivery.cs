@@ -524,21 +524,51 @@ namespace BugsnagUnity
 
                     try
                     {
+                        // if something goes wrong at this stage then we silently discard the file as it's most likely that the file wasn't fully serialised to disk
                         payloadDictionary = ((JsonObject)SimpleJson.DeserializeObject(payloadJson)).GetDictionary();
                     }
-                    catch (Exception e)
+                    catch
                     {
-                        Debug.LogException(new Exception("Bugsnag Error. Deserialising a cached payload for delivery failed: " + e.Message + " Cached json: " + payloadJson));
+                        if (isSession)
+                        {
+                            _cacheManager.RemoveCachedSession(id);
+                        }
+                        else
+                        {
+                            _cacheManager.RemoveCachedEvent(id);
+                        }
                         continue;
                     }
 
                     if (isSession)
                     {
-                        Deliver(new SessionReport(_configuration, payloadDictionary));
+                        SessionReport sessionReport = null;
+                        try
+                        {
+                            sessionReport = new SessionReport(_configuration, payloadDictionary);
+                        }
+                        catch
+                        {
+                            // this will be internally reported in a future update
+                            _cacheManager.RemoveCachedSession(id);
+                            continue;
+                        }
+                        Deliver(sessionReport);
                     }
                     else
                     {
-                        Deliver(new Report(_configuration, payloadDictionary));
+                        Report report = null;
+                        try
+                        {
+                            report = new Report(_configuration, payloadDictionary);
+                        }
+                        catch
+                        {
+                            // this will be internally reported in a future update
+                            _cacheManager.RemoveCachedEvent(id);
+                            continue;
+                        }
+                        Deliver(report);
                     }
                     
                     yield return new WaitUntil(() => CachedPayloadProcessed(id));
