@@ -5,6 +5,16 @@ using UnityEngine;
 
 public class CorruptedCacheFile : Scenario
 {
+
+    public override void PrepareConfig(string apiKey, string host)
+    {
+        base.PrepareConfig(apiKey, host);
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            Configuration.EnabledErrorTypes.OOMs = false;
+        }
+    }
+
     public override void Run()
     {
         var dirPath = Application.persistentDataPath + "/Bugsnag/Events";
