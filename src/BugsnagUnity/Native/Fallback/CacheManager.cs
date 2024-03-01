@@ -188,9 +188,13 @@ namespace BugsnagUnity
 
         private void WriteFile(string path, string data)
         {
+            // not using File.WriteAllText to avoid under the hood buffering. We want the file to be written immediately to avoid truncation in case of a crash
             try
             {
-                File.WriteAllText(path, data);
+                var file = File.Create(path);
+                file.Write(System.Text.Encoding.UTF8.GetBytes(data), 0, data.Length);
+                file.Flush();
+                file.Close();
             }catch { }
         }
 

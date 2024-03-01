@@ -70,6 +70,7 @@ steps:
           - features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk
           - features/fixtures/build_android_apk.log
     commands:
+      - bundle install
       - rake test:android:build
     retry:
       automatic:
@@ -176,6 +177,7 @@ steps:
           - features/fixtures/unity.log
           - project_2020.tgz
     commands:
+      - bundle install
       - rake test:ios:generate_xcode
       - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
     retry:
@@ -199,6 +201,7 @@ steps:
           - features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa
           - features/fixtures/unity.log
     commands:
+      - bundle install
       - tar -zxf project_2020.tgz features/fixtures/maze_runner
       - rake test:ios:build_xcode
     retry:
