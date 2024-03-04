@@ -34,9 +34,6 @@ project_path=`pwd`/maze_runner
 
 # Installing the Bugsnag package
 echo "Importing Bugsnag.unitypackage into $project_path"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
-                  -projectPath $project_path \
-                  -ignoreCompilerErrors \
-                  -importPackage $script_path/../../Bugsnag.unitypackage
+$UNITY_PATH/Unity -quit -batchmode -nographics -logFile unity.log -projectPath maze_runner -ignoreCompilerErrors -importPackage $script_path/../../Bugsnag.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
