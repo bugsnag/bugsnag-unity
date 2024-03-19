@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Dependencies
+
+Update bugsnag-android to [v6.3.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.3.0) [#777](https://github.com/bugsnag/bugsnag-unity/pull/777)
+
 ## 7.7.2 (2024-03-01)
 
 ### Enhancements
@@ -17,7 +23,6 @@
 ### Enhancements
 
 - Added `IsStarted` check method that returns false if start has not been called on the BugSnag client.
-
 - Update bugsnag-cocoa from v6.27.2 to [v6.28.0](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6280-2023-12-13)
 
 ## 7.6.5 (2023-08-17)
@@ -32,11 +37,9 @@
 
 - Add null guard in the Bugsnag exception handler. [#734](https://github.com/bugsnag/bugsnag-unity/pull/734)
 
-
 ## 7.6.3 (2023-08-03)
 
 - Update bugsnag-cocoa from v6.26.2 to [v6.27.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6272-2023-07-24)
-
 ### Bug Fixes
 
 - Handle exceptions thrown during deserialisation of a cached events and sessions and log the problematic json. [#731](https://github.com/bugsnag/bugsnag-unity/pull/731)
@@ -46,7 +49,6 @@
 ### Bug Fixes
 
 - Remove unnecessary usages of DateTimeOffset.Now to prevent iOS app hangs resulting from Unity native code accessing non-thread safe methods. [#725](https://github.com/bugsnag/bugsnag-unity/pull/725)
-
 
 ## 7.6.1 (2023-06-13)
 
@@ -58,11 +60,9 @@
 
 - Update bugsnag-cocoa from v6.25.2 to [v6.26.2](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6262-2023-04-20)
 - Update bugsnag-android from v5.28.4 to [v5.30.0](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5300-2023-05-11)
-
 ### Bug fixes
 
 * Fix an issue where stack frames containing (wrapper some/wrapper) entries were incorrectly formatted. [#713](https://github.com/bugsnag/bugsnag-unity/pull/713)
-
 * Fix an issue where Config.GenerateAnonymousId was not respected. [#704](https://github.com/bugsnag/bugsnag-unity/pull/704)
 
 ## 7.5.2 (2023-03-08)
@@ -70,7 +70,6 @@
 ### Bug fixes
 
 * Fix a race condition in Bugsnag.Start involving creation of gameobjects outside of the main Unity thread. [#699](https://github.com/bugsnag/bugsnag-unity/pull/699)
-
 * Fix an issue causing empty stacktraces in some Android events. [#700](https://github.com/bugsnag/bugsnag-unity/pull/700)
 
 ### Dependency updates
@@ -86,9 +85,7 @@
 ### Bug fixes
 
 * Fix an issue where collections in metadata were not present in native Android crashes. [#685](https://github.com/bugsnag/bugsnag-unity/pull/685)
-
 * Fix an issue where errors in serialisation threw exceptions. [#693](https://github.com/bugsnag/bugsnag-unity/pull/693)
-
 * Fix an issue where persisted events had 'unhandled' set to null [#695](https://github.com/bugsnag/bugsnag-unity/pull/695)
 
 ## 7.5.0 (2023-01-04)
@@ -96,11 +93,8 @@
 ### Enhancements
 
 * Added checks in delivery to ensure payloads can't get stuck in a retry loop. [#683](https://github.com/bugsnag/bugsnag-unity/pull/683)
-
 * Raised `Configuration.MaxBreadcrumbs` default from 50 to 100, raised the limit from 100 to 500 and added a check to truncate breadcrumbs from oversized payloads. [#671](https://github.com/bugsnag/bugsnag-unity/pull/671)
-
 * Add `Configuration.MaxStringValueLength` config option. [#668](https://github.com/bugsnag/bugsnag-unity/pull/668)
-
 * Added `Telemetry.Usage` configuration option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#telemetry) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#telemetry) [#666](https://github.com/bugsnag/bugsnag-unity/pull/666)
 
 ### Dependency updates
@@ -111,15 +105,10 @@
 ### Bug fixes
 
 * Fix an issue where bundle version was not reported correctly on iOS and MacOS. [#672](https://github.com/bugsnag/bugsnag-unity/pull/672)
-
 * Fix an issue where a null value in metadata could cause an exception. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
-
 * Fix an issue where android metadata was not deserialised as the correct type, which could cause exceptions when processing metadata. [#652](https://github.com/bugsnag/bugsnag-unity/pull/652)
-
 * Fix an issue where android sessions had inaccurate Session.Handled and Unhandled counts. [#684](https://github.com/bugsnag/bugsnag-unity/pull/684)
-
 * Fix an issue where Cocoa Device and App data was serialized incorrectly causing invalid cast exceptions in callbacks [#680](https://github.com/bugsnag/bugsnag-unity/pull/680)
-
 * Fixed an issue where user changes made in OnSession callbacks did not make it to the generated payload [#681](https://github.com/bugsnag/bugsnag-unity/pull/681)
 
 ## 7.4.0 (2022-10-26)
@@ -164,10 +153,8 @@
 
 * Fixed issue where exceptions thrown in async methods were missing some stack frames
   [#610](https://github.com/bugsnag/bugsnag-unity/pull/610)
-
 * Added `DontSave` HideFlags to gameObjects created by the Bugsnag SDK to negate the chances of them making scenes dirty in the editor
   [#604](https://github.com/bugsnag/bugsnag-unity/pull/604)
-
 * Fixed compilation errors when building with IL2CPP for Android after changes to the Unity API `BlockCopy` method caused `ArgumentException`
   [#605](https://github.com/bugsnag/bugsnag-unity/pull/605)
 
@@ -191,21 +178,16 @@
 
 * Increased thread saftey of the metadata dictionary in Bugsnag.LeaveBreadcrumb
   [#564](https://github.com/bugsnag/bugsnag-unity/pull/564)
-
 * Fixed an issue where events occuring directly after Bugsnag init had no session information attached.
   [#571](https://github.com/bugsnag/bugsnag-unity/pull/571)
-
 
 ## 7.0.0 (2022-05-30)
 
 This version contains **breaking** changes: some errors generated by the new version will no longer group in the Bugnsag dashboard with equivalent errors generated by older versions. This is due to the introduction of a new exception interceptor that gets passed the C# exception objects, rather than having to parse the information from Unity logs.
-
 Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
-
 ### Dependency updates
 
 * Update bugsnag-android from v5.22.0 to [v5.22.4](https://github.com/bugsnag/bugsnag-android/blob/master/CHANGELOG.md#5224-2022-05-24)
-
 * Update bugsnag-cocoa from v6.16.1 to [v6.17.1](https://github.com/bugsnag/bugsnag-cocoa/blob/master/CHANGELOG.md#6171-2022-05-18)
 
 ## 6.3.2 (2022-05-27)
@@ -234,7 +216,6 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
 
 * Fixed an issue where the use of ToUpper caused a crash on devices using the Turkish language
   [#543](https://github.com/bugsnag/bugsnag-unity/pull/543)
-
 * Fixed an issue where breadcrumbs with null messages caused errors
   [#545](https://github.com/bugsnag/bugsnag-unity/pull/545)
 
@@ -243,7 +224,6 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
 ### Enhancements
 
 * Added Android support for [EDM4U](https://github.com/googlesamples/unity-jar-resolver). For manual installs there see the new menu item at Window/Bugsnag/Enable EDM Support. For UPM installs we have a [dedicated package](https://github.com/bugsnag/bugsnag-unity-upm-edm4u). [#528](https://github.com/bugsnag/bugsnag-unity/pull/528)
-
 * Update bugsnag-android to v5.21.0
   * Fix inconsistencies in stack trace quality for C/C++ events. Resolves a few
     cases where file and line number information was not resolving to the correct
@@ -259,9 +239,7 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
 ### Enhancements
 
 * Added offline persistence of C# events/exceptions (all platforms); and of sessions and device ID (Windows and WebGL) [#512](https://github.com/bugsnag/bugsnag-unity/pull/512) [#509](https://github.com/bugsnag/bugsnag-unity/pull/509) [#514](https://github.com/bugsnag/bugsnag-unity/pull/514)
-
 * Add `Configuration.MaxReportedThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxreportedthreads) [523](https://github.com/bugsnag/bugsnag-unity/pull/523)
-
 * Update bugsnag-android to v5.20.0
   * The number of threads reported can now be limited using `Configuration.setMaxReportedThreads` (defaulting to 200)
     [bugsnag-android#1607](https://github.com/bugsnag/bugsnag-android/pull/1607)
@@ -276,7 +254,6 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
 * New APIs to support forthcoming feature flag and experiment functionality.
   For more information, please see https://docs.bugsnag.com/product/features-experiments
   [#504](https://github.com/bugsnag/bugsnag-unity/pull/504) [#501](https://github.com/bugsnag/bugsnag-unity/pull/501)
-
 * Update bugsnag-cocoa to v6.16.1
   * New APIs to support forthcoming feature flag and experiment functionality.
     For more information, please see https://docs.bugsnag.com/product/features-experiments
@@ -313,7 +290,6 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
     [bugsnag-cocoa#1214](https://github.com/bugsnag/bugsnag-cocoa/pull/1214)
   * Fix missing imports when building with `CLANG_ENABLE_MODULES=NO`
     [bugsnag-cocoa#1284](https://github.com/bugsnag/bugsnag-cocoa/pull/1284)
-
 * Update bugsnag-android to v5.19.2
   * New APIs to support forthcoming feature flag and experiment functionality. For more information, please see https://docs.bugsnag.com/product/features-experiments.
   * Explicitly define Kotlin api/language versions
@@ -329,15 +305,11 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
   * Fix a bug where api keys set in React Native callbacks were ignored
     [bugsnag-android#1592](https://github.com/bugsnag/bugsnag-android/pull/1592)
 
-
 ## 6.0.0 (2022-01-20)
 
 This version contains **breaking** changes, as bugsnag-unity has been updated to allow for more convenient and performant initialisation and configuration features.
-
 Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
-
 In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag Android Notifier has been updated. See below for details.
-
 * Update bugsnag-android to v5.18.0
   * Bump compileSdkVersion to apiLevel 31
     [bugsnag-android#1536](https://github.com/bugsnag/bugsnag-android/pull/1536)
@@ -372,14 +344,13 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
 * Update bugsnag-cocoa to v6.14.2
   * Fix missing `configuration.user` and manually resumed `session` info in unhandled errors.
     [bugsnag-cocoa#1215](https://github.com/bugsnag/bugsnag-cocoa/pull/1215)
-* Update bugsnag-android to v5.15.0 
+* Update bugsnag-android to v5.15.0
   * Avoid reporting false-positive background ANRs with improved foreground detection
     [bugsnag-android#1429](https://github.com/bugsnag/bugsnag-android/pull/1429)
   * Prevent events being attached to phantom sessions when they are blocked by an `OnSessionCallback`
     [bugsnag-android#1434](https://github.com/bugsnag/bugsnag-android/pull/1434)
   * Plugins will correctly mirror metadata added using `addMetadata(String, Map)`
     [bugsnag-android#1454](https://github.com/bugsnag/bugsnag-android/pull/1454)
-
 ### Bug fixes
 
 * Fixed an issue where breadcrumbs from non fatal apphang errors caused a crash on retrieval
@@ -390,12 +361,10 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
 ### Enhancements
 
 * Removed the limit on the length of a breadcrumbs name [#399](https://github.com/bugsnag/bugsnag-unity/pull/399)
-
 * Update bugsnag-android to v5.14.0
   * Capture and report thread state (running, sleeping, etc.) for Android Runtime and Native threads
     [bugsnag-android#1367](https://github.com/bugsnag/bugsnag-android/pull/1367)
     [bugsnag-android#1390](https://github.com/bugsnag/bugsnag-android/pull/1390)
-
 * Update bugsnag-cocoa to v6.14.1
   * Disable automatic session tracking in app extensions (it was not working as intended.)
     [bugsnag-cocoa#1211](https://github.com/bugsnag/bugsnag-cocoa/pull/1211)
@@ -405,7 +374,7 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
     [bugsnag-cocoa#1209](https://github.com/bugsnag/bugsnag-cocoa/pull/1209)
   * Apply `redactedKeys` to breadcrumb metadata.
     [bugsnag-cocoa#1204](https://github.com/bugsnag/bugsnag-cocoa/pull/1204)
-  * Capture and report thread states (running, stopped, waiting, etc.) 
+  * Capture and report thread states (running, stopped, waiting, etc.)
     [bugsnag-cocoa#1200](https://github.com/bugsnag/bugsnag-cocoa/pull/1200)
   * Disable app hang detection for app extensions.
     [bugsnag-cocoa#1198](https://github.com/bugsnag/bugsnag-cocoa/pull/1198)
@@ -420,24 +389,18 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
 ### Enhancements
 
 * Update bugsnag-cocoa to v6.12.2
-
   * Stop dropping breadcrumbs when provided invalid metadata (that is not JSON convertible.)
     [bugsnag-cocoa#1187](https://github.com/bugsnag/bugsnag-cocoa/pull/1187)
-
   * Fix Swift fatal error parsing for messages with no filename.
     [bugsnag-cocoa#1186](https://github.com/bugsnag/bugsnag-cocoa/pull/1186)
-
   * Events now include a `thermalState` property in the `device` tab, and unexpected app terminations that occur
     when the thermal state is critical will now be reported as a "Thermal Kill" rather than Out Of Memory error.
     [bugsnag-cocoa#1171](https://github.com/bugsnag/bugsnag-cocoa/pull/1171)
-
   * Fix a regression where the session was not captured at launch if Bugsnag was started before
     `willFinishLaunchingWithOptions` in iOS apps that do not adopt the UIScene life-cycle.
     [bugsnag-cocoa#1180](https://github.com/bugsnag/bugsnag-cocoa/pull/1180)
-
   * Fatal app hangs will no longer be reported if the `willTerminateNotification` is received.
     [bugsnag-cocoa#1176](https://github.com/bugsnag/bugsnag-cocoa/pull/1176)
-    
 * Update bugsnag-android to v5.13.0
   * The `app.lowMemory` value always report the most recent `onTrimMemory`/`onLowMemory` status [bugsnag-android#1342](https://github.com/bugsnag/bugsnag-android/pull/1342)
   * Added the `app.memoryTrimLevel` metadata to report a description of the latest `onTrimMemory` status [bugsnag-android#1344](https://github.com/bugsnag/bugsnag-android/pull/1344)
@@ -455,18 +418,11 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
     [bugsnag-android#1375](https://github.com/bugsnag/bugsnag-android/pull/1375)
   * Use SystemClock.elapsedRealtime to track `app.durationInForeground`
     [bugsnag-android#1375](https://github.com/bugsnag/bugsnag-android/pull/1375)
-
-
 * Add new automatically collected Device data to Windows, WebGL and Unity Editor events: `batteryLevel, charging, id, model, screenDensity, screenResolution, totalMemory` [#390](https://github.com/bugsnag/bugsnag-unity/pull/390)
-
 * Add new automatically collected App data to Windows, WebGL and Unity Editor events: `duration, id, isLaunching, lowMemory` [#390](https://github.com/bugsnag/bugsnag-unity/pull/390)
-
 * Add new Bugsnag.Notify overloads: `Notify(exception, stacktrace)`  `Notify(exception, stacktrace, callback)` `Notify(name, message, stacktrace)` `Notify(name, message, stacktrace, callback)` [#380](https://github.com/bugsnag/bugsnag-unity/pull/380)
-
 * Add `Bugsnag.GetLastRunInfo()` To get relevant crash information regarding the last run of the application [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
-
 * Add `Configuration.SendLaunchCrashesSynchronously` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#launchdurationmillis) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#launchdurationmillis) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
-
 * Add `Configuration.LaunchDurationMillis` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendlaunchcrashessynchronously) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendlaunchcrashessynchronously) [#379](https://github.com/bugsnag/bugsnag-unity/pull/379)
 
 ### Deprecated
@@ -478,203 +434,138 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
 * Fixed an issue where app.type was not sent in native Cocoa crash reports
   [#395](https://github.com/bugsnag/bugsnag-unity/pull/395)
 
-
 ## 5.3.0 (2021-09-01)
 
 ### Enhancements
 
 * Add `Configuration.VersionCode` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#versioncode) [#373](https://github.com/bugsnag/bugsnag-unity/pull/373)
-
 * Add `Configuration.PersistenceDirectory` to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistencedirectory) [#368](https://github.com/bugsnag/bugsnag-unity/pull/368)
-
 * Add `Configuration.SendThreads` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#sendthreads) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#sendthreads) [#375](https://github.com/bugsnag/bugsnag-unity/pull/375)
-
 * Add `Configuration.PersistUser` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#persistuser) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#persistuser) [#372](https://github.com/bugsnag/bugsnag-unity/pull/372)
-
 * Add `Configuration.MaxPersistedEvents` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#maxpersistedevents) and the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#maxpersistedevents) [#371](https://github.com/bugsnag/bugsnag-unity/pull/371)
-
 * Add `Configuration.RedactedKeys` configuration option to enable redacting specific keys in metadata [#367](https://github.com/bugsnag/bugsnag-unity/pull/367)
-
 * Add `Configuration.Endpoints` to enable setting custom endpoints for events and sessions [#366](https://github.com/bugsnag/bugsnag-unity/pull/366)
-
 * Add `Configuration.ProjectPackages` config option to set the [native Android option](https://docs.bugsnag.com/platforms/android/configuration-options/#projectpackages) [#364](https://github.com/bugsnag/bugsnag-unity/pull/364)
-
 * Add `Configuration.BundleVersion` config option to set the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#bundleversion) [#359](https://github.com/bugsnag/bugsnag-unity/pull/359)
-
 * Add `Configuration.AppType` configuration option to enable setting a custom value for the app.type field in an event [#363](https://github.com/bugsnag/bugsnag-unity/pull/363)
-
 * Update bugsnag-cocoa to v6.11.0
-
   * Add breadcrumbs for `UIScene` notifications.
     [#1165](https://github.com/bugsnag/bugsnag-cocoa/pull/1165)
-
   * Fix another rare crash in `bsg_ksmachgetThreadQueueName`.
     [#1157](https://github.com/bugsnag/bugsnag-cocoa/pull/1157)
-
   * Fix ThreadSanitizer data race in `BugsnagBreadcrumbs`.
     [#1160](https://github.com/bugsnag/bugsnag-cocoa/pull/1160)
-    
 * Add `DiscardClasses` configuration option to disable sending events that contain user defined error classes. [#361](https://github.com/bugsnag/bugsnag-unity/pull/361)
-
 * Update bugsnag-android to v5.11.0:
   * Add Bugsnag listeners for StrictMode violation detection
     [#1331](https://github.com/bugsnag/bugsnag-android/pull/1331)
-
   * Address pre-existing StrictMode violations
     [#1328](https://github.com/bugsnag/bugsnag-android/pull/1328)
-    
+
 ### Deprecated
 
 * `Bugsnag.SetContext(string context)` has been deprecated in favour of the new `Bugsnag.Context` property and will be removed in the next major release.
-
 * `Configuration.Endpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.
-
-* `Configuration.SessionEndpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.   
-
-* `Configuration.NotifyReleaseStages` has been deprecated in favour of `Configuration.EnabledReleaseStages` and will be removed in the next major release. 
+* `Configuration.SessionEndpoint` has been deprecated in favour of the new `Configuration.Endpoints` class and will be removed in the next major release.
+* `Configuration.NotifyReleaseStages` has been deprecated in favour of `Configuration.EnabledReleaseStages` and will be removed in the next major release.
 
 ## 5.2.0 (2021-08-04)
 
 ### Enhancements
 
 * Add `AppHangThresholdMillis` to set the [native Cocoa option](https://docs.bugsnag.com/platforms/ios/configuration-options/#apphangthresholdmillis) [#347](https://github.com/bugsnag/bugsnag-unity/pull/347)
-
 * Add `EnabledErrorTypes` configuration option to enable/disable different types of errors [#341](https://github.com/bugsnag/bugsnag-unity/pull/341)
-
-* [Android] Automatic [App Not Responding](https://developer.android.com/topic/performance/vitals/anr) (ANR) detection is now enabled by default  
+* [Android] Automatic [App Not Responding](https://developer.android.com/topic/performance/vitals/anr) (ANR) detection is now enabled by default
   [#339](https://github.com/bugsnag/bugsnag-unity/pull/339)
-
 * Update bugsnag-cocoa to v6.10.2
-
   * Fix ThreadSanitizer data race warning in `BSGAppHangDetector`.
     [#1153](https://github.com/bugsnag/bugsnag-cocoa/pull/1153)
-
   * Remove (duplicated) `user` information from `metaData`.
     [#1151](https://github.com/bugsnag/bugsnag-cocoa/pull/1151)
-
   * Fix a potential stack overflow in `+[BugsnagThread allThreadsWithCurrentThreadBacktrace:]`.
     [#1148](https://github.com/bugsnag/bugsnag-cocoa/pull/1148)
-
   * Fix `NSNull` handling in `+[BugsnagError errorFromJson:]` and `+[BugsnagStackframe frameFromJson:]`.
     [#1143](https://github.com/bugsnag/bugsnag-cocoa/pull/1143)
-
   * Fix a rare crash in `bsg_ksmachgetThreadQueueName`.
     [#1147](https://github.com/bugsnag/bugsnag-cocoa/pull/1147)
-
   * Fix an issue that could cause C++ exceptions with very long descriptions to not be reported.
     [#1137](https://github.com/bugsnag/bugsnag-cocoa/pull/1137)
-
   * Improve performance of adding metadata by using async file I/O.
     [#1133](https://github.com/bugsnag/bugsnag-cocoa/pull/1133)
-
   * Improve performance of leaving breadcrumbs by using async file I/O.
     [#1124](https://github.com/bugsnag/bugsnag-cocoa/pull/1124)
-
   * Prevent some potential false positive detection of app hangs.
     [#1122](https://github.com/bugsnag/bugsnag-cocoa/pull/1122)
-    
 * Update bugsnag-android to v5.10.1:
-
   * Prefer `calloc()` to `malloc()` in NDK code
     [#1320](https://github.com/bugsnag/bugsnag-android/pull/1320)
-
   * Ensure correct value always collected for activeScreen
     [#1322](https://github.com/bugsnag/bugsnag-android/pull/1322)
-
   * Capture process name in Event payload
     [#1318](https://github.com/bugsnag/bugsnag-android/pull/1318)
-
   * Avoid unnecessary BroadcastReceiver registration for monitoring device orientation
     [#1303](https://github.com/bugsnag/bugsnag-android/pull/1303)
-
   * Register system callbacks on background thread
     [#1292](https://github.com/bugsnag/bugsnag-android/pull/1292)
-
   * Fix rare NullPointerExceptions from ConnectivityManager
     [#1311](https://github.com/bugsnag/bugsnag-android/pull/1311)
-
   * Respect manual setting of context
     [#1310](https://github.com/bugsnag/bugsnag-android/pull/1310)
-
   * Handle interrupt when shutting down executors
     [#1315](https://github.com/bugsnag/bugsnag-android/pull/1315)
-
   * Allow serializing enabledBreadcrumbTypes as null
     [#1316](https://github.com/bugsnag/bugsnag-android/pull/1316)
-
   * Properly handle ANRs after multiple calls to autoNotify and autoDetectAnrs
     [#1265](https://github.com/bugsnag/bugsnag-android/pull/1265)
-
   * Cache value of app.backgroundWorkRestricted
     [#1275](https://github.com/bugsnag/bugsnag-android/pull/1275)
-
   * Optimize execution of callbacks
     [#1276](https://github.com/bugsnag/bugsnag-android/pull/1276)
-
   * Optimize implementation of internal state change observers
     [#1274](https://github.com/bugsnag/bugsnag-android/pull/1274)
-
   * Optimize metadata implementation by reducing type casts
     [#1277](https://github.com/bugsnag/bugsnag-android/pull/1277)
-
   * Trim stacktraces to <200 frames before attempting to construct POJOs
     [#1281](https://github.com/bugsnag/bugsnag-android/pull/1281)
-
   * Use direct field access when adding breadcrumbs and state updates
     [#1279](https://github.com/bugsnag/bugsnag-android/pull/1279)
-
   * Avoid using regex to validate api key
     [#1282](https://github.com/bugsnag/bugsnag-android/pull/1282)
-
   * Discard unwanted automatic data earlier where possible
     [#1280](https://github.com/bugsnag/bugsnag-android/pull/1280)
-
   * Enable ANR handling on immediately if started from the main thread
     [#1283](https://github.com/bugsnag/bugsnag-android/pull/1283)
-
   * Include `app.binaryArch` in all events
     [#1287](https://github.com/bugsnag/bugsnag-android/pull/1287)
-
   * Cache results from PackageManager
     [#1288](https://github.com/bugsnag/bugsnag-android/pull/1288)
-
   * Use ring buffer to store breadcrumbs
     [#1286](https://github.com/bugsnag/bugsnag-android/pull/1286)
-
   * Avoid expensive set construction in Config constructor
     [#1289](https://github.com/bugsnag/bugsnag-android/pull/1289)
-
   * Replace calls to String.format() with concatenation
     [#1293](https://github.com/bugsnag/bugsnag-android/pull/1293)
-
   * Optimize capture of thread traces
-    [#1300](https://github.com/bugsnag/bugsnag-android/pull/1300)    
-    
+    [#1300](https://github.com/bugsnag/bugsnag-android/pull/1300)
+
 ### Bug fixes
 
-* Fixed an issue where Windows events would have incorrectly split stacktraces resulting in all lines being bundled into one 
+* Fixed an issue where Windows events would have incorrectly split stacktraces resulting in all lines being bundled into one
   [#350](https://github.com/bugsnag/bugsnag-unity/pull/350)
-
-* Fixed an issue where WebGL web requests that initially fail were not respecting the 10 second delay before retrying 
+* Fixed an issue where WebGL web requests that initially fail were not respecting the 10 second delay before retrying
   [#321](https://github.com/bugsnag/bugsnag-unity/pull/321)
-  
 * Fixed an issue where Breadcrumbs were reported in the wrong order on Windows and in the Unity Editor
   [#322](https://github.com/bugsnag/bugsnag-unity/pull/322)
-
 * Fixed an issue where a "Bugsnag loaded" breadcrumb was not added on Windows, Linux, WebGL, and editor builds
   [#327](https://github.com/bugsnag/bugsnag-unity/pull/327)
-
 * Fixed an issue where the fallback was not reporting the correct app.type
   [#325](https://github.com/bugsnag/bugsnag-unity/pull/325)
-  
+
 ### Deprecated
 
 * `Configuration.NotifyLevel` has been deprecated in favour of `Configuration.NotifyLogLevel` and will be removed in the next major release.
-
 * `Configuration.AutoNotify` has been deprecated in favour of `Configuration.AutoDetectErrors` and will be removed in the next major release.
-
 * `Configuration.AutoCaptureSessions` has been deprecated in favour of `Configuration.AutoTrackSessions` and will be removed in the next major release.
- 
 
 ## 5.1.1 (2021-06-24)
 
@@ -694,31 +585,23 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
   * `unity.osLanguage` -> `device.osLanguage`
   * `unity.unityException` -> removed as a duplicate of the error class
   * `unity.unityLogType` -> removed as is contained in the error class for generic logs
-	
 * Add `EnabledBreadcrumbTypes` configuration option to enable/disable automatically recorded breadcrumbs [#301](https://github.com/bugsnag/bugsnag-unity/pull/301)
 * Add `MaxBreadcrumbs` configuration option to control the number of breadcrumbs collected on all platforms
   [#275](https://github.com/bugsnag/bugsnag-unity/pull/275)
   [#304](https://github.com/bugsnag/bugsnag-unity/pull/304)
-
 * Update bugsnag-cocoa to v6.9.6:
-	
   * Improve accuracy of app hang event information to better reflect state at time of detection.
   [#1118](https://github.com/bugsnag/bugsnag-cocoa/pull/1118)
-  
   * Stop app hangs being reported if app is launched in the background.
   [#1112](https://github.com/bugsnag/bugsnag-cocoa/pull/1112)
-
   * Stop session being reported if app is launched in the background.
   [#1107](https://github.com/bugsnag/bugsnag-cocoa/pull/1107)
-
   * Fix KSCrash state storage for apps with no CFBundleName.
   [#1103](https://github.com/bugsnag/bugsnag-cocoa/pull/1103)
-  
   * Improve performance of `notify()`.
   [#1102](https://github.com/bugsnag/bugsnag-cocoa/pull/1102)
   [#1104](https://github.com/bugsnag/bugsnag-cocoa/pull/1104)
   [#1105](https://github.com/bugsnag/bugsnag-cocoa/pull/1105)
-
   * Fix a crash in `-[BugsnagApp deserializeFromJson:]` if main Mach-O image could not be identified, and improve reliability of identification.
   [#1097](https://github.com/bugsnag/bugsnag-cocoa/issues/1097)
   [#1101](https://github.com/bugsnag/bugsnag-cocoa/pull/1101)
@@ -727,29 +610,22 @@ In addition to the changes mentioned in the upgrade guide, the bundled Bugsnag A
 
 * Fix an issue where the Device.time of an event was missing the milliseconds
   [#298](https://github.com/bugsnag/bugsnag-unity/pull/298)
-
 * Adjust post build script to support Unity 2021 builds
   [#289](https://github.com/bugsnag/bugsnag-unity/pull/289)
-
 * Fix an issue where timestamps and other `:`-containing log message content was interpreted as the error class
   [#292](https://github.com/bugsnag/bugsnag-unity/pull/292)
-
 * Correct Android session start times
   [#291](https://github.com/bugsnag/bugsnag-unity/pull/291)
-
 * Fix duplicate events being sent for Android C/C++ crashes
- 
+
 ## 5.0.0 (2021-06-08)
 
 This version contains **breaking** changes, as bugsnag-unity has been updated to use the latest available versions of bugsnag-android (v4.22.2 -> v5.9.4) and bugsnag-cocoa (v5.23.5 -> v6.9.3).
-
 Please see the [upgrade guide](./UPGRADING.md) for details of all the changes and instructions on how to upgrade.
-
 ### Bug fixes
 
 * Stop scene changes overrriding context when manually set
   [#255](https://github.com/bugsnag/bugsnag-unity/pull/255)
-
 * Don't Destroy TimingTrackerObject, so it persists across scenes
   [#239](https://github.com/bugsnag/bugsnag-unity/pull/239)
 
@@ -780,7 +656,6 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
 
 * Avoid JNI crash in leaveBreadcrumb by pushing local frame
   [#214](https://github.com/bugsnag/bugsnag-unity/pull/214)
-
 * Respect autoNotify flag on Android
   [#207](https://github.com/bugsnag/bugsnag-unity/pull/207)
 
@@ -790,35 +665,27 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
 
 * Add device id to error reports on Cocoa platforms
   [#203](https://github.com/bugsnag/bugsnag-unity/pull/203)
-
 * Update bugsnag-cocoa to v5.23.5:
-
   * Fix JSON serialisation of strings with control characters
     [#739](https://github.com/bugsnag/bugsnag-cocoa/pull/739)
-
   * Removed non-thread safe date formatter
     [#758](https://github.com/bugsnag/bugsnag-cocoa/pull/758)
-
   * Avoid dereference null pointer in JSON serialisation
     [#637](https://github.com/bugsnag/bugsnag-cocoa/pull/637)
     [Naugladur](https://github.com/Naugladur)
-
   * Fixed an issue where an app could deadlock during a crash if unfavourable
     timing caused DYLD lock contention.
     [#580](https://github.com/bugsnag/bugsnag-cocoa/pull/580)
     [#675](https://github.com/bugsnag/bugsnag-cocoa/pull/675)
     [#725](https://github.com/bugsnag/bugsnag-cocoa/pull/725)
     [#721](https://github.com/bugsnag/bugsnag-cocoa/pull/721)
-
   * Fix possible report corruption when using `notify()` from multiple threads
     when configured to skip capturing/reporting background thread contents
     (generally only Unity games).
     [#442](https://github.com/bugsnag/bugsnag-cocoa/pull/442)
-
   * Added several additional event fields (`codeBundleId`, `osName`,
     `modelNumber`, `locale`) that were missing from the OOM reports.
     [#444](https://github.com/bugsnag/bugsnag-cocoa/pull/444)
-
   * Bugsnag now correctly records a new session if it is returning to
     the foreground after more than 60 seconds in the background.
     [#529](https://github.com/bugsnag/bugsnag-cocoa/pull/529)
@@ -829,7 +696,6 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
 
 * Delete local JNI references to avoid leaks
   [#198](https://github.com/bugsnag/bugsnag-unity/pull/198)
-
 * Add option to `Configuration` to prevent automatic breadcrumb collection
   [#199](https://github.com/bugsnag/bugsnag-unity/pull/199)
 
@@ -853,7 +719,6 @@ Please see the [upgrade guide](./UPGRADING.md) for details of all the changes an
 
 This release adds ANR detection for Unity apps running in Android. To enable this option you should
 set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag in the normal way.
-
 * Detect ANRs on Android and provide configuration option to enable detection
   [#184](https://github.com/bugsnag/bugsnag-unity/pull/184)
 
@@ -865,16 +730,12 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
 ## 4.7.0 (2020-01-22)
 
 * Update bugsnag-android to v4.22.2:
-
   * This release adds a compile-time dependency on the Kotlin standard library. This should not affect
   the use of any API supplied by bugsnag-unity.
-
   * Modularise bugsnag-android into Core, NDK, and ANR artifacts
     [#522](https://github.com/bugsnag/bugsnag-android/pull/522)
-
   * Migrate dependencies to androidx
     [#554](https://github.com/bugsnag/bugsnag-android/pull/554)
-
   * Report internal SDK errors to bugsnag
     [#570](https://github.com/bugsnag/bugsnag-android/pull/570)
     [#581](https://github.com/bugsnag/bugsnag-android/pull/581)
@@ -882,48 +743,36 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
     [#605](https://github.com/bugsnag/bugsnag-android/pull/605)
     [#588](https://github.com/bugsnag/bugsnag-android/pull/588)
     [#612](https://github.com/bugsnag/bugsnag-android/pull/612)
-
   * Add `detectNdkCrashes` configuration option to bugsnag-android to toggle whether C/C++ crashes
     are detected
     [#491](https://github.com/bugsnag/bugsnag-android/pull/491)
-
   * Use NetworkCallback to monitor connectivity changes on newer API levels
   [#501](https://github.com/bugsnag/bugsnag-android/pull/501)
-
   * Fix deserialization of custom stackframe fields in cached error reports
     [#576](https://github.com/bugsnag/bugsnag-android/pull/576)
-
   * Buffer IO when reading from cached error files, improving SDK performance
     [#573](https://github.com/bugsnag/bugsnag-android/pull/573)
-
   * flushOnLaunch() does not cancel previous requests if they timeout, leading to potential duplicate reports
     [#593](https://github.com/bugsnag/bugsnag-android/pull/593)
-
   * Report correct value for free disk space
     [#589](https://github.com/bugsnag/bugsnag-android/pull/589)
-
   * Allow overriding the versionCode via Configuration
     [#610](https://github.com/bugsnag/bugsnag-android/pull/610)
-
   * Catch throwables when invoking methods on system services
     [#623](https://github.com/bugsnag/bugsnag-android/pull/623)
-
 * Update bugsnag-cocoa to v5.23.0:
   * Fix unrecognized selector crash when adding metadata
     [#430](https://github.com/bugsnag/bugsnag-cocoa/pull/430)
-
   * This release removes support for reporting 'partial' or 'minimal' crash reports
   where the crash report could not be entirely written (due to disk space or other
   issues like the device battery dying). While sometimes the reports could point
   in the right direction for debugging, they could also be confusing or not enough
   information to pursue and close the issue successfully.
-
     This release  also renames a few configuration properties to align better with the
   intended use and other Bugsnag libraries, so people who use more than one
   platform can easily find related functionality in a different library. The old
   names are deprecated but still supported until the next major release.
   [#435](https://github.com/bugsnag/bugsnag-cocoa/pull/435)
-
     * `Bugsnag.setBreadcrumbCapacity()` is now `setMaxBreadcrumbs()` on the
     `BugsnagConfiguration` class. In addition, the default number of breadcrumbs
     saved has been raised to 25 and limited to no more than 100.
@@ -998,13 +847,10 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
 
 * Support disabling native reporting during initialization
   [#164](https://github.com/bugsnag/bugsnag-unity/pull/164)
-
   The new API can be used as follows:
-
   ```c#
   Bugsnag.Init("your-api=key-here", false /* disable crash reporting */);
   ```
-
   or by unchecking "Auto Notify" when initializing Bugsnag via a GameObject in
   the Unity Inspector.
 
@@ -1121,14 +967,11 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
 * Migrate version information in reports to device.runtimeVersions, adding
   additional info like scripting backend
   [#149](https://github.com/bugsnag/bugsnag-unity/pull/149)
-
 * Update bugsnag-android dependency to v4.14.0:
   * Improve In-foreground calculation for report metadata
     [#466](https://github.com/bugsnag/bugsnag-android/pull/466)
-
   * Migrate version information to device.runtimeVersions
     [#472](https://github.com/bugsnag/bugsnag-android/pull/472)
-
 * Update bugsnag-cocoa dependency to v5.22.0:
   * Migrate version information to device.runtimeVersions
     [#340](https://github.com/bugsnag/bugsnag-cocoa/pull/340)
@@ -1170,7 +1013,6 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
   main thread-only `logMessageReceived` callback receives more stackframes on
   some versions of Unity 2017, improving the debugging experience.
 
-
 ## 4.4.0 (2019-04-05)
 
 ### Enhancements
@@ -1178,10 +1020,8 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
 * Update bugsnag-android dependency to v4.13.0:
   * Add ANR detection to bugsnag-android (ANR detection is disabled on Unity)
     [bugsnag-android#442](https://github.com/bugsnag/bugsnag-android/pull/442)
-
   * Add unhandled_events field to native payload
     [bugsnag-android#445](https://github.com/bugsnag/bugsnag-android/pull/445)
-
   * Add stopSession() and resumeSession() to Client
     [bugsnag-android#429](https://github.com/bugsnag/bugsnag-android/pull/429)
 
@@ -1190,16 +1030,12 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
 * Update bugsnag-android dependency to v4.13.0:
   * Prevent overwriting config.projectPackages if already set
     [bugsnag-android#428](https://github.com/bugsnag/bugsnag-android/pull/428)
-
   * Fix incorrect session handledCount when notifying in quick succession
     [bugsnag-android#434](https://github.com/bugsnag/bugsnag-android/pull/434)
-
   * Ensure boolean object from map serialised as boolean primitive in JNI
     [bugsnag-android#452](https://github.com/bugsnag/bugsnag-android/pull/452)
-
   * Prevent NPE occurring when calling resumeSession()
     [bugsnag-android#444](https://github.com/bugsnag/bugsnag-android/pull/444)
-
 * Update bugsnag-cocoa dependency to v5.19.1:
   * Fix generating an incorrect stacktrace used when logging an exception to
     Bugsnag from a location other than the original call site (for example, from a
@@ -1210,7 +1046,6 @@ set `Bugsnag.Configuration.AutoDetectAnrs` to `true` after initialising bugsnag 
     reporting the handler code stacktrace rather than the reported exception
     stack.
     [bugsnag-cocoa#334](https://github.com/bugsnag/bugsnag-cocoa/pull/334)
-
   * Fix network connectivity monitor by connecting to the correct domain
     [Jacky Wijaya](https://github.com/Jekiwijaya)
     [bugsnag-cocoa#332](https://github.com/bugsnag/bugsnag-cocoa/pull/332)
@@ -1221,12 +1056,10 @@ This release is the first to distribute Unity packages with and without 64-bit
 ABI libraries for Android. In most cases, `Bugsnag.unitypackage` is the correct
 package to use, as by default most Unity Android apps only can use 32-bit
 binaries.
-
 ### Enhancements
 
 * Add StopSession() and ResumeSession() to public API
   [#136](https://github.com/bugsnag/bugsnag-unity/pull/136)
-
 * Update bugsnag-android dependency to v4.11.0:
   * Add stopSession() and resumeSession() to Client
     [bugsnag-android#429](https://github.com/bugsnag/bugsnag-android/pull/429)
@@ -1234,7 +1067,6 @@ binaries.
     [bugsnag-android#428](https://github.com/bugsnag/bugsnag-android/pull/428)
   * Fix incorrect session handledCount when notifying in quick succession
     [bugsnag-android#434](https://github.com/bugsnag/bugsnag-android/pull/434)
-
 * Update bugsnag-cocoa dependency to v5.19.0:
   * Add stopSession() and resumeSession() to Bugsnag
     [bugsnag-cocoa#325](https://github.com/bugsnag/bugsnag-cocoa/pull/325)
@@ -1248,13 +1080,10 @@ binaries.
   [#138](https://github.com/bugsnag/bugsnag-unity/pull/138)
   [bugsnag-cocoa#333](https://github.com/bugsnag/bugsnag-cocoa/pull/333)
   [bugsnag-android#439](https://github.com/bugsnag/bugsnag-android/pull/439)
-
 * [Android] Remove references to 64-bit ABIs included in the package
   [#139](https://github.com/bugsnag/bugsnag-unity/pull/139)
-
 * Make `ErrorClass` and `ErrorMessage` mutable on `Exception`. This allows for
   modifying both properties from callbacks:
-
   ```cs
   Bugsnag.Notify(exception, report => {
     report.Exceptions[0].ErrorClass = "CustomException";
@@ -1262,7 +1091,6 @@ binaries.
   });
   ```
   [#140](https://github.com/bugsnag/bugsnag-unity/pull/140)
-
 * Set severity reason when manually specifying severity as a parameter to
   `Notify()`. This sets the correct reason for the severity selection on the
   dashboard.
@@ -1298,7 +1126,6 @@ binaries.
 
 * Ensure configuration options are synced with native layer
   [#124](https://github.com/bugsnag/bugsnag-unity/pull/124)
-
 * Add retry delays after delivery failure to stop excess logging
   [#126](https://github.com/bugsnag/bugsnag-unity/pull/126)
 
@@ -1330,7 +1157,6 @@ Update bugsnag-android dependency to v4.11.0:
 * Update dependent libraries:
   * bugsnag-cocoa v5.17.3
   * bugsnag-android v4.10.0
-
 ### Enhancements
 
 * Add a configuration option for allowing Unity exceptions to reduce a project's
@@ -1350,7 +1176,6 @@ This is a new major release with many features and fixes. See the [upgrade
 guide](https://github.com/bugsnag/bugsnag-unity/blob/master/UPGRADING.md) for
 more information on how to update your integration, or the [integration
 guide](https://docs.bugsnag.com/platforms/unity/) to get started.
-
 ### Enhancements
 
 * Unity/C# errors are now automatically detected and reported on Windows and any
@@ -1369,15 +1194,12 @@ guide](https://docs.bugsnag.com/platforms/unity/) to get started.
   | [#94](https://github.com/bugsnag/bugsnag-unity/pull/94)
 * Report app information in WebGL: `duration`, `inForeground` and `durationInForeground`
   | [#94](https://github.com/bugsnag/bugsnag-unity/pull/94)
-
 **Note:**
 During the preparation for this release we noticed a workflow issue when targeting tvOS. In order to successfully build for tvOS, after importing the Bugsnag plugin there is a manual step required:
-
 - In the Unity editor, go to Project > Assets > iOS > Bugsnag
 - Select all source files in this directory
 - In the inspector pane check `tvOS` in the "Include platforms" list
 - Click the "Apply" button at the bottom of the inspector pane
-
 We'll work on making this install process smoother in the future.
 
 ## 3.6.6 (2018-05-24)
@@ -1396,7 +1218,6 @@ We'll work on making this install process smoother in the future.
     - Ensure timezone is serialised in report payload.
   [#248](https://github.com/bugsnag/bugsnag-cocoa/pull/248)
   [Jamie Lynch](https://github.com/fractalwrench)
-
 * Upgrade bugsnag-android to v4.3.4:
   - *Bug Fixes:*
     - Avoid adding extra comma separator in JSON if File input is empty or null [#284](https://github.com/bugsnag/bugsnag-android/pull/284)
@@ -1416,7 +1237,6 @@ We'll work on making this install process smoother in the future.
 ## 3.6.4 (2018-02-21)
 
 * (iOS) Fix error message displayed when thread tracing disabled
-
 * Update dependent libraries:
   * bugsnag-cocoa v5.15.4
   * bugsnag-android v4.3.1
@@ -1445,6 +1265,7 @@ We'll work on making this install process smoother in the future.
   app health
 
 ## 3.5.5 (2017-11-30)
+
 * (iOS) Fix encoding of control characters in crash reports. Ensures crash reports are
 written correctly and delivered when containing U+0000 - U+001F
 
@@ -1473,7 +1294,6 @@ written correctly and delivered when containing U+0000 - U+001F
 ## 3.5.0 (2017-02-10)
 
 * Track whether an error is handled or unhandled
-
 * Update native libraries
 
 ## 3.4.0 (2017-19-09)
@@ -1482,11 +1302,9 @@ written correctly and delivered when containing U+0000 - U+001F
 
 * Improve error grouping by standardizing log message format
   [#45](https://github.com/bugsnag/bugsnag-unity/pull/45)
-
 * Add breadcrumbs for scene changes
   [Jamie Lynch](https://github.com/fractalwrench)
   [#54](https://github.com/bugsnag/bugsnag-unity/pull/54)
-
 * Load WebGL extension locally, negating the need for a separate request
   [#46](https://github.com/bugsnag/bugsnag-unity/pull/46)
 
@@ -1597,7 +1415,6 @@ written correctly and delivered when containing U+0000 - U+001F
 
 This release includes significant updates to the underlying android and cocoa
 libraries.
-
 ### Enhancements
 
 * Add support for WebGL
@@ -1605,7 +1422,6 @@ libraries.
 * Add support for setting user metadata
 * Add support for setting app version
 * Add support for setting breadcrumbs
-
 * Upgrade bugsnag-android from 3.2.5 -> 3.4.0
 * Upgrade bugsnag-cocoa from 4.0.7 -> 4.1.0
 
@@ -1614,54 +1430,36 @@ libraries.
 * Fix crash resulting from use of deprecated method
   [Simon Maynard](https://github.com/snmaynard)
   [#13](https://github.com/bugsnag/bugsnag-unity/pull/13)
-
 * Update callback registration method to remove deprecations
   [Delisa Mason](https://github.com/kattrali)
   [#20](https://github.com/bugsnag/bugsnag-unity/pull/20)
-
 2.2.6
 -----
-
 - Fix compilation under arm64
-
 2.2.5
 -----
-
 - Allow passing Context as a second argument to Bugsnag.Notify
-
 2.2.4
 -----
-
 - Fix use-after-free on NSNotification
-
 2.2.3
 -----
-
 - Make context thread safe too
-
 2.2.2
 -----
-
 - Make metaData thread safe
-
 2.2.1
 -----
-
 - Improve speed during manual notifies on android and ios.
-
 2.2.0
 -----
-
 - Fix LogHandler in non-debug builds.
 - Make Bugsnag methods static.
 - Fix crashes caused by passing unexpected nulls into Bugsnag.
-
 2.1.0
 -----
-
 - Fix stacktrace generation in Bugsnag.Notify() on unthrown exceptions.
-
 2.0.0
 -----
-
 - Rewrite to use bugsnag-android and bugsnag-ios.
+
