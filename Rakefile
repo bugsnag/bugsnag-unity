@@ -124,7 +124,7 @@ def assemble_android filter_abis=true
   # copy kotlin dependencies required by bugsnag-android. the exact files required for each
   # version can be found here:
   # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.4.32/kotlin-stdlib-1.4.32.pom
-  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script and in the upm-tools/EDM/BugsnagAndroidDependencies.xml file. 
+  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script and in the upm-tools/EDM/BugsnagAndroidDependencies.xml file.
   # All should be informed by what the android notifier is using
   kotlin_stdlib = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-1.4.32.jar")
   kotlin_stdlib_common = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-common-1.4.32.jar")
@@ -164,7 +164,7 @@ namespace :plugin do
       unless is_windows?
         # remove android build area
         cd "bugsnag-android" do
-          sh "./gradlew", "clean"
+          sh "./gradlew clean"
         end
 
         cd "bugsnag-android-unity" do
@@ -291,9 +291,9 @@ namespace :plugin do
             else
               simulator_x64 = simulator_library
             end
-       
+
             sh "lipo", "-create", device_library, simulator_x64, "-output", output_library
-            
+
           end
         end
       end
@@ -322,7 +322,7 @@ namespace :plugin do
 
       cd File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
         cp File.realpath("BugsnagUnity.dll"), assets_path
-        windows_dir = File.join(assets_path, "Windows")        
+        windows_dir = File.join(assets_path, "Windows")
         cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
         cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
         cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
