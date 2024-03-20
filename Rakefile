@@ -167,8 +167,8 @@ namespace :plugin do
           sh "./gradlew clean"
         end
 
-        cd "bugsnag-android-unity" do
-          sh "./gradlew", "clean"
+        Dir.chdir("bugsnag-android-unity") do
+          sh "./gradlew clean"
         end
       end
     end
