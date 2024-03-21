@@ -38,13 +38,13 @@ def unity_executable dir=unity_directory
   [File.join(dir, "Unity.app", "Contents", "MacOS", "Unity"),
    File.join(dir, "Editor", "Unity"),
    File.join(dir, "Editor", "Unity.exe")].find do |unity|
-    File.exists? unity
+    File.exist? unity
   end
 end
 
 def unity_dll_location
   [File.join(unity_directory, "Unity.app", "Contents", "Managed"), File.join(unity_directory, "Editor", "Data", "Managed")].find do |unity|
-    File.exists? unity
+    File.exist? unity
   end
 end
 
@@ -56,7 +56,7 @@ def get_required_unity_paths
   dir = unity_directory
   exe = unity_executable(dir)
   raise "No unity executable found in '#{dir}'" if exe.nil?
-  unless File.exists? exe
+  unless File.exist? exe
     raise "Unity not found at path '#{exe}' - set $UNITY_DIR (full path) or $UNITY_VERSION (loaded via hub) to customize"
   end
   [dir, exe]
@@ -80,7 +80,7 @@ def unity(*cmd, force_free: true, no_graphics: true)
   cmd = cmd.unshift(*cmd_prepend)
   sh *cmd do |ok, res|
     if !ok
-      puts File.read("unity.log") if File.exists?("unity.log")
+      puts File.read("unity.log") if File.exist?("unity.log")
 
       raise "unity error: #{res}"
     end
