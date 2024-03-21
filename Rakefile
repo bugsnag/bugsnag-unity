@@ -101,7 +101,7 @@ end
 
 def export_package name="Bugsnag.unitypackage"
   package_output = File.join(current_directory, name)
-  rm_f package_output
+  FileUtils.rm_rf package_output
   unity "-projectPath", project_path, "-exportPackage", "Assets/Bugsnag", package_output, force_free: false
 end
 
