@@ -322,13 +322,13 @@ namespace :plugin do
       end
 
       Dir.chdir File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
-        cp File.realpath("BugsnagUnity.dll"), assets_path
+        Fileutils.cp File.realpath("BugsnagUnity.dll"), assets_path
         windows_dir = File.join(assets_path, "Windows")
-        cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
-        cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
-        cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
-        cp File.realpath("BugsnagUnity.MacOS.dll"), File.join(assets_path, "OSX")
-        cp File.realpath("BugsnagUnity.Android.dll"), File.join(assets_path, "Android")
+        Fileutils.cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
+        Fileutils.cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
+        Fileutils.cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
+        Fileutils.cp File.realpath("BugsnagUnity.MacOS.dll"), File.join(assets_path, "OSX")
+        Fileutils.cp File.realpath("BugsnagUnity.Android.dll"), File.join(assets_path, "Android")
       end
     end
 
