@@ -163,11 +163,11 @@ namespace :plugin do
       FileUtils.rm_rf cocoa_build_dir
       unless is_windows?
         # remove android build area
-        cd "bugsnag-android" do
+        Dir.chdir "./bugsnag-android" do
           sh "./gradlew", "clean"
         end
 
-        cd "bugsnag-android-unity" do
+        Dir.chdir "bugsnag-android-unity" do
           sh "./gradlew", "clean"
         end
       end
