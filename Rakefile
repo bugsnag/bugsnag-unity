@@ -265,7 +265,7 @@ namespace :plugin do
       tvos_dir = File.join(assets_path, "tvOS")
 
       #copy framework usage api file
-      FileUtils.cp_r(cp_r File.join("bugsnag-cocoa", "Bugsnag", "resources", "PrivacyInfo.xcprivacy"), ios_dir)
+      FileUtils.cp_r(File.join(current_directory,"bugsnag-cocoa", "Bugsnag", "resources", "PrivacyInfo.xcprivacy"), ios_dir)
 
       cd cocoa_build_dir do
         cd "build" do
