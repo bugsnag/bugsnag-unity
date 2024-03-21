@@ -184,7 +184,7 @@ namespace :plugin do
       bugsnag_unity_file = File.realpath("BugsnagUnity.m", "src")
       public_headers = Dir.entries(File.join(cocoa_build_dir, "Bugsnag", "include", "Bugsnag"))
 
-      cd cocoa_build_dir do
+      Dir.chdir cocoa_build_dir do
         ["bugsnag-ios", "bugsnag-osx", "bugsnag-tvos"].each do |project_name|
           project_file = File.join("#{project_name}.xcodeproj")
           next if File.exist?(project_file)
