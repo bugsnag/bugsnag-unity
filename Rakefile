@@ -1,6 +1,7 @@
 require "open3"
 require "xcodeproj"
 require "rbconfig"
+require 'fileutils'
 
 unless ENV['GITHUB_ACTIONS'].nil?
   require "bumpsnag"
@@ -173,7 +174,7 @@ namespace :plugin do
       end
     end
     task :assets do
-      cp_r File.join(current_directory, "src", "Assets"), project_path, preserve: true
+      FileUtils.cp_r(File.join(current_directory, "src", "Assets"), project_path, preserve: true)
     end
     task :cocoa do
       next unless is_mac?
