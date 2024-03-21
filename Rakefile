@@ -109,11 +109,11 @@ def assemble_android filter_abis=true
   abi_filters = filter_abis ? "-PABI_FILTERS=armeabi-v7a,x86" : "-Pnoop_filters=true"
   android_dir = File.join(assets_path, "Android")
 
-  cd "bugsnag-android" do
+  Dir.chdir"bugsnag-android" do
     sh "./gradlew", "assembleRelease", abi_filters
   end
 
-  cd "bugsnag-android-unity" do
+  Dir.chdir"bugsnag-android-unity" do
     sh "./gradlew", "assembleRelease", abi_filters
   end
 
@@ -267,15 +267,15 @@ namespace :plugin do
       #copy framework usage api file
       FileUtils.cp_r(File.join(current_directory,"bugsnag-cocoa", "Bugsnag", "resources", "PrivacyInfo.xcprivacy"), ios_dir)
 
-      cd cocoa_build_dir do
-        cd "build" do
+      Dir.chdir cocoa_build_dir do
+        Dir.chdir "build" do
           def is_fat library_path
             stdout, stderr, status = Open3.capture3("lipo", "-info", library_path)
             return !stdout.start_with?('Non-fat')
           end
           # we just need to copy the os x bundle into the correct directory
 
-          cp_r File.join(build_type, "bugsnag-osx.bundle"), osx_dir
+          FileUtils.cp_r(File.join(build_type, "bugsnag-osx.bundle"), osx_dir)
 
           # for ios and tvos we need to build a fat binary that includes architecture
           # slices for both the device and the simulator
@@ -321,7 +321,7 @@ namespace :plugin do
         end
       end
 
-      cd File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
+      Dir.chdir File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
         cp File.realpath("BugsnagUnity.dll"), assets_path
         windows_dir = File.join(assets_path, "Windows")
         cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
@@ -432,7 +432,7 @@ namespace :test do
       end
 
       # Generate the Xcode project
-      cd "features" do
+      Dir.chdir"features" do
         script = File.join("scripts", "generate_xcode_project.sh")
         unless system env, script
           raise 'IPA build failed'
@@ -442,7 +442,7 @@ namespace :test do
 
     task :build_xcode do
       # Build and archive from the Xcode project
-      cd "features" do
+      Dir.chdir"features" do
         script = File.join("scripts", "build_ios.sh")
         unless system script
           raise 'IPA build failed'
