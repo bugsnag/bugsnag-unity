@@ -1,7 +1,7 @@
 agents:
   queue: macos-14
 env:
-  XCODE_VERSION: "15.2.0"
+  XCODE_VERSION: "15.3.0"
 
 steps:
   #
