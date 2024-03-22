@@ -1,11 +1,11 @@
 agents:
-  queue: macos-12-arm-unity
+  queue: macos-14
 
 steps:
-  # Note:
-  #  The basic pipeline handles Unity 2020, but doesn't include the building of test fixtures for WebGL, macOS and
-  #  Windows.  They are included here instead.
-
+#  # Note:
+#  #  The basic pipeline handles Unity 2020, but doesn't include the building of test fixtures for WebGL, macOS and
+#  #  Windows.  They are included here instead.
+#
   # Build MacOS and WebGL test fixtures
   #
   - label: Build Unity 2018 MacOS and WebGL test fixtures
@@ -13,7 +13,6 @@ steps:
     key: "cocoa-webgl-2018-fixtures"
     depends_on: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2018.4.36f1"
       # Python2 needed for WebGL to build
       EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
@@ -37,7 +36,6 @@ steps:
     key: "cocoa-webgl-2019-fixtures"
     depends_on: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2019.4.35f1"
       # Python2 needed for WebGL to build
       EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
@@ -61,7 +59,6 @@ steps:
     key: "cocoa-webgl-2020-fixtures"
     depends_on: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2020.3.48f1"
       # Python2 needed for WebGL to build
       EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
@@ -85,7 +82,6 @@ steps:
     key: "cocoa-webgl-2021-fixtures"
     depends_on: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2021.3.27f1"
     plugins:
       artifacts#v1.5.0:
@@ -107,7 +103,6 @@ steps:
     key: "cocoa-webgl-2022-fixtures"
     depends_on: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2022.3.2f1"
     plugins:
       artifacts#v1.5.0:
@@ -130,8 +125,6 @@ steps:
   - label: Run MacOS e2e tests for Unity 2018
     timeout_in_minutes: 60
     depends_on: "cocoa-webgl-2018-fixtures"
-    agents:
-      queue: macos-12-arm-unity
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -148,8 +141,6 @@ steps:
   - label: Run MacOS e2e tests for Unity 2019
     timeout_in_minutes: 60
     depends_on: "cocoa-webgl-2019-fixtures"
-    agents:
-      queue: macos-12-arm-unity
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -166,8 +157,6 @@ steps:
   - label: Run MacOS e2e tests for Unity 2020
     timeout_in_minutes: 60
     depends_on: "cocoa-webgl-2020-fixtures"
-    agents:
-      queue: macos-12-arm-unity
     env:
       UNITY_VERSION: "2020.3.48f1"
     plugins:
@@ -202,8 +191,6 @@ steps:
   - label: Run MacOS e2e tests for Unity 2022
     timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2022-fixtures'
-    agents:
-      queue: macos-12-arm-unity
     env:
       UNITY_VERSION: "2022.3.2f1"
     plugins:
@@ -224,8 +211,6 @@ steps:
   - label: Run WebGL e2e tests for Unity 2018
     timeout_in_minutes: 30
     depends_on: "cocoa-webgl-2018-fixtures"
-    agents:
-      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2018.4.36f1"
     plugins:
@@ -242,8 +227,6 @@ steps:
   - label: Run WebGL e2e tests for Unity 2019
     timeout_in_minutes: 30
     depends_on: "cocoa-webgl-2019-fixtures"
-    agents:
-      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2019.4.35f1"
     plugins:
@@ -260,8 +243,6 @@ steps:
   - label: Run WebGL e2e tests for Unity 2020
     timeout_in_minutes: 30
     depends_on: "cocoa-webgl-2020-fixtures"
-    agents:
-      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: "2020.3.48f1"
     plugins:
@@ -597,10 +578,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-ios-fixture-2018"
     depends_on: "generate-fixture-project-2018"
-    agents:
-      queue: macos-12-arm-unity
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2018.4.36f1"
     plugins:
       artifacts#v1.5.0:
@@ -645,10 +623,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-ios-fixture-2019"
     depends_on: "generate-fixture-project-2019"
-    agents:
-      queue: macos-12-arm-unity
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2019.4.35f1"
     plugins:
       artifacts#v1.5.0:
@@ -693,10 +668,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-ios-fixture-2021"
     depends_on: "generate-fixture-project-2021"
-    agents:
-      queue: macos-12-arm-unity
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2021.3.27f1"
     plugins:
       artifacts#v1.5.0:
@@ -741,10 +713,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-ios-fixture-2022"
     depends_on: "generate-fixture-project-2022"
-    agents:
-      queue: macos-12-arm-unity
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2022.3.2f1"
     plugins:
       artifacts#v1.5.0:

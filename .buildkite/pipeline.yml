@@ -238,10 +238,10 @@ steps:
     concurrency: 25
     concurrency_group: "bitbar"
     concurrency_method: eager
-#
-#  #
-#  # Conditionally trigger full pipeline
-#  #
-#  - label: "Conditionally trigger full set of tests"
-#    timeout_in_minutes: 30
-#    command: sh -c .buildkite/pipeline_trigger.sh
+
+  #
+  # Conditionally trigger full pipeline
+  #
+  - label: "Conditionally trigger full set of tests"
+    timeout_in_minutes: 30
+    command: sh -c .buildkite/pipeline_trigger.sh
