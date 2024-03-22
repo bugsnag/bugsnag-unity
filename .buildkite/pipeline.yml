@@ -11,7 +11,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-artifacts"
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: "2018.4.36f1"
     commands:
       - bundle install
       - bundle exec rake plugin:export
@@ -21,7 +21,6 @@ steps:
       automatic:
         - exit_status: "*"
           limit: 1
-
 #  # - label: Ensure notifier builds on Windows (for development)
 #  #   timeout_in_minutes: 30
 #  #   agents:
