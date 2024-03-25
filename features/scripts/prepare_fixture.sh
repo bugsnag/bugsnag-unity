@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -x
+
 if [ -z "$UNITY_VERSION" ]
 then
   echo "UNITY_VERSION must be set"
