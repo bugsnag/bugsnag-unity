@@ -14,7 +14,7 @@ steps:
       UNITY_VERSION: "2018.4.36f1"
     commands:
       - bundle install
-      - bundle exec rake plugin:export
+      - bundle exec rake plugin:export --trace
     artifact_paths:
       - Bugsnag.unitypackage
     retry:
@@ -68,7 +68,7 @@ steps:
           - features/fixtures/build_android_apk.log
     commands:
       - bundle install
-      - bundle exec rake test:android:build
+      - bundle exec rake test:android:build --trace
     retry:
       automatic:
         - exit_status: "*"
@@ -175,7 +175,7 @@ steps:
           - project_2020.tgz
     commands:
       - bundle install
-      - rake test:ios:generate_xcode
+      - rake test:ios:generate_xcode --trace
       - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
     retry:
       automatic:
@@ -199,7 +199,7 @@ steps:
     commands:
       - bundle install
       - tar -zxf project_2020.tgz features/fixtures/maze_runner
-      - rake test:ios:build_xcode
+      - rake test:ios:build_xcode --trace
     retry:
       automatic:
         - exit_status: "*"
