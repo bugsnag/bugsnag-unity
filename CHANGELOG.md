@@ -2,7 +2,7 @@
 
 ## TBD
 
-- Updated naming for BugsnagEditor EDM menu 
+- Updated naming for BugsnagEditor EDM menu [#780](https://github.com/bugsnag/bugsnag-unity/pull/780)
 
 ## 7.7.2 (2024-03-01)
 
