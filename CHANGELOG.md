@@ -1,5 +1,9 @@
 # Changelog
 
+## TBD
+
+- Updated naming for BugsnagEditor EDM menu 
+
 ## 7.7.2 (2024-03-01)
 
 ### Enhancements
