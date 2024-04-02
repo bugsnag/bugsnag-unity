@@ -1,5 +1,8 @@
 agents:
-  queue: macos-12-arm-unity
+  queue: macos-14
+
+env:
+  XCODE_VERSION: "15.2"
 
 steps:
   #
@@ -9,7 +12,6 @@ steps:
     timeout_in_minutes: 30
     key: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2018.4.36f1"
     commands:
       - bundle install
@@ -45,7 +47,6 @@ steps:
     depends_on: build-artifacts
     env:
       UNITY_VERSION: "2020.3.48f1"
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
     plugins:
       'artifacts#v1.9.0':
         download:
@@ -190,7 +191,6 @@ steps:
     key: "build-ios-fixture-2020"
     depends_on: "generate-fixture-project-2020"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
       UNITY_VERSION: "2020.3.48f1"
     plugins:
       artifacts#v1.5.0:
