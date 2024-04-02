@@ -86,7 +86,7 @@ steps:
     depends_on: "build-artifacts"
     env:
       DEVELOPER_DIR: "/Applications/Xcode14.0.app"
-      UNITY_VERSION: "2021.3.27f1"
+      UNITY_VERSION: "2021.3.36f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -95,8 +95,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2021.3.27f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2021.3.27f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2021.3.36f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2021.3.36f1.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -108,7 +108,7 @@ steps:
     depends_on: "build-artifacts"
     env:
       DEVELOPER_DIR: "/Applications/Xcode14.0.app"
-      UNITY_VERSION: "2022.3.2f1"
+      UNITY_VERSION: "2022.3.22f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -117,8 +117,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2022.3.2f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2022.3.2f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2022.3.22f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2022.3.22f1.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -188,11 +188,11 @@ steps:
   #   agents:
   #     queue: macos-12-arm-unity
   #   env:
-  #     UNITY_VERSION: "2021.3.27f1"
+  #     UNITY_VERSION: "2021.3.36f1"
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - features/fixtures/maze_runner/build/MacOS-2021.3.27f1.zip
+  #         - features/fixtures/maze_runner/build/MacOS-2021.3.36f1.zip
   #       upload:
   #         - maze_output/**/*
   #         - Mazerunner.log
@@ -205,11 +205,11 @@ steps:
     agents:
       queue: macos-12-arm-unity
     env:
-      UNITY_VERSION: "2022.3.2f1"
+      UNITY_VERSION: "2022.3.22f1"
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2022.3.2f1.zip
+          - features/fixtures/maze_runner/build/MacOS-2022.3.22f1.zip
         upload:
           - maze_output/**/*
           - '*-mazerunner.log'
@@ -281,11 +281,11 @@ steps:
   #   timeout_in_minutes: 30
   #   depends_on: 'cocoa-webgl-2021-fixtures'
   #   env:
-  #     UNITY_VERSION: "2021.3.27f1"
+  #     UNITY_VERSION: "2021.3.36f1"
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - features/fixtures/maze_runner/build/WebGL-2021.3.27f1.zip
+  #         - features/fixtures/maze_runner/build/WebGL-2021.3.36f1.zip
   #       upload:
   #         - maze_output/**/*
   #   # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
@@ -296,11 +296,11 @@ steps:
     timeout_in_minutes: 30
     depends_on: 'cocoa-webgl-2022-fixtures'
     env:
-      UNITY_VERSION: "2022.3.2f1"
+      UNITY_VERSION: "2022.3.22f1"
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2022.3.2f1.zip
+          - features/fixtures/maze_runner/build/WebGL-2022.3.22f1.zip
         upload:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
@@ -357,13 +357,13 @@ steps:
     key: "build-android-fixture-2021"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: "2021.3.27f1"
+      UNITY_VERSION: "2021.3.36f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2021.3.27f1.apk
+          - features/fixtures/maze_runner/mazerunner_2021.3.36f1.apk
           - features/fixtures/build_android_apk.log
     commands:
       - bundle install
@@ -378,13 +378,13 @@ steps:
     key: "build-android-fixture-2022"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: "2022.3.2f1"
+      UNITY_VERSION: "2022.3.22f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2022.3.2f1.apk
+          - features/fixtures/maze_runner/mazerunner_2022.3.22f1.apk
           - features/fixtures/build_android_apk.log
     commands:
       - bundle install
@@ -399,13 +399,13 @@ steps:
   #   key: 'build-edm-fixture-2021'
   #   depends_on: 'build-artifacts'
   #   env:
-  #     UNITY_VERSION: "2021.3.27f1"
+  #     UNITY_VERSION: "2021.3.36f1"
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
   #         - Bugsnag.unitypackage
   #       upload:
-  #         - features/fixtures/EDM_Fixture/edm_2021.3.27f1.apk
+  #         - features/fixtures/EDM_Fixture/edm_2021.3.36f1.apk
   #         - features/scripts/buildEdmFixture.log
   #         - features/scripts/edmImport.log
   #         - features/scripts/enableEdm.log
@@ -487,11 +487,11 @@ steps:
     agents:
       queue: opensource
     env:
-      UNITY_VERSION: "2021.3.27f1"
+      UNITY_VERSION: "2021.3.36f1"
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2021.3.27f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2021.3.36f1.apk"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -502,7 +502,7 @@ steps:
         command:
           - "features/csharp"
           - "features/android"
-          - "--app=features/fixtures/maze_runner/mazerunner_2021.3.27f1.apk"
+          - "--app=features/fixtures/maze_runner/mazerunner_2021.3.36f1.apk"
           - "--farm=bb"
           - "--device=ANDROID_9|ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
           - "--no-tunnel"
@@ -518,11 +518,11 @@ steps:
     agents:
       queue: opensource
     env:
-      UNITY_VERSION: "2022.3.2f1"
+      UNITY_VERSION: "2022.3.22f1"
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2022.3.2f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2022.3.22f1.apk"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -533,7 +533,7 @@ steps:
         command:
           - "features/csharp"
           - "features/android"
-          - "--app=features/fixtures/maze_runner/mazerunner_2022.3.2f1.apk"
+          - "--app=features/fixtures/maze_runner/mazerunner_2022.3.22f1.apk"
           - "--farm=bb"
           - "--device=ANDROID_9|ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
           - "--no-tunnel"
@@ -549,18 +549,18 @@ steps:
   #   agents:
   #     queue: opensource
   #   env:
-  #     UNITY_VERSION: "2021.3.27f1"
+  #     UNITY_VERSION: "2021.3.36f1"
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - "features/fixtures/EDM_Fixture/edm_2021.3.27f1.apk"
+  #         - "features/fixtures/EDM_Fixture/edm_2021.3.36f1.apk"
   #       upload:
   #         - "maze_output/**/*"
   #     docker-compose#v3.7.0:
   #       pull: maze-runner
   #       run: maze-runner
   #       command:
-  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2021.3.27f1.apk"
+  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2021.3.36f1.apk"
   #         - "--farm=bs"
   #         - "--device=ANDROID_11_0"
   #         - "features/edm"
@@ -672,7 +672,7 @@ steps:
     key: "generate-fixture-project-2021"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: "2021.3.27f1"
+      UNITY_VERSION: "2021.3.36f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -697,14 +697,14 @@ steps:
       queue: macos-12-arm-unity
     env:
       DEVELOPER_DIR: "/Applications/Xcode14.0.app"
-      UNITY_VERSION: "2021.3.27f1"
+      UNITY_VERSION: "2021.3.36f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2021.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2021.3.27f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2021.3.36f1.ipa
           - features/fixtures/unity.log
     commands:
       - bundle install
@@ -720,7 +720,7 @@ steps:
     key: "generate-fixture-project-2022"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: "2022.3.2f1"
+      UNITY_VERSION: "2022.3.22f1"
     plugins:
       artifacts#v1.5.0:
         download:
@@ -745,14 +745,14 @@ steps:
       queue: macos-12-arm-unity
     env:
       DEVELOPER_DIR: "/Applications/Xcode14.0.app"
-      UNITY_VERSION: "2022.3.2f1"
+      UNITY_VERSION: "2022.3.22f1"
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2022.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2022.3.2f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2022.3.22f1.ipa
           - features/fixtures/unity.log
     commands:
       - bundle install
@@ -834,7 +834,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2021.3.27f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2021.3.36f1.ipa"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -845,7 +845,7 @@ steps:
         command:
           - "features/csharp"
           - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2021.3.27f1.ipa"
+          - "--app=features/fixtures/maze_runner/mazerunner_2021.3.36f1.ipa"
           - "--farm=bb"
           - "--device=IOS_12|IOS_13|IOS_14|IOS_15"
           - "--no-tunnel"
@@ -863,7 +863,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2022.3.2f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2022.3.22f1.ipa"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -874,7 +874,7 @@ steps:
         command:
           - "features/csharp"
           - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2022.3.2f1.ipa"
+          - "--app=features/fixtures/maze_runner/mazerunner_2022.3.22f1.ipa"
           - "--farm=bb"
           - "--device=IOS_12|IOS_13|IOS_14|IOS_15"
           - "--no-tunnel"
