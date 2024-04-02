@@ -1,9 +1,6 @@
 agents:
   queue: macos-14
 
-env:
-  XCODE_VERSION: "15.3.0"
-
 steps:
   #
   # Build notifier.  We run tests for all Unity versions with the 2018 artifacts, as that is what we ship.
