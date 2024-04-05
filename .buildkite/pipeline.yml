@@ -1,3 +1,7 @@
+aliases:
+  - &2018 "2018.4.36f1"
+  - &2020 "2020.3.48f1"
+
 agents:
   queue: macos-14
 
@@ -9,7 +13,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-artifacts"
     env:
-      UNITY_VERSION: "2018.4.36f1"
+      UNITY_VERSION: *2018
     commands:
       - bundle install
       - bundle exec rake plugin:export
@@ -43,7 +47,7 @@ steps:
     timeout_in_minutes: 10
     depends_on: build-artifacts
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       'artifacts#v1.9.0':
         download:
@@ -57,13 +61,13 @@ steps:
     key: "build-android-fixture-2020"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk
+          - features/fixtures/maze_runner/mazerunner_2020.apk
           - features/fixtures/build_android_apk.log
     commands:
       - bundle install
@@ -78,13 +82,13 @@ steps:
   #   key: 'build-edm-fixture-2020'
   #   depends_on: 'build-artifacts'
   #   env:
-  #     UNITY_VERSION: "2020.3.48f1"
+  #     UNITY_VERSION: *2020
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
   #         - Bugsnag.unitypackage
   #       upload:
-  #         - features/fixtures/EDM_Fixture/edm_2020.3.48f1.apk
+  #         - features/fixtures/EDM_Fixture/edm_2020.apk
   #         - features/scripts/buildEdmFixture.log
   #         - features/scripts/edmImport.log
   #         - features/scripts/enableEdm.log
@@ -104,11 +108,11 @@ steps:
     agents:
       queue: opensource
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2020.apk"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -119,7 +123,7 @@ steps:
         command:
           - "features/csharp"
           - "features/android"
-          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk"
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.apk"
           - "--farm=bb"
           - "--device=ANDROID_9|ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
           - "--no-tunnel"
@@ -137,18 +141,18 @@ steps:
   #   agents:
   #     queue: opensource
   #   env:
-  #     UNITY_VERSION: "2020.3.48f1"
+  #     UNITY_VERSION: *2020
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - "features/fixtures/EDM_Fixture/edm_2020.3.48f1.apk"
+  #         - "features/fixtures/EDM_Fixture/edm_2020.apk"
   #       upload:
   #         - "maze_output/**/*"
   #     docker-compose#v3.7.0:
   #       pull: maze-runner
   #       run: maze-runner
   #       command:
-  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.3.48f1.apk"
+  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.apk"
   #         - "--farm=bs"
   #         - "--device=ANDROID_11_0"
   #         - "features/edm"
@@ -164,7 +168,7 @@ steps:
     key: "generate-fixture-project-2020"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.5.0:
         download:
@@ -186,14 +190,14 @@ steps:
     key: "build-ios-fixture-2020"
     depends_on: "generate-fixture-project-2020"
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.5.0:
         download:
           - Bugsnag.unitypackage
           - project_2020.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2020.ipa
           - features/fixtures/unity.log
     commands:
       - bundle install
@@ -215,7 +219,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2020.ipa"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -227,7 +231,7 @@ steps:
         command:
           - "features/csharp"
           - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa"
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.ipa"
           - "--farm=bb"
           - "--device=IOS_12|IOS_13|IOS_14|IOS_15"
           - "--no-tunnel"
