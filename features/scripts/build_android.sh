@@ -25,4 +25,4 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Bu
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-mv $project_path/mazerunner.apk $project_path/mazerunner_${UNITY_VERSION:0:4}.apk
+mv $project_path/mazerunner.apk $project_path/mazerunner_$UNITY_VERSION.apk

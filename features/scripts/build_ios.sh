@@ -38,4 +38,4 @@ if [ $? -ne 0 ]; then
 fi
 
 # Move to known location for running (note - the name of the .ipa differs between Xcode versions)
-find $project_path/output/ -name "*.ipa" -exec mv '{}' $project_path/mazerunner_${UNITY_VERSION:0:4}.ipa \;
+find $project_path/output/ -name "*.ipa" -exec mv '{}' $project_path/mazerunner_$UNITY_VERSION.ipa \;

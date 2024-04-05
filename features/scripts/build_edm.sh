@@ -41,4 +41,4 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -buildTarget Android -logFile $script_path/b
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-  mv $project_path/edm.apk $project_path/edm_${UNITY_VERSION:0:4}.apk
+  mv $project_path/edm.apk $project_path/edm_$UNITY_VERSION.apk

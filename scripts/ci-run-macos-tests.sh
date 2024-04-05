@@ -1,6 +1,6 @@
 #!/bin/bash -e
 pushd features/fixtures/maze_runner/build
-  unzip MacOS-${UNITY_VERSION:0:4}.zip
+  unzip MacOS-$UNITY_VERSION.zip
 popd
 
 bundle install

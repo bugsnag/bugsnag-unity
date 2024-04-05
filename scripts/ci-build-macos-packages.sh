@@ -5,6 +5,6 @@
 ./features/scripts/build_maze_runner.sh webgl
 
 pushd features/fixtures/maze_runner/build
-  zip -r MacOS-${UNITY_VERSION:0:4}.zip MacOS
-  zip -r WebGL-${UNITY_VERSION:0:4}.zip WebGL
+  zip -r MacOS-$UNITY_VERSION.zip MacOS
+  zip -r WebGL-$UNITY_VERSION.zip WebGL
 popd
