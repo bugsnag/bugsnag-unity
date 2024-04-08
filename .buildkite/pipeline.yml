@@ -1,5 +1,9 @@
+aliases:
+  - &2018 "2018.4.36f1"
+  - &2020 "2020.3.48f1"
+
 agents:
-  queue: macos-12-arm-unity
+  queue: macos-14
 
 steps:
   #
@@ -9,8 +13,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-artifacts"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
-      UNITY_VERSION: "2018.4.36f1"
+      UNITY_VERSION: *2018
     commands:
       - bundle install
       - bundle exec rake plugin:export
@@ -44,14 +47,11 @@ steps:
     timeout_in_minutes: 10
     depends_on: build-artifacts
     env:
-      UNITY_VERSION: "2020.3.48f1"
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
+      UNITY_VERSION: *2020
     plugins:
       'artifacts#v1.9.0':
         download:
           - Bugsnag.unitypackage
-    agents:
-      queue: macos-12-arm
     commands:
       features/scripts/do_size_test.sh
 
@@ -61,7 +61,7 @@ steps:
     key: "build-android-fixture-2020"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.5.0:
         download:
@@ -108,7 +108,7 @@ steps:
     agents:
       queue: opensource
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.5.0:
         download:
@@ -168,7 +168,7 @@ steps:
     key: "generate-fixture-project-2020"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.5.0:
         download:
@@ -190,8 +190,7 @@ steps:
     key: "build-ios-fixture-2020"
     depends_on: "generate-fixture-project-2020"
     env:
-      DEVELOPER_DIR: "/Applications/Xcode14.0.app"
-      UNITY_VERSION: "2020.3.48f1"
+      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.5.0:
         download:
