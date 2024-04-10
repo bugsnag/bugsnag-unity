@@ -24,13 +24,6 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: ":large_blue_circle: :large_blue_circle: :large_blue_circle: UNITY 2023 STEPS :large_blue_circle: :large_blue_circle: :large_blue_circle:"
-    depends_on:
-      - "build-artifacts"
-    commands:
-      - buildkite-agent pipeline upload .buildkite/full/2023.yml
-
-#
 #  # - label: Ensure notifier builds on Windows (for development)
 #  #   timeout_in_minutes: 30
 #  #   agents:
@@ -250,9 +243,9 @@ steps:
 #    concurrency_group: "bitbar"
 #    concurrency_method: eager
 #
-#  #
-#  # Conditionally trigger full pipeline
-#  #
-#  - label: "Conditionally trigger full set of tests"
-#    timeout_in_minutes: 30
-#    command: sh -c .buildkite/pipeline_trigger.sh
+  #
+  # Conditionally trigger full pipeline
+  #
+  - label: "Conditionally trigger full set of tests"
+    timeout_in_minutes: 30
+    command: sh -c .buildkite/pipeline_trigger.sh
