@@ -192,6 +192,7 @@ steps:
     depends_on: "generate-fixture-project-2021"
     env:
       UNITY_VERSION: *2021
+      XCODE_VERSION: "15.3.0"
     plugins:
       artifacts#v1.5.0:
         download:
