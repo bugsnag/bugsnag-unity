@@ -1,0 +1,33 @@
+aliases:
+  - &2023 "2023.1.17f1"
+
+env:
+    UNITY_VERSION: *2023
+    XCODE_VERSION: "15.3.0"
+
+agents:
+  queue: "macos-14"
+
+steps:
+  - label: Build Unity 2023 MacOS and WebGL test fixtures
+    timeout_in_minutes: 30
+    key: "cocoa-webgl-2023-fixtures"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2023
+      # Python2 needed for WebGL to build
+#      EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-macos-packages.sh
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/MacOS-2023.1.17f1.zip
+      - features/fixtures/maze_runner/build/WebGL-2023.1.17f1.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
