@@ -87,6 +87,8 @@ steps:
   - label: Run MacOS e2e tests for Unity 2020
     timeout_in_minutes: 60
     depends_on: "cocoa-webgl-2020-fixtures"
+    agents:
+      queue: macos-12-arm
     env:
       UNITY_VERSION: *2020
     plugins:
@@ -121,6 +123,8 @@ steps:
   - label: Run MacOS e2e tests for Unity 2022
     timeout_in_minutes: 60
     depends_on: 'cocoa-webgl-2022-fixtures'
+    agents:
+      queue: macos-12-arm
     env:
       UNITY_VERSION: *2022
     plugins:
@@ -176,6 +180,8 @@ steps:
   - label: Run WebGL e2e tests for Unity 2022
     timeout_in_minutes: 30
     depends_on: 'cocoa-webgl-2022-fixtures'
+    agents:
+      queue: opensource-mac-cocoa-11
     env:
       UNITY_VERSION: *2022
     plugins:
@@ -464,7 +470,7 @@ steps:
         command:
           - "features/csharp"
           - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.28f1.ipa"
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=IOS_13|IOS_14|IOS_15"
