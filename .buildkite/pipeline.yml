@@ -248,4 +248,4 @@ steps:
   #
   - label: "Conditionally trigger full set of tests"
     timeout_in_minutes: 30
-    command: sh -c .buildkite/full/pipeline_trigger.sh
+    command: sh -c .buildkite/pipeline_trigger.sh
