@@ -13,7 +13,7 @@ steps:
     timeout_in_minutes: 30
     key: "build-artifacts"
     env:
-      UNITY_VERSION: *2020
+      UNITY_VERSION: *2021
     commands:
       - bundle install
       - bundle exec rake plugin:export
