@@ -10,7 +10,7 @@ namespace BugsnagUnity
 
         private Dictionary<LogType, int> CurrentCounts { get; }
 
-        private double FlushAt { get; set; }
+        private double FlushAt { get; set; } = -1; 
 
         private double MaximumLogsTimePeriod => Configuration.MaximumLogsTimePeriod.TotalSeconds;
 
@@ -18,16 +18,18 @@ namespace BugsnagUnity
 
         private readonly object _lock = new object();
 
-        private void SetFlushTime()
+        private void EnsureFlushTimeIsSet()
         {
-            FlushAt = Time.ElapsedSeconds + MaximumLogsTimePeriod;
+            if (FlushAt < 0) 
+            {
+                FlushAt = Time.ElapsedSeconds + MaximumLogsTimePeriod;
+            }
         }
 
         public MaximumLogTypeCounter(Configuration configuration)
         {
             Configuration = configuration;
             CurrentCounts = new Dictionary<LogType, int>();
-            SetFlushTime();
         }
 
         public bool ShouldSend(UnityLogMessage unityLogMessage)
@@ -36,6 +38,8 @@ namespace BugsnagUnity
 
             lock (_lock)
             {
+                EnsureFlushTimeIsSet();
+
                 if (MaximumTypePerTimePeriod.ContainsKey(type))
                 {
                     if (CurrentCounts.ContainsKey(type))
@@ -52,7 +56,7 @@ namespace BugsnagUnity
                         if (unityLogMessage.CreatedAt > FlushAt)
                         {
                             CurrentCounts.Clear();
-                            SetFlushTime();
+                            FlushAt = Time.ElapsedSeconds + MaximumLogsTimePeriod;
                             return true;
                         }
                         return false;
