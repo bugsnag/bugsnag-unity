@@ -71,7 +71,7 @@ namespace BugsnagUnity
         /// the tracking of in foreground time for the application.
         /// </summary>
         /// <param name="inFocus"></param>
-        public static void SetApplicationState(bool inFocus) => Client.SetApplicationState(inFocus);
+        public static void SetApplicationState(bool inFocus) => Client?.SetApplicationState(inFocus);
 
         /// <summary>
         /// Bugsnag uses the concept of contexts to help display and group your errors.
