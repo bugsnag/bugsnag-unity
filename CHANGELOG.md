@@ -1,5 +1,9 @@
 # Changelog
 
+### TBD
+
+- Added more null reference checking to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
+
 ## 7.7.3 (2024-04-11)
 
 ### Bug Fixes
