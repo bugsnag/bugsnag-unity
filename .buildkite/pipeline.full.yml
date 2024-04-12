@@ -297,6 +297,27 @@ steps:
         - exit_status: "*"
           limit: 1
 
+  - label: ":android: Build Android test fixture for Unity 2023"
+    timeout_in_minutes: 30
+    key: "build-android-fixture-2023"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2023
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/maze_runner/mazerunner_2022.2.17f1.apk
+          - features/fixtures/build_android_apk.log
+    commands:
+      - bundle install
+      - rake test:android:build
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
   # - label: ':android: Build Android EDM test fixture for Unity 2020'
   #   timeout_in_minutes: 30
   #   key: 'build-edm-fixture-2020'
@@ -396,7 +417,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2023.3.22f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2023.2.17f1.apk"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -407,7 +428,7 @@ steps:
         command:
           - "features/csharp"
           - "features/android"
-          - "--app=features/fixtures/maze_runner/mazerunner_2023.3.22f1.apk"
+          - "--app=features/fixtures/maze_runner/mazerunner_2023.2.17f1.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
@@ -573,7 +594,7 @@ steps:
           - Bugsnag.unitypackage
           - project_2023.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2023.3.22f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2023.2.17f1.ipa
           - features/fixtures/unity.log
     commands:
       - bundle install
@@ -655,7 +676,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2023.3.22f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2023.2.17f1.ipa"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -666,7 +687,7 @@ steps:
         command:
           - "features/csharp"
           - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2023.3.22f1.ipa"
+          - "--app=features/fixtures/maze_runner/mazerunner_2023.2.17f1.ipa"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=IOS_13|IOS_14|IOS_15"
