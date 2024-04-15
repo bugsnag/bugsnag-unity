@@ -308,7 +308,7 @@ steps:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2022.2.17f1.apk
+          - features/fixtures/maze_runner/mazerunner_2023.2.17f1.apk
           - features/fixtures/build_android_apk.log
     commands:
       - bundle install
@@ -774,7 +774,7 @@ steps:
     agents:
       queue: windows-unity-wsl
     env:
-      UNITY_VERSION: "2023.2.15f1"
+      UNITY_VERSION: *2023
     commands:
       - scripts/ci-build-windows-fixture-wsl.sh
     plugins:
@@ -783,7 +783,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
-          - features/fixtures/maze_runner/build/Windows-2023.2.15f1.zip
+          - features/fixtures/maze_runner/build/Windows-2023.2.17f1.zip
     retry:
       automatic:
         - exit_status: "*"
