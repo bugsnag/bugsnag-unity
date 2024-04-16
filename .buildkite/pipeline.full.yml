@@ -30,8 +30,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2020.3.48f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2020.3.48f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2020.zip
+      - features/fixtures/maze_runner/build/WebGL-2020.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -52,8 +52,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2021.3.36f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2021.3.36f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2021.zip
+      - features/fixtures/maze_runner/build/WebGL-2021.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -74,8 +74,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2022.3.22f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2022.3.22f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2022.zip
+      - features/fixtures/maze_runner/build/WebGL-2022.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -94,7 +94,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2020.3.48f1.zip
+          - features/fixtures/maze_runner/build/MacOS-2020.zip
         upload:
           - maze_output/**/*
           - '*-mazerunner.log'
@@ -113,7 +113,7 @@ steps:
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - features/fixtures/maze_runner/build/MacOS-2021.3.36f1.zip
+  #         - features/fixtures/maze_runner/build/MacOS-2021.zip
   #       upload:
   #         - maze_output/**/*
   #         - Mazerunner.log
@@ -130,7 +130,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2022.3.22f1.zip
+          - features/fixtures/maze_runner/build/MacOS-2022.zip
         upload:
           - maze_output/**/*
           - '*-mazerunner.log'
@@ -152,7 +152,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2020.3.48f1.zip
+          - features/fixtures/maze_runner/build/WebGL-2020.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
@@ -170,7 +170,7 @@ steps:
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - features/fixtures/maze_runner/build/WebGL-2021.3.36f1.zip
+  #         - features/fixtures/maze_runner/build/WebGL-2021.zip
   #       upload:
   #         - maze_output/**/*
   #   # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
@@ -187,7 +187,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2022.3.22f1.zip
+          - features/fixtures/maze_runner/build/WebGL-2022.zip
         upload:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
@@ -208,7 +208,7 @@ steps:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk
+          - features/fixtures/maze_runner/mazerunner_2020.apk
           - features/fixtures/build_android_apk.log
     commands:
       - bundle install
@@ -229,7 +229,7 @@ steps:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2022.3.22f1.apk
+          - features/fixtures/maze_runner/mazerunner_2022.apk
           - features/fixtures/build_android_apk.log
     commands:
       - bundle install
@@ -250,7 +250,7 @@ steps:
   #       download:
   #         - Bugsnag.unitypackage
   #       upload:
-  #         - features/fixtures/EDM_Fixture/edm_2020.3.48f1.apk
+  #         - features/fixtures/EDM_Fixture/edm_2020.apk
   #         - features/scripts/buildEdmFixture.log
   #         - features/scripts/edmImport.log
   #         - features/scripts/enableEdm.log
@@ -274,7 +274,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2020.apk"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -285,7 +285,7 @@ steps:
         command:
           - "features/csharp"
           - "features/android"
-          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.48f1.apk"
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
@@ -306,7 +306,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2022.3.22f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2022.apk"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -317,7 +317,7 @@ steps:
         command:
           - "features/csharp"
           - "features/android"
-          - "--app=features/fixtures/maze_runner/mazerunner_2022.3.22f1.apk"
+          - "--app=features/fixtures/maze_runner/mazerunner_2022.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
@@ -338,14 +338,14 @@ steps:
   #   plugins:
   #     artifacts#v1.5.0:
   #       download:
-  #         - "features/fixtures/EDM_Fixture/edm_2020.3.48f1.apk"
+  #         - "features/fixtures/EDM_Fixture/edm_2020.apk"
   #       upload:
   #         - "maze_output/**/*"
   #     docker-compose#v3.7.0:
   #       pull: maze-runner
   #       run: maze-runner
   #       command:
-  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.3.48f1.apk"
+  #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.apk"
   #         - "--farm=bs"
   #         - "--device=ANDROID_11_0"
   #         - "features/edm"
@@ -391,7 +391,7 @@ steps:
           - Bugsnag.unitypackage
           - project_2020.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2020.ipa
           - features/fixtures/unity.log
     commands:
       - bundle install
@@ -437,7 +437,7 @@ steps:
           - Bugsnag.unitypackage
           - project_2022.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2022.3.22f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2022.ipa
           - features/fixtures/unity.log
     commands:
       - bundle install
@@ -459,7 +459,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2020.ipa"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -470,7 +470,7 @@ steps:
         command:
           - "features/csharp"
           - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2020.3.48f1.ipa"
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.ipa"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=IOS_13|IOS_14|IOS_15"
@@ -489,7 +489,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2022.3.22f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2022.ipa"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -500,7 +500,7 @@ steps:
         command:
           - "features/csharp"
           - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2022.3.22f1.ipa"
+          - "--app=features/fixtures/maze_runner/mazerunner_2022.ipa"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=IOS_13|IOS_14|IOS_15"
@@ -528,7 +528,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
-          - features/fixtures/maze_runner/build/Windows-2020.3.48f1.zip
+          - features/fixtures/maze_runner/build/Windows-2020.zip
     commands:
       - scripts/ci-build-windows-fixture-wsl.sh
     retry:
@@ -552,7 +552,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
-          - features/fixtures/maze_runner/build/Windows-2021.3.36f1.zip
+          - features/fixtures/maze_runner/build/Windows-2021.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -574,7 +574,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
-          - features/fixtures/maze_runner/build/Windows-2022.3.22f1.zip
+          - features/fixtures/maze_runner/build/Windows-2022.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -593,7 +593,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/Windows-2020.3.48f1.zip
+          - features/fixtures/maze_runner/build/Windows-2020.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
@@ -611,7 +611,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/Windows-2021.3.36f1.zip
+          - features/fixtures/maze_runner/build/Windows-2021.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
@@ -628,7 +628,7 @@ steps:
     plugins:
       artifacts#v1.5.0:
         download:
-          - features/fixtures/maze_runner/build/Windows-2022.3.22f1.zip
+          - features/fixtures/maze_runner/build/Windows-2022.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
