@@ -1,5 +1,12 @@
 # Changelog
 
+## 7.7.3 (2024-04-11)
+
+### Bug Fixes
+
+- Changed initialisation of time api to reduce the risk of iOS app hangs on start [#783](https://github.com/bugsnag/bugsnag-unity/pull/783)
+- Updated naming for BugsnagEditor EDM menu to reduce potential conflicts with other tools [#780](https://github.com/bugsnag/bugsnag-unity/pull/780)
+
 ## 7.7.2 (2024-03-01)
 
 ### Enhancements

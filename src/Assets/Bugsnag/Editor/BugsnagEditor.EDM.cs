@@ -36,7 +36,7 @@ namespace BugsnagUnity.Editor
         [MenuItem(EDM_MENU_ITEM, true)]
         private static bool ToggleEDMValidate()
         {
-            Menu.SetChecked(EDM_MENU_ITEM, IsEDMEnabled());
+            UnityEditor.Menu.SetChecked(EDM_MENU_ITEM, IsEDMEnabled());
             return true;
         }
 

@@ -119,6 +119,28 @@ After do |scenario|
   end
 end
 
+device_logs = []
+After do |scenario|
+  if Maze.driver && Maze.driver.is_a?(Maze::Driver::Appium)
+    log_file = Maze::Api::Appium::FileManager.new.read_app_file('mazerunner-unity.log')
+    device_logs << {
+      file: log_file,
+      scenario: scenario.name
+    }
+  end
+end
+
+AfterAll do
+  maze_output = File.join(Dir.pwd, 'maze_output')
+  device_logs_folder = File.join(maze_output, 'device_logs')
+  FileUtils.makedirs(device_logs_folder)
+  device_logs.each do |log|
+    File.open(File.join(device_logs_folder, "#{log[:scenario]}.log"), 'w') do |f|
+      f.write(log[:file])
+    end
+  end
+end
+
 AfterAll do
   case Maze::Helper.get_current_platform
   when 'macos'
