@@ -755,7 +755,6 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
 char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
     BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
     NSDictionary *deviceDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-        device.freeDisk, @"freeDisk",
         device.freeMemory, @"freeMemory",
         device.id, @"id",
         device.jailbroken ? @"true" : @"false", @"jailbroken",
