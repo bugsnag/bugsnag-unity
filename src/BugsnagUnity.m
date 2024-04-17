@@ -754,20 +754,27 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
 
 char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
     BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
-    NSDictionary *deviceDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-        device.freeMemory, @"freeMemory",
-        device.id, @"id",
-        device.jailbroken ? @"true" : @"false", @"jailbroken",
-        device.locale, @"locale",
-        device.manufacturer, @"manufacturer",
-        device.model, @"model",
-        device.modelNumber, @"modelNumber",
-        device.runtimeVersions[@"osBuild"], @"osBuild",
-        device.osName, @"osName",
-        device.osVersion,@ "osVersion",
-        nil];
+    NSMutableDictionary *deviceDictionary = [[NSMutableDictionary alloc] init];
+
+    if (device.freeDisk != nil) [deviceDictionary setObject:device.freeDisk forKey:@"freeDisk"];
+    if (device.freeMemory != nil) [deviceDictionary setObject:device.freeMemory forKey:@"freeMemory"];
+    if (device.id != nil) [deviceDictionary setObject:device.id forKey:@"id"];
+    if (device.jailbroken) {
+        [deviceDictionary setObject:@"true" forKey:@"jailbroken"];
+    } else {
+        [deviceDictionary setObject:@"false" forKey:@"jailbroken"];
+    }
+    if (device.locale != nil) [deviceDictionary setObject:device.locale forKey:@"locale"];
+    if (device.manufacturer != nil) [deviceDictionary setObject:device.manufacturer forKey:@"manufacturer"];
+    if (device.model != nil) [deviceDictionary setObject:device.model forKey:@"model"];
+    if (device.modelNumber != nil) [deviceDictionary setObject:device.modelNumber forKey:@"modelNumber"];
+    if (device.runtimeVersions[@"osBuild"] != nil) [deviceDictionary setObject:device.runtimeVersions[@"osBuild"] forKey:@"osBuild"];
+    if (device.osName != nil) [deviceDictionary setObject:device.osName forKey:@"osName"];
+    if (device.osVersion != nil) [deviceDictionary setObject:device.osVersion forKey:@"osVersion"];
+
     return getJson(deviceDictionary);
 }
+
 
 void bugsnag_populateUser(struct bugsnag_user *user) {
   user->user_id = BSGGetDefaultDeviceId().UTF8String;
