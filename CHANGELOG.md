@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 7.7.4 (2024-05-19)
 
 ### Bug Fixes
 
