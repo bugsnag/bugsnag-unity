@@ -732,13 +732,26 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
 
 char * bugsnag_retrieveAppData() {
     BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
-     NSDictionary *appDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-        app.bundleVersion, @"bundleVersion",
-        app.id, @"id",
-        app.isLaunching ? @"true" : @"false", @"isLaunching",
-        app.type, @"type",
-        app.version, @"version",
-        nil];
+    if (app == nil) {
+        return NULL;
+    }
+
+    NSDictionary *appDictionary = [NSMutableDictionary dictionary];
+
+    if (app.bundleVersion != nil) {
+        [appDictionary setObject:app.bundleVersion forKey:@"bundleVersion"];
+    }
+    if (app.id != nil) {
+        [appDictionary setObject:app.id forKey:@"id"];
+    }
+    [appDictionary setObject:(app.isLaunching ? @"true" : @"false") forKey:@"isLaunching"];
+    if (app.type != nil) {
+        [appDictionary setObject:app.type forKey:@"type"];
+    }
+    if (app.version != nil) {
+        [appDictionary setObject:app.version forKey:@"version"];
+    }
+
     return getJson(appDictionary);
 }
 
