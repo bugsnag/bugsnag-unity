@@ -28,6 +28,10 @@ Before('@macos_only') do |_scenario|
 end
 
 
+Before('@ios_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze::Helper.get_current_platform == 'ios'
+end
+
 Before('@cocoa_only') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.os == 'macos' || Maze::Helper.get_current_platform == 'ios'
 end
@@ -51,6 +55,10 @@ end
 
 Before('@skip_android') do |_scenario|
   skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == 'android'
+end
+
+Before('@android_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze::Helper.get_current_platform == 'android'
 end
 
 
