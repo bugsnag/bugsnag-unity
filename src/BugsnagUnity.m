@@ -736,7 +736,7 @@ char * bugsnag_retrieveAppData() {
         return NULL;
     }
 
-    NSDictionary *appDictionary = [NSMutableDictionary dictionary];
+    NSMutableDictionary *appDictionary = [NSMutableDictionary dictionary];
 
     if (app.bundleVersion != nil) {
         [appDictionary setObject:app.bundleVersion forKey:@"bundleVersion"];
