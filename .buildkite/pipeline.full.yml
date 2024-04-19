@@ -739,6 +739,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
+          - unity_import.log
           - features/fixtures/maze_runner/build/Windows-2021.3.36f1.zip
     retry:
       automatic:
@@ -761,6 +762,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
+          - unity_import.log
           - features/fixtures/maze_runner/build/Windows-2022.3.22f1.zip
     retry:
       automatic:
@@ -783,6 +785,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
+          - unity_import.log
           - features/fixtures/maze_runner/build/Windows-2023.2.17f1.zip
     retry:
       automatic:
