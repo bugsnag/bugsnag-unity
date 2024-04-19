@@ -1,5 +1,11 @@
 # Changelog
 
+## 7.7.4 (2024-05-19)
+
+### Bug Fixes
+
+- Fixed issue where iOS C# events reported the incorrect value for device.osName. [#791](https://github.com/bugsnag/bugsnag-unity/pull/791)
+
 ## 7.7.3 (2024-04-11)
 
 ### Bug Fixes
