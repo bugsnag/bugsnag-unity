@@ -50,6 +50,10 @@ Feature: Callbacks
     And the event "device.osVersion" equals "Custom OsVersion"
     And the event "device.runtimeVersions.scoop" equals "dewoop"
     And the event "device.orientation" equals "Custom Orientation"
+    And the event "device.modelNumber" equals "Custom ModelNumber"
+    And the event "device.totalmemory" equals "999"
+
+
 
     # Breadcrumbs
     And the event "breadcrumbs.0.name" equals "Custom Message"
