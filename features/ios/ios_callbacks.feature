@@ -51,7 +51,7 @@ Feature: Callbacks
     And the event "device.runtimeVersions.scoop" equals "dewoop"
     And the event "device.orientation" equals "Custom Orientation"
     And the event "device.modelNumber" equals "Custom ModelNumber"
-    And the event "device.totalMemory" equals "999"
+    And the event "device.totalMemory" equals 999
 
 
 
