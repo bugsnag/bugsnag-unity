@@ -98,8 +98,8 @@ steps:
       - scripts/ci-build-macos-packages.sh
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2023.2.17f1.zip
-      - features/fixtures/maze_runner/build/WebGL-2023.2.17f1.zip
+      - features/fixtures/maze_runner/build/MacOS-2023.zip
+      - features/fixtures/maze_runner/build/WebGL-2023.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -171,7 +171,7 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2023.2.17f1.zip
+          - features/fixtures/maze_runner/build/MacOS-2023.zip
         upload:
           - maze_output/**/*
           - '*-mazerunner.log'
@@ -245,7 +245,7 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2023.2.17f1.zip
+          - features/fixtures/maze_runner/build/WebGL-2023.zip
         upload:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
@@ -308,7 +308,7 @@ steps:
         download:
           - Bugsnag.unitypackage
         upload:
-          - features/fixtures/maze_runner/mazerunner_2023.2.17f1.apk
+          - features/fixtures/maze_runner/mazerunner_2023.apk
           - features/fixtures/build_android_apk.log
     commands:
       - bundle install
@@ -417,7 +417,7 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2023.2.17f1.apk"
+          - "features/fixtures/maze_runner/mazerunner_2023.apk"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -428,7 +428,7 @@ steps:
         command:
           - "features/csharp"
           - "features/android"
-          - "--app=features/fixtures/maze_runner/mazerunner_2023.2.17f1.apk"
+          - "--app=features/fixtures/maze_runner/mazerunner_2023.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
@@ -594,7 +594,7 @@ steps:
           - Bugsnag.unitypackage
           - project_2023.tgz
         upload:
-          - features/fixtures/maze_runner/mazerunner_2023.2.17f1.ipa
+          - features/fixtures/maze_runner/mazerunner_2023.ipa
           - features/fixtures/unity.log
     commands:
       - bundle install
@@ -676,7 +676,7 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - "features/fixtures/maze_runner/mazerunner_2023.2.17f1.ipa"
+          - "features/fixtures/maze_runner/mazerunner_2023.ipa"
         upload:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
@@ -687,7 +687,7 @@ steps:
         command:
           - "features/csharp"
           - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2023.2.17f1.ipa"
+          - "--app=features/fixtures/maze_runner/mazerunner_2023.ipa"
           - "--farm=bb"
           - "--appium-version=1.22"
           - "--device=IOS_13|IOS_14|IOS_15"
@@ -787,7 +787,7 @@ steps:
         upload:
           - unity.log
           - unity_import.log
-          - features/fixtures/maze_runner/build/Windows-2023.2.17f1.zip
+          - features/fixtures/maze_runner/build/Windows-2023.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -855,11 +855,11 @@ steps:
     agents:
       queue: windows-general-wsl
     env:
-      UNITY_VERSION: "2023.2.15f1"
+      UNITY_VERSION: *2023
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/Windows-2023.2.15f1.zip
+          - features/fixtures/maze_runner/build/Windows-2023.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
