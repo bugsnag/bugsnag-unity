@@ -770,6 +770,7 @@ steps:
           limit: 1
 
   - label: Build Unity 2023 Windows test fixture
+    skip: Pending PLAT-12072
     timeout_in_minutes: 30
     key: "windows-2023-fixture"
     depends_on: "build-artifacts"
@@ -848,6 +849,7 @@ steps:
       - scripts/ci-run-windows-tests-wsl.sh
 
   - label: Run Windows e2e tests for Unity 2023
+    skip: Pending PLAT-12072
     timeout_in_minutes: 30
     depends_on: "windows-2023-fixture"
     agents:
