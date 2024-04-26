@@ -3,55 +3,36 @@ using System.Collections.Generic;
 
 namespace BugsnagUnity
 {
-    /// <summary>
-    /// Applies the configured unique log throttling rules.
-    /// </summary>
     public class UniqueLogThrottle
     {
         private readonly object _lock = new object();
-
-        /// <summary>
-        /// Used to track the unique messages received.
-        /// </summary>
         private Dictionary<UnityLogMessage, int> Counter { get; }
-
-        /// <summary>
-        /// Used to track when the counter should be flushed next
-        /// </summary>
-        private double FlushAt { get; set; }
-
-        /// <summary>
-        /// The configuration for unique log counts and times
-        /// </summary>
+        private double FlushAt { get; set; } = -1;
         private Configuration Configuration { get; }
 
         private double UniqueLogsTimePeriod => Configuration.SecondsPerUniqueLog.TotalSeconds;
 
-        private void SetFlushTime()
+        private void EnsureFlushTimeIsSet()
         {
-            FlushAt = Time.ElapsedSeconds + UniqueLogsTimePeriod;
+            if (FlushAt < 0)
+            {
+                FlushAt = Time.ElapsedSeconds + UniqueLogsTimePeriod;
+            }
         }
 
         public UniqueLogThrottle(Configuration configuration)
         {
             Configuration = configuration;
             Counter = new Dictionary<UnityLogMessage, int>(new UnityLogMessageEqualityComparer());
-            SetFlushTime();
         }
 
-        /// <summary>
-        /// Determines if this log message should be sent to Bugsnag based on the
-        /// configured rules around unique log messages with a time period.
-        /// </summary>
-        /// <param name="unityLogMessage"></param>
-        /// <returns></returns>
         public bool ShouldSend(UnityLogMessage unityLogMessage)
         {
             bool shouldSend;
             lock (_lock)
             {
+                EnsureFlushTimeIsSet();
                 shouldSend = !Counter.ContainsKey(unityLogMessage);
-
                 if (shouldSend)
                 {
                     Counter.Add(unityLogMessage, 0);
@@ -61,30 +42,24 @@ namespace BugsnagUnity
                     if (unityLogMessage.CreatedAt > FlushAt)
                     {
                         Counter.Clear();
-                        SetFlushTime();
+                        FlushAt = Time.ElapsedSeconds + UniqueLogsTimePeriod;
                         shouldSend = true;
                     }
                 }
             }
-
             return shouldSend;
         }
 
-        /// <summary>
-        /// Used to determine if log messages are unique.
-        /// </summary>
         class UnityLogMessageEqualityComparer : EqualityComparer<UnityLogMessage>
         {
             public override bool Equals(UnityLogMessage x, UnityLogMessage y)
             {
-                return x.Condition == y.Condition
-                  && x.StackTrace == y.StackTrace
-                  && x.Type == y.Type;
+                return x.Condition == y.Condition && x.StackTrace == y.StackTrace && x.Type == y.Type;
             }
 
             public override int GetHashCode(UnityLogMessage obj)
             {
-                unchecked // Overflow is fine, just wrap
+                unchecked
                 {
                     int hash = 17;
                     hash = hash * 23 + obj.Condition.GetHashCode();

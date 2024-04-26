@@ -2,7 +2,22 @@
 
 ## TBD
 
-- Updated naming for BugsnagEditor EDM menu [#780](https://github.com/bugsnag/bugsnag-unity/pull/780)
+### Bug Fixes
+
+- Fixed issue where changes to device.TotalMemory and device.ModelNumber in cocoa on send callbacks were not respected. [#793](https://github.com/bugsnag/bugsnag-unity/pull/793)
+
+## 7.7.4 (2024-05-19)
+
+### Bug Fixes
+
+- Fixed issue where iOS C# events reported the incorrect value for device.osName. [#791](https://github.com/bugsnag/bugsnag-unity/pull/791)
+
+## 7.7.3 (2024-04-11)
+
+### Bug Fixes
+
+- Changed initialisation of time api to reduce the risk of iOS app hangs on start [#783](https://github.com/bugsnag/bugsnag-unity/pull/783)
+- Updated naming for BugsnagEditor EDM menu to reduce potential conflicts with other tools [#780](https://github.com/bugsnag/bugsnag-unity/pull/780)
 
 ## 7.7.2 (2024-03-01)
 
