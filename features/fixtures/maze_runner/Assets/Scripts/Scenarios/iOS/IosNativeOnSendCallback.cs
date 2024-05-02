@@ -40,7 +40,9 @@ public class IosNativeOnSendCallback : Scenario
                 device.Jailbroken = true;
                 device.Orientation = "Custom Orientation";
                 device.Time = new DateTimeOffset(1985, 08, 21, 01, 01, 01, TimeSpan.Zero);
-
+                device.TotalMemory = 999;
+                device.ModelNumber = "Custom ModelNumber";
+                
                 // breadcrumbs
                 foreach (var crumb in @event.Breadcrumbs)
                 {
