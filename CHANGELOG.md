@@ -1,12 +1,12 @@
 # Changelog
 
-## TBD
+## 7.7.5 (2024-05-02)
 
 ### Bug Fixes
 
 - Fixed issue where changes to device.TotalMemory and device.ModelNumber in cocoa on send callbacks were not respected. [#793](https://github.com/bugsnag/bugsnag-unity/pull/793)
 
-## 7.7.4 (2024-05-19)
+## 7.7.4 (2024-04-19)
 
 ### Bug Fixes
 
