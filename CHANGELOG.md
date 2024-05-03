@@ -4,6 +4,19 @@
 
 - Added more null reference checking to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
 
+## 7.7.5 (2024-05-02)
+
+### Bug Fixes
+
+- Fixed issue where changes to device.TotalMemory and device.ModelNumber in cocoa on send callbacks were not respected. [#793](https://github.com/bugsnag/bugsnag-unity/pull/793)
+
+## 7.7.4 (2024-04-19)
+
+### Bug Fixes
+
+- Fixed issue where iOS C# events reported the incorrect value for device.osName. [#791](https://github.com/bugsnag/bugsnag-unity/pull/791)
+
+
 ## 7.7.3 (2024-04-11)
 
 ### Bug Fixes
