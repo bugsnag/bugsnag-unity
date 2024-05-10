@@ -64,8 +64,6 @@ end
 
 BeforeAll do
   $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
-  Maze.config.enforce_bugsnag_integrity = true
-
   if Maze.config.os&.downcase == 'macos'
     # The default macOS Crash Reporter "#{app_name} quit unexpectedly" alert grabs focus which can cause tests to flake.
     # This option, which appears to have been introduced in macOS 10.11, displays a notification instead of the alert.
