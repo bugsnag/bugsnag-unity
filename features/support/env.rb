@@ -111,6 +111,14 @@ Maze.hooks.before do
   end
 end
 
+Maze.hooks.before do |scenario|
+  # Detect if we're running the webgl tests
+  if Maze.config.farm.eql?('local')
+    # Allows each scenario to auto retry once due to instability in the local browser
+    scenario.tags << '@retry'
+  end
+end
+
 After do |scenario|
   next if scenario.status == :skipped
 
