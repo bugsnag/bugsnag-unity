@@ -115,7 +115,7 @@ Maze.hooks.before do |scenario|
   # Detect if we're running the webgl tests
   if Maze.config.farm.eql?('local')
     # Allows each scenario to auto retry once due to instability in the local browser
-    scenario.tags << '@retry'
+    scenario.tags << Cucumber::Core::Test::Tag.new(nil, '@retry')
   end
 end
 
