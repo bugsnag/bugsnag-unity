@@ -9,7 +9,7 @@ namespace BugsnagUnity.Payload
     {
        
         private const string TRACE_ID_KEY = "traceid";
-        private const string SPAN_ID_KEY = "string";
+        private const string SPAN_ID_KEY = "spanid";
 
         internal Correlation(string traceId, string spanId)
         {
