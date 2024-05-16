@@ -56,89 +56,6 @@ namespace BugsnagUnity
 
         private bool _isUnity2019OrHigher;
 
-        const string BUGSNAG_PERFORMANCE_ASSEMBLY_NAME = "BugsnagUnityPerformance.BugsnagPerformance";
-        const string GET_CURRENT_CONTEXT_INTERNAL_METHOD_NAME = "GetCurrentContextInternal";
-
-        static MethodInfo _getCurrentContextInternalMethod;
-        private static bool _isPerformanceLibraryAvailable = true;
-
-        [Serializable]
-        private class SpanContext
-        {
-            public string traceId;
-            public string spanId;
-        }
-
-        private static Correlation GetCurrentPerformanceSpanContext()
-        {
-            UnityEngine.Debug.Log("Entering GetCurrentPerformanceSpanContext");
-
-            if (!_isPerformanceLibraryAvailable)
-            {
-                UnityEngine.Debug.Log("Performance library is not available");
-                return null;
-            }
-
-            try
-            {
-                UnityEngine.Debug.Log("Initializing GetCurrentContextInternalMethod if needed");
-                InitializeGetCurrentContextInternalMethodIfNeeded();
-
-                UnityEngine.Debug.Log("Invoking _getCurrentContextInternalMethod");
-                string result = (string)_getCurrentContextInternalMethod?.Invoke(null, null);
-
-                UnityEngine.Debug.Log("Result from _getCurrentContextInternalMethod: " + result);
-
-                if (string.IsNullOrEmpty(result))
-                {
-                    UnityEngine.Debug.Log("Result is null or empty");
-                    return null;
-                }
-
-                UnityEngine.Debug.Log("Parsing result to CorrelationTransfer");
-                var correlationTransfer = JsonUtility.FromJson<SpanContext>(result);
-
-                if (correlationTransfer == null)
-                {
-                    UnityEngine.Debug.Log("Deserialization failed, CorrelationTransfer is null");
-                    return null;
-                }
-
-                UnityEngine.Debug.Log("Performance library context: traceId=" + correlationTransfer.traceId + ", spanId=" + correlationTransfer.spanId);
-
-                var correlation = new Correlation(correlationTransfer.traceId, correlationTransfer.spanId);
-
-                UnityEngine.Debug.Log("Performance library correlation: spanId=" + correlation.SpanId + ", traceId=" + correlation.TraceId);
-
-                UnityEngine.Debug.Log("Exiting GetCurrentPerformanceSpanContext with correlation");
-                return correlation;
-            }
-            catch (Exception ex)
-            {
-                UnityEngine.Debug.Log("Exception caught: " + ex.Message);
-                // Silently handle case where performance library is not available or out of date
-                UnityEngine.Debug.Log("Performance library is not available or out of date");
-                _isPerformanceLibraryAvailable = false;
-
-                UnityEngine.Debug.Log("Exiting GetCurrentPerformanceSpanContext with null due to exception");
-                return null;
-            }
-        }
-
-        private static void InitializeGetCurrentContextInternalMethodIfNeeded()
-        {
-            if (_getCurrentContextInternalMethod != null) return;
-
-            var bugsnagPerformanceType = AppDomain.CurrentDomain.GetAssemblies()
-                .Select(assembly => assembly.GetType(BUGSNAG_PERFORMANCE_ASSEMBLY_NAME))
-                .FirstOrDefault(type => type != null);
-
-            _getCurrentContextInternalMethod = bugsnagPerformanceType?.GetMethod(
-                GET_CURRENT_CONTEXT_INTERNAL_METHOD_NAME, 
-                BindingFlags.NonPublic | BindingFlags.Static
-            );
-        }
-
         private class BugsnagLogHandler : ILogHandler
         {
 
@@ -454,7 +371,7 @@ namespace BugsnagUnity
                 return;
             }
 
-            var correlation = GetCurrentPerformanceSpanContext();
+            var correlation = PerformanceHelper.GetCurrentPerformanceSpanContext();
             if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
                 try
