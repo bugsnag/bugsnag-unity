@@ -1,4 +1,4 @@
-#define PERFORMANCE_HELPER_LOG
+//#define PERFORMANCE_HELPER_LOG
 using System;
 using System.Linq;
 using System.Reflection;
