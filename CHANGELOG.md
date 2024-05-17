@@ -1,7 +1,5 @@
 # Changelog
 
-## TBD ()
-
 ## 7.7.6 (2024-05-17)
 
 - Fixed issue where meta files for the MacOS bundle were not generated. [#802](https://github.com/bugsnag/bugsnag-unity/pull/802)
