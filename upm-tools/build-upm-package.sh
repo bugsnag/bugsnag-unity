@@ -18,7 +18,16 @@ VERSION=$1
 
 if [ -z "$UNITY_UPM_VERSION" ]
 then
-  echo "UNITY_VERSION must be set"
+  echo "UNITY_UPM_VERSION must be set"
+  exit 1
+fi
+
+#There is a bug in some versions of unity 2020, 2021 and 2022 where macos bundles will not be imported as a single plugin file.
+#In which case all sub dirs and files must have .meta files to work with UPM.
+#Building the UPM package with unity 2019 ensures that the meta files are created 
+
+if [[ "$UNITY_UPM_VERSION" != *"2019"* ]]; then
+  echo "ERROR: UNITY_UPM_VERSION must be a version of Unity 2019. See script comments for details."
   exit 1
 fi
 
