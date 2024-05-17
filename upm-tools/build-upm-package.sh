@@ -16,13 +16,13 @@ fi
 
 VERSION=$1
 
-if [ -z "$UNITY_VERSION" ]
+if [ -z "$UNITY_UPM_VERSION" ]
 then
   echo "UNITY_VERSION must be set"
   exit 1
 fi
 
-UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS"
+UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_UPM_VERSION/Unity.app/Contents/MacOS"
 
 
 
