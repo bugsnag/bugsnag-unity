@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD ()
+
+### Enhancements
+
+- Added the `Bugsnag-Integrity` header to outgoing Bugsnag requests. [#797](https://github.com/bugsnag/bugsnag-unity/pull/797)
+
 ## 7.7.6 (2024-05-17)
 
 - Fixed issue where meta files for the MacOS bundle were not generated. [#802](https://github.com/bugsnag/bugsnag-unity/pull/802)
