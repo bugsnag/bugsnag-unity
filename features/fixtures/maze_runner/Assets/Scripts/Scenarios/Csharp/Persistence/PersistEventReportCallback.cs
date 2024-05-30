@@ -26,10 +26,6 @@ public class PersistEventReportCallback : Scenario
 
             return true;
         });
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            Configuration.EnabledErrorTypes.OOMs = false;
-        }
     }
 
     public override void Run()
