@@ -38,7 +38,7 @@ public class Scenario : MonoBehaviour
         Configuration.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
         Configuration.AutoTrackSessions = false;
-         if (Application.platform == RuntimePlatform.IPhonePlayer)
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
             Configuration.EnabledErrorTypes.OOMs = false;
         }
