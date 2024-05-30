@@ -8,6 +8,7 @@ public class IosDisableCrashes : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.EnabledErrorTypes.Crashes = false;
+        Configuration.EnabledErrorTypes.OOMs = true;
     }
 
     public override void Run()
