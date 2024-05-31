@@ -1,8 +1,18 @@
 # Changelog
 
-### TBD
+## TBD ()
+
+### Enhancements
+
+- Added the `Bugsnag-Integrity` header to outgoing Bugsnag requests. [#797](https://github.com/bugsnag/bugsnag-unity/pull/797)
+
+### Bug Fixes
 
 - Added more null reference checking to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
+
+## 7.7.6 (2024-05-17)
+
+- Fixed issue where meta files for the MacOS bundle were not generated. [#802](https://github.com/bugsnag/bugsnag-unity/pull/802)
 
 ## 7.7.5 (2024-05-02)
 

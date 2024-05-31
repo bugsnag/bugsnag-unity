@@ -64,8 +64,6 @@ end
 
 BeforeAll do
   $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
-  Maze.config.enforce_bugsnag_integrity = false
-
   if Maze.config.os&.downcase == 'macos'
     # The default macOS Crash Reporter "#{app_name} quit unexpectedly" alert grabs focus which can cause tests to flake.
     # This option, which appears to have been introduced in macOS 10.11, displays a notification instead of the alert.
@@ -110,6 +108,14 @@ Maze.hooks.before do
     # This is to get around a strange macos bug where clearing prefs does not work 
     $logger.info 'Killing defaults service'
     Maze::Runner.run_command("killall -u #{ENV['USER']} cfprefsd")
+  end
+end
+
+Before do |scenario|
+  # Detect if we're running the webgl tests
+  if Maze.config.farm.to_s.eql?('local')
+    # Allows each scenario to auto retry once due to instability in the local browser
+    scenario.tags << Cucumber::Core::Test::Tag.new(nil, '@retry')
   end
 end
 
