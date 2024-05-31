@@ -456,7 +456,7 @@ namespace BugsnagUnity
             // set DiscardedClasses
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
-                obj.Call("setDiscardClasses", GetAndroidStringSetFromArray(config.DiscardClasses));
+                obj.Call("setDiscardClasses", GetAndroidRegexPatternSetFromArray(config.DiscardClasses));
             }
 
             // set ProjectPackages
@@ -468,7 +468,7 @@ namespace BugsnagUnity
             // set redacted keys
             if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
             {
-                obj.Call("setRedactedKeys", GetAndroidStringSetFromArray(config.RedactedKeys));
+                obj.Call("setRedactedKeys", GetAndroidRegexPatternSetFromArray(config.RedactedKeys));
             }
 
             // add unity event callback
@@ -505,6 +505,20 @@ namespace BugsnagUnity
             {
                 set.Call<Boolean>("add", item);
             }
+            return set;
+        }
+
+        private AndroidJavaObject GetAndroidRegexPatternSetFromArray(string[] array)
+        {
+            AndroidJavaObject set = new AndroidJavaObject("java.util.HashSet");
+            AndroidJavaClass patternClass = new AndroidJavaClass("java.util.regex.Pattern");
+
+            foreach (var item in array)
+            {
+                AndroidJavaObject pattern = patternClass.CallStatic<AndroidJavaObject>("compile", item);
+                set.Call<bool>("add", pattern);
+            }
+
             return set;
         }
 
