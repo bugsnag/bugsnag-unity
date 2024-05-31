@@ -14,6 +14,8 @@ namespace BugsnagUnity
         private const string MODEL_KEY = "model";
         private const string OS_NAME_KEY = "osName";
         private const string OS_VERSION_KEY = "osVersion";
+        private const string MODEL_NUMBER_KEY = "modelNumber";
+        private const string TOTAL_MEMORY_KEY = "totalMemory";
 
         internal NativePayloadClassWrapper NativeWrapper;
 
@@ -25,11 +27,9 @@ namespace BugsnagUnity
         public string BrowserName { get; set; }
         public string BrowserVersion { get; set; }
         public string[] CpuAbi { get; set; }
-        public long? TotalMemory { get; set; }
+        public long? TotalMemory {get => NativeWrapper.GetNativeLong(TOTAL_MEMORY_KEY); set => NativeWrapper.SetNativeLong(TOTAL_MEMORY_KEY, value); }
         public string UserAgent { get; set; }
-        public string ModelNumber { get; set; }
-
-
+        public string ModelNumber { get => NativeWrapper.GetNativeString(MODEL_NUMBER_KEY); set => NativeWrapper.SetNativeString(MODEL_NUMBER_KEY,value); }
         public string Id { get => NativeWrapper.GetNativeString(ID_KEY); set => NativeWrapper.SetNativeString(ID_KEY,value); }
 
         public bool? Jailbroken { get => NativeWrapper.GetNativeBool(JAIL_BROKEN_KEY); set => NativeWrapper.SetNativeBool(JAIL_BROKEN_KEY, value); }

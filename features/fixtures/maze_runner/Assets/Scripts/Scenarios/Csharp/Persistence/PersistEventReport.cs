@@ -6,10 +6,6 @@ public class PersistEventReport : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.Context = "Error 2";
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            Configuration.EnabledErrorTypes.OOMs = false;
-        }
     }
 
     public override void Run()

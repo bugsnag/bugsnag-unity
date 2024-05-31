@@ -9,10 +9,6 @@ public class MaxPersistEvents : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.MaxPersistedEvents = 3;
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            Configuration.EnabledErrorTypes.OOMs = false;
-        }
     }
 
     public override void Run()

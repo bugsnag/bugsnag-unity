@@ -1,5 +1,44 @@
 # Changelog
 
+## TBD ()
+
+### Enhancements
+
+- Added the `Bugsnag-Integrity` header to outgoing Bugsnag requests. [#797](https://github.com/bugsnag/bugsnag-unity/pull/797)
+
+### Bug Fixes
+
+- Added more null reference checking to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
+
+## 7.7.6 (2024-05-17)
+
+- Fixed issue where meta files for the MacOS bundle were not generated. [#802](https://github.com/bugsnag/bugsnag-unity/pull/802)
+
+## 7.7.5 (2024-05-02)
+
+### Bug Fixes
+
+- Fixed issue where changes to device.TotalMemory and device.ModelNumber in cocoa on send callbacks were not respected. [#793](https://github.com/bugsnag/bugsnag-unity/pull/793)
+
+## 7.7.4 (2024-04-19)
+
+### Bug Fixes
+
+- Fixed issue where iOS C# events reported the incorrect value for device.osName. [#791](https://github.com/bugsnag/bugsnag-unity/pull/791)
+
+
+## 7.7.3 (2024-04-11)
+
+### Bug Fixes
+
+- Changed initialisation of time api to reduce the risk of iOS app hangs on start [#783](https://github.com/bugsnag/bugsnag-unity/pull/783)
+- Updated naming for BugsnagEditor EDM menu to reduce potential conflicts with other tools [#780](https://github.com/bugsnag/bugsnag-unity/pull/780)
+
+## 7.7.2 (2024-03-01)
+
+### Enhancements
+
+- Improved handling of serialisation errors when flushing the event cache [#773](https://github.com/bugsnag/bugsnag-unity/pull/773)
 
 ## 7.7.1 (2024-01-25)
 
