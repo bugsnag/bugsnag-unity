@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 pushd features/fixtures/maze_runner/build
-  unzip WebGL-$UNITY_VERSION.zip
+  unzip WebGL-${UNITY_VERSION:0:4}.zip
 popd
 
 bundle install

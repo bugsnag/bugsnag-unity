@@ -1,6 +1,7 @@
 require "open3"
 require "xcodeproj"
 require "rbconfig"
+require 'fileutils'
 
 unless ENV['GITHUB_ACTIONS'].nil?
   require "bumpsnag"
@@ -20,7 +21,7 @@ def unity_directory
 
   if ENV.has_key? 'UNITY_VERSION'
     if is_mac?
-    "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
+      "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
     elsif is_windows?
       "C:\\Program Files\\Unity\\Hub\\Editor\\#{ENV['UNITY_VERSION']}"
     end
@@ -37,13 +38,13 @@ def unity_executable dir=unity_directory
   [File.join(dir, "Unity.app", "Contents", "MacOS", "Unity"),
    File.join(dir, "Editor", "Unity"),
    File.join(dir, "Editor", "Unity.exe")].find do |unity|
-    File.exists? unity
+    File.exist? unity
   end
 end
 
 def unity_dll_location
   [File.join(unity_directory, "Unity.app", "Contents", "Managed"), File.join(unity_directory, "Editor", "Data", "Managed")].find do |unity|
-    File.exists? unity
+    File.exist? unity
   end
 end
 
@@ -55,7 +56,7 @@ def get_required_unity_paths
   dir = unity_directory
   exe = unity_executable(dir)
   raise "No unity executable found in '#{dir}'" if exe.nil?
-  unless File.exists? exe
+  unless File.exist? exe
     raise "Unity not found at path '#{exe}' - set $UNITY_DIR (full path) or $UNITY_VERSION (loaded via hub) to customize"
   end
   [dir, exe]
@@ -79,7 +80,7 @@ def unity(*cmd, force_free: true, no_graphics: true)
   cmd = cmd.unshift(*cmd_prepend)
   sh *cmd do |ok, res|
     if !ok
-      puts File.read("unity.log") if File.exists?("unity.log")
+      puts File.read("unity.log") if File.exist?("unity.log")
 
       raise "unity error: #{res}"
     end
@@ -100,7 +101,7 @@ end
 
 def export_package name="Bugsnag.unitypackage"
   package_output = File.join(current_directory, name)
-  rm_f package_output
+  FileUtils.rm_rf package_output
   unity "-projectPath", project_path, "-exportPackage", "Assets/Bugsnag", package_output, force_free: false
 end
 
@@ -108,11 +109,11 @@ def assemble_android filter_abis=true
   abi_filters = filter_abis ? "-PABI_FILTERS=armeabi-v7a,x86" : "-Pnoop_filters=true"
   android_dir = File.join(assets_path, "Android")
 
-  cd "bugsnag-android" do
+  Dir.chdir"bugsnag-android" do
     sh "./gradlew", "assembleRelease", abi_filters
   end
 
-  cd "bugsnag-android-unity" do
+  Dir.chdir"bugsnag-android-unity" do
     sh "./gradlew", "assembleRelease", abi_filters
   end
 
@@ -124,7 +125,7 @@ def assemble_android filter_abis=true
   # copy kotlin dependencies required by bugsnag-android. the exact files required for each
   # version can be found here:
   # https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.4.32/kotlin-stdlib-1.4.32.pom
-  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script and in the upm-tools/EDM/BugsnagAndroidDependencies.xml file. 
+  # The exact version number here should match the version in the EDM manifest in the BugsnagEditor.cs script and in the upm-tools/EDM/BugsnagAndroidDependencies.xml file.
   # All should be informed by what the android notifier is using
   kotlin_stdlib = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-1.4.32.jar")
   kotlin_stdlib_common = File.join("android-libs", "org.jetbrains.kotlin.kotlin-stdlib-common-1.4.32.jar")
@@ -133,14 +134,14 @@ def assemble_android filter_abis=true
   # copy unity lib
   unity_lib = File.join("bugsnag-android-unity", "build", "outputs", "aar", "bugsnag-android-unity-release.aar")
 
-  cp android_core_lib, File.join(android_dir, "bugsnag-android-release.aar")
-  cp ndk_lib, File.join(android_dir, "bugsnag-android-ndk-release.aar")
-  cp anr_lib, File.join(android_dir, "bugsnag-plugin-android-anr-release.aar")
-  cp unity_lib, File.join(android_dir, "bugsnag-android-unity-release.aar")
-  mkdir File.join(android_dir, "Kotlin")
-  cp kotlin_stdlib, File.join(android_dir, "Kotlin/kotlin-stdlib.jar")
-  cp kotlin_stdlib_common, File.join(android_dir, "Kotlin/kotlin-stdlib-common.jar")
-  cp kotlin_annotations, File.join(android_dir, "Kotlin/kotlin-annotations.jar")
+  FileUtils.cp android_core_lib, File.join(android_dir, "bugsnag-android-release.aar")
+  FileUtils.cp ndk_lib, File.join(android_dir, "bugsnag-android-ndk-release.aar")
+  FileUtils.cp anr_lib, File.join(android_dir, "bugsnag-plugin-android-anr-release.aar")
+  FileUtils.cp unity_lib, File.join(android_dir, "bugsnag-android-unity-release.aar")
+  FileUtils.mkdir File.join(android_dir, "Kotlin")
+  FileUtils.cp kotlin_stdlib, File.join(android_dir, "Kotlin/kotlin-stdlib.jar")
+  FileUtils.cp kotlin_stdlib_common, File.join(android_dir, "Kotlin/kotlin-stdlib-common.jar")
+  FileUtils.cp kotlin_annotations, File.join(android_dir, "Kotlin/kotlin-annotations.jar")
 end
 
 namespace :plugin do
@@ -163,17 +164,17 @@ namespace :plugin do
       FileUtils.rm_rf cocoa_build_dir
       unless is_windows?
         # remove android build area
-        cd "bugsnag-android" do
+        Dir.chdir "./bugsnag-android" do
           sh "./gradlew", "clean"
         end
 
-        cd "bugsnag-android-unity" do
+        Dir.chdir "bugsnag-android-unity" do
           sh "./gradlew", "clean"
         end
       end
     end
     task :assets do
-      cp_r File.join(current_directory, "src", "Assets"), project_path, preserve: true
+      FileUtils.cp_r(File.join(current_directory, "src", "Assets"), project_path, preserve: true)
     end
     task :cocoa do
       next unless is_mac?
@@ -183,7 +184,7 @@ namespace :plugin do
       bugsnag_unity_file = File.realpath("BugsnagUnity.m", "src")
       public_headers = Dir.entries(File.join(cocoa_build_dir, "Bugsnag", "include", "Bugsnag"))
 
-      cd cocoa_build_dir do
+      Dir.chdir cocoa_build_dir do
         ["bugsnag-ios", "bugsnag-osx", "bugsnag-tvos"].each do |project_name|
           project_file = File.join("#{project_name}.xcodeproj")
           next if File.exist?(project_file)
@@ -219,9 +220,9 @@ namespace :plugin do
           group = project.new_group("Bugsnag")
 
           source_files = Dir.glob(File.join("Bugsnag", "**", "*.{c,h,mm,cpp,m}"))
-            .map(&File.method(:realpath))
-            .tap { |files| files << bugsnag_unity_file }
-            .map { |f| group.new_file(f) }
+                            .map(&File.method(:realpath))
+                            .tap { |files| files << bugsnag_unity_file }
+                            .map { |f| group.new_file(f) }
 
           target.add_file_references(source_files) do |build_file|
             if public_headers.include? build_file.file_ref.name
@@ -264,17 +265,17 @@ namespace :plugin do
       tvos_dir = File.join(assets_path, "tvOS")
 
       #copy framework usage api file
-      cp_r File.join("bugsnag-cocoa", "Bugsnag", "resources", "PrivacyInfo.xcprivacy"), ios_dir
+      FileUtils.cp_r(File.join(current_directory,"bugsnag-cocoa", "Bugsnag", "resources", "PrivacyInfo.xcprivacy"), ios_dir)
 
-      cd cocoa_build_dir do
-        cd "build" do
+      Dir.chdir cocoa_build_dir do
+        Dir.chdir "build" do
           def is_fat library_path
             stdout, stderr, status = Open3.capture3("lipo", "-info", library_path)
             return !stdout.start_with?('Non-fat')
           end
           # we just need to copy the os x bundle into the correct directory
 
-          cp_r File.join(build_type, "bugsnag-osx.bundle"), osx_dir
+          FileUtils.cp_r(File.join(build_type, "bugsnag-osx.bundle"), osx_dir)
 
           # for ios and tvos we need to build a fat binary that includes architecture
           # slices for both the device and the simulator
@@ -291,9 +292,9 @@ namespace :plugin do
             else
               simulator_x64 = simulator_library
             end
-       
+
             sh "lipo", "-create", device_library, simulator_x64, "-output", output_library
-            
+
           end
         end
       end
@@ -320,14 +321,14 @@ namespace :plugin do
         end
       end
 
-      cd File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
-        cp File.realpath("BugsnagUnity.dll"), assets_path
-        windows_dir = File.join(assets_path, "Windows")        
-        cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
-        cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
-        cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
-        cp File.realpath("BugsnagUnity.MacOS.dll"), File.join(assets_path, "OSX")
-        cp File.realpath("BugsnagUnity.Android.dll"), File.join(assets_path, "Android")
+      Dir.chdir File.join("src", "BugsnagUnity", "bin", "Release", "net35") do
+        FileUtils.cp File.realpath("BugsnagUnity.dll"), assets_path
+        windows_dir = File.join(assets_path, "Windows")
+        FileUtils.cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
+        FileUtils.cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
+        FileUtils.cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
+        FileUtils.cp File.realpath("BugsnagUnity.MacOS.dll"), File.join(assets_path, "OSX")
+        FileUtils.cp File.realpath("BugsnagUnity.Android.dll"), File.join(assets_path, "Android")
       end
     end
 
@@ -431,7 +432,7 @@ namespace :test do
       end
 
       # Generate the Xcode project
-      cd "features" do
+      Dir.chdir"features" do
         script = File.join("scripts", "generate_xcode_project.sh")
         unless system env, script
           raise 'IPA build failed'
@@ -441,7 +442,7 @@ namespace :test do
 
     task :build_xcode do
       # Build and archive from the Xcode project
-      cd "features" do
+      Dir.chdir"features" do
         script = File.join("scripts", "build_ios.sh")
         unless system script
           raise 'IPA build failed'

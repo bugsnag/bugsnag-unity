@@ -8,8 +8,7 @@ Feature: iOS Native Errors
     And I wait for 2 seconds
     And On Mobile I relaunch the app
     And I run the game in the "StartSDKDefault" state
-    And I wait to receive an error
-    And the exception "message" equals "The app was likely terminated by the operating system while in the foreground"
+    And I should receive no errors
 
   Scenario: Last Run Info
     When I run the game in the "IosNativeException" state

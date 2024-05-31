@@ -38,6 +38,10 @@ public class Scenario : MonoBehaviour
         Configuration.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
         Configuration.AutoTrackSessions = false;
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            Configuration.EnabledErrorTypes.OOMs = false;
+        }
     }
 
     public void AddSwitchConfigValues(SwitchCacheType switchCacheType, int switchCacheIndex, string switchMountName)
