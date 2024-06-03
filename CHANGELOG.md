@@ -16,6 +16,10 @@
 
 - Update bugsnag-android from [v5.30.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v5.30.0) to [v6.5.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.5.0)
 
+### Deprecations
+
+- Bugsnag Unity will no longer officially support Unity versions below Unity 2020. Older versions may work, but we will not test against them during development.
+
 
 ## 7.7.6 (2024-05-17)
 
