@@ -63,7 +63,7 @@ namespace BugsnagUnity
             {
                 return false;
             }
-            if (_redactedKeysRegex == null)
+            if (_redactedKeysRegex == null || _redactedKeysRegex.Count != RedactedKeys.Length)
             {
                 _redactedKeysRegex = new List<Regex>();
                 foreach (var redactedKey in RedactedKeys)
@@ -74,6 +74,34 @@ namespace BugsnagUnity
             foreach (var regex in _redactedKeysRegex)
             {
                 if (regex.IsMatch(key))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public string[] DiscardClasses;
+
+        private List<Regex> _discardClassesRegex;
+
+        internal bool ErrorClassIsDiscarded(string className)
+        {
+            if (DiscardClasses == null || DiscardClasses.Length == 0)
+            {
+                return false;
+            }
+            if (_discardClassesRegex == null || _discardClassesRegex.Count != DiscardClasses.Length)
+            {
+                _discardClassesRegex = new List<Regex>();
+                foreach (var discardClass in DiscardClasses)
+                {
+                    _discardClassesRegex.Add(new Regex(discardClass));
+                }
+            }
+            foreach (var regex in _discardClassesRegex)
+            {
+                if (regex.IsMatch(className))
                 {
                     return true;
                 }
@@ -204,36 +232,6 @@ namespace BugsnagUnity
         public int MaxPersistedSessions = 128;
 
         public int MaxStringValueLength = 10000;
-        public string[] DiscardClasses;
-
-        private List<Regex> _discardClassesRegex;
-
-        internal bool ErrorClassIsDiscarded(string className)
-        {
-            if(DiscardClasses == null || DiscardClasses.Length == 0)
-            {
-                return false;
-            }
-            if(_discardClassesRegex == null)
-            {
-                _discardClassesRegex = new List<Regex>();
-                if(DiscardClasses != null)
-                {
-                    foreach (var discardClass in DiscardClasses)
-                    {
-                        _discardClassesRegex.Add(new Regex(discardClass));
-                    }
-                }               
-            }
-            foreach (var regex in _discardClassesRegex)
-            {
-                if (regex.IsMatch(className))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         private bool IsRunningInEditor()
         {
