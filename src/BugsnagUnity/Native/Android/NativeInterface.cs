@@ -160,6 +160,7 @@ namespace BugsnagUnity
         {
             _configuration = cfg;
             AndroidJavaObject config = CreateNativeConfig(cfg);
+            ConfigureNotifierInfo(config);
             Unity2019OrNewer = IsUnity2019OrNewer();
             MainThread = Thread.CurrentThread;
             using (AndroidJavaClass system = new AndroidJavaClass("java.lang.System"))
@@ -312,10 +313,9 @@ namespace BugsnagUnity
                             activityName = AndroidJNI.GetStringUTFChars(activityNameObject.GetRawObject());
                         }
                     }
-                    sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
+                    sessionTracker.Call("updateContext", activityName, true);
                 }
 
-                ConfigureNotifierInfo(client);
             }
         }
 
@@ -456,7 +456,7 @@ namespace BugsnagUnity
             // set DiscardedClasses
             if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
             {
-                obj.Call("setDiscardClasses", GetAndroidStringSetFromArray(config.DiscardClasses));
+                obj.Call("setDiscardClasses", GetAndroidRegexPatternSetFromArray(config.DiscardClasses));
             }
 
             // set ProjectPackages
@@ -468,7 +468,7 @@ namespace BugsnagUnity
             // set redacted keys
             if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
             {
-                obj.Call("setRedactedKeys", GetAndroidStringSetFromArray(config.RedactedKeys));
+                obj.Call("setRedactedKeys", GetAndroidRegexPatternSetFromArray(config.RedactedKeys));
             }
 
             // add unity event callback
@@ -508,11 +508,24 @@ namespace BugsnagUnity
             return set;
         }
 
-        private void ConfigureNotifierInfo(AndroidJavaObject client)
+        private AndroidJavaObject GetAndroidRegexPatternSetFromArray(string[] array)
         {
-            using (AndroidJavaObject notifier = client.Get<AndroidJavaObject>("notifier"))
-            {
+            AndroidJavaObject set = new AndroidJavaObject("java.util.HashSet");
+            AndroidJavaClass patternClass = new AndroidJavaClass("java.util.regex.Pattern");
 
+            foreach (var item in array)
+            {
+                AndroidJavaObject pattern = patternClass.CallStatic<AndroidJavaObject>("compile", item);
+                set.Call<bool>("add", pattern);
+            }
+
+            return set;
+        }
+
+        private void ConfigureNotifierInfo(AndroidJavaObject config)
+        {
+            using (AndroidJavaObject notifier = config.Call<AndroidJavaObject>("getNotifier"))
+            {
                 AndroidJavaObject androidNotifier = new AndroidJavaObject("com.bugsnag.android.Notifier");
                 androidNotifier.Call("setUrl", androidNotifier.Get<string>("url"));
                 androidNotifier.Call("setName", androidNotifier.Get<string>("name"));
