@@ -6,7 +6,7 @@
 
 - Added the `Bugsnag-Integrity` header to outgoing Bugsnag requests. [#797](https://github.com/bugsnag/bugsnag-unity/pull/797)
 
-- Changed proccessing of `Configuration.DiscardClasses` and `Configuration.RedactedKeys`. They remain sting collections in the config object, but are now converted to Regex objects when in use. [#807](https://github.com/bugsnag/bugsnag-unity/pull/807)
+- Changed processing of `Configuration.DiscardClasses` and `Configuration.RedactedKeys`. They remain sting collections in the config object, but are now converted to Regex objects when in use. [#807](https://github.com/bugsnag/bugsnag-unity/pull/807)
 
 ### Bug Fixes
 
