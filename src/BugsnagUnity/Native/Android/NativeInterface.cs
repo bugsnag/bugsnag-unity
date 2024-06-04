@@ -346,7 +346,7 @@ namespace BugsnagUnity
             obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
             obj.Call("setMaxReportedThreads", config.MaxReportedThreads);
             obj.Call("setMaxStringValueLength", config.MaxStringValueLength);
-
+            obj.Call("setGenerateAnonymousId", config.GenerateAnonymousId);
 
             if (config.GetUser() != null)
             {
