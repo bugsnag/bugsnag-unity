@@ -115,7 +115,7 @@ Feature: csharp events
     And the event "breadcrumbs.1.metaData.dictionary.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "breadcrumbs.1.metaData.stringDictionary.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
 
-  @skip_cocoa @skip_android #not supported on these platforms
+  @skip_cocoa #not supported on these platforms
   Scenario: GenerateAnonymousId
     When I run the game in the "GenerateAnonymousId" state
     And I wait to receive an error
