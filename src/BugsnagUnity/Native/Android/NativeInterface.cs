@@ -454,9 +454,14 @@ namespace BugsnagUnity
             }
 
             // set DiscardedClasses
-            if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
+            if (config.DiscardClasses != null && config.DiscardClasses.Count > 0)
             {
-                obj.Call("setDiscardClasses", GetAndroidRegexPatternSetFromArray(config.DiscardClasses));
+                var patternsAsStrings = new string[config.DiscardClasses.Count];
+                foreach (var pattern in config.DiscardClasses)
+                {
+                    patternsAsStrings[config.DiscardClasses.IndexOf(pattern)] = pattern.ToString();
+                }
+                obj.Call("setDiscardClasses", GetAndroidRegexPatternSetFromArray(patternsAsStrings));
             }
 
             // set ProjectPackages
@@ -466,9 +471,14 @@ namespace BugsnagUnity
             }
 
             // set redacted keys
-            if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
+            if (config.RedactedKeys != null && config.RedactedKeys.Count > 0)
             {
-                obj.Call("setRedactedKeys", GetAndroidRegexPatternSetFromArray(config.RedactedKeys));
+                var patternsAsStrings = new string[config.RedactedKeys.Count];
+                foreach (var key in config.RedactedKeys)
+                {
+                    patternsAsStrings[config.RedactedKeys.IndexOf(key)] = key.ToString();
+                }
+                obj.Call("setRedactedKeys", GetAndroidRegexPatternSetFromArray(patternsAsStrings));
             }
 
             // add unity event callback

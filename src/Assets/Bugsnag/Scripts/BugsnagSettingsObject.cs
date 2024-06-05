@@ -34,7 +34,7 @@ namespace BugsnagUnity
         public bool PersistUser = true;
         public string SessionEndpoint = "https://sessions.bugsnag.com";
         public ThreadSendPolicy SendThreads = ThreadSendPolicy.UnhandledOnly;
-        public string[] RedactedKeys = new string[] { "password" };
+        public string[] RedactedKeys = new string[] { ".*password.*" };
         public string ReleaseStage;
         public bool ReportExceptionLogsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
@@ -79,7 +79,16 @@ namespace BugsnagUnity
 
             config.BreadcrumbLogLevel = GetLogTypeFromLogLevel( BreadcrumbLogLevel );
             config.Context = Context;
-            config.DiscardClasses = DiscardClasses;
+            foreach(string discardedClass in DiscardClasses){
+                try
+                {
+                    config.DiscardClasses.Add(new System.Text.RegularExpressions.Regex(discardedClass));
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("Regex error adding discard class: " + e.Message);
+                }
+            }
             if (EnabledReleaseStages != null && EnabledReleaseStages.Length > 0)
             {
                 config.EnabledReleaseStages = EnabledReleaseStages;
@@ -98,7 +107,17 @@ namespace BugsnagUnity
             {
                 config.Endpoints = new EndpointConfiguration(NotifyEndpoint, SessionEndpoint);
             }
-            config.RedactedKeys = RedactedKeys;
+            foreach(string key in RedactedKeys)
+            {
+                try
+                {
+                    config.RedactedKeys.Add(new System.Text.RegularExpressions.Regex(key));
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("Regex error adding redacted key: " + e.Message);
+                }
+            }
             if (string.IsNullOrEmpty(ReleaseStage))
             {
                 config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";

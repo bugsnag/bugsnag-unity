@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using UnityEngine;
 
@@ -87,26 +88,28 @@ namespace BugsnagUnity.Payload.Tests
         public void RedactedKeysTest()
         {
             var config = new Configuration("foo");
-            
-            // // Default redacted keys
+
+            // Default redacted keys
             Assert.IsTrue(config.KeyIsRedacted("password"));
             Assert.IsFalse(config.KeyIsRedacted("username"));
 
             var config2 = new Configuration("foo");
 
             // Custom redacted keys
-            config2.RedactedKeys = new string[] { "secret", "token" };
+            config2.RedactedKeys.Add(new Regex(".*secret.*", RegexOptions.IgnoreCase));
+            config2.RedactedKeys.Add(new Regex(".*token.*", RegexOptions.IgnoreCase));
             Assert.IsTrue(config2.KeyIsRedacted("secret"));
             Assert.IsTrue(config2.KeyIsRedacted("token"));
-            Assert.IsFalse(config2.KeyIsRedacted("password"));
+            Assert.IsTrue(config2.KeyIsRedacted("password"));
 
             var config3 = new Configuration("foo");
 
             // Regex pattern keys
-            config3.RedactedKeys = new string[] { ".*_key$", "^token_.*" };
+            config3.RedactedKeys.Add(new Regex(".*api_key.*", RegexOptions.IgnoreCase));
+            config3.RedactedKeys.Add(new Regex(".*token_value.*", RegexOptions.IgnoreCase));
             Assert.IsTrue(config3.KeyIsRedacted("api_key"));
             Assert.IsTrue(config3.KeyIsRedacted("token_value"));
-            Assert.IsFalse(config3.KeyIsRedacted("password"));
+            Assert.IsTrue(config3.KeyIsRedacted("password"));
         }
 
         [Test]
@@ -117,19 +120,20 @@ namespace BugsnagUnity.Payload.Tests
             // No discard classes by default
             Assert.IsFalse(config.ErrorClassIsDiscarded("System.Exception"));
 
-
             var config2 = new Configuration("foo");
 
             // Adding discard classes
-            config2.DiscardClasses = new string[] { "System.Exception", "System.NullReferenceException" };
+            config2.DiscardClasses.Add(new Regex("^System\\.Exception$", RegexOptions.IgnoreCase));
+            config2.DiscardClasses.Add(new Regex("^System\\.NullReferenceException$", RegexOptions.IgnoreCase));
             Assert.IsTrue(config2.ErrorClassIsDiscarded("System.Exception"));
             Assert.IsTrue(config2.ErrorClassIsDiscarded("System.NullReferenceException"));
             Assert.IsFalse(config2.ErrorClassIsDiscarded("System.ArgumentException"));
 
             var config3 = new Configuration("foo");
 
-            // // Regex pattern discard classes
-            config3.DiscardClasses = new string[] { "^System\\..*Exception$", ".*ReferenceException" };
+            // Regex pattern discard classes
+            config3.DiscardClasses.Add(new Regex("^System\\..*Exception$", RegexOptions.IgnoreCase));
+            config3.DiscardClasses.Add(new Regex(".*ReferenceException", RegexOptions.IgnoreCase));
             Assert.IsTrue(config3.ErrorClassIsDiscarded("System.Exception"));
             Assert.IsTrue(config3.ErrorClassIsDiscarded("System.NullReferenceException"));
             Assert.IsTrue(config3.ErrorClassIsDiscarded("CustomReferenceException"));

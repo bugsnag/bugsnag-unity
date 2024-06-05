@@ -55,23 +55,15 @@ namespace BugsnagUnity
 
         internal OrderedDictionary FeatureFlags = new OrderedDictionary();
 
-        private List<Regex> _redactedKeysRegex;
-        public string[] RedactedKeys = new string[] { "password" };
+
+        public List<Regex> RedactedKeys = new List<Regex>{new Regex(".*password.*",RegexOptions.IgnoreCase)};
         public bool KeyIsRedacted(string key)
         {
-            if (RedactedKeys == null || RedactedKeys.Length == 0)
+            if (RedactedKeys == null || RedactedKeys.Count == 0)
             {
                 return false;
             }
-            if (_redactedKeysRegex == null || _redactedKeysRegex.Count != RedactedKeys.Length)
-            {
-                _redactedKeysRegex = new List<Regex>();
-                foreach (var redactedKey in RedactedKeys)
-                {
-                    _redactedKeysRegex.Add(new Regex(redactedKey));
-                }
-            }
-            foreach (var regex in _redactedKeysRegex)
+            foreach (var regex in RedactedKeys)
             {
                 if (regex.IsMatch(key))
                 {
@@ -81,25 +73,15 @@ namespace BugsnagUnity
             return false;
         }
 
-        public string[] DiscardClasses;
-
-        private List<Regex> _discardClassesRegex;
+        public List<Regex> DiscardClasses = new List<Regex>();
 
         internal bool ErrorClassIsDiscarded(string className)
         {
-            if (DiscardClasses == null || DiscardClasses.Length == 0)
+            if (DiscardClasses == null || DiscardClasses.Count == 0)
             {
                 return false;
             }
-            if (_discardClassesRegex == null || _discardClassesRegex.Count != DiscardClasses.Length)
-            {
-                _discardClassesRegex = new List<Regex>();
-                foreach (var discardClass in DiscardClasses)
-                {
-                    _discardClassesRegex.Add(new Regex(discardClass));
-                }
-            }
-            foreach (var regex in _discardClassesRegex)
+            foreach (var regex in DiscardClasses)
             {
                 if (regex.IsMatch(className))
                 {
