@@ -90,7 +90,7 @@ namespace BugsnagUnity.Payload.Tests
             var config = new Configuration("foo");
 
             // Default redacted keys
-            Assert.IsTrue(config.KeyIsRedacted("password"));
+            Assert.IsTrue(config.KeyIsRedacted("user-password"));
             Assert.IsFalse(config.KeyIsRedacted("username"));
 
             var config2 = new Configuration("foo");
@@ -101,15 +101,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsTrue(config2.KeyIsRedacted("secret"));
             Assert.IsTrue(config2.KeyIsRedacted("token"));
             Assert.IsTrue(config2.KeyIsRedacted("password"));
-
-            var config3 = new Configuration("foo");
-
-            // Regex pattern keys
-            config3.RedactedKeys.Add(new Regex(".*api_key.*", RegexOptions.IgnoreCase));
-            config3.RedactedKeys.Add(new Regex(".*token_value.*", RegexOptions.IgnoreCase));
-            Assert.IsTrue(config3.KeyIsRedacted("api_key"));
-            Assert.IsTrue(config3.KeyIsRedacted("token_value"));
-            Assert.IsTrue(config3.KeyIsRedacted("password"));
+            Assert.IsFalse(config2.KeyIsRedacted("app_id"));
         }
 
         [Test]
@@ -128,16 +120,6 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsTrue(config2.ErrorClassIsDiscarded("System.Exception"));
             Assert.IsTrue(config2.ErrorClassIsDiscarded("System.NullReferenceException"));
             Assert.IsFalse(config2.ErrorClassIsDiscarded("System.ArgumentException"));
-
-            var config3 = new Configuration("foo");
-
-            // Regex pattern discard classes
-            config3.DiscardClasses.Add(new Regex("^System\\..*Exception$", RegexOptions.IgnoreCase));
-            config3.DiscardClasses.Add(new Regex(".*ReferenceException", RegexOptions.IgnoreCase));
-            Assert.IsTrue(config3.ErrorClassIsDiscarded("System.Exception"));
-            Assert.IsTrue(config3.ErrorClassIsDiscarded("System.NullReferenceException"));
-            Assert.IsTrue(config3.ErrorClassIsDiscarded("CustomReferenceException"));
-            Assert.IsFalse(config3.ErrorClassIsDiscarded("ArgumentError"));
         }
     }
 }

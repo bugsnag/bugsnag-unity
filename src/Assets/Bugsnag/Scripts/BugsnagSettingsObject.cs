@@ -84,9 +84,9 @@ namespace BugsnagUnity
                 {
                     config.DiscardClasses.Add(new System.Text.RegularExpressions.Regex(discardedClass));
                 }
-                catch (Exception e)
+                catch (ArgumentException e)
                 {
-                    Debug.LogError("Regex error adding discard class: " + e.Message);
+                    Debug.LogError("Invalid Regex pattern for discard class: " + e.Message);
                 }
             }
             if (EnabledReleaseStages != null && EnabledReleaseStages.Length > 0)
@@ -113,9 +113,9 @@ namespace BugsnagUnity
                 {
                     config.RedactedKeys.Add(new System.Text.RegularExpressions.Regex(key));
                 }
-                catch (Exception e)
+                catch (ArgumentException e)
                 {
-                    Debug.LogError("Regex error adding redacted key: " + e.Message);
+                    Debug.LogError("Invalid Regex pattern for redacted key: " + e.Message);
                 }
             }
             if (string.IsNullOrEmpty(ReleaseStage))

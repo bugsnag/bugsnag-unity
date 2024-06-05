@@ -461,6 +461,7 @@ namespace BugsnagUnity
                 {
                     patternsAsStrings[config.DiscardClasses.IndexOf(pattern)] = pattern.ToString();
                 }
+                
                 obj.Call("setDiscardClasses", GetAndroidRegexPatternSetFromArray(patternsAsStrings));
             }
 
@@ -525,8 +526,15 @@ namespace BugsnagUnity
 
             foreach (var item in array)
             {
-                AndroidJavaObject pattern = patternClass.CallStatic<AndroidJavaObject>("compile", item);
-                set.Call<bool>("add", pattern);
+                try
+                {
+                    AndroidJavaObject pattern = patternClass.CallStatic<AndroidJavaObject>("compile", item);
+                    set.Call<bool>("add", pattern);
+                }
+                catch (AndroidJavaException e)
+                {
+                    Debug.LogWarning("Failed to compile regex pattern: " + item + " " + e.Message);
+                }
             }
 
             return set;

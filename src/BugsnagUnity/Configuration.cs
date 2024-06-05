@@ -59,7 +59,7 @@ namespace BugsnagUnity
         public List<Regex> RedactedKeys = new List<Regex>{new Regex(".*password.*",RegexOptions.IgnoreCase)};
         public bool KeyIsRedacted(string key)
         {
-            if (RedactedKeys == null || RedactedKeys.Count == 0)
+            if (RedactedKeys == null)
             {
                 return false;
             }
@@ -77,7 +77,7 @@ namespace BugsnagUnity
 
         internal bool ErrorClassIsDiscarded(string className)
         {
-            if (DiscardClasses == null || DiscardClasses.Count == 0)
+            if (DiscardClasses == null)
             {
                 return false;
             }
