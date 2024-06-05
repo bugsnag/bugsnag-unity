@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using BugsnagUnity.Payload;
 using UnityEngine;
+using System.Text.RegularExpressions;
 
 namespace BugsnagUnity
 {
@@ -32,7 +33,7 @@ namespace BugsnagUnity
 
         public string BundleVersion;
 
-        public string[] RedactedKeys = new string[] { "password" };
+
 
         public int VersionCode = -1;
 
@@ -54,15 +55,35 @@ namespace BugsnagUnity
 
         internal OrderedDictionary FeatureFlags = new OrderedDictionary();
 
+
+        public List<Regex> RedactedKeys = new List<Regex>{new Regex(".*password.*",RegexOptions.IgnoreCase)};
         public bool KeyIsRedacted(string key)
         {
-            if (RedactedKeys == null || RedactedKeys.Length == 0)
+            if (RedactedKeys == null)
             {
                 return false;
             }
-            foreach (var redactedKey in RedactedKeys)
+            foreach (var regex in RedactedKeys)
             {
-                if (key.ToLower() == redactedKey.ToLower())
+                if (regex.IsMatch(key))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public List<Regex> DiscardClasses = new List<Regex>();
+
+        internal bool ErrorClassIsDiscarded(string className)
+        {
+            if (DiscardClasses == null)
+            {
+                return false;
+            }
+            foreach (var regex in DiscardClasses)
+            {
+                if (regex.IsMatch(className))
                 {
                     return true;
                 }
@@ -188,18 +209,11 @@ namespace BugsnagUnity
             }
         }
 
-        public string[] DiscardClasses;
-
         public int MaxPersistedEvents = 32;
 
         public int MaxPersistedSessions = 128;
 
         public int MaxStringValueLength = 10000;
-
-        internal bool ErrorClassIsDiscarded(string className)
-        {
-            return DiscardClasses != null && DiscardClasses.Contains(className);
-        }
 
         private bool IsRunningInEditor()
         {

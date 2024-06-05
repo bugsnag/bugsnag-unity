@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using UnityEngine;
 
@@ -81,6 +82,44 @@ namespace BugsnagUnity.Payload.Tests
             config.Endpoints.Notify = null;
 
             Assert.IsFalse(config.Endpoints.IsValid);
+        }
+
+        [Test]
+        public void RedactedKeysTest()
+        {
+            var config = new Configuration("foo");
+
+            // Default redacted keys
+            Assert.IsTrue(config.KeyIsRedacted("user-password"));
+            Assert.IsFalse(config.KeyIsRedacted("username"));
+
+            var config2 = new Configuration("foo");
+
+            // Custom redacted keys
+            config2.RedactedKeys.Add(new Regex(".*secret.*", RegexOptions.IgnoreCase));
+            config2.RedactedKeys.Add(new Regex(".*token.*", RegexOptions.IgnoreCase));
+            Assert.IsTrue(config2.KeyIsRedacted("secret"));
+            Assert.IsTrue(config2.KeyIsRedacted("token"));
+            Assert.IsTrue(config2.KeyIsRedacted("password"));
+            Assert.IsFalse(config2.KeyIsRedacted("app_id"));
+        }
+
+        [Test]
+        public void DiscardedClassesTest()
+        {
+            var config = new Configuration("foo");
+
+            // No discard classes by default
+            Assert.IsFalse(config.ErrorClassIsDiscarded("System.Exception"));
+
+            var config2 = new Configuration("foo");
+
+            // Adding discard classes
+            config2.DiscardClasses.Add(new Regex("^System\\.Exception$", RegexOptions.IgnoreCase));
+            config2.DiscardClasses.Add(new Regex("^System\\.NullReferenceException$", RegexOptions.IgnoreCase));
+            Assert.IsTrue(config2.ErrorClassIsDiscarded("System.Exception"));
+            Assert.IsTrue(config2.ErrorClassIsDiscarded("System.NullReferenceException"));
+            Assert.IsFalse(config2.ErrorClassIsDiscarded("System.ArgumentException"));
         }
     }
 }

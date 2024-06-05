@@ -6,6 +6,8 @@
 
 - Added the `Bugsnag-Integrity` header to outgoing Bugsnag requests. [#797](https://github.com/bugsnag/bugsnag-unity/pull/797)
 
+- Changed processing of `Configuration.DiscardClasses` and `Configuration.RedactedKeys`. They remain sting collections in the config object, but are now converted to Regex objects when in use. [#807](https://github.com/bugsnag/bugsnag-unity/pull/807)
+
 ### Bug Fixes
 
 - Added a null check to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
