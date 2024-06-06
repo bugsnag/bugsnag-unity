@@ -3,8 +3,6 @@ Upgrading
 
 ## 7.x to 8.x
 
-#### Breaking Changes
-
 `Configuration.DiscardClasses` and `Configuration.RedactedKeys` are now [Regex](https://learn.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex?view=net-8.0) collections instead of string collections. This allows developers to have more control over how they perform. 
 
 If you are using the `DiscardClasses` and `RedactedKeys` sections of the Bugsnag Unity Configuration Window, you can enter Regex patterns as strings and they will be converted into Regex objects when the Bugsnag SDK is started.
