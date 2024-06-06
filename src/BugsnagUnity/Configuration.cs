@@ -222,55 +222,86 @@ namespace BugsnagUnity
                 || Application.platform == RuntimePlatform.LinuxEditor;
         }
 
+        // Thread-safe collections with locks
+        private readonly object _onErrorLock = new object();
         private List<Func<IEvent, bool>> _onErrorCallbacks = new List<Func<IEvent, bool>>();
+
+        private readonly object _onSendErrorLock = new object();
+        private List<Func<IEvent, bool>> _onSendErrorCallbacks = new List<Func<IEvent, bool>>();
+
+        private readonly object _onSessionLock = new object();
+        private List<Func<ISession, bool>> _onSessionCallbacks = new List<Func<ISession, bool>>();
 
         public void AddOnError(Func<IEvent, bool> callback)
         {
-            _onErrorCallbacks.Add(callback);
+            lock (_onErrorLock)
+            {
+                _onErrorCallbacks.Add(callback);
+            }
         }
 
         internal List<Func<IEvent, bool>> GetOnErrorCallbacks()
         {
-            return _onErrorCallbacks;
+            lock (_onErrorLock)
+            {
+                return _onErrorCallbacks.ToList();
+            }
         }
 
         public void RemoveOnError(Func<IEvent, bool> callback)
         {
-            _onErrorCallbacks.Remove(callback);
+            lock (_onErrorLock)
+            {
+                _onErrorCallbacks.Remove(callback);
+            }
         }
-
-        private List<Func<IEvent, bool>> _onSendErrorCallbacks = new List<Func<IEvent, bool>>();
 
         public void AddOnSendError(Func<IEvent, bool> callback)
         {
-            _onSendErrorCallbacks.Add(callback);
+            lock (_onSendErrorLock)
+            {
+                _onSendErrorCallbacks.Add(callback);
+            }
         }
 
         internal List<Func<IEvent, bool>> GetOnSendErrorCallbacks()
         {
-            return _onSendErrorCallbacks;
+            lock (_onSendErrorLock)
+            {
+                return _onSendErrorCallbacks.ToList();
+            }
         }
 
         public void RemoveOnSendError(Func<IEvent, bool> callback)
         {
-            _onSendErrorCallbacks.Remove(callback);
+            lock (_onSendErrorLock)
+            {
+                _onSendErrorCallbacks.Remove(callback);
+            }
         }
-
-        private List<Func<ISession, bool>> _onSessionCallbacks = new List<Func<ISession, bool>>();
 
         public void AddOnSession(Func<ISession, bool> callback)
         {
-            _onSessionCallbacks.Add(callback);
+            lock (_onSessionLock)
+            {
+                _onSessionCallbacks.Add(callback);
+            }
         }
 
         public void RemoveOnSession(Func<ISession, bool> callback)
         {
-            _onSessionCallbacks.Remove(callback);
+            lock (_onSessionLock)
+            {
+                _onSessionCallbacks.Remove(callback);
+            }
         }
 
         internal List<Func<ISession, bool>> GetOnSessionCallbacks()
         {
-            return _onSessionCallbacks;
+            lock (_onSessionLock)
+            {
+                return _onSessionCallbacks.ToList();
+            }
         }
 
         public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors, TelemetryType.Usage };
