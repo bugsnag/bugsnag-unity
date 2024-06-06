@@ -12,6 +12,8 @@
 
 - Added a null check to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
 
+- Made all callback collections within the Configuration class thread safe. [#810](https://github.com/bugsnag/bugsnag-unity/pull/810)
+
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.28.1](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.28.1) [#774](https://github.com/bugsnag/bugsnag-unity/pull/774)

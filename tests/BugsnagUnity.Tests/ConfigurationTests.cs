@@ -1,4 +1,6 @@
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -120,6 +122,88 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsTrue(config2.ErrorClassIsDiscarded("System.Exception"));
             Assert.IsTrue(config2.ErrorClassIsDiscarded("System.NullReferenceException"));
             Assert.IsFalse(config2.ErrorClassIsDiscarded("System.ArgumentException"));
+        }
+
+        [Test]
+        public void ThreadSafeCallbacksTest()
+        {
+            var config = new Configuration("foo");
+
+            // Define a simple callback function
+            Func<IEvent, bool> callback1 = (e) => true;
+            Func<IEvent, bool> callback2 = (e) => false;
+            Func<ISession, bool> sessionCallback = (s) => true;
+
+            // We will use these lists to store the results from multiple threads
+            List<bool> onErrorResults = new List<bool>();
+            List<bool> onSendErrorResults = new List<bool>();
+            List<bool> onSessionResults = new List<bool>();
+
+            // Adding callbacks in multiple threads
+            Thread addThread1 = new Thread(() =>
+            {
+                for (int i = 0; i < 50; i++)
+                {
+                    config.AddOnError(callback1);
+                    config.AddOnSendError(callback2);
+                    config.AddOnSession(sessionCallback);
+                }
+            });
+
+            Thread addThread2 = new Thread(() =>
+            {
+                for (int i = 0; i < 50; i++)
+                {
+                    config.AddOnError(callback2);
+                    config.AddOnSendError(callback1);
+                    config.AddOnSession(sessionCallback);
+                }
+            });
+
+            // Removing callbacks in multiple threads
+            Thread removeThread1 = new Thread(() =>
+            {
+                for (int i = 0; i < 25; i++)
+                {
+                    config.RemoveOnError(callback1);
+                    config.RemoveOnSendError(callback2);
+                    config.RemoveOnSession(sessionCallback);
+                }
+            });
+
+            Thread removeThread2 = new Thread(() =>
+            {
+                for (int i = 0; i < 25; i++)
+                {
+                    config.RemoveOnError(callback2);
+                    config.RemoveOnSendError(callback1);
+                    config.RemoveOnSession(sessionCallback);
+                }
+            });
+
+            // Start all threads
+            addThread1.Start();
+            addThread2.Start();
+            removeThread1.Start();
+            removeThread2.Start();
+
+            // Wait for all threads to complete
+            addThread1.Join();
+            addThread2.Join();
+            removeThread1.Join();
+            removeThread2.Join();
+
+            // Verify the state of the callback lists
+            // The exact number might vary depending on the execution order,
+            // but there should be no exceptions thrown and the list should not be empty
+            Assert.IsTrue(config.GetOnErrorCallbacks().Count > 0, "OnErrorCallbacks should have entries.");
+            Assert.IsTrue(config.GetOnSendErrorCallbacks().Count > 0, "OnSendErrorCallbacks should have entries.");
+            Assert.IsTrue(config.GetOnSessionCallbacks().Count > 0, "OnSessionCallbacks should have entries.");
+
+            // Check if the remaining callbacks are as expected
+            Assert.IsTrue(config.GetOnErrorCallbacks().Contains(callback1) || config.GetOnErrorCallbacks().Contains(callback2), "Callback1 or Callback2 should be in OnErrorCallbacks.");
+            Assert.IsTrue(config.GetOnSendErrorCallbacks().Contains(callback1) || config.GetOnSendErrorCallbacks().Contains(callback2), "Callback1 or Callback2 should be in OnSendErrorCallbacks.");
+            Assert.IsTrue(config.GetOnSessionCallbacks().Contains(sessionCallback), "SessionCallback should be in OnSessionCallbacks.");
         }
     }
 }
