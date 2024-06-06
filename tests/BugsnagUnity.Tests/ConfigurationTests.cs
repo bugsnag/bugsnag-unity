@@ -124,7 +124,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsFalse(config2.ErrorClassIsDiscarded("System.ArgumentException"));
         }
 
-         [Test]
+        [Test]
         public void ThreadSafeCallbacksTest()
         {
             var config = new Configuration("foo");
