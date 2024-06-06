@@ -14,6 +14,8 @@
 
 - Made all callback collections within the Configuration class thread safe. [#810](https://github.com/bugsnag/bugsnag-unity/pull/810)
 
+- Added GenerateAnonymousId to the BugsnagSettingsObject. This fixes a null object reference error on GenerateAnonymousId when using both the performance SDK and Error monitoring SDK, where the error monitoring SDK shares the confirguration with the performance monitoring SDK. [#812](https://github.com/bugsnag/bugsnag-unity/pull/812)
+
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.28.1](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.28.1) [#774](https://github.com/bugsnag/bugsnag-unity/pull/774)

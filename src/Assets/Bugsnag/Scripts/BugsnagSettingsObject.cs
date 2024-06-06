@@ -42,6 +42,7 @@ namespace BugsnagUnity
         public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors, TelemetryType.Usage };
         public int VersionCode = -1;
 
+        public bool GenerateAnonymousId = true;
         public SwitchCacheType SwitchCacheType = SwitchCacheType.R;
         public string SwitchCacheMountName = "BugsnagCache";
         public int SwitchCacheIndex = 0;
@@ -132,7 +133,7 @@ namespace BugsnagUnity
             config.SecondsPerUniqueLog = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             config.Telemetry = Telemetry;
             config.VersionCode = VersionCode;
-
+            config.GenerateAnonymousId = GenerateAnonymousId;
             config.SwitchCacheType = SwitchCacheType;
             config.SwitchCacheIndex = SwitchCacheIndex;
             config.SwitchCacheMaxSize = SwitchCacheMaxSize;
