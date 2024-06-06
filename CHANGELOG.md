@@ -1,5 +1,9 @@
 # Changelog
 
+#TBD 
+
+- Added GenerateAnonymousId to the BugsnagSettingsObject [#812](https://github.com/bugsnag/bugsnag-unity/pull/812)
+
 ## 8.0.0 (2024-06-10)
 
 ### Enhancements
