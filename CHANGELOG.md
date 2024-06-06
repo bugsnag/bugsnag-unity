@@ -1,9 +1,5 @@
 # Changelog
 
-#TBD 
-
-- Added GenerateAnonymousId to the BugsnagSettingsObject [#812](https://github.com/bugsnag/bugsnag-unity/pull/812)
-
 ## 8.0.0 (2024-06-10)
 
 ### Enhancements
@@ -17,6 +13,8 @@
 - Added a null check to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
 
 - Made all callback collections within the Configuration class thread safe. [#810](https://github.com/bugsnag/bugsnag-unity/pull/810)
+
+- Added GenerateAnonymousId to the BugsnagSettingsObject. This fixes a null object reference error on GenerateAnonymousId when using both the performance SDK and Error monitoring SDK, where the error monitoring SDK shares the confirguration with the performance monitoring SDK. [#812](https://github.com/bugsnag/bugsnag-unity/pull/812)
 
 ### Dependencies
 
