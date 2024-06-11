@@ -28,7 +28,7 @@ namespace BugsnagUnity
 
         public List<IThread> Threads => GetThreads();
 
-        public bool? Unhandled { get => NativePointer.Call<bool>("isUnhandled"); set => NativePointer.Call("setUnhandled", (bool)value); }
+        public bool Unhandled { get => NativePointer.Call<bool>("isUnhandled"); set => NativePointer.Call("setUnhandled", (bool)value); }
 
         private Severity GetSeverity()
         {

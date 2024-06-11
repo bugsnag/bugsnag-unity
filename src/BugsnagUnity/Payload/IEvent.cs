@@ -27,6 +27,6 @@ namespace BugsnagUnity
 
         List<IThread> Threads { get; }
 
-        bool? Unhandled { get; set; }
+        bool Unhandled { get; set; }
     }
 }
