@@ -8,6 +8,8 @@
 
 - Changed `Configuration.DiscardClasses` and `Configuration.RedactedKeys` to Regex types. [#807](https://github.com/bugsnag/bugsnag-unity/pull/807)
 
+- `Event.Unhandled` is (accessed via OnError and OnSend callbacks) is now non null. [#813](https://github.com/bugsnag/bugsnag-unity/pull/813)
+
 ### Bug Fixes
 
 - Added a null check to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
