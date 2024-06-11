@@ -8,7 +8,7 @@
 
 - Changed `Configuration.DiscardClasses` and `Configuration.RedactedKeys` to Regex types. [#807](https://github.com/bugsnag/bugsnag-unity/pull/807)
 
-- `Event.Unhandled` is (accessed via OnError and OnSend callbacks) is now non null. [#813](https://github.com/bugsnag/bugsnag-unity/pull/813)
+- `Event.Unhandled` is (accessed via OnError and OnSend callbacks) is now non-nullable. [#813](https://github.com/bugsnag/bugsnag-unity/pull/813)
 
 ### Bug Fixes
 
