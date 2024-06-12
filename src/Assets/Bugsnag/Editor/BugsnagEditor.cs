@@ -164,6 +164,7 @@ namespace BugsnagUnity.Editor
             }
             EditorGUILayout.PropertyField(so.FindProperty("AutoDetectErrors"));
             EditorGUILayout.PropertyField(so.FindProperty("AutoTrackSessions"));
+            EditorGUILayout.PropertyField(so.FindProperty("GenerateAnonymousId"));
             EditorGUILayout.PropertyField(so.FindProperty("BreadcrumbLogLevel"));
             EditorGUILayout.PropertyField(so.FindProperty("Context"));
             EditorGUILayout.PropertyField(so.FindProperty("DiscardClasses"));

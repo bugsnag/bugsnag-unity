@@ -9,6 +9,7 @@ using System.Threading;
 using BugsnagUnity.Payload;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Security.Cryptography;
 
 namespace BugsnagUnity
 {
@@ -187,6 +188,8 @@ namespace BugsnagUnity
             {
                 req.SetRequestHeader("Content-Type", "application/json");
                 req.SetRequestHeader("Bugsnag-Sent-At", DateTimeOffset.Now.ToString("o", CultureInfo.InvariantCulture));
+                req.SetRequestHeader("Bugsnag-Integrity", "sha1 " + Hash(body));
+
                 foreach (var header in payload.Headers)
                 {
                     req.SetRequestHeader(header.Key, header.Value);
@@ -276,6 +279,20 @@ namespace BugsnagUnity
             }
            
             return serialisedPayload;
+        }
+
+        private string Hash(byte[] input)
+        {
+            using (SHA1Managed sha1 = new SHA1Managed())
+            {
+                var hash = sha1.ComputeHash(input);
+                var sb = new StringBuilder(hash.Length * 2);
+                foreach (byte b in hash)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                return sb.ToString();
+            }
         }
 
         private bool TruncateBreadcrumbs(Dictionary<string, object> @event, int bytesToRemove)

@@ -34,7 +34,7 @@ namespace BugsnagUnity
         public bool PersistUser = true;
         public string SessionEndpoint = "https://sessions.bugsnag.com";
         public ThreadSendPolicy SendThreads = ThreadSendPolicy.UnhandledOnly;
-        public string[] RedactedKeys = new string[] { "password" };
+        public string[] RedactedKeys = new string[] { ".*password.*" };
         public string ReleaseStage;
         public bool ReportExceptionLogsAsHandled = true;
         public bool SendLaunchCrashesSynchronously = true;
@@ -42,6 +42,7 @@ namespace BugsnagUnity
         public List<TelemetryType> Telemetry = new List<TelemetryType> { TelemetryType.InternalErrors, TelemetryType.Usage };
         public int VersionCode = -1;
 
+        public bool GenerateAnonymousId = true;
         public SwitchCacheType SwitchCacheType = SwitchCacheType.R;
         public string SwitchCacheMountName = "BugsnagCache";
         public int SwitchCacheIndex = 0;
@@ -79,7 +80,16 @@ namespace BugsnagUnity
 
             config.BreadcrumbLogLevel = GetLogTypeFromLogLevel( BreadcrumbLogLevel );
             config.Context = Context;
-            config.DiscardClasses = DiscardClasses;
+            foreach(string discardedClass in DiscardClasses){
+                try
+                {
+                    config.DiscardClasses.Add(new System.Text.RegularExpressions.Regex(discardedClass));
+                }
+                catch (ArgumentException e)
+                {
+                    Debug.LogError("Invalid Regex pattern for discard class: " + e.Message);
+                }
+            }
             if (EnabledReleaseStages != null && EnabledReleaseStages.Length > 0)
             {
                 config.EnabledReleaseStages = EnabledReleaseStages;
@@ -98,7 +108,17 @@ namespace BugsnagUnity
             {
                 config.Endpoints = new EndpointConfiguration(NotifyEndpoint, SessionEndpoint);
             }
-            config.RedactedKeys = RedactedKeys;
+            foreach(string key in RedactedKeys)
+            {
+                try
+                {
+                    config.RedactedKeys.Add(new System.Text.RegularExpressions.Regex(key));
+                }
+                catch (ArgumentException e)
+                {
+                    Debug.LogError("Invalid Regex pattern for redacted key: " + e.Message);
+                }
+            }
             if (string.IsNullOrEmpty(ReleaseStage))
             {
                 config.ReleaseStage = Debug.isDebugBuild ? "development" : "production";
@@ -113,7 +133,7 @@ namespace BugsnagUnity
             config.SecondsPerUniqueLog = TimeSpan.FromSeconds(SecondsPerUniqueLog);
             config.Telemetry = Telemetry;
             config.VersionCode = VersionCode;
-
+            config.GenerateAnonymousId = GenerateAnonymousId;
             config.SwitchCacheType = SwitchCacheType;
             config.SwitchCacheIndex = SwitchCacheIndex;
             config.SwitchCacheMaxSize = SwitchCacheMaxSize;
