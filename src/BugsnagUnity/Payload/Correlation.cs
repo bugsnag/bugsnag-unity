@@ -8,8 +8,8 @@ namespace BugsnagUnity.Payload
     public class Correlation : PayloadContainer
     {
        
-        private const string TRACE_ID_KEY = "traceid";
-        private const string SPAN_ID_KEY = "spanid";
+        private const string TRACE_ID_KEY = "traceId";
+        private const string SPAN_ID_KEY = "spanId";
 
         internal Correlation(string traceId, string spanId)
         {
