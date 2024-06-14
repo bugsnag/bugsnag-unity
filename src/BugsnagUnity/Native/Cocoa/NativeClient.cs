@@ -73,13 +73,23 @@ namespace BugsnagUnity
                 var user = config.GetUser();
                 NativeCode.bugsnag_setUserInConfig(obj, user.Id, user.Email, user.Name);
             }
-            if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
+            if (config.DiscardClasses != null && config.DiscardClasses.Count > 0)
             {
-                NativeCode.bugsnag_setDiscardClasses(obj, config.DiscardClasses, config.DiscardClasses.Length);
+                var patternsAsStrings = new string[config.DiscardClasses.Count];
+                foreach (var key in config.DiscardClasses)
+                {
+                    patternsAsStrings[config.DiscardClasses.IndexOf(key)] = key.ToString();
+                }
+                NativeCode.bugsnag_setDiscardClasses(obj, patternsAsStrings, patternsAsStrings.Length);
             }
-            if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
+            if (config.RedactedKeys != null && config.RedactedKeys.Count > 0)
             {
-                NativeCode.bugsnag_setRedactedKeys(obj, config.RedactedKeys, config.RedactedKeys.Length);
+                var patternsAsStrings = new string[config.RedactedKeys.Count];
+                foreach (var key in config.RedactedKeys)
+                {
+                    patternsAsStrings[config.RedactedKeys.IndexOf(key)] = key.ToString();
+                }
+                NativeCode.bugsnag_setRedactedKeys(obj, patternsAsStrings, patternsAsStrings.Length);
             }
 
             SetEnabledTelemetryTypes(obj,config);

@@ -1,6 +1,14 @@
 Upgrading
 =========
 
+## 7.x to 8.x
+
+`Configuration.DiscardClasses` and `Configuration.RedactedKeys` are now [Regex](https://learn.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regex?view=net-8.0) collections instead of string collections. This allows developers to have more control over how they perform. 
+
+If you are using the `DiscardClasses` and `RedactedKeys` sections of the Bugsnag Unity Configuration Window, you can enter Regex patterns as strings and they will be converted into Regex objects when the Bugsnag SDK is started.
+
+`Event.Unhandled` (accessed via OnError and OnSend callbacks) is now non-nullable.
+
 ## 6.x to 7.x
 
 When building using Unity 2019+, the Bugsnag SDK now uses a new method to intercept uncaught C# exceptions. This allows us access to the original exception object, meaning more accurate exception data and full support for inner exceptions.
