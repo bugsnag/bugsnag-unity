@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Dependencies
+
+- Update bugsnag-cocoa to [v6.29.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.29.0) [#814](https://github.com/bugsnag/bugsnag-unity/pull/814)
+
 ## 8.0.0 (2024-06-12)
 
 ### Enhancements
