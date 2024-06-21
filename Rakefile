@@ -398,7 +398,25 @@ namespace :test do
       end
 
       # Build the Android APK
-      script = File.join("features", "scripts", "build_android.sh")
+      script = File.join("features", "scripts", "build_android.sh release")
+      unless system env, script
+        raise 'Android APK build failed'
+      end
+    end
+
+    task :build_dev do
+      # Check that a Unity version has been selected and the path exists before calling the build script
+      unity_path, unity = get_required_unity_paths
+
+      # Prepare the test fixture project by importing the plugins
+      env = { "UNITY_PATH" => File.dirname(unity) }
+      script = File.join("features", "scripts", "prepare_fixture.sh")
+      unless system env, script
+        raise 'Preparation of test fixture failed'
+      end
+
+      # Build the Android APK
+      script = File.join("features", "scripts", "build_android.sh dev")
       unless system env, script
         raise 'Android APK build failed'
       end
