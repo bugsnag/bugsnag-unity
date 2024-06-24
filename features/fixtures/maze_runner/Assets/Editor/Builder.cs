@@ -8,30 +8,60 @@ using UnityEditor.Callbacks;
 
 public class Builder : MonoBehaviour {
 
-    static void Build(string folder, BuildTarget target)
+    static void BuildStandalone(string folder, BuildTarget target, bool dev)
     {
         BuildPlayerOptions opts = new BuildPlayerOptions();
         var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
         opts.scenes = scenes;
         opts.locationPathName = folder;
         opts.target = target;
-        opts.options = BuildOptions.Development;
+        opts.options = dev ? BuildOptions.Development : BuildOptions.None;
         BuildPipeline.BuildPlayer(opts);
     }
 
-    public static void MacOS()
+    public static void MacOSRelease()
     {
-        Build("build/MacOS/Mazerunner", BuildTarget.StandaloneOSX);
+        MacOS(false);
     }
 
-    public static void Win64()
+    public static void Win64Release()
     {
-        Build("build/Windows/Mazerunner.exe", BuildTarget.StandaloneWindows64);
+        Win64(false);
     }
 
-    public static void WebGL()
+    public static void WebGLRelease()
     {
-        Build("build/WebGL/Mazerunner", BuildTarget.WebGL);
+        WebGL(false);
+    }
+
+    public static void MacOSDev()
+    {
+        MacOS(true);
+    }
+
+    public static void Win64Dev()
+    {
+        Win64(true);
+    }
+
+    public static void WebGLDev()
+    {
+        WebGL(true);
+    }
+
+    static void MacOS(bool dev)
+    {
+        BuildStandalone(dev ? "build/MacOS/Mazerunner_dev" : "build/MacOS/Mazerunner", BuildTarget.StandaloneOSX, dev);
+    }
+
+    static void Win64(bool dev)
+    {
+        BuildStandalone(dev ? "build/Windows/Mazerunner_dev.exe" : "build/Windows/Mazerunner.exe", BuildTarget.StandaloneWindows64, dev);
+    }
+
+    static void WebGL(bool dev)
+    {
+        BuildStandalone("build/WebGL/Mazerunner" + (dev ? "_dev" : ""), BuildTarget.WebGL, dev);
     }
 
 

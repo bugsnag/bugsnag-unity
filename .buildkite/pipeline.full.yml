@@ -29,7 +29,7 @@ steps:
         download:
           - Bugsnag.unitypackage
     commands:
-      - scripts/ci-build-macos-packages.sh
+      - scripts/ci-build-macos-packages.sh release
     artifact_paths:
       - unity.log
       - features/fixtures/maze_runner/build/MacOS-2020.zip
@@ -51,7 +51,7 @@ steps:
         download:
           - Bugsnag.unitypackage
     commands:
-      - scripts/ci-build-macos-packages.sh
+      - scripts/ci-build-macos-packages.sh release
     artifact_paths:
       - unity.log
       - features/fixtures/maze_runner/build/MacOS-2021.zip
@@ -73,7 +73,7 @@ steps:
         download:
           - Bugsnag.unitypackage
     commands:
-      - scripts/ci-build-macos-packages.sh
+      - scripts/ci-build-macos-packages.sh release
     artifact_paths:
       - unity.log
       - features/fixtures/maze_runner/build/MacOS-2022.zip
@@ -95,7 +95,7 @@ steps:
         download:
           - Bugsnag.unitypackage
     commands:
-      - scripts/ci-build-macos-packages.sh
+      - scripts/ci-build-macos-packages.sh release
     artifact_paths:
       - unity.log
       - features/fixtures/maze_runner/build/MacOS-2023.zip
@@ -711,7 +711,7 @@ steps:
           - unity.log
           - features/fixtures/maze_runner/build/Windows-2020.zip
     commands:
-      - scripts/ci-build-windows-fixture-wsl.sh
+      - scripts/ci-build-windows-fixture-wsl.sh release
     retry:
       automatic:
         - exit_status: "*"
@@ -726,7 +726,7 @@ steps:
     env:
       UNITY_VERSION: *2021
     commands:
-      - scripts/ci-build-windows-fixture-wsl.sh
+      - scripts/ci-build-windows-fixture-wsl.sh release
     plugins:
       artifacts#v1.9.0:
         download:
@@ -749,7 +749,7 @@ steps:
     env:
       UNITY_VERSION: *2022
     commands:
-      - scripts/ci-build-windows-fixture-wsl.sh
+      - scripts/ci-build-windows-fixture-wsl.sh release
     plugins:
       artifacts#v1.9.0:
         download:
@@ -773,7 +773,7 @@ steps:
     env:
       UNITY_VERSION: *2023
     commands:
-      - scripts/ci-build-windows-fixture-wsl.sh
+      - scripts/ci-build-windows-fixture-wsl.sh release
     plugins:
       artifacts#v1.9.0:
         download:
