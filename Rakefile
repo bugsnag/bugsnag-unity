@@ -451,7 +451,27 @@ namespace :test do
 
       # Generate the Xcode project
       Dir.chdir"features" do
-        script = File.join("scripts", "generate_xcode_project.sh")
+        script = File.join("scripts", "generate_xcode_project.sh release")
+        unless system env, script
+          raise 'IPA build failed'
+        end
+      end
+    end
+
+    task :generate_xcode_dev do
+      # Check that a Unity version has been selected and the path exists before calling the build script
+      unity_path, unity = get_required_unity_paths
+
+      # Prepare the test fixture project by importing the plugins
+      env = { "UNITY_PATH" => File.dirname(unity) }
+      script = File.join("features", "scripts", "prepare_fixture.sh")
+      unless system env, script
+        raise 'Preparation of test fixture failed'
+      end
+
+      # Generate the Xcode project
+      Dir.chdir"features" do
+        script = File.join("scripts", "generate_xcode_project.sh dev")
         unless system env, script
           raise 'IPA build failed'
         end
@@ -461,7 +481,17 @@ namespace :test do
     task :build_xcode do
       # Build and archive from the Xcode project
       Dir.chdir"features" do
-        script = File.join("scripts", "build_ios.sh")
+        script = File.join("scripts", "build_ios.sh release")
+        unless system script
+          raise 'IPA build failed'
+        end
+      end
+    end
+
+    task :build_xcode_dev do
+      # Build and archive from the Xcode project
+      Dir.chdir"features" do
+        script = File.join("scripts", "build_ios.sh dev")
         unless system script
           raise 'IPA build failed'
         end
