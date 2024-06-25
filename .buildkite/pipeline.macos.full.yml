@@ -58,7 +58,7 @@ steps:
 
   - label: Build Unity 2022 MacOS and WebGL test fixtures
     timeout_in_minutes: 30
-    key: "macos-2021-fixture"
+    key: "macos-2022-fixture"
     depends_on: "build-artifacts"
     env:
       UNITY_VERSION: *2022
