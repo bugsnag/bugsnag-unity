@@ -11,6 +11,8 @@ public class Builder : MonoBehaviour {
     static void BuildStandalone(string folder, BuildTarget target, bool dev)
     {
         BuildPlayerOptions opts = new BuildPlayerOptions();
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "UNITY_ASSERTIONS");
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "UNITY_ASSERTIONS");
         var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
         opts.scenes = scenes;
         opts.locationPathName = folder;
@@ -132,6 +134,9 @@ public class Builder : MonoBehaviour {
         var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
 
         PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, "UNITY_ASSERTIONS");
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, "UNITY_ASSERTIONS");
+
         BuildPlayerOptions opts = new BuildPlayerOptions();
         opts.scenes = scenes;
         opts.locationPathName = Application.dataPath + "/../" + outputFile;
