@@ -78,7 +78,7 @@ steps:
 
   - label: Build Unity 2023 WebGL test fixture
     timeout_in_minutes: 30
-    key: "webgl-2023-fixtures"
+    key: "webgl-2023-fixture"
     depends_on: "build-artifacts"
     env:
       UNITY_VERSION: *2023
