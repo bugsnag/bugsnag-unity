@@ -18,3 +18,12 @@ BUILD_TYPE=$1
 pushd features/fixtures/maze_runner/build
   zip -r MacOS-${UNITY_VERSION:0:4}.zip MacOS
 popd
+
+
+pushd features/fixtures/maze_runner/build
+  if [ "$BUILD_TYPE" == "release" ]; then
+    zip -r MacOS-release-${UNITY_VERSION:0:4}.zip MacOS
+  else
+    zip -r MacOS-dev-${UNITY_VERSION:0:4}.zip MacOS
+  fi
+popd

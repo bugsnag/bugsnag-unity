@@ -22,7 +22,7 @@ steps:
           - Bugsnag.unitypackage
         upload:
           - unity.log
-          - features/fixtures/maze_runner/build/Windows-2020.zip
+          - features/fixtures/maze_runner/build/Windows-release-2020.zip
     commands:
       - scripts/ci-build-windows-fixture-wsl.sh release
     retry:
@@ -47,7 +47,30 @@ steps:
         upload:
           - unity.log
           - unity_import.log
-          - features/fixtures/maze_runner/build/Windows-2021.zip
+          - features/fixtures/maze_runner/build/Windows-release-2021.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2021 Windows DEV test fixture
+    timeout_in_minutes: 30
+    key: "windows-2021-dev-fixture"
+    depends_on: "build-artifacts"
+    agents:
+      queue: windows-unity-wsl
+    env:
+      UNITY_VERSION: *2021
+    commands:
+      - scripts/ci-build-windows-fixture-wsl.sh dev
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - unity_import.log
+          - features/fixtures/maze_runner/build/Windows-dev-2021.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -70,7 +93,7 @@ steps:
         upload:
           - unity.log
           - unity_import.log
-          - features/fixtures/maze_runner/build/Windows-2022.zip
+          - features/fixtures/maze_runner/build/Windows-release-2022.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -94,7 +117,7 @@ steps:
         upload:
           - unity.log
           - unity_import.log
-          - features/fixtures/maze_runner/build/Windows-2023.zip
+          - features/fixtures/maze_runner/build/Windows-release-2023.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -113,13 +136,13 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/Windows-2020.zip
+          - features/fixtures/maze_runner/build/Windows-release-2020.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
 
     command:
-      - scripts/ci-run-windows-tests-wsl.sh
+      - scripts/ci-run-windows-tests-wsl.sh release
 
   - label: Run Windows e2e tests for Unity 2021
     timeout_in_minutes: 30
@@ -131,12 +154,29 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/Windows-2021.zip
+          - features/fixtures/maze_runner/build/Windows-release-2021.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
     commands:
-      - scripts/ci-run-windows-tests-wsl.sh
+      - scripts/ci-run-windows-tests-wsl.sh release
+
+  - label: Run Windows e2e DEV tests for Unity 2021
+    timeout_in_minutes: 30
+    depends_on: "windows-2021-dev-fixture"
+    agents:
+      queue: windows-general-wsl
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-dev-2021.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+    commands:
+      - scripts/ci-run-windows-tests-wsl.sh dev
 
   - label: Run Windows e2e tests for Unity 2022
     timeout_in_minutes: 30
@@ -148,12 +188,12 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/Windows-2022.zip
+          - features/fixtures/maze_runner/build/Windows-release-2022.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
     commands:
-      - scripts/ci-run-windows-tests-wsl.sh
+      - scripts/ci-run-windows-tests-wsl.sh release
 
   - label: Run Windows e2e tests for Unity 2023
     skip: Pending PLAT-12072
@@ -166,9 +206,9 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/Windows-2023.zip
+          - features/fixtures/maze_runner/build/Windows-release-2023.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
     commands:
-      - scripts/ci-run-windows-tests-wsl.sh
+      - scripts/ci-run-windows-tests-wsl.sh release

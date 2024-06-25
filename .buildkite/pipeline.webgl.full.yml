@@ -138,7 +138,7 @@ steps:
 
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
-      - scripts/ci-run-webgl-tests.sh
+      - scripts/ci-run-webgl-tests.sh release
 
    # DISABLED Pending PLAT-9177
   # - label: Run WebGL e2e tests for Unity 2021
@@ -169,7 +169,7 @@ steps:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
-      - scripts/ci-run-webgl-tests.sh
+      - scripts/ci-run-webgl-tests.sh release
 
   - label: Run WebGL e2e DEV tests for Unity 2022
     timeout_in_minutes: 30
@@ -184,7 +184,7 @@ steps:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
-      - scripts/ci-run-webgl-tests.sh
+      - scripts/ci-run-webgl-tests.sh dev
 
   - label: Run WebGL e2e tests for Unity 2023
     timeout_in_minutes: 30
@@ -199,5 +199,5 @@ steps:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
-      - scripts/ci-run-webgl-tests.sh
+      - scripts/ci-run-webgl-tests.sh release
 

@@ -29,7 +29,7 @@ steps:
       - scripts/ci-build-macos-fixture.sh release
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2020.zip
+      - features/fixtures/maze_runner/build/MacOS-release-2020.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -50,7 +50,28 @@ steps:
       - scripts/ci-build-macos-fixture.sh release
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2021.zip
+      - features/fixtures/maze_runner/build/MacOS-release-2021.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2021 MacOS DEV test fixture
+    timeout_in_minutes: 30
+    key: "macos-2021-dev-fixture"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2021
+      XCODE_VERSION: "15.3.0"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-macos-fixture.sh dev
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/MacOS-dev-2021.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -71,7 +92,7 @@ steps:
       - scripts/ci-build-macos-fixture.sh release
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2022.zip
+      - features/fixtures/maze_runner/build/MacOS-release-2022.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -92,7 +113,7 @@ steps:
       - scripts/ci-build-macos-fixture.sh release
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/MacOS-2023.zip
+      - features/fixtures/maze_runner/build/MacOS-release-2023.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -111,13 +132,13 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2020.zip
+          - features/fixtures/maze_runner/build/MacOS-release-2020.zip
         upload:
           - maze_output/**/*
           - '*-mazerunner.log'
           - maze_output/metrics.csv
     commands:
-      - scripts/ci-run-macos-tests.sh
+      - scripts/ci-run-macos-tests.sh release
 
   - label: Run MacOS e2e tests for Unity 2021
     timeout_in_minutes: 60
@@ -129,12 +150,29 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2021.zip
+          - features/fixtures/maze_runner/build/MacOS-release-2021.zip
         upload:
           - maze_output/**/*
           - Mazerunner.log
     commands:
-      - scripts/ci-run-macos-tests.sh
+      - scripts/ci-run-macos-tests.sh release
+
+  - label: Run MacOS e2e DEV tests for Unity 2021
+    timeout_in_minutes: 60
+    depends_on: 'macos-2021-dev-fixture'
+    agents:
+      queue: macos-12-arm-unity
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/MacOS-dev-2021.zip
+        upload:
+          - maze_output/**/*
+          - Mazerunner.log
+    commands:
+      - scripts/ci-run-macos-tests.sh dev
 
   - label: Run MacOS e2e tests for Unity 2022
     timeout_in_minutes: 60
@@ -146,12 +184,12 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2022.zip
+          - features/fixtures/maze_runner/build/MacOS-release-2022.zip
         upload:
           - maze_output/**/*
           - '*-mazerunner.log'
     commands:
-      - scripts/ci-run-macos-tests.sh
+      - scripts/ci-run-macos-tests.sh release
 
   - label: Run MacOS e2e tests for Unity 2023
     timeout_in_minutes: 60
@@ -163,9 +201,9 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/MacOS-2023.zip
+          - features/fixtures/maze_runner/build/MacOS-release-2023.zip
         upload:
           - maze_output/**/*
           - '*-mazerunner.log'
     commands:
-      - scripts/ci-run-macos-tests.sh
+      - scripts/ci-run-macos-tests.sh release

@@ -15,4 +15,9 @@ BUILD_TYPE=$1
 cd features/scripts
 ./build_maze_runner.sh $BUILD_TYPE wsl
 cd ../fixtures/maze_runner/build
-zip -r Windows-${UNITY_VERSION:0:4}.zip Windows
+
+if [ "$BUILD_TYPE" == "release" ]; then
+  zip -r Windows-release-${UNITY_VERSION:0:4}.zip Windows
+else
+  zip -r Windows-dev-${UNITY_VERSION:0:4}.zip Windows
+fi
