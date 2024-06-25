@@ -140,21 +140,20 @@ steps:
     commands:
       - scripts/ci-run-webgl-tests.sh release
 
-   # DISABLED Pending PLAT-9177
-  # - label: Run WebGL e2e tests for Unity 2021
-  #   timeout_in_minutes: 30
-  #   depends_on: 'cocoa-webgl-2021-fixtures'
-  #   env:
-  #     UNITY_VERSION: *2021
-  #   plugins:
-  #     artifacts#v1.9.0:
-  #       download:
-  #         - features/fixtures/maze_runner/build/WebGL-2021.zip
-  #       upload:
-  #         - maze_output/**/*
-  #   # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-  #   commands:
-  #     - scripts/ci-run-webgl-tests.sh
+  - label: Run WebGL e2e tests for Unity 2021
+    timeout_in_minutes: 30
+    depends_on: 'webgl-2021-fixture'
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-release-2021.zip
+        upload:
+          - maze_output/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh release
 
   - label: Run WebGL e2e tests for Unity 2022
     timeout_in_minutes: 30
