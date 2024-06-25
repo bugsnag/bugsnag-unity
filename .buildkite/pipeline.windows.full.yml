@@ -1,0 +1,174 @@
+aliases:
+  - &2020 "2020.3.48f1"
+  - &2021 "2021.3.36f1"
+  - &2022 "2022.3.22f1"
+  - &2023 "2023.2.19f1"
+
+steps:
+  #
+  # Build Windows test fixtures
+  #
+  - label: Build Unity 2020 Windows test fixture
+    timeout_in_minutes: 30
+    key: "windows-2020-fixture"
+    depends_on: "build-artifacts"
+    agents:
+      queue: windows-unity-wsl
+    env:
+      UNITY_VERSION: *2020
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - features/fixtures/maze_runner/build/Windows-2020.zip
+    commands:
+      - scripts/ci-build-windows-fixture-wsl.sh release
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2021 Windows test fixture
+    timeout_in_minutes: 30
+    key: "windows-2021-fixture"
+    depends_on: "build-artifacts"
+    agents:
+      queue: windows-unity-wsl
+    env:
+      UNITY_VERSION: *2021
+    commands:
+      - scripts/ci-build-windows-fixture-wsl.sh release
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - unity_import.log
+          - features/fixtures/maze_runner/build/Windows-2021.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2022 Windows test fixture
+    timeout_in_minutes: 30
+    key: "windows-2022-fixture"
+    depends_on: "build-artifacts"
+    agents:
+      queue: windows-unity-wsl
+    env:
+      UNITY_VERSION: *2022
+    commands:
+      - scripts/ci-build-windows-fixture-wsl.sh release
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - unity_import.log
+          - features/fixtures/maze_runner/build/Windows-2022.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2023 Windows test fixture
+    skip: Pending PLAT-12072
+    timeout_in_minutes: 30
+    key: "windows-2023-fixture"
+    depends_on: "build-artifacts"
+    agents:
+      queue: windows-unity-wsl
+    env:
+      UNITY_VERSION: *2023
+    commands:
+      - scripts/ci-build-windows-fixture-wsl.sh release
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - unity_import.log
+          - features/fixtures/maze_runner/build/Windows-2023.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  #
+  # Run Windows e2e tests
+  #
+  - label: Run Windows e2e tests for Unity 2020
+    timeout_in_minutes: 30
+    depends_on: "windows-2020-fixture"
+    agents:
+      queue: windows-general-wsl
+    env:
+      UNITY_VERSION: *2020
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2020.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+
+    command:
+      - scripts/ci-run-windows-tests-wsl.sh
+
+  - label: Run Windows e2e tests for Unity 2021
+    timeout_in_minutes: 30
+    depends_on: "windows-2021-fixture"
+    agents:
+      queue: windows-general-wsl
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2021.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+    commands:
+      - scripts/ci-run-windows-tests-wsl.sh
+
+  - label: Run Windows e2e tests for Unity 2022
+    timeout_in_minutes: 30
+    depends_on: "windows-2022-fixture"
+    agents:
+      queue: windows-general-wsl
+    env:
+      UNITY_VERSION: *2022
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2022.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+    commands:
+      - scripts/ci-run-windows-tests-wsl.sh
+
+  - label: Run Windows e2e tests for Unity 2023
+    skip: Pending PLAT-12072
+    timeout_in_minutes: 30
+    depends_on: "windows-2023-fixture"
+    agents:
+      queue: windows-general-wsl
+    env:
+      UNITY_VERSION: *2023
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-2023.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+    commands:
+      - scripts/ci-run-windows-tests-wsl.sh

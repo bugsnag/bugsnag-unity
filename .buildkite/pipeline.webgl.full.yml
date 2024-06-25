@@ -1,0 +1,167 @@
+aliases:
+  - &2020 "2020.3.48f1"
+  - &2021 "2021.3.36f1"
+  - &2022 "2022.3.22f1"
+  - &2023 "2023.2.19f1"
+
+
+agents:
+  queue: macos-14
+
+steps:
+  # Build WebGL test fixtures
+  #
+  - label: Build Unity 2020 WebGL test fixture
+    timeout_in_minutes: 30
+    key: "webgl-2020-fixture"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2020
+      XCODE_VERSION: "15.3.0"
+      # Python2 needed for WebGL to build
+      EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-webgl-fixture.sh release
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/WebGL-2020.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2021 WebGL test fixture
+    timeout_in_minutes: 30
+    key: "webgl-2021-fixture"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2021
+      XCODE_VERSION: "15.3.0"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-webgl-fixture.sh release
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/WebGL-2021.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2022 WebGL test fixture
+    timeout_in_minutes: 30
+    key: "webgl-2022-fixture"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2022
+      XCODE_VERSION: "15.3.0"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-webgl-fixture.sh release
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/WebGL-2022.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2023 WebGL test fixture
+    timeout_in_minutes: 30
+    key: "webgl-2023-fixtures"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2023
+      XCODE_VERSION: "15.3.0"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-webgl-fixture.sh release
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/WebGL-2023.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  #
+  # Run WebGL tests
+  #
+  # Note: These are run on Intel due to an issue with persistence with Firefox on ARM.
+  #
+  - label: Run WebGL e2e tests for Unity 2020
+    timeout_in_minutes: 30
+    depends_on: "webgl-2020-fixture"
+    env:
+      UNITY_VERSION: *2020
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2020.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+   # DISABLED Pending PLAT-9177
+  # - label: Run WebGL e2e tests for Unity 2021
+  #   timeout_in_minutes: 30
+  #   depends_on: 'cocoa-webgl-2021-fixtures'
+  #   env:
+  #     UNITY_VERSION: *2021
+  #   plugins:
+  #     artifacts#v1.9.0:
+  #       download:
+  #         - features/fixtures/maze_runner/build/WebGL-2021.zip
+  #       upload:
+  #         - maze_output/**/*
+  #   # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+  #   commands:
+  #     - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e tests for Unity 2022
+    timeout_in_minutes: 30
+    depends_on: 'webgl-2022-fixture'
+    env:
+      UNITY_VERSION: *2022
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2022.zip
+        upload:
+          - maze_output/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e tests for Unity 2023
+    timeout_in_minutes: 30
+    depends_on: 'webgl-2023-fixture'
+    env:
+      UNITY_VERSION: *2023
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-2023.zip
+        upload:
+          - maze_output/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
