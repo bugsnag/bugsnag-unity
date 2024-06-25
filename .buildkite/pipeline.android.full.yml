@@ -4,7 +4,6 @@ aliases:
   - &2022 "2022.3.22f1"
   - &2023 "2023.2.19f1"
 
-
 agents:
   queue: macos-14
 

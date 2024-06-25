@@ -12,9 +12,13 @@ fi
 
 BUILD_TYPE=$1
 
-# Build the MacOS and WebGL fixtures
+# Build the WebGL fixture
 ./features/scripts/build_maze_runner.sh $BUILD_TYPE webgl
 
 pushd features/fixtures/maze_runner/build
-  zip -r WebGL-${UNITY_VERSION:0:4}.zip WebGL
+  if [ "$BUILD_TYPE" == "release" ]; then
+    zip -r WebGL-release-${UNITY_VERSION:0:4}.zip WebGL
+  else
+    zip -r WebGL-dev-${UNITY_VERSION:0:4}.zip WebGL
+  fi
 popd

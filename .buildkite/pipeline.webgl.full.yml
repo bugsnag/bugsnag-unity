@@ -28,7 +28,7 @@ steps:
       - scripts/ci-build-webgl-fixture.sh release
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/WebGL-2020.zip
+      - features/fixtures/maze_runner/build/WebGL-release-2020.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -49,7 +49,28 @@ steps:
       - scripts/ci-build-webgl-fixture.sh release
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/WebGL-2021.zip
+      - features/fixtures/maze_runner/build/WebGL-release-2021.zip
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: Build Unity 2022 WebGL DEV test fixture
+    timeout_in_minutes: 30
+    key: "webgl-2022-dev-fixture"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2022
+      XCODE_VERSION: "15.3.0"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+    commands:
+      - scripts/ci-build-webgl-fixture.sh dev
+    artifact_paths:
+      - unity.log
+      - features/fixtures/maze_runner/build/WebGL-dev-2022.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -70,7 +91,7 @@ steps:
       - scripts/ci-build-webgl-fixture.sh release
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/WebGL-2022.zip
+      - features/fixtures/maze_runner/build/WebGL-release-2022.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -91,7 +112,7 @@ steps:
       - scripts/ci-build-webgl-fixture.sh release
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/WebGL-2023.zip
+      - features/fixtures/maze_runner/build/WebGL-release-2023.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -110,7 +131,7 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2020.zip
+          - features/fixtures/maze_runner/build/WebGL-release-2020.zip
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
@@ -143,7 +164,22 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2022.zip
+          - features/fixtures/maze_runner/build/WebGL-release-2022.zip
+        upload:
+          - maze_output/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh
+
+  - label: Run WebGL e2e DEV tests for Unity 2022
+    timeout_in_minutes: 30
+    depends_on: 'webgl-2022-dev-fixture'
+    env:
+      UNITY_VERSION: *2022
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-dev-2022.zip
         upload:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
@@ -158,7 +194,7 @@ steps:
     plugins:
       artifacts#v1.9.0:
         download:
-          - features/fixtures/maze_runner/build/WebGL-2023.zip
+          - features/fixtures/maze_runner/build/WebGL-release-2023.zip
         upload:
           - maze_output/**/*
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
