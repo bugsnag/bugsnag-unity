@@ -55,12 +55,12 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: Build Unity 2022 WebGL DEV test fixture
+  - label: Build Unity 2021 WebGL test fixture
     timeout_in_minutes: 30
-    key: "webgl-2022-dev-fixture"
+    key: "webgl-2021-dev-fixture"
     depends_on: "build-artifacts"
     env:
-      UNITY_VERSION: *2022
+      UNITY_VERSION: *2021
       XCODE_VERSION: "15.3.0"
     plugins:
       artifacts#v1.9.0:
@@ -70,7 +70,7 @@ steps:
       - scripts/ci-build-webgl-fixture.sh dev
     artifact_paths:
       - unity.log
-      - features/fixtures/maze_runner/build/WebGL-dev-2022.zip
+      - features/fixtures/maze_runner/build/WebGL-dev-2021.zip
     retry:
       automatic:
         - exit_status: "*"
@@ -155,6 +155,21 @@ steps:
     commands:
       - scripts/ci-run-webgl-tests.sh release
 
+  - label: Run WebGL e2e DEV tests for Unity 2021
+    timeout_in_minutes: 30
+    depends_on: 'webgl-2021-dev-fixture'
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/WebGL-dev-2021.zip
+        upload:
+          - maze_output/**/*
+    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+    commands:
+      - scripts/ci-run-webgl-tests.sh dev
+
   - label: Run WebGL e2e tests for Unity 2022
     timeout_in_minutes: 30
     depends_on: 'webgl-2022-fixture'
@@ -169,21 +184,6 @@ steps:
     # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
     commands:
       - scripts/ci-run-webgl-tests.sh release
-
-  - label: Run WebGL e2e DEV tests for Unity 2022
-    timeout_in_minutes: 30
-    depends_on: 'webgl-2022-dev-fixture'
-    env:
-      UNITY_VERSION: *2022
-    plugins:
-      artifacts#v1.9.0:
-        download:
-          - features/fixtures/maze_runner/build/WebGL-dev-2022.zip
-        upload:
-          - maze_output/**/*
-    # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-    commands:
-      - scripts/ci-run-webgl-tests.sh dev
 
   - label: Run WebGL e2e tests for Unity 2023
     timeout_in_minutes: 30
