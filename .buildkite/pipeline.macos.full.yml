@@ -77,7 +77,7 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: Build Unity 2022 MacOS and WebGL test fixtures
+  - label: Build Unity 2022 MacOS fixture
     timeout_in_minutes: 30
     key: "macos-2022-fixture"
     depends_on: "build-artifacts"
