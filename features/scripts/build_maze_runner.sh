@@ -5,31 +5,50 @@ if [ -z "$UNITY_VERSION" ]; then
   exit 1
 fi
 
-if [[ $# != 1 ]]; then
-  echo "Build platform (macos/webgl/windows) must be passed as a parameter"
+if [[ $# != 2 ]]; then
+  echo "Build type (release/dev) and platform (macos/webgl/windows/wsl) must be passed as parameters"
   exit 2
 fi
 
-if [ "$1" == "macos" ]; then
-  PLATFORM="MacOS"
+BUILD_TYPE=$1
+PLATFORM_TYPE=$2
+
+if [ "$PLATFORM_TYPE" == "macos" ]; then
+  if [ "$BUILD_TYPE" == "release" ]; then
+    PLATFORM="MacOSRelease"
+  else
+    PLATFORM="MacOSDev"
+  fi
   UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
-elif [ "$1" == "windows" ]; then
-  PLATFORM="Win64"
+elif [ "$PLATFORM_TYPE" == "windows" ]; then
+  if [ "$BUILD_TYPE" == "release" ]; then
+    PLATFORM="Win64Release"
+  else
+    PLATFORM="Win64Dev"
+  fi
   set -m
   UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-elif [ "$1" == "wsl" ]; then
-  PLATFORM="Win64"
+elif [ "$PLATFORM_TYPE" == "wsl" ]; then
+  if [ "$BUILD_TYPE" == "release" ]; then
+    PLATFORM="Win64Release"
+  else
+    PLATFORM="Win64Dev"
+  fi
   set -m
   UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-elif [ "$1" == "webgl" ]; then
-  PLATFORM="WebGL"
+elif [ "$PLATFORM_TYPE" == "webgl" ]; then
+  if [ "$BUILD_TYPE" == "release" ]; then
+    PLATFORM="WebGLRelease"
+  else
+    PLATFORM="WebGLDev"
+  fi
   if [ "$(uname)" == "Darwin" ]; then
     UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
   else
     UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
   fi
 else
-  echo "Unsupported platform: $1"
+  echo "Unsupported platform: $PLATFORM_TYPE"
   exit 3
 fi
 
@@ -46,7 +65,7 @@ pushd $SCRIPT_DIR
     package_path="$root_path/Bugsnag.unitypackage"
     project_path="$root_path/features/fixtures/maze_runner"
 
-    if [ "$1" == "wsl" ]; then
+    if [ "$PLATFORM_TYPE" == "wsl" ]; then
       # Solves an issue on WSL were wslpath fails if the file does not exist.
       if [ ! -f "$import_log_file" ]; then
         touch $import_log_file

@@ -12,14 +12,18 @@ fi
 
 BUILD_TYPE=$1
 
+# Build the MacOS and WebGL fixtures
+./features/scripts/build_maze_runner.sh $BUILD_TYPE macos
+
 pushd features/fixtures/maze_runner/build
-  if [ "$BUILD_TYPE" == "release" ]; then
-    unzip WebGL-release-${UNITY_VERSION:0:4}.zip
-  else
-    unzip WebGL-dev-${UNITY_VERSION:0:4}.zip
-  fi
+  zip -r MacOS-${UNITY_VERSION:0:4}.zip MacOS
 popd
 
-bundle install
-# TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-bundle exec maze-runner --farm=local --browser=firefox -e features/csharp/csharp_persistence.feature features/csharp
+
+pushd features/fixtures/maze_runner/build
+  if [ "$BUILD_TYPE" == "release" ]; then
+    zip -r MacOS-release-${UNITY_VERSION:0:4}.zip MacOS
+  else
+    zip -r MacOS-dev-${UNITY_VERSION:0:4}.zip MacOS
+  fi
+popd
