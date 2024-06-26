@@ -55,7 +55,7 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: Build Unity 2021 WebGL test fixture
+  - label: Build Unity 2021 DEV WebGL test fixture
     timeout_in_minutes: 30
     key: "webgl-2021-dev-fixture"
     depends_on: "build-artifacts"
