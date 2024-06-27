@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
+using BugsnagNetworking;
 
 namespace BugsnagUnity
 {
@@ -134,7 +135,30 @@ namespace BugsnagUnity
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
             ListenForSceneLoad();
+            SetupNetworkListeners();
             InitLogHandlers();
+        }
+
+        private void SetupNetworkListeners()
+        {
+            BugsnagUnityWebRequest.OnSend.AddListener(OnWebRequestSend);
+            BugsnagUnityWebRequest.OnComplete.AddListener(OnWebRequestComplete);
+            BugsnagUnityWebRequest.OnAbort.AddListener(OnWebRequestAbort);
+        }
+
+        private void OnWebRequestAbort(BugsnagUnityWebRequest arg0)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnWebRequestComplete(BugsnagUnityWebRequest arg0)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnWebRequestSend(BugsnagUnityWebRequest arg0)
+        {
+            throw new NotImplementedException();
         }
 
         private void InitMainthreadDispatcher()
