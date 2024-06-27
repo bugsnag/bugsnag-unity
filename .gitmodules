@@ -4,3 +4,6 @@
 [submodule "bugsnag-android"]
 	path = bugsnag-android
 	url = https://github.com/bugsnag/bugsnag-android
+[submodule "src/BugsnagUnity/BugsnagUnityWebRequest"]
+	path = src/BugsnagUnity/BugsnagUnityWebRequest
+	url = https://github.com/bugsnag/bugsnag-unity-web-request
