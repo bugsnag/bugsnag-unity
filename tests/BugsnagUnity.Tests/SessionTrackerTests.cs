@@ -9,7 +9,7 @@ namespace BugsnagUnity.Payload.Tests
     [TestClass]
     public class SessionTrackerTests
     {
-        public SessionTracker Tracker { get; set; }
+        private SessionTracker Tracker { get; set; }
 
         public SessionTrackerTests()
         {
