@@ -1,17 +1,16 @@
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using UnityEngine;
 
 namespace BugsnagUnity.Payload.Tests
 {
-    [TestFixture]
-    class ConfigurationTests
+    [TestClass]
+    public class ConfigurationTests
     {
-        [Test]
+        [TestMethod]
         public void DefaultConfigurationValues()
         {
             var config = new Configuration("foo");
@@ -24,60 +23,57 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("foo", config.ApiKey);
         }
 
-
-        [Test]
+        [TestMethod]
         public void MaxBreadcrumbsLimit()
         {
             var config = new Configuration("foo");
             config.MaximumBreadcrumbs = 501;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 100);
+            Assert.AreEqual(100, config.MaximumBreadcrumbs);
             config.MaximumBreadcrumbs = -1;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 100);
+            Assert.AreEqual(100, config.MaximumBreadcrumbs);
             config.MaximumBreadcrumbs = 20;
-            Assert.AreEqual(config.MaximumBreadcrumbs, 20);
+            Assert.AreEqual(20, config.MaximumBreadcrumbs);
         }
 
-        [Test]
+        [TestMethod]
         public void CloneTest()
         {
             var original = new Configuration("foo");
 
             original.MaximumBreadcrumbs = 1;
             original.ReleaseStage = "1";
-            original.SetUser("1","1","1");
+            original.SetUser("1", "1", "1");
 
             var clone = original.Clone();
 
-            //int check
+            // int check
             Assert.AreEqual(original.MaximumBreadcrumbs, clone.MaximumBreadcrumbs);
             clone.MaximumBreadcrumbs = 2;
             Assert.AreEqual(1, original.MaximumBreadcrumbs);
-            Assert.AreEqual( 2, clone.MaximumBreadcrumbs);
+            Assert.AreEqual(2, clone.MaximumBreadcrumbs);
 
-            //string check
+            // string check
             clone.ReleaseStage = "2";
             Assert.AreNotEqual(original.ReleaseStage, clone.ReleaseStage);
 
-
-            //user check
+            // user check
             clone.SetUser("2", "2", "2");
             Assert.AreEqual("1", original.GetUser().Name);
             Assert.AreEqual("2", clone.GetUser().Name);
         }
 
-
-        [Test]
+        [TestMethod]
         public void EndpointValidation()
         {
             var config = new Configuration("foo");
 
             Assert.IsTrue(config.Endpoints.IsValid);
 
-            config.Endpoints.Notify = new System.Uri("https://www.richIsCool.com/");
+            config.Endpoints.Notify = new Uri("https://www.richIsCool.com/");
 
             Assert.IsFalse(config.Endpoints.IsValid);
 
-            config.Endpoints.Session = new System.Uri("https://www.richIsSuperCool.com/");
+            config.Endpoints.Session = new Uri("https://www.richIsSuperCool.com/");
 
             Assert.IsTrue(config.Endpoints.IsValid);
 
@@ -86,7 +82,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsFalse(config.Endpoints.IsValid);
         }
 
-        [Test]
+        [TestMethod]
         public void RedactedKeysTest()
         {
             var config = new Configuration("foo");
@@ -106,7 +102,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsFalse(config2.KeyIsRedacted("app_id"));
         }
 
-        [Test]
+        [TestMethod]
         public void DiscardedClassesTest()
         {
             var config = new Configuration("foo");
@@ -124,7 +120,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.IsFalse(config2.ErrorClassIsDiscarded("System.ArgumentException"));
         }
 
-        [Test]
+        [TestMethod]
         public void ThreadSafeCallbacksTest()
         {
             var config = new Configuration("foo");
