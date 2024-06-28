@@ -24,10 +24,7 @@ Task("Test")
   .IsDependentOn("Build")
   .Does(() => {
     var assemblies = GetFiles($"./tests/**/bin/{configuration}/**/*.Tests.dll");
-    foreach(var assembly in assemblies)
-    {
-      VSTest(assembly);
-    }
+    VSTest(assemblies);
   });
 
 Task("Default")
