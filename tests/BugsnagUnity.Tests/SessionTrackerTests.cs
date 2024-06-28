@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 using System.Threading;
@@ -6,10 +6,9 @@ using UnityEngine;
 
 namespace BugsnagUnity.Payload.Tests
 {
-    [TestFixture]
-    class SessionTrackerTests
+    [TestClass]
+    public class SessionTrackerTests
     {
-
         public SessionTracker Tracker { get; set; }
 
         public SessionTrackerTests()
@@ -22,7 +21,7 @@ namespace BugsnagUnity.Payload.Tests
         /**
         * Verifies that a session can be resumed after it is stopped
         */
-        [Test]
+        [TestMethod]
         public void ResumeFromStoppedSession()
         {
             Tracker.StartSession();
@@ -39,7 +38,7 @@ namespace BugsnagUnity.Payload.Tests
         /**
         * Verifies that the previous session is resumed when calling SessionTracker.ResumeSession
         */
-        [Test]
+        [TestMethod]
         public void ResumeWithNoStoppedSession()
         {
             Tracker.StartSession();
@@ -51,7 +50,7 @@ namespace BugsnagUnity.Payload.Tests
         /**
         * Verifies that a new session can be created after the previous one is stopped
         */
-        [Test]
+        [TestMethod]
         public void StartNewAfterStoppedSession()
         {
             Tracker.StartSession();
@@ -65,7 +64,7 @@ namespace BugsnagUnity.Payload.Tests
         /**
         * Verifies that calling SessionTracker.ResumeSession multiple times only starts one session
         */
-        [Test]
+        [TestMethod]
         public void MultipleResumesHaveNoEffect()
         {
             Tracker.StartSession();
@@ -74,16 +73,15 @@ namespace BugsnagUnity.Payload.Tests
 
             Assert.IsTrue(Tracker.ResumeSession());
             Assert.IsTrue(SessionsAreTheSame(original, Tracker.CurrentSession));
-           
+
             Assert.IsFalse(Tracker.ResumeSession());
             Assert.IsTrue(SessionsAreTheSame(original, Tracker.CurrentSession));
-
         }
 
         /**
         * Verifies that calling SessionTracker.StopSession multiple times only stops one session
         */
-        [Test]
+        [TestMethod]
         public void MultipleStopsHaveNoEffect()
         {
             Tracker.StartSession();
