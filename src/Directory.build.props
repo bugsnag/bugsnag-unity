@@ -1,7 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
-    <TargetFramework>net35</TargetFramework>
-    <LangVersion>7.1</LangVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>8</LangVersion>
     <Version Condition="$(Version) == ''">1.0.0</Version>
   </PropertyGroup>
   <ItemGroup>
