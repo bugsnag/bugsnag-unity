@@ -16,6 +16,8 @@ for i in "$@"; do
 done
 
 # Restore NuGet packages
+# NOTE it is necessary to call restore on every project, not just the solution!
+# Builds will intermitently fail if this is not done every time.
 echo "Restoring NuGet packages..."
 dotnet restore "$SOLUTION"
 dotnet restore src/BugsnagUnity/BugsnagUnity.csproj
