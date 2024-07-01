@@ -1,15 +1,15 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace BugsnagUnity.Tests
 {
-    [TestFixture]
+    [TestClass]
     public class MaximumLogTypeCounterTests
     {
-        [Test]
+        [TestMethod]
         public void SendsSingleMessage()
         {
             Dictionary<LogType, int> maximumTypePerTimePeriod =
@@ -22,12 +22,12 @@ namespace BugsnagUnity.Tests
 
             var counter = new MaximumLogTypeCounter(configuration);
 
-            var message = new UnityLogMessage("", "", LogType.Error);
+            var message = new UnityLogMessage("", "", UnityEngine.LogType.Error);
 
-            Assert.True(counter.ShouldSend(message));
+            Assert.IsTrue(counter.ShouldSend(message));
         }
 
-        [Test]
+        [TestMethod]
         public void ShouldNotSendOverLimitMessages()
         {
             Dictionary<LogType, int> maximumTypePerTimePeriod =
@@ -44,10 +44,10 @@ namespace BugsnagUnity.Tests
             var message2 = new UnityLogMessage("", "", LogType.Error);
 
             counter.ShouldSend(message1);
-            Assert.False(counter.ShouldSend(message2));
+            Assert.IsFalse(counter.ShouldSend(message2));
         }
 
-        [Test]
+        [TestMethod]
         public void ShouldSendUnderTheLimit()
         {
             Dictionary<LogType, int> maximumTypePerTimePeriod =
@@ -66,14 +66,14 @@ namespace BugsnagUnity.Tests
             var message4 = new UnityLogMessage("", "", LogType.Error);
             var message5 = new UnityLogMessage("", "", LogType.Error);
 
-            Assert.True(counter.ShouldSend(message1));
-            Assert.True(counter.ShouldSend(message2));
-            Assert.True(counter.ShouldSend(message3));
-            Assert.True(counter.ShouldSend(message4));
-            Assert.True(counter.ShouldSend(message5));
+            Assert.IsTrue(counter.ShouldSend(message1));
+            Assert.IsTrue(counter.ShouldSend(message2));
+            Assert.IsTrue(counter.ShouldSend(message3));
+            Assert.IsTrue(counter.ShouldSend(message4));
+            Assert.IsTrue(counter.ShouldSend(message5));
         }
 
-        [Test]
+        [TestMethod]
         public void DontTrackCertainLogType()
         {
             Dictionary<LogType, int> maximumTypePerTimePeriod =
@@ -89,10 +89,10 @@ namespace BugsnagUnity.Tests
 
             var message = new UnityLogMessage("", "", LogType.Error);
 
-            Assert.True(counter.ShouldSend(message));
+            Assert.IsTrue(counter.ShouldSend(message));
         }
 
-        [Test]
+        [TestMethod]
         public void FlushesCorrectly()
         {
             Dictionary<LogType, int> maximumTypePerTimePeriod =
@@ -114,7 +114,7 @@ namespace BugsnagUnity.Tests
 
             message = new UnityLogMessage("", "", LogType.Error);
 
-            Assert.True(counter.ShouldSend(message));
+            Assert.IsTrue(counter.ShouldSend(message));
         }
     }
 }

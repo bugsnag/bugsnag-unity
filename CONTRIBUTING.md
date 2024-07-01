@@ -108,12 +108,12 @@ bundle exec maze-runner features/handled_errors.feature
 
 1. Make sure any changes made since last release in `master` are merged into `next`.
 
-2. Checkout the `next` branch. Set the version number in the change log and `build.cake`.
+2. Checkout the `next` branch. Set the version number in the change log and `build.sh`.
 
 3. Commit the changelog and version updates:
 
     ```
-    git add CHANGELOG.md build.cake
+    git add CHANGELOG.md build.sh
     git commit -m "Release v7.x.x"
     ```
 4. Make a pull request to merge the changes into `master`

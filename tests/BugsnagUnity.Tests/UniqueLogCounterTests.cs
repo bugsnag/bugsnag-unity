@@ -1,13 +1,13 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
 using UnityEngine;
 
 namespace BugsnagUnity.Tests
 {
-    [TestFixture]
+    [TestClass]
     public class UniqueLogCounterTests
     {
-        [Test]
+        [TestMethod]
         public void ShouldNotSendDuplicateMessages()
         {
             var counter = new UniqueLogThrottle(new Configuration("foo"));
@@ -16,20 +16,20 @@ namespace BugsnagUnity.Tests
             var message2 = new UnityLogMessage("", "", LogType.Error);
 
             counter.ShouldSend(message1);
-            Assert.False(counter.ShouldSend(message2));
+            Assert.IsFalse(counter.ShouldSend(message2));
         }
 
-        [Test]
+        [TestMethod]
         public void SendsSingleMessage()
         {
             var counter = new UniqueLogThrottle(new Configuration("foo"));
 
             var message = new UnityLogMessage("", "", LogType.Error);
 
-            Assert.True(counter.ShouldSend(message));
+            Assert.IsTrue(counter.ShouldSend(message));
         }
 
-        [Test]
+        [TestMethod]
         public void FlushesCorrectly()
         {
             var configuration = new Configuration("foo");
@@ -43,7 +43,7 @@ namespace BugsnagUnity.Tests
 
             message = new UnityLogMessage("", "", LogType.Error);
 
-            Assert.True(counter.ShouldSend(message));
+            Assert.IsTrue(counter.ShouldSend(message));
         }
     }
 }
