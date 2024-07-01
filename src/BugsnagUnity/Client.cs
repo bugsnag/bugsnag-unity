@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using BugsnagNetworking;
+using UnityEngine.Networking;
 
 namespace BugsnagUnity
 {
@@ -137,28 +138,6 @@ namespace BugsnagUnity
             ListenForSceneLoad();
             SetupNetworkListeners();
             InitLogHandlers();
-        }
-
-        private void SetupNetworkListeners()
-        {
-            BugsnagUnityWebRequest.OnSend.AddListener(OnWebRequestSend);
-            BugsnagUnityWebRequest.OnComplete.AddListener(OnWebRequestComplete);
-            BugsnagUnityWebRequest.OnAbort.AddListener(OnWebRequestAbort);
-        }
-
-        private void OnWebRequestAbort(BugsnagUnityWebRequest arg0)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void OnWebRequestComplete(BugsnagUnityWebRequest arg0)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void OnWebRequestSend(BugsnagUnityWebRequest arg0)
-        {
-            throw new NotImplementedException();
         }
 
         private void InitMainthreadDispatcher()
@@ -662,6 +641,85 @@ namespace BugsnagUnity
         {
             _featureFlags.Clear();
             NativeClient.ClearFeatureFlags();
+        }
+
+        private void SetupNetworkListeners()
+        {
+            BugsnagUnityWebRequest.OnSend.AddListener(OnWebRequestSend);
+            BugsnagUnityWebRequest.OnComplete.AddListener(OnWebRequestComplete);
+            BugsnagUnityWebRequest.OnAbort.AddListener(OnWebRequestAbort);
+        }
+
+        private readonly Dictionary<BugsnagUnityWebRequest, DateTimeOffset> _requestStartTimes = new Dictionary<BugsnagUnityWebRequest, DateTimeOffset>();
+
+
+        private void OnWebRequestComplete(BugsnagUnityWebRequest request)
+        {
+            if (_requestStartTimes.TryGetValue(request, out DateTimeOffset startTime))
+            {
+                TimeSpan duration = DateTimeOffset.UtcNow - startTime;
+                LeaveNetworkBreadcrumb(request, duration);
+                _requestStartTimes.Remove(request);
+            }
+            else
+            {
+                LeaveNetworkBreadcrumb(request, null);
+            }
+        }
+
+        private void OnWebRequestSend(BugsnagUnityWebRequest request)
+        {
+            _requestStartTimes[request] = DateTimeOffset.UtcNow;
+        }
+
+        private void OnWebRequestAbort(BugsnagUnityWebRequest request)
+        {
+            if (_requestStartTimes.ContainsKey(request))
+            {
+                _requestStartTimes.Remove(request);
+            }
+        }
+
+        private void LeaveNetworkBreadcrumb(BugsnagUnityWebRequest request, TimeSpan? duration)
+        {
+            string statusMessage = request.UnityWebRequest.result == UnityWebRequest.Result.Success ? "succeeded" : "failed";
+            string fullMessage = $"HttpRequest {statusMessage}";
+            var metadata = new Dictionary<string, object>
+            {
+                { "status", request.responseCode },
+                { "method", request.method },
+                { "url",  request.uri.Query.TrimEnd('?')},
+                { "urlParams", ExtractUrlParams(request.uri)},
+                { "duration", duration?.TotalMilliseconds },
+                { "requestContentLength", request.uploadHandler?.data?.Length },
+                { "responseContentLength", request.downloadHandler?.data?.Length }
+            };
+            Bugsnag.LeaveBreadcrumb(fullMessage, metadata, BreadcrumbType.Request);
+        }
+
+        public Dictionary<string, string> ExtractUrlParams(Uri uri)
+        {
+            var query = uri.Query.TrimStart('?');
+            var urlParams = new Dictionary<string, string>();
+
+            if (string.IsNullOrEmpty(query))
+            {
+                return urlParams;
+            }
+
+            var pairs = query.Split('&');
+            foreach (var pair in pairs)
+            {
+                var kvp = pair.Split('=');
+                if (kvp.Length == 2)
+                {
+                    var key = Uri.UnescapeDataString(kvp[0]);
+                    var value = Uri.UnescapeDataString(kvp[1]);
+                    urlParams[key] = value;
+                }
+            }
+
+            return urlParams;
         }
     }
 }
