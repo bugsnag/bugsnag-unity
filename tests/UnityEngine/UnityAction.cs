@@ -7,7 +7,10 @@ namespace UnityEngine.Events
         public void Invoke() { }
     }
 
-
+    public class UnityEvent<T0> {
+        public void AddListener(UnityAction<T0> action) { }
+        public void Invoke(T0 arg0) { }
+    }
 
     public delegate void UnityAction();
     public delegate void UnityAction<T0>(T0 arg0);
