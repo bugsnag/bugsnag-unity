@@ -683,6 +683,10 @@ namespace BugsnagUnity
 
         public void LeaveNetworkBreadcrumb(UnityWebRequest request, TimeSpan? duration)
         {
+            if(!Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Request))
+            {
+                return;
+            }
             string statusMessage = request.result == UnityWebRequest.Result.Success ? "succeeded" : "failed";
             string fullMessage = $"HttpRequest {statusMessage}";
 
