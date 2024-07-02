@@ -117,7 +117,7 @@ namespace BugsnagUnity
             NativeClient = nativeClient;
             CacheManager = new CacheManager(Configuration);
             PayloadManager = new PayloadManager(CacheManager);
-            _delivery = new Delivery(this, Configuration,CacheManager,PayloadManager);
+            _delivery = new Delivery(this, Configuration, CacheManager, PayloadManager);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
             _isUnity2019OrHigher = IsUnity2019OrHigher();
@@ -131,7 +131,7 @@ namespace BugsnagUnity
                 SetupAdvancedExceptionInterceptor();
             }
             InitTimingTracker();
-            StartInitialSession();          
+            StartInitialSession();
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
@@ -260,14 +260,15 @@ namespace BugsnagUnity
 
         private void ListenForSceneLoad()
         {
-            SceneManager.sceneLoaded += (Scene scene, LoadSceneMode loadSceneMode) => {
+            SceneManager.sceneLoaded += (Scene scene, LoadSceneMode loadSceneMode) =>
+            {
                 if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Navigation))
                 {
                     Breadcrumbs.Leave("Scene Loaded", new Dictionary<string, object> { { "sceneName", scene.name } }, BreadcrumbType.Navigation);
                 }
-                _storedMetadata.AddMetadata("app", "lastLoadedUnityScene",scene.name);
+                _storedMetadata.AddMetadata("app", "lastLoadedUnityScene", scene.name);
             };
-        }       
+        }
 
         public void Send(IPayload payload)
         {
@@ -322,7 +323,7 @@ namespace BugsnagUnity
                 {
                     {"logLevel" , logType.ToString() }
                 };
-                Breadcrumbs.Leave(condition, metadata, BreadcrumbType.Log );
+                Breadcrumbs.Leave(condition, metadata, BreadcrumbType.Log);
             }
         }
 
@@ -388,8 +389,8 @@ namespace BugsnagUnity
             else
             {
                 NotifyOnMainThread(exceptions, handledState, callback, logType);
-            }            
-           
+            }
+
         }
 
         private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
@@ -409,7 +410,7 @@ namespace BugsnagUnity
 
             NativeClient.PopulateAppWithState(app);
 
-            var device = new DeviceWithState(Configuration,CacheManager.GetCachedDeviceId());
+            var device = new DeviceWithState(Configuration, CacheManager.GetCachedDeviceId());
 
             NativeClient.PopulateDeviceWithState(device);
 
@@ -489,7 +490,7 @@ namespace BugsnagUnity
             if (!report.Ignored)
             {
                 //if serialisation fails, then we ignore the event
-                if (PayloadManager.AddPendingPayload(report)) 
+                if (PayloadManager.AddPendingPayload(report))
                 {
                     Send(report);
                     if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
@@ -501,7 +502,7 @@ namespace BugsnagUnity
             }
         }
 
-       
+
         private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
         {
             return Application.platform.Equals(RuntimePlatform.Android)
@@ -578,10 +579,10 @@ namespace BugsnagUnity
         public string GetContext()
         {
             return Configuration.Context;
-        }      
+        }
 
         public void MarkLaunchCompleted() => NativeClient.MarkLaunchCompleted();
-        
+
         public void AddOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.AddOnError(bugsnagCallback);
 
         public void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
@@ -596,13 +597,13 @@ namespace BugsnagUnity
 
         public void AddMetadata(string section, string key, object value) => _storedMetadata.AddMetadata(section, key, value);
 
-        public void AddMetadata(string section, IDictionary<string, object> metadata) => _storedMetadata.AddMetadata(section,metadata);
+        public void AddMetadata(string section, IDictionary<string, object> metadata) => _storedMetadata.AddMetadata(section, metadata);
 
         public void ClearMetadata(string section) => _storedMetadata.ClearMetadata(section);
 
         public void ClearMetadata(string section, string key) => _storedMetadata.ClearMetadata(section, key);
 
-        public IDictionary<string,object> GetMetadata(string section) => _storedMetadata.GetMetadata(section);
+        public IDictionary<string, object> GetMetadata(string section) => _storedMetadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => _storedMetadata.GetMetadata(section, key);
 
@@ -629,7 +630,7 @@ namespace BugsnagUnity
             {
                 AddFeatureFlag(flag.Name, flag.Variant);
             }
-        } 
+        }
 
         public void ClearFeatureFlag(string name)
         {
@@ -658,12 +659,12 @@ namespace BugsnagUnity
             if (_requestStartTimes.TryGetValue(request, out DateTimeOffset startTime))
             {
                 TimeSpan duration = DateTimeOffset.UtcNow - startTime;
-                LeaveNetworkBreadcrumb(request, duration);
+                LeaveNetworkBreadcrumb(request.UnityWebRequest, duration);
                 _requestStartTimes.Remove(request);
             }
             else
             {
-                LeaveNetworkBreadcrumb(request, null);
+                LeaveNetworkBreadcrumb(request.UnityWebRequest, null);
             }
         }
 
@@ -680,46 +681,45 @@ namespace BugsnagUnity
             }
         }
 
-        private void LeaveNetworkBreadcrumb(BugsnagUnityWebRequest request, TimeSpan? duration)
+        public void LeaveNetworkBreadcrumb(UnityWebRequest request, TimeSpan? duration)
         {
-            string statusMessage = request.UnityWebRequest.result == UnityWebRequest.Result.Success ? "succeeded" : "failed";
+            string statusMessage = request.result == UnityWebRequest.Result.Success ? "succeeded" : "failed";
             string fullMessage = $"HttpRequest {statusMessage}";
-            var metadata = new Dictionary<string, object>
+
+            var metadata = new Dictionary<string, object>();
+            metadata["status"] = request.result;
+            metadata["method"] = request.method;
+            metadata["url"] = request.url;
+            metadata["urlParams"] = ExtractUrlParams(request.uri);
+            metadata["duration"] = duration?.TotalMilliseconds;
+            if (request.uploadHandler != null && request.uploadHandler.data != null)
             {
-                { "status", request.responseCode },
-                { "method", request.method },
-                { "url",  request.uri.Query.TrimEnd('?')},
-                { "urlParams", ExtractUrlParams(request.uri)},
-                { "duration", duration?.TotalMilliseconds },
-                { "requestContentLength", request.uploadHandler?.data?.Length },
-                { "responseContentLength", request.downloadHandler?.data?.Length }
-            };
-            Bugsnag.LeaveBreadcrumb(fullMessage, metadata, BreadcrumbType.Request);
+                metadata["requestContentLength"] = request.uploadHandler.data.Length;
+            }
+            if (request.downloadHandler != null && request.downloadHandler.data != null)
+            {
+                metadata["responseContentLength"] = request.downloadHandler.data.Length;
+            }
+            Breadcrumbs.Leave(fullMessage, metadata, BreadcrumbType.Request);
         }
 
-        public Dictionary<string, string> ExtractUrlParams(Uri uri)
+        private Dictionary<string, string> ExtractUrlParams(Uri uri)
         {
-            var query = uri.Query.TrimStart('?');
-            var urlParams = new Dictionary<string, string>();
+            var queryParams = new Dictionary<string, string>();
+            var querySegments = uri.Query.TrimStart('?').Split('&');
 
-            if (string.IsNullOrEmpty(query))
+            foreach (var segment in querySegments)
             {
-                return urlParams;
-            }
-
-            var pairs = query.Split('&');
-            foreach (var pair in pairs)
-            {
-                var kvp = pair.Split('=');
-                if (kvp.Length == 2)
+                var parts = segment.Split('=');
+                if (parts.Length == 2)
                 {
-                    var key = Uri.UnescapeDataString(kvp[0]);
-                    var value = Uri.UnescapeDataString(kvp[1]);
-                    urlParams[key] = value;
+                    queryParams[parts[0]] = parts[1];
                 }
             }
 
-            return urlParams;
+            return queryParams;
         }
+
+
     }
 }
