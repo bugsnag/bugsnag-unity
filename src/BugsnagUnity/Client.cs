@@ -687,10 +687,14 @@ namespace BugsnagUnity
             string fullMessage = $"HttpRequest {statusMessage}";
 
             var metadata = new Dictionary<string, object>();
-            metadata["status"] = request.result;
+            metadata["status"] = request.responseCode;
             metadata["method"] = request.method;
             metadata["url"] = request.url;
-            metadata["urlParams"] = ExtractUrlParams(request.uri);
+            var urlParams = ExtractUrlParams(request.uri);
+            if (urlParams.Count > 0)
+            {
+                metadata["urlParams"] = urlParams;
+            }
             metadata["duration"] = duration?.TotalMilliseconds;
             if (request.uploadHandler != null && request.uploadHandler.data != null)
             {
