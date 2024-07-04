@@ -78,6 +78,9 @@ namespace BugsnagUnity.Editor
             var settings = GetSettingsObject();
             var so = new SerializedObject(settings);
 
+            var assemblyName = BugsnagUnity.Configuration.GetAssemblyName();
+            var version = assemblyName.Version;
+            EditorGUILayout.LabelField($"{assemblyName.Name} version {version.Major}.{version.Minor}.{version.Build}");
 
             _showBasicConfig = EditorGUILayout.Foldout(_showBasicConfig, "Basic Configuration", true);
             if (_showBasicConfig)
