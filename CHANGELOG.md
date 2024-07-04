@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Enhancements
+
+- Added the BugsnagUnity version to the configuration window. [#819](https://github.com/bugsnag/bugsnag-unity/pull/819)
+
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.29.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.29.0) [#814](https://github.com/bugsnag/bugsnag-unity/pull/814)
