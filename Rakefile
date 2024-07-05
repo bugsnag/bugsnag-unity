@@ -2,6 +2,8 @@ require "open3"
 require "xcodeproj"
 require "rbconfig"
 require 'fileutils'
+require 'tmpdir'
+require "json"
 
 unless ENV['GITHUB_ACTIONS'].nil?
   require "bumpsnag"
@@ -144,6 +146,116 @@ def assemble_android filter_abis=true
 
 end
 
+def get_current_version()
+  version_line = File.open("build.sh").read.lines.find { |line| line.start_with?("VERSION=\"") }.strip
+  return version_line.delete_prefix("VERSION=\"").delete_suffix("\"")
+end
+
+# Generate the upm package by importing the package file
+def create_upm(package_dir, upm_tools, package_file, cli_args)
+  # Clone upm package
+  if File.directory?(package_dir)
+    FileUtils.remove_dir(package_dir)
+  end
+  system("git clone --recursive --depth 1 https://github.com/bugsnag/bugsnag-unity-upm.git #{package_dir}")
+  
+  version = get_current_version()
+
+  # Check for the release package
+  if not File.file?(package_file)
+    throw "#{package_file} not found, please build the package."
+  end
+  puts "SDK package found"
+
+  
+  if ENV["UNITY_UPM_VERSION"] != nil and ENV["UNITY_UPM_VERSION"].length > 0 
+    unity_executable = "/Applications/Unity/Hub/Editor/#{ENV["UNITY_UPM_VERSION"]}/Unity.app/Contents/MacOS"
+  elsif ENV["UNITY_PATH"] != nil and ENV["UNITY_PATH"].length > 0
+    unity_executable = File.join(ENV["UNITY_PATH"], "Unity")
+  end
+
+  puts "Unity executable #{unity_executable}"
+  # Importing the .unitypackage into the import project
+  project_path = File.join(upm_tools, "UPMImportProject")
+  system("#{unity_executable} #{cli_args} -projectPath #{project_path} -ignoreCompilerErrors -importPackage #{package_file}")
+
+  puts "Copying over the unpacked sdk files"
+  import_project = File.join(project_path, "Assets", "Bugsnag", ".")
+
+  # Copying the unpacked sdk files
+  FileUtils.cp_r(import_project, package_dir)
+
+  # Copying the package manifest, assembly definitions, and README
+  ["package.json", "package.json.meta", "README.md", "README.md.meta"].each { |file| FileUtils.cp(File.join(upm_tools, file), package_dir)}
+  FileUtils.cp(File.join(upm_tools, "AssemblyDefinitions", "Bugsnag.asmdef"), File.join(package_dir, "Scripts"))
+  FileUtils.cp(File.join(upm_tools, "AssemblyDefinitions", "Bugsnag.asmdef.meta"), File.join(package_dir, "Scripts"))
+  FileUtils.cp(File.join(upm_tools, "AssemblyDefinitions", "BugsnagEditor.asmdef"), File.join(package_dir, "Editor"))
+  FileUtils.cp(File.join(upm_tools, "AssemblyDefinitions", "BugsnagEditor.asmdef.meta"), File.join(package_dir, "Editor"))
+  
+  # Remove EDM menu from package
+  if File.file?(File.join(package_dir, "Editor", "BugsnagEditor.EDM.cs"))
+    File.delete(File.join(package_dir, "Editor", "BugsnagEditor.EDM.cs"))
+    File.delete(File.join(package_dir, "Editor", "BugsnagEditor.EDM.cs.meta"))
+  end
+
+  # Set version in manifest and README
+  puts "Setting the version #{version} in copied manifest and readme"
+  File.write(File.join(package_dir, "README.md"), File.read(File.join(package_dir, "README.md")).gsub("VERSION_STRING", "v#{version}"))
+  File.write(File.join(package_dir, "package.json"), File.read(File.join(package_dir, "package.json")).gsub("VERSION_STRING", version))
+end
+
+# Generate the upm-edm4u based on the upm package_dir
+def create_edm(package_dir, upm_tools, edm_package)
+  if File.directory?(edm_package)
+    FileUtils.remove_dir(edm_package)
+  end
+  system("git clone --recursive --depth 1 https://github.com/bugsnag/bugsnag-unity-upm-edm4u.git #{edm_package}")
+  FileUtils.cp_r(package_dir, edm_package)
+
+  # Remove bundled kotlin libs
+  if File.directory?(File.join(edm_package, "Plugins", "Android", "Kotlin"))
+    FileUtils.remove_dir(File.join(edm_package, "Plugins", "Android", "Kotlin"))
+    File.delete(File.join(edm_package, "Plugins", "Android", "Kotlin.meta"))
+  end
+
+  # Copy in the EDM4U manifest
+  FileUtils.cp(File.join(upm_tools, "EDM", "BugsnagAndroidDependencies.xml"), File.join(edm_package, "Editor"))
+  FileUtils.cp(File.join(upm_tools, "EDM", "BugsnagAndroidDependencies.xml.meta"), File.join(edm_package, "Editor"))
+
+  # Change the readme title to reference EDM4U
+  updated_readme = File.read(File.join(edm_package, "README.md")).gsub("Bugsnag SDK for Unity", "Bugsnag SDK for Unity Including EDM4U Support").gsub("bugsnag-unity-upm.git", "bugsnag-unity-upm-edm4u.git")
+  File.write(File.join(edm_package, "README.md"), updated_readme)
+end
+
+# Test the UPM package by adding the file to the dependencies of the minimalapp
+def test_package(cli_args, package_dir)
+  project_root = File.join(File.dirname(__FILE__), "features", "fixtures", "minimalapp")
+  manifest = File.join(project_root, "Packages", "manifest.json")
+  File.write(manifest, "{\"dependencies\": {\"com.bugsnag.unitynotifier\": \"file:#{package_dir}\"}}")
+  system("#{unity_executable} #{cli_args} -logFile unity.log -projectPath #{project_root}")
+  if $?.exitstatus == 1
+    throw "Failed to import UPM"
+  end
+end
+
+# Commit and tag the release
+def update_package_git(package_dir)
+  version = get_current_version()
+  Dir.chdir(package_dir) do
+    system("git add -A")
+    system("git commit -m \"Release V#{version}\"")
+    system("git push")
+    if $?.exitstatus != 0
+      throw "Cannot push."
+    end
+    system("git tag v#{version}")
+    system("git push origin v#{version}")
+    if $?.exitstatus != 0
+      throw "Cannot push tag."
+    end
+  end
+end
+
 namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
@@ -152,7 +264,7 @@ namespace :plugin do
       task all_android64: [:assets, :csharp]
     else
       task all: [:assets, :cocoa, :android, :csharp, ]
-      task all_android64: [:assets, :cocoa, :android_64bit, :csharp ]
+      task all_android64: [:assets, :csharp ]
     end
 
 
@@ -162,16 +274,7 @@ namespace :plugin do
       sh "git", "clean", "-dfx", "unity"
       # remove cocoa build area
       FileUtils.rm_rf cocoa_build_dir
-      unless is_windows?
-        # remove android build area
-        Dir.chdir "./bugsnag-android" do
-          sh "./gradlew", "clean"
-        end
-
-        Dir.chdir "bugsnag-android-unity" do
-          sh "./gradlew", "clean"
-        end
-      end
+      
     end
     task :assets do
       FileUtils.cp_r(File.join(current_directory, "src", "Assets"), project_path, preserve: true)
@@ -392,8 +495,7 @@ namespace :plugin do
 
   desc "Releases the current master branch"
   task :release do
-    version_line = File.open("build.sh").read.lines.find { |line| line.start_with?("VERSION=\"") }.strip
-    version = version_line.delete_prefix("VERSION=\"").delete_suffix("\"")
+    version = get_current_version()
 
     system("git fetch origin")
     if %x|git rev-parse --abbrev-ref HEAD|.strip != "master"
@@ -419,6 +521,30 @@ namespace :plugin do
     if $?.exitstatus != 0
       throw "Cannot push tag."
     end
+  end
+
+  desc "Create UPM and EDM packages"
+  task :package do
+    pwd = File.dirname(__FILE__)
+    upm_tools = File.join(pwd, "upm-tools")
+    package_file = File.join(pwd, "Bugsnag.unitypackage")
+    cli_args = "-quit -batchmode -nographics -logFile unity.log"
+    package_dir = File.join(pwd, "bugsnag-unity-upm")
+    edm_package = File.join(pwd, "bugsnag-unity-upm-edm4u")
+
+    
+    
+    
+    puts "Creating UPM package"
+    create_upm(package_dir, upm_tools, package_file, cli_args)
+    puts "Creating EDM package"
+    create_edm(package_dir, upm_tools, edm_package)
+    puts "Testing generated package"
+    test_package(cli_args, package_dir)
+    puts "Committing changes"
+    update_package_git(package_dir)
+    update_package_git(edm_package)
+    
   end
 end
 
