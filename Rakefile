@@ -352,6 +352,74 @@ namespace :plugin do
     Rake::Task["plugin:build:all_android64"].invoke
     export_package("Bugsnag.unitypackage")
   end
+
+  desc "Create a PR for the release. Usage: `rake \"plugin:bump[8.1.0]\"`. Quotes required around args in zsh."
+  task :bump, [:version] do |task, args|
+    new_version = args[:version]
+    if new_version == nil or new_version.length < 5 or new_version.chars.any? { |letter| !"0123456789.".include? letter }
+      throw "New version required e.g. `rake \"plugin:bump[8.1.0]\"`."
+    end
+
+    branch = %x|git rev-parse --abbrev-ref HEAD|.strip
+    if branch != "next"
+      throw "Must be on the 'next' branch. Current branch is #{branch}."
+    end
+
+    # Update CHANGELOG.md if it doesn't already have the new version
+    changelog = File.open("CHANGELOG.md").read
+    if not changelog.include? "## #{new_version}"
+      insert_index = changelog.index("## TBD") + 6
+      changelog.insert(insert_index, "\n\n\n## #{new_version} (#{Time.now.strftime("%Y-%m-%d")})")
+      File.write("CHANGELOG.md", changelog)
+      puts "Updated CHANGELOG.md"
+    end
+
+    # Update build.sh
+    build_sh = File.open("build.sh").read.lines.map { |line| line.start_with?("VERSION=\"") ? "VERSION=\"#{new_version}\"\n" : line }.join
+    File.write("build.sh", build_sh)
+
+    # Commit
+    %x|git add CHANGELOG.md build.sh|
+    %x|git diff --exit-code|
+    if $?.exitstatus == 1
+      throw "You have unstaged changes."
+    end
+    system("git commit -m \"Release v#{new_version}\"")
+    system("git push origin next")
+    system("open", "https://github.com/bugsnag/bugsnag-unity/compare/master...next?expand=1&title=Release%20v#{new_version}")
+    puts "Once you have merged the PR you can run `rake plugin:release`"
+  end
+
+  desc "Releases the current master branch"
+  task :release do
+    version_line = File.open("build.sh").read.lines.find { |line| line.start_with?("VERSION=\"") }.strip
+    version = version_line.delete_prefix("VERSION=\"").delete_suffix("\"")
+
+    system("git fetch origin")
+    if %x|git rev-parse --abbrev-ref HEAD|.strip != "master"
+      puts "Switching to the 'master' branch..."
+      system("git switch master")
+      if $?.exitstatus != 0
+        throw "Cannot switch to 'master'."
+      end
+      system("git rebase origin/master")
+      if $?.exitstatus != 0
+        throw "Cannot rebase."
+      end
+    end
+    system("git diff origin/master..master")
+    if $?.exitstatus != 0
+      throw "You have unpushed commits."
+    end
+    system("git tag v#{version}")
+    if $?.exitstatus != 0
+      throw "Cannot create tag."
+    end
+    system("git push origin tag v#{version}")
+    if $?.exitstatus != 0
+      throw "Cannot push tag."
+    end
+  end
 end
 
 namespace :example do
