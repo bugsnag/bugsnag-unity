@@ -5,7 +5,7 @@ public class BugsnagAddScriptingSymbol : MonoBehaviour
 {
     private const string DEFINE_SYMBOL = "BUGSNAG_UNITY_WEB_REQUEST";
 
-    private static BuildTargetGroup[] _supportedPlatforms = { BuildTargetGroup.Android, BuildTargetGroup.Standalone, BuildTargetGroup.iOS, BuildTargetGroup.WebGL};
+    private static BuildTargetGroup[] _supportedPlatforms = { BuildTargetGroup.Android, BuildTargetGroup.Standalone, BuildTargetGroup.iOS, BuildTargetGroup.WebGL };
 
     static BugsnagAddScriptingSymbol()
     {
@@ -25,10 +25,14 @@ public class BugsnagAddScriptingSymbol : MonoBehaviour
     static void SetScriptingSymbol(BuildTargetGroup buildTargetGroup)
     {
         var existingSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
-        if (!existingSymbols.Contains(DEFINE_SYMBOL))
+        if (string.IsNullOrEmpty(existingSymbols))
         {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup,existingSymbols + ";" + DEFINE_SYMBOL);
+            existingSymbols = DEFINE_SYMBOL;
         }
+        else if (!existingSymbols.Contains(DEFINE_SYMBOL))
+        {
+            existingSymbols += ";" + DEFINE_SYMBOL;
+        }
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, existingSymbols);
     }
 }
-

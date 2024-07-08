@@ -90,6 +90,7 @@ Feature: Csharp Breadcrumbs
     And the error payload field "events.0.breadcrumbs.1.metaData.url" matches the regex "^http:\/\/\S*:\d{4}(\/.*)?"
     And the event "breadcrumbs.1.metaData.status" equals 200
     And the event "breadcrumbs.1.metaData.urlParams.success" equals "true"
+    And the event "breadcrumbs.1.metaData.urlParams.redactthis" equals "[REDACTED]"
     And the event "breadcrumbs.1.metaData.duration" is greater than 0
     And the event "breadcrumbs.1.metaData.responseContentLength" is greater than 0
 

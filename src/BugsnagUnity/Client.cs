@@ -683,12 +683,12 @@ namespace BugsnagUnity
 
         public void LeaveNetworkBreadcrumb(UnityWebRequest request, TimeSpan? duration)
         {
-            if(!Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Request))
+            if (!Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Request))
             {
                 return;
             }
             string statusMessage = request.result == UnityWebRequest.Result.Success ? "succeeded" : "failed";
-            string fullMessage = $"HttpRequest {statusMessage}";
+            string fullMessage = $"UnityWebRequest {statusMessage}";
 
             var metadata = new Dictionary<string, object>();
             metadata["status"] = request.responseCode;
@@ -721,7 +721,14 @@ namespace BugsnagUnity
                 var parts = segment.Split('=');
                 if (parts.Length == 2)
                 {
-                    queryParams[parts[0]] = parts[1];
+                    if (Configuration.KeyIsRedacted(parts[0]))
+                    {
+                        queryParams[parts[0]] = "[REDACTED]";
+                    }
+                    else
+                    {
+                        queryParams[parts[0]] = parts[1];
+                    }
                 }
             }
 

@@ -1,10 +1,17 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using BugsnagNetworking;
 using UnityEngine;
 
 public class NetworkBreadcrumbsSuccess : Scenario
 {
 
+    public override void PrepareConfig(string apiKey, string host)
+    {
+        base.PrepareConfig(apiKey, host);
+        Configuration.RedactedKeys = new List<Regex> { new Regex("redactthis") };
+    }
     public override void Run()
     {
        StartCoroutine(DoRun());
@@ -12,7 +19,7 @@ public class NetworkBreadcrumbsSuccess : Scenario
 
     private IEnumerator DoRun()
     {
-        var get = BugsnagUnityWebRequest.Get(Main.MazeHost + "?success=true");
+        var get = BugsnagUnityWebRequest.Get(Main.MazeHost + "?success=true&redactthis=notRedacted");
         yield return get.SendWebRequest();
         yield return new WaitForSeconds(1);
 
