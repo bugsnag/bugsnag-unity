@@ -6,7 +6,7 @@
 
 ### Enhancements
 
-- Added automatic and manual newtwork request breadcrumbs. [#817](https://github.com/bugsnag/bugsnag-unity/pull/817)
+- Added automatic and manual network request breadcrumbs. [#817](https://github.com/bugsnag/bugsnag-unity/pull/817)
 
 - Update bugsnag-cocoa to [v6.29.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.29.0) [#814](https://github.com/bugsnag/bugsnag-unity/pull/814)
 
