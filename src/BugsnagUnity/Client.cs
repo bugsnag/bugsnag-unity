@@ -646,6 +646,12 @@ namespace BugsnagUnity
 
         private void SetupNetworkListeners()
         {
+            // Currently network breadcrumb are the only feature using the web events. 
+            // If we add more features that use web request events, we will need to move this check
+            if (!Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Request))
+            {
+                return;
+            }
             BugsnagUnityWebRequest.OnSend.AddListener(OnWebRequestSend);
             BugsnagUnityWebRequest.OnComplete.AddListener(OnWebRequestComplete);
             BugsnagUnityWebRequest.OnAbort.AddListener(OnWebRequestAbort);
@@ -683,13 +689,8 @@ namespace BugsnagUnity
 
         public void LeaveNetworkBreadcrumb(UnityWebRequest request, TimeSpan? duration)
         {
-            if (!Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Request))
-            {
-                return;
-            }
             string statusMessage = request.result == UnityWebRequest.Result.Success ? "succeeded" : "failed";
             string fullMessage = $"UnityWebRequest {statusMessage}";
-
             var metadata = new Dictionary<string, object>();
             metadata["status"] = request.responseCode;
             metadata["method"] = request.method;
