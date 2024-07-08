@@ -25,6 +25,8 @@ public class Scenario : MonoBehaviour
 
 #endif
 
+    public const string FAIL_URL = "https://localhost:994";
+
     public Configuration Configuration;
 
     [HideInInspector]
