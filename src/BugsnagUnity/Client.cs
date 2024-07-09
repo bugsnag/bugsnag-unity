@@ -206,6 +206,8 @@ namespace BugsnagUnity
         {
             _foregroundStopwatch = new Stopwatch();
             _backgroundStopwatch = new Stopwatch();
+            // Required in case the focus event is not recieved (if Bugsnag is started after it is sent)
+            _foregroundStopwatch.Start();
         }
 
         private void InitUserObject()
