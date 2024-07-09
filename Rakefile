@@ -264,7 +264,7 @@ namespace :plugin do
       task all_android64: [:assets, :csharp]
     else
       task all: [:assets, :cocoa, :android, :csharp, ]
-      task all_android64: [:assets, :csharp ]
+      task all_android64: [:assets, :cocoa, :android_64bit, :csharp ]
     end
 
 
@@ -274,7 +274,16 @@ namespace :plugin do
       sh "git", "clean", "-dfx", "unity"
       # remove cocoa build area
       FileUtils.rm_rf cocoa_build_dir
-      
+      unless is_windows?
+        # remove android build area
+        Dir.chdir "./bugsnag-android" do
+          sh "./gradlew", "clean"
+        end
+
+        Dir.chdir "bugsnag-android-unity" do
+          sh "./gradlew", "clean"
+        end
+      end
     end
     task :assets do
       FileUtils.cp_r(File.join(current_directory, "src", "Assets"), project_path, preserve: true)
