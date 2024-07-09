@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Enhancements
+
+- Added the BugsnagUnity version to the configuration window. [#819](https://github.com/bugsnag/bugsnag-unity/pull/819)
+
 ### Dependencies
 
 ### Enhancements
