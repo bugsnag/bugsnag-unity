@@ -44,7 +44,7 @@ namespace BugsnagUnity
             }
             else
             {
-                isLaunching = app.DurationInForeground?.TotalMilliseconds < Configuration.LaunchDurationMillis;
+                isLaunching = app.Duration?.TotalMilliseconds < Configuration.LaunchDurationMillis;
             }
             app.IsLaunching = isLaunching;
         }
