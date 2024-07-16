@@ -6,7 +6,7 @@ $SOLUTION = "./BugsnagUnity.sln"
 $VERSION = "8.0.0"
 
 # Parse arguments.
-param(
+param (
     [string]$configuration = $CONFIGURATION,
     [string]$version = $VERSION
 )
@@ -22,6 +22,10 @@ if ($args) {
         }
     }
 }
+
+# Ensure configuration is set to provided argument value
+$CONFIGURATION = $configuration
+$VERSION = $version
 
 # Restore NuGet packages
 # NOTE it is necessary to call restore on every project, not just the solution!
