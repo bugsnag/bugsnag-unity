@@ -45,7 +45,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Build the solution
 Write-Output "Building the solution..."
-dotnet build $SOLUTION -c $CONFIGURATION -p:Version=$VERSION
+dotnet build $SOLUTION -c $CONFIGURATION -p:Version=$VERSION -p:Platform="Any CPU"
 if ($LASTEXITCODE -ne 0) {
     Write-Output "An error occurred while building the solution."
     exit 1
