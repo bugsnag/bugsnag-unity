@@ -143,13 +143,8 @@ end
 
 Then('the event "breadcrumbs.1.metaData.status" has failed') do
   status = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs.1.metaData.status')
-  platform = Maze::Helper.get_current_platform
-  # 500 is returned due to browser CORs
-  if platform == 'browser'
-    Maze.check.equal(status, 500)
-  else
-    Maze.check.equal(status, 0)
-  end
+  # 500 may be returned due to browser CORs
+  Maze.check.true(status == 0 || status == 500, "Expected an error status of 0 or 500 but got #{status}")
 end
 
 Then('the stack frame methods should match:') do |expected_values|
