@@ -141,6 +141,12 @@ Then('the error is valid for the error reporting API sent by the Unity notifier'
   check_error_reporting_api notifier_name
 end
 
+Then('the event "breadcrumbs.1.metaData.status" has failed') do
+  status = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs.1.metaData.status')
+  # 500 may be returned due to browser CORs
+  Maze.check.true(status == 0 || status == 500, "Expected an error status of 0 or 500 but got #{status}")
+end
+
 Then('the stack frame methods should match:') do |expected_values|
   stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
   expected_frame_values = expected_values.raw

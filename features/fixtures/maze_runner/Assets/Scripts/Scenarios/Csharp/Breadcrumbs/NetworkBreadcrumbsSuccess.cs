@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using BugsnagNetworking;
+using BugsnagUnity;
 using UnityEngine;
 
 public class NetworkBreadcrumbsSuccess : Scenario
@@ -11,6 +12,7 @@ public class NetworkBreadcrumbsSuccess : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.RedactedKeys = new List<Regex> { new Regex("redactthis") };
+        Configuration.EnabledBreadcrumbTypes = new BugsnagUnity.Payload.BreadcrumbType[] { BugsnagUnity.Payload.BreadcrumbType.Request };
     }
     public override void Run()
     {
