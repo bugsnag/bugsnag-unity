@@ -17,6 +17,7 @@
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.29.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.29.0) [#814](https://github.com/bugsnag/bugsnag-unity/pull/814)
+Update bugsnag-android to [v6.6.1](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.6.1) [#818](https://github.com/bugsnag/bugsnag-unity/pull/818)
 
 
 ## 8.0.0 (2024-06-12)
@@ -24,29 +25,23 @@
 ### Enhancements
 
 - Added the `Bugsnag-Integrity` header to outgoing Bugsnag requests to avoid extraneous releases being generated if payloads are altered. [#797](https://github.com/bugsnag/bugsnag-unity/pull/797)
-
 - Changed `Configuration.DiscardClasses` and `Configuration.RedactedKeys` to Regex types. [#807](https://github.com/bugsnag/bugsnag-unity/pull/807)
-
 - `Event.Unhandled` is (accessed via OnError and OnSend callbacks) is now non-nullable. [#813](https://github.com/bugsnag/bugsnag-unity/pull/813)
 
 ### Bug Fixes
 
 - Added a null check to the Bugsnag client to prevent crashes when accessing the client before it has been initialised [#788](https://github.com/bugsnag/bugsnag-unity/pull/788)
-
 - Made all callback collections within the Configuration class thread safe. [#810](https://github.com/bugsnag/bugsnag-unity/pull/810)
-
 - Added GenerateAnonymousId to the BugsnagSettingsObject. This fixes a null object reference error on GenerateAnonymousId when using both the performance SDK and Error monitoring SDK, where the error monitoring SDK shares the confirguration with the performance monitoring SDK. [#812](https://github.com/bugsnag/bugsnag-unity/pull/812)
 
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.28.1](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.28.1) [#774](https://github.com/bugsnag/bugsnag-unity/pull/774)
-
 - Update bugsnag-android from [v5.30.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v5.30.0) to [v6.5.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.5.0)
 
 ### Deprecations
 
 - Bugsnag Unity will no longer officially support Unity versions below Unity 2020. Older versions may work, but we will not test against them during development.
-
 
 ## 7.7.6 (2024-05-17)
 
