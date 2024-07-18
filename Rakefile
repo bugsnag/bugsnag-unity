@@ -333,6 +333,8 @@ namespace :plugin do
 
           source_files = Dir.glob(File.join("Bugsnag", "**", "*.{c,h,mm,cpp,m}"))
                             .map(&File.method(:realpath))
+                              # For some reason this file is included already and including it again causes an error that "multiple commands produce" it.
+                            .select { |files| !files.end_with? "BugsnagCorrelation.h" }
                             .tap { |files| files << bugsnag_unity_file }
                             .map { |f| group.new_file(f) }
 
