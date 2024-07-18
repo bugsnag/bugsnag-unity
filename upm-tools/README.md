@@ -1,7 +1,7 @@
-Bugsnag SDK for Unity
+BugSnag SDK for Unity
 ===========
 
-This is the UPM package for the Bugsnag SDK for Unity.
+This is the UPM package for the BugSnag SDK for Unity.
 
 Install it via `UPM`:
 ```

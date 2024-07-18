@@ -24,11 +24,11 @@ namespace BugsnagUnity.Editor
 
         private void OnEnable()
         {
-            titleContent.text = "Bugsnag";
+            titleContent.text = "BugSnag";
             CheckForSettingsCreation();
         }
 
-        [MenuItem("Window/Bugsnag/Configuration", false, 0)]
+        [MenuItem("Window/BugSnag/Configuration", false, 0)]
         public static void ShowWindow()
         {
             CheckForSettingsCreation();
@@ -80,7 +80,7 @@ namespace BugsnagUnity.Editor
 
             var assemblyName = BugsnagUnity.Configuration.GetAssemblyName();
             var version = assemblyName.Version;
-            EditorGUILayout.LabelField($"{assemblyName.Name} version {version.Major}.{version.Minor}.{version.Build}");
+            EditorGUILayout.LabelField($"BugSnag Unity version {version.Major}.{version.Minor}.{version.Build}");
 
             _showBasicConfig = EditorGUILayout.Foldout(_showBasicConfig, "Basic Configuration", true);
             if (_showBasicConfig)

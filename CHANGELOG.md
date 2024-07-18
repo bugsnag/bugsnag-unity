@@ -10,6 +10,8 @@
 
 - Remove unnecessary ToArray() call when constructing an error. [#822](https://github.com/bugsnag/bugsnag-unity/pull/822)
 
+- Updated BugSnag UI branding. [#701](https://github.com/bugsnag/bugsnag-unity/pull/701)
+
 ### Bug Fixes
 
 - Fix timing issues when Bugsnag is started after the focus event. [#821](https://github.com/bugsnag/bugsnag-unity/pull/821)
