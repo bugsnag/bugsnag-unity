@@ -10,10 +10,6 @@ public class ReportMaxPersistedEvents : Scenario
     {
         _eventsCorrect = CheckForEvents();
         base.PrepareConfig(apiKey, host);
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            Configuration.EnabledErrorTypes.OOMs = false;
-        }
     }
 
     private bool CheckForEvents()

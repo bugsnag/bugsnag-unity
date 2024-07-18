@@ -28,7 +28,13 @@ namespace BugsnagUnity
 
         public string GroupingHash { get => GetNativeString(GROUPING_HASH_KEY); set => SetNativeString(GROUPING_HASH_KEY, value); }
 
-        public bool? Unhandled { get => GetNativeBool(UNHANDLED_KEY); set => SetNativeBool(UNHANDLED_KEY, value); }
+        public bool Unhandled { 
+            get {
+                var nativeBool = GetNativeBool(UNHANDLED_KEY); 
+                return nativeBool.HasValue ? nativeBool.Value : false;
+            }
+            set => SetNativeBool(UNHANDLED_KEY, value); 
+        }
 
         private List<IBreadcrumb> _breadcrumbs = new List<IBreadcrumb>();
 

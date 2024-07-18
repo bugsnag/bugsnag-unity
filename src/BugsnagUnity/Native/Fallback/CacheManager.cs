@@ -70,19 +70,23 @@ namespace BugsnagUnity
 
         public string GetCachedDeviceId()
         {
+
+            if (!_configuration.GenerateAnonymousId)
+            {
+                return string.Empty;
+            }
             try
             {
-                var deviceId = string.Empty;
                 if (File.Exists(_deviceIdFile))
                 {
-                    deviceId = File.ReadAllText(_deviceIdFile);
+                    // return existing cached device id
+                    return File.ReadAllText(_deviceIdFile);
                 }
-                if (string.IsNullOrEmpty(deviceId) && _configuration.GenerateAnonymousId)
-                {
-                    deviceId = Guid.NewGuid().ToString();
-                    SaveDeviceIdToCache(deviceId);
-                }
-                return deviceId;
+
+                // create and cache new random device id
+                var newDeviceId = Guid.NewGuid().ToString();
+                SaveDeviceIdToCache(newDeviceId);
+                return newDeviceId;
             }
             catch
             {
@@ -184,9 +188,13 @@ namespace BugsnagUnity
 
         private void WriteFile(string path, string data)
         {
+            // not using File.WriteAllText to avoid under the hood buffering. We want the file to be written immediately to avoid truncation in case of a crash
             try
             {
-                File.WriteAllText(path, data);
+                var file = File.Create(path);
+                file.Write(System.Text.Encoding.UTF8.GetBytes(data), 0, data.Length);
+                file.Flush();
+                file.Close();
             }catch { }
         }
 

@@ -6,11 +6,6 @@ public class PersistEvent : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.Context = "Error 1";
-        Configuration.AutoTrackSessions = false;
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            Configuration.EnabledErrorTypes.OOMs = false;
-        }
     }
 
     public override void Run()

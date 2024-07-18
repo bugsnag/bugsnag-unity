@@ -61,6 +61,11 @@ namespace BugsnagUnity.Payload
             {
                 Add("unhandled", eventObject["unhandled"]);
             }
+            else
+            {
+                Add("unhandled", false);
+            }
+            
             if (eventObject["severity"] != null)
             {
                 Add("severity", eventObject["severity"]);
@@ -190,7 +195,17 @@ namespace BugsnagUnity.Payload
 
         internal LogType? LogType { get; }
 
-        public bool? Unhandled { get => (bool)Get("unhandled"); set => Add("unhandled",value); }
+        public bool Unhandled {     
+        get {
+            var currentValue = Get("unhandled"); 
+            if (currentValue == null) 
+            {
+                return false;
+            }
+            return (bool)currentValue;
+        } 
+        set => Add("unhandled",value); 
+        }
 
         internal bool IsHandled
         {

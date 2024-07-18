@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
+using UnityEngine.Networking;
 
 namespace BugsnagUnity
 {
@@ -34,29 +35,28 @@ namespace BugsnagUnity
             }
         }
 
+        public static bool IsStarted()
+        {
+            return InternalClient != null;
+        }
+
         private static Client InternalClient { get; set; }
 
         private static IClient Client => InternalClient;
 
-        public static void Notify(string name, string message, string stackTrace) => InternalClient.Notify(name, message, stackTrace, null);
+        public static void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback = null) => InternalClient.Notify(name, message, stackTrace, callback);
 
-        public static void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback) => InternalClient.Notify(name, message, stackTrace, callback);
+        public static void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback = null) => InternalClient.Notify(exception, stacktrace, callback);
 
-        public static void Notify(System.Exception exception) => InternalClient.Notify(exception, 3);
+        public static void Notify(System.Exception exception, Func<IEvent, bool> callback = null) => InternalClient.Notify(exception, callback);
 
-        public static void Notify(System.Exception exception, string stacktrace) => InternalClient.Notify(exception, stacktrace, null);
-
-        public static void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback) => InternalClient.Notify(exception, stacktrace, callback);
-
-        public static void Notify(System.Exception exception, Func<IEvent, bool> callback) => InternalClient.Notify(exception, callback, 3);
-
-        public static void Notify(System.Exception exception, Severity severity) => InternalClient.Notify(exception, severity, 3);
-
-        public static void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback) => InternalClient.Notify(exception, severity, callback, 3);
+        public static void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback = null) => InternalClient.Notify(exception, severity, callback);
 
         public static List<Breadcrumb> Breadcrumbs => Client.Breadcrumbs.Retrieve();
 
         public static void LeaveBreadcrumb(string message, Dictionary<string, object> metadata = null, BreadcrumbType type = BreadcrumbType.Manual ) => InternalClient.Breadcrumbs.Leave(message, metadata, type);
+
+        public static void LeaveBreadcrumb(UnityWebRequest request, TimeSpan? duration) => InternalClient.LeaveNetworkBreadcrumb(request, duration);
 
         public static User GetUser() => Client.GetUser();
 
@@ -74,7 +74,13 @@ namespace BugsnagUnity
         /// the tracking of in foreground time for the application.
         /// </summary>
         /// <param name="inFocus"></param>
-        public static void SetApplicationState(bool inFocus) => Client.SetApplicationState(inFocus);
+        public static void SetApplicationState(bool inFocus)
+        {
+            if(Client != null)
+            {
+                 Client.SetApplicationState(inFocus);
+            }
+        }
 
         /// <summary>
         /// Bugsnag uses the concept of contexts to help display and group your errors.

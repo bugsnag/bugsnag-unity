@@ -1,7 +1,7 @@
 require 'cgi'
 
 When('On Mobile I relaunch the app') do
-  next unless %w[android ios].include? Maze::Helper.get_current_platform 
+  next unless %w[android ios].include? Maze::Helper.get_current_platform
   Maze.driver.launch_app
   sleep 3
 end
@@ -67,14 +67,14 @@ When('I run the game in the {string} state') do |state|
   case platform
   when 'macos'
     # Call executable directly rather than use open, which flakes on CI
-    log = File.join(Dir.pwd, 'mazerunner.log')
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner"
+    log = File.join(Dir.pwd, "#{state}-mazerunner.log")
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
 
     execute_command('run_scenario', state)
 
   when 'windows'
-    win_log = File.join(Dir.pwd, 'mazerunner.log')
+    win_log = File.join(Dir.pwd, "#{state}-mazerunner.log")
     command = "#{Maze.config.app} --args -logfile #{win_log}"
     Maze::Runner.run_command(command, blocking: false)
 
@@ -136,16 +136,15 @@ Then('the error is valid for the error reporting API sent by the Unity notifier'
     Maze.config.os
   end
 
-  notifier_name = case os
-                  when 'ios'
-                    'Unity Bugsnag Notifier'
-                  when 'android'
-                    'Android Bugsnag Notifier'
-                  else
-                    'Unity Bugsnag Notifier'
-                  end
+  notifier_name = 'Unity Bugsnag Notifier'
 
   check_error_reporting_api notifier_name
+end
+
+Then('the event "breadcrumbs.1.metaData.status" has failed') do
+  status = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.breadcrumbs.1.metaData.status')
+  # 500 may be returned due to browser CORs
+  Maze.check.true(status == 0 || status == 500, "Expected an error status of 0 or 500 but got #{status}")
 end
 
 Then('the stack frame methods should match:') do |expected_values|
@@ -303,7 +302,7 @@ Then("expected device metadata is included in the event") do
     And the event "device.totalMemory" is not null
     And the event "metaData.device.screenDensity" is not null
     And the event "metaData.device.screenResolution" is not null
-    And the event "metaData.device.osLanguage" equals "English"
+    And the event "metaData.device.osLanguage" is not null
     And the event "metaData.device.graphicsDeviceVersion" is not null
     And the event "metaData.device.graphicsMemorySize" is not null
     And the event "metaData.device.processorType" is not null

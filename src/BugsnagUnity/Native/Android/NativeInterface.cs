@@ -9,6 +9,27 @@ using System.Text;
 
 namespace BugsnagUnity
 {
+    internal class DisposableContainer : IDisposable
+    {
+        private List<IDisposable> _disposables = new List<IDisposable>();
+
+        public void Add(IDisposable disposable)
+        {
+            _disposables.Add(disposable);
+        }
+
+        public void Dispose()
+        {
+            for (int i = _disposables.Count - 1; i >= 0; i--)
+            {
+                if (_disposables[i] != null)
+                {
+                    _disposables[i].Dispose();
+                }
+            }
+        }
+    }
+
     class NativeInterface
     {
         private IntPtr BugsnagNativeInterface;
@@ -64,12 +85,14 @@ namespace BugsnagUnity
 
 
 
-
+        private Configuration _configuration;
 
         private bool CanRunOnBackgroundThread;
 
         private static bool Unity2019OrNewer;
         private Thread MainThread;
+
+        private bool _registeredForSessionCallbacks;
 
         private class OnSessionCallback : AndroidJavaProxy
         {
@@ -135,7 +158,9 @@ namespace BugsnagUnity
 
         public NativeInterface(Configuration cfg)
         {
+            _configuration = cfg;
             AndroidJavaObject config = CreateNativeConfig(cfg);
+            ConfigureNotifierInfo(config);
             Unity2019OrNewer = IsUnity2019OrNewer();
             MainThread = Thread.CurrentThread;
             using (AndroidJavaClass system = new AndroidJavaClass("java.lang.System"))
@@ -288,10 +313,9 @@ namespace BugsnagUnity
                             activityName = AndroidJNI.GetStringUTFChars(activityNameObject.GetRawObject());
                         }
                     }
-                    sessionTracker.Call("updateForegroundTracker", activityName, true, 0L);
+                    sessionTracker.Call("updateContext", activityName, true);
                 }
 
-                ConfigureNotifierInfo(client);
             }
         }
 
@@ -322,7 +346,7 @@ namespace BugsnagUnity
             obj.Call("setSendLaunchCrashesSynchronously", config.SendLaunchCrashesSynchronously);
             obj.Call("setMaxReportedThreads", config.MaxReportedThreads);
             obj.Call("setMaxStringValueLength", config.MaxStringValueLength);
-
+            obj.Call("setGenerateAnonymousId", config.GenerateAnonymousId);
 
             if (config.GetUser() != null)
             {
@@ -331,9 +355,15 @@ namespace BugsnagUnity
             }
 
             //Register for callbacks
-            obj.Call("addOnSession", new OnSessionCallback(config));
-            obj.Call("addOnSend", new OnSendErrorCallback(config));
-
+            if (config.GetOnSessionCallbacks() != null && config.GetOnSessionCallbacks().Count > 0)
+            {
+                obj.Call("addOnSession", new OnSessionCallback(config));
+                _registeredForSessionCallbacks = true;
+            }
+            if (config.GetOnSendErrorCallbacks() != null && config.GetOnSendErrorCallbacks().Count > 0)
+            {
+                obj.Call("addOnSend", new OnSendErrorCallback(config));
+            }
 
             // set endpoints
             var notify = config.Endpoints.Notify.ToString();
@@ -424,9 +454,15 @@ namespace BugsnagUnity
             }
 
             // set DiscardedClasses
-            if (config.DiscardClasses != null && config.DiscardClasses.Length > 0)
+            if (config.DiscardClasses != null && config.DiscardClasses.Count > 0)
             {
-                obj.Call("setDiscardClasses", GetAndroidStringSetFromArray(config.DiscardClasses));
+                var patternsAsStrings = new string[config.DiscardClasses.Count];
+                foreach (var pattern in config.DiscardClasses)
+                {
+                    patternsAsStrings[config.DiscardClasses.IndexOf(pattern)] = pattern.ToString();
+                }
+                
+                obj.Call("setDiscardClasses", GetAndroidRegexPatternSetFromArray(patternsAsStrings));
             }
 
             // set ProjectPackages
@@ -436,9 +472,14 @@ namespace BugsnagUnity
             }
 
             // set redacted keys
-            if (config.RedactedKeys != null && config.RedactedKeys.Length > 0)
+            if (config.RedactedKeys != null && config.RedactedKeys.Count > 0)
             {
-                obj.Call("setRedactedKeys", GetAndroidStringSetFromArray(config.RedactedKeys));
+                var patternsAsStrings = new string[config.RedactedKeys.Count];
+                foreach (var key in config.RedactedKeys)
+                {
+                    patternsAsStrings[config.RedactedKeys.IndexOf(key)] = key.ToString();
+                }
+                obj.Call("setRedactedKeys", GetAndroidRegexPatternSetFromArray(patternsAsStrings));
             }
 
             // add unity event callback
@@ -478,11 +519,31 @@ namespace BugsnagUnity
             return set;
         }
 
-        private void ConfigureNotifierInfo(AndroidJavaObject client)
+        private AndroidJavaObject GetAndroidRegexPatternSetFromArray(string[] array)
         {
-            using (AndroidJavaObject notifier = client.Get<AndroidJavaObject>("notifier"))
-            {
+            AndroidJavaObject set = new AndroidJavaObject("java.util.HashSet");
+            AndroidJavaClass patternClass = new AndroidJavaClass("java.util.regex.Pattern");
 
+            foreach (var item in array)
+            {
+                try
+                {
+                    AndroidJavaObject pattern = patternClass.CallStatic<AndroidJavaObject>("compile", item);
+                    set.Call<bool>("add", pattern);
+                }
+                catch (AndroidJavaException e)
+                {
+                    Debug.LogWarning("Failed to compile regex pattern: " + item + " " + e.Message);
+                }
+            }
+
+            return set;
+        }
+
+        private void ConfigureNotifierInfo(AndroidJavaObject config)
+        {
+            using (AndroidJavaObject notifier = config.Call<AndroidJavaObject>("getNotifier"))
+            {
                 AndroidJavaObject androidNotifier = new AndroidJavaObject("com.bugsnag.android.Notifier");
                 androidNotifier.Call("setUrl", androidNotifier.Get<string>("url"));
                 androidNotifier.Call("setName", androidNotifier.Get<string>("name"));
@@ -649,19 +710,26 @@ namespace BugsnagUnity
             {
                 return;
             }
-            CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/Map;)V",
-            new object[] { section, DictionaryToJavaMap(metadata) });           
+            using (var disposableContainer = new DisposableContainer())
+            {
+                CallNativeVoidMethod("addMetadata", "(Ljava/lang/String;Ljava/util/Map;)V",
+                new object[] { section, DictionaryToJavaMap(metadata, disposableContainer) });
+            }
         }
 
-        internal static AndroidJavaObject DictionaryToJavaMap(IDictionary<string, object> inputDict)
+
+
+        internal static AndroidJavaObject DictionaryToJavaMap(IDictionary<string, object> inputDict, DisposableContainer disposables)
         {
             AndroidJavaObject map = new AndroidJavaObject("java.util.HashMap");
+            disposables.Add(map);
             if (inputDict != null)
             {
                 foreach (var entry in inputDict)
                 {
+                    
                     var key = new AndroidJavaObject("java.lang.String", entry.Key);
-
+                    disposables.Add(key);
                     if (entry.Value == null)
                     {
                         map.Call<AndroidJavaObject>("put", key, null);
@@ -670,24 +738,24 @@ namespace BugsnagUnity
                     {
                         if (entry.Value is IDictionary<string, object> dictionary)
                         {
-                            map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(dictionary));
+                            map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(dictionary, disposables));
                         }
                         else
                         {
                             var convertedDictionary = ConvertIfPoss(entry.Value);
                             if (convertedDictionary != null)
                             {
-                                map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(convertedDictionary));
+                                map.Call<AndroidJavaObject>("put", key, DictionaryToJavaMap(convertedDictionary, disposables));
                             }
                         }
                     }
                     else if (IsListOrArray(entry.Value))
                     {
-                        map.Call<AndroidJavaObject>("put", key, GetJavaArrayListFromCollection(entry.Value));
+                        map.Call<AndroidJavaObject>("put", key, GetJavaArrayListFromCollection(entry.Value, disposables));
                     }
                     else
                     {
-                        map.Call<AndroidJavaObject>("put", key, GetAndroidObjectFromBasicObject(entry.Value));
+                        map.Call<AndroidJavaObject>("put", key, GetAndroidObjectFromBasicObject(entry.Value, disposables));
                     }
                 }
             }
@@ -722,18 +790,19 @@ namespace BugsnagUnity
             return (oType.IsGenericType && oType.GetGenericTypeDefinition() == typeof(List<>)) || oType.IsArray;
         }
 
-        private static AndroidJavaObject GetJavaArrayListFromCollection(object theObject)
+        private static AndroidJavaObject GetJavaArrayListFromCollection(object theObject, DisposableContainer disposableContainer)
         {
             var collection = (IEnumerable)theObject;
             var arrayList = new AndroidJavaObject("java.util.ArrayList");
+            disposableContainer.Add(arrayList);
             foreach (var item in collection)
             {
-                arrayList.Call<Boolean>("add", GetAndroidObjectFromBasicObject(item));
+                arrayList.Call<Boolean>("add", GetAndroidObjectFromBasicObject(item, disposableContainer));
             }
             return arrayList;
         }
 
-        private static AndroidJavaObject GetAndroidObjectFromBasicObject(object theObject)
+        private static AndroidJavaObject GetAndroidObjectFromBasicObject(object theObject, DisposableContainer disposableContainer)
         {
             if (theObject == null)
             {
@@ -766,11 +835,13 @@ namespace BugsnagUnity
             }
             else
             {
-                return new AndroidJavaObject("java.lang.String", theObject.ToString());
+                var stringObj = new AndroidJavaObject("java.lang.String", theObject.ToString());
+                disposableContainer.Add(stringObj);
+                return stringObj;
             }
-
-            return new AndroidJavaObject(nativeClass, theObject);
-            
+            var androidObj = new AndroidJavaObject(nativeClass, theObject);
+            disposableContainer.Add(androidObj);
+            return androidObj;
         }
 
         public void LeaveBreadcrumb(string name, string type, IDictionary<string, object> metadata)
@@ -786,10 +857,11 @@ namespace BugsnagUnity
             }
             if (PushLocalFrame())
             {
-                using (AndroidJavaObject map = DictionaryToJavaMap(metadata))
+                using (var disposableContainer = new DisposableContainer())
                 {
+                    var map = DictionaryToJavaMap(metadata, disposableContainer);
                     CallNativeVoidMethod("leaveBreadcrumb", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V",
-                        new object[] { name, type, map });
+                            new object[] { name, type, map });
                 }
                 PopLocalFrame();
             }
@@ -1198,6 +1270,21 @@ namespace BugsnagUnity
         public void ClearFeatureFlags()
         {
             AndroidJNI.CallVoidMethod(GetClientRef(), ClearFeatureFlagsMethod, null);
+        }
+
+        public void RegisterForOnSessionCallbacks()
+        {
+            if (_registeredForSessionCallbacks || _configuration == null)
+            {
+                return;
+            }
+
+            var addOnSessionmethodId = AndroidJNI.GetMethodID(ClientClass, "addOnSession", "(Lcom/bugsnag/android/OnSessionCallback;)V");
+            var callback = new OnSessionCallback(_configuration);
+            object[] args = new object[] { callback };
+            jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(args);
+            AndroidJNI.CallVoidMethod(GetClientRef(), addOnSessionmethodId, jargs);
+            _registeredForSessionCallbacks = true;
         }
 
     }

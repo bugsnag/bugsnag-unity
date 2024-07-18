@@ -1,13 +1,22 @@
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
 using UnityEngine;
 
 namespace BugsnagUnity.Payload.Tests
 {
-    [TestFixture]
-    class StackFrameParsingTests
+    [TestClass]
+    public class StackFrameParsingTests
     {
-        [Test]
+        [TestMethod]
+        public void ParseMethodWithAt()
+        {
+            var stackframe = Payload.StackTraceLine.FromLogMessage(
+              "at UnityEngine.Events.InvokableCall.Invoke () [0x00010] in /Users/bokken/build/output/unity/unity/Runtime/Export/UnityEvent/UnityEvent.cs:178"
+            );
+            Assert.AreEqual("UnityEngine.Events.InvokableCall.Invoke()", stackframe.Method);
+        }
+
+        [TestMethod]
         public void ParseMethodNameWithColon()
         {
             var stackframe = Payload.StackTraceLine.FromLogMessage(
@@ -18,18 +27,18 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("/Users/gameserver/parky/Assets/ReporterBehavior.cs", stackframe.File);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseMethodNameWithColonWithoutFileInfo()
         {
             var stackframe = Payload.StackTraceLine.FromLogMessage(
               "UnityEngine.EventSystems.EventSystem:Update()"
             );
             Assert.AreEqual("UnityEngine.EventSystems.EventSystem:Update()", stackframe.Method);
-            Assert.AreEqual(null, stackframe.LineNumber);
-            Assert.AreEqual(null, stackframe.File);
+            Assert.IsNull(stackframe.LineNumber);
+            Assert.IsNull(stackframe.File);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseMethodNameWithSpace()
         {
             var stackframe = Payload.StackTraceLine.FromLogMessage(
@@ -40,7 +49,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("/Users/gameserver/parky/Assets/ReporterBehavior.cs", stackframe.File);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseFilePathWithSpace()
         {
             var stackframe = Payload.StackTraceLine.FromLogMessage(
@@ -51,7 +60,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("/Users/game server/parky/Assets/ReporterBehavior.cs", stackframe.File);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseMethodArgument()
         {
             var stackframe = Payload.StackTraceLine.FromLogMessage(
@@ -62,7 +71,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("/Users/builduser/buildslave/unity/build/Extensions/guisystem/UnityEngine.UI/UI/Core/Button.cs", stackframe.File);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseMultipleMethodArguments()
         {
             var stackframe = Payload.StackTraceLine.FromLogMessage(
@@ -73,7 +82,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("/Users/builduser/buildslave/unity/build/Extensions/guisystem/UnityEngine.UI/EventSystem/ExecuteEvents.cs", stackframe.File);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseInterfaceMethod()
         {
             var stackframe = Payload.StackTraceLine.FromLogMessage(
@@ -84,15 +93,34 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual("/Users/builduser/buildslave/unity/build/Extensions/guisystem/UnityEngine.UI/EventSystem/ExecuteEvents.cs", stackframe.File);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseGenericMethod()
         {
             var stackframe = Payload.StackTraceLine.FromLogMessage(
               "UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1].Invoke (.T1 handler, UnityEngine.EventSystems.BaseEventData eventData)"
             );
             Assert.AreEqual("UnityEngine.EventSystems.ExecuteEvents+EventFunction`1[T1].Invoke(.T1 handler, UnityEngine.EventSystems.BaseEventData eventData)", stackframe.Method);
-            Assert.AreEqual(null, stackframe.LineNumber);
-            Assert.AreEqual(null, stackframe.File);
+            Assert.IsNull(stackframe.LineNumber);
+            Assert.IsNull(stackframe.File);
+        }
+
+        [TestMethod]
+        public void ParseUnknownManagedToNative()
+        {
+            var stackframe = Payload.StackTraceLine.FromLogMessage("at (wrapper managed-to-native) Program.NativeMethod(Program/StructToMarshal)");
+            Assert.AreEqual("(wrapper managed-to-native) Program.NativeMethod(Program/StructToMarshal)", stackframe.Method);
+
+            stackframe = Payload.StackTraceLine.FromLogMessage("at (wrapper scoop-de-woop) SomeClass.SomeMethod(Program / Something else)");
+            Assert.AreEqual("(wrapper scoop-de-woop) SomeClass.SomeMethod(Program / Something else)", stackframe.Method);
+        }
+
+        [TestMethod]
+        public void ParseAndroidMethod()
+        {
+            var stackframe = Payload.StackTraceLine.FromAndroidJavaMessage("at com.example.lib.BugsnagCrash.throwJvmException(BugsnagCrash.java:14)");
+            Assert.AreEqual("com.example.lib.BugsnagCrash.throwJvmException()", stackframe.Method);
+            Assert.AreEqual("BugsnagCrash.java", stackframe.File);
+            Assert.AreEqual(14, stackframe.LineNumber);
         }
     }
 }

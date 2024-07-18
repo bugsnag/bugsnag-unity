@@ -1,5 +1,5 @@
 {
-    "name": "BugSnagEditor",
+    "name": "BugsnagEditor",
     "references": [
         "Bugsnag"
     ],

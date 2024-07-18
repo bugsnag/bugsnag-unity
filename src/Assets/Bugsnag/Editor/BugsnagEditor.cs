@@ -78,6 +78,9 @@ namespace BugsnagUnity.Editor
             var settings = GetSettingsObject();
             var so = new SerializedObject(settings);
 
+            var assemblyName = BugsnagUnity.Configuration.GetAssemblyName();
+            var version = assemblyName.Version;
+            EditorGUILayout.LabelField($"BugSnag Unity version {version.Major}.{version.Minor}.{version.Build}");
 
             _showBasicConfig = EditorGUILayout.Foldout(_showBasicConfig, "Basic Configuration", true);
             if (_showBasicConfig)
@@ -164,6 +167,7 @@ namespace BugsnagUnity.Editor
             }
             EditorGUILayout.PropertyField(so.FindProperty("AutoDetectErrors"));
             EditorGUILayout.PropertyField(so.FindProperty("AutoTrackSessions"));
+            EditorGUILayout.PropertyField(so.FindProperty("GenerateAnonymousId"));
             EditorGUILayout.PropertyField(so.FindProperty("BreadcrumbLogLevel"));
             EditorGUILayout.PropertyField(so.FindProperty("Context"));
             EditorGUILayout.PropertyField(so.FindProperty("DiscardClasses"));

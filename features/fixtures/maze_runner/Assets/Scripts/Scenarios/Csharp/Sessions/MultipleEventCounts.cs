@@ -9,7 +9,6 @@ public class MultipleEventCounts : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.ReportExceptionLogsAsHandled = false;
-        Configuration.AutoTrackSessions = false;
     }
 
     public override void Run()

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
-using System.ComponentModel;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
+using BugsnagNetworking;
+using UnityEngine.Networking;
 
 namespace BugsnagUnity
 {
@@ -73,6 +74,10 @@ namespace BugsnagUnity
 
             public void LogException(System.Exception exception, UnityEngine.Object context)
             {
+                if (exception == null)
+                {
+                    return;
+                }
                 if (_config.AutoDetectErrors && LogType.Exception.IsGreaterThanOrEqualTo(_config.NotifyLogLevel))
                 {
                     var unityLogMessage = new UnityLogMessage(exception);
@@ -82,7 +87,7 @@ namespace BugsnagUnity
                     if (shouldSend)
                     {
                         var handledState = _config.ReportExceptionLogsAsHandled ? HandledState.ForLoggedException() : HandledState.ForUnhandledException();
-                        _client.Notify(exception, handledState, null, 3);
+                        _client.Notify(exception, handledState, null);
                     }
                 }
                 if (_oldLogHandler != null)
@@ -112,7 +117,7 @@ namespace BugsnagUnity
             NativeClient = nativeClient;
             CacheManager = new CacheManager(Configuration);
             PayloadManager = new PayloadManager(CacheManager);
-            _delivery = new Delivery(this, Configuration,CacheManager,PayloadManager);
+            _delivery = new Delivery(this, Configuration, CacheManager, PayloadManager);
             MainThread = Thread.CurrentThread;
             SessionTracking = new SessionTracker(this);
             _isUnity2019OrHigher = IsUnity2019OrHigher();
@@ -126,11 +131,12 @@ namespace BugsnagUnity
                 SetupAdvancedExceptionInterceptor();
             }
             InitTimingTracker();
-            StartInitialSession();          
+            StartInitialSession();
             CheckForMisconfiguredEndpointsWarning();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
             ListenForSceneLoad();
+            SetupNetworkListeners();
             InitLogHandlers();
         }
 
@@ -180,7 +186,7 @@ namespace BugsnagUnity
         private void InitLogHandlers()
         {
             Application.logMessageReceivedThreaded += MultiThreadedNotify;
-            Application.logMessageReceived += Notify;
+            Application.logMessageReceived += NotifyFromUnityLog;
         }
 
         private void InitCounters()
@@ -200,6 +206,8 @@ namespace BugsnagUnity
         {
             _foregroundStopwatch = new Stopwatch();
             _backgroundStopwatch = new Stopwatch();
+            // Required in case the focus event is not recieved (if Bugsnag is started after it is sent)
+            _foregroundStopwatch.Start();
         }
 
         private void InitUserObject()
@@ -254,14 +262,15 @@ namespace BugsnagUnity
 
         private void ListenForSceneLoad()
         {
-            SceneManager.sceneLoaded += (Scene scene, LoadSceneMode loadSceneMode) => {
+            SceneManager.sceneLoaded += (Scene scene, LoadSceneMode loadSceneMode) =>
+            {
                 if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Navigation))
                 {
                     Breadcrumbs.Leave("Scene Loaded", new Dictionary<string, object> { { "sceneName", scene.name } }, BreadcrumbType.Navigation);
                 }
-                _storedMetadata.AddMetadata("app", "lastLoadedUnityScene",scene.name);
+                _storedMetadata.AddMetadata("app", "lastLoadedUnityScene", scene.name);
             };
-        }       
+        }
 
         public void Send(IPayload payload)
         {
@@ -277,25 +286,21 @@ namespace BugsnagUnity
             // Discard messages from the main thread as they will be reported separately
             if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
-                Notify(condition, stackTrace, logType);
+                NotifyFromUnityLog(condition, stackTrace, logType);
             }
         }
 
-        /// <summary>
-        /// Notify a Unity log message if it the client has been configured to
-        /// notify at the specified level, if not leave a breadcrumb with the log
-        /// message.
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="stackTrace"></param>
-        /// <param name="logType"></param>
-        void Notify(string condition, string stackTrace, LogType logType)
+        private void NotifyFromUnityLog(string condition, string stackTrace, LogType logType)
         {
             if (!Configuration.EnabledErrorTypes.UnityLog)
             {
                 return;
             }
             if (logType.Equals(LogType.Exception) && _isUnity2019OrHigher)
+            {
+                return;
+            }
+            if (condition.StartsWith("BUGSNAG_MAZERUNNER_LOG"))
             {
                 return;
             }
@@ -320,7 +325,7 @@ namespace BugsnagUnity
                 {
                     {"logLevel" , logType.ToString() }
                 };
-                Breadcrumbs.Leave(condition, metadata, BreadcrumbType.Log );
+                Breadcrumbs.Leave(condition, metadata, BreadcrumbType.Log);
             }
         }
 
@@ -336,52 +341,22 @@ namespace BugsnagUnity
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
-        public void Notify(System.Exception exception)
-        {
-            Notify(exception, 3);
-        }
-
-        internal void Notify(System.Exception exception, int level)
-        {
-            Notify(exception, HandledState.ForHandledException(), null, level);
-        }
-
         public void Notify(System.Exception exception, Func<IEvent, bool> callback)
         {
-            Notify(exception, callback, 3);
-        }
-
-        internal void Notify(System.Exception exception, Func<IEvent, bool> callback, int level)
-        {
-            Notify(exception, HandledState.ForHandledException(), callback, level);
-        }
-
-        public void Notify(System.Exception exception, Severity severity)
-        {
-            Notify(exception, severity, 3);
-        }
-
-        internal void Notify(System.Exception exception, Severity severity, int level)
-        {
-            Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), null, level);
+            Notify(exception, HandledState.ForHandledException(), callback);
         }
 
         public void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback)
         {
-            Notify(exception, severity, callback, 3);
+            Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback);
         }
 
-        internal void Notify(System.Exception exception, Severity severity, Func<IEvent, bool> callback, int level)
-        {
-            Notify(exception, HandledState.ForUserSpecifiedSeverity(severity), callback, level);
-        }
-
-        void Notify(System.Exception exception, HandledState handledState, Func<IEvent, bool> callback, int level)
+        void Notify(System.Exception exception, HandledState handledState, Func<IEvent, bool> callback)
         {
             // we need to generate a substitute stacktrace here as if we are not able
             // to generate one from the exception that we are given then we are not able
             // to do this inside of the IEnumerator generator code
-            var substitute = new System.Diagnostics.StackTrace(level, true).GetFrames();
+            var substitute = new System.Diagnostics.StackTrace(true).GetFrames();
             var errors = new Errors(exception, substitute).ToArray();
             foreach (var error in errors)
             {
@@ -393,7 +368,7 @@ namespace BugsnagUnity
             Notify(errors, handledState, callback, null);
         }
 
-        void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
+        private void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -401,7 +376,7 @@ namespace BugsnagUnity
             }
 
 
-            if (!object.ReferenceEquals(Thread.CurrentThread, MainThread))
+            if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
                 try
                 {
@@ -416,8 +391,8 @@ namespace BugsnagUnity
             else
             {
                 NotifyOnMainThread(exceptions, handledState, callback, logType);
-            }            
-           
+            }
+
         }
 
         private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
@@ -437,7 +412,7 @@ namespace BugsnagUnity
 
             NativeClient.PopulateAppWithState(app);
 
-            var device = new DeviceWithState(Configuration,CacheManager.GetCachedDeviceId());
+            var device = new DeviceWithState(Configuration, CacheManager.GetCachedDeviceId());
 
             NativeClient.PopulateDeviceWithState(device);
 
@@ -517,7 +492,7 @@ namespace BugsnagUnity
             if (!report.Ignored)
             {
                 //if serialisation fails, then we ignore the event
-                if (PayloadManager.AddPendingPayload(report)) 
+                if (PayloadManager.AddPendingPayload(report))
                 {
                     Send(report);
                     if (Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Error))
@@ -529,7 +504,7 @@ namespace BugsnagUnity
             }
         }
 
-       
+
         private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
         {
             return Application.platform.Equals(RuntimePlatform.Android)
@@ -606,27 +581,31 @@ namespace BugsnagUnity
         public string GetContext()
         {
             return Configuration.Context;
-        }      
+        }
 
         public void MarkLaunchCompleted() => NativeClient.MarkLaunchCompleted();
-        
+
         public void AddOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.AddOnError(bugsnagCallback);
 
         public void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Configuration.RemoveOnError(bugsnagCallback);
 
-        public void AddOnSession(Func<ISession, bool> callback) => Configuration.AddOnSession(callback);
+        public void AddOnSession(Func<ISession, bool> callback)
+        {
+            Configuration.AddOnSession(callback);
+            NativeClient.RegisterForOnSessionCallbacks();
+        }
 
         public void RemoveOnSession(Func<ISession, bool> callback) => Configuration.RemoveOnSession(callback);
 
         public void AddMetadata(string section, string key, object value) => _storedMetadata.AddMetadata(section, key, value);
 
-        public void AddMetadata(string section, IDictionary<string, object> metadata) => _storedMetadata.AddMetadata(section,metadata);
+        public void AddMetadata(string section, IDictionary<string, object> metadata) => _storedMetadata.AddMetadata(section, metadata);
 
         public void ClearMetadata(string section) => _storedMetadata.ClearMetadata(section);
 
         public void ClearMetadata(string section, string key) => _storedMetadata.ClearMetadata(section, key);
 
-        public IDictionary<string,object> GetMetadata(string section) => _storedMetadata.GetMetadata(section);
+        public IDictionary<string, object> GetMetadata(string section) => _storedMetadata.GetMetadata(section);
 
         public object GetMetadata(string section, string key) => _storedMetadata.GetMetadata(section, key);
 
@@ -653,7 +632,7 @@ namespace BugsnagUnity
             {
                 AddFeatureFlag(flag.Name, flag.Variant);
             }
-        } 
+        }
 
         public void ClearFeatureFlag(string name)
         {
@@ -666,5 +645,99 @@ namespace BugsnagUnity
             _featureFlags.Clear();
             NativeClient.ClearFeatureFlags();
         }
+
+        private void SetupNetworkListeners()
+        {
+            // Currently network breadcrumb are the only feature using the web events. 
+            // If we add more features that use web request events, we will need to move this check
+            if (!Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Request))
+            {
+                return;
+            }
+            BugsnagUnityWebRequest.OnSend.AddListener(OnWebRequestSend);
+            BugsnagUnityWebRequest.OnComplete.AddListener(OnWebRequestComplete);
+            BugsnagUnityWebRequest.OnAbort.AddListener(OnWebRequestAbort);
+        }
+
+        private readonly Dictionary<BugsnagUnityWebRequest, DateTimeOffset> _requestStartTimes = new Dictionary<BugsnagUnityWebRequest, DateTimeOffset>();
+
+
+        private void OnWebRequestComplete(BugsnagUnityWebRequest request)
+        {
+            if (_requestStartTimes.TryGetValue(request, out DateTimeOffset startTime))
+            {
+                TimeSpan duration = DateTimeOffset.UtcNow - startTime;
+                LeaveNetworkBreadcrumb(request.UnityWebRequest, duration);
+                _requestStartTimes.Remove(request);
+            }
+            else
+            {
+                LeaveNetworkBreadcrumb(request.UnityWebRequest, null);
+            }
+        }
+
+        private void OnWebRequestSend(BugsnagUnityWebRequest request)
+        {
+            _requestStartTimes[request] = DateTimeOffset.UtcNow;
+        }
+
+        private void OnWebRequestAbort(BugsnagUnityWebRequest request)
+        {
+            if (_requestStartTimes.ContainsKey(request))
+            {
+                _requestStartTimes.Remove(request);
+            }
+        }
+
+        public void LeaveNetworkBreadcrumb(UnityWebRequest request, TimeSpan? duration)
+        {
+            string statusMessage = request.result == UnityWebRequest.Result.Success ? "succeeded" : "failed";
+            string fullMessage = $"UnityWebRequest {statusMessage}";
+            var metadata = new Dictionary<string, object>();
+            metadata["status"] = request.responseCode;
+            metadata["method"] = request.method;
+            metadata["url"] = request.url;
+            var urlParams = ExtractUrlParams(request.uri);
+            if (urlParams.Count > 0)
+            {
+                metadata["urlParams"] = urlParams;
+            }
+            metadata["duration"] = duration?.TotalMilliseconds;
+            if (request.uploadHandler != null && request.uploadHandler.data != null)
+            {
+                metadata["requestContentLength"] = request.uploadHandler.data.Length;
+            }
+            if (request.downloadHandler != null && request.downloadHandler.data != null)
+            {
+                metadata["responseContentLength"] = request.downloadHandler.data.Length;
+            }
+            Breadcrumbs.Leave(fullMessage, metadata, BreadcrumbType.Request);
+        }
+
+        private Dictionary<string, string> ExtractUrlParams(Uri uri)
+        {
+            var queryParams = new Dictionary<string, string>();
+            var querySegments = uri.Query.TrimStart('?').Split('&');
+
+            foreach (var segment in querySegments)
+            {
+                var parts = segment.Split('=');
+                if (parts.Length == 2)
+                {
+                    if (Configuration.KeyIsRedacted(parts[0]))
+                    {
+                        queryParams[parts[0]] = "[REDACTED]";
+                    }
+                    else
+                    {
+                        queryParams[parts[0]] = parts[1];
+                    }
+                }
+            }
+
+            return queryParams;
+        }
+
+
     }
 }

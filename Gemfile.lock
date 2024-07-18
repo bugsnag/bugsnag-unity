@@ -1,26 +1,7 @@
-GIT
-  remote: https://github.com/bugsnag/maze-runner
-  revision: 81f79a9b405fb63bbfc8ef6cc8f20cd1f2c3905e
-  tag: v7.2.1
-  specs:
-    bugsnag-maze-runner (7.2.1)
-      appium_lib (~> 12.0)
-      bugsnag (~> 6.24)
-      cucumber (~> 7.1)
-      cucumber-expressions (~> 6.0.0)
-      curb (~> 0.9.6)
-      optimist (~> 3.0.1)
-      os (~> 1.0.0)
-      rake (~> 12.3.3)
-      rubyzip (~> 2.3.2)
-      selenium-webdriver (~> 4.0)
-      test-unit (~> 3.5.2)
-      webrick (~> 1.7.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (3.0.5)
+    CFPropertyList (3.0.6)
       rexml
     appium_lib (12.0.1)
       appium_lib_core (~> 5.0)
@@ -30,13 +11,30 @@ GEM
       faye-websocket (~> 0.11.0)
       selenium-webdriver (~> 4.2, < 4.6)
     atomos (0.1.3)
-    bugsnag (6.24.2)
+    bugsnag (6.26.4)
       concurrent-ruby (~> 1.0)
+    bugsnag-maze-runner (9.6.0)
+      appium_lib (~> 12.0.0)
+      appium_lib_core (~> 5.4.0)
+      bugsnag (~> 6.24)
+      cucumber (~> 7.1)
+      cucumber-expressions (~> 6.0.0)
+      curb (~> 0.9.6)
+      dogstatsd-ruby (~> 5.5.0)
+      json_schemer (~> 0.2.24)
+      optimist (~> 3.0.1)
+      os (~> 1.0.0)
+      rack (~> 2.2)
+      rake (~> 12.3.3)
+      rubyzip (~> 2.3.2)
+      selenium-webdriver (~> 4.0)
+      test-unit (~> 3.5.2)
+      webrick (~> 1.7.0)
     builder (3.2.4)
     childprocess (4.1.0)
     claide (1.1.0)
     colored2 (3.1.2)
-    concurrent-ruby (1.1.10)
+    concurrent-ruby (1.2.3)
     cucumber (7.1.0)
       builder (~> 3.2, >= 3.2.4)
       cucumber-core (~> 10.1, >= 10.1.0)
@@ -69,31 +67,37 @@ GEM
       cucumber-core (~> 10.1, >= 10.1.0)
       cucumber-cucumber-expressions (~> 14.0, >= 14.0.0)
     curb (0.9.11)
-    diff-lcs (1.5.0)
+    diff-lcs (1.5.1)
+    dogstatsd-ruby (5.5.0)
+    ecma-re-validator (0.4.0)
+      regexp_parser (~> 2.2)
     eventmachine (1.2.7)
-    faye-websocket (0.11.1)
+    faye-websocket (0.11.3)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
-    ffi (1.15.5)
-    mime-types (3.4.1)
+    ffi (1.16.3)
+    hana (1.3.7)
+    json_schemer (0.2.25)
+      ecma-re-validator (~> 0.3)
+      hana (~> 1.3)
+      regexp_parser (~> 2.0)
+      simpleidn (~> 0.2)
+      uri_template (~> 0.7)
+    mime-types (3.5.2)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2022.0105)
-    mini_portile2 (2.8.0)
+    mime-types-data (3.2024.0305)
     multi_test (0.1.2)
     nanaimo (0.3.0)
-    nokogiri (1.13.8)
-      mini_portile2 (~> 2.8.0)
-      racc (~> 1.4)
-    nokogiri (1.13.8-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.13.8-x86_64-linux)
+    nokogiri (1.16.3-x86_64-darwin)
       racc (~> 1.4)
     optimist (3.0.1)
     os (1.0.1)
-    power_assert (2.0.1)
-    racc (1.6.0)
+    power_assert (2.0.3)
+    racc (1.7.3)
+    rack (2.2.9)
     rake (12.3.3)
-    rexml (3.2.5)
+    regexp_parser (2.9.0)
+    rexml (3.2.6)
     rouge (2.0.7)
     rubyzip (2.3.2)
     selenium-webdriver (4.5.0)
@@ -101,17 +105,23 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sys-uname (1.2.2)
+    simpleidn (0.2.1)
+      unf (~> 0.1.4)
+    sys-uname (1.2.3)
       ffi (~> 1.1)
-    test-unit (3.5.5)
+    test-unit (3.5.9)
       power_assert
     tomlrb (2.0.3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.9.1)
+    uri_template (0.7.0)
     webrick (1.7.0)
-    websocket (1.2.9)
-    websocket-driver (0.7.5)
+    websocket (1.2.10)
+    websocket-driver (0.7.6)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    xcodeproj (1.21.0)
+    xcodeproj (1.23.0)
       CFPropertyList (>= 2.3.3, < 4.0)
       atomos (~> 0.1.3)
       claide (>= 1.0.2, < 2.0)
@@ -124,13 +134,12 @@ GEM
 PLATFORMS
   x86_64-darwin-19
   x86_64-darwin-20
-  x86_64-linux
 
 DEPENDENCIES
-  bugsnag-maze-runner!
+  bugsnag-maze-runner (~> 9.0)
   rake
   xcodeproj
   xcpretty
 
 BUNDLED WITH
-   2.3.18
+   2.4.8

@@ -108,21 +108,20 @@ bundle exec maze-runner features/handled_errors.feature
 
 1. Make sure any changes made since last release in `master` are merged into `next`.
 
-2. Checkout the `next` branch. Set the version number in the change log and `build.cake`.
+2. Checkout the `next` branch.
 
-3. Commit the changelog and version updates:
-
-    ```
-    git add CHANGELOG.md build.cake
-    git commit -m "Release v7.x.x"
-    ```
-4. Make a pull request to merge the changes into `master`
-
-5. Once merged, tag the new release version, pushing the tag to GitHub:
+3. To bump the version in `build.sh` and `CHANGELOG.md`, run:
 
    ```
-   git tag v7.x.x
-   git push origin v7.x.x
+   rake "plugin:bump[1.2.3]"
+   ```
+
+4. Make a pull request to merge the changes into `master`
+
+5. Once merged, tag the new release version, pushing the tag to GitHub using:
+
+   ```
+   rake plugin:release
    ```
 
 6. Wait. The CI build will build the new package and create a draft release.
@@ -135,20 +134,10 @@ Once the UnityPackage release is confirmed a UPM release should be deployed
 
 1. Make sure that the package used in the github release is present in the root of the repo.
 
-2. Build the upm package by running the `build-upm-package.sh` script in the upm-tools directory. You should pass the version number of the release like so `./build-upm-package.sh 7.x.x`. You must run the script from within the upm-tools folder. This will build the upm package in a directory called `upm-package`
-
-3. Test that the built package installs by using the install local package option in unity package manager.
-
-4. Clone the `bugsnag-unity-upm` repo and make sure you are in the `main` branch.
-
-5. Replace the contents of the repo with the contents of the `upm-package` directory in the `bugsnag-unity` repo
-6. Commit these changes to main with the message `Release V7.x.x`
-7. Tag the release and push the tag
-  ```
-   git tag v7.x.x
-   git push origin v7.x.x
+2. Run:
    ```
-8. Run the script `./build-edm-package.sh` , this will convert the built package to the EDM4U support version. Repeat the UPM release steps but with the `bugsnag-unity-upm-edm4u` repo.
+   rake plugin:package
+   ```
 
 #### Post-release
 

@@ -28,6 +28,10 @@ Before('@macos_only') do |_scenario|
 end
 
 
+Before('@ios_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze::Helper.get_current_platform == 'ios'
+end
+
 Before('@cocoa_only') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.os == 'macos' || Maze::Helper.get_current_platform == 'ios'
 end
@@ -53,11 +57,13 @@ Before('@skip_android') do |_scenario|
   skip_this_scenario("Skipping scenario") if Maze::Helper.get_current_platform == 'android'
 end
 
+Before('@android_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze::Helper.get_current_platform == 'android'
+end
+
 
 BeforeAll do
   $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
-  Maze.config.enforce_bugsnag_integrity = false
-
   if Maze.config.os&.downcase == 'macos'
     # The default macOS Crash Reporter "#{app_name} quit unexpectedly" alert grabs focus which can cause tests to flake.
     # This option, which appears to have been introduced in macOS 10.11, displays a notification instead of the alert.
@@ -66,7 +72,20 @@ BeforeAll do
     # Allow the necessary environment variables to be passed from Ubuntu (under WSL) to the Windows test fixture
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
   elsif Maze.config.browser != nil # WebGL
-    Maze.config.document_server_root = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
+  
+    release_path = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
+    dev_path = 'features/fixtures/maze_runner/build/WebGL/Mazerunner_dev'
+
+    if File.exist?(release_path) && File.exist?(dev_path)
+      raise "Both webgl builds exist: #{release_path} and #{dev_path}"
+    elsif File.exist?(release_path)
+      Maze.config.document_server_root = release_path
+    elsif File.exist?(dev_path)
+      Maze.config.document_server_root = dev_path
+    else
+      raise "Neither webgl build exists: #{release_path} or #{dev_path}"
+    end
+
   elsif Maze.config.os&.downcase == 'switch'
     maze_ip = ENV['SWITCH_MAZE_IP']
     raise 'SWITCH_MAZE_IP must be set' unless maze_ip
@@ -105,6 +124,14 @@ Maze.hooks.before do
   end
 end
 
+Before do |scenario|
+  # Detect if we're running the webgl tests
+  if Maze.config.farm.to_s.eql?('local')
+    # Allows each scenario to auto retry once due to instability in the local browser
+    scenario.tags << Cucumber::Core::Test::Tag.new(nil, '@retry')
+  end
+end
+
 After do |scenario|
   next if scenario.status == :skipped
 
@@ -116,6 +143,28 @@ After do |scenario|
   when 'switch'
     # Terminate the app
     Maze::Runner.run_command('ControlTarget.exe terminate')
+  end
+end
+
+device_logs = []
+After do |scenario|
+  if Maze.driver && Maze.driver.is_a?(Maze::Driver::Appium)
+    log_file = Maze::Api::Appium::FileManager.new.read_app_file('mazerunner-unity.log')
+    device_logs << {
+      file: log_file,
+      scenario: scenario.name
+    }
+  end
+end
+
+AfterAll do
+  maze_output = File.join(Dir.pwd, 'maze_output')
+  device_logs_folder = File.join(maze_output, 'device_logs')
+  FileUtils.makedirs(device_logs_folder)
+  device_logs.each do |log|
+    File.open(File.join(device_logs_folder, "#{log[:scenario]}.log"), 'w') do |f|
+      f.write(log[:file])
+    end
   end
 end
 

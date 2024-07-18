@@ -10,7 +10,6 @@ public class IosNativeOnSendCallback : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AutoTrackSessions = false;
         Configuration.AddOnSendError((@event) => {
             try
             {
@@ -41,7 +40,9 @@ public class IosNativeOnSendCallback : Scenario
                 device.Jailbroken = true;
                 device.Orientation = "Custom Orientation";
                 device.Time = new DateTimeOffset(1985, 08, 21, 01, 01, 01, TimeSpan.Zero);
-
+                device.TotalMemory = 999;
+                device.ModelNumber = "Custom ModelNumber";
+                
                 // breadcrumbs
                 foreach (var crumb in @event.Breadcrumbs)
                 {

@@ -7,7 +7,6 @@ public class PersistEventReportCallback : Scenario
     {
         base.PrepareConfig(apiKey, host);
         Configuration.Context = "Error 2";
-        Configuration.AutoTrackSessions = false;
         Configuration.AddOnSendError((@event) => {
 
             @event.App.BinaryArch = "Persist BinaryArch";
@@ -27,10 +26,6 @@ public class PersistEventReportCallback : Scenario
 
             return true;
         });
-        if (Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            Configuration.EnabledErrorTypes.OOMs = false;
-        }
     }
 
     public override void Run()

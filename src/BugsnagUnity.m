@@ -390,6 +390,12 @@ void bugsnag_markLaunchCompleted() {
   [Bugsnag markLaunchCompleted];
 }
 
+void bugsnag_registerForSessionCallbacksAfterStart(bool (*callback)(void *session)){
+    [Bugsnag addOnSessionBlock:^BOOL (BugsnagSession *session) {    
+        return callback((__bridge void *)session);
+    }];
+}
+
 void *bugsnag_createConfiguration(char *apiKey) {
     return (void *)CFBridgingRetain([[BugsnagConfiguration alloc] initWithApiKey:@(apiKey)]);
 }
@@ -726,13 +732,26 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
 
 char * bugsnag_retrieveAppData() {
     BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
-     NSDictionary *appDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-        app.bundleVersion, @"bundleVersion",
-        app.id, @"id",
-        app.isLaunching ? @"true" : @"false", @"isLaunching",
-        app.type, @"type",
-        app.version, @"version",
-        nil];
+    if (app == nil) {
+        return NULL;
+    }
+
+    NSMutableDictionary *appDictionary = [NSMutableDictionary dictionary];
+
+    if (app.bundleVersion != nil) {
+        [appDictionary setObject:app.bundleVersion forKey:@"bundleVersion"];
+    }
+    if (app.id != nil) {
+        [appDictionary setObject:app.id forKey:@"id"];
+    }
+    [appDictionary setObject:(app.isLaunching ? @"true" : @"false") forKey:@"isLaunching"];
+    if (app.type != nil) {
+        [appDictionary setObject:app.type forKey:@"type"];
+    }
+    if (app.version != nil) {
+        [appDictionary setObject:app.version forKey:@"version"];
+    }
+
     return getJson(appDictionary);
 }
 
@@ -748,21 +767,27 @@ void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const
 
 char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
     BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
-    NSDictionary *deviceDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-        device.freeDisk, @"freeDisk",
-        device.freeMemory, @"freeMemory",
-        device.id, @"id",
-        device.jailbroken ? @"true" : @"false", @"jailbroken",
-        device.locale, @"locale",
-        device.manufacturer, @"manufacturer",
-        device.model, @"model",
-        device.modelNumber, @"modelNumber",
-        device.runtimeVersions[@"osBuild"], @"osBuild",
-        device.osName, @"osName",
-        device.osVersion,@ "osVersion",
-        nil];
+    NSMutableDictionary *deviceDictionary = [[NSMutableDictionary alloc] init];
+
+    if (device.freeDisk != nil) [deviceDictionary setObject:device.freeDisk forKey:@"freeDisk"];
+    if (device.freeMemory != nil) [deviceDictionary setObject:device.freeMemory forKey:@"freeMemory"];
+    if (device.id != nil) [deviceDictionary setObject:device.id forKey:@"id"];
+    if (device.jailbroken) {
+        [deviceDictionary setObject:@"true" forKey:@"jailbroken"];
+    } else {
+        [deviceDictionary setObject:@"false" forKey:@"jailbroken"];
+    }
+    if (device.locale != nil) [deviceDictionary setObject:device.locale forKey:@"locale"];
+    if (device.manufacturer != nil) [deviceDictionary setObject:device.manufacturer forKey:@"manufacturer"];
+    if (device.model != nil) [deviceDictionary setObject:device.model forKey:@"model"];
+    if (device.modelNumber != nil) [deviceDictionary setObject:device.modelNumber forKey:@"modelNumber"];
+    if (device.runtimeVersions[@"osBuild"] != nil) [deviceDictionary setObject:device.runtimeVersions[@"osBuild"] forKey:@"osBuild"];
+    if (device.osName != nil) [deviceDictionary setObject:device.osName forKey:@"osName"];
+    if (device.osVersion != nil) [deviceDictionary setObject:device.osVersion forKey:@"osVersion"];
+
     return getJson(deviceDictionary);
 }
+
 
 void bugsnag_populateUser(struct bugsnag_user *user) {
   user->user_id = BSGGetDefaultDeviceId().UTF8String;

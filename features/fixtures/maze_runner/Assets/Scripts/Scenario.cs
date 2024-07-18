@@ -25,6 +25,8 @@ public class Scenario : MonoBehaviour
 
 #endif
 
+    public const string FAIL_URL = "https://localhost:994";
+
     public Configuration Configuration;
 
     [HideInInspector]
@@ -37,6 +39,11 @@ public class Scenario : MonoBehaviour
         Configuration.ScriptingBackend = FindScriptingBackend();
         Configuration.DotnetScriptingRuntime = FindDotnetScriptingRuntime();
         Configuration.DotnetApiCompatibility = FindDotnetApiCompatibility();
+        Configuration.AutoTrackSessions = false;
+        if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            Configuration.EnabledErrorTypes.OOMs = false;
+        }
     }
 
     public void AddSwitchConfigValues(SwitchCacheType switchCacheType, int switchCacheIndex, string switchMountName)

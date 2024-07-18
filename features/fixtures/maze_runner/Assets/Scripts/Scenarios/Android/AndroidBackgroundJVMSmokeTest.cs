@@ -10,6 +10,7 @@ public class AndroidBackgroundJVMSmokeTest : Scenario
         base.PrepareConfig(apiKey, host);
         Configuration.SetUser("1", "2", "3");
         Configuration.ProjectPackages = new string[] { "test.test.test" };
+        Configuration.AddOnSession((s) => { return true; });
     }
 
     public override void Run()

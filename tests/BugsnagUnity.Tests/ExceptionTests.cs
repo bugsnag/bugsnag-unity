@@ -1,14 +1,14 @@
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
 
 namespace BugsnagUnity.Payload.Tests
 {
-    [TestFixture]
-    class ExceptionTests
+    [TestClass]
+    public class ExceptionTests
     {
-        [Test]
+        [TestMethod]
         public void ParseExceptionFromLogMessage()
         {
             string condition = "IndexOutOfRangeException: Array index is out of range.";
@@ -21,7 +21,7 @@ namespace BugsnagUnity.Payload.Tests
    UnityEngine.EventSystems.ExecuteEvents.Execute[IPointerClickHandler] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor) [0x00000] in <filename unknown>:0";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
-            Assert.True(Error.ShouldSend(log));
+            Assert.IsTrue(Error.ShouldSend(log));
 
             var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Info);
             var stack = exception.Stacktrace.ToList();
@@ -51,7 +51,7 @@ namespace BugsnagUnity.Payload.Tests
             Assert.AreEqual(0, stack[6].LineNumber);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseDuplicateAndroidExceptionFromLogMessage()
         {
             string condition = "AndroidJavaException: java.lang.Error";
@@ -61,10 +61,10 @@ libunity.003606e3(Unknown:-2)
 app_process64.000d1b11(Unknown:-2)";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
-            Assert.False(Error.ShouldSend(log));
+            Assert.IsFalse(Error.ShouldSend(log));
         }
 
-        [Test]
+        [TestMethod]
         public void ParseAndroidExceptionFromLogMessage()
         {
             string condition = "AndroidJavaException: java.lang.IllegalArgumentException";
@@ -73,11 +73,11 @@ com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash(CrashHelper.java:11)
 com.unity3d.player.UnityPlayer.nativeRender(Native Method)";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
-            Assert.True(Error.ShouldSend(log));
+            Assert.IsTrue(Error.ShouldSend(log));
             var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
             var stack = exception.Stacktrace.ToList();
             Assert.AreEqual("java.lang.IllegalArgumentException", exception.ErrorClass);
-            Assert.True(System.String.IsNullOrEmpty(exception.ErrorMessage));
+            Assert.IsTrue(System.String.IsNullOrEmpty(exception.ErrorMessage));
             Assert.AreEqual(2, stack.Count);
             Assert.AreEqual("com.example.bugsnagcrashplugin.CrashHelper.UnhandledCrash()", stack[0].Method);
             Assert.AreEqual("CrashHelper.java", stack[0].File);
@@ -87,7 +87,7 @@ com.unity3d.player.UnityPlayer.nativeRender(Native Method)";
             Assert.AreEqual(null, stack[1].LineNumber);
         }
 
-        [Test]
+        [TestMethod]
         public void ParseAndroidExceptionAndMessageFromLogMessage()
         {
             string condition = "AndroidJavaException: java.lang.ArrayIndexOutOfBoundsException: length=2; index=2";
@@ -107,7 +107,7 @@ UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData,
 UnityEngine.EventSystems.EventSystem:Update()";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
-            Assert.True(Error.ShouldSend(log));
+            Assert.IsTrue(Error.ShouldSend(log));
 
             var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
             var stack = exception.Stacktrace.ToList();
@@ -156,4 +156,3 @@ UnityEngine.EventSystems.EventSystem:Update()";
         }
     }
 }
-
