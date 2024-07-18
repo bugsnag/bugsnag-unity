@@ -1,15 +1,14 @@
 #!/usr/bin/env pwsh
+# Parse arguments. Must be the first non commented line for reasons of powershell.
+param (
+    [string]$configuration = "Release",
+    [string]$version = "8.0.0"
+)
 
 # Define default arguments.
 $CONFIGURATION = "Release"
 $SOLUTION = "./BugsnagUnity.sln"
 $VERSION = "8.0.0"
-
-# Parse arguments.
-param (
-    [string]$configuration = $CONFIGURATION,
-    [string]$version = $VERSION
-)
 
 # Set arguments if passed
 if ($args) {
