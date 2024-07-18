@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
+using UnityEngine.Networking;
 
 namespace BugsnagUnity
 {
@@ -54,6 +55,8 @@ namespace BugsnagUnity
         public static List<Breadcrumb> Breadcrumbs => Client.Breadcrumbs.Retrieve();
 
         public static void LeaveBreadcrumb(string message, Dictionary<string, object> metadata = null, BreadcrumbType type = BreadcrumbType.Manual ) => InternalClient.Breadcrumbs.Leave(message, metadata, type);
+
+        public static void LeaveBreadcrumb(UnityWebRequest request, TimeSpan? duration) => InternalClient.LeaveNetworkBreadcrumb(request, duration);
 
         public static User GetUser() => Client.GetUser();
 

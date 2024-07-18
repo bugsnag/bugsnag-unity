@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -360,6 +361,10 @@ namespace BugsnagUnity
         public void ClearFeatureFlags()
         {
             FeatureFlags.Clear();
+        }
+
+        public static AssemblyName GetAssemblyName() {
+            return typeof(Configuration).Assembly.GetName(); 
         }
     }
 

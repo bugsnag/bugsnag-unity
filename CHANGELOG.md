@@ -2,10 +2,23 @@
 
 ## TBD
 
+### Enhancements
+
+- Added the BugsnagUnity version to the configuration window. [#819](https://github.com/bugsnag/bugsnag-unity/pull/819)
+
+- Added automatic and manual network request breadcrumbs. [#817](https://github.com/bugsnag/bugsnag-unity/pull/817)
+
+- Remove unnecessary ToArray() call when constructing an error. [#822](https://github.com/bugsnag/bugsnag-unity/pull/822)
+
+### Bug Fixes
+
+- Fix timing issues when Bugsnag is started after the focus event. [#821](https://github.com/bugsnag/bugsnag-unity/pull/821)
+
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.29.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.29.0) [#814](https://github.com/bugsnag/bugsnag-unity/pull/814)
 Update bugsnag-cocoa to [v6.30.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.30.0) [#820](https://github.com/bugsnag/bugsnag-unity/pull/820)
+
 
 ## 8.0.0 (2024-06-12)
 
