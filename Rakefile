@@ -12,6 +12,7 @@ end
 HOST_OS = RbConfig::CONFIG['host_os']
 def is_mac?; HOST_OS =~ /darwin/i; end
 def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
+def is_linux?; HOST_OS.strip =~ /linux/i; end
 
 ##
 #
@@ -26,6 +27,8 @@ def unity_directory
       "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
     elsif is_windows?
       "C:\\Program Files\\Unity\\Hub\\Editor\\#{ENV['UNITY_VERSION']}"
+    elsif is_linux?
+      "#{ENV['HOME']}/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
     end
   else
     raise 'No unity version set - use $UNITY_VERSION'

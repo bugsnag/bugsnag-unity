@@ -7,8 +7,9 @@
 
   <!-- Property to detect OS -->
   <PropertyGroup>
-    <IsWindows Condition=" '$(OS)' == 'Windows_NT' ">true</IsWindows>
-    <IsMac Condition=" '$(OS)' == 'Unix' ">true</IsMac>
+    <IsWindows Condition="$([MSBuild]::IsOsPlatform('Windows'))">true</IsWindows>
+    <IsMac Condition="$([MSBuild]::IsOsPlatform('OSX'))">true</IsMac>
+    <IsLinux Condition="$([MSBuild]::IsOsPlatform('Linux'))">true</IsLinux>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(IsMac)' == 'true'">
@@ -29,6 +30,17 @@
     </Reference>
     <Reference Include="UnityEditor">
       <HintPath>C:\Program Files\Unity\Hub\Editor\$(UNITY_VERSION)\Editor\Data\Managed\UnityEditor.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsLinux)' == 'true'">
+    <Reference Include="UnityEngine">
+      <HintPath>$(HOME)/Unity/Hub/Editor/$(UNITY_VERSION)/Editor/Data/Managed/UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>$(HOME)/Unity/Hub/Editor/$(UNITY_VERSION)/Editor/Data/Managed/UnityEditor.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
