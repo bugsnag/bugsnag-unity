@@ -1,0 +1,8 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <Compile Remove="Native/**/*.cs" />
+    <Compile Include="Native/Linux/**/*.cs" />
+    <Compile Include="Native/Fallback/Breadcrumbs.cs" />
+    <Compile Include="Native/Fallback/CacheManager.cs" />
+  </ItemGroup>
+</Project>

@@ -72,6 +72,11 @@ The plugin can be built with a cache using `rake plugin:quick_export`.
 bundle exec rake plugin:rebuild
 ```
 
+To compile and export without the Android and iOS plugins (which is much faster), use:
+```
+bundle exec rake plugin:export_minimal
+``
+
 List available tasks using `rake -T`.
 
 ## Building Example

@@ -36,6 +36,7 @@ dotnet restore "src/BugsnagUnity/BugsnagUnity.Android.csproj"
 dotnet restore "src/BugsnagUnity/BugsnagUnity.iOS.csproj"
 dotnet restore "src/BugsnagUnity/BugsnagUnity.MacOS.csproj"
 dotnet restore "src/BugsnagUnity/BugsnagUnity.Windows.csproj"
+dotnet restore "src/BugsnagUnity/BugsnagUnity.Linux.csproj"
 
 if ($LASTEXITCODE -ne 0) {
     Write-Output "An error occurred while restoring NuGet packages."

@@ -25,6 +25,7 @@ dotnet restore src/BugsnagUnity/BugsnagUnity.Android.csproj
 dotnet restore src/BugsnagUnity/BugsnagUnity.iOS.csproj 
 dotnet restore src/BugsnagUnity/BugsnagUnity.MacOS.csproj 
 dotnet restore src/BugsnagUnity/BugsnagUnity.Windows.csproj 
+dotnet restore src/BugsnagUnity/BugsnagUnity.Linux.csproj 
 
 if [ $? -ne 0 ]; then
     echo "An error occurred while restoring NuGet packages."
