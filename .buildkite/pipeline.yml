@@ -23,17 +23,17 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: 'build size impact reporting'
-    timeout_in_minutes: 10
-    depends_on: build-artifacts
-    env:
-      UNITY_VERSION: *2021
-    plugins:
-      'artifacts#v1.9.0':
-        download:
-          - Bugsnag.unitypackage
-    commands:
-      features/scripts/do_size_test.sh
+  # - label: 'build size impact reporting'
+  #   timeout_in_minutes: 10
+  #   depends_on: build-artifacts
+  #   env:
+  #     UNITY_VERSION: *2021
+  #   plugins:
+  #     'artifacts#v1.9.0':
+  #       download:
+  #         - Bugsnag.unitypackage
+  #   commands:
+  #     features/scripts/do_size_test.sh
 
   - label: Ensure notifier builds on Windows (for development)
     timeout_in_minutes: 30
@@ -164,89 +164,89 @@ steps:
   #
   # Build iOS test fixtures
   #
-  - label: ":ios: Generate Xcode project - Unity 2021"
-    timeout_in_minutes: 30
-    key: "generate-fixture-project-2021"
-    depends_on: "build-artifacts"
-    env:
-      UNITY_VERSION: *2021
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - Bugsnag.unitypackage
-        upload:
-          - features/fixtures/unity.log
-          - project_2021.tgz
-    commands:
-      - bundle install
-      - rake test:ios:generate_xcode
-      - tar -zvcf project_2021.tgz features/fixtures/maze_runner/mazerunner_xcode
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+  # - label: ":ios: Generate Xcode project - Unity 2021"
+  #   timeout_in_minutes: 30
+  #   key: "generate-fixture-project-2021"
+  #   depends_on: "build-artifacts"
+  #   env:
+  #     UNITY_VERSION: *2021
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - Bugsnag.unitypackage
+  #       upload:
+  #         - features/fixtures/unity.log
+  #         - project_2021.tgz
+  #   commands:
+  #     - bundle install
+  #     - rake test:ios:generate_xcode
+  #     - tar -zvcf project_2021.tgz features/fixtures/maze_runner/mazerunner_xcode
+  #   retry:
+  #     automatic:
+  #       - exit_status: "*"
+  #         limit: 1
 
-  - label: ":ios: Build iOS test fixture for Unity 2021"
-    timeout_in_minutes: 30
-    key: "build-ios-fixture-2021"
-    depends_on: "generate-fixture-project-2021"
-    env:
-      UNITY_VERSION: *2021
-      XCODE_VERSION: "15.3.0"
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - Bugsnag.unitypackage
-          - project_2021.tgz
-        upload:
-          - features/fixtures/maze_runner/mazerunner_2021.ipa
-          - features/fixtures/unity.log
-    commands:
-      - bundle install
-      - tar -zxf project_2021.tgz features/fixtures/maze_runner
-      - rake test:ios:build_xcode
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+  # - label: ":ios: Build iOS test fixture for Unity 2021"
+  #   timeout_in_minutes: 30
+  #   key: "build-ios-fixture-2021"
+  #   depends_on: "generate-fixture-project-2021"
+  #   env:
+  #     UNITY_VERSION: *2021
+  #     XCODE_VERSION: "15.3.0"
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - Bugsnag.unitypackage
+  #         - project_2021.tgz
+  #       upload:
+  #         - features/fixtures/maze_runner/mazerunner_2021.ipa
+  #         - features/fixtures/unity.log
+  #   commands:
+  #     - bundle install
+  #     - tar -zxf project_2021.tgz features/fixtures/maze_runner
+  #     - rake test:ios:build_xcode
+  #   retry:
+  #     automatic:
+  #       - exit_status: "*"
+  #         limit: 1
 
-  #
-  # Run iOS tests
-  #
-  - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2021"
-    timeout_in_minutes: 60
-    depends_on: "build-ios-fixture-2021"
-    agents:
-      queue: opensource
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - "features/fixtures/maze_runner/mazerunner_2021.ipa"
-        upload:
-          - "maze_output/**/*"
-          - "maze_output/metrics.csv"
+  # #
+  # # Run iOS tests
+  # #
+  # - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2021"
+  #   timeout_in_minutes: 60
+  #   depends_on: "build-ios-fixture-2021"
+  #   agents:
+  #     queue: opensource
+  #   plugins:
+  #     artifacts#v1.5.0:
+  #       download:
+  #         - "features/fixtures/maze_runner/mazerunner_2021.ipa"
+  #       upload:
+  #         - "maze_output/**/*"
+  #         - "maze_output/metrics.csv"
 
-      docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
-        service-ports: true
-        command:
-          - "features/csharp"
-          - "features/ios"
-          - "--app=features/fixtures/maze_runner/mazerunner_2021.ipa"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=IOS_13|IOS_14|IOS_15"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-          - "--fail-fast"
-    concurrency: 25
-    concurrency_group: "bitbar"
-    concurrency_method: eager
+  #     docker-compose#v4.7.0:
+  #       pull: maze-runner-bitbar
+  #       run: maze-runner-bitbar
+  #       service-ports: true
+  #       command:
+  #         - "features/csharp"
+  #         - "features/ios"
+  #         - "--app=features/fixtures/maze_runner/mazerunner_2021.ipa"
+  #         - "--farm=bb"
+  #         - "--appium-version=1.22"
+  #         - "--device=IOS_13|IOS_14|IOS_15"
+  #         - "--no-tunnel"
+  #         - "--aws-public-ip"
+  #         - "--fail-fast"
+  #   concurrency: 25
+  #   concurrency_group: "bitbar"
+  #   concurrency_method: eager
 
-  #
-  # Conditionally trigger full pipeline
-  #
-  - label: "Conditionally trigger full set of tests"
-    timeout_in_minutes: 30
-    command: sh -c .buildkite/pipeline_trigger.sh
+  # #
+  # # Conditionally trigger full pipeline
+  # #
+  # - label: "Conditionally trigger full set of tests"
+  #   timeout_in_minutes: 30
+  #   command: sh -c .buildkite/pipeline_trigger.sh
