@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -21,8 +22,22 @@ public class Logger : MonoBehaviour
 
     private static void WriteLogFile()
     {
-        var path = Path.Combine(Application.persistentDataPath, LOG_FILE_NAME);
-        File.WriteAllText(path, _currentLog);
+        try
+        {
+            var path = Path.Combine(Application.persistentDataPath, LOG_FILE_NAME);
+            File.WriteAllText(path, _currentLog);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+            try
+            {
+                var path = Path.Combine(Application.dataPath, LOG_FILE_NAME);
+                File.WriteAllText(path, _currentLog);
+            }
+            catch (UnauthorizedAccessException _)
+            {
+            }
+        }
     }
    
 }
