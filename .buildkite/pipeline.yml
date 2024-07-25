@@ -122,12 +122,11 @@ steps:
         run: maze-runner-bitbar
         service-ports: true
         command:
-          - "features/csharp"
-          - "features/android"
+          - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_13"
+          - "--device=ANDROID_12"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -152,12 +151,11 @@ steps:
         run: maze-runner-bitbar
         service-ports: true
         command:
-          - "features/csharp"
-          - "features/android"
+          - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_13"
+          - "--device=ANDROID_12"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -182,12 +180,11 @@ steps:
         run: maze-runner-bitbar
         service-ports: true
         command:
-          - "features/csharp"
-          - "features/android"
+          - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_13"
+          - "--device=ANDROID_12"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -212,12 +209,11 @@ steps:
         run: maze-runner-bitbar
         service-ports: true
         command:
-          - "features/csharp"
-          - "features/android"
+          - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_13"
+          - "--device=ANDROID_12"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -242,12 +238,11 @@ steps:
         run: maze-runner-bitbar
         service-ports: true
         command:
-          - "features/csharp"
-          - "features/android"
+          - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_13"
+          - "--device=ANDROID_12"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -272,12 +267,11 @@ steps:
         run: maze-runner-bitbar
         service-ports: true
         command:
-          - "features/csharp"
-          - "features/android"
+          - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_13"
+          - "--device=ANDROID_12"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -302,12 +296,11 @@ steps:
         run: maze-runner-bitbar
         service-ports: true
         command:
-          - "features/csharp"
-          - "features/android"
+          - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_13"
+          - "--device=ANDROID_12"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -332,12 +325,11 @@ steps:
         run: maze-runner-bitbar
         service-ports: true
         command:
-          - "features/csharp"
-          - "features/android"
+          - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_13"
+          - "--device=ANDROID_12"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
