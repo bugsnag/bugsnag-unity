@@ -5,11 +5,8 @@
 ### Enhancements
 
 - Added the BugsnagUnity version to the configuration window. [#819](https://github.com/bugsnag/bugsnag-unity/pull/819)
-
 - Added automatic and manual network request breadcrumbs. [#817](https://github.com/bugsnag/bugsnag-unity/pull/817)
-
 - Remove unnecessary ToArray() call when constructing an error. [#822](https://github.com/bugsnag/bugsnag-unity/pull/822)
-
 - Updated BugSnag UI branding. [#701](https://github.com/bugsnag/bugsnag-unity/pull/701)
 
 ### Bug Fixes
@@ -20,7 +17,7 @@
 
 - Update bugsnag-cocoa to [v6.29.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.29.0) [#814](https://github.com/bugsnag/bugsnag-unity/pull/814)
 Update bugsnag-android to [v6.6.1](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.6.1) [#818](https://github.com/bugsnag/bugsnag-unity/pull/818)
-
+Update bugsnag-cocoa to [v6.30.1](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.30.1) [#832](https://github.com/bugsnag/bugsnag-unity/pull/832)
 
 ## 8.0.0 (2024-06-12)
 
