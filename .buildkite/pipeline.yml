@@ -127,7 +127,7 @@ steps:
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--device=ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -157,7 +157,7 @@ steps:
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--device=ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -187,7 +187,7 @@ steps:
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--device=ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -217,7 +217,7 @@ steps:
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--device=ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -247,7 +247,7 @@ steps:
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--device=ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -277,7 +277,7 @@ steps:
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--device=ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -307,7 +307,7 @@ steps:
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--device=ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
@@ -337,7 +337,7 @@ steps:
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
           - "--farm=bb"
           - "--appium-version=1.22"
-          - "--device=ANDROID_11|ANDROID_12|ANDROID_13"
+          - "--device=ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
     concurrency: 25
