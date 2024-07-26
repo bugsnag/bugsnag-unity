@@ -155,7 +155,7 @@ Before do |scenario|
               dir = Maze.config.android_app_files_directory || "/sdcard/Android/data/#{Maze.driver.app_id}/files"
               "#{dir}/mazerunner-unity.log"
             end
-    Maze.driver.push_file(path, 'New file\n')
+    Maze.driver.push_file(path, "Unwritten log file")
   end
 end
 

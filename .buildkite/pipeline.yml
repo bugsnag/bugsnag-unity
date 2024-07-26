@@ -118,19 +118,43 @@ steps:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
+        pull: maze-runner
+        run: maze-runner
         service-ports: true
         command:
           - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=ANDROID_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--farm=bs"
+          - "--appium-version=2.4.1"
+          - "--device=ANDROID_14"
     concurrency: 25
-    concurrency_group: "bitbar"
+    concurrency_group: "browserstack-app"
+  - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
+    timeout_in_minutes: 60
+    depends_on: "build-android-fixture-2021"
+    agents:
+      queue: opensource
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_2021.apk"
+        upload:
+          - "maze_output/**/*"
+          - "maze_output/metrics.csv"
+      docker-compose#v4.7.0:
+        pull: maze-runner
+        run: maze-runner
+        service-ports: true
+        command:
+          - "features/csharp/csharp_breadcrumbs.feature:81"
+          - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
+          - "--farm=bs"
+          - "--appium-version=2.4.1"
+          - "--device=ANDROID_14"
+    concurrency: 25
+    concurrency_group: "browserstack-app"
     concurrency_method: eager
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
     timeout_in_minutes: 60
@@ -147,19 +171,17 @@ steps:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
+        pull: maze-runner
+        run: maze-runner
         service-ports: true
         command:
           - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=ANDROID_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--farm=bs"
+          - "--appium-version=2.4.1"
+          - "--device=ANDROID_14"
     concurrency: 25
-    concurrency_group: "bitbar"
+    concurrency_group: "browserstack-app"
     concurrency_method: eager
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
     timeout_in_minutes: 60
@@ -176,19 +198,17 @@ steps:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
+        pull: maze-runner
+        run: maze-runner
         service-ports: true
         command:
           - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=ANDROID_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--farm=bs"
+          - "--appium-version=2.4.1"
+          - "--device=ANDROID_14"
     concurrency: 25
-    concurrency_group: "bitbar"
+    concurrency_group: "browserstack-app"
     concurrency_method: eager
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
     timeout_in_minutes: 60
@@ -205,19 +225,17 @@ steps:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
+        pull: maze-runner
+        run: maze-runner
         service-ports: true
         command:
           - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=ANDROID_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--farm=bs"
+          - "--appium-version=2.4.1"
+          - "--device=ANDROID_14"
     concurrency: 25
-    concurrency_group: "bitbar"
+    concurrency_group: "browserstack-app"
     concurrency_method: eager
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
     timeout_in_minutes: 60
@@ -234,19 +252,17 @@ steps:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
+        pull: maze-runner
+        run: maze-runner
         service-ports: true
         command:
           - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=ANDROID_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--farm=bs"
+          - "--appium-version=2.4.1"
+          - "--device=ANDROID_14"
     concurrency: 25
-    concurrency_group: "bitbar"
+    concurrency_group: "browserstack-app"
     concurrency_method: eager
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
     timeout_in_minutes: 60
@@ -263,19 +279,17 @@ steps:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
+        pull: maze-runner
+        run: maze-runner
         service-ports: true
         command:
           - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=ANDROID_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--farm=bs"
+          - "--appium-version=2.4.1"
+          - "--device=ANDROID_14"
     concurrency: 25
-    concurrency_group: "bitbar"
+    concurrency_group: "browserstack-app"
     concurrency_method: eager
   - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
     timeout_in_minutes: 60
@@ -292,48 +306,17 @@ steps:
           - "maze_output/**/*"
           - "maze_output/metrics.csv"
       docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
+        pull: maze-runner
+        run: maze-runner
         service-ports: true
         command:
           - "features/csharp/csharp_breadcrumbs.feature:81"
           - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=ANDROID_12"
-          - "--no-tunnel"
-          - "--aws-public-ip"
+          - "--farm=bs"
+          - "--appium-version=2.4.1"
+          - "--device=ANDROID_14"
     concurrency: 25
-    concurrency_group: "bitbar"
-    concurrency_method: eager
-  - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
-    timeout_in_minutes: 60
-    depends_on: "build-android-fixture-2021"
-    agents:
-      queue: opensource
-    env:
-      UNITY_VERSION: *2021
-    plugins:
-      artifacts#v1.5.0:
-        download:
-          - "features/fixtures/maze_runner/mazerunner_2021.apk"
-        upload:
-          - "maze_output/**/*"
-          - "maze_output/metrics.csv"
-      docker-compose#v4.7.0:
-        pull: maze-runner-bitbar
-        run: maze-runner-bitbar
-        service-ports: true
-        command:
-          - "features/csharp/csharp_breadcrumbs.feature:81"
-          - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
-          - "--farm=bb"
-          - "--appium-version=1.22"
-          - "--device=ANDROID_11"
-          - "--no-tunnel"
-          - "--aws-public-ip"
-    concurrency: 25
-    concurrency_group: "bitbar"
+    concurrency_group: "browserstack-app"
     concurrency_method: eager
 
   # Run Android EDM tests
