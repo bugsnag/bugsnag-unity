@@ -19,10 +19,12 @@ x-common-environment: &common-environment
   MAZE_BUGSNAG_API_KEY:
   MAZE_REPEATER_API_KEY:
   UNITY_VERSION:
+  BROWSER_STACK_USERNAME:
+  BROWSER_STACK_ACCESS_KEY:
 
 services:
   maze-runner:
-    image: 855461928732.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
     environment:
       DEBUG:
       BUILDKITE:
