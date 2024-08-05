@@ -146,19 +146,6 @@ After do |scenario|
   end
 end
 
-Before do |scenario|
-  if Maze.driver && Maze.driver.is_a?(Maze::Driver::Appium)
-    path = case Maze::Helper.get_current_platform
-            when 'ios'
-              "@#{Maze.driver.app_id}/Documents/mazerunner-unity.log"
-            when 'android'
-              dir = Maze.config.android_app_files_directory || "/sdcard/Android/data/#{Maze.driver.app_id}/files"
-              "#{dir}/mazerunner-unity.log"
-            end
-    Maze.driver.push_file(path, "Unwritten log file")
-  end
-end
-
 device_logs = []
 After do |scenario|
   if Maze.driver && Maze.driver.is_a?(Maze::Driver::Appium)
