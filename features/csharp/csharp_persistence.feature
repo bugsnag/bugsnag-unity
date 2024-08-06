@@ -3,7 +3,7 @@ Feature: Unity Persistence
   Background:
     Given I clear the Bugsnag cache
 
-  @skip_windows @skip_webgl @skip_cocoa @skip_android #pending PLAT-8632
+  @skip_windows @skip_linux @skip_webgl @skip_cocoa @skip_android #pending PLAT-8632
   Scenario: Receive a persisted session
     When I set the HTTP status code for the next request to 408
     And I run the game in the "PersistSession" state

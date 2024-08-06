@@ -70,9 +70,18 @@ namespace BugsnagUnity
             
             public ulong f_bsize;
             public ulong f_frsize;
-            public long f_blocks;
-            public long f_bfree;
-            public long f_bavailable;
+            public ulong f_blocks;
+            public ulong f_bfree;
+            public ulong f_bavailable;
+
+            public ulong f_files;
+            public ulong f_ffree;
+            public ulong f_favail;
+
+            public ulong f_fsid;
+            public ulong f_flag;
+            public ulong f_namemax;
+
         }
 
         [return: MarshalAs(UnmanagedType.SysInt)]
@@ -107,7 +116,7 @@ namespace BugsnagUnity
             // See https://man7.org/linux/man-pages/man3/statvfs.3.html
             StatvfsBuffer buffer = new StatvfsBuffer();
             if (statvfs(Environment.CurrentDirectory, buffer) == 0) {
-                device.FreeDisk = buffer.f_bavailable * (long)buffer.f_bsize;
+                device.FreeDisk = (long)buffer.f_bavailable * (long)buffer.f_bsize;
             }
         }
 

@@ -10,6 +10,7 @@ if [[ "$BUILDKITE_MESSAGE" == *"[full ci]"* ||
   buildkite-agent pipeline upload .buildkite/pipeline.ios.full.yml
   buildkite-agent pipeline upload .buildkite/pipeline.windows.full.yml
   buildkite-agent pipeline upload .buildkite/pipeline.macos.full.yml
+  buildkite-agent pipeline upload .buildkite/pipeline.linux.full.yml
   buildkite-agent pipeline upload .buildkite/pipeline.webgl.full.yml
 else
   # Basic build, but allow a full build to be triggered

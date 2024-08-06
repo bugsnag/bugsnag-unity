@@ -37,6 +37,7 @@ Feature: Session Tracking
     And the session payload field "app.type" equals the platform-dependent string:
       | macos   | MacOS           |
       | windows | Windows         |
+      | linux   | Linux           |
       | switch  | nintendo-switch |
       | browser | WebGL           |
       | android | android         |
@@ -45,6 +46,7 @@ Feature: Session Tracking
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
+      | linux   | Unix                 |
       | switch  | Nintendo Switch      |
       | browser | Unix                 |
       | android | android              |
@@ -53,6 +55,7 @@ Feature: Session Tracking
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple    |
       | windows | PC       |
+      | linux   | @skip    |
       | switch  | Nintendo |
       | browser | @skip    |
       | android | @skip    |
@@ -72,6 +75,7 @@ Feature: Session Tracking
     And the session payload field "app.type" equals the platform-dependent string:
       | macos   | MacOS           |
       | windows | Windows         |
+      | linux   | Linux           |
       | switch  | nintendo-switch |
       | browser | WebGL           |
       | android | android         |
@@ -80,6 +84,7 @@ Feature: Session Tracking
     And the session payload field "device.osName" equals the platform-dependent string:
       | macos   | Mac OS               |
       | windows | Microsoft Windows NT |
+      | linux   | Unix                 |
       | switch  | Nintendo Switch      |
       | browser | Unix                 |
       | android | android              |
@@ -88,6 +93,7 @@ Feature: Session Tracking
     And the session payload field "device.manufacturer" equals the platform-dependent string:
       | macos   | Apple    |
       | windows | PC       |
+      | linux   | @skip    |
       | switch  | Nintendo |
       | browser | @skip    |
       | android | @skip    |

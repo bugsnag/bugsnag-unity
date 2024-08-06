@@ -48,6 +48,13 @@ Before('@skip_windows') do |_scenario|
   skip_this_scenario("Skipping scenario") if Maze.config.os == 'windows'
 end
 
+Before('@linux_only') do |_scenario|
+  skip_this_scenario('Skipping scenario') unless Maze.config.os == 'linux'
+end
+Before('@skip_linux') do |_scenario|
+  skip_this_scenario("Skipping scenario") if Maze.config.os == 'linux'
+end
+
 
 Before('@switch_only') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.os == 'switch'
@@ -71,6 +78,7 @@ BeforeAll do
   elsif Maze.config.os&.downcase == 'windows'
     # Allow the necessary environment variables to be passed from Ubuntu (under WSL) to the Windows test fixture
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
+  elsif Maze.config.os&.downcase == 'linux'
   elsif Maze.config.browser != nil # WebGL
   
     release_path = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
@@ -137,6 +145,8 @@ After do |scenario|
 
   case Maze::Helper.get_current_platform
   when 'macos'
+    `killall Mazerunner`
+  when 'linux'
     `killall Mazerunner`
   when 'webgl','windows'
     execute_command('close_application')
