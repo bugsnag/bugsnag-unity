@@ -4,6 +4,7 @@ aliases:
   - &2022 "2022.3.22f1"
   - &2023 "2023.2.19f1"
 
+# Waiting on https://smartbear.atlassian.net/browse/PLAT-12563
 agents:
   queue: macos-14
 
@@ -95,7 +96,6 @@ steps:
           limit: 1
 
   - label: Build Unity 2023 linux test fixture
-    skip: Pending PLAT-12072
     timeout_in_minutes: 30
     key: "linux-2023-fixture"
     depends_on: "build-artifacts"
@@ -181,7 +181,6 @@ steps:
       - scripts/ci-run-linux-tests.sh release
 
   - label: Run linux e2e tests for Unity 2023
-    skip: Pending PLAT-12072
     timeout_in_minutes: 30
     depends_on: "linux-2023-fixture"
     env:

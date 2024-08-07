@@ -4,11 +4,10 @@ gem 'rake'
 gem 'xcpretty'
 gem 'xcodeproj'
 gem 'cocoapods'
-gem 'rake'
 
 unless Gem.win_platform?
   # Use official Maze Runner release
-  gem 'bugsnag-maze-runner', '~>9.11.2'
+  gem 'bugsnag-maze-runner', '~>9.0'
 
   # Use a specific Maze Runner branch
   # gem 'bugsnag-maze-runner', git: 'https://github.com/bugsnag/maze-runner', branch: 'main'

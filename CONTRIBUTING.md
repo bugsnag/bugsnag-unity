@@ -25,21 +25,21 @@ git clone --recursive git@github.com:bugsnag/bugsnag-unity
 
 ### Ubuntu 22.04
 
-- Set up unity
-  - Download unity hub with the custom repository using https://docs.unity3d.com/hub/manual/InstallHub.html. Note that Ubuntu 24.04 doesn't work currently.
-  - Install a unity version.
-  - Set the `UNITY_VERSION` environment variables based on the unity version; for example:
+- Set up Unity
+  - Download Unity Hub with the custom repository using https://docs.unity3d.com/hub/manual/InstallHub.html. Note that Ubuntu 24.04 doesn't work currently.
+  - Install a Unity version.
+  - Set the `UNITY_VERSION` environment variables based on the Unity version; for example:
     ```
     export UNITY_VERSION=2021.3.40f1
     ```
   - Install the required libssl version with https://stackoverflow.com/a/72137153
-- Install dotnet with sudo apt install dotnet-sdk-8.0. The snap release doesn't work.
+- Install .NET with `sudo apt install dotnet-sdk-8.0`. The snap release doesn't work.
 - Install Ruby 3.3.4 and bundler via https://stackoverflow.com/a/37956249. The snap release doesn't work.
-- Setup android
+- Setup Android
   - `sudo apt-get install openjdk-11-jdk`
   - `sudo snap install android-studio --classic`
-  - Use Andoroid Studio open any project, click the hamburger menu -> Tools -> SDK -> SDK Tools. Then select and download NDK (side by side) and Android SDK Command-line Tools.
-  - Set `ANDROID_SDK_ROOT` to the path from Andoroid Studio's hamburger menu -> Tools -> SDK -> Path. For example:
+  - Use Android Studio open any project, click the hamburger menu -> Tools -> SDK -> SDK Tools. Then select and download NDK (side by side) and Android SDK Command-line Tools.
+  - Set `ANDROID_SDK_ROOT` to the path from Android Studio's hamburger menu -> Tools -> SDK -> Path. For example:
     ```
     export ANDROID_SDK_ROOT=/home/username/Android/Sdk
     ```
