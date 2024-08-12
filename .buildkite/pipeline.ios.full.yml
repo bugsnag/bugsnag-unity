@@ -1,0 +1,321 @@
+aliases:
+  - &2020 "2020.3.48f1"
+  - &2021 "2021.3.36f1"
+  - &2022 "2022.3.22f1"
+  - &2023 "2023.2.19f1"
+
+
+agents:
+  queue: macos-14
+
+steps:
+  #
+  # Build iOS test fixtures
+  #
+  - label: ":ios: Generate Xcode project - Unity 2020"
+    timeout_in_minutes: 30
+    key: "generate-fixture-project-2020"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2020
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/unity.log
+          - project_2020.tgz
+    commands:
+      - bundle install
+      - rake test:ios:generate_xcode
+      - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ":ios: Build iOS test fixture for Unity 2020"
+    timeout_in_minutes: 30
+    key: "build-ios-fixture-2020"
+    depends_on: "generate-fixture-project-2020"
+    env:
+      XCODE_VERSION: "15.3.0"
+      UNITY_VERSION: *2020
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+          - project_2020.tgz
+        upload:
+          - features/fixtures/maze_runner/mazerunner_2020.ipa
+          - features/fixtures/unity.log
+    commands:
+      - bundle install
+      - tar -zxf project_2020.tgz features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ":ios: Generate Xcode DEV project - Unity 2021"
+    timeout_in_minutes: 30
+    key: "generate-dev-fixture-project-2021"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/unity.log
+          - project_dev_2021.tgz
+    commands:
+      - bundle install
+      - rake test:ios:generate_xcode_dev
+      - tar -zvcf project_dev_2021.tgz features/fixtures/maze_runner/mazerunner_dev_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ":ios: Build DEV iOS test fixture for Unity 2021"
+    timeout_in_minutes: 30
+    key: "build-ios-dev-fixture-2021"
+    depends_on: "generate-dev-fixture-project-2021"
+    env:
+      UNITY_VERSION: *2021
+      XCODE_VERSION: "15.3.0"
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - Bugsnag.unitypackage
+          - project_dev_2021.tgz
+        upload:
+          - features/fixtures/maze_runner/mazerunner_dev_2021.ipa
+          - features/fixtures/unity.log
+    commands:
+      - bundle install
+      - tar -zxf project_dev_2021.tgz features/fixtures/maze_runner
+      - rake test:ios:build_xcode_dev
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ":ios: Generate Xcode project - Unity 2022"
+    timeout_in_minutes: 30
+    key: "generate-fixture-project-2022"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2022
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/unity.log
+          - project_2022.tgz
+    commands:
+      - bundle install
+      - rake test:ios:generate_xcode
+      - tar -zvcf project_2022.tgz features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ":ios: Build iOS test fixture for Unity 2022"
+    timeout_in_minutes: 30
+    key: "build-ios-fixture-2022"
+    depends_on: "generate-fixture-project-2022"
+    env:
+      UNITY_VERSION: *2022
+      XCODE_VERSION: "15.3.0"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+          - project_2022.tgz
+        upload:
+          - features/fixtures/maze_runner/mazerunner_2022.ipa
+          - features/fixtures/unity.log
+    commands:
+      - bundle install
+      - tar -zxf project_2022.tgz features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ":ios: Generate Xcode project - Unity 2023"
+    timeout_in_minutes: 30
+    key: "generate-fixture-project-2023"
+    depends_on: "build-artifacts"
+    env:
+      UNITY_VERSION: *2023
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+        upload:
+          - features/fixtures/unity.log
+          - project_2023.tgz
+    commands:
+      - bundle install
+      - rake test:ios:generate_xcode
+      - tar -zvcf project_2023.tgz features/fixtures/maze_runner/mazerunner_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  - label: ":ios: Build iOS test fixture for Unity 2023"
+    timeout_in_minutes: 30
+    key: "build-ios-fixture-2023"
+    depends_on: "generate-fixture-project-2023"
+    env:
+      UNITY_VERSION: *2023
+      XCODE_VERSION: "15.3.0"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - Bugsnag.unitypackage
+          - project_2023.tgz
+        upload:
+          - features/fixtures/maze_runner/mazerunner_2023.ipa
+          - features/fixtures/unity.log
+    commands:
+      - bundle install
+      - tar -zxf project_2023.tgz features/fixtures/maze_runner
+      - rake test:ios:build_xcode
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
+  #
+  # Run iOS tests
+  #
+  - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2020"
+    timeout_in_minutes: 60
+    depends_on: "build-ios-fixture-2020"
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_2020.ipa"
+        upload:
+          - "maze_output/**/*"
+          - "maze_output/metrics.csv"
+      docker-compose#v4.7.0:
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
+        service-ports: true
+        command:
+          - "features/csharp"
+          - "features/ios"
+          - "--app=features/fixtures/maze_runner/mazerunner_2020.ipa"
+          - "--farm=bb"
+          - "--appium-version=1.22"
+          - "--device=IOS_13|IOS_14|IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: "bitbar"
+    concurrency_method: eager
+
+  - label: ":bitbar: :ios: Run iOS e2e DEV tests for Unity 2021"
+    timeout_in_minutes: 60
+    depends_on: "build-ios-dev-fixture-2021"
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.5.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_dev_2021.ipa"
+        upload:
+          - "maze_output/**/*"
+          - "maze_output/metrics.csv"
+
+      docker-compose#v4.7.0:
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
+        service-ports: true
+        command:
+          - "features/csharp"
+          - "features/ios"
+          - "--app=features/fixtures/maze_runner/mazerunner_dev_2021.ipa"
+          - "--farm=bb"
+          - "--appium-version=1.22"
+          - "--device=IOS_13|IOS_14|IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: "bitbar"
+    concurrency_method: eager
+
+  - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2022"
+    timeout_in_minutes: 60
+    depends_on: "build-ios-fixture-2022"
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_2022.ipa"
+        upload:
+          - "maze_output/**/*"
+          - "maze_output/metrics.csv"
+      docker-compose#v4.7.0:
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
+        service-ports: true
+        command:
+          - "features/csharp"
+          - "features/ios"
+          - "--app=features/fixtures/maze_runner/mazerunner_2022.ipa"
+          - "--farm=bb"
+          - "--appium-version=1.22"
+          - "--device=IOS_13|IOS_14|IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: "bitbar"
+    concurrency_method: eager
+
+  - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2023"
+    timeout_in_minutes: 60
+    depends_on: "build-ios-fixture-2023"
+    agents:
+      queue: opensource
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - "features/fixtures/maze_runner/mazerunner_2023.ipa"
+        upload:
+          - "maze_output/**/*"
+          - "maze_output/metrics.csv"
+      docker-compose#v4.7.0:
+        pull: maze-runner-bitbar
+        run: maze-runner-bitbar
+        service-ports: true
+        command:
+          - "features/csharp"
+          - "features/ios"
+          - "--app=features/fixtures/maze_runner/mazerunner_2023.ipa"
+          - "--farm=bb"
+          - "--appium-version=1.22"
+          - "--device=IOS_13|IOS_14|IOS_15"
+          - "--no-tunnel"
+          - "--aws-public-ip"
+          - "--fail-fast"
+    concurrency: 25
+    concurrency_group: "bitbar"
+    concurrency_method: eager

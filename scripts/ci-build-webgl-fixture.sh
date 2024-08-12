@@ -12,14 +12,13 @@ fi
 
 BUILD_TYPE=$1
 
+# Build the WebGL fixture
+./features/scripts/build_maze_runner.sh $BUILD_TYPE webgl
+
 pushd features/fixtures/maze_runner/build
   if [ "$BUILD_TYPE" == "release" ]; then
-    unzip WebGL-release-${UNITY_VERSION:0:4}.zip
+    zip -r WebGL-release-${UNITY_VERSION:0:4}.zip WebGL
   else
-    unzip WebGL-dev-${UNITY_VERSION:0:4}.zip
+    zip -r WebGL-dev-${UNITY_VERSION:0:4}.zip WebGL
   fi
 popd
-
-bundle install
-# TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-bundle exec maze-runner --farm=local --browser=firefox -e features/csharp/csharp_persistence.feature features/csharp

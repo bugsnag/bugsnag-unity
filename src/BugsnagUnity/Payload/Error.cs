@@ -144,7 +144,7 @@ namespace BugsnagUnity.Payload
                 var androidErrorData = ProcessAndroidError(exception.Message);
                 var androidErrorClass = androidErrorData[0];
                 var androidErrorMessage = androidErrorData[1];
-                var lines = new StackTrace(exception.StackTrace, StackTraceFormat.AndroidJava).ToArray();
+                var lines = new StackTrace(exception.StackTrace, StackTraceFormat.AndroidJava).StackTraceLines;
                 return new Error(androidErrorClass, androidErrorMessage, lines, HandledState.ForUnhandledException(), true);
             }
             else
@@ -152,11 +152,11 @@ namespace BugsnagUnity.Payload
                 StackTraceLine[] lines;
                 if (!string.IsNullOrEmpty(exception.StackTrace))
                 {
-                    lines = new StackTrace(exception.StackTrace).ToArray();
+                    lines = new StackTrace(exception.StackTrace).StackTraceLines;
                 }
                 else
                 {
-                    lines = new StackTrace(alternativeStackTrace).ToArray();
+                    lines = new StackTrace(alternativeStackTrace).StackTraceLines;
                 }
                 return new Error(errorClass, exception.Message, lines);
             }
@@ -165,14 +165,14 @@ namespace BugsnagUnity.Payload
 
         internal static Error FromStringInfo(string name, string message, string stacktrace)
         {
-            var stackFrames = new StackTrace(stacktrace).ToArray();
+            var stackFrames = new StackTrace(stacktrace).StackTraceLines;
             return new Error(name, message, stackFrames);
         }
 
         internal static Error FromSystemException(System.Exception exception, string stackTrace)
         {
             var errorClass = exception.GetType().Name;
-            var lines = new StackTrace(stackTrace).ToArray();            
+            var lines = new StackTrace(stackTrace).StackTraceLines;
 
             return new Error(errorClass, exception.Message, lines);
         }
@@ -209,10 +209,10 @@ namespace BugsnagUnity.Payload
         {
             var match = Regex.Match(logMessage.Condition, ERROR_CLASS_MESSAGE_PATTERN, RegexOptions.Singleline);
 
-            var lines = new StackTrace(logMessage.StackTrace).ToArray();
+            var lines = new StackTrace(logMessage.StackTrace).StackTraceLines;
             if (lines.Length == 0)
             {
-                lines = new StackTrace(fallbackStackFrames).ToArray();
+                lines = new StackTrace(fallbackStackFrames).StackTraceLines;
             }
 
             var handledState = forceUnhandled
@@ -231,7 +231,7 @@ namespace BugsnagUnity.Payload
                     var androidErrorData = ProcessAndroidError(message);
                     errorClass = androidErrorData[0];
                     message = androidErrorData[1];
-                    lines = new StackTrace(logMessage.StackTrace, StackTraceFormat.AndroidJava).ToArray();
+                    lines = new StackTrace(logMessage.StackTrace, StackTraceFormat.AndroidJava).StackTraceLines;
                     handledState = HandledState.ForUnhandledException();
                 }
                 return new Error(errorClass, message, lines, handledState, isAndroidJavaException);
