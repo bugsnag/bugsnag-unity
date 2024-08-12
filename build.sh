@@ -3,7 +3,7 @@
 # Define default arguments.
 CONFIGURATION="Release"
 SOLUTION="./BugsnagUnity.sln"
-VERSION="8.0.0"
+VERSION="8.1.0"
 
 # Parse arguments.
 for i in "$@"; do
