@@ -133,7 +133,6 @@ steps:
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
-
     command:
       - scripts/ci-run-linux-tests.sh release
 
@@ -142,8 +141,8 @@ steps:
     depends_on: "linux-2021-fixture"
     env:
       UNITY_VERSION: *2021
-    queue:
-      name: "opensource-ubuntu-1804-unity"
+    agents:
+      queue: "opensource-ubuntu-1804-unity"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -159,8 +158,8 @@ steps:
     depends_on: "linux-2021-dev-fixture"
     env:
       UNITY_VERSION: *2021
-    queue:
-      name: "opensource-ubuntu-1804-unity"
+    agents:
+      queue: "opensource-ubuntu-1804-unity"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -176,8 +175,8 @@ steps:
     depends_on: "linux-2022-fixture"
     env:
       UNITY_VERSION: *2022
-    queue:
-      name: "opensource-ubuntu-1804-unity"
+    agents:
+      queue: "opensource-ubuntu-1804-unity"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -193,8 +192,8 @@ steps:
     depends_on: "linux-2023-fixture"
     env:
       UNITY_VERSION: *2023
-    queue:
-      name: "opensource-ubuntu-1804-unity"
+    agents:
+      queue: "opensource-ubuntu-1804-unity"
     plugins:
       artifacts#v1.9.0:
         download:
