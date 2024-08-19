@@ -11,7 +11,7 @@ if [[ "$BUILDKITE_MESSAGE" == *"[full ci]"* ||
   buildkite-agent pipeline upload .buildkite/pipeline.windows.full.yml
   buildkite-agent pipeline upload .buildkite/pipeline.macos.full.yml
   # Waiting on https://smartbear.atlassian.net/browse/PLAT-12563
-  # buildkite-agent pipeline upload .buildkite/pipeline.linux.full.yml
+  buildkite-agent pipeline upload .buildkite/pipeline.linux.full.yml
   buildkite-agent pipeline upload .buildkite/pipeline.webgl.full.yml
 else
   # Basic build, but allow a full build to be triggered
