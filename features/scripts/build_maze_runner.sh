@@ -6,7 +6,7 @@ if [ -z "$UNITY_VERSION" ]; then
 fi
 
 if [[ $# != 2 ]]; then
-  echo "Build type (release/dev) and platform (macos/webgl/windows/wsl) must be passed as parameters"
+  echo "Build type (release/dev) and platform (macos/webgl/windows/wsl/linux) must be passed as parameters"
   exit 2
 fi
 
@@ -36,6 +36,14 @@ elif [ "$PLATFORM_TYPE" == "wsl" ]; then
   fi
   set -m
   UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+elif [ "$PLATFORM_TYPE" == "linux" ]; then
+  if [ "$BUILD_TYPE" == "release" ]; then
+    PLATFORM="Linux64Release"
+  else
+    PLATFORM="Linux64Dev"
+  fi
+  set -m
+  UNITY_PATH="$HOME/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity"
 elif [ "$PLATFORM_TYPE" == "webgl" ]; then
   if [ "$BUILD_TYPE" == "release" ]; then
     PLATFORM="WebGLRelease"

@@ -34,6 +34,12 @@ When('I clear the Bugsnag cache') do
     Maze::Runner.run_command(command, blocking: false)
     execute_command('clear_cache')
 
+  when 'linux'
+    log = File.join(Dir.pwd, 'mazerunner.log')
+    command = "#{Maze.config.app} --args -logfile #{log} > /dev/null"
+    Maze::Runner.run_command(command, blocking: false)
+    execute_command('clear_cache')
+
   when 'android', 'ios'
     execute_command('clear_cache')
   when 'browser'
@@ -76,6 +82,13 @@ When('I run the game in the {string} state') do |state|
   when 'windows'
     win_log = File.join(Dir.pwd, "#{state}-mazerunner.log")
     command = "#{Maze.config.app} --args -logfile #{win_log}"
+    Maze::Runner.run_command(command, blocking: false)
+
+    execute_command('run_scenario', state)
+
+  when 'linux'
+    log = File.join(Dir.pwd, "#{state}-mazerunner.log")
+    command = "#{Maze.config.app} --args -logfile #{log} > /dev/null"
     Maze::Runner.run_command(command, blocking: false)
 
     execute_command('run_scenario', state)

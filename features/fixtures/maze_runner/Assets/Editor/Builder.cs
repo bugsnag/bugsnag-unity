@@ -31,6 +31,11 @@ public class Builder : MonoBehaviour {
         Win64(false);
     }
 
+    public static void Linux64Release()
+    {
+        Linux64(false);
+    }
+
     public static void WebGLRelease()
     {
         WebGL(false);
@@ -46,6 +51,11 @@ public class Builder : MonoBehaviour {
         Win64(true);
     }
 
+    public static void Linux64Dev()
+    {
+        Linux64(true);
+    }
+
     public static void WebGLDev()
     {
         WebGL(true);
@@ -59,6 +69,11 @@ public class Builder : MonoBehaviour {
     static void Win64(bool dev)
     {
         BuildStandalone(dev ? "build/Windows/Mazerunner_dev.exe" : "build/Windows/Mazerunner.exe", BuildTarget.StandaloneWindows64, dev);
+    }
+
+    static void Linux64(bool dev)
+    {
+        BuildStandalone(dev ? "build/linux/Mazerunner_dev" : "build/linux/Mazerunner", BuildTarget.StandaloneLinux64, dev);
     }
 
     static void WebGL(bool dev)

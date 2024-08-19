@@ -12,6 +12,7 @@ end
 HOST_OS = RbConfig::CONFIG['host_os']
 def is_mac?; HOST_OS =~ /darwin/i; end
 def is_windows?; HOST_OS =~ /mingw|mswin|windows/i; end
+def is_linux?; HOST_OS.strip =~ /linux/i; end
 
 ##
 #
@@ -26,6 +27,8 @@ def unity_directory
       "/Applications/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
     elsif is_windows?
       "C:\\Program Files\\Unity\\Hub\\Editor\\#{ENV['UNITY_VERSION']}"
+    elsif is_linux?
+      "#{ENV['HOME']}/Unity/Hub/Editor/#{ENV['UNITY_VERSION']}"
     end
   else
     raise 'No unity version set - use $UNITY_VERSION'
@@ -266,6 +269,7 @@ namespace :plugin do
       task all: [:assets, :cocoa, :android, :csharp, ]
       task all_android64: [:assets, :cocoa, :android_64bit, :csharp ]
     end
+    task minimal: [:assets, :csharp]
 
 
     desc "Delete all build artifacts"
@@ -437,6 +441,9 @@ namespace :plugin do
         FileUtils.cp File.realpath("BugsnagUnity.dll"), assets_path
         windows_dir = File.join(assets_path, "Windows")
         FileUtils.cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
+        linux_dir = File.join(assets_path, "Linux")
+        FileUtils.mkpath linux_dir
+        FileUtils.cp File.realpath("BugsnagUnity.Linux.dll"), linux_dir
         FileUtils.cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
         FileUtils.cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
         FileUtils.cp File.realpath("BugsnagUnity.MacOS.dll"), File.join(assets_path, "OSX")
@@ -456,6 +463,11 @@ namespace :plugin do
     #Rake::Task["plugin:build:all"].invoke
     #export_package("Bugsnag.unitypackage")
     Rake::Task["plugin:build:all_android64"].invoke
+    export_package("Bugsnag.unitypackage")
+  end
+
+  task export_minimal: ["plugin:build:minimal"] do
+    Rake::Task["plugin:build:minimal"].invoke
     export_package("Bugsnag.unitypackage")
   end
 

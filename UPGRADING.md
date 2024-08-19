@@ -65,6 +65,7 @@ If you wish to do it manually, please remove the following directories and files
 - File: `Assets/Plugins/OSX/BugsnagUnity.MacOS.dll`
 - File: `Assets/Plugins/tvOS/BugsnagUnity.iOS.dll`
 - File: `Assets/Plugins/Windows/BugsnagUnity.Windows.dll`
+- File: `Assets/Plugins/Windows/BugsnagUnity.Linux.dll`
 - Directory: `Assets/Plugins/iOS/Bugsnag`
 - Directory: `Assets/Plugins/OSX/Bugsnag`
 - Directory: `Assets/Plugins/tvOS/Bugsnag`
