@@ -43,7 +43,7 @@ elif [ "$PLATFORM_TYPE" == "linux" ]; then
     PLATFORM="Linux64Dev"
   fi
   set -m
-  UNITY_PATH="$HOME/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity"
+  UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
 elif [ "$PLATFORM_TYPE" == "webgl" ]; then
   if [ "$BUILD_TYPE" == "release" ]; then
     PLATFORM="WebGLRelease"
