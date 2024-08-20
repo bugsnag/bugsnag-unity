@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+set -x
+
 if [ -z "$UNITY_VERSION" ]; then
   echo "UNITY_VERSION must be set, to e.g. 2018.4.36f1"
   exit 1
@@ -14,6 +16,8 @@ BUILD_TYPE=$1
 
 # Build the Linux fixture
 ./features/scripts/build_maze_runner.sh $BUILD_TYPE linux
+
+pwd
 
 pushd features/fixtures/maze_runner/build
   zip -r linux-${UNITY_VERSION:0:4}.zip linux
