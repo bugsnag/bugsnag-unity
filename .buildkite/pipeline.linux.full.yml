@@ -47,7 +47,7 @@ steps:
         upload:
           - unity.log
           - unity_import.log
-          - c/linux-release-2021.zip
+          - features/fixtures/maze_runner/build/linux-release-2021.zip
     retry:
       automatic:
         - exit_status: "*"
