@@ -125,7 +125,7 @@ steps:
     env:
       UNITY_VERSION: *2020
     agents:
-        queue: "opensource-ubuntu-1804-unity"
+        queue: "buildkite-unity-i-01d4fe46553eefabc-1"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -142,7 +142,7 @@ steps:
     env:
       UNITY_VERSION: *2021
     agents:
-      queue: "opensource-ubuntu-1804-unity"
+      queue: "buildkite-unity-i-01d4fe46553eefabc-1"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -159,7 +159,7 @@ steps:
     env:
       UNITY_VERSION: *2021
     agents:
-      queue: "opensource-ubuntu-1804-unity"
+      queue: "buildkite-unity-i-01d4fe46553eefabc-1"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -176,7 +176,7 @@ steps:
     env:
       UNITY_VERSION: *2022
     agents:
-      queue: "opensource-ubuntu-1804-unity"
+      queue: "buildkite-unity-i-01d4fe46553eefabc-1"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -193,7 +193,7 @@ steps:
     env:
       UNITY_VERSION: *2023
     agents:
-      queue: "opensource-ubuntu-1804-unity"
+      queue: "buildkite-unity-i-01d4fe46553eefabc-1"
     plugins:
       artifacts#v1.9.0:
         download:
