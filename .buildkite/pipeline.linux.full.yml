@@ -14,25 +14,27 @@ steps:
   #
   # Build Linux test fixtures
   #
-  - label: Build Unity 2020 Linux test fixture
-    timeout_in_minutes: 30
-    key: "linux-2020-fixture"
-    depends_on: "build-artifacts"
-    env:
-      UNITY_VERSION: *2020
-    plugins:
-      artifacts#v1.9.0:
-        download:
-          - Bugsnag.unitypackage
-        upload:
-          - unity.log
-          - features/fixtures/maze_runner/build/linux-release-2020.zip
-    commands:
-      - scripts/ci-build-linux-fixture.sh release
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+
+# Skipped - PLAT-12628
+#  - label: Build Unity 2020 Linux test fixture
+#    timeout_in_minutes: 30
+#    key: "linux-2020-fixture"
+#    depends_on: "build-artifacts"
+#    env:
+#      UNITY_VERSION: *2020
+#    plugins:
+#      artifacts#v1.9.0:
+#        download:
+#          - Bugsnag.unitypackage
+#        upload:
+#          - unity.log
+#          - features/fixtures/maze_runner/build/linux-release-2020.zip
+#    commands:
+#      - scripts/ci-build-linux-fixture.sh release
+#    retry:
+#      automatic:
+#        - exit_status: "*"
+#          limit: 1
 
   - label: Build Unity 2021 linux test fixture
     timeout_in_minutes: 30
@@ -55,26 +57,27 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: Build Unity 2021 linux DEV test fixture
-    timeout_in_minutes: 30
-    key: "linux-2021-dev-fixture"
-    depends_on: "build-artifacts"
-    env:
-      UNITY_VERSION: *2021
-    commands:
-      - scripts/ci-build-linux-fixture.sh dev
-    plugins:
-      artifacts#v1.9.0:
-        download:
-          - Bugsnag.unitypackage
-        upload:
-          - unity.log
-          - unity_import.log
-          - features/fixtures/maze_runner/build/linux-dev-2021.zip
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
+# Skipped - PLAT-12629
+#  - label: Build Unity 2021 linux DEV test fixture
+#    timeout_in_minutes: 30
+#    key: "linux-2021-dev-fixture"
+#    depends_on: "build-artifacts"
+#    env:
+#      UNITY_VERSION: *2021
+#    commands:
+#      - scripts/ci-build-linux-fixture.sh dev
+#    plugins:
+#      artifacts#v1.9.0:
+#        download:
+#          - Bugsnag.unitypackage
+#        upload:
+#          - unity.log
+#          - unity_import.log
+#          - features/fixtures/maze_runner/build/linux-dev-2021.zip
+#    retry:
+#      automatic:
+#        - exit_status: "*"
+#          limit: 1
 
   - label: Build Unity 2022 linux test fixture
     timeout_in_minutes: 30
@@ -121,22 +124,24 @@ steps:
   #
   # Run linux e2e tests
   #
-  - label: Run linux e2e tests for Unity 2020
-    timeout_in_minutes: 30
-    depends_on: "linux-2020-fixture"
-    env:
-      UNITY_VERSION: *2020
-    agents:
-        queue: "opensource-ubuntu-1804-unity"
-    plugins:
-      artifacts#v1.9.0:
-        download:
-          - features/fixtures/maze_runner/build/linux-release-2020.zip
-        upload:
-          - maze_output/**/*
-          - maze_output/metrics.csv
-    command:
-      - scripts/ci-run-linux-tests.sh release
+
+# Skipped - PLAT-12628
+#  - label: Run linux e2e tests for Unity 2020
+#    timeout_in_minutes: 30
+#    depends_on: "linux-2020-fixture"
+#    env:
+#      UNITY_VERSION: *2020
+#    agents:
+#        queue: "opensource-ubuntu-1804-unity"
+#    plugins:
+#      artifacts#v1.9.0:
+#        download:
+#          - features/fixtures/maze_runner/build/linux-release-2020.zip
+#        upload:
+#          - maze_output/**/*
+#          - maze_output/metrics.csv
+#    command:
+#      - scripts/ci-run-linux-tests.sh release
 
   - label: Run linux e2e tests for Unity 2021
     timeout_in_minutes: 30
@@ -172,22 +177,23 @@ steps:
     commands:
       - scripts/ci-run-linux-tests.sh dev
 
-  - label: Run linux e2e tests for Unity 2022
-    timeout_in_minutes: 30
-    depends_on: "linux-2022-fixture"
-    env:
-      UNITY_VERSION: *2022
-    agents:
-      queue: "opensource-ubuntu-1804-unity"
-    plugins:
-      artifacts#v1.9.0:
-        download:
-          - features/fixtures/maze_runner/build/linux-release-2022.zip
-        upload:
-          - maze_output/**/*
-          - maze_output/metrics.csv
-    commands:
-      - scripts/ci-run-linux-tests.sh release
+# Skipped - PLAT-12629
+#  - label: Run linux e2e tests for Unity 2022
+#    timeout_in_minutes: 30
+#    depends_on: "linux-2022-fixture"
+#    env:
+#      UNITY_VERSION: *2022
+#    agents:
+#      queue: "opensource-ubuntu-1804-unity"
+#    plugins:
+#      artifacts#v1.9.0:
+#        download:
+#          - features/fixtures/maze_runner/build/linux-release-2022.zip
+#        upload:
+#          - maze_output/**/*
+#          - maze_output/metrics.csv
+#    commands:
+#      - scripts/ci-run-linux-tests.sh release
 
   - label: Run linux e2e tests for Unity 2023
     timeout_in_minutes: 30
