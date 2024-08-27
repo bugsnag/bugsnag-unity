@@ -8,6 +8,8 @@ aliases:
 agents:
   queue: macos-14
 
+timeout_in_minutes: 60
+
 steps:
   #
   # Build Linux test fixtures
