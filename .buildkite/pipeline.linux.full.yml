@@ -148,6 +148,7 @@ steps:
     depends_on: "linux-2021-fixture"
     env:
       UNITY_VERSION: *2021
+      DEBUG: "true"
     agents:
       queue: "opensource-ubuntu-1804-unity"
     plugins:
