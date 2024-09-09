@@ -48,3 +48,4 @@ features/fixtures/minimalapp/Assets/Bugsnag
 features/fixtures/minimalapp/minimal_with_xcode
 features/fixtures/minimalapp/minimal_without_xcode
 features/fixtures/minimalapp/Packages
+Gemfile.lock
