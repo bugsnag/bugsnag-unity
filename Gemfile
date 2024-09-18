@@ -5,6 +5,7 @@ gem 'xcpretty'
 gem 'xcodeproj'
 gem 'cocoapods'
 gem 'rake'
+gem 'danger'
 
 unless Gem.win_platform?
   # Use official Maze Runner release
