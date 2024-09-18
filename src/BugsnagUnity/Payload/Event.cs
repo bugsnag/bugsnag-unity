@@ -10,7 +10,7 @@ namespace BugsnagUnity.Payload
     public class Event : PayloadContainer, IEvent
     {
 
-        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey, OrderedDictionary featureFlags, LogType? logType = null)
+        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey, OrderedDictionary featureFlags, Correlation correlation, LogType? logType = null)
         {
             ApiKey = apiKey;
             OriginalSeverity = handledState;
@@ -23,6 +23,7 @@ namespace BugsnagUnity.Payload
             _user = user;
             _errors = errors.ToList();
             Errors = new List<IError>();
+            Correlation = correlation;
             foreach (var error in _errors)
             {
                 Errors.Add(error);
@@ -187,6 +188,8 @@ namespace BugsnagUnity.Payload
 
         public string ApiKey { get; set; }
 
+        public Correlation Correlation;
+
         private List<Breadcrumb> _breadcrumbs;
 
         public ReadOnlyCollection<IBreadcrumb> Breadcrumbs { get; }
@@ -314,6 +317,10 @@ namespace BugsnagUnity.Payload
             Add("groupingHash", GroupingHash);
             Add("payloadVersion", PayloadVersion);
             Add("exceptions", _errors);
+            if(Correlation != null)
+            {
+                Add("correlation", Correlation.Payload);
+            }
             if (_androidProjectPackages != null)
             {
                 Add("projectPackages", _androidProjectPackages);
