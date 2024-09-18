@@ -77,3 +77,43 @@ Feature: Csharp Breadcrumbs
     And the error payload field "events.0.breadcrumbs" is an array with 99 elements
     And the event "breadcrumbs.98.name" equals "Removed, along with 2 older breadcrumbs, to reduce payload size"
     And the event "breadcrumbs.98.type" equals "manual"
+
+ Scenario: Network breadcrumb success
+    When I run the game in the "NetworkBreadcrumbsSuccess" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "NetworkBreadcrumbsSuccess"
+    
+    And the event "breadcrumbs.0.name" equals "UnityWebRequest succeeded"
+    And the event "breadcrumbs.0.type" equals "request"
+    And the event "breadcrumbs.0.metaData.method" equals "GET" 
+    And the error payload field "events.0.breadcrumbs.0.metaData.url" matches the regex "^http:\/\/\S*:\d{4}(\/.*)?"
+    And the event "breadcrumbs.0.metaData.status" equals 200
+    And the event "breadcrumbs.0.metaData.urlParams.success" equals "true"
+    And the event "breadcrumbs.0.metaData.urlParams.redactthis" equals "[REDACTED]"
+    And the event "breadcrumbs.0.metaData.duration" is greater than 0
+    And the event "breadcrumbs.0.metaData.responseContentLength" is greater than 0
+
+    And the event "breadcrumbs.1.name" equals "UnityWebRequest succeeded"
+    And the event "breadcrumbs.1.type" equals "request"
+    And the event "breadcrumbs.1.metaData.method" equals "POST" 
+    And the error payload field "events.0.breadcrumbs.1.metaData.url" matches the regex "^http:\/\/\S*:\d{4}(\/.*)?"
+    And the event "breadcrumbs.1.metaData.status" equals 200
+    And the event "breadcrumbs.1.metaData.duration" is greater than 0
+    And the event "breadcrumbs.1.metaData.responseContentLength" is greater than 0
+    And the event "breadcrumbs.1.metaData.requestContentLength" is greater than 0
+
+
+ Scenario: Network breadcrumb fails
+    When I run the game in the "NetworkBreadcrumbsFail" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "NetworkBreadcrumbsFail"
+    And the event "breadcrumbs.1.name" equals "UnityWebRequest failed"
+    And the event "breadcrumbs.1.type" equals "request"
+    And the event "breadcrumbs.1.metaData.method" equals "GET" 
+    And the error payload field "events.0.breadcrumbs.1.metaData.url" equals "https://localhost:994/?success=false"
+    And the event "breadcrumbs.1.metaData.status" has failed
+    And the event "breadcrumbs.1.metaData.urlParams.success" equals "false"
+    And the event "breadcrumbs.1.metaData.duration" is greater than 0
+

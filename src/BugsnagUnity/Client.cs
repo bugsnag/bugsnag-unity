@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
 using System.Reflection;
+using BugsnagNetworking;
+using UnityEngine.Networking;
 
 namespace BugsnagUnity
 {
@@ -135,6 +137,7 @@ namespace BugsnagUnity
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
             ListenForSceneLoad();
+            SetupNetworkListeners();
             InitLogHandlers();
         }
 
@@ -204,6 +207,8 @@ namespace BugsnagUnity
         {
             _foregroundStopwatch = new Stopwatch();
             _backgroundStopwatch = new Stopwatch();
+            // Required in case the focus event is not recieved (if Bugsnag is started after it is sent)
+            _foregroundStopwatch.Start();
         }
 
         private void InitUserObject()
@@ -388,7 +393,6 @@ namespace BugsnagUnity
             {
                 NotifyOnMainThread(exceptions, handledState, callback, logType, correlation);
             }            
-           
         }
 
         private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType, Correlation correlation)
@@ -629,7 +633,7 @@ namespace BugsnagUnity
             {
                 AddFeatureFlag(flag.Name, flag.Variant);
             }
-        } 
+        }
 
         public void ClearFeatureFlag(string name)
         {
@@ -642,5 +646,99 @@ namespace BugsnagUnity
             _featureFlags.Clear();
             NativeClient.ClearFeatureFlags();
         }
+
+        private void SetupNetworkListeners()
+        {
+            // Currently network breadcrumb are the only feature using the web events. 
+            // If we add more features that use web request events, we will need to move this check
+            if (!Configuration.IsBreadcrumbTypeEnabled(BreadcrumbType.Request))
+            {
+                return;
+            }
+            BugsnagUnityWebRequest.OnSend.AddListener(OnWebRequestSend);
+            BugsnagUnityWebRequest.OnComplete.AddListener(OnWebRequestComplete);
+            BugsnagUnityWebRequest.OnAbort.AddListener(OnWebRequestAbort);
+        }
+
+        private readonly Dictionary<BugsnagUnityWebRequest, DateTimeOffset> _requestStartTimes = new Dictionary<BugsnagUnityWebRequest, DateTimeOffset>();
+
+
+        private void OnWebRequestComplete(BugsnagUnityWebRequest request)
+        {
+            if (_requestStartTimes.TryGetValue(request, out DateTimeOffset startTime))
+            {
+                TimeSpan duration = DateTimeOffset.UtcNow - startTime;
+                LeaveNetworkBreadcrumb(request.UnityWebRequest, duration);
+                _requestStartTimes.Remove(request);
+            }
+            else
+            {
+                LeaveNetworkBreadcrumb(request.UnityWebRequest, null);
+            }
+        }
+
+        private void OnWebRequestSend(BugsnagUnityWebRequest request)
+        {
+            _requestStartTimes[request] = DateTimeOffset.UtcNow;
+        }
+
+        private void OnWebRequestAbort(BugsnagUnityWebRequest request)
+        {
+            if (_requestStartTimes.ContainsKey(request))
+            {
+                _requestStartTimes.Remove(request);
+            }
+        }
+
+        public void LeaveNetworkBreadcrumb(UnityWebRequest request, TimeSpan? duration)
+        {
+            string statusMessage = request.result == UnityWebRequest.Result.Success ? "succeeded" : "failed";
+            string fullMessage = $"UnityWebRequest {statusMessage}";
+            var metadata = new Dictionary<string, object>();
+            metadata["status"] = request.responseCode;
+            metadata["method"] = request.method;
+            metadata["url"] = request.url;
+            var urlParams = ExtractUrlParams(request.uri);
+            if (urlParams.Count > 0)
+            {
+                metadata["urlParams"] = urlParams;
+            }
+            metadata["duration"] = duration?.TotalMilliseconds;
+            if (request.uploadHandler != null && request.uploadHandler.data != null)
+            {
+                metadata["requestContentLength"] = request.uploadHandler.data.Length;
+            }
+            if (request.downloadHandler != null && request.downloadHandler.data != null)
+            {
+                metadata["responseContentLength"] = request.downloadHandler.data.Length;
+            }
+            Breadcrumbs.Leave(fullMessage, metadata, BreadcrumbType.Request);
+        }
+
+        private Dictionary<string, string> ExtractUrlParams(Uri uri)
+        {
+            var queryParams = new Dictionary<string, string>();
+            var querySegments = uri.Query.TrimStart('?').Split('&');
+
+            foreach (var segment in querySegments)
+            {
+                var parts = segment.Split('=');
+                if (parts.Length == 2)
+                {
+                    if (Configuration.KeyIsRedacted(parts[0]))
+                    {
+                        queryParams[parts[0]] = "[REDACTED]";
+                    }
+                    else
+                    {
+                        queryParams[parts[0]] = parts[1];
+                    }
+                }
+            }
+
+            return queryParams;
+        }
+
+
     }
 }

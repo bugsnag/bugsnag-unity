@@ -16,7 +16,7 @@ namespace BugsnagUnity.Payload
     /// </summary>
     class StackTrace : IEnumerable<StackTraceLine>
     {
-        private StackTraceLine[] StackTraceLines { get; }
+        public StackTraceLine[] StackTraceLines { get; private set; }
 
         internal StackTrace(StackFrame[] stackFrames)
         {

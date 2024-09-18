@@ -23,25 +23,6 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  # - label: Ensure notifier builds on Windows (for development)
-  #   timeout_in_minutes: 30
-  #   agents:
-  #     queue: windows-unity-wsl
-  #   env:
-  #     UNITY_VERSION: *2020
-  #     WSLENV: UNITY_VERSION
-  #   command:
-  #     - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
-  #   plugins:
-  #     artifacts#v1.5.0:
-  #       upload:
-  #         - from: Bugsnag.unitypackage
-  #           to: Bugsnag_WindowsBuilt.unitypackage
-  #   retry:
-  #     automatic:
-  #       - exit_status: "*"
-  #         limit: 1
-
   - label: 'build size impact reporting'
     timeout_in_minutes: 10
     depends_on: build-artifacts
@@ -53,6 +34,25 @@ steps:
           - Bugsnag.unitypackage
     commands:
       features/scripts/do_size_test.sh
+
+  - label: Ensure notifier builds on Windows (for development)
+    timeout_in_minutes: 30
+    agents:
+      queue: windows-unity-wsl
+    env:
+      UNITY_VERSION: *2021
+      WSLENV: UNITY_VERSION
+    command:
+      - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
+    plugins:
+      artifacts#v1.5.0:
+        upload:
+          - from: Bugsnag.unitypackage
+            to: Bugsnag_WindowsBuilt.unitypackage
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   # Build Android test fixtures
   - label: ":android: Build Android test fixture for Unity 2021"
@@ -75,6 +75,8 @@ steps:
       automatic:
         - exit_status: "*"
           limit: 1
+
+ 
 
   # - label: ':android: Build Android EDM test fixture for Unity 2021'
   #   timeout_in_minutes: 30

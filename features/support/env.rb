@@ -72,7 +72,20 @@ BeforeAll do
     # Allow the necessary environment variables to be passed from Ubuntu (under WSL) to the Windows test fixture
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
   elsif Maze.config.browser != nil # WebGL
-    Maze.config.document_server_root = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
+  
+    release_path = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
+    dev_path = 'features/fixtures/maze_runner/build/WebGL/Mazerunner_dev'
+
+    if File.exist?(release_path) && File.exist?(dev_path)
+      raise "Both webgl builds exist: #{release_path} and #{dev_path}"
+    elsif File.exist?(release_path)
+      Maze.config.document_server_root = release_path
+    elsif File.exist?(dev_path)
+      Maze.config.document_server_root = dev_path
+    else
+      raise "Neither webgl build exists: #{release_path} or #{dev_path}"
+    end
+
   elsif Maze.config.os&.downcase == 'switch'
     maze_ip = ENV['SWITCH_MAZE_IP']
     raise 'SWITCH_MAZE_IP must be set' unless maze_ip
