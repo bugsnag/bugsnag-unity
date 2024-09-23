@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using System.Collections;
+using System.Reflection;
 using BugsnagNetworking;
 using UnityEngine.Networking;
 
@@ -375,13 +376,13 @@ namespace BugsnagUnity
                 return;
             }
 
-
+            var correlation = PerformanceHelper.GetCurrentPerformanceSpanContext();
             if (!ReferenceEquals(Thread.CurrentThread, MainThread))
             {
                 try
                 {
                     var asyncHandler = MainThreadDispatchBehaviour.Instance();
-                    asyncHandler.Enqueue(() => { NotifyOnMainThread(exceptions, handledState, callback, logType); });
+                    asyncHandler.Enqueue(() => { NotifyOnMainThread(exceptions, handledState, callback,logType, correlation); });
                 }
                 catch
                 {
@@ -390,12 +391,11 @@ namespace BugsnagUnity
             }
             else
             {
-                NotifyOnMainThread(exceptions, handledState, callback, logType);
-            }
-
+                NotifyOnMainThread(exceptions, handledState, callback, logType, correlation);
+            }            
         }
 
-        private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
+        private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType, Correlation correlation)
         {
             if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
             {
@@ -447,7 +447,8 @@ namespace BugsnagUnity
               Breadcrumbs.Retrieve(),
               SessionTracking.CurrentSession,
               Configuration.ApiKey,
-              featureFlags);
+              featureFlags,
+              correlation);
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))

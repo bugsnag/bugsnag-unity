@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.2.0 (2024-09-23)
+
+### Enhancements
+
+- Allow for error correlation with Bugsnag Unity Performance. [#806](https://github.com/bugsnag/bugsnag-unity/pull/806)
+
 ## 8.1.0 (2024-08-12)
 
 ### Enhancements

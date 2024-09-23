@@ -16,6 +16,8 @@ package_path=Bugsnag.unitypackage
 
 imported_sdk_path="$project_path/Assets/Bugsnag"
 
+bundle install
+
 rm -rf "$project_path/Assets/Bugsnag"
 
 echo "building android without bugsnag"
