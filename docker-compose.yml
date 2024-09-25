@@ -4,6 +4,7 @@ x-common-environment: &common-environment
   DEBUG:
   VERBOSE:
   BUILDKITE:
+  BUILDKITE_ANALYTICS_TOKEN:
   BUILDKITE_BRANCH:
   BUILDKITE_BUILD_CREATOR:
   BUILDKITE_BUILD_NUMBER:
@@ -18,6 +19,7 @@ x-common-environment: &common-environment
   BUILDKITE_STEP_KEY:
   MAZE_BUGSNAG_API_KEY:
   MAZE_REPEATER_API_KEY:
+  MAZE_NO_FAIL_FAST:
   UNITY_VERSION:
 
 services:
