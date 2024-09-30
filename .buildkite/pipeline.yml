@@ -76,8 +76,6 @@ steps:
         - exit_status: "*"
           limit: 1
 
- 
-
   # - label: ':android: Build Android EDM test fixture for Unity 2021'
   #   timeout_in_minutes: 30
   #   key: 'build-edm-fixture-2021'
@@ -130,6 +128,10 @@ steps:
           - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
           - "--no-tunnel"
           - "--aws-public-ip"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: "bitbar"
     concurrency_method: eager
@@ -157,6 +159,10 @@ steps:
   #         - "--farm=bs"
   #         - "--device=ANDROID_11_0"
   #         - "features/edm"
+  #     test-collector#v1.10.2:
+  #       files: "reports/TEST-*.xml"
+  #       format: "junit"
+  #       branch: "^master|next$$"
   #   concurrency: 5
   #   concurrency_group: browserstack-app
   #   concurrency_method: eager
@@ -240,6 +246,10 @@ steps:
           - "--no-tunnel"
           - "--aws-public-ip"
           - "--fail-fast"
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^master|next$$"
     concurrency: 25
     concurrency_group: "bitbar"
     concurrency_method: eager
