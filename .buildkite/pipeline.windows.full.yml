@@ -140,6 +140,10 @@ steps:
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^main|next$$"
 
     command:
       - scripts/ci-run-windows-tests-wsl.sh release
@@ -158,6 +162,10 @@ steps:
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^main|next$$"
     commands:
       - scripts/ci-run-windows-tests-wsl.sh release
 
@@ -175,6 +183,10 @@ steps:
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^main|next$$"
     commands:
       - scripts/ci-run-windows-tests-wsl.sh dev
 
@@ -192,6 +204,10 @@ steps:
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^main|next$$"
     commands:
       - scripts/ci-run-windows-tests-wsl.sh release
 
@@ -210,5 +226,9 @@ steps:
         upload:
           - maze_output/**/*
           - maze_output/metrics.csv
+      test-collector#v1.10.2:
+        files: "reports/TEST-*.xml"
+        format: "junit"
+        branch: "^main|next$$"
     commands:
       - scripts/ci-run-windows-tests-wsl.sh release
