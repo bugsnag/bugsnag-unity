@@ -134,7 +134,7 @@ steps:
             - exit_status: "*"
               limit: 1
 
-  - group: ":cog: E2E tests Unity 2022"
+  - group: ":test_tube: E2E tests Unity 2022"
     steps:
       - label: ":bitbar: :android: Run Android e2e tests for Unity 2022"
         timeout_in_minutes: 60

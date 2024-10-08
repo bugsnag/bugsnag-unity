@@ -97,7 +97,7 @@ steps:
               limit: 1
 
 
-  - group: ":cog: E2E tests Unity 2021"
+  - group: ":test_tube: E2E tests Unity 2021"
     steps:
       - label: ":bitbar: :android: Run Android e2e tests for Unity 2021"
         timeout_in_minutes: 60
