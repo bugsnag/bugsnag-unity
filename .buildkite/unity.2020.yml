@@ -99,7 +99,6 @@ steps:
       - label: Build Unity 2020 MacOS test fixture
         timeout_in_minutes: 30
         key: "macos-2020-fixture"
-        depends_on: "build-artifacts"
         env:
           UNITY_VERSION: *2020
           XCODE_VERSION: "15.3.0"

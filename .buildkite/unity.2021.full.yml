@@ -155,7 +155,6 @@ steps:
       - label: Build Unity 2021 Windows test fixture
         timeout_in_minutes: 30
         key: "windows-2021-fixture"
-        depends_on: "build-artifacts"
         agents:
           queue: windows-unity-wsl
         env:
@@ -178,7 +177,6 @@ steps:
       - label: Build Unity 2021 Windows DEV test fixture
         timeout_in_minutes: 30
         key: "windows-2021-dev-fixture"
-        depends_on: "build-artifacts"
         agents:
           queue: windows-unity-wsl
         env:
