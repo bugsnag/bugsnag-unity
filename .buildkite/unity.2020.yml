@@ -1,0 +1,319 @@
+aliases:
+  - &2020 "2020.3.48f1"
+
+agents:
+  queue: macos-14
+
+steps:
+  - group: ":hammer: Build Unity 2020 test fixtures"
+    steps:
+      - label: ":android: Build Android test fixture for Unity 2020"
+        timeout_in_minutes: 30
+        key: "build-android-fixture-2020"
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+            upload:
+              - features/fixtures/maze_runner/mazerunner_2020.apk
+              - features/fixtures/build_android_apk.log
+        commands:
+          - bundle install
+          - rake test:android:build
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      # - label: ':android: Build Android EDM test fixture for Unity 2020'
+      #   timeout_in_minutes: 30
+      #   key: 'build-edm-fixture-2020'
+      #   env:
+      #     UNITY_VERSION: *2020
+      #   plugins:
+      #     artifacts#v1.9.0:
+      #       download:
+      #         - Bugsnag.unitypackage
+      #       upload:
+      #         - features/fixtures/EDM_Fixture/edm_2020.apk
+      #         - features/scripts/buildEdmFixture.log
+      #         - features/scripts/edmImport.log
+      #         - features/scripts/enableEdm.log
+      #   commands:
+      #     - rake test:edm:build
+      #   retry:
+      #     automatic:
+      #       - exit_status: "*"
+      #         limit: 1
+
+      #
+      # Build iOS test fixtures
+      #
+      - label: ":ios: Generate Xcode project - Unity 2020"
+        timeout_in_minutes: 30
+        key: "generate-fixture-project-2020"
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+            upload:
+              - features/fixtures/unity.log
+              - project_2020.tgz
+        commands:
+          - bundle install
+          - rake test:ios:generate_xcode
+          - tar -zvcf project_2020.tgz features/fixtures/maze_runner/mazerunner_xcode
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: ":ios: Build iOS test fixture for Unity 2020"
+        timeout_in_minutes: 30
+        key: "build-ios-fixture-2020"
+        depends_on: "generate-fixture-project-2020"
+        env:
+          XCODE_VERSION: "15.3.0"
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+              - project_2020.tgz
+            upload:
+              - features/fixtures/maze_runner/mazerunner_2020.ipa
+              - features/fixtures/unity.log
+        commands:
+          - bundle install
+          - tar -zxf project_2020.tgz features/fixtures/maze_runner
+          - rake test:ios:build_xcode
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: Build Unity 2020 MacOS test fixture
+        timeout_in_minutes: 30
+        key: "macos-2020-fixture"
+        env:
+          UNITY_VERSION: *2020
+          XCODE_VERSION: "15.3.0"
+          # Python2 needed for WebGL to build
+          EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+        commands:
+          - scripts/ci-build-macos-fixture.sh release
+        artifact_paths:
+          - unity.log
+          - features/fixtures/maze_runner/build/MacOS-release-2020.zip
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+      - label: Build Unity 2020 WebGL test fixture
+        timeout_in_minutes: 30
+        key: "webgl-2020-fixture"
+        env:
+          UNITY_VERSION: *2020
+          XCODE_VERSION: "15.3.0"
+          # Python2 needed for WebGL to build
+          EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+        commands:
+          - scripts/ci-build-webgl-fixture.sh release
+        artifact_paths:
+          - unity.log
+          - features/fixtures/maze_runner/build/WebGL-release-2020.zip
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: Build Unity 2020 Windows test fixture
+        timeout_in_minutes: 30
+        key: "windows-2020-fixture"
+        agents:
+          queue: windows-unity-wsl
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+            upload:
+              - unity.log
+              - features/fixtures/maze_runner/build/Windows-release-2020.zip
+        commands:
+          - scripts/ci-build-windows-fixture-wsl.sh release
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+  - group: ":test_tube: E2E tests Unity 2020"
+    steps:
+      - label: ":bitbar: :android: Run Android e2e tests for Unity 2020"
+        timeout_in_minutes: 60
+        depends_on: "build-android-fixture-2020"
+        agents:
+          queue: opensource
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - "features/fixtures/maze_runner/mazerunner_2020.apk"
+            upload:
+              - "maze_output/**/*"
+              - "maze_output/metrics.csv"
+          docker-compose#v4.7.0:
+            pull: maze-runner-bitbar
+            run: maze-runner-bitbar
+            service-ports: true
+            command:
+              - "features/csharp"
+              - "features/android"
+              - "--app=features/fixtures/maze_runner/mazerunner_2020.apk"
+              - "--farm=bb"
+              - "--appium-version=1.22"
+              - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "--fail-fast"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
+        concurrency: 25
+        concurrency_group: "bitbar"
+        concurrency_method: eager
+
+      # - label: ':android: Run Android EDM e2e tests for Unity 2020'
+      #   timeout_in_minutes: 60
+      #   depends_on: 'build-edm-fixture-2020'
+      #   agents:
+      #     queue: opensource
+      #   env:
+      #     UNITY_VERSION: *2021
+      #   plugins:
+      #     artifacts#v1.9.0:
+      #       download:
+      #         - "features/fixtures/EDM_Fixture/edm_2020.apk"
+      #       upload:
+      #         - "maze_output/**/*"
+      #     docker-compose#v3.7.0:
+      #       pull: maze-runner
+      #       run: maze-runner
+      #       command:
+      #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.apk"
+      #         - "--farm=bs"
+      #         - "--device=ANDROID_11_0"
+      #         - "features/edm"
+      #     test-collector#v1.10.2:
+      #       files: "reports/TEST-*.xml"
+      #       format: "junit"
+      #       branch: "^master|next$$"
+      #   concurrency: 5
+      #   concurrency_group: browserstack-app
+      #   concurrency_method: eager
+
+      - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2020"
+        timeout_in_minutes: 60
+        depends_on: "build-ios-fixture-2020"
+        agents:
+          queue: opensource
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - "features/fixtures/maze_runner/mazerunner_2020.ipa"
+            upload:
+              - "maze_output/**/*"
+              - "maze_output/metrics.csv"
+          docker-compose#v4.7.0:
+            pull: maze-runner-bitbar
+            run: maze-runner-bitbar
+            service-ports: true
+            command:
+              - "features/csharp"
+              - "features/ios"
+              - "--app=features/fixtures/maze_runner/mazerunner_2020.ipa"
+              - "--farm=bb"
+              - "--appium-version=1.22"
+              - "--device=IOS_13|IOS_14|IOS_15"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+              - "--fail-fast"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
+        concurrency: 25
+        concurrency_group: "bitbar"
+        concurrency_method: eager
+
+      - label: Run MacOS e2e tests for Unity 2020
+        timeout_in_minutes: 60
+        depends_on: "macos-2020-fixture"
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/MacOS-release-2020.zip
+            upload:
+              - maze_output/**/*
+              - '*-mazerunner.log'
+              - maze_output/metrics.csv
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
+        commands:
+          - scripts/ci-run-macos-tests.sh release
+
+      - label: Run WebGL e2e tests for Unity 2020
+        timeout_in_minutes: 30
+        depends_on: "webgl-2020-fixture"
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/WebGL-release-2020.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
+        # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+        commands:
+          - scripts/ci-run-webgl-tests.sh release
+
+      - label: Run Windows e2e tests for Unity 2020
+        timeout_in_minutes: 30
+        depends_on: "windows-2020-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-2020.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        command:
+          - scripts/ci-run-windows-tests-wsl.sh release
