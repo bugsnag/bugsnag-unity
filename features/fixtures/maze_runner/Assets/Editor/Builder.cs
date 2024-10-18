@@ -82,6 +82,7 @@ public class Builder : MonoBehaviour {
         Debug.Log("Building Android app...");
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.fixtures.unity.notifier.android");
         var opts = CommonMobileBuildOptions(dev ? "mazerunner_dev.apk" : "mazerunner.apk", dev);
+        EditorUserBuildSettings.androidCreateSymbols = AndroidCreateSymbols.Debugging;
         opts.target = BuildTarget.Android;
 
 #if UNITY_2022_1_OR_NEWER
