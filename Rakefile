@@ -289,7 +289,7 @@ namespace :plugin do
       build_type = "Release" # "Debug" or "Release"
       FileUtils.mkdir_p cocoa_build_dir
       FileUtils.cp_r "bugsnag-cocoa/Bugsnag", cocoa_build_dir
-      bugsnag_unity_file = File.realpath("BugsnagUnity.m", "src")
+      bugsnag_unity_file = File.realpath("BugsnagUnity.mm", "src")
       public_headers = Dir.entries(File.join(cocoa_build_dir, "Bugsnag", "include", "Bugsnag"))
 
       Dir.chdir cocoa_build_dir do

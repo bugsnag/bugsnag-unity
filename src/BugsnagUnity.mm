@@ -1,21 +1,292 @@
 #import "BugsnagInternals.h"
+#import <dlfcn.h>
+#import <mach-o/dyld.h>
+#import <mutex>
+#import <vector>
 
- struct bugsnag_user {
-        const char *user_id;
-        const char *user_name;
-        const char *user_email;
-    };
+extern "C" {
+
+static uint8_t *byteDupOrNull(const uint8_t * const oldBytes, int byteCount) {
+    auto newBytes = new uint8_t[byteCount];
+    if (oldBytes != nullptr) {
+        memcpy(newBytes, oldBytes, byteCount);
+    }
+    return newBytes;
+}
+
+static char *strDupOrNull(const char* const oldStr) {
+    if (oldStr == nullptr) {
+        return nullptr;
+    }
+    auto byteCount = strnlen(oldStr, 1000);
+    auto newStr = new char[byteCount + 1];
+    memcpy(newStr, oldStr, byteCount);
+    newStr[byteCount] = 0;
+    return newStr;
+}
+
+struct bugsnag_user {
+    const char *user_id;
+    const char *user_name;
+    const char *user_email;
+};
+
+class LoadedImage {
+public:
+    // We need to expose raw pointers and blittable types for native interop with C#
+    // https://learn.microsoft.com/en-us/dotnet/standard/native-interop/best-practices#blittable-types
+    // These members must be in the EXACT SAME ORDER and of the EXACT SAME SIZE as the C# side!
+    uint64_t LoadAddress{0};
+    uint64_t ImageSize{0};
+    const char *FileName{nullptr};
+    uint8_t *UuidBytes{nullptr};
+
+public:
+    // "invalid" image
+    LoadedImage() {}
+
+    LoadedImage(const struct mach_header * const header);
+
+    LoadedImage(const char * const filename,
+                const uint8_t * const uuidBytes,
+                const uint64_t loadAddress,
+                const uint64_t imageSize)
+    : FileName(strDupOrNull(filename))
+    , UuidBytes(byteDupOrNull(uuidBytes, 16))
+    , LoadAddress(loadAddress)
+    , ImageSize(imageSize)
+    {}
+
+    LoadedImage(LoadedImage&& other)
+    : FileName(other.FileName)
+    , UuidBytes(other.UuidBytes)
+    , LoadAddress(other.LoadAddress)
+    , ImageSize(other.ImageSize)
+    {
+        other.invalidateAndAbandonOwnership();
+    }
+
+    LoadedImage(const LoadedImage& other)
+    : LoadedImage(other.FileName, other.UuidBytes, other.LoadAddress, other.ImageSize)
+    {}
+
+    ~LoadedImage() {
+        releaseResources();
+    }
+
+    LoadedImage *clone() {
+        return new LoadedImage(FileName, UuidBytes, LoadAddress, ImageSize);
+    }
+
+    LoadedImage& operator=(LoadedImage&& other) {
+        if(this != &other) {
+            delete [] FileName;
+            delete [] UuidBytes;
+            // Assume ownership of these
+            FileName = other.FileName;
+            UuidBytes = other.UuidBytes;
+            LoadAddress = other.LoadAddress;
+            ImageSize = other.ImageSize;
+            other.invalidateAndAbandonOwnership();
+        }
+        return *this;
+    }
+
+    LoadedImage& operator=(const LoadedImage& other)
+    {
+        if(this != &other) {
+            delete [] FileName;
+            delete [] UuidBytes;
+            // Make copies of these
+            FileName = strDupOrNull(other.FileName);
+            UuidBytes = byteDupOrNull(other.UuidBytes, 16);
+            LoadAddress = other.LoadAddress;
+            ImageSize = other.ImageSize;
+        }
+        return *this;
+    }
+
+    bool isValid() const {
+        return ImageSize > 0;
+    }
+
+private:
+    void invalidateAndAbandonOwnership() {
+        FileName = nullptr;
+        UuidBytes = nullptr;
+        LoadAddress = 0;
+        ImageSize = 0;
+    }
+
+    void releaseResources() {
+        if (FileName != nullptr) {
+            delete [] FileName;
+            FileName = nullptr;
+        }
+        if (UuidBytes != nullptr) {
+            delete [] UuidBytes;
+            UuidBytes = nullptr;
+        }
+    }
+};
+
+bool operator<(const LoadedImage& lhs, const LoadedImage& rhs)
+{
+    return lhs.LoadAddress < rhs.LoadAddress;
+}
+bool operator>(const LoadedImage& lhs, const LoadedImage& rhs)
+{
+    return lhs.LoadAddress > rhs.LoadAddress;
+}
+bool operator==(const LoadedImage& lhs, const LoadedImage& rhs)
+{
+    return lhs.LoadAddress == rhs.LoadAddress;
+}
+
+LoadedImage::LoadedImage(const struct mach_header * const header) {
+    if (header == NULL) {
+        LoadedImage();
+        return;
+    }
+
+    uintptr_t cmdPtr = 0;
+    switch (header->magic) {
+        case MH_MAGIC:
+        case MH_CIGAM:
+            cmdPtr = (uintptr_t)(header + 1);
+            break;
+        case MH_MAGIC_64:
+        case MH_CIGAM_64:
+            cmdPtr = (uintptr_t)(((const struct mach_header_64 *)header) + 1);
+            break;
+        default:
+            // Header is corrupt
+            LoadedImage();
+            return;
+    }
+
+    Dl_info dlInfo = {0};
+    if (dladdr(header, &dlInfo) == 0) {
+        LoadedImage();
+        return;
+    }
+
+    const char *fileName = dlInfo.dli_fname;
+    const uint64_t loadAddress = (uint64_t)dlInfo.dli_fbase;
+
+    if (fileName == nullptr) {
+        LoadedImage();
+        return;
+    }
+
+    uint64_t imageSize = 0;
+    uint8_t *uuid = NULL;
+
+    // Step through the header commands, looking for the image size and UUID entries.
+    for (uint32_t iCmd = 0; iCmd < header->ncmds; iCmd++) {
+        struct load_command *loadCmd = (struct load_command *)cmdPtr;
+        switch (loadCmd->cmd) {
+            case LC_SEGMENT: {
+                struct segment_command *segCmd = (struct segment_command *)cmdPtr;
+                if (strcmp(segCmd->segname, SEG_TEXT) == 0) {
+                    imageSize = segCmd->vmsize;
+                }
+                break;
+            }
+            case LC_SEGMENT_64: {
+                struct segment_command_64 *segCmd =
+                (struct segment_command_64 *)cmdPtr;
+                if (strcmp(segCmd->segname, SEG_TEXT) == 0) {
+                    imageSize = segCmd->vmsize;
+                }
+                break;
+            }
+            case LC_UUID: {
+                struct uuid_command *uuidCmd = (struct uuid_command *)cmdPtr;
+                uuid = uuidCmd->uuid;
+                break;
+            }
+        }
+        cmdPtr += loadCmd->cmdsize;
+    }
+
+    FileName = fileName;
+    UuidBytes = uuid;
+    LoadAddress = loadAddress;
+    ImageSize = imageSize;
+}
+
+// All currently loaded images. This MUST be kept ordered: LoadAddress low to high.
+static std::vector<LoadedImage> allImages;
+static std::mutex allImagesMutex;
+
+static void add_image(const struct mach_header *header, intptr_t slide) {
+    LoadedImage image(header);
+    if (!image.isValid()) {
+        return;
+    }
+    std::lock_guard<std::mutex> guard(allImagesMutex);
+    allImages.push_back(std::move(image));
+    std::sort(allImages.begin(), allImages.end());
+}
+
+static void remove_image(const struct mach_header *header, intptr_t slide) {
+    LoadedImage image(header);
+    if (!image.isValid()) {
+        return;
+    }
+    std::lock_guard<std::mutex> guard(allImagesMutex);
+    auto foundImage = std::find(allImages.begin(), allImages.end(), image);
+    if (foundImage != allImages.end()) {
+        allImages.erase(foundImage);
+    }
+}
+
+static void register_for_dyld_changes(void) {
+    // Give a decent amount of headroom before reallocation is needed.
+    // Normally, there will be about 800 loaded images in a basic app.
+    allImages.reserve(1000);
+
+    // Register for binary images being loaded and unloaded. Upon registering for
+    // add_image, dyld calls the add function once for each library that has already
+    // been loaded, and then calls normally for all future additions.
+    _dyld_register_func_for_add_image(&add_image);
+    _dyld_register_func_for_remove_image(&remove_image);
+}
+
+uint64_t bugsnag_getLoadedImageCount() {
+    std::lock_guard<std::mutex> guard(allImagesMutex);
+    return allImages.size();
+}
+
+uint64_t bugsnag_getLoadedImages(LoadedImage *images, uint64_t capacity) {
+    std::lock_guard<std::mutex> guard(allImagesMutex);
+    uint64_t count = allImages.size();
+    if (count > capacity) {
+        count = capacity;
+    }
+    for(uint64_t i = 0; i < count; i++) {
+        images[i] = allImages[i];
+    }
+    return count;
+}
+
+// ==========================================================================================================
+// ==========================================================================================================
+// ==========================================================================================================
 
 void bugsnag_startBugsnagWithConfiguration(const void *configuration, char *notifierVersion) {
-  if (notifierVersion) {
-    ((__bridge BugsnagConfiguration *)configuration).notifier =
-      [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
-                                    version:@(notifierVersion)
-                                        url:@"https://github.com/bugsnag/bugsnag-unity"
-                               dependencies:@[[[BugsnagNotifier alloc] init]]];
-  }
-  [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
-  // Memory introspection is unused in a C/C++ context
+    if (notifierVersion) {
+        ((__bridge BugsnagConfiguration *)configuration).notifier =
+        [[BugsnagNotifier alloc] initWithName:@"Unity Bugsnag Notifier"
+                                      version:@(notifierVersion)
+                                          url:@"https://github.com/bugsnag/bugsnag-unity"
+                                 dependencies:@[[[BugsnagNotifier alloc] init]]];
+    }
+    [Bugsnag startWithConfiguration: (__bridge BugsnagConfiguration *)configuration];
+    // Memory introspection is unused in a C/C++ context
+
+    register_for_dyld_changes();
 }
 
 static const char * getJson(id obj) {
@@ -39,7 +310,7 @@ static const char * getJson(id obj) {
 void bugsnag_clearMetadata(const char * section){
     if(section == NULL)
     {
-        return;   
+        return;
     }
     [Bugsnag clearMetadataFromSection:@(section)];
 }
@@ -47,7 +318,7 @@ void bugsnag_clearMetadata(const char * section){
 void bugsnag_clearMetadataWithKey(const char * section, const char * key){
     if(section == NULL || key == NULL)
     {
-        return;   
+        return;
     }
     [Bugsnag clearMetadataFromSection:@(section) withKey:@(key)];
 }
@@ -67,15 +338,15 @@ NSDictionary * getDictionaryFromMetadataJson(const char * jsonString){
 }
 
 static NSString * stringFromDate(NSDate *date) {
-  static NSDateFormatter *dateFormatter;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    dateFormatter = [NSDateFormatter new];
-    dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-    dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'";
-  });
-  return [date isKindOfClass:[NSDate class]] ? [dateFormatter stringFromDate:date] : nil;
+    static NSDateFormatter *dateFormatter;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dateFormatter = [NSDateFormatter new];
+        dateFormatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        dateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+        dateFormatter.dateFormat = @"yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'";
+    });
+    return [date isKindOfClass:[NSDate class]] ? [dateFormatter stringFromDate:date] : nil;
 }
 
 const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
@@ -84,15 +355,15 @@ const char * bugsnag_getEventMetaData(const void *event, const char *tab) {
 }
 
 void bugsnag_clearEventMetadataWithKey(const void *event, const char *section, const char *key){
-   [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section) withKey:@(key)];
+    [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section) withKey:@(key)];
 }
 
 void bugsnag_clearEventMetadataSection(const void *event, const char *section){
-   [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section)];
+    [((__bridge BugsnagEvent *)event) clearMetadataFromSection:@(section)];
 }
 
 void bugsnag_setEventMetadata(const void *event, const char *tab, const char *metadataJson) {
-  
+
     if (tab == NULL || metadataJson == NULL)
     {
         return;
@@ -107,8 +378,8 @@ BugsnagUser * bugsnag_getUserFromSession(const void *session){
 
 void bugsnag_setUserFromSession(const void *session, char *userId, char *userEmail, char *userName){
     [((__bridge BugsnagSession *)session) setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
-            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
-             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
+                                        withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+                                          andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
 }
 
 BugsnagUser * bugsnag_getUserFromEvent(const void *event){
@@ -117,22 +388,22 @@ BugsnagUser * bugsnag_getUserFromEvent(const void *event){
 
 void bugsnag_setUserFromEvent(const void *event, char *userId, char *userEmail, char *userName){
     [((__bridge BugsnagEvent *)event) setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
-            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
-             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
+                                    withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+                                      andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
 }
 
 void bugsnag_getThreadsFromEvent(const void *event,const void *instance, void (*callback)(const void *instance, void *threads[], int threads_size)) {
     NSArray * theThreads = ((__bridge BugsnagEvent *)event).threads;
     void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theThreads.count));
     for (NSUInteger i = 0; i < (NSUInteger)theThreads.count; i++) {
-       c_array[i] = (__bridge void *)theThreads[i];
+        c_array[i] = (__bridge void *)theThreads[i];
     }
-    callback(instance, c_array, [theThreads count]);
+    callback(instance, c_array, (int)[theThreads count]);
     free(c_array);
 }
 
 
-void bugsnag_setEventSeverity(const void *event, const char *severity){   
+void bugsnag_setEventSeverity(const void *event, const char *severity){
     if (strcmp(severity, "error") == 0)
     {
         ((__bridge BugsnagEvent *)event).severity = BSGSeverityError;
@@ -144,10 +415,10 @@ void bugsnag_setEventSeverity(const void *event, const char *severity){
     else
     {
         ((__bridge BugsnagEvent *)event).severity = BSGSeverityInfo;
-    }     
+    }
 }
 
-const char * bugsnag_getSeverityFromEvent(const void *event){   
+const char * bugsnag_getSeverityFromEvent(const void *event){
     BSGSeverity theSeverity = ((__bridge BugsnagEvent *)event).severity;
     if(theSeverity == BSGSeverityError)
     {
@@ -157,7 +428,7 @@ const char * bugsnag_getSeverityFromEvent(const void *event){
     {
         return strdup("warning");
     }
-    return strdup("info"); 
+    return strdup("info");
 }
 
 
@@ -166,9 +437,9 @@ void bugsnag_getStackframesFromError(const void *error,const void *instance, voi
     NSArray * theStackframes = ((__bridge BugsnagError *)error).stacktrace;
     void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theStackframes.count));
     for (NSUInteger i = 0; i < (NSUInteger)theStackframes.count; i++) {
-       c_array[i] = (__bridge void *)theStackframes[i];
+        c_array[i] = (__bridge void *)theStackframes[i];
     }
-    callback(instance, c_array, [theStackframes count]);
+    callback(instance, c_array, (int)[theStackframes count]);
     free(c_array);
 }
 
@@ -177,9 +448,9 @@ void bugsnag_getStackframesFromThread(const void *thread,const void *instance, v
     NSArray * theStackframes = ((__bridge BugsnagThread *)thread).stacktrace;
     void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theStackframes.count));
     for (NSUInteger i = 0; i < (NSUInteger)theStackframes.count; i++) {
-       c_array[i] = (__bridge void *)theStackframes[i];
+        c_array[i] = (__bridge void *)theStackframes[i];
     }
-    callback(instance, c_array, [theStackframes count]);
+    callback(instance, c_array, (int)[theStackframes count]);
     free(c_array);
 }
 
@@ -188,9 +459,9 @@ void bugsnag_getErrorsFromEvent(const void *event,const void *instance, void (*c
     NSArray * theErrors = ((__bridge BugsnagEvent *)event).errors;
     void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theErrors.count));
     for (NSUInteger i = 0; i < (NSUInteger)theErrors.count; i++) {
-       c_array[i] = (__bridge void *)theErrors[i];
+        c_array[i] = (__bridge void *)theErrors[i];
     }
-    callback(instance, c_array, [theErrors count]);
+    callback(instance, c_array, (int)[theErrors count]);
     free(c_array);
 }
 
@@ -199,9 +470,9 @@ void bugsnag_getBreadcrumbsFromEvent(const void *event,const void *instance, voi
     NSArray * theBreadcrumbs = ((__bridge BugsnagEvent *)event).breadcrumbs;
     void **c_array = (void **) malloc(sizeof(void *) * ((size_t)theBreadcrumbs.count));
     for (NSUInteger i = 0; i < (NSUInteger)theBreadcrumbs.count; i++) {
-       c_array[i] = (__bridge void *)theBreadcrumbs[i];
+        c_array[i] = (__bridge void *)theBreadcrumbs[i];
     }
-    callback(instance, c_array, [theBreadcrumbs count]);
+    callback(instance, c_array, (int)[theBreadcrumbs count]);
     free(c_array);
 }
 
@@ -222,11 +493,11 @@ const char * bugsnag_getBreadcrumbMetadata(const void *breadcrumb) {
 }
 
 void bugsnag_setBreadcrumbMetadata(const void *breadcrumb, const char *jsonString) {
-  ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = jsonString  ? getDictionaryFromMetadataJson(jsonString) : nil;
+    ((__bridge BugsnagBreadcrumb *)breadcrumb).metadata = jsonString  ? getDictionaryFromMetadataJson(jsonString) : nil;
 }
 
 const char * bugsnag_getBreadcrumbType(const void *breadcrumb){
-    return strdup([BSGBreadcrumbTypeValue(((__bridge BugsnagBreadcrumb *)breadcrumb).type) UTF8String]);    
+    return strdup([BSGBreadcrumbTypeValue(((__bridge BugsnagBreadcrumb *)breadcrumb).type) UTF8String]);
 }
 
 void bugsnag_setBreadcrumbType(const void *breadcrumb, char * type){
@@ -244,7 +515,7 @@ const char * bugsnag_getValueAsString(const void *object, char *key) {
     }
 }
 
-void bugsnag_setNumberValue(const void *object, char * key, const char * value){       
+void bugsnag_setNumberValue(const void *object, char * key, const char * value){
     NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
     f.numberStyle = NSNumberFormatterDecimalStyle;
     NSNumber *myNumber = [f numberFromString:@(value)];
@@ -252,7 +523,7 @@ void bugsnag_setNumberValue(const void *object, char * key, const char * value){
 }
 
 
-    
+
 double bugsnag_getTimestampFromDateInObject(const void *object, char * key){
     NSDate *value = (NSDate *)[(__bridge id)object valueForKey:@(key)];
     if(value != NULL && [value isKindOfClass:[NSDate class]])
@@ -262,7 +533,7 @@ double bugsnag_getTimestampFromDateInObject(const void *object, char * key){
     return -1;
 }
 
-void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp){       
+void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double timeStamp){
     if(timeStamp < 0)
     {
         [(__bridge id)object setValue:NULL forKey:@(key)];
@@ -274,8 +545,8 @@ void bugsnag_setTimestampFromDateInObject(const void *object, char * key, double
 }
 
 void bugsnag_setRuntimeVersionsFromDevice(const void *device, const char *versions[], int count){
-    
-    NSMutableDictionary *versionsDict =  [[NSMutableDictionary alloc] init];       
+
+    NSMutableDictionary *versionsDict =  [[NSMutableDictionary alloc] init];
     for (int i = 0; i < count; i+=2) {
 
         NSString *key = @(versions[i]);
@@ -335,7 +606,7 @@ const char * bugsnag_getErrorTypeFromError(const void *error){
 }
 
 const char * bugsnag_getThreadTypeFromThread(const void *thread){
-     BSGThreadType theType = ((__bridge BugsnagThread *)thread).type;
+    BSGThreadType theType = ((__bridge BugsnagThread *)thread).type;
     if(theType == BSGThreadTypeCocoa)
     {
         return strdup("cocoa");
@@ -360,13 +631,13 @@ BugsnagDeviceWithState * bugsnag_getDeviceFromEvent(const void *event){
 }
 
 void bugsnag_registerForSessionCallbacks(const void *configuration, bool (*callback)(void *session)){
-    [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {    
+    [((__bridge BugsnagConfiguration *)configuration) addOnSessionBlock:^BOOL (BugsnagSession *session) {
         return callback((__bridge void *)session);
     }];
 }
 
 void bugsnag_registerForOnSendCallbacks(const void *configuration, bool (*callback)(void *event)){
-    [((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {       
+    [((__bridge BugsnagConfiguration *)configuration) addOnSendErrorBlock:^BOOL (BugsnagEvent *event) {
         return callback((__bridge void *)event);
     }];
 }
@@ -387,11 +658,11 @@ void bugsnag_retrieveCurrentSession(const void *ptr, void (*callback)(const void
 }
 
 void bugsnag_markLaunchCompleted() {
-  [Bugsnag markLaunchCompleted];
+    [Bugsnag markLaunchCompleted];
 }
 
 void bugsnag_registerForSessionCallbacksAfterStart(bool (*callback)(void *session)){
-    [Bugsnag addOnSessionBlock:^BOOL (BugsnagSession *session) {    
+    [Bugsnag addOnSessionBlock:^BOOL (BugsnagSession *session) {
         return callback((__bridge void *)session);
     }];
 }
@@ -401,8 +672,8 @@ void *bugsnag_createConfiguration(char *apiKey) {
 }
 
 void bugsnag_setReleaseStage(const void *configuration, char *releaseStage) {
-  NSString *ns_releaseStage = releaseStage == NULL ? nil : [NSString stringWithUTF8String: releaseStage];
-  ((__bridge BugsnagConfiguration *)configuration).releaseStage = ns_releaseStage;
+    NSString *ns_releaseStage = releaseStage == NULL ? nil : [NSString stringWithUTF8String: releaseStage];
+    ((__bridge BugsnagConfiguration *)configuration).releaseStage = ns_releaseStage;
 }
 
 void bugsnag_addFeatureFlagOnConfig(const void *configuration, char *name, char *variant) {
@@ -454,12 +725,12 @@ NSMutableSet * getSetFromStringArray(const char *values[], int valuesCount)
 }
 
 void bugsnag_setNotifyReleaseStages(const void *configuration, const char *releaseStages[], int releaseStagesCount){
-  ((__bridge BugsnagConfiguration *)configuration).enabledReleaseStages = getSetFromStringArray(releaseStages,releaseStagesCount);
+    ((__bridge BugsnagConfiguration *)configuration).enabledReleaseStages = getSetFromStringArray(releaseStages,releaseStagesCount);
 }
 
 void bugsnag_setAppVersion(const void *configuration, char *appVersion) {
-  NSString *ns_appVersion = appVersion == NULL ? nil : [NSString stringWithUTF8String: appVersion];
-  ((__bridge BugsnagConfiguration *)configuration).appVersion = ns_appVersion;
+    NSString *ns_appVersion = appVersion == NULL ? nil : [NSString stringWithUTF8String: appVersion];
+    ((__bridge BugsnagConfiguration *)configuration).appVersion = ns_appVersion;
 }
 
 void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger appHangThresholdMillis) {
@@ -472,43 +743,43 @@ void bugsnag_setAppHangThresholdMillis(const void *configuration, NSUInteger app
 }
 
 void bugsnag_setLaunchDurationMillis(const void *configuration, NSUInteger launchDurationMillis) {
-  ((__bridge BugsnagConfiguration *)configuration).launchDurationMillis = launchDurationMillis;
+    ((__bridge BugsnagConfiguration *)configuration).launchDurationMillis = launchDurationMillis;
 }
 
 void bugsnag_setBundleVersion(const void *configuration, char *bundleVersion) {
-  NSString *ns_bundleVersion = bundleVersion == NULL ? nil : [NSString stringWithUTF8String: bundleVersion];
-  ((__bridge BugsnagConfiguration *)configuration).bundleVersion = ns_bundleVersion;
+    NSString *ns_bundleVersion = bundleVersion == NULL ? nil : [NSString stringWithUTF8String: bundleVersion];
+    ((__bridge BugsnagConfiguration *)configuration).bundleVersion = ns_bundleVersion;
 }
 
 void bugsnag_setAppType(const void *configuration, char *appType) {
-  NSString *ns_appType = appType == NULL ? nil : [NSString stringWithUTF8String: appType];
-  ((__bridge BugsnagConfiguration *)configuration).appType = ns_appType;
+    NSString *ns_appType = appType == NULL ? nil : [NSString stringWithUTF8String: appType];
+    ((__bridge BugsnagConfiguration *)configuration).appType = ns_appType;
 }
 
 void bugsnag_setContext(const void *configuration, char *context) {
-  NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
-  [Bugsnag.client setContext:ns_Context];
+    NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
+    [Bugsnag.client setContext:ns_Context];
 }
 
 void bugsnag_setContextConfig(const void *configuration, char *context) {
-  NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
-  ((__bridge BugsnagConfiguration *)configuration).context = ns_Context;
+    NSString *ns_Context = context == NULL ? nil : [NSString stringWithUTF8String: context];
+    ((__bridge BugsnagConfiguration *)configuration).context = ns_Context;
 }
 
 void bugsnag_setMaxBreadcrumbs(const void *configuration, int maxBreadcrumbs) {
-  ((__bridge BugsnagConfiguration *)configuration).maxBreadcrumbs = maxBreadcrumbs;
+    ((__bridge BugsnagConfiguration *)configuration).maxBreadcrumbs = maxBreadcrumbs;
 }
 
 void bugsnag_setMaxStringValueLength(const void *configuration, int maxStringValueLength) {
-  ((__bridge BugsnagConfiguration *)configuration).maxStringValueLength = maxStringValueLength;
+    ((__bridge BugsnagConfiguration *)configuration).maxStringValueLength = maxStringValueLength;
 }
 
 void bugsnag_setMaxPersistedEvents(const void *configuration, int maxPersistedEvents) {
-  ((__bridge BugsnagConfiguration *)configuration).maxPersistedEvents = maxPersistedEvents;
+    ((__bridge BugsnagConfiguration *)configuration).maxPersistedEvents = maxPersistedEvents;
 }
 
 void bugsnag_setMaxPersistedSessions(const void *configuration, int maxPersistedSessions) {
-  ((__bridge BugsnagConfiguration *)configuration).maxPersistedSessions = maxPersistedSessions;
+    ((__bridge BugsnagConfiguration *)configuration).maxPersistedSessions = maxPersistedSessions;
 }
 
 void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *types[], int count){
@@ -524,7 +795,7 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
         const char *enabledType = types[i];
         if (enabledType != nil) {
 
-			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
+            NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"Navigation"])
             {
@@ -555,7 +826,7 @@ void bugsnag_setEnabledBreadcrumbTypes(const void *configuration, const char *ty
                 ((__bridge BugsnagConfiguration *)configuration).enabledBreadcrumbTypes |= BSGEnabledBreadcrumbTypeError;
             }
         }
-      }
+    }
 }
 
 void bugsnag_setEnabledTelemetryTypes(const void *configuration, const char *types[], int count){
@@ -612,7 +883,7 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
         const char *enabledType = types[i];
         if (enabledType != nil) {
 
-			NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
+            NSString *typeString = [[NSString alloc] initWithUTF8String:enabledType];
 
             if([typeString isEqualToString:@"AppHangs"])
             {
@@ -643,60 +914,60 @@ void bugsnag_setEnabledErrorTypes(const void *configuration, const char *types[]
                 ((__bridge BugsnagConfiguration *)configuration).enabledErrorTypes.thermalKills = YES;
             }
         }
-      }
+    }
 }
 
 void bugsnag_setDiscardClasses(const void *configuration, const char *classNames[], int count){
-  ((__bridge BugsnagConfiguration *)configuration).discardClasses = getSetFromStringArray(classNames, count);
+    ((__bridge BugsnagConfiguration *)configuration).discardClasses = getSetFromStringArray(classNames, count);
 }
 
 void bugsnag_setUserInConfig(const void *configuration, char *userId, char *userEmail, char *userName)
 {
     [((__bridge BugsnagConfiguration *)configuration) setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
-            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
-             andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
+                                                    withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+                                                      andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
 }
 
 void bugsnag_setRedactedKeys(const void *configuration, const char *redactedKeys[], int count){
-  ((__bridge BugsnagConfiguration *)configuration).redactedKeys = getSetFromStringArray(redactedKeys, count);
+    ((__bridge BugsnagConfiguration *)configuration).redactedKeys = getSetFromStringArray(redactedKeys, count);
 }
 
 void bugsnag_setAutoNotifyConfig(const void *configuration, bool autoNotify) {
-  ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
+    ((__bridge BugsnagConfiguration *)configuration).autoDetectErrors = autoNotify;
 }
 
 void bugsnag_setAutoTrackSessions(const void *configuration, bool autoTrackSessions) {
-  ((__bridge BugsnagConfiguration *)configuration).autoTrackSessions  = autoTrackSessions;
+    ((__bridge BugsnagConfiguration *)configuration).autoTrackSessions  = autoTrackSessions;
 }
 
 void bugsnag_setPersistUser(const void *configuration, bool persistUser) {
-  ((__bridge BugsnagConfiguration *)configuration).persistUser = persistUser;
+    ((__bridge BugsnagConfiguration *)configuration).persistUser = persistUser;
 }
 
 void bugsnag_setSendLaunchCrashesSynchronously(const void *configuration, bool sendLaunchCrashesSynchronously) {
-  ((__bridge BugsnagConfiguration *)configuration).sendLaunchCrashesSynchronously = sendLaunchCrashesSynchronously;
+    ((__bridge BugsnagConfiguration *)configuration).sendLaunchCrashesSynchronously = sendLaunchCrashesSynchronously;
 }
 
 void bugsnag_setEndpoints(const void *configuration, char *notifyURL, char *sessionsURL) {
-  if (notifyURL == NULL || sessionsURL == NULL)
-    return;
+    if (notifyURL == NULL || sessionsURL == NULL)
+        return;
 
-  NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
-  NSString *ns_sessionsURL = [NSString stringWithUTF8String: sessionsURL];
+    NSString *ns_notifyURL = [NSString stringWithUTF8String: notifyURL];
+    NSString *ns_sessionsURL = [NSString stringWithUTF8String: sessionsURL];
 
-  ((__bridge BugsnagConfiguration *)configuration).endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:ns_notifyURL sessions:ns_sessionsURL];
+    ((__bridge BugsnagConfiguration *)configuration).endpoints = [[BugsnagEndpointConfiguration alloc] initWithNotify:ns_notifyURL sessions:ns_sessionsURL];
 }
 
 void bugsnag_setMetadata(const char *section, const char *jsonString) {
 
-  if (section == NULL || jsonString == NULL)
-  {
-    return;
-  }
+    if (section == NULL || jsonString == NULL)
+    {
+        return;
+    }
 
-  NSString *tabName = [NSString stringWithUTF8String: section];
+    NSString *tabName = [NSString stringWithUTF8String: section];
 
- [Bugsnag.client addMetadata:getDictionaryFromMetadataJson(jsonString) toSection:tabName];
+    [Bugsnag.client addMetadata:getDictionaryFromMetadataJson(jsonString) toSection:tabName];
 
 }
 
@@ -705,32 +976,32 @@ const char * bugsnag_retrieveMetaData() {
 }
 
 void bugsnag_removeMetadata(const void *configuration, const char *tab) {
-  if (tab == NULL)
-    return;
+    if (tab == NULL)
+        return;
 
-  NSString *tabName = [NSString stringWithUTF8String:tab];
-  [Bugsnag.client clearMetadataFromSection:tabName];
+    NSString *tabName = [NSString stringWithUTF8String:tab];
+    [Bugsnag.client clearMetadataFromSection:tabName];
 }
 
 void bugsnag_addBreadcrumb(char *message, char *type, char *metadataJson) {
-  [Bugsnag leaveBreadcrumbWithMessage:message ? @(message) : @"<empty>"
-                             metadata:metadataJson ? getDictionaryFromMetadataJson(metadataJson) : nil
-                              andType:BSGBreadcrumbTypeFromString(@(type))];
+    [Bugsnag leaveBreadcrumbWithMessage:message ? @(message) : @"<empty>"
+                               metadata:metadataJson ? getDictionaryFromMetadataJson(metadataJson) : nil
+                                andType:BSGBreadcrumbTypeFromString(@(type))];
 }
 
 void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcrumb)(const void *instance, const char *name, const char *timestamp, const char *type, const char *metadataJson)) {
-  [Bugsnag.breadcrumbs enumerateObjectsUsingBlock:^(BugsnagBreadcrumb *crumb, __unused NSUInteger index, __unused BOOL *stop){
-    const char *message = [crumb.message UTF8String];
-    const char *timestamp = stringFromDate(crumb.timestamp).UTF8String;
-    const char *type = [BSGBreadcrumbTypeValue(crumb.type) UTF8String];
+    [Bugsnag.breadcrumbs enumerateObjectsUsingBlock:^(BugsnagBreadcrumb *crumb, __unused NSUInteger index, __unused BOOL *stop){
+        const char *message = [crumb.message UTF8String];
+        const char *timestamp = stringFromDate(crumb.timestamp).UTF8String;
+        const char *type = [BSGBreadcrumbTypeValue(crumb.type) UTF8String];
 
-    NSDictionary *metadata = crumb.metadata;
-    breadcrumb(managedBreadcrumbs, message, timestamp, type, getJson(metadata));
+        NSDictionary *metadata = crumb.metadata;
+        breadcrumb(managedBreadcrumbs, message, timestamp, type, getJson(metadata));
 
-  }];
+    }];
 }
 
-char * bugsnag_retrieveAppData() {
+const char * bugsnag_retrieveAppData() {
     BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
     if (app == nil) {
         return NULL;
@@ -757,15 +1028,15 @@ char * bugsnag_retrieveAppData() {
 
 void bugsnag_retrieveLastRunInfo(const void *lastRuninfo, void (*callback)(const void *instance, bool crashed, bool crashedDuringLaunch, int consecutiveLaunchCrashes)) {
 
-  int consecutiveLaunchCrashes = Bugsnag.lastRunInfo.consecutiveLaunchCrashes;
-  bool crashed = Bugsnag.lastRunInfo.crashed;
-  bool crashedDuringLaunch = Bugsnag.lastRunInfo.crashedDuringLaunch;
+    int consecutiveLaunchCrashes = (int)Bugsnag.lastRunInfo.consecutiveLaunchCrashes;
+    bool crashed = Bugsnag.lastRunInfo.crashed;
+    bool crashedDuringLaunch = Bugsnag.lastRunInfo.crashedDuringLaunch;
 
-  callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
+    callback(lastRuninfo, crashed, crashedDuringLaunch, consecutiveLaunchCrashes);
 
 }
 
-char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
+const char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const void *instance, const char *key, const char *value)) {
     BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
     NSMutableDictionary *deviceDictionary = [[NSMutableDictionary alloc] init];
 
@@ -790,12 +1061,12 @@ char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)(const
 
 
 void bugsnag_populateUser(struct bugsnag_user *user) {
-  user->user_id = BSGGetDefaultDeviceId().UTF8String;
+    user->user_id = BSGGetDefaultDeviceId().UTF8String;
 }
 
 void bugsnag_setUser(char *userId, char *userEmail, char *userName) {
     [Bugsnag setUser:userId == NULL ? nil : [NSString stringWithUTF8String:userId]
-            withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
+           withEmail:userEmail == NULL ? nil : [NSString stringWithUTF8String:userEmail]
              andName:userName == NULL ? nil : [NSString stringWithUTF8String:userName]];
 }
 
@@ -809,4 +1080,6 @@ void bugsnag_pauseSession() {
 
 bool bugsnag_resumeSession() {
     return [Bugsnag resumeSession];
+}
+
 }
