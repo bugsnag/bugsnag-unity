@@ -208,4 +208,16 @@ public class MySymbolUploader : IPostprocessBuildWithReport
     {
       
     }
+
+     [MenuItem("Window/BugSnag/UploadIosDSYMs", validate = true)]
+    private static bool ValidateSelectAndUploadIosSymbols()
+    {
+        return EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS;
+    }
+
+     [MenuItem("Window/BugSnag/UploadAndroidSymbols", validate = true)]
+    private static bool ValidateSelectAndUploadAndroidSymbols()
+    {
+        return EditorUserBuildSettings.activeBuildTarget == BuildTarget.Android;
+    }
 }
