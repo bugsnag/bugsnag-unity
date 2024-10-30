@@ -14,18 +14,6 @@ namespace BugsnagUnity
         static MethodInfo _getPerformanceStateMethodInfo;
         private static bool _isPerformanceLibraryAvailable = true;
 
-        [Serializable]
-        private class PerformanceState
-        {
-            public string currentContextSpanId;
-            public string currentContextTraceId;
-            public PerformanceState(string currentContextSpanId, string currentContextTraceId)
-            {
-                this.currentContextSpanId = currentContextSpanId;
-                this.currentContextTraceId = currentContextTraceId;
-            }
-        }
-
         internal static Correlation GetCurrentPerformanceSpanContext()
         {
             if (!_isPerformanceLibraryAvailable)
@@ -37,21 +25,21 @@ namespace BugsnagUnity
             {
                 InitializeGetCurrentContextInternalMethodIfNeeded();
 
-                string result = (string)_getPerformanceStateMethodInfo?.Invoke(null, null);
+                byte[] data = (byte[])_getPerformanceStateMethodInfo?.Invoke(null, null);
 
-                if (string.IsNullOrEmpty(result))
+                if (data == null)
                 {
                     return null;
                 }
+                
+                int spanIdLength = BitConverter.ToInt32(data, 0);
+                string spanId = System.Text.Encoding.UTF8.GetString(data, 4, spanIdLength);
 
-                var performanceState = JsonUtility.FromJson<PerformanceState>(result);
+                int traceIdLength = BitConverter.ToInt32(data, 4 + spanIdLength);
+                string traceId = System.Text.Encoding.UTF8.GetString(data, 4 + spanIdLength + 4, traceIdLength);
 
-                if (performanceState == null)
-                {
-                    return null;
-                }
 
-                var correlation = new Correlation(performanceState.currentContextTraceId, performanceState.currentContextSpanId);
+                var correlation = new Correlation(spanId, traceId);
 
                 return correlation;
             }
