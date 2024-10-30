@@ -119,7 +119,6 @@ namespace BugsnagUnity.Payload
             var file = stackFrame.GetFileName();
             var lineNumber = stackFrame.GetFileLineNumber();
             var methodName = new Method(method).DisplayName();
-
             return new StackTraceLine(file, lineNumber, methodName);
         }
 
@@ -131,6 +130,7 @@ namespace BugsnagUnity.Payload
                 this.AddToPayload("lineNumber", lineNumber.Value);
             }
             this.AddToPayload("method", methodName);
+            this.AddToPayload("symbolAddress", "MY-SYMBOL-ADDRESS");
         }
         internal StackTraceLine(Dictionary<string, object> data)
         {
@@ -176,6 +176,17 @@ namespace BugsnagUnity.Payload
             }
         }
 
+        public string SymbolAddress 
+         {
+            get
+            {
+                return this.Get("symbolAddress") as string;
+            }
+            set
+            {
+                this.AddToPayload("symbolAddress", value);
+            }
+        }
         public string FrameAddress { get; set; }
         public bool? IsLr { get; set; }
         public bool? IsPc { get; set; }
@@ -183,7 +194,7 @@ namespace BugsnagUnity.Payload
         public string MachoLoadAddress { get; set; }
         public string MachoUuid { get; set; }
         public string MachoVmAddress { get; set; }
-        public string SymbolAddress { get; set; }
+        
         public bool? InProject { get; set; }
     }
 }
