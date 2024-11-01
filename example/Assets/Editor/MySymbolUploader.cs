@@ -11,6 +11,8 @@ public class MySymbolUploader : IPostprocessBuildWithReport
 {
     public int callbackOrder => 1; // Determines the order of callback execution
 
+    const string API_KEY = "227df1042bc7772c321dbde3b31a03c2";
+
     private static string GetBugsnagCliUrl()
     {
         string baseUrl = "https://github.com/bugsnag/bugsnag-cli/releases/latest/download/";
@@ -171,8 +173,7 @@ public class MySymbolUploader : IPostprocessBuildWithReport
         var path = Path.GetDirectoryName(report.summary.outputPath);
         UnityEngine.Debug.Log($"Build output path: {path}");
 
-        var apiKey = "227df1042bc7772c321dbde3b31a03c2";
-        var args = string.Format("upload unity-android --api-key={0} --verbose {1}", apiKey, path);
+        var args = string.Format("upload unity-android --api-key={0} --verbose {1}", API_KEY, path);
 
         RunBugsnagCliCommand(cliDownloadPath, args);
     }
@@ -194,7 +195,7 @@ public class MySymbolUploader : IPostprocessBuildWithReport
             }
 
             // Customize the CLI command as needed
-            var args = $"upload dsym --api-key=227df1042bc7772c321dbde3b31a03c2 --xcode-project {selectedPath}";
+            var args = $"upload dsym --api-key={API_KEY} --xcode-project {selectedPath}";
             RunBugsnagCliCommand(cliDownloadPath, args);
         }
         else
