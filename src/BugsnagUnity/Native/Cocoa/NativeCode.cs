@@ -11,8 +11,51 @@ namespace BugsnagUnity
         public IntPtr Email;
     }
 
+    /// <summary>
+    /// A binary image that has been loaded into the process memory,
+    /// usually in the form of a dynamic library.
+    /// </summary>
+    /// <remarks>
+    /// This MUST be declared as a struct, not a class. It's supposed to be possible
+    /// to declare it as a class, but you get all sorts of weird marshalling exceptions
+    /// if you do.
+    ///
+    /// Strings and byte arrays should in theory be directly marshallable, but my experience
+    /// has taught me that this feature is flaky at best. Better to just declare them as IntPtr
+    /// and marshal them manually in a wrapper class.
+    /// </remarks>
+    [StructLayout(LayoutKind.Sequential)]
+    struct NativeLoadedImage
+    {
+        public UInt64 LoadAddress;
+        public UInt64 Size;
+        public IntPtr FileName;
+        public IntPtr UuidBytes;
+    }
+
     partial class NativeCode
     {
+        /// <summary>
+        /// Get the number of native binary images (dynamic libraries) that are in memory right now.
+        /// </summary>
+        /// <returns>The number of loaded images</returns>
+        [DllImport(Import)]
+        internal static extern UInt64 bugsnag_getLoadedImageCount();
+
+        /// <summary>
+        /// Get the current list of native loaded binary images (dynamic libraries).
+        /// </summary>
+        /// <param name="images">An array of NativeLoadedImage structs that will be updated to contain the image data.</param>
+        /// <param name="capacity">The number of entries in images.</param>
+        /// <returns>The number of entries that were filled.</returns>
+        /// <remarks>
+        /// Note: Array types MUST be declared as [In, Out] or else you'll get all sorts of weird issues,
+        /// like arrays being truncated to zero length, or a single entry being duplicated across the
+        /// entire array. The compiler won't complain, either.
+        /// </remarks>
+        [DllImport(Import)]
+        internal static extern UInt64 bugsnag_getLoadedImages([In, Out] NativeLoadedImage[] images, UInt64 capacity);
+
         [DllImport(Import)]
         internal static extern void bugsnag_startBugsnagWithConfiguration(IntPtr configuration, string notifierVersion);
 
