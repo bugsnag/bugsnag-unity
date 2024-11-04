@@ -357,6 +357,11 @@ namespace :plugin do
 
       tvos_dir = File.join(plugins_dir, "tvOS")
 
+      # Ensure these directories exist
+      [osx_dir, ios_dir, tvos_dir].each do |dir|
+        FileUtils.mkdir_p(dir) unless File.directory?(dir)
+      end
+
       #copy framework usage api file
       FileUtils.cp_r(File.join(current_directory,"bugsnag-cocoa", "Bugsnag", "resources", "PrivacyInfo.xcprivacy"), ios_dir)
 
