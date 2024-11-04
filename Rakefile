@@ -255,6 +255,9 @@ namespace :plugin do
     
     desc "Delete all build artifacts"
     task :clean do
+
+      sh "git", "clean", "-dfx", "Bugsnag/Assets/Bugsnag/Plugins"
+
       FileUtils.rm_rf cocoa_build_dir
       unless is_windows?
         # remove android build area
@@ -348,7 +351,7 @@ namespace :plugin do
         end
       end
 
-      osx_dir = File.join(plugins_dir, "OSX")
+      osx_dir = File.join(plugins_dir, "MacOS")
 
       ios_dir = File.join(plugins_dir, "iOS")
 
@@ -443,6 +446,7 @@ namespace :test do
       end
     end
   end
+end  
 
   namespace :edm do
     task :build do
