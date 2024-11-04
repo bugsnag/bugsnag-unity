@@ -251,7 +251,7 @@ namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
 
-    task all: [:cocoa, :android]
+    task native_plugins: [:cocoa, :android]
     
     desc "Delete all build artifacts"
     task :clean do
@@ -407,7 +407,7 @@ namespace :plugin do
   task export: ["plugin:build:clean"] do
     if is_windows?
     else
-      Rake::Task["plugin:build:all"].invoke
+      Rake::Task["plugin:build:native_plugins"].invoke
     end
     export_package("Bugsnag.unitypackage")
   end
