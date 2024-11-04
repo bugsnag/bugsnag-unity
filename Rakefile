@@ -101,7 +101,7 @@ end
 def assemble_android filter_abis=true
   abi_filters = filter_abis ? "-PABI_FILTERS=armeabi-v7a,x86" : "-Pnoop_filters=true"
   android_dir = File.join(plugins_dir, "Android")
-
+  FileUtils.mkdir_p(android_dir)
   Dir.chdir"bugsnag-android" do
     sh "./gradlew", "assembleRelease", abi_filters
   end
