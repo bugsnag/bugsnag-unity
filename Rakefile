@@ -40,11 +40,6 @@ def unity_executable dir=unity_directory
   end
 end
 
-def unity_dll_location
-  [File.join(unity_directory, "Unity.app", "Contents", "Managed"), File.join(unity_directory, "Editor", "Data", "Managed")].find do |unity|
-    File.exist? unity
-  end
-end
 
 ##
 # Get existing unity executable path or exit with error
@@ -90,10 +85,10 @@ def current_directory
 end
 
 def project_path
-  File.join(current_directory, "unity", "PackageProject")
+  File.join(current_directory, "Bugsnag")
 end
 
-def assets_path
+def plugins_dir
   File.join(project_path, "Assets", "Bugsnag/Plugins")
 end
 
@@ -105,7 +100,7 @@ end
 
 def assemble_android filter_abis=true
   abi_filters = filter_abis ? "-PABI_FILTERS=armeabi-v7a,x86" : "-Pnoop_filters=true"
-  android_dir = File.join(assets_path, "Android")
+  android_dir = File.join(plugins_dir, "Android")
 
   Dir.chdir"bugsnag-android" do
     sh "./gradlew", "assembleRelease", abi_filters
@@ -255,20 +250,11 @@ end
 namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
-    if is_windows?
-      task all: [:assets, :csharp]
-      task all_android64: [:assets, :csharp]
-    else
-      task all: [:assets, :cocoa, :android, :csharp, ]
-      task all_android64: [:assets, :cocoa, :android_64bit, :csharp ]
-    end
 
-
+    task all: [:cocoa, :android]
+    
     desc "Delete all build artifacts"
     task :clean do
-      # remove any leftover artifacts from the package generation directory
-      sh "git", "clean", "-dfx", "unity"
-      # remove cocoa build area
       FileUtils.rm_rf cocoa_build_dir
       unless is_windows?
         # remove android build area
@@ -281,15 +267,12 @@ namespace :plugin do
         end
       end
     end
-    task :assets do
-      FileUtils.cp_r(File.join(current_directory, "src", "Assets"), project_path, preserve: true)
-    end
+
     task :cocoa do
       next unless is_mac?
       build_type = "Release" # "Debug" or "Release"
       FileUtils.mkdir_p cocoa_build_dir
       FileUtils.cp_r "bugsnag-cocoa/Bugsnag", cocoa_build_dir
-      bugsnag_unity_file = File.realpath("BugsnagUnity.mm", "src")
       public_headers = Dir.entries(File.join(cocoa_build_dir, "Bugsnag", "include", "Bugsnag"))
 
       Dir.chdir cocoa_build_dir do
@@ -329,7 +312,6 @@ namespace :plugin do
 
           source_files = Dir.glob(File.join("Bugsnag", "**", "*.{c,h,mm,cpp,m}"))
                             .map(&File.method(:realpath))
-                            .tap { |files| files << bugsnag_unity_file }
                             .map { |f| group.new_file(f) }
 
           target.add_file_references(source_files) do |build_file|
@@ -366,11 +348,11 @@ namespace :plugin do
         end
       end
 
-      osx_dir = File.join(assets_path, "OSX")
+      osx_dir = File.join(plugins_dir, "OSX")
 
-      ios_dir = File.join(assets_path, "iOS")
+      ios_dir = File.join(plugins_dir, "iOS")
 
-      tvos_dir = File.join(assets_path, "tvOS")
+      tvos_dir = File.join(plugins_dir, "tvOS")
 
       #copy framework usage api file
       FileUtils.cp_r(File.join(current_directory,"bugsnag-cocoa", "Bugsnag", "resources", "PrivacyInfo.xcprivacy"), ios_dir)
@@ -409,179 +391,19 @@ namespace :plugin do
     end
 
     task :android do
-      assemble_android(true)
-    end
-
-    task :android_64bit do
       assemble_android(false)
     end
-
-    task :csharp do
-      if is_windows?
-        env = { "UnityDir" => unity_dll_location }
-        unless system env, "powershell", "-File", "build.ps1"
-          raise "Failed to build csharp plugin"
-        end
-      else
-        env = { "UnityDir" => unity_dll_location }
-        unless system env, "./build.sh"
-          raise "Failed to build csharp plugin"
-        end
-      end
-
-      Dir.chdir File.join("src", "BugsnagUnity", "bin", "Release", "netstandard2.0") do
-        FileUtils.cp File.realpath("BugsnagUnity.dll"), assets_path
-        windows_dir = File.join(assets_path, "Windows")
-        FileUtils.cp File.realpath("BugsnagUnity.Windows.dll"), windows_dir
-        FileUtils.cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "tvOS")
-        FileUtils.cp File.realpath("BugsnagUnity.iOS.dll"), File.join(assets_path, "iOS")
-        FileUtils.cp File.realpath("BugsnagUnity.MacOS.dll"), File.join(assets_path, "OSX")
-        FileUtils.cp File.realpath("BugsnagUnity.Android.dll"), File.join(assets_path, "Android")
-      end
-    end
-
-
-  end
-
-  task :export_package do
-    export_package
   end
 
   desc "Generate release artifacts"
   task export: ["plugin:build:clean"] do
-    #Rake::Task["plugin:build:all"].invoke
-    #export_package("Bugsnag.unitypackage")
-    Rake::Task["plugin:build:all_android64"].invoke
+    if is_windows?
+    else
+      Rake::Task["plugin:build:all"].invoke
+    end
     export_package("Bugsnag.unitypackage")
   end
 
-  desc "Generate release artifacts from cache (using Android 64-bit)"
-  task :quick_export do
-    Rake::Task["plugin:build:all_android64"].invoke
-    export_package("Bugsnag.unitypackage")
-  end
-
-  desc "Create a PR for the release. Usage: `rake \"plugin:bump[8.1.0]\"`. Quotes required around args in zsh."
-  task :bump, [:version] do |task, args|
-    new_version = args[:version]
-    if new_version == nil or new_version.length < 5 or new_version.chars.any? { |letter| !"0123456789.".include? letter }
-      throw "New version required e.g. `rake \"plugin:bump[8.1.0]\"`."
-    end
-
-    branch = %x|git rev-parse --abbrev-ref HEAD|.strip
-    if branch != "next"
-      throw "Must be on the 'next' branch. Current branch is #{branch}."
-    end
-
-    # Update CHANGELOG.md if it doesn't already have the new version
-    changelog = File.open("CHANGELOG.md").read
-    if not changelog.include? "## #{new_version}"
-      insert_index = changelog.index("## TBD") + 6
-      changelog.insert(insert_index, "\n\n\n## #{new_version} (#{Time.now.strftime("%Y-%m-%d")})")
-      File.write("CHANGELOG.md", changelog)
-      puts "Updated CHANGELOG.md"
-    end
-
-    # Update build.sh
-    build_sh = File.open("build.sh").read.lines.map { |line| line.start_with?("VERSION=\"") ? "VERSION=\"#{new_version}\"\n" : line }.join
-    File.write("build.sh", build_sh)
-
-    # Commit
-    %x|git add CHANGELOG.md build.sh|
-    %x|git diff --exit-code|
-    if $?.exitstatus == 1
-      throw "You have unstaged changes."
-    end
-    system("git commit -m \"Release v#{new_version}\"")
-    system("git push origin next")
-    system("open", "https://github.com/bugsnag/bugsnag-unity/compare/master...next?expand=1&title=Release%20v#{new_version}")
-    puts "Once you have merged the PR you can run `rake plugin:release`"
-  end
-
-  desc "Releases the current master branch"
-  task :release do
-    version = get_current_version()
-
-    system("git fetch origin")
-    if %x|git rev-parse --abbrev-ref HEAD|.strip != "master"
-      puts "Switching to the 'master' branch..."
-      system("git switch master")
-      if $?.exitstatus != 0
-        throw "Cannot switch to 'master'."
-      end
-      system("git rebase origin/master")
-      if $?.exitstatus != 0
-        throw "Cannot rebase."
-      end
-    end
-    system("git diff origin/master..master")
-    if $?.exitstatus != 0
-      throw "You have unpushed commits."
-    end
-    system("git tag v#{version}")
-    if $?.exitstatus != 0
-      throw "Cannot create tag."
-    end
-    system("git push origin tag v#{version}")
-    if $?.exitstatus != 0
-      throw "Cannot push tag."
-    end
-  end
-
-  desc "Create UPM and EDM packages"
-  task :package do
-    pwd = File.dirname(__FILE__)
-    upm_tools = File.join(pwd, "upm-tools")
-    package_file = File.join(pwd, "Bugsnag.unitypackage")
-    cli_args = "-quit -batchmode -nographics -logFile unity.log"
-    package_dir = File.join(pwd, "bugsnag-unity-upm")
-    edm_package = File.join(pwd, "bugsnag-unity-upm-edm4u")
-
-    
-    
-    
-    puts "Creating UPM package"
-    create_upm(package_dir, upm_tools, package_file, cli_args)
-    puts "Creating EDM package"
-    create_edm(package_dir, upm_tools, edm_package)
-    puts "Testing generated package"
-    test_package(cli_args, package_dir)
-    puts "Committing changes"
-    update_package_git(package_dir)
-    update_package_git(edm_package)
-    
-  end
-end
-
-namespace :example do
-  namespace :build do
-    task prepare: %w[plugin:export] do
-      # import the built bugsnag package into the sample application
-      example = File.absolute_path "example"
-      package = File.absolute_path "Bugsnag.unitypackage"
-      unity "-projectPath", example, "-importPackage", package
-
-      # here we have to uncomment the lines that reference bugsnag. These are
-      # commented out so that we can import the package above and have it compile
-      # before the bugsnag references have been added.
-      bugsnag_file = File.join(example, "Assets", "Scripts", "Main.cs")
-      c = File.read(bugsnag_file).gsub("//", "")
-      File.write(bugsnag_file, c)
-    end
-
-    task ios: %w[example:build:prepare] do
-      example = File.absolute_path "example"
-      unity "-projectPath", example, "-executeMethod", "Main.iOSBuild"
-    end
-
-    task android: %w[example:build:prepare] do
-      example = File.absolute_path "example"
-      unity "-projectPath", example, "-executeMethod", "Main.AndroidBuild"
-    end
-
-    task all: %w[example:build:ios example:build:android]
-  end
-end
 
 namespace :test do
   namespace :android do
