@@ -461,21 +461,7 @@ namespace :test do
       end
     end
   end
-end  
-
-  namespace :edm do
-    task :build do
-      # Check that a Unity version has been selected and the path exists before calling the build script
-      unity_path, unity = get_required_unity_paths
-
-      # Build the Android APK
-      env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("features", "scripts", "build_edm.sh")
-      unless system env, script
-        raise 'EDM APK build failed'
-      end
-    end
-  end
+ 
 
   namespace :ios do
     task :generate_xcode do
@@ -541,3 +527,4 @@ end
     task build: %w[test:ios:generate_xcode test:ios:build_xcode] do
     end
   end
+end 
