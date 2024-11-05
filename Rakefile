@@ -96,6 +96,10 @@ def run_unit_tests
   unity "-runTests", "-batchmode", "-projectPath", project_path, "-testPlatform", "EditMode", "-testResults", File.join(current_directory, "testResults.xml") , force_free: false
 end
 
+def apply_plugin_import_settings
+  unity "-quit", "-batchmode", "-projectPath", project_path, "-executeMethod", "ForceImportSettings.ApplyImportSettings"
+end
+
 def export_package name="Bugsnag.unitypackage"
   package_output = File.join(current_directory, name)
   FileUtils.rm_rf package_output
@@ -255,7 +259,7 @@ namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
 
-    task native_plugins: [:cocoa, :android]
+    task native_plugins: [:cocoa, :android, :apply_plugin_settings]
     
     desc "Delete all build artifacts"
     task :clean do
@@ -404,6 +408,10 @@ namespace :plugin do
 
     task :android do
       assemble_android(false)
+    end
+
+    task :apply_plugin_settings do
+      apply_plugin_import_settings
     end
   end
 

@@ -2,19 +2,15 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[InitializeOnLoad]
 public class ForceImportSettings : MonoBehaviour
 {
-    static ForceImportSettings()
+    public static void ApplyImportSettings()
     {
-        EditorApplication.delayCall += () =>
-        {
-            ApplyPluginImportSettings("Assets/Bugsnag/Plugins/iOS", new List<BuildTarget> { BuildTarget.iOS });
-            ApplyPluginImportSettings("Assets/Bugsnag/Plugins/MacOS", new List<BuildTarget> { BuildTarget.StandaloneOSX });
-            ApplyPluginImportSettings("Assets/Bugsnag/Plugins/tvOS", new List<BuildTarget> { BuildTarget.tvOS });
-            ApplyPluginImportSettings("Assets/Bugsnag/Plugins/Android", new List<BuildTarget> { BuildTarget.Android });
-            ApplyPluginImportSettings("Assets/Bugsnag/Plugins/Cocoa", new List<BuildTarget> { BuildTarget.iOS, BuildTarget.tvOS, BuildTarget.StandaloneOSX });
-        };
+        ApplyPluginImportSettings("Assets/Bugsnag/Plugins/iOS", new List<BuildTarget> { BuildTarget.iOS });
+        ApplyPluginImportSettings("Assets/Bugsnag/Plugins/MacOS", new List<BuildTarget> { BuildTarget.StandaloneOSX });
+        ApplyPluginImportSettings("Assets/Bugsnag/Plugins/tvOS", new List<BuildTarget> { BuildTarget.tvOS });
+        ApplyPluginImportSettings("Assets/Bugsnag/Plugins/Android", new List<BuildTarget> { BuildTarget.Android });
+        ApplyPluginImportSettings("Assets/Bugsnag/Plugins/Cocoa", new List<BuildTarget> { BuildTarget.iOS, BuildTarget.tvOS, BuildTarget.StandaloneOSX });
     }
 
     private static List<BuildTarget> RelevantBuildTargets = new List<BuildTarget> {
