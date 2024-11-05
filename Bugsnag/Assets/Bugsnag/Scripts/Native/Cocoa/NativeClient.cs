@@ -1,4 +1,4 @@
-﻿#if UNITY_IOS || UNITY_STANDALONE_OSX && !UNITY_EDITOR
+﻿#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
 
 using System;
 using System.Collections;

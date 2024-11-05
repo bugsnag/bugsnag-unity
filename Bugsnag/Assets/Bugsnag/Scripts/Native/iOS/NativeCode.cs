@@ -1,4 +1,4 @@
-﻿#if UNITY_IOS
+﻿#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
 namespace BugsnagUnity
 {
     partial class NativeCode
