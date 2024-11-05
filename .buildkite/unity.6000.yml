@@ -5,9 +5,9 @@ agents:
   queue: macos-14
 
 steps:
-  - group: ":hammer: Build Unity 2023 test fixtures"
+  - group: ":hammer: Build Unity 6000 test fixtures"
     steps:
-      - label: ":android: Build Android test fixture for Unity 2023"
+      - label: ":android: Build Android test fixture for Unity 6000"
         timeout_in_minutes: 30
         key: "build-android-fixture-6000"
         env:
