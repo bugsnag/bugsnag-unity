@@ -1,4 +1,6 @@
 ﻿using System;
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BugsnagUnityTests")]
+
 namespace BugsnagUnity
 {
     public class EndpointConfiguration

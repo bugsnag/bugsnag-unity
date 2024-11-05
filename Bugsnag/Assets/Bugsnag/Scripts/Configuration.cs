@@ -6,6 +6,7 @@ using System.Linq;
 using BugsnagUnity.Payload;
 using UnityEngine;
 using System.Text.RegularExpressions;
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BugsnagUnityTests")]
 
 namespace BugsnagUnity
 {

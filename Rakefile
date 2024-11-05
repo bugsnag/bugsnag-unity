@@ -92,6 +92,10 @@ def plugins_dir
   File.join(project_path, "Assets", "Bugsnag/Plugins")
 end
 
+def run_unit_tests
+  unity "-runTests", "-batchmode", "-projectPath", project_path, "-testPlatform", "EditMode", "-testResults", File.join(current_directory, "testResults.xml") , force_free: false
+end
+
 def export_package name="Bugsnag.unitypackage"
   package_output = File.join(current_directory, name)
   FileUtils.rm_rf package_output
@@ -405,10 +409,8 @@ namespace :plugin do
 
   desc "Generate release artifacts"
   task export: ["plugin:build:clean"] do
-    if is_windows?
-    else
-      Rake::Task["plugin:build:native_plugins"].invoke
-    end
+    Rake::Task["plugin:build:native_plugins"].invoke unless is_windows?
+    run_unit_tests
     export_package("Bugsnag.unitypackage")
   end
 
