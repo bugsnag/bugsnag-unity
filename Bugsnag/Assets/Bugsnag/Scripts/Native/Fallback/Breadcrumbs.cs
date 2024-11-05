@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+﻿#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBGL
 using System.Collections.Generic;
 using System.Linq;
 using BugsnagUnity.Payload;
