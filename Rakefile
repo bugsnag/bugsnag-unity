@@ -413,7 +413,7 @@ namespace :plugin do
     run_unit_tests
     export_package("Bugsnag.unitypackage")
   end
-
+end
 
 namespace :test do
   namespace :android do
@@ -533,4 +533,3 @@ end
     task build: %w[test:ios:generate_xcode test:ios:build_xcode] do
     end
   end
-end
