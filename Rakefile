@@ -284,6 +284,7 @@ namespace :plugin do
       build_type = "Release" # "Debug" or "Release"
       FileUtils.mkdir_p cocoa_build_dir
       FileUtils.cp_r "bugsnag-cocoa/Bugsnag", cocoa_build_dir
+      bugsnag_unity_native_cocoa_file = File.realpath("BugsnagUnity.mm", "Bugsnag/NativeSrc/Cocoa")
       public_headers = Dir.entries(File.join(cocoa_build_dir, "Bugsnag", "include", "Bugsnag"))
 
       Dir.chdir cocoa_build_dir do
@@ -323,6 +324,7 @@ namespace :plugin do
 
           source_files = Dir.glob(File.join("Bugsnag", "**", "*.{c,h,mm,cpp,m}"))
                             .map(&File.method(:realpath))
+                            .tap { |files| files << bugsnag_unity_native_cocoa_file }
                             .map { |f| group.new_file(f) }
 
           target.add_file_references(source_files) do |build_file|
