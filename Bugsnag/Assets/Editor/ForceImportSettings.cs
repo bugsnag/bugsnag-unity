@@ -11,6 +11,10 @@ public class ForceImportSettings : MonoBehaviour
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/MacOS", new List<BuildTarget> { BuildTarget.StandaloneOSX });
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/tvOS", new List<BuildTarget> { BuildTarget.tvOS });
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/Android", new List<BuildTarget> { BuildTarget.Android });
+        // There is a bug in some unity versions where MacOS bundle plugins are imported as a directory instead of a single plugin file.
+        // This causes issues for UPM installs, because if the plugin is imported as a directory, then the package manager will expect
+        // each file to have a .meta file with it and throws an error when non is found.
+        // This method is a work around that manually adds those meta files.
         GenerateMetaFilesForBundle();
     }
 
@@ -28,15 +32,12 @@ public class ForceImportSettings : MonoBehaviour
     private static void ApplyPluginImportSettings(string dir, List<BuildTarget> targets)
     {
         string[] guids = AssetDatabase.FindAssets("", new[] { dir });
-
         foreach (string guid in guids)
         {
             string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-
             if (!string.IsNullOrEmpty(assetPath) && !assetPath.EndsWith(".meta"))
             {
                 AssetImporter importer = AssetImporter.GetAtPath(assetPath);
-
                 if (importer != null)
                 {
                     if (importer is PluginImporter pluginImporter)
@@ -47,15 +48,11 @@ public class ForceImportSettings : MonoBehaviour
                             pluginImporter.SetCompatibleWithPlatform(target, targets.Contains(target));
                         }
                         pluginImporter.SaveAndReimport();
-
-                        Debug.Log($"Set import settings for {assetPath}");
                     }
                 }
             }
         }
-
         AssetDatabase.Refresh();
-        Debug.Log("Import settings applied and Asset Database refreshed.");
     }
 
     private static void GenerateMetaFilesForBundle()
@@ -73,17 +70,12 @@ public class ForceImportSettings : MonoBehaviour
 
         AssetDatabase.ImportAsset(tempDir, ImportAssetOptions.ForceUpdate);
         AssetDatabase.Refresh();
-
         Directory.Delete(sourceDir, true);
         Directory.CreateDirectory(sourceDir);
         CopyDirectory(tempDir, sourceDir);
-        
         Directory.Delete(tempDir, true);
         File.Delete(tempDirMeta);
-
         AssetDatabase.Refresh();
-
-        Debug.Log("Meta files generated and contents of bugsnag-osx.bundle overwritten.");
     }
 
     private static void CopyDirectory(string sourceDir, string targetDir)
