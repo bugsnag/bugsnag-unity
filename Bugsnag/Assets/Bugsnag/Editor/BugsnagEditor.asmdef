@@ -1,16 +1,16 @@
 {
     "name": "BugsnagEditor",
+    "rootNamespace": "",
     "references": [
-        "Bugsnag"
+        "GUID:8d198819d450d4d6292709bec5a655cc"
     ],
-    "optionalUnityReferences": [],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
