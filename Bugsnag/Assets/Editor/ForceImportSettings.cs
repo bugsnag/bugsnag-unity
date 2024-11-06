@@ -62,8 +62,8 @@ public class ForceImportSettings : MonoBehaviour
     {
         string sourceDir = "Assets/Bugsnag/Plugins/MacOS/bugsnag-osx.bundle";
         string tempDir = "Assets/Bugsnag/Plugins/MacOS/bundleMetaGeneration";
+        string tempDirMeta = "Assets/Bugsnag/Plugins/MacOS/bundleMetaGeneration.meta";
 
-        // Step 1: Copy contents of bugsnag-osx.bundle to bundleMetaGeneration
         if (Directory.Exists(tempDir))
         {
             Directory.Delete(tempDir, true);
@@ -71,17 +71,18 @@ public class ForceImportSettings : MonoBehaviour
         Directory.CreateDirectory(tempDir);
         CopyDirectory(sourceDir, tempDir);
 
-        // Step 2: Import assets in bundleMetaGeneration to generate .meta files
         AssetDatabase.ImportAsset(tempDir, ImportAssetOptions.ForceUpdate);
         AssetDatabase.Refresh();
-        // Step 3: Overwrite bugsnag-osx.bundle with contents from bundleMetaGeneration
+
         Directory.Delete(sourceDir, true);
         Directory.CreateDirectory(sourceDir);
         CopyDirectory(tempDir, sourceDir);
         
         Directory.Delete(tempDir, true);
-        // Refresh to apply changes
+        File.Delete(tempDirMeta);
+
         AssetDatabase.Refresh();
+
         Debug.Log("Meta files generated and contents of bugsnag-osx.bundle overwritten.");
     }
 
