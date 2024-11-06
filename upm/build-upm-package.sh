@@ -26,34 +26,35 @@ fi
 #In which case all sub dirs and files must have .meta files to work with UPM.
 #Building the UPM package with unity 2019 ensures that the meta files are created 
 
-if [[ "$UNITY_UPM_VERSION" != *"2019"* ]]; then
-  echo "ERROR: UNITY_UPM_VERSION must be a version of Unity 2019. See script comments for details."
-  exit 1
-fi
+# if [[ "$UNITY_UPM_VERSION" != *"2019"* ]]; then
+#   echo "ERROR: UNITY_UPM_VERSION must be a version of Unity 2019. See script comments for details."
+#   exit 1
+# fi
 
-UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_UPM_VERSION/Unity.app/Contents/MacOS"
+# UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_UPM_VERSION/Unity.app/Contents/MacOS"
 
 
 
-#Check for the release package
-echo "Checking for the release package"
+# #Check for the release package
+# echo "Checking for the release package"
 
-# make sure the package of the release is present after building
-if [ ! -f "$PACKAGE_FILE" ]; then
-    echo "$PACKAGE_FILE not found, please provide a release package."
-    exit 1
-fi
+# # make sure the package of the release is present after building
+# if [ ! -f "$PACKAGE_FILE" ]; then
+#     echo "$PACKAGE_FILE not found, please provide a release package."
+#     exit 1
+# fi
 
-echo "SDK package found"
+# echo "SDK package found"
 
-echo "\`Unity\` executable = $UNITY_PATH/Unity"
+# echo "\`Unity\` executable = $UNITY_PATH/Unity"
 
-#Import unitypackage into the Import project
-echo "Importing Bugsnag.unitypackage into the import project"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
-                  -projectPath $PROJECT_PATH \
-                  -ignoreCompilerErrors \
-                  -importPackage $SCRIPT_PATH/../Bugsnag.unitypackage
+# #Import unitypackage into the Import project
+# echo "Importing Bugsnag.unitypackage into the import project"
+# $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
+#                   -projectPath $PROJECT_PATH \
+#                   -ignoreCompilerErrors \
+#                   -logFile upm-import-log.log \
+#                   -importPackage $SCRIPT_PATH/../Bugsnag.unitypackage
 
 echo "Copying over the unpacked sdk files"
 cp -r UPMImportProject/Assets/Bugsnag/. $PACKAGE_DIR

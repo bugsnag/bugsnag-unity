@@ -62,3 +62,7 @@ Bugsnag/Temp
 Bugsnag/UserSettings
 Bugsnag/Assets/Bugsnag/Plugins
 Bugsnag/Packages
+upm/UPMImportProject/Library
+upm-package
+upm/UPMImportProject/.vscode
+UPMImportProject.sln
