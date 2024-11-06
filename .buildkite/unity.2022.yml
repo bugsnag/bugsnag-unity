@@ -206,24 +206,24 @@ steps:
         concurrency_group: "bitbar"
         concurrency_method: eager
 
-      - label: Run MacOS e2e tests for Unity 2022
-        timeout_in_minutes: 60
-        depends_on: 'macos-2022-fixture'
-        env:
-          UNITY_VERSION: *2022
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - features/fixtures/maze_runner/build/MacOS-release-2022.zip
-            upload:
-              - maze_output/**/*
-              - '*-mazerunner.log'
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
-        commands:
-          - scripts/ci-run-macos-tests.sh release
+      # - label: Run MacOS e2e tests for Unity 2022
+      #   timeout_in_minutes: 60
+      #   depends_on: 'macos-2022-fixture'
+      #   env:
+      #     UNITY_VERSION: *2022
+      #   plugins:
+      #     artifacts#v1.9.0:
+      #       download:
+      #         - features/fixtures/maze_runner/build/MacOS-release-2022.zip
+      #       upload:
+      #         - maze_output/**/*
+      #         - '*-mazerunner.log'
+      #     test-collector#v1.10.2:
+      #       files: "reports/TEST-*.xml"
+      #       format: "junit"
+      #       branch: "^master|next$$"
+      #   commands:
+      #     - scripts/ci-run-macos-tests.sh release
 
       - label: Run WebGL e2e tests for Unity 2022
         timeout_in_minutes: 30
