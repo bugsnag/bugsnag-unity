@@ -21,26 +21,6 @@ steps:
             - exit_status: "*"
               limit: 1
 
-      - label: Ensure notifier builds on Windows (for development)
-        timeout_in_minutes: 30
-        agents:
-          queue: windows-unity-wsl
-        env:
-          UNITY_VERSION: *2021
-          WSLENV: UNITY_VERSION
-        command:
-          - bundle install
-          - bundle exec rake plugin:export
-        plugins:
-          artifacts#v1.5.0:
-            upload:
-              - from: Bugsnag.unitypackage
-                to: Bugsnag_WindowsBuilt.unitypackage
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
   - label: 'Run size impact reporting'
     depends_on: build_unitypackage
     timeout_in_minutes: 10
