@@ -1,4 +1,4 @@
-﻿#if UNITY_EDITOR || UNITY_WEBGL
+﻿#if (UNITY_EDITOR || UNITY_WEBGL) && !(BGS_COCOA_DEV || BGS_ANDROID_DEV || BGS_WIN_DEV)
 using BugsnagUnity.Payload;
 using System;
 using System.Collections.Generic;

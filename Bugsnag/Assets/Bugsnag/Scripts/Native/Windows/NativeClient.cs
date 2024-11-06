@@ -1,4 +1,4 @@
-﻿#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+﻿#if (UNITY_STANDALONE_WIN && !UNITY_EDITOR) || BGS_WIN_DEV
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
