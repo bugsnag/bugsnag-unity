@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ public class ForceImportSettings : MonoBehaviour
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/MacOS", new List<BuildTarget> { BuildTarget.StandaloneOSX });
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/tvOS", new List<BuildTarget> { BuildTarget.tvOS });
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/Android", new List<BuildTarget> { BuildTarget.Android });
+        GenerateMetaFilesForBundle();
     }
 
     private static List<BuildTarget> RelevantBuildTargets = new List<BuildTarget> {
@@ -54,5 +56,44 @@ public class ForceImportSettings : MonoBehaviour
 
         AssetDatabase.Refresh();
         Debug.Log("Import settings applied and Asset Database refreshed.");
+    }
+
+    private static void GenerateMetaFilesForBundle()
+    {
+        string sourceDir = "Assets/Editor/Bugsnag/Plugins/MacOS/bugsnag-osx.bundle";
+        string tempDir = "Assets/Editor/Bugsnag/Plugins/MacOS/bundleMetaGeneration";
+
+        // Step 1: Copy contents of bugsnag-osx.bundle to bundleMetaGeneration
+        if (Directory.Exists(tempDir))
+        {
+            Directory.Delete(tempDir, true);
+        }
+        Directory.CreateDirectory(tempDir);
+        CopyDirectory(sourceDir, tempDir);
+
+        // Step 2: Import assets in bundleMetaGeneration to generate .meta files
+        AssetDatabase.ImportAsset(tempDir, ImportAssetOptions.ForceUpdate);
+        
+        // Step 3: Overwrite bugsnag-osx.bundle with contents from bundleMetaGeneration
+        Directory.Delete(sourceDir, true);
+        Directory.CreateDirectory(sourceDir);
+        CopyDirectory(tempDir, sourceDir);
+
+        // Refresh to apply changes
+        AssetDatabase.Refresh();
+        Debug.Log("Meta files generated and contents of bugsnag-osx.bundle overwritten.");
+    }
+
+    private static void CopyDirectory(string sourceDir, string targetDir)
+    {
+        foreach (var dirPath in Directory.GetDirectories(sourceDir, "*", SearchOption.AllDirectories))
+        {
+            Directory.CreateDirectory(dirPath.Replace(sourceDir, targetDir));
+        }
+
+        foreach (var filePath in Directory.GetFiles(sourceDir, "*.*", SearchOption.AllDirectories))
+        {
+            File.Copy(filePath, filePath.Replace(sourceDir, targetDir), true);
+        }
     }
 }
