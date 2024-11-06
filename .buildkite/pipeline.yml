@@ -29,7 +29,8 @@ steps:
           UNITY_VERSION: *2021
           WSLENV: UNITY_VERSION
         command:
-          - /mnt/c/Windows/System32/cmd.exe /c  .\\scripts\\ci-build-windows-plugin.bat
+          - bundle install
+          - bundle exec rake plugin:export
         plugins:
           artifacts#v1.5.0:
             upload:
