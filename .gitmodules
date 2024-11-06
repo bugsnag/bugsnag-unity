@@ -6,4 +6,4 @@
 	url = https://github.com/bugsnag/bugsnag-android
 [submodule "Bugsnag/Assets/Bugsnag/Runtime/bugsnag-web-request"]
 	path = Bugsnag/Assets/Bugsnag/Runtime/bugsnag-web-request
-	url = git@github.com:bugsnag/bugsnag-unity-web-request.git
+url=https://github.com/bugsnag/bugsnag-unity-web-request.git
