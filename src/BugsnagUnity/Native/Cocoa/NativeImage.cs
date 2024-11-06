@@ -4,56 +4,22 @@ using System.Runtime.InteropServices;
 
 namespace BugsnagUnity
 {
-    /// <summary>
-    /// Wraps a NativeLoadedImage to provide automatic and lazy marshaling from the native side.
-    /// </summary>
-    /// <remarks>
-    /// We generally don't need the name and UUID except in specific cases, so we unmarshal
-    /// them lazily.
-    /// </remarks>
     class LoadedImage
     {
-        public UInt64 LoadAddress
-        {
-            get => Image.LoadAddress;
-        }
-        public UInt64 Size
-        {
-            get => Image.Size;
-        }
-        public string FileName
-        {
-            get
-            {
-                if (CachedFileName == null)
-                {
-                    CachedFileName = Marshal.PtrToStringAnsi(Image.FileName);
-                }
-                return CachedFileName;
-            }
-        }
-        public string Uuid
-        {
-            get
-            {
-                if (CachedUuid == null)
-                {
-                    var uuid = new byte[16];
-                    Marshal.Copy(Image.UuidBytes, uuid, 0, 16);
-                    CachedUuid = new Guid(uuid).ToString();
-                }
-                return CachedUuid;
-            }
-        }
-
         public LoadedImage(NativeLoadedImage image)
         {
-            Image = image;
+            LoadAddress = image.LoadAddress;
+            Size = image.Size;
+            FileName = Marshal.PtrToStringAnsi(image.FileName);
+            var uuid = new byte[16];
+            Marshal.Copy(image.UuidBytes, uuid, 0, 16);
+            Uuid = new Guid(uuid).ToString();
         }
 
-        private NativeLoadedImage Image;
-        private string CachedFileName;
-        private string CachedUuid;
+        public UInt64 LoadAddress;
+        public UInt64 Size;
+        public string FileName;
+        public string Uuid;
     }
 
     class LoadedImages
@@ -75,6 +41,8 @@ namespace BugsnagUnity
                 images[i] = new LoadedImage(nativeImages[i]);
             }
             Images = images;
+            // bugsnag_getLoadedImages() locks a mutex, so we must call bugsnag_unlockLoadedImages()
+            NativeCode.bugsnag_unlockLoadedImages();
         }
 
         /// <summary>
