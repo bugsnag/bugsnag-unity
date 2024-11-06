@@ -55,27 +55,19 @@ def get_required_unity_paths
   [dir, exe]
 end
 
-##
 #
-# Run a command with the unity executable and the default command line parameters
-# that we apply
+# Run a command with the Unity executable and apply default command line parameters.
 #
-def unity(*cmd, force_free: true, no_graphics: true)
+def unity(*cmd)
   raise "Unable to locate Unity executable in #{unity_directory}" unless unity_executable
 
-  cmd_prepend = [unity_executable, "-force-free", "-batchmode", "-nographics", "-logFile", "unity.log", "-quit"]
-  unless force_free
-    cmd_prepend = cmd_prepend - ["-force-free"]
-  end
-  unless no_graphics
-    cmd_prepend = cmd_prepend - ["-nographics"]
-  end
-  cmd = cmd.unshift(*cmd_prepend)
-  sh *cmd do |ok, res|
-    if !ok
-      puts File.read("unity.log") if File.exist?("unity.log")
+  unity_options = [unity_executable, "-batchmode", "-logFile", "unity.log", "-quit", "-nographics"]
 
-      raise "unity error: #{res}"
+  full_cmd = unity_options + cmd
+  sh *full_cmd do |ok, res|
+    unless ok
+      puts File.read("unity.log") if File.exist?("unity.log")
+      raise "Unity error: #{res}"
     end
   end
 end
@@ -93,17 +85,17 @@ def plugins_dir
 end
 
 def run_unit_tests
-  unity "-runTests", "-batchmode", "-projectPath", project_path, "-testPlatform", "EditMode", "-testResults", File.join(current_directory, "testResults.xml") , force_free: false
+  unity "-runTests", "-projectPath", project_path, "-testPlatform", "EditMode", "-testResults", File.join(current_directory, "testResults.xml")
 end
 
 def apply_plugin_import_settings
-  unity "-quit", "-batchmode", "-projectPath", project_path, "-executeMethod", "ForceImportSettings.ApplyImportSettings"
+  unity "-projectPath", project_path, "-executeMethod", "ForceImportSettings.ApplyImportSettings"
 end
 
 def export_package name="Bugsnag.unitypackage"
   package_output = File.join(current_directory, name)
   FileUtils.rm_rf package_output
-  unity "-projectPath", project_path, "-exportPackage", "Assets/Bugsnag", package_output, force_free: false
+  unity "-projectPath", project_path, "-exportPackage", "Assets/Bugsnag", package_output
 end
 
 def assemble_android filter_abis=true
