@@ -6,146 +6,50 @@
 
 extern "C" {
 
-static uint8_t *byteDupOrNull(const uint8_t * const oldBytes, int byteCount) {
-    auto newBytes = new uint8_t[byteCount];
-    if (oldBytes != nullptr) {
-        memcpy(newBytes, oldBytes, byteCount);
-    }
-    return newBytes;
-}
-
-static char *strDupOrNull(const char* const oldStr) {
-    if (oldStr == nullptr) {
-        return nullptr;
-    }
-    auto byteCount = strnlen(oldStr, 1000);
-    auto newStr = new char[byteCount + 1];
-    memcpy(newStr, oldStr, byteCount);
-    newStr[byteCount] = 0;
-    return newStr;
-}
-
 struct bugsnag_user {
     const char *user_id;
     const char *user_name;
     const char *user_email;
 };
 
-class LoadedImage {
+
+class NativeLoadedImage {
 public:
     // We need to expose raw pointers and blittable types for native interop with C#
     // https://learn.microsoft.com/en-us/dotnet/standard/native-interop/best-practices#blittable-types
     // These members must be in the EXACT SAME ORDER and of the EXACT SAME SIZE as the C# side!
     uint64_t LoadAddress{0};
     uint64_t ImageSize{0};
+    // These are pointers to data allocated by the dynamic loader, and could be deallocated at any time.
     const char *FileName{nullptr};
     uint8_t *UuidBytes{nullptr};
 
-public:
     // "invalid" image
-    LoadedImage() {}
+    NativeLoadedImage() {}
 
-    LoadedImage(const struct mach_header * const header);
-
-    LoadedImage(const char * const filename,
-                const uint8_t * const uuidBytes,
-                const uint64_t loadAddress,
-                const uint64_t imageSize)
-    : FileName(strDupOrNull(filename))
-    , UuidBytes(byteDupOrNull(uuidBytes, 16))
-    , LoadAddress(loadAddress)
-    , ImageSize(imageSize)
-    {}
-
-    LoadedImage(LoadedImage&& other)
-    : FileName(other.FileName)
-    , UuidBytes(other.UuidBytes)
-    , LoadAddress(other.LoadAddress)
-    , ImageSize(other.ImageSize)
-    {
-        other.invalidateAndAbandonOwnership();
-    }
-
-    LoadedImage(const LoadedImage& other)
-    : LoadedImage(other.FileName, other.UuidBytes, other.LoadAddress, other.ImageSize)
-    {}
-
-    ~LoadedImage() {
-        releaseResources();
-    }
-
-    LoadedImage *clone() {
-        return new LoadedImage(FileName, UuidBytes, LoadAddress, ImageSize);
-    }
-
-    LoadedImage& operator=(LoadedImage&& other) {
-        if(this != &other) {
-            delete [] FileName;
-            delete [] UuidBytes;
-            // Assume ownership of these
-            FileName = other.FileName;
-            UuidBytes = other.UuidBytes;
-            LoadAddress = other.LoadAddress;
-            ImageSize = other.ImageSize;
-            other.invalidateAndAbandonOwnership();
-        }
-        return *this;
-    }
-
-    LoadedImage& operator=(const LoadedImage& other)
-    {
-        if(this != &other) {
-            delete [] FileName;
-            delete [] UuidBytes;
-            // Make copies of these
-            FileName = strDupOrNull(other.FileName);
-            UuidBytes = byteDupOrNull(other.UuidBytes, 16);
-            LoadAddress = other.LoadAddress;
-            ImageSize = other.ImageSize;
-        }
-        return *this;
-    }
+    NativeLoadedImage(const struct mach_header * const header);
 
     bool isValid() const {
         return ImageSize > 0;
     }
-
-private:
-    void invalidateAndAbandonOwnership() {
-        FileName = nullptr;
-        UuidBytes = nullptr;
-        LoadAddress = 0;
-        ImageSize = 0;
-    }
-
-    void releaseResources() {
-        if (FileName != nullptr) {
-            delete [] FileName;
-            FileName = nullptr;
-        }
-        if (UuidBytes != nullptr) {
-            delete [] UuidBytes;
-            UuidBytes = nullptr;
-        }
-    }
 };
 
-bool operator<(const LoadedImage& lhs, const LoadedImage& rhs)
+bool operator<(const NativeLoadedImage& lhs, const NativeLoadedImage& rhs)
 {
     return lhs.LoadAddress < rhs.LoadAddress;
 }
-bool operator>(const LoadedImage& lhs, const LoadedImage& rhs)
+bool operator>(const NativeLoadedImage& lhs, const NativeLoadedImage& rhs)
 {
     return lhs.LoadAddress > rhs.LoadAddress;
 }
-bool operator==(const LoadedImage& lhs, const LoadedImage& rhs)
+bool operator==(const NativeLoadedImage& lhs, const NativeLoadedImage& rhs)
 {
     return lhs.LoadAddress == rhs.LoadAddress;
 }
 
-LoadedImage::LoadedImage(const struct mach_header * const header) {
+NativeLoadedImage::NativeLoadedImage(const struct mach_header * const header) {
     if (header == NULL) {
-        LoadedImage();
+        NativeLoadedImage();
         return;
     }
 
@@ -161,13 +65,13 @@ LoadedImage::LoadedImage(const struct mach_header * const header) {
             break;
         default:
             // Header is corrupt
-            LoadedImage();
+            NativeLoadedImage();
             return;
     }
 
     Dl_info dlInfo = {0};
     if (dladdr(header, &dlInfo) == 0) {
-        LoadedImage();
+        NativeLoadedImage();
         return;
     }
 
@@ -175,7 +79,7 @@ LoadedImage::LoadedImage(const struct mach_header * const header) {
     const uint64_t loadAddress = (uint64_t)dlInfo.dli_fbase;
 
     if (fileName == nullptr) {
-        LoadedImage();
+        NativeLoadedImage();
         return;
     }
 
@@ -217,11 +121,11 @@ LoadedImage::LoadedImage(const struct mach_header * const header) {
 }
 
 // All currently loaded images. This MUST be kept ordered: LoadAddress low to high.
-static std::vector<LoadedImage> allImages;
+static std::vector<NativeLoadedImage> allImages;
 static std::mutex allImagesMutex;
 
 static void add_image(const struct mach_header *header, intptr_t slide) {
-    LoadedImage image(header);
+    NativeLoadedImage image(header);
     if (!image.isValid()) {
         return;
     }
@@ -231,7 +135,7 @@ static void add_image(const struct mach_header *header, intptr_t slide) {
 }
 
 static void remove_image(const struct mach_header *header, intptr_t slide) {
-    LoadedImage image(header);
+    NativeLoadedImage image(header);
     if (!image.isValid()) {
         return;
     }
@@ -259,16 +163,21 @@ uint64_t bugsnag_getLoadedImageCount() {
     return allImages.size();
 }
 
-uint64_t bugsnag_getLoadedImages(LoadedImage *images, uint64_t capacity) {
-    std::lock_guard<std::mutex> guard(allImagesMutex);
+uint64_t bugsnag_getLoadedImages(NativeLoadedImage *images, uint64_t capacity) {
+    // Lock and hold the lock until bugsnag_unlockLoadedImages() is called.
+    // We do this to allow the C# side time to copy over FileName and UUID.
+    allImagesMutex.lock();
     uint64_t count = allImages.size();
     if (count > capacity) {
         count = capacity;
     }
-    for(uint64_t i = 0; i < count; i++) {
-        images[i] = allImages[i];
-    }
+    memcpy(images, allImages.data(), sizeof(*images)*count);
+
     return count;
+}
+
+void bugsnag_unlockLoadedImages() {
+    allImagesMutex.unlock();
 }
 
 // ==========================================================================================================
