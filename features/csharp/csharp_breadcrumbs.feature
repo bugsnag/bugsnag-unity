@@ -109,11 +109,11 @@ Feature: Csharp Breadcrumbs
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "NetworkBreadcrumbsFail"
-    And the event "breadcrumbs.1.name" equals "UnityWebRequest failed"
-    And the event "breadcrumbs.1.type" equals "request"
-    And the event "breadcrumbs.1.metaData.method" equals "GET" 
-    And the error payload field "events.0.breadcrumbs.1.metaData.url" equals "https://localhost:994/?success=false"
-    And the event "breadcrumbs.1.metaData.status" has failed
-    And the event "breadcrumbs.1.metaData.urlParams.success" equals "false"
-    And the event "breadcrumbs.1.metaData.duration" is greater than 0
+    And the event "breadcrumbs.0.name" equals "UnityWebRequest failed"
+    And the event "breadcrumbs.0.type" equals "request"
+    And the event "breadcrumbs.0.metaData.method" equals "GET" 
+    And the error payload field "events.0.breadcrumbs.0.metaData.url" equals "https://localhost:994/?success=false"
+    And the event "breadcrumbs.0.metaData.status" has failed
+    And the event "breadcrumbs.0.metaData.urlParams.success" equals "false"
+    And the event "breadcrumbs.0.metaData.duration" is greater than 0
 

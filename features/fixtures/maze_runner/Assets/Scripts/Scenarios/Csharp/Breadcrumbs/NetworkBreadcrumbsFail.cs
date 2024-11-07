@@ -5,9 +5,11 @@ using UnityEngine;
 public class NetworkBreadcrumbsFail: Scenario
 {
 
+
     public override void Run()
     {
        StartCoroutine(DoRun());
+        Configuration.EnabledBreadcrumbTypes = new BugsnagUnity.Payload.BreadcrumbType[] { BugsnagUnity.Payload.BreadcrumbType.Request };
     }
 
     private IEnumerator DoRun()
