@@ -38,6 +38,7 @@ Feature: Unity Persistence
     And the error is valid for the error reporting API sent by the Unity notifier
     And the event "context" equals "Error 2"
     And the exception "message" equals "Error 2"
+    And I wait for 2 seconds
 
   Scenario: Receive a persisted event with on send callback
     When I set the HTTP status code for the next request to 408
