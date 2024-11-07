@@ -1,4 +1,5 @@
-﻿using System;
+﻿// VERSION 2.0.0
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -65,10 +66,18 @@ namespace BugsnagNetworking
         }
 
         // Post
+    #if UNITY_2022_2_OR_NEWER
+        public static BugsnagUnityWebRequest PostWwwForm(string uri, string form)
+        {
+            return new BugsnagUnityWebRequest(UnityWebRequest.PostWwwForm(uri, form));
+        }
+    #else
         public static BugsnagUnityWebRequest Post(string uri, string postData)
         {
             return new BugsnagUnityWebRequest(UnityWebRequest.Post(uri, postData));
         }
+    #endif
+        
 
         public static BugsnagUnityWebRequest Post(string uri, WWWForm formData)
         {
@@ -85,10 +94,18 @@ namespace BugsnagNetworking
             return new BugsnagUnityWebRequest(UnityWebRequest.Post(uri, formFields));
         }
 
+    #if UNITY_2022_2_OR_NEWER
+        public static BugsnagUnityWebRequest PostWwwForm(Uri uri, string form)
+        {
+            return new BugsnagUnityWebRequest(UnityWebRequest.PostWwwForm(uri, form));
+        }
+    #else
         public static BugsnagUnityWebRequest Post(Uri uri, string postData)
         {
             return new BugsnagUnityWebRequest(UnityWebRequest.Post(uri, postData));
         }
+    #endif
+       
 
         public static BugsnagUnityWebRequest Post(Uri uri, WWWForm formData)
         {
@@ -333,10 +350,6 @@ namespace BugsnagNetworking
 
 
         public bool isDone => UnityWebRequest.isDone;
-
-        public bool isNetworkError => UnityWebRequest.isNetworkError;
-
-        public bool isHttpError => UnityWebRequest.isHttpError;
 
         public long responseCode => UnityWebRequest.responseCode;
 
