@@ -50,12 +50,24 @@ namespace BugsnagUnity
         /// <param name="capacity">The number of entries in images.</param>
         /// <returns>The number of entries that were filled.</returns>
         /// <remarks>
+        /// You MUST call bugsnag_unlockLoadedImages() after you are done with the NativeLoadedImage structs.
+        ///
         /// Note: Array types MUST be declared as [In, Out] or else you'll get all sorts of weird issues,
         /// like arrays being truncated to zero length, or a single entry being duplicated across the
         /// entire array. The compiler won't complain, either.
         /// </remarks>
         [DllImport(Import)]
         internal static extern UInt64 bugsnag_getLoadedImages([In, Out] NativeLoadedImage[] images, UInt64 capacity);
+
+        /// <summary>
+        /// Unlock the mutex protecting the loaded images list.
+        /// </summary>
+        /// <remarks>
+        /// This MUST be called after collecting the data from tha NativeLoadedImage structs returned by
+        /// bugsnag_getLoadedImages().
+        /// </remarks>
+        [DllImport(Import)]
+        internal static extern void bugsnag_unlockLoadedImages();
 
         [DllImport(Import)]
         internal static extern void bugsnag_startBugsnagWithConfiguration(IntPtr configuration, string notifierVersion);
