@@ -40,7 +40,6 @@ namespace BugsnagUnityTests
 
             counter.ShouldSend(message);
 
-            // Sleep for the duration specified in the configuration (convert seconds to milliseconds)
             Thread.Sleep(configuration.SecondsPerUniqueLog);
 
             message = new UnityLogMessage("", "", LogType.Error);
