@@ -113,7 +113,7 @@ Feature: Csharp Breadcrumbs
     And the event "breadcrumbs.0.type" equals "request"
     And the event "breadcrumbs.0.metaData.method" equals "GET" 
     And the error payload field "events.0.breadcrumbs.0.metaData.url" equals "https://localhost:994/?success=false"
-    And the event "breadcrumbs.0.metaData.status" has failed
+    And the event "breadcrumbs.0.metaData.status" equals 0
     And the event "breadcrumbs.0.metaData.urlParams.success" equals "false"
     And the event "breadcrumbs.0.metaData.duration" is greater than 0
 
