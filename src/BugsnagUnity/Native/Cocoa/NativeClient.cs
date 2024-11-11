@@ -18,6 +18,8 @@ namespace BugsnagUnity
         private static NativeClient _instance;
         private bool _registeredForSessionCallbacks;
 
+        private LoadedImages loadedImages;
+
         public NativeClient(Configuration configuration)
         {
             _instance = this;
@@ -483,5 +485,12 @@ namespace BugsnagUnity
             _registeredForSessionCallbacks = true;
             NativeCode.bugsnag_registerForSessionCallbacksAfterStart(HandleSessionCallbacks);
         }
+
+        public LoadedImage FindImageAtAddress(UInt64 address)
+        {
+            loadedImages.Refresh();
+            return loadedImages.FindImageAtAddress(address);
+        }
+
     }
 }

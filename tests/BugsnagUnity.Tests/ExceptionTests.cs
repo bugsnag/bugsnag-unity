@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace BugsnagUnity.Payload.Tests
     [TestClass]
     public class ExceptionTests
     {
+        private ErrorBuilder errorBuilder = new ErrorBuilder(new NativeClient(new Configuration("X")));
+
         [TestMethod]
         public void ParseExceptionFromLogMessage()
         {
@@ -23,7 +26,7 @@ namespace BugsnagUnity.Payload.Tests
             var log = new UnityLogMessage(condition, stacktrace, logType);
             Assert.IsTrue(Error.ShouldSend(log));
 
-            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Info);
+            var exception = errorBuilder.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Info);
             var stack = exception.Stacktrace.ToList();
             Assert.AreEqual(7, stack.Count);
             Assert.AreEqual("IndexOutOfRangeException", exception.ErrorClass);
@@ -74,7 +77,7 @@ com.unity3d.player.UnityPlayer.nativeRender(Native Method)";
             var logType = UnityEngine.LogType.Error;
             var log = new UnityLogMessage(condition, stacktrace, logType);
             Assert.IsTrue(Error.ShouldSend(log));
-            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
+            var exception = errorBuilder.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
             var stack = exception.Stacktrace.ToList();
             Assert.AreEqual("java.lang.IllegalArgumentException", exception.ErrorClass);
             Assert.IsTrue(System.String.IsNullOrEmpty(exception.ErrorMessage));
@@ -109,7 +112,7 @@ UnityEngine.EventSystems.EventSystem:Update()";
             var log = new UnityLogMessage(condition, stacktrace, logType);
             Assert.IsTrue(Error.ShouldSend(log));
 
-            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
+            var exception = errorBuilder.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
             var stack = exception.Stacktrace.ToList();
             Assert.AreEqual(13, stack.Count);
             Assert.AreEqual("java.lang.ArrayIndexOutOfBoundsException", exception.ErrorClass);
