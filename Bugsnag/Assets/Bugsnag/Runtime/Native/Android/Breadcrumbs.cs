@@ -1,4 +1,4 @@
-#if (UNITY_ANDROID && !UNITY_EDITOR) || BGS_ANDROID_DEV
+#if (UNITY_ANDROID && !UNITY_EDITOR) || BSG_ANDROID_DEV
 
 using System;
 using System.Collections.Generic;
