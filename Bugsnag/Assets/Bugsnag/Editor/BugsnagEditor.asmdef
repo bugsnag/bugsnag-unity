@@ -1,0 +1,18 @@
+{
+    "name": "BugsnagEditor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8d198819d450d4d6292709bec5a655cc"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

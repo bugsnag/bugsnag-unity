@@ -24,8 +24,11 @@ public class NetworkBreadcrumbsSuccess : Scenario
         var get = BugsnagUnityWebRequest.Get(Main.MazeHost + "?success=true&redactthis=notRedacted");
         yield return get.SendWebRequest();
         yield return new WaitForSeconds(1);
-
+    #if UNITY_2022_2_OR_NEWER
+        var post = BugsnagUnityWebRequest.PostWwwForm(Main.MazeHost, "{\"action\":\"success\"}");
+    #else
         var post = BugsnagUnityWebRequest.Post(Main.MazeHost, "{\"action\":\"success\"}");
+    #endif
         yield return post.SendWebRequest();
         yield return new WaitForSeconds(1);
 
