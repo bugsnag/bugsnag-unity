@@ -2,10 +2,15 @@
 
 ## TBD
 
+### Enhancements
+
+- Changed from shipping the C# layer of the SDK as precomiled DLLs to shipping source. Please see the PR description for a full list of the benefits. [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
+
 ### Dependencies
 
-Update bugsnag-android to [v6.8.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.8.0) [#841](https://github.com/bugsnag/bugsnag-unity/pull/841)
-Update bugsnag-cocoa to [v6.30.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.30.2) [#849](https://github.com/bugsnag/bugsnag-unity/pull/849)
+- Update bugsnag-android to [v6.8.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.8.0) [#841](https://github.com/bugsnag/bugsnag-unity/pull/841)
+- Update bugsnag-cocoa to [v6.30.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.30.2) [#849](https://github.com/bugsnag/bugsnag-unity/pull/849)
+- Updated BugsnagUnityWebRequest to remove deprecation warnings and add new PostWwwForm methods introduced in Unity 2022.2 [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
 
 ## 8.2.0 (2024-09-23)
 
