@@ -27,27 +27,6 @@ steps:
             - exit_status: "*"
               limit: 1
 
-      # - label: ':android: Build Android EDM test fixture for Unity 2020'
-      #   timeout_in_minutes: 30
-      #   key: 'build-edm-fixture-2020'
-      #   env:
-      #     UNITY_VERSION: *2020
-      #   plugins:
-      #     artifacts#v1.9.0:
-      #       download:
-      #         - Bugsnag.unitypackage
-      #       upload:
-      #         - features/fixtures/EDM_Fixture/edm_2020.apk
-      #         - features/scripts/buildEdmFixture.log
-      #         - features/scripts/edmImport.log
-      #         - features/scripts/enableEdm.log
-      #   commands:
-      #     - rake test:edm:build
-      #   retry:
-      #     automatic:
-      #       - exit_status: "*"
-      #         limit: 1
-
       #
       # Build iOS test fixtures
       #
@@ -117,6 +96,7 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+
       - label: Build Unity 2020 WebGL test fixture
         timeout_in_minutes: 30
         key: "webgl-2020-fixture"
@@ -197,35 +177,6 @@ steps:
         concurrency: 25
         concurrency_group: "bitbar"
         concurrency_method: eager
-
-      # - label: ':android: Run Android EDM e2e tests for Unity 2020'
-      #   timeout_in_minutes: 60
-      #   depends_on: 'build-edm-fixture-2020'
-      #   agents:
-      #     queue: opensource
-      #   env:
-      #     UNITY_VERSION: *2021
-      #   plugins:
-      #     artifacts#v1.9.0:
-      #       download:
-      #         - "features/fixtures/EDM_Fixture/edm_2020.apk"
-      #       upload:
-      #         - "maze_output/**/*"
-      #     docker-compose#v3.7.0:
-      #       pull: maze-runner
-      #       run: maze-runner
-      #       command:
-      #         - "--app=/app/features/fixtures/EDM_Fixture/edm_2020.apk"
-      #         - "--farm=bs"
-      #         - "--device=ANDROID_11_0"
-      #         - "features/edm"
-      #     test-collector#v1.10.2:
-      #       files: "reports/TEST-*.xml"
-      #       format: "junit"
-      #       branch: "^master|next$$"
-      #   concurrency: 5
-      #   concurrency_group: browserstack-app
-      #   concurrency_method: eager
 
       - label: ":bitbar: :ios: Run iOS e2e tests for Unity 2020"
         timeout_in_minutes: 60
