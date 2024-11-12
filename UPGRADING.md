@@ -49,9 +49,7 @@ You can now install Bugsnag using the [Unity Package Manager](https://docs.unity
 
 All the files in the V6 package are located in a parent Bugsnag directory and so you will need to remove all the v5 files from your project to avoid having multiple instances of Bugsnag running.
 
-To remove these files, you can download and run the bash script `utils/remove-bugsnag-v5.sh` in the `bugsnag-unity` repository, passing the path to your project as a parameter.
-
-If you wish to do it manually, please remove the following directories and files:
+Please remove the following directories and files:
 
 - File: `Assets/Plugins/Android/BugsnagUnity.Android.dll`
 - File: `Assets/Plugins/Android/bugsnag-android-ndk-release.aar`
