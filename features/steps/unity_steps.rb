@@ -351,3 +351,14 @@ def switch_run_on_target
               "#{cache_mount_name_arg}"
   Maze::Runner.run_command(command)
 end
+
+Then('the event {string} equals one of these ints:') do |string, table|
+  # Convert the expected values in the table to integers
+  expected_values = table.raw.flatten.map(&:to_i)
+
+  # Retrieve the event value as an integer
+  event_value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], string).to_i
+
+  # Check if the integer event value is one of the expected values
+  Maze.check.true(expected_values.include?(event_value), "Expected one of #{expected_values} but got #{event_value}")
+end
