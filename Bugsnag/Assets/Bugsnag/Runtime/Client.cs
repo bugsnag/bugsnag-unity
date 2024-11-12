@@ -58,6 +58,8 @@ namespace BugsnagUnity
 
         private bool _isUnity2019OrHigher;
 
+        private ErrorBuilder _errorBuilder;
+
         private class BugsnagLogHandler : ILogHandler
         {
 
@@ -116,6 +118,7 @@ namespace BugsnagUnity
         {
             InitMainthreadDispatcher();
             NativeClient = nativeClient;
+            _errorBuilder = new ErrorBuilder(nativeClient);
             CacheManager = new CacheManager(Configuration);
             PayloadManager = new PayloadManager(CacheManager);
             _delivery = new Delivery(this, Configuration, CacheManager, PayloadManager);
@@ -316,7 +319,7 @@ namespace BugsnagUnity
                     var severity = Configuration.LogTypeSeverityMapping.Map(logType);
                     var backupStackFrames = new System.Diagnostics.StackTrace(1, true).GetFrames();
                     var forceUnhandled = logType == LogType.Exception && !Configuration.ReportExceptionLogsAsHandled;
-                    var exception = Error.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
+                    var exception = _errorBuilder.FromUnityLogMessage(logMessage, backupStackFrames, severity, forceUnhandled);
                     Notify(new Error[] { exception }, exception.HandledState, null, logType);
                 }
             }
@@ -332,13 +335,13 @@ namespace BugsnagUnity
 
         public void Notify(string name, string message, string stackTrace, Func<IEvent, bool> callback)
         {
-            var exceptions = new Error[] { Error.FromStringInfo(name, message, stackTrace) };
+            var exceptions = new Error[] { _errorBuilder.FromStringInfo(name, message, stackTrace) };
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
         public void Notify(System.Exception exception, string stacktrace, Func<IEvent, bool> callback)
         {
-            var exceptions = new Errors(exception, stacktrace).ToArray();
+            var exceptions = _errorBuilder.EnumerateFrom(exception, stacktrace).ToArray();
             Notify(exceptions, HandledState.ForHandledException(), callback, LogType.Exception);
         }
 
@@ -358,7 +361,7 @@ namespace BugsnagUnity
             // to generate one from the exception that we are given then we are not able
             // to do this inside of the IEnumerator generator code
             var substitute = new System.Diagnostics.StackTrace(true).GetFrames();
-            var errors = new Errors(exception, substitute).ToArray();
+            var errors = _errorBuilder.EnumerateFrom(exception, substitute).ToArray();
             foreach (var error in errors)
             {
                 if (error.IsAndroidJavaException)

@@ -1,4 +1,6 @@
 using System.Linq;
+using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -10,6 +12,8 @@ namespace BugsnagUnityTests
     [TestFixture]
     public class ExceptionTests
     {
+        private ErrorBuilder errorBuilder = new ErrorBuilder(new NativeClient(new Configuration("X")));
+
         [Test]
         public void ParseExceptionFromLogMessage()
         {
@@ -26,7 +30,7 @@ namespace BugsnagUnityTests
 
             Assert.IsTrue(Error.ShouldSend(log));
 
-            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Info);
+            var exception = errorBuilder.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Info);
             var stack = exception.Stacktrace.ToList();
 
             Assert.AreEqual(7, stack.Count);
@@ -80,8 +84,7 @@ com.unity3d.player.UnityPlayer.nativeRender(Native Method)";
             var log = new UnityLogMessage(condition, stacktrace, logType);
 
             Assert.IsTrue(Error.ShouldSend(log));
-
-            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
+            var exception = errorBuilder.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
             var stack = exception.Stacktrace.ToList();
 
             Assert.AreEqual("java.lang.IllegalArgumentException", exception.ErrorClass);
@@ -118,7 +121,7 @@ UnityEngine.EventSystems.EventSystem:Update()";
 
             Assert.IsTrue(Error.ShouldSend(log));
 
-            var exception = Error.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
+            var exception = errorBuilder.FromUnityLogMessage(log, new System.Diagnostics.StackFrame[] { }, Severity.Warning);
             var stack = exception.Stacktrace.ToList();
 
             Assert.AreEqual(13, stack.Count);

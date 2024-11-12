@@ -217,6 +217,11 @@ namespace BugsnagUnity
         {
             // Not Used on this platform
         }
+
+        public LoadedImage FindImageAtAddress(UInt64 address)
+        {
+            return null;
+        }
     }
 }
 #endif

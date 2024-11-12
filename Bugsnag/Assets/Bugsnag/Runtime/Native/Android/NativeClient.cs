@@ -1,4 +1,5 @@
 #if (UNITY_ANDROID && !UNITY_EDITOR) || BSG_ANDROID_DEV
+using System;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -161,6 +162,11 @@ namespace BugsnagUnity
         public void RegisterForOnSessionCallbacks()
         {
             NativeInterface.RegisterForOnSessionCallbacks();
+        }
+
+        public LoadedImage FindImageAtAddress(UInt64 address)
+        {
+            return null;
         }
     }
 

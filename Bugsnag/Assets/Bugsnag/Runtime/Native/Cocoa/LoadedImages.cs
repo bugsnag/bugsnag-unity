@@ -5,24 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace BugsnagUnity
 {
-    class LoadedImage
-    {
-        public LoadedImage(NativeLoadedImage image)
-        {
-            LoadAddress = image.LoadAddress;
-            Size = image.Size;
-            FileName = Marshal.PtrToStringAnsi(image.FileName);
-            var uuid = new byte[16];
-            Marshal.Copy(image.UuidBytes, uuid, 0, 16);
-            Uuid = new Guid(uuid).ToString();
-        }
-
-        public UInt64 LoadAddress;
-        public UInt64 Size;
-        public string FileName;
-        public string Uuid;
-    }
-
     class LoadedImages
     {
         /// <summary>
@@ -39,7 +21,13 @@ namespace BugsnagUnity
             var images = new LoadedImage[count];
             for (UInt64 i = 0; i < count; i++)
             {
-                images[i] = new LoadedImage(nativeImages[i]);
+                var nativeImage = nativeImages[i];
+                var uuid = new byte[16];
+                Marshal.Copy(nativeImage.UuidBytes, uuid, 0, 16);
+                images[i] = new LoadedImage(nativeImage.LoadAddress,
+                                            nativeImage.Size,
+                                            Marshal.PtrToStringAnsi(nativeImage.FileName),
+                                            new Guid(uuid).ToString());
             }
             Images = images;
             // bugsnag_getLoadedImages() locks a mutex, so we must call bugsnag_unlockLoadedImages()
