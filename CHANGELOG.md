@@ -8,9 +8,10 @@
 
 ### Dependencies
 
-- Updated BugsnagUnityWebRequest to remove deprecation warnings and add new PostWwwForm methods introduced in Unity 2022.2 [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
-
 - Update bugsnag-android to [v6.8.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.8.0) [#841](https://github.com/bugsnag/bugsnag-unity/pull/841)
+- Update bugsnag-android to [v6.9.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.9.0) [#850](https://github.com/bugsnag/bugsnag-unity/pull/850)
+
+- Updated BugsnagUnityWebRequest to remove deprecation warnings and add new PostWwwForm methods introduced in Unity 2022.2 [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
 
 ## 8.2.0 (2024-09-23)
 
