@@ -60,6 +60,13 @@ namespace BugsnagUnity
         internal static extern UInt64 bugsnag_getLoadedImages([In, Out] NativeLoadedImage[] images, UInt64 capacity);
 
         /// <summary>
+        /// Marker for the last time the loaded images list was changed. If this value changes,
+        /// the loaded images have been changed.
+        /// </summary>
+        [DllImport(Import)]
+        internal static extern UInt64 bugsnag_lastChangedLoadedImages();
+
+        /// <summary>
         /// Unlock the mutex protecting the loaded images list.
         /// </summary>
         /// <remarks>

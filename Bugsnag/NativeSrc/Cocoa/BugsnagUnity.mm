@@ -123,6 +123,7 @@ NativeLoadedImage::NativeLoadedImage(const struct mach_header * const header) {
 // All currently loaded images. This MUST be kept ordered: LoadAddress low to high.
 static std::vector<NativeLoadedImage> allImages;
 static std::mutex allImagesMutex;
+static uint64_t lastChangedLoadedImages;
 
 static void add_image(const struct mach_header *header, intptr_t slide) {
     NativeLoadedImage image(header);
@@ -132,6 +133,7 @@ static void add_image(const struct mach_header *header, intptr_t slide) {
     std::lock_guard<std::mutex> guard(allImagesMutex);
     allImages.push_back(std::move(image));
     std::sort(allImages.begin(), allImages.end());
+    lastChangedLoadedImages = CFAbsoluteTimeGetCurrent() * 1000000000ULL;
 }
 
 static void remove_image(const struct mach_header *header, intptr_t slide) {
@@ -144,6 +146,7 @@ static void remove_image(const struct mach_header *header, intptr_t slide) {
     if (foundImage != allImages.end()) {
         allImages.erase(foundImage);
     }
+    lastChangedLoadedImages = CFAbsoluteTimeGetCurrent() * 1000000000ULL;
 }
 
 static void register_for_dyld_changes(void) {
@@ -161,6 +164,10 @@ static void register_for_dyld_changes(void) {
 uint64_t bugsnag_getLoadedImageCount() {
     std::lock_guard<std::mutex> guard(allImagesMutex);
     return allImages.size();
+}
+
+uint64_t bugsnag_lastChangedLoadedImages() {
+    return lastChangedLoadedImages;
 }
 
 uint64_t bugsnag_getLoadedImages(NativeLoadedImage *images, uint64_t capacity) {

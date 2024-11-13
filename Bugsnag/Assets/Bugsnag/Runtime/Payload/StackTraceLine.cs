@@ -14,11 +14,11 @@ namespace BugsnagUnity.Payload
     /// Represents a set of Bugsnag payload stacktrace lines that are generated from a single StackTrace provided
     /// by the runtime.
     /// </summary>
-    class StackTrace : IEnumerable<StackTraceLine>
+    class PayloadStackTrace : IEnumerable<StackTraceLine>
     {
         public StackTraceLine[] StackTraceLines { get; private set; }
 
-        internal StackTrace(StackFrame[] stackFrames)
+        internal PayloadStackTrace(StackFrame[] stackFrames)
         {
             StackTraceLines = new StackTraceLine[stackFrames.Length];
             for (int i = 0; i < stackFrames.Length; i++)
@@ -27,9 +27,9 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        internal StackTrace(string stackTrace) : this(stackTrace, StackTraceFormat.Standard) { }
+        internal PayloadStackTrace(string stackTrace) : this(stackTrace, StackTraceFormat.Standard) { }
 
-        internal StackTrace(string stackTrace, StackTraceFormat format)
+        internal PayloadStackTrace(string stackTrace, StackTraceFormat format)
         {
             string[] lines = stackTrace.Split(new[] {"\r\n","\r","\n", System.Environment.NewLine },
                                               System.StringSplitOptions.RemoveEmptyEntries);

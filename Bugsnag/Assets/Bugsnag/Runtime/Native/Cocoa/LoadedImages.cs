@@ -15,6 +15,13 @@ namespace BugsnagUnity
         /// </remarks>
         public void Refresh()
         {
+            UInt64 loadedNativeImagesAt = NativeCode.bugsnag_lastChangedLoadedImages();
+            if (loadedNativeImagesAt == lastLoadedNativeImagesAt)
+            {
+                return;
+            }
+            lastLoadedNativeImagesAt = loadedNativeImagesAt;
+
             // Ask for the current count * 2 in case new images get added between calls
             var nativeImages = new NativeLoadedImage[NativeCode.bugsnag_getLoadedImageCount() * 2];
             var count = NativeCode.bugsnag_getLoadedImages(nativeImages, (UInt64)nativeImages.LongLength);
@@ -54,6 +61,7 @@ namespace BugsnagUnity
         /// The currently loaded images, as of the last call to Refresh().
         /// </summary>
         public LoadedImage[] Images;
+        private UInt64 lastLoadedNativeImagesAt = 0;
 
         private class AddressToImageComparator : IComparer
         {
