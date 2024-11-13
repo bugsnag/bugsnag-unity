@@ -20,28 +20,148 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+      - label: Build Unity 2020 Windows test fixture
+        timeout_in_minutes: 30
+        key: "windows-2020-fixture"
+        agents:
+          queue: win-general-2
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+            upload:
+              - unity.log
+              - features/fixtures/maze_runner/build/Windows-release-2020.zip
+        commands:
+          - scripts/ci-build-windows-fixture-wsl.sh release
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
 
-  - label: 'Run size impact reporting'
-    depends_on: build_unitypackage
-    timeout_in_minutes: 30
-    env:
-      UNITY_VERSION: *2021
-    plugins:
-      'artifacts#v1.9.0':
-        download:
-          - Bugsnag.unitypackage
-    commands:
-      features/scripts/do_size_test.sh
+      - label: Run Windows e2e tests for Unity 2020
+        timeout_in_minutes: 30
+        depends_on: "windows-2020-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-2020.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        command:
+          - scripts/ci-run-windows-tests-wsl.sh release
 
-  - name: 'Append Unity 2021 Pipeline'
-    depends_on: build_unitypackage
-    commands:
-        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
+      - label: Build Unity 2021 Windows test fixture
+        timeout_in_minutes: 30
+        key: "windows-2021-fixture"
+        agents:
+          queue: win-general-2
+        env:
+          UNITY_VERSION: *2021
+        commands:
+          - scripts/ci-build-windows-fixture-wsl.sh release
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+            upload:
+              - unity.log
+              - unity_import.log
+              - features/fixtures/maze_runner/build/Windows-release-2021.zip
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
 
-  #
-  # Conditionally trigger full pipeline
-  #
-  - label: "Conditionally trigger full set of tests"
-    depends_on: build_unitypackage
-    timeout_in_minutes: 30
-    command: sh -c .buildkite/pipeline_trigger.sh
+      - label: Run Windows e2e tests for Unity 2021
+        timeout_in_minutes: 30
+        depends_on: "windows-2021-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *2021
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-2021.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        commands:
+          - scripts/ci-run-windows-tests-wsl.sh release
+
+      - label: Build Unity 2022 Windows test fixture
+        timeout_in_minutes: 30
+        key: "windows-2022-fixture"
+        agents:
+          queue: win-general-2
+        env:
+          UNITY_VERSION: *2022
+        commands:
+          - scripts/ci-build-windows-fixture-wsl.sh release
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+            upload:
+              - unity.log
+              - unity_import.log
+              - features/fixtures/maze_runner/build/Windows-release-2022.zip
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: Run Windows e2e tests for Unity 2022
+        timeout_in_minutes: 30
+        depends_on: "windows-2022-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *2022
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-2022.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        commands:
+          - scripts/ci-run-windows-tests-wsl.sh release
+
+
+
+
+
+#
+#  - label: 'Run size impact reporting'
+#    depends_on: build_unitypackage
+#    timeout_in_minutes: 30
+#    env:
+#      UNITY_VERSION: *2021
+#    plugins:
+#      'artifacts#v1.9.0':
+#        download:
+#          - Bugsnag.unitypackage
+#    commands:
+#      features/scripts/do_size_test.sh
+#
+#  - name: 'Append Unity 2021 Pipeline'
+#    depends_on: build_unitypackage
+#    commands:
+#        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
+#
+#  #
+#  # Conditionally trigger full pipeline
+#  #
+#  - label: "Conditionally trigger full set of tests"
+#    depends_on: build_unitypackage
+#    timeout_in_minutes: 30
+#    command: sh -c .buildkite/pipeline_trigger.sh
