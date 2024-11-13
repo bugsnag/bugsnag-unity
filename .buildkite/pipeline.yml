@@ -22,9 +22,11 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+
       - label: Build Unity 2020 Windows test fixture
         timeout_in_minutes: 30
         key: "windows-2020-fixture"
+        depends_on: "build_unitypackage"
         agents:
           queue: win-general-2
         env:
@@ -63,6 +65,7 @@ steps:
       - label: Build Unity 2021 Windows test fixture
         timeout_in_minutes: 30
         key: "windows-2021-fixture"
+        depends_on: "build_unitypackage"
         agents:
           queue: win-general-2
         env:
@@ -102,6 +105,7 @@ steps:
       - label: Build Unity 2022 Windows test fixture
         timeout_in_minutes: 30
         key: "windows-2022-fixture"
+        depends_on: "build_unitypackage"
         agents:
           queue: win-general-2
         env:
