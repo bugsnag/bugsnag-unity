@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
+using TMPro;
+
 
 [Serializable]
 public class Command
@@ -20,6 +22,8 @@ public class FixtureConfig
 
 public class Main : MonoBehaviour
 {
+    public TextMeshProUGUI DebugText; 
+    private static Main _instance;
 
 #if UNITY_STANDALONE_OSX
     [DllImport("NativeCrashy")]
@@ -39,6 +43,11 @@ public class Main : MonoBehaviour
     private const int MAX_CONFIG_GET_TRIES = 15;
 
     public ScenarioRunner ScenarioRunner;
+
+    private void Awake()
+    {
+        _instance = this;
+    }
 
     public IEnumerator Start()
     {
@@ -183,6 +192,7 @@ public class Main : MonoBehaviour
 
     private static void Log(string msg)
     {
+        _instance.DebugText.text = _instance.DebugText.text + "\n" + msg;
         Logger.I(msg);
     }
 
