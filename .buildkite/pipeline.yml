@@ -29,7 +29,7 @@ steps:
         key: "windows-2020-fixture"
         depends_on: "build_unitypackage"
         agents:
-          queue: win-general-2
+          queue: win-general-2-wsl
         env:
           UNITY_VERSION: *2020
         plugins:
@@ -85,7 +85,7 @@ steps:
         key: "windows-2021-fixture"
         depends_on: "build_unitypackage"
         agents:
-          queue: win-general-2
+          queue: win-general-2-wsl
         env:
           UNITY_VERSION: *2021
         commands:
@@ -142,7 +142,7 @@ steps:
         key: "windows-2022-fixture"
         depends_on: "build_unitypackage"
         agents:
-          queue: win-general-2
+          queue: win-general-2-wsl
         env:
           UNITY_VERSION: *2022
         commands:
