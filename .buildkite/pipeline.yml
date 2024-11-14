@@ -62,6 +62,23 @@ steps:
         command:
           - scripts/ci-run-windows-tests-wsl.sh release
 
+      - label: Run Windows e2e tests for Unity 2020
+        timeout_in_minutes: 30
+        depends_on: "windows-2020-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *2020
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-2020.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        command:
+          - scripts/ci-run-windows-tests-wsl.sh release
+
       - label: Build Unity 2021 Windows test fixture
         timeout_in_minutes: 30
         key: "windows-2021-fixture"
@@ -84,6 +101,23 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+
+      - label: Run Windows e2e tests for Unity 2021
+        timeout_in_minutes: 30
+        depends_on: "windows-2021-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *2021
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-2021.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        commands:
+          - scripts/ci-run-windows-tests-wsl.sh release
 
       - label: Run Windows e2e tests for Unity 2021
         timeout_in_minutes: 30
@@ -142,8 +176,82 @@ steps:
         commands:
           - scripts/ci-run-windows-tests-wsl.sh release
 
+      - label: Run Windows e2e tests for Unity 2022
+        timeout_in_minutes: 30
+        depends_on: "windows-2022-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *2022
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-2022.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        commands:
+          - scripts/ci-run-windows-tests-wsl.sh release
 
+      - label: Build Unity 6000 Windows test fixture
+        skip: Pending PLAT-12072
+        timeout_in_minutes: 30
+        depends_on: "windows-2022-fixture"
+        key: "windows-6000-fixture"
+        agents:
+          queue: windows-unity-wsl
+        env:
+          UNITY_VERSION: *6000
+        commands:
+          - scripts/ci-build-windows-fixture-wsl.sh release
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - Bugsnag.unitypackage
+            upload:
+              - unity.log
+              - unity_import.log
+              - features/fixtures/maze_runner/build/Windows-release-6000.zip
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
 
+      - label: Run Windows e2e tests for Unity 6000
+        skip: Pending PLAT-12072
+        timeout_in_minutes: 30
+        depends_on: "windows-6000-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *6000
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-6000.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        commands:
+          - scripts/ci-run-windows-tests-wsl.sh release
+
+      - label: Run Windows e2e tests for Unity 6000
+        skip: Pending PLAT-12072
+        timeout_in_minutes: 30
+        depends_on: "windows-6000-fixture"
+        agents:
+          queue: windows-general-wsl
+        env:
+          UNITY_VERSION: *6000
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - features/fixtures/maze_runner/build/Windows-release-6000.zip
+            upload:
+              - maze_output/**/*
+              - maze_output/metrics.csv
+        commands:
+          - scripts/ci-run-windows-tests-wsl.sh release
 
 
 #
