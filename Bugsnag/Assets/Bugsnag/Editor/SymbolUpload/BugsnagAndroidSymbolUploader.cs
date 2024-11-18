@@ -13,10 +13,9 @@ using UnityEngine;
 public class BugsnagAndroidSymbolUploader : IPostprocessBuildWithReport
 {
     public int callbackOrder => 1;
-
-    private string _cliDownloadPath = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
-
-
+    private const string CLI_DOWNLOAD_VERSION = "2.6.2";
+    private string _cliDownloadPath = Path.Combine(Application.dataPath, $"../bugsnag/bin/v{CLI_DOWNLOAD_VERSION}/bugsnag_cli");
+    private string _cliDownloadUrl = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{CLI_DOWNLOAD_VERSION}/";
 
     private BugsnagSettingsObject GetSettingsObject()
     {
@@ -32,21 +31,21 @@ public class BugsnagAndroidSymbolUploader : IPostprocessBuildWithReport
             return;
         }
 
-
         // Get the Bugsnag settings object and check if auto-upload is enabled
         var config = GetSettingsObject();
         if (config == null || !config.AutoUploadSymbols)
         {
-            UnityEngine.Debug.Log("Bugsnag symbol upload is disabled. Skipping symbol upload.");
             return;
         }
 
         UnityEngine.Debug.Log("Beginning Bugsnag Android automatic symbol upload.");
+        EditorUtility.DisplayProgressBar("Bugsnag Symbol Upload", "Uploading Android Symbol Files", 0.0f);
 
         // Check if symbol creation is enabled
         if (EditorUserBuildSettings.androidCreateSymbols != AndroidCreateSymbols.Public && EditorUserBuildSettings.androidCreateSymbols != AndroidCreateSymbols.Debugging)
         {
             UnityEngine.Debug.LogError("Bugsnag symbol upload is enabled but Android symbol creation is disabled. Please enable symbol creation in your build settings.");
+            EditorUtility.ClearProgressBar();
             return;
         }
 
@@ -55,6 +54,7 @@ public class BugsnagAndroidSymbolUploader : IPostprocessBuildWithReport
         if (string.IsNullOrEmpty(apiKey))
         {
             UnityEngine.Debug.LogError("Bugsnag symbol upload is enabled but the API key is not set. Please set the API key in the Bugsnag settings window.");
+            EditorUtility.ClearProgressBar();
             return;
         }
 
@@ -69,6 +69,7 @@ public class BugsnagAndroidSymbolUploader : IPostprocessBuildWithReport
             if (!DownloadBugsnagCli(GetBugsnagCliDownloadUrl(), _cliDownloadPath) || !MakeExecutable(_cliDownloadPath))
             {
                 UnityEngine.Debug.LogError("Failed to download and make the Bugsnag CLI executable.");
+                EditorUtility.ClearProgressBar();
                 return; // Exit if the download or chmod process failed
             }
             cliExecutablePath = _cliDownloadPath;
@@ -78,32 +79,39 @@ public class BugsnagAndroidSymbolUploader : IPostprocessBuildWithReport
         var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
 
         var args = string.Format("upload unity-android --api-key={0} --verbose {1}", apiKey, buildOutputPath);
-
+        if(!string.IsNullOrEmpty( config.AppVersion ))
+        {
+            args += $" --version-name={config.AppVersion}";
+        }
+        if(config.VersionCode > -1)
+        {
+            args += $" --version-code={config.VersionCode}";
+        }
         RunBugsnagCliCommand(cliExecutablePath, args);
+        EditorUtility.ClearProgressBar();
     }
 
     private string GetBugsnagCliDownloadUrl()
     {
-        string baseUrl = "https://github.com/bugsnag/bugsnag-cli/releases/download/v2.6.2/";
 
         // Detect platform
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             return RuntimeInformation.OSArchitecture == Architecture.Arm64
-                ? baseUrl + "arm64-macos-bugsnag-cli"
-                : baseUrl + "x86_64-macos-bugsnag-cli";
+                ? _cliDownloadUrl + "arm64-macos-bugsnag-cli"
+                : _cliDownloadUrl + "x86_64-macos-bugsnag-cli";
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             return RuntimeInformation.OSArchitecture == Architecture.X86
-                ? baseUrl + "i386-windows-bugsnag-cli.exe"
-                : baseUrl + "x86_64-windows-bugsnag-cli.exe";
+                ? _cliDownloadUrl + "i386-windows-bugsnag-cli.exe"
+                : _cliDownloadUrl + "x86_64-windows-bugsnag-cli.exe";
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
         {
             return RuntimeInformation.OSArchitecture == Architecture.X86
-                ? baseUrl + "i386-linux-bugsnag-cli"
-                : baseUrl + "x86_64-linux-bugsnag-cli";
+                ? _cliDownloadUrl + "i386-linux-bugsnag-cli"
+                : _cliDownloadUrl + "x86_64-linux-bugsnag-cli";
         }
 
         throw new PlatformNotSupportedException("Your platform is not supported for Bugsnag CLI.");
@@ -113,7 +121,7 @@ public class BugsnagAndroidSymbolUploader : IPostprocessBuildWithReport
     {
         UnityEngine.Debug.Log("Starting Bugsnag CLI download process...");
 
-         var directory = Path.GetDirectoryName(downloadPath);
+        var directory = Path.GetDirectoryName(downloadPath);
         if (!Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
@@ -122,8 +130,8 @@ public class BugsnagAndroidSymbolUploader : IPostprocessBuildWithReport
 
         if (File.Exists(downloadPath))
         {
-            UnityEngine.Debug.Log($"File already exists at {downloadPath}, deleting it.");
-            File.Delete(downloadPath); // Remove existing file
+            UnityEngine.Debug.Log($"Executable already exists at {downloadPath}, skipping download.");
+            return true;
         }
 
         UnityEngine.Debug.Log($"Downloading Bugsnag CLI from {cliUrl} to {downloadPath}...");
