@@ -78,7 +78,7 @@ public class BugsnagAndroidSymbolUploader : IPostprocessBuildWithReport
 
         var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
 
-        var args = string.Format("upload unity-android --api-key={0} --verbose {1}", apiKey, buildOutputPath);
+        var args = string.Format("upload unity-android --api-key={0} --verbose --project-root={1} {2}", apiKey, Application.dataPath, buildOutputPath);
         if(!string.IsNullOrEmpty( config.AppVersion ))
         {
             args += $" --version-name={config.AppVersion}";
