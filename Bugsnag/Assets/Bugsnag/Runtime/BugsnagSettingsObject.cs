@@ -9,6 +9,14 @@ namespace BugsnagUnity
     public class BugsnagSettingsObject : ScriptableObject
     {
 
+        // Build time settings
+
+        public bool AutoUploadSymbols;
+        public string BugsnagCLIExecutablePath;
+        public string UploadEndpoint;
+
+        // Runtime Settings
+
         public bool StartAutomaticallyAtLaunch = true;
         public bool AutoDetectErrors = true;
         public bool AutoTrackSessions = true;
