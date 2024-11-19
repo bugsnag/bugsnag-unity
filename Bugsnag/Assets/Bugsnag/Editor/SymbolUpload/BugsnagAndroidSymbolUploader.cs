@@ -66,7 +66,7 @@ namespace BugsnagUnity.Editor
             }
             else
             {
-                if (!DownloadBugsnagCli(GetBugsnagCliDownloadUrl(), _cliDownloadPath) || !MakeExecutable(_cliDownloadPath))
+                if (!DownloadBugsnagCli(GetBugsnagCliDownloadUrl(), _cliDownloadPath))
                 {
                     UnityEngine.Debug.LogError("Failed to download and make the Bugsnag CLI executable.");
                     EditorUtility.ClearProgressBar();
@@ -87,7 +87,10 @@ namespace BugsnagUnity.Editor
             {
                 args += $" --version-code={config.VersionCode}";
             }
-            RunBugsnagCliCommand(cliExecutablePath, args);
+            if(RunBugsnagCliCommand(cliExecutablePath, args))
+            {
+                UnityEngine.Debug.Log("Symbol files uploaded successfully");
+            }
             EditorUtility.ClearProgressBar();
         }
 
@@ -114,28 +117,23 @@ namespace BugsnagUnity.Editor
                     : _cliDownloadUrl + "x86_64-linux-bugsnag-cli";
             }
 
-            throw new PlatformNotSupportedException("Your platform is not supported for Bugsnag CLI.");
+            UnityEngine.Debug.LogError($"Unable to run the BugSnag CLI on {RuntimeInformation.OSDescription} platform.");
+
+            return null;
         }
 
         private bool DownloadBugsnagCli(string cliUrl, string downloadPath)
         {
-            UnityEngine.Debug.Log("Starting Bugsnag CLI download process...");
-
             var directory = Path.GetDirectoryName(downloadPath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
-                UnityEngine.Debug.Log($"Created directory at {directory}");
             }
 
             if (File.Exists(downloadPath))
             {
-                UnityEngine.Debug.Log($"Executable already exists at {downloadPath}, skipping download.");
                 return true;
             }
-
-            UnityEngine.Debug.Log($"Downloading Bugsnag CLI from {cliUrl} to {downloadPath}...");
-
             var downloadProcess = new Process()
             {
                 StartInfo = new ProcessStartInfo
@@ -150,26 +148,21 @@ namespace BugsnagUnity.Editor
             };
 
             downloadProcess.Start();
-            string downloadOutput = downloadProcess.StandardOutput.ReadToEnd();
             string downloadError = downloadProcess.StandardError.ReadToEnd();
             downloadProcess.WaitForExit();
 
             if (downloadProcess.ExitCode != 0)
             {
-                UnityEngine.Debug.LogError($"Failed to download the Bugsnag CLI tool. Error: {downloadError}");
+                 UnityEngine.Debug.LogError($"Failed to download the BugSnag CLI. Error: {downloadError}");
                 return false;
             }
-
-            UnityEngine.Debug.Log($"Bugsnag CLI tool downloaded successfully. Output: {downloadOutput}");
-            return true;
+            return MakeCLIExecutable(_cliDownloadPath);
         }
 
-        private bool MakeExecutable(string filePath)
+        private bool MakeCLIExecutable(string filePath)
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                UnityEngine.Debug.Log($"Making the Bugsnag CLI executable with chmod on Unix/MacOS platform...");
-
                 var chmodProcess = new Process()
                 {
                     StartInfo = new ProcessStartInfo
@@ -190,10 +183,8 @@ namespace BugsnagUnity.Editor
 
                 if (chmodProcess.ExitCode != 0)
                 {
-                    UnityEngine.Debug.LogError($"Failed to make the CLI executable. Error: {chmodError}");
                     return false;
                 }
-                UnityEngine.Debug.Log($"Bugsnag CLI made executable successfully. Output: {chmodOutput}");
             }
 
             return true;
@@ -203,11 +194,11 @@ namespace BugsnagUnity.Editor
         {
             if (!File.Exists(cliPath))
             {
-                UnityEngine.Debug.LogError($"Bugsnag CLI not found at {cliPath}");
+                UnityEngine.Debug.LogError($"BugSnag CLI not found at {cliPath}");
                 return false;
             }
 
-            UnityEngine.Debug.Log($"Running Bugsnag CLI tool with arguments: {arguments}");
+            UnityEngine.Debug.Log($"Running BugSnag CLI:\n{cliPath} {arguments}");
 
             var runCliProcess = new Process()
             {
@@ -227,15 +218,12 @@ namespace BugsnagUnity.Editor
             string runCliError = runCliProcess.StandardError.ReadToEnd();
             runCliProcess.WaitForExit();
 
-            UnityEngine.Debug.Log($"Bugsnag CLI process exited with code {runCliProcess.ExitCode}");
-
             if (runCliProcess.ExitCode != 0)
             {
-                UnityEngine.Debug.LogError($"Failed to run the Bugsnag CLI tool. Error: {runCliError} Output: {runCliOutput}");
+                UnityEngine.Debug.LogError($"An error occurred uploading symbol files: {runCliError}.\nCLI output: {runCliOutput}");
                 return false;
             }
 
-            UnityEngine.Debug.Log($"Bugsnag CLI tool executed successfully. Output: {runCliOutput}");
             return true;
         }
 
