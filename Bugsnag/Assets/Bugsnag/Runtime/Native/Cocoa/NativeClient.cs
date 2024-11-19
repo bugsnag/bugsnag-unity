@@ -506,11 +506,12 @@ namespace BugsnagUnity
 
         private StackTraceLine[] ToStackFrames(System.Exception exception, IntPtr[] nativeAddresses)
         {
-            var systemTrace = new StackTrace(exception, true);
-            var stackFrames = new StackTraceLine[systemTrace.FrameCount];
-            for (int i = 0; i < systemTrace.FrameCount; i++)
+            var unityTrace = new PayloadStackTrace(exception.StackTrace).StackTraceLines;
+            var length = nativeAddresses.Length < unityTrace.Length ? nativeAddresses.Length : unityTrace.Length;
+            var stackFrames = new StackTraceLine[length];
+            for (int i = 0; i < length; i++)
             {
-                var method = systemTrace.GetFrame(i).GetMethod(); // Only method has useful info
+                var method = unityTrace[i].Method;
                 var address = (UInt64)nativeAddresses[i].ToInt64();
                 var image = loadedImages.FindImageAtAddress(address);
 
