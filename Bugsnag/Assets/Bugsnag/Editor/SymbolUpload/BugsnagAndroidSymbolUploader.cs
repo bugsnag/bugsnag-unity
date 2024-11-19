@@ -39,7 +39,7 @@ namespace BugsnagUnity.Editor
             }
 
             UnityEngine.Debug.Log("Starting BugSnag Android symbol upload.");
-            EditorUtility.DisplayProgressBar("Bugsnag Symbol Upload", "Uploading Android Symbol Files", 0.0f);
+            EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
 
             // Check if symbol creation is enabled
             if (EditorUserBuildSettings.androidCreateSymbols != AndroidCreateSymbols.Public && EditorUserBuildSettings.androidCreateSymbols != AndroidCreateSymbols.Debugging)
