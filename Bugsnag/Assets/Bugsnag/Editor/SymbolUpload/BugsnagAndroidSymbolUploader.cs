@@ -44,7 +44,7 @@ namespace BugsnagUnity.Editor
             // Check if symbol creation is enabled
             if (EditorUserBuildSettings.androidCreateSymbols != AndroidCreateSymbols.Public && EditorUserBuildSettings.androidCreateSymbols != AndroidCreateSymbols.Debugging)
             {
-                UnityEngine.Debug.LogError("Bugsnag symbol upload is enabled but Android symbol creation is disabled. Please enable symbol creation in your build settings.");
+                UnityEngine.Debug.LogError("BugSnag symbol upload is enabled but Android symbol creation is disabled. Please enable symbol creation in your build settings.");
                 EditorUtility.ClearProgressBar();
                 return;
             }
