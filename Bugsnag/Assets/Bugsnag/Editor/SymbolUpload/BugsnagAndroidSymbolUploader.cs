@@ -53,7 +53,7 @@ namespace BugsnagUnity.Editor
             var apiKey = config.ApiKey;
             if (string.IsNullOrEmpty(apiKey))
             {
-                UnityEngine.Debug.LogError("Bugsnag symbol upload is enabled but the API key is not set. Please set the API key in the Bugsnag settings window.");
+                UnityEngine.Debug.LogError("BugSnag symbol upload is enabled but your BugSnag API key is not set. Please set the API key in your BugSnag configuration.");
                 EditorUtility.ClearProgressBar();
                 return;
             }
