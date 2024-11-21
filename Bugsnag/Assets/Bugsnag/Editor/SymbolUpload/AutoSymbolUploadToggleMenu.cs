@@ -6,17 +6,18 @@ namespace BugsnagUnity.Editor
 
     public class AutoSymbolUploadToggleMenu
     {
+        private const string MENU_PATH = "Window/BugSnag/Enable Symbol Uploads";
 
-        [MenuItem("Window/BugSnag/Auto Upload Symbols")]
+        [MenuItem(MENU_PATH,false,50)]
         private static void ToggleAutoUpload()
         {
             SetEnabled(!IsEnabled());
         }
 
-        [MenuItem("Window/BugSnag/Auto Upload Symbols", true)]
+        [MenuItem(MENU_PATH, true)]
         private static bool ToggleAutoUploadValidate()
         {
-            Menu.SetChecked("Window/BugSnag/Auto Upload Symbols", IsEnabled());
+            Menu.SetChecked(MENU_PATH, IsEnabled());
             return true;
         }
 
