@@ -92,10 +92,15 @@ namespace BugsnagUnity.Editor
 
         private bool IsAndroidSymbolsEnabled()
         {
-         #if UNITY_ANDROID   
+#if UNITY_ANDROID
+
+#if UNITY_2021_1_OR_NEWER
             return EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Public ||
                    EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Debugging;
-        #endif
+#else
+            return EditorUserBuildSettings.androidCreateSymbolsZip;
+#endif
+#endif
             return false;
         }
 
