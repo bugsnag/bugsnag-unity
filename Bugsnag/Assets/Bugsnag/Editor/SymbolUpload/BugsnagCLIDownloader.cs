@@ -122,8 +122,6 @@ namespace BugsnagUnity.Editor
                 };
 
                 chmodProcess.Start();
-                string chmodOutput = chmodProcess.StandardOutput.ReadToEnd();
-                string chmodError = chmodProcess.StandardError.ReadToEnd();
                 chmodProcess.WaitForExit();
 
                 if (chmodProcess.ExitCode != 0)
