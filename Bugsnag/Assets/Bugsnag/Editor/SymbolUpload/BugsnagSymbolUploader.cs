@@ -25,7 +25,7 @@ namespace BugsnagUnity.Editor
                 return;
             }
 
-            UnityEngine.Debug.Log("Starting Bugsnag symbol upload...");
+            UnityEngine.Debug.Log($"Starting BugSnag symbol upload for {report.summary.platform}...");
 
             string cliPath = GetBugsnagCLIPath(config);
             if (string.IsNullOrEmpty(cliPath))
