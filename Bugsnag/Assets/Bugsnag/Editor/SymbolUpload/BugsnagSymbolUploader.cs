@@ -92,8 +92,11 @@ namespace BugsnagUnity.Editor
 
         private bool IsAndroidSymbolsEnabled()
         {
+         #if UNITY_ANDROID   
             return EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Public ||
                    EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Debugging;
+        #endif
+            return false;
         }
 
         private string BuildAndroidCLIArgs(string buildPath, BugsnagSettingsObject config)
