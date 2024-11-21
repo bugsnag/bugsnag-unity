@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -8,56 +6,126 @@ using UnityEngine;
 
 namespace BugsnagUnity.Editor
 {
-
     internal class BugsnagCLIDownloader
     {
-        private const string CLI_DOWNLOAD_VERSION = "2.6.2";
-        private static string _cliDownloadPath = Path.Combine(Application.dataPath, $"../bugsnag/bin/v{CLI_DOWNLOAD_VERSION}/bugsnag_cli");
-        private static string _cliDownloadUrl = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{CLI_DOWNLOAD_VERSION}/";
+        private const string CLI_VERSION = "2.6.2";
+        private static readonly string CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
+        private static readonly string BASE_DOWNLOAD_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{CLI_VERSION}/";
 
-        private static string GetBugsnagCliDownloadUrl()
+        public static string DownloadBugsnagCli()
         {
-            // Detect platform
+            try
+            {
+                RemoveOldVersion();
+
+                if (File.Exists(CLI_PATH))
+                {
+                    return CLI_PATH;
+                }
+
+                DownloadCLI();
+                if (!MakeExecutable())
+                {
+                    throw new InvalidOperationException("Failed to make CLI executable.");
+                }
+
+                return CLI_PATH;
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogError($"Failed to setup Bugsnag CLI: {ex.Message}");
+                return null;
+            }
+        }
+
+        private static void RemoveOldVersion()
+        {
+            var directory = Path.GetDirectoryName(CLI_PATH);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+                return;
+            }
+
+            if (File.Exists(CLI_PATH) && GetCurrentCliVersion() != CLI_VERSION)
+            {
+                UnityEngine.Debug.Log("Removing old Bugsnag CLI version");
+                File.Delete(CLI_PATH);
+            }
+        }
+
+        private static void DownloadCLI()
+        {
+            string url = GetDownloadUrl();
+            if (string.IsNullOrEmpty(url))
+            {
+                throw new InvalidOperationException($"Unsupported platform: {RuntimeInformation.OSDescription}");
+            }
+
+            var process = StartProcess("curl", $"-L {url} --output {CLI_PATH}");
+            if (process.ExitCode != 0)
+            {
+                throw new InvalidOperationException($"Download failed: {process.StandardError.ReadToEnd()}");
+            }
+        }
+
+        private static string GetDownloadUrl()
+        {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                return RuntimeInformation.OSArchitecture == Architecture.Arm64
-                    ? _cliDownloadUrl + "arm64-macos-bugsnag-cli"
-                    : _cliDownloadUrl + "x86_64-macos-bugsnag-cli";
+                return BASE_DOWNLOAD_URL + 
+                    (RuntimeInformation.OSArchitecture == Architecture.Arm64 ? "arm64-macos-bugsnag-cli" : "x86_64-macos-bugsnag-cli");
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return RuntimeInformation.OSArchitecture == Architecture.X86
-                    ? _cliDownloadUrl + "i386-windows-bugsnag-cli.exe"
-                    : _cliDownloadUrl + "x86_64-windows-bugsnag-cli.exe";
+                return BASE_DOWNLOAD_URL + 
+                    (RuntimeInformation.OSArchitecture == Architecture.X86 ? "i386-windows-bugsnag-cli.exe" : "x86_64-windows-bugsnag-cli.exe");
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                return RuntimeInformation.OSArchitecture == Architecture.X86
-                    ? _cliDownloadUrl + "i386-linux-bugsnag-cli"
-                    : _cliDownloadUrl + "x86_64-linux-bugsnag-cli";
+                return BASE_DOWNLOAD_URL + 
+                    (RuntimeInformation.OSArchitecture == Architecture.X86 ? "i386-linux-bugsnag-cli" : "x86_64-linux-bugsnag-cli");
             }
-
-            UnityEngine.Debug.LogError($"Unable to run the BugSnag CLI on {RuntimeInformation.OSDescription} platform.");
 
             return null;
         }
 
-        public static string DownloadBugsnagCli()
+        private static bool MakeExecutable()
         {
-
-            RemoveOldVersions();
-
-            if (File.Exists(_cliDownloadPath))
+            if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                return _cliDownloadPath;
+                var process = StartProcess("chmod", $"+x {CLI_PATH}");
+                return process.ExitCode == 0;
+            }
+            return true;
+        }
+
+        private static string GetCurrentCliVersion()
+        {
+            if (!File.Exists(CLI_PATH))
+            {
+                UnityEngine.Debug.LogError($"Bugsnag CLI not found at {CLI_PATH}");
+                return null;
             }
 
-            var downloadProcess = new Process()
+            var process = StartProcess(CLI_PATH, "--version");
+            if (process.ExitCode != 0)
+            {
+                UnityEngine.Debug.LogError($"Error checking CLI version: {process.StandardError.ReadToEnd()}");
+                return null;
+            }
+
+            return process.StandardOutput.ReadToEnd().Trim();
+        }
+
+        private static Process StartProcess(string fileName, string arguments)
+        {
+            var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "curl",
-                    Arguments = $"-L {GetBugsnagCliDownloadUrl()} --output {_cliDownloadPath}",
+                    FileName = fileName,
+                    Arguments = arguments,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false,
@@ -65,73 +133,9 @@ namespace BugsnagUnity.Editor
                 }
             };
 
-            downloadProcess.Start();
-            string downloadError = downloadProcess.StandardError.ReadToEnd();
-            downloadProcess.WaitForExit();
-
-            if (downloadProcess.ExitCode != 0)
-            {
-                UnityEngine.Debug.LogError($"Failed to download the BugSnag CLI. Error: {downloadError}");
-                return null;
-            }
-            return MakeCLIExecutable() ? _cliDownloadPath : null;
+            process.Start();
+            process.WaitForExit();
+            return process;
         }
-
-        private static void RemoveOldVersions()
-        {
-            var directory = Path.GetDirectoryName(_cliDownloadPath);
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            var parentDirectory = Directory.GetParent(directory)?.FullName;
-            if (parentDirectory != null)
-            {
-                var directoryName = Path.GetFileName(directory);
-                foreach (var subdirectory in Directory.GetDirectories(parentDirectory))
-                {
-                    var subdirectoryName = Path.GetFileName(subdirectory);
-                    if (!string.Equals(subdirectoryName, directoryName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        try
-                        {
-                            Directory.Delete(subdirectory, true);
-                        }
-                        catch { }
-                    }
-                }
-            }
-        }
-
-        private static bool MakeCLIExecutable()
-        {
-            if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
-            {
-                var chmodProcess = new Process()
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "chmod",
-                        Arguments = $"+x {_cliDownloadPath}",
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-
-                chmodProcess.Start();
-                chmodProcess.WaitForExit();
-
-                if (chmodProcess.ExitCode != 0)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
     }
 }
