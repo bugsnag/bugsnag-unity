@@ -1,9 +1,7 @@
-using System.Diagnostics;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-using UnityEngine;
 
 namespace BugsnagUnity.Editor
 {
@@ -19,7 +17,7 @@ namespace BugsnagUnity.Editor
                 return;
             }
 
-            var config = GetSettingsObject();
+            var config = BugsnagSettingsObject.GetSettingsObject();
             if (config == null || !config.AutoUploadSymbols)
             {
                 return;
@@ -32,13 +30,13 @@ namespace BugsnagUnity.Editor
             if (report.summary.platform == BuildTarget.Android)
             {
                 EditorUtility.DisplayProgressBar("Bugsnag Symbol Upload", "Uploading Android symbol files", 0.0f);
-                if(UploadAndroidSymbols(config.BugsnagCLIExecutablePath, buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode))
+                try
                 {
-                    UnityEngine.Debug.Log("Android symbol files uploaded to Bugsnag successfully.");
+                    UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode);
                 }
-                else
+                catch (System.Exception e)
                 {
-                    UnityEngine.Debug.LogError("Failed to upload Android symbol files to Bugsnag.");
+                    UnityEngine.Debug.LogError($"Failed to upload Android symbol files to Bugsnag: {e.Message}");
                 }
                 EditorUtility.ClearProgressBar();
             }
@@ -53,26 +51,20 @@ namespace BugsnagUnity.Editor
 
         }
 
-        private BugsnagSettingsObject GetSettingsObject()
-        {
-            return Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
-        }
-
         private bool IsSupportedPlatform(BuildTarget platform)
         {
             return platform == BuildTarget.Android || platform == BuildTarget.iOS || platform == BuildTarget.StandaloneOSX;
         }
 
-        private bool UploadAndroidSymbols(string customExecutablePath, string buildOutputPath, string apiKey, string versionName, int versionCode)
+        private void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode)
         {
-
             if (!IsAndroidSymbolCreationEnabled())
             {
                 UnityEngine.Debug.LogError("Cannot upload Android symbols to BugSnag because Android symbol creation is disabled in the Unity Build Settings.");
-                return false;
+                return;
             }
-            
-            return BugsnagCLI.UploadAndroidSymbols(customExecutablePath, buildOutputPath, apiKey, versionName, versionCode);
+            var cli = new BugsnagCLI();
+            cli.UploadAndroidSymbols(buildOutputPath, apiKey, versionName, versionCode);
         }
 
         private bool IsAndroidSymbolCreationEnabled()

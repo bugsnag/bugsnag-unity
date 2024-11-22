@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -10,11 +8,39 @@ namespace BugsnagUnity.Editor
 {
     internal class BugsnagCLI
     {
-        private const string CLI_VERSION = "2.6.2";
-        private static readonly string CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
-        private static readonly string BASE_DOWNLOAD_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{CLI_VERSION}/";
+        private const string DOWNLOADED_CLI_VERSION = "2.6.2";
+        private readonly string DOWNLOADED_CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
+        private readonly string DOWNLOADED_CLI_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{DOWNLOADED_CLI_VERSION}/";
+        private readonly string _cliExecutablePath;
+        public BugsnagCLI()
+        {
+            try
+            {
+                var config = BugsnagSettingsObject.GetSettingsObject();
+                if (config == null)
+                {
+                    return;
+                }
+                if (string.IsNullOrEmpty(config.BugsnagCLIExecutablePath))
+                {
+                    _cliExecutablePath = GetBugsnagCLI();
+                }
+                else
+                {
+                    _cliExecutablePath = config.BugsnagCLIExecutablePath;
+                }
+                if (!File.Exists(_cliExecutablePath))
+                {
+                    throw new Exception($"BugSnag CLI not found at expected path: {_cliExecutablePath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogError($"Failed to setup Bugsnag CLI: {ex.Message}");
+            }
+        }
 
-        public static bool UploadAndroidSymbols(string customExecutablePath, string buildOutputPath, string apiKey, string versionName, int versionCode)
+        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode)
         {
             string args = $"upload unity-android --api-key={apiKey} --verbose --project-root={Application.dataPath} {buildOutputPath}";
 
@@ -23,50 +49,26 @@ namespace BugsnagUnity.Editor
             if (versionCode > -1)
                 args += $" --version-code={versionCode}";
 
-            return RunCLICommand(customExecutablePath, args);
-        }
-
-        private static bool RunCLICommand(string customExecutablePath, string args)
-        {
-            string executablePath = File.Exists(customExecutablePath) ? customExecutablePath : GetBugsnagCLI();
-
-            if (string.IsNullOrEmpty(executablePath) || !File.Exists(executablePath))
-            {
-                UnityEngine.Debug.LogError("Bugsnag CLI not available. Symbol upload aborted.");
-                return false;
-            }
-
-            UnityEngine.Debug.Log($"Executing Bugsnag CLI:\n{executablePath} {args}");
-
-            int exitCode = StartProcess(executablePath, args, out string output, out string error);
+            int exitCode = StartProcess(_cliExecutablePath, args, out string output, out string error);
 
             if (exitCode != 0)
             {
-                UnityEngine.Debug.LogError($"Error uploading symbols: {error}\nOutput: {output}");
-                return false;
+                throw new Exception($"Error uploading symbols: {error}\nOutput: {output}");
             }
-
-            return true;
         }
 
-        public static string GetBugsnagCLI()
+        public string GetBugsnagCLI()
         {
             try
             {
                 EnsureDirectoryExists();
-
-                if (File.Exists(CLI_PATH) && GetCurrentCliVersion() == CLI_VERSION)
+                if (File.Exists(DOWNLOADED_CLI_PATH) && GetCurrentCliVersion() == DOWNLOADED_CLI_VERSION)
                 {
-                    return CLI_PATH;
+                    return DOWNLOADED_CLI_PATH;
                 }
-
                 DownloadCLI();
-                if (!MakeExecutable())
-                {
-                    throw new InvalidOperationException("Failed to make CLI executable.");
-                }
-
-                return CLI_PATH;
+                MakeExecutable();
+                return DOWNLOADED_CLI_PATH;
             }
             catch (Exception ex)
             {
@@ -75,16 +77,16 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        private static void EnsureDirectoryExists()
+        private void EnsureDirectoryExists()
         {
-            var directory = Path.GetDirectoryName(CLI_PATH);
+            var directory = Path.GetDirectoryName(DOWNLOADED_CLI_PATH);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
         }
 
-        private static void DownloadCLI()
+        private void DownloadCLI()
         {
             string url = GetDownloadUrl();
             if (string.IsNullOrEmpty(url))
@@ -92,7 +94,7 @@ namespace BugsnagUnity.Editor
                 throw new InvalidOperationException($"Unsupported platform: {RuntimeInformation.OSDescription}");
             }
 
-            string tempPath = CLI_PATH + ".tmp";
+            string tempPath = DOWNLOADED_CLI_PATH + ".tmp";
 
             try
             {
@@ -102,12 +104,12 @@ namespace BugsnagUnity.Editor
                     throw new InvalidOperationException($"Download failed: {error}");
                 }
 
-                if (File.Exists(CLI_PATH))
+                if (File.Exists(DOWNLOADED_CLI_PATH))
                 {
-                    File.Delete(CLI_PATH);
+                    File.Delete(DOWNLOADED_CLI_PATH);
                 }
 
-                File.Move(tempPath, CLI_PATH);
+                File.Move(tempPath, DOWNLOADED_CLI_PATH);
             }
             finally
             {
@@ -118,7 +120,7 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        private static string GetDownloadUrl()
+        private string GetDownloadUrl()
         {
             string fileName = null;
 
@@ -141,28 +143,30 @@ namespace BugsnagUnity.Editor
                     : "x86_64-linux-bugsnag-cli";
             }
 
-            return fileName != null ? BASE_DOWNLOAD_URL + fileName : null;
+            return fileName != null ? DOWNLOADED_CLI_URL + fileName : null;
         }
 
-        private static bool MakeExecutable()
+        private void MakeExecutable()
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                int exitCode = StartProcess("chmod", $"+x {CLI_PATH}", out _, out _);
-                return exitCode == 0;
+                int exitCode = StartProcess("chmod", $"+x {DOWNLOADED_CLI_PATH}", out _, out _);
+                if(exitCode != 0)
+                {
+                    throw new InvalidOperationException("Failed to make CLI executable");
+                }
             }
-            return true;
         }
 
-        private static string GetCurrentCliVersion()
+        private string GetCurrentCliVersion()
         {
-            if (!File.Exists(CLI_PATH))
+            if (!File.Exists(DOWNLOADED_CLI_PATH))
             {
-                UnityEngine.Debug.LogError($"Bugsnag CLI not found at {CLI_PATH}");
+                UnityEngine.Debug.LogError($"Bugsnag CLI not found at {DOWNLOADED_CLI_PATH}");
                 return null;
             }
 
-            int exitCode = StartProcess(CLI_PATH, "--version", out string output, out string error);
+            int exitCode = StartProcess(_cliExecutablePath, "--version", out string output, out string error);
             if (exitCode != 0)
             {
                 UnityEngine.Debug.LogError($"Error checking CLI version: {error}");
@@ -172,7 +176,7 @@ namespace BugsnagUnity.Editor
             return output.Trim();
         }
 
-        private static int StartProcess(string fileName, string arguments, out string standardOutput, out string standardError)
+        private int StartProcess(string fileName, string arguments, out string standardOutput, out string standardError)
         {
             var process = new Process
             {
@@ -193,5 +197,6 @@ namespace BugsnagUnity.Editor
             process.WaitForExit();
             return process.ExitCode;
         }
+
     }
 }
