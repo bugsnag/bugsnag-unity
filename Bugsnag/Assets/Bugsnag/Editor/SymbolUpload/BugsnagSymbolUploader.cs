@@ -29,24 +29,24 @@ namespace BugsnagUnity.Editor
 
             if (report.summary.platform == BuildTarget.Android)
             {
-                EditorUtility.DisplayProgressBar("Bugsnag Symbol Upload", "Uploading Android symbol files", 0.0f);
+                EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
                 try
                 {
                     UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode);
                 }
                 catch (System.Exception e)
                 {
-                    UnityEngine.Debug.LogError($"Failed to upload Android symbol files to Bugsnag: {e.Message}");
+                    UnityEngine.Debug.LogError($"Failed to upload Android symbol files to BugSnag. Error: {e.Message}");
                 }
                 EditorUtility.ClearProgressBar();
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
-                //TODO implement iOS symbol upload
+                //TODO implement iOS post build script generation
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
-                // TODO implement macOS symbol upload
+                // TODO implement macOS post build script generation
             }
 
         }

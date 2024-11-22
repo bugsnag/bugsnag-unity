@@ -14,29 +14,19 @@ namespace BugsnagUnity.Editor
         private readonly string _cliExecutablePath;
         public BugsnagCLI()
         {
-            try
+            var config = BugsnagSettingsObject.GetSettingsObject();
+
+            if (string.IsNullOrEmpty(config.BugsnagCLIExecutablePath))
             {
-                var config = BugsnagSettingsObject.GetSettingsObject();
-                if (config == null)
-                {
-                    return;
-                }
-                if (string.IsNullOrEmpty(config.BugsnagCLIExecutablePath))
-                {
-                    _cliExecutablePath = GetBugsnagCLI();
-                }
-                else
-                {
-                    _cliExecutablePath = config.BugsnagCLIExecutablePath;
-                }
-                if (!File.Exists(_cliExecutablePath))
-                {
-                    throw new Exception($"BugSnag CLI not found at expected path: {_cliExecutablePath}");
-                }
+                _cliExecutablePath = DownloadBugsnagCLI();
             }
-            catch (Exception ex)
+            else
             {
-                UnityEngine.Debug.LogError($"Failed to setup Bugsnag CLI: {ex.Message}");
+                _cliExecutablePath = config.BugsnagCLIExecutablePath;
+            }
+            if (!File.Exists(_cliExecutablePath))
+            {
+                throw new Exception($"BugSnag CLI not found at path: {_cliExecutablePath}");
             }
         }
 
@@ -57,24 +47,16 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        public string GetBugsnagCLI()
+        public string DownloadBugsnagCLI()
         {
-            try
+            EnsureDirectoryExists();
+            if (File.Exists(DOWNLOADED_CLI_PATH) && GetCurrentCliVersion() == DOWNLOADED_CLI_VERSION)
             {
-                EnsureDirectoryExists();
-                if (File.Exists(DOWNLOADED_CLI_PATH) && GetCurrentCliVersion() == DOWNLOADED_CLI_VERSION)
-                {
-                    return DOWNLOADED_CLI_PATH;
-                }
-                DownloadCLI();
-                MakeExecutable();
                 return DOWNLOADED_CLI_PATH;
             }
-            catch (Exception ex)
-            {
-                UnityEngine.Debug.LogError($"Failed to setup Bugsnag CLI: {ex.Message}");
-                return null;
-            }
+            DownloadCLI();
+            MakeExecutable();
+            return DOWNLOADED_CLI_PATH;
         }
 
         private void EnsureDirectoryExists()
@@ -153,7 +135,7 @@ namespace BugsnagUnity.Editor
                 int exitCode = StartProcess("chmod", $"+x {DOWNLOADED_CLI_PATH}", out _, out _);
                 if(exitCode != 0)
                 {
-                    throw new InvalidOperationException("Failed to make CLI executable");
+                    throw new InvalidOperationException("Failed to make BugSnag CLI executable");
                 }
             }
         }
@@ -162,7 +144,7 @@ namespace BugsnagUnity.Editor
         {
             if (!File.Exists(DOWNLOADED_CLI_PATH))
             {
-                UnityEngine.Debug.LogError($"Bugsnag CLI not found at {DOWNLOADED_CLI_PATH}");
+                UnityEngine.Debug.LogError($"BugSnag CLI not found at {DOWNLOADED_CLI_PATH}");
                 return null;
             }
 
