@@ -27,18 +27,20 @@ namespace BugsnagUnity.Editor
 
             UnityEngine.Debug.Log($"Starting BugSnag symbol upload for {report.summary.platform}...");
 
-            string cliPath = GetBugsnagCLIPath(config);
-            if (string.IsNullOrEmpty(cliPath))
-            {
-                UnityEngine.Debug.LogError("Bugsnag CLI is not available. Symbol upload aborted.");
-                return;
-            }
-
             var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
 
             if (report.summary.platform == BuildTarget.Android)
             {
-                UploadAndroidSymbols(buildOutputPath, cliPath, config);
+                EditorUtility.DisplayProgressBar("Bugsnag Symbol Upload", "Uploading Android symbol files", 0.0f);
+                if(UploadAndroidSymbols(config.BugsnagCLIExecutablePath, buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode))
+                {
+                    UnityEngine.Debug.Log("Android symbol files uploaded to Bugsnag successfully.");
+                }
+                else
+                {
+                    UnityEngine.Debug.LogError("Failed to upload Android symbol files to Bugsnag.");
+                }
+                EditorUtility.ClearProgressBar();
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
@@ -61,36 +63,19 @@ namespace BugsnagUnity.Editor
             return platform == BuildTarget.Android || platform == BuildTarget.iOS || platform == BuildTarget.StandaloneOSX;
         }
 
-        private string GetBugsnagCLIPath(BugsnagSettingsObject config)
+        private bool UploadAndroidSymbols(string customExecutablePath, string buildOutputPath, string apiKey, string versionName, int versionCode)
         {
-            if (!string.IsNullOrEmpty(config.BugsnagCLIExecutablePath))
-            {
-                return config.BugsnagCLIExecutablePath;
-            }
 
-            return BugsnagCLIDownloader.DownloadBugsnagCli();
+            if (!IsAndroidSymbolCreationEnabled())
+            {
+                UnityEngine.Debug.LogError("Cannot upload Android symbols to BugSnag because Android symbol creation is disabled in the Unity Build Settings.");
+                return false;
+            }
+            
+            return BugsnagCLI.UploadAndroidSymbols(customExecutablePath, buildOutputPath, apiKey, versionName, versionCode);
         }
 
-        private void UploadAndroidSymbols(string buildPath, string cliPath, BugsnagSettingsObject config)
-        {
-            EditorUtility.DisplayProgressBar("Bugsnag Symbol Upload", "Uploading Android symbol files", 0.0f);
-
-            if (!IsAndroidSymbolsEnabled())
-            {
-                UnityEngine.Debug.LogError("Android symbol creation is disabled. Enable it in the build settings.");
-                EditorUtility.ClearProgressBar();
-                return;
-            }
-
-            string args = BuildAndroidCLIArgs(buildPath, config);
-            if (RunBugsnagCliCommand(cliPath, args))
-            {
-                UnityEngine.Debug.Log("Android symbol files uploaded to Bugsnag successfully.");
-            }
-            EditorUtility.ClearProgressBar();
-        }
-
-        private bool IsAndroidSymbolsEnabled()
+        private bool IsAndroidSymbolCreationEnabled()
         {
 #if UNITY_ANDROID
 
@@ -102,55 +87,6 @@ namespace BugsnagUnity.Editor
 #endif
 #endif
             return false;
-        }
-
-        private string BuildAndroidCLIArgs(string buildPath, BugsnagSettingsObject config)
-        {
-            string args = $"upload unity-android --api-key={config.ApiKey} --verbose --project-root={Application.dataPath} {buildPath}";
-
-            if (!string.IsNullOrEmpty(config.AppVersion))
-                args += $" --version-name={config.AppVersion}";
-            if (config.VersionCode > -1)
-                args += $" --version-code={config.VersionCode}";
-
-            return args;
-        }
-
-        private bool RunBugsnagCliCommand(string cliPath, string arguments)
-        {
-            if (!File.Exists(cliPath))
-            {
-                UnityEngine.Debug.LogError($"Bugsnag CLI not found at {cliPath}");
-                return false;
-            }
-
-            UnityEngine.Debug.Log($"Executing Bugsnag CLI:\n{cliPath} {arguments}");
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = cliPath,
-                    Arguments = arguments,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
-
-            process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            string error = process.StandardError.ReadToEnd();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-            {
-                UnityEngine.Debug.LogError($"Error uploading symbols: {error}\nOutput: {output}");
-                return false;
-            }
-
-            return true;
         }
     }
 }

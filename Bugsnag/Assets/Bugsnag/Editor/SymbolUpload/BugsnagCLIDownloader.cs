@@ -12,13 +12,13 @@ namespace BugsnagUnity.Editor
         private static readonly string CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
         private static readonly string BASE_DOWNLOAD_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{CLI_VERSION}/";
 
-        public static string DownloadBugsnagCli()
+        public static string GetBugsnagCLI()
         {
             try
             {
-                RemoveOldVersion();
+                EnsureDirectoryExists();
 
-                if (File.Exists(CLI_PATH))
+                if (File.Exists(CLI_PATH) && GetCurrentCliVersion() == CLI_VERSION)
                 {
                     return CLI_PATH;
                 }
@@ -38,19 +38,12 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        private static void RemoveOldVersion()
+        private static void EnsureDirectoryExists()
         {
             var directory = Path.GetDirectoryName(CLI_PATH);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
-                return;
-            }
-
-            if (File.Exists(CLI_PATH) && GetCurrentCliVersion() != CLI_VERSION)
-            {
-                UnityEngine.Debug.Log("Removing old Bugsnag CLI version");
-                File.Delete(CLI_PATH);
             }
         }
 
@@ -62,10 +55,29 @@ namespace BugsnagUnity.Editor
                 throw new InvalidOperationException($"Unsupported platform: {RuntimeInformation.OSDescription}");
             }
 
-            var process = StartProcess("curl", $"-L {url} --output {CLI_PATH}");
-            if (process.ExitCode != 0)
+            string tempPath = CLI_PATH + ".tmp";
+
+            try
             {
-                throw new InvalidOperationException($"Download failed: {process.StandardError.ReadToEnd()}");
+                var process = StartProcess("curl", $"-L {url} --output {tempPath}");
+                if (process.ExitCode != 0)
+                {
+                    throw new InvalidOperationException($"Download failed: {process.StandardError.ReadToEnd()}");
+                }
+
+                if (File.Exists(CLI_PATH))
+                {
+                    File.Delete(CLI_PATH);
+                }
+
+                File.Move(tempPath, CLI_PATH);
+            }
+            finally
+            {
+                if (File.Exists(tempPath))
+                {
+                    File.Delete(tempPath);
+                }
             }
         }
 
@@ -73,17 +85,17 @@ namespace BugsnagUnity.Editor
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                return BASE_DOWNLOAD_URL + 
+                return BASE_DOWNLOAD_URL +
                     (RuntimeInformation.OSArchitecture == Architecture.Arm64 ? "arm64-macos-bugsnag-cli" : "x86_64-macos-bugsnag-cli");
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return BASE_DOWNLOAD_URL + 
+                return BASE_DOWNLOAD_URL +
                     (RuntimeInformation.OSArchitecture == Architecture.X86 ? "i386-windows-bugsnag-cli.exe" : "x86_64-windows-bugsnag-cli.exe");
             }
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                return BASE_DOWNLOAD_URL + 
+                return BASE_DOWNLOAD_URL +
                     (RuntimeInformation.OSArchitecture == Architecture.X86 ? "i386-linux-bugsnag-cli" : "x86_64-linux-bugsnag-cli");
             }
 
