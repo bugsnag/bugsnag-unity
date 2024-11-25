@@ -133,9 +133,9 @@ namespace BugsnagUnity.Editor
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
                 int exitCode = StartProcess("chmod", $"+x {DOWNLOADED_CLI_PATH}", out _, out _);
-                if(exitCode != 0)
+                if (exitCode != 0)
                 {
-                    throw new InvalidOperationException("Failed to make BugSnag CLI executable");
+                    throw new InvalidOperationException($"Failed to make BugSnag CLI at {DOWNLOADED_CLI_PATH} executable");
                 }
             }
         }
@@ -148,7 +148,7 @@ namespace BugsnagUnity.Editor
                 return null;
             }
 
-            int exitCode = StartProcess(_cliExecutablePath, "--version", out string output, out string error);
+            int exitCode = StartProcess(DOWNLOADED_CLI_PATH, "--version", out string output, out string error);
             if (exitCode != 0)
             {
                 UnityEngine.Debug.LogError($"Error checking CLI version: {error}");
