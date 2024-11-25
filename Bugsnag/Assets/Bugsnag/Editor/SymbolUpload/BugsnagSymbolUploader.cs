@@ -2,6 +2,8 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEditor.iOS.Xcode;
+using UnityEngine;
 
 namespace BugsnagUnity.Editor
 {
@@ -28,10 +30,10 @@ namespace BugsnagUnity.Editor
 
             UnityEngine.Debug.Log($"Starting BugSnag symbol upload for {report.summary.platform}...");
 
-            var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
 
             if (report.summary.platform == BuildTarget.Android)
             {
+                var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
                 EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
                 try
                 {
@@ -45,7 +47,7 @@ namespace BugsnagUnity.Editor
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
-                //TODO implement iOS post build script generation
+                AddIosPostBuildScript(report.summary.outputPath);
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
@@ -85,7 +87,7 @@ namespace BugsnagUnity.Editor
         }
 
 
-        private bool AddIosPostBuildScript(string pathToBuiltProject)
+        private void AddIosPostBuildScript(string pathToBuiltProject)
         {
             string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
             PBXProject pbxProject = new PBXProject();
@@ -100,8 +102,6 @@ namespace BugsnagUnity.Editor
 
             // Save changes
             pbxProject.WriteToFile(pbxProjectPath);
-
-            return true;
         }
     }
 }
