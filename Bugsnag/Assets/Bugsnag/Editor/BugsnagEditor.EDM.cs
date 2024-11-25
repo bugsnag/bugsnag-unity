@@ -20,7 +20,7 @@ namespace BugsnagUnity.Editor
 
         private static string KotlinLibsDirPath = "/Bugsnag/Plugins/Android/Kotlin";
 
-        [MenuItem(EDM_MENU_ITEM, false, 1)]
+        [MenuItem(EDM_MENU_ITEM, false, 51)]
         private static void ToggleEDM()
         {
             if (IsEDMEnabled())

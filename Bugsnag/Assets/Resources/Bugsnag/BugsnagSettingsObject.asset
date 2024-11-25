@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e0efee821abb422baf5bb3728925f09, type: 3}
   m_Name: BugsnagSettingsObject
   m_EditorClassIdentifier: 
+  AutoUploadSymbols: 1
+  BugsnagCLIExecutablePath: 
+  UploadEndpoint: 
   StartAutomaticallyAtLaunch: 1
   AutoDetectErrors: 1
   AutoTrackSessions: 1

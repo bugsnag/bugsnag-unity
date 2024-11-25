@@ -2,12 +2,22 @@
 using UnityEngine;
 using BugsnagUnity.Payload;
 using System;
+using System.Runtime.CompilerServices;
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("BugsnagEditor")]
 
 namespace BugsnagUnity
 {
     [Serializable]
     public class BugsnagSettingsObject : ScriptableObject
     {
+
+        // Build time settings
+
+        public bool AutoUploadSymbols;
+        public string BugsnagCLIExecutablePath;
+        public string UploadEndpoint;
+
+        // Runtime Settings
 
         public bool StartAutomaticallyAtLaunch = true;
         public bool AutoDetectErrors = true;
@@ -47,6 +57,11 @@ namespace BugsnagUnity
         public string SwitchCacheMountName = "BugsnagCache";
         public int SwitchCacheIndex = 0;
         public int SwitchCacheMaxSize = 10485760;
+
+        internal static BugsnagSettingsObject GetSettingsObject()
+        {
+            return Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
+        }
 
         public static Configuration LoadConfiguration()
         {

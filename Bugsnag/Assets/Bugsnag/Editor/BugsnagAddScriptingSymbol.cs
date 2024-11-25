@@ -1,7 +1,9 @@
 using UnityEditor;
-using UnityEngine;
+
+namespace BugsnagUnity.Editor
+{
 [InitializeOnLoad]
-public class BugsnagAddScriptingSymbol : MonoBehaviour
+public class BugsnagAddScriptingSymbol 
 {
     private const string DEFINE_SYMBOL = "BUGSNAG_UNITY_WEB_REQUEST";
 
@@ -35,4 +37,5 @@ public class BugsnagAddScriptingSymbol : MonoBehaviour
         }
         PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, existingSymbols);
     }
+}
 }
