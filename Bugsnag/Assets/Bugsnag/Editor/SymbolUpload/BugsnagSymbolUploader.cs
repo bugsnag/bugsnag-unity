@@ -10,6 +10,9 @@ namespace BugsnagUnity.Editor
     {
         public int callbackOrder => 1;
 
+        private string _iosUploadScriptPath = Application.dataPath + "/Bugsnag/Editor/SymbolUpload/iosSymbolUpload.sh";
+
+
         public void OnPostprocessBuild(BuildReport report)
         {
             if (!IsSupportedPlatform(report.summary.platform))
@@ -79,6 +82,26 @@ namespace BugsnagUnity.Editor
 #endif
 #endif
             return false;
+        }
+
+
+        private bool AddIosPostBuildScript(string pathToBuiltProject)
+        {
+            string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+            PBXProject pbxProject = new PBXProject();
+            pbxProject.ReadFromFile(pbxProjectPath);
+
+            string targetGUID = pbxProject.GetUnityMainTargetGuid();
+
+            // Add your shell script
+            string shellScriptName = "BugsnagDSYMUpload";
+            string shellScript = _iosUploadScriptPath; // Change to the actual script path or command
+            pbxProject.AddShellScriptBuildPhase(targetGUID, shellScriptName, "/bin/sh", shellScript);
+
+            // Save changes
+            pbxProject.WriteToFile(pbxProjectPath);
+
+            return true;
         }
     }
 }
