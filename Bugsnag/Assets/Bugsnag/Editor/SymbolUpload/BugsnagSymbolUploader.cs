@@ -91,13 +91,9 @@ namespace BugsnagUnity.Editor
         {
 
             var cli = new BugsnagCLI();
-            string script = File.ReadAllText(_iosUploadScriptPath);
+            string dsymUploadScript = File.ReadAllText(_iosUploadScriptPath);
             var command = cli.GetIosDsymUploadCommand(apiKey);
-            script = script.Replace("#<INSERT_COMMAND>", command);
-
-            File.WriteAllText(pathToBuiltProject + "/bugsnagDsymUpload.sh", script);
-
-            cli.MakeFileExecutable(pathToBuiltProject + "/bugsnagDsymUpload.sh");
+            dsymUploadScript = dsymUploadScript.Replace("#<INSERT_COMMAND>", command);
 
             string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
             PBXProject pbxProject = new PBXProject();
@@ -105,14 +101,27 @@ namespace BugsnagUnity.Editor
 
             string targetGUID = pbxProject.GetUnityMainTargetGuid();
 
+                        // Set Debug Information Format for the desired build configurations
+            pbxProject.SetBuildProperty(targetGUID, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym"); // For all configurations
+            // pbxProject.SetBuildPropertyForConfig(pbxProject.BuildConfigByName(targetGUID, "Debug"), "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
+            // pbxProject.SetBuildPropertyForConfig(pbxProject.BuildConfigByName(targetGUID, "Release"), "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
+            // pbxProject.SetBuildPropertyForConfig(pbxProject.BuildConfigByName(targetGUID, "ReleaseForRunning"), "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
+            // pbxProject.SetBuildPropertyForConfig(pbxProject.BuildConfigByName(targetGUID, "ReleaseForProfiling"), "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
+
+
             // Add your shell script
             string shellScriptName = "BugsnagDSYMUpload";
-            string shellScript = pathToBuiltProject + "/bugsnagDsymUpload.sh"; // Change to the actual script path or command
-            pbxProject.AddShellScriptBuildPhase(targetGUID, shellScriptName, "/bin/sh", shellScript);
+            pbxProject.AddShellScriptBuildPhase(targetGUID, shellScriptName, "/bin/sh", dsymUploadScript);
 
             // Save changes
             pbxProject.WriteToFile(pbxProjectPath);
+
         }
+
+
+
+
+        
 
        
     }

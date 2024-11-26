@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
 {
     internal class BugsnagCLI
     {
-        private const string DOWNLOADED_CLI_VERSION = "2.6.2";
+        private const string DOWNLOADED_CLI_VERSION = "2.7.0";
         private readonly string DOWNLOADED_CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
         private readonly string DOWNLOADED_CLI_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{DOWNLOADED_CLI_VERSION}/";
         private readonly string _cliExecutablePath;
@@ -128,7 +128,7 @@ namespace BugsnagUnity.Editor
             return fileName != null ? DOWNLOADED_CLI_URL + fileName : null;
         }
 
-        public void MakeFileExecutable(string path)
+        private void MakeFileExecutable(string path)
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
@@ -182,7 +182,7 @@ namespace BugsnagUnity.Editor
 
         public string GetIosDsymUploadCommand(string apiKey)
         {
-            return $"{_cliExecutablePath} upload dsym --api-key={apiKey} --verbose --scheme=Unity-iPhone";
+            return $"{_cliExecutablePath} upload dsym --api-key={apiKey} --verbose --scheme=Unity-iPhone --configuration $CONFIGURATION";
         }
 
     }
