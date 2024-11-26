@@ -9,9 +9,9 @@
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.30.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.30.2) [#849](https://github.com/bugsnag/bugsnag-unity/pull/849)
-- Update bugsnag-android to [v6.9.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.9.0) [#850](https://github.com/bugsnag/bugsnag-unity/pull/850)
+- Update bugsnag-android to [v6.10.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.10.0) [#854](https://github.com/bugsnag/bugsnag-unity/pull/854)
 - Updated BugsnagUnityWebRequest to remove deprecation warnings and add new PostWwwForm methods introduced in Unity 2022.2 [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
-Update bugsnag-android to [v6.10.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.10.0) [#854](https://github.com/bugsnag/bugsnag-unity/pull/854)
+
 
 ## 8.2.0 (2024-09-23)
 
