@@ -12,7 +12,7 @@ namespace BugsnagUnity.Editor
     {
         public int callbackOrder => 1;
 
-        private string _iosUploadScriptPath = Application.dataPath + "/Bugsnag/Editor/SymbolUpload/iosSymbolUpload.sh";
+        private readonly string _iosDsymUploadScriptTemplatePath = Application.dataPath + "/Bugsnag/Editor/SymbolUpload/iosSymbolUpload.sh";
 
 
         public void OnPostprocessBuild(BuildReport report)
@@ -89,35 +89,29 @@ namespace BugsnagUnity.Editor
 
         private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey)
         {
-
+            // Prepare the shell script to upload dSYM files
             var cli = new BugsnagCLI();
-            string dsymUploadScript = File.ReadAllText(_iosUploadScriptPath);
+            string dsymUploadScript = File.ReadAllText(_iosDsymUploadScriptTemplatePath);
             var command = cli.GetIosDsymUploadCommand(apiKey);
-            dsymUploadScript = dsymUploadScript.Replace("#<INSERT_COMMAND>", command);
+            dsymUploadScript = dsymUploadScript.Replace("<CLI_COMMAND>", command);
 
+            // Get the PBXProject object
             string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(pbxProjectPath);
-
             string targetGUID = pbxProject.GetUnityMainTargetGuid();
 
-                        // Set Debug Information Format for the desired build configurations
+            // Add a new shell script build phase to the project
+            pbxProject.AddShellScriptBuildPhase(targetGUID, "BugsnagDSYMUpload", "/bin/sh", dsymUploadScript, new System.Collections.Generic.List<string>{"$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)"});
+
+            // Set the debug information format to dwarf-with-dsym
             pbxProject.SetBuildProperty(targetGUID, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym"); // For all configurations
-            // pbxProject.SetBuildPropertyForConfig(pbxProject.BuildConfigByName(targetGUID, "Debug"), "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
-            // pbxProject.SetBuildPropertyForConfig(pbxProject.BuildConfigByName(targetGUID, "Release"), "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
-            // pbxProject.SetBuildPropertyForConfig(pbxProject.BuildConfigByName(targetGUID, "ReleaseForRunning"), "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
-            // pbxProject.SetBuildPropertyForConfig(pbxProject.BuildConfigByName(targetGUID, "ReleaseForProfiling"), "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
-
-
-            // Add your shell script
-            string shellScriptName = "BugsnagDSYMUpload";
-            pbxProject.AddShellScriptBuildPhase(targetGUID, shellScriptName, "/bin/sh", dsymUploadScript);
-
-            // Save changes
+           
             pbxProject.WriteToFile(pbxProjectPath);
 
         }
 
+        
 
 
 

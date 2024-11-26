@@ -182,8 +182,9 @@ namespace BugsnagUnity.Editor
 
         public string GetIosDsymUploadCommand(string apiKey)
         {
-            return $"{_cliExecutablePath} upload dsym --api-key={apiKey} --verbose --scheme=Unity-iPhone --configuration $CONFIGURATION";
+            return $"{_cliExecutablePath} upload dsym --api-key={apiKey} --configuration $CONFIGURATION $DSYM_PATH";
         }
 
     }
 }
+
