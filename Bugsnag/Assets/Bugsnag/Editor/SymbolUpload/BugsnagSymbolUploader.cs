@@ -28,7 +28,7 @@ namespace BugsnagUnity.Editor
                 return;
             }
 
-            UnityEngine.Debug.Log($"Starting BugSnag symbol upload for {report.summary.platform}...");
+            Debug.Log($"Starting BugSnag symbol upload for {report.summary.platform}...");
 
 
             if (report.summary.platform == BuildTarget.Android)
@@ -41,13 +41,13 @@ namespace BugsnagUnity.Editor
                 }
                 catch (System.Exception e)
                 {
-                    UnityEngine.Debug.LogError($"Failed to upload Android symbol files to BugSnag. Error: {e.Message}");
+                    Debug.LogError($"Failed to upload Android symbol files to BugSnag. Error: {e.Message}");
                 }
                 EditorUtility.ClearProgressBar();
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
-                AddIosPostBuildScript(report.summary.outputPath);
+                AddIosPostBuildScript(report.summary.outputPath,config.ApiKey);
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
@@ -65,7 +65,7 @@ namespace BugsnagUnity.Editor
         {
             if (!IsAndroidSymbolCreationEnabled())
             {
-                UnityEngine.Debug.LogError("Cannot upload Android symbols to BugSnag because Android symbol creation is disabled in the Unity Build Settings.");
+                Debug.LogError("Cannot upload Android symbols to BugSnag because Android symbol creation is disabled in the Unity Build Settings.");
                 return;
             }
             var cli = new BugsnagCLI();
@@ -87,8 +87,18 @@ namespace BugsnagUnity.Editor
         }
 
 
-        private void AddIosPostBuildScript(string pathToBuiltProject)
+        private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey)
         {
+
+            var cli = new BugsnagCLI();
+            string script = File.ReadAllText(_iosUploadScriptPath);
+            var command = cli.GetIosDsymUploadCommand(apiKey);
+            script = script.Replace("#<INSERT_COMMAND>", command);
+
+            File.WriteAllText(pathToBuiltProject + "/bugsnagDsymUpload.sh", script);
+
+            cli.MakeFileExecutable(pathToBuiltProject + "/bugsnagDsymUpload.sh");
+
             string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(pbxProjectPath);
@@ -97,11 +107,13 @@ namespace BugsnagUnity.Editor
 
             // Add your shell script
             string shellScriptName = "BugsnagDSYMUpload";
-            string shellScript = _iosUploadScriptPath; // Change to the actual script path or command
+            string shellScript = pathToBuiltProject + "/bugsnagDsymUpload.sh"; // Change to the actual script path or command
             pbxProject.AddShellScriptBuildPhase(targetGUID, shellScriptName, "/bin/sh", shellScript);
 
             // Save changes
             pbxProject.WriteToFile(pbxProjectPath);
         }
+
+       
     }
 }

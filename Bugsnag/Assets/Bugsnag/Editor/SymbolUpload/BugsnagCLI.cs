@@ -55,7 +55,7 @@ namespace BugsnagUnity.Editor
                 return DOWNLOADED_CLI_PATH;
             }
             DownloadCLI();
-            MakeExecutable();
+            MakeFileExecutable(DOWNLOADED_CLI_PATH);
             return DOWNLOADED_CLI_PATH;
         }
 
@@ -128,14 +128,14 @@ namespace BugsnagUnity.Editor
             return fileName != null ? DOWNLOADED_CLI_URL + fileName : null;
         }
 
-        private void MakeExecutable()
+        public void MakeFileExecutable(string path)
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                int exitCode = StartProcess("chmod", $"+x {DOWNLOADED_CLI_PATH}", out _, out _);
+                int exitCode = StartProcess("chmod", $"+x {path}", out _, out _);
                 if (exitCode != 0)
                 {
-                    throw new InvalidOperationException($"Failed to make BugSnag CLI at {DOWNLOADED_CLI_PATH} executable");
+                    throw new InvalidOperationException($"Failed to make file at {path} executable");
                 }
             }
         }
@@ -178,6 +178,11 @@ namespace BugsnagUnity.Editor
             standardError = process.StandardError.ReadToEnd();
             process.WaitForExit();
             return process.ExitCode;
+        }
+
+        public string GetIosDsymUploadCommand(string apiKey)
+        {
+            return $"{_cliExecutablePath} upload dsym --api-key={apiKey} --verbose --scheme=Unity-iPhone";
         }
 
     }
