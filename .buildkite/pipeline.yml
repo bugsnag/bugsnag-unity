@@ -57,3 +57,37 @@ steps:
           - maze_output/metrics.csv
     command:
       - scripts/ci-run-windows-tests-wsl.sh release
+
+  - label: Run Windows e2e tests for Unity 2021
+    timeout_in_minutes: 30
+    depends_on: "windows-2021-fixture"
+    agents:
+      queue: win-general-1
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-release-2021.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+    command:
+      - scripts/ci-run-windows-tests-wsl.sh release
+
+  - label: Run Windows e2e tests for Unity 2021
+    timeout_in_minutes: 30
+    depends_on: "windows-2021-fixture"
+    agents:
+      queue: win-general-1
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-release-2021.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+    command:
+      - scripts/ci-run-windows-tests-wsl.sh release
