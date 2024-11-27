@@ -122,7 +122,7 @@ public class Main : MonoBehaviour
                     Log("No Maze Runner command to process at present");
                 }
                 else
-                { 
+                {
                     var command = JsonUtility.FromJson<Command>(response);
                     if (command != null)
                     {
@@ -140,6 +140,7 @@ public class Main : MonoBehaviour
                         }
                         else if ("close_application".Equals(command.action))
                         {
+                            Log("Closing Fixture");
                             CloseFixture();
                         }
                     }

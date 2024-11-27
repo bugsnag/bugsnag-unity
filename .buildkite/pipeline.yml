@@ -2,46 +2,40 @@ aliases:
   - &2021 "2021.3.36f1"
 
 steps:
-  - group: ":hammer: Build Unity packages"
-    steps:
-      - label: Build released notifier artifact
-        key: "build_unitypackage"
-        timeout_in_minutes: 30
-        agents:
-          queue: macos-14
-        env:
-          UNITY_VERSION: *2021
-        commands:
-          - bundle install
-          - bundle exec rake plugin:export
-        artifact_paths:
-          - Bugsnag.unitypackage
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-  - label: 'Run size impact reporting'
-    depends_on: build_unitypackage
+  - label: Build Unity 2021 Windows test fixture
     timeout_in_minutes: 30
+    key: "windows-2021-fixture"
+    agents:
+      queue: windows-unity-wsl
     env:
       UNITY_VERSION: *2021
     plugins:
-      'artifacts#v1.9.0':
+      artifacts#v1.9.0:
         download:
           - Bugsnag.unitypackage
+        upload:
+          - unity.log
+          - features/fixtures/maze_runner/build/Windows-release-2021.zip
     commands:
-      features/scripts/do_size_test.sh
+      - scripts/ci-build-windows-fixture-wsl.sh release
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
-  - name: 'Append Unity 2021 Pipeline'
-    depends_on: build_unitypackage
-    commands:
-        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
-
-  #
-  # Conditionally trigger full pipeline
-  #
-  - label: "Conditionally trigger full set of tests"
-    depends_on: build_unitypackage
+  - label: Run Windows e2e tests for Unity 2021
     timeout_in_minutes: 30
-    command: sh -c .buildkite/pipeline_trigger.sh
+    depends_on: "windows-2021-fixture"
+    agents:
+      queue: windows-general-wsl
+    env:
+      UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - features/fixtures/maze_runner/build/Windows-release-2021.zip
+        upload:
+          - maze_output/**/*
+          - maze_output/metrics.csv
+    command:
+      - scripts/ci-run-windows-tests-wsl.sh release

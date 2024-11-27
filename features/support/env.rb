@@ -72,7 +72,7 @@ BeforeAll do
     # Allow the necessary environment variables to be passed from Ubuntu (under WSL) to the Windows test fixture
     ENV['WSLENV'] = 'BUGSNAG_SCENARIO:BUGSNAG_APIKEY:MAZE_ENDPOINT'
   elsif Maze.config.browser != nil # WebGL
-  
+
     release_path = 'features/fixtures/maze_runner/build/WebGL/Mazerunner'
     dev_path = 'features/fixtures/maze_runner/build/WebGL/Mazerunner_dev'
 
@@ -118,7 +118,7 @@ Maze.hooks.before do
     Maze::Runner.run_command('defaults delete com.bugsnag.Mazerunner');
     Maze::Runner.run_command('defaults write com.bugsnag.Mazerunner ApplePersistenceIgnoreState YES');
 
-    # This is to get around a strange macos bug where clearing prefs does not work 
+    # This is to get around a strange macos bug where clearing prefs does not work
     $logger.info 'Killing defaults service'
     Maze::Runner.run_command("killall -u #{ENV['USER']} cfprefsd")
   end
@@ -139,6 +139,7 @@ After do |scenario|
   when 'macos'
     `killall Mazerunner`
   when 'webgl','windows'
+    $logger.info 'Closing application'
     execute_command('close_application')
   when 'switch'
     # Terminate the app
