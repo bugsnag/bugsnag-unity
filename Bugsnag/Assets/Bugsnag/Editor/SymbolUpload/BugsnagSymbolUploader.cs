@@ -12,8 +12,24 @@ namespace BugsnagUnity.Editor
     {
         public int callbackOrder => 1;
 
-        private readonly string _iosDsymUploadScriptTemplatePath = Application.dataPath + "/Bugsnag/Editor/SymbolUpload/iosSymbolUpload.sh";
+        private const string IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE = @"
+        #!/bin/bash
 
+        # Iterate through all input files
+        for ((i=0; i<SCRIPT_INPUT_FILE_COUNT; i++))
+        do
+            # Dynamically get the input file variable name
+            INPUT_FILE_VAR=""SCRIPT_INPUT_FILE_$i""
+            INPUT_FILE=${!INPUT_FILE_VAR}
+
+            # Extract path up to and including BugsnagUnity.app.dSYM
+            DSYM_PATH=$(echo ""$INPUT_FILE"" | sed 's#/Contents.*##')
+
+            echo ""Uploading dSYM: $DSYM_PATH""
+
+            # Upload the dSYM file
+            <CLI_COMMAND>
+        done";
 
         public void OnPostprocessBuild(BuildReport report)
         {
@@ -47,7 +63,7 @@ namespace BugsnagUnity.Editor
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
-                AddIosPostBuildScript(report.summary.outputPath,config.ApiKey);
+                AddIosPostBuildScript(report.summary.outputPath, config.ApiKey);
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
@@ -91,32 +107,24 @@ namespace BugsnagUnity.Editor
         {
             // Prepare the shell script to upload dSYM files
             var cli = new BugsnagCLI();
-            string dsymUploadScript = File.ReadAllText(_iosDsymUploadScriptTemplatePath);
             var command = cli.GetIosDsymUploadCommand(apiKey);
-            dsymUploadScript = dsymUploadScript.Replace("<CLI_COMMAND>", command);
+            var dsymUploadScript = IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<CLI_COMMAND>", command);
 
             // Get the PBXProject object
             string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(pbxProjectPath);
+
+            // add the upload script to the main target
             string targetGUID = pbxProject.GetUnityMainTargetGuid();
+            pbxProject.AddShellScriptBuildPhase(targetGUID, "BugsnagDSYMUpload", "/bin/sh", dsymUploadScript, new System.Collections.Generic.List<string> { "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)" });
 
-            // Add a new shell script build phase to the project
-            pbxProject.AddShellScriptBuildPhase(targetGUID, "BugsnagDSYMUpload", "/bin/sh", dsymUploadScript, new System.Collections.Generic.List<string>{"$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)"});
+            // add the upload script to the unity framework target
+            string unityFrameworkGUID = pbxProject.GetUnityFrameworkTargetGuid();
+            pbxProject.AddShellScriptBuildPhase(unityFrameworkGUID, "BugsnagDSYMUpload", "/bin/sh", dsymUploadScript, new System.Collections.Generic.List<string> { "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)" });
 
-            // Set the debug information format to dwarf-with-dsym
-            pbxProject.SetBuildProperty(targetGUID, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym"); // For all configurations
-           
             pbxProject.WriteToFile(pbxProjectPath);
 
         }
-
-        
-
-
-
-        
-
-       
     }
 }
