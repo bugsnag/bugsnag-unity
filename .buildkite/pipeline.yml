@@ -2,9 +2,27 @@ aliases:
   - &2021 "2021.3.36f1"
 
 steps:
+  - label: Build released notifier artifact
+    key: "build_unitypackage"
+    timeout_in_minutes: 30
+    agents:
+      queue: macos-14
+    env:
+      UNITY_VERSION: *2021
+    commands:
+      - bundle install
+      - bundle exec rake plugin:export
+    artifact_paths:
+      - Bugsnag.unitypackage
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
+
   - label: Build Unity 2021 Windows test fixture
     timeout_in_minutes: 30
     key: "windows-2021-fixture"
+    depends_on: "build_unitypackage"
     agents:
       queue: windows-unity-wsl
     env:
