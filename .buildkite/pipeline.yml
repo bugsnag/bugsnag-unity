@@ -24,7 +24,7 @@ steps:
     key: "windows-2021-fixture"
     depends_on: "build_unitypackage"
     agents:
-      queue: windows-unity-wsl
+      queue: win-general-1
     env:
       UNITY_VERSION: *2021
     plugins:
@@ -45,7 +45,7 @@ steps:
     timeout_in_minutes: 30
     depends_on: "windows-2021-fixture"
     agents:
-      queue: windows-general-wsl
+      queue: win-general-1
     env:
       UNITY_VERSION: *2021
     plugins:
