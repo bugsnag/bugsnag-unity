@@ -3,7 +3,9 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+#if UNITY_IOS
 using UnityEditor.iOS.Xcode;
+#endif
 using UnityEngine;
 
 namespace BugsnagUnity.Editor
@@ -106,6 +108,7 @@ namespace BugsnagUnity.Editor
 
         private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
         {
+#if UNITY_IOS
             // Prepare the shell script to upload dSYM files
             var cli = new BugsnagCLI();
             var command = cli.GetIosDsymUploadCommand(apiKey, uploadEndpoint);
@@ -143,12 +146,12 @@ namespace BugsnagUnity.Editor
             pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript, IOS_DSYM_UPLOAD_INPUT_FILES_LIST);
             pbxProject.AddShellScriptBuildPhase(unityFrameworkGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript, IOS_DSYM_UPLOAD_INPUT_FILES_LIST);
             pbxProject.WriteToFile(pbxProjectPath);
-
+#endif
         }
 
         private string RemoveShellScriptPhase(string project, string guid)
         {
-            var matches = System.Text.RegularExpressions.Regex.Matches(project,guid + _shelScriptPattern);
+            var matches = System.Text.RegularExpressions.Regex.Matches(project, guid + _shelScriptPattern);
             foreach (System.Text.RegularExpressions.Match match in matches)
             {
                 if (match.Groups[1].Value.Contains(guid))
