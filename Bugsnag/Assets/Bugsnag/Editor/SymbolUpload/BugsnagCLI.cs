@@ -30,15 +30,22 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode)
+        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint)
         {
             string args = $"upload unity-android --api-key={apiKey} --verbose --project-root={Application.dataPath} {buildOutputPath}";
 
             if (!string.IsNullOrEmpty(versionName))
+            {
                 args += $" --version-name={versionName}";
+            }
             if (versionCode > -1)
+            {
                 args += $" --version-code={versionCode}";
-
+            }
+            if (!string.IsNullOrEmpty(uploadEndpoint))
+            {
+                args += $" --upload-api-root-url={uploadEndpoint}";
+            }
             int exitCode = StartProcess(_cliExecutablePath, args, out string output, out string error);
 
             if (exitCode != 0)
@@ -180,9 +187,14 @@ namespace BugsnagUnity.Editor
             return process.ExitCode;
         }
 
-        public string GetIosDsymUploadCommand(string apiKey)
+        public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
         {
-            return $"{_cliExecutablePath} upload dsym --api-key={apiKey} --configuration $CONFIGURATION $DSYM_PATH";
+            var command = $"{_cliExecutablePath} upload dsym --api-key={apiKey} --configuration $CONFIGURATION $DSYM_PATH";
+            if (!string.IsNullOrEmpty(uploadEndpoint))
+            {
+                command += $" --upload-api-root-url={uploadEndpoint}";
+            }
+            return command;
         }
 
     }

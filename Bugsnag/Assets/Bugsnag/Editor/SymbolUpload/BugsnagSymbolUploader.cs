@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
@@ -14,22 +15,24 @@ namespace BugsnagUnity.Editor
 
         private const string IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE = @"
         #!/bin/bash
-
         # Iterate through all input files
         for ((i=0; i<SCRIPT_INPUT_FILE_COUNT; i++))
         do
             # Dynamically get the input file variable name
             INPUT_FILE_VAR=""SCRIPT_INPUT_FILE_$i""
             INPUT_FILE=${!INPUT_FILE_VAR}
-
             # Extract path up to and including BugsnagUnity.app.dSYM
             DSYM_PATH=$(echo ""$INPUT_FILE"" | sed 's#/Contents.*##')
-
             echo ""Uploading dSYM: $DSYM_PATH""
-
             # Upload the dSYM file
             <CLI_COMMAND>
         done";
+
+        private const string IOS_DSYM_UPLOAD_BUILD_PHASE_NAME = "BugsnagDSYMUpload";
+        private const string IOS_DSYM_UPLOAD_SHELL_NAME = "/bin/sh";
+
+        private string _shelScriptPattern = @"\s*\/\*\s*\w+\s*\*\/\s*=\s*\{([\s\S]*?)\};";
+        private readonly System.Collections.Generic.List<string> IOS_DSYM_UPLOAD_INPUT_FILES_LIST = new System.Collections.Generic.List<string> { "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)" };
 
         public void OnPostprocessBuild(BuildReport report)
         {
@@ -46,14 +49,13 @@ namespace BugsnagUnity.Editor
 
             Debug.Log($"Starting BugSnag symbol upload for {report.summary.platform}...");
 
-
             if (report.summary.platform == BuildTarget.Android)
             {
                 var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
                 EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
                 try
                 {
-                    UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode);
+                    UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode, config.UploadEndpoint);
                 }
                 catch (System.Exception e)
                 {
@@ -63,11 +65,11 @@ namespace BugsnagUnity.Editor
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
-                AddIosPostBuildScript(report.summary.outputPath, config.ApiKey);
+                AddIosPostBuildScript(report.summary.outputPath, config.ApiKey, config.UploadEndpoint);
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
-                // TODO implement macOS post build script generation
+                // TODO - Add support for uploading macOS symbols
             }
 
         }
@@ -77,7 +79,7 @@ namespace BugsnagUnity.Editor
             return platform == BuildTarget.Android || platform == BuildTarget.iOS || platform == BuildTarget.StandaloneOSX;
         }
 
-        private void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode)
+        private void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint)
         {
             if (!IsAndroidSymbolCreationEnabled())
             {
@@ -85,7 +87,7 @@ namespace BugsnagUnity.Editor
                 return;
             }
             var cli = new BugsnagCLI();
-            cli.UploadAndroidSymbols(buildOutputPath, apiKey, versionName, versionCode);
+            cli.UploadAndroidSymbols(buildOutputPath, apiKey, versionName, versionCode, uploadEndpoint);
         }
 
         private bool IsAndroidSymbolCreationEnabled()
@@ -102,12 +104,11 @@ namespace BugsnagUnity.Editor
             return false;
         }
 
-
-        private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey)
+        private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
         {
             // Prepare the shell script to upload dSYM files
             var cli = new BugsnagCLI();
-            var command = cli.GetIosDsymUploadCommand(apiKey);
+            var command = cli.GetIosDsymUploadCommand(apiKey, uploadEndpoint);
             var dsymUploadScript = IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<CLI_COMMAND>", command);
 
             // Get the PBXProject object
@@ -116,15 +117,46 @@ namespace BugsnagUnity.Editor
             pbxProject.ReadFromFile(pbxProjectPath);
 
             // add the upload script to the main target
-            string targetGUID = pbxProject.GetUnityMainTargetGuid();
-            pbxProject.AddShellScriptBuildPhase(targetGUID, "BugsnagDSYMUpload", "/bin/sh", dsymUploadScript, new System.Collections.Generic.List<string> { "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)" });
+            string mainAppTargetGUID = pbxProject.GetUnityMainTargetGuid();
+            foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(mainAppTargetGUID))
+            {
+                if (IOS_DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
+                {
+                    // remove existing build phase
+                    var editedProject = RemoveShellScriptPhase(pbxProject.WriteToString(), guid);
+                    pbxProject.ReadFromString(editedProject);
+                }
+            }
 
             // add the upload script to the unity framework target
             string unityFrameworkGUID = pbxProject.GetUnityFrameworkTargetGuid();
-            pbxProject.AddShellScriptBuildPhase(unityFrameworkGUID, "BugsnagDSYMUpload", "/bin/sh", dsymUploadScript, new System.Collections.Generic.List<string> { "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)" });
+            foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(unityFrameworkGUID))
+            {
+                if (IOS_DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
+                {
+                    // remove existing build phase
+                    var editedProject = RemoveShellScriptPhase(pbxProject.WriteToString(), guid);
+                    pbxProject.ReadFromString(editedProject);
+                }
+            }
 
+            pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript, IOS_DSYM_UPLOAD_INPUT_FILES_LIST);
+            pbxProject.AddShellScriptBuildPhase(unityFrameworkGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript, IOS_DSYM_UPLOAD_INPUT_FILES_LIST);
             pbxProject.WriteToFile(pbxProjectPath);
 
+        }
+
+        private string RemoveShellScriptPhase(string project, string guid)
+        {
+            var matches = System.Text.RegularExpressions.Regex.Matches(project,guid + _shelScriptPattern);
+            foreach (System.Text.RegularExpressions.Match match in matches)
+            {
+                if (match.Groups[1].Value.Contains(guid))
+                {
+                    project = project.Replace(match.Groups[0].Value, "");
+                }
+            }
+            return project;
         }
     }
 }
