@@ -1,8 +1,10 @@
 # Changelog
 
-## TBD
+## 8.3.0 (2024-12-02)
 
 ### Enhancements
+
+- Added support for Unity V6. [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
 
 - Changed from shipping the C# layer of the SDK as precomiled DLLs to shipping source. Please see the PR description for a full list of the benefits. [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
 
