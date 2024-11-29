@@ -29,7 +29,10 @@ namespace BugsnagUnity.Payload
 
         internal User? User { get; set; }
 
+// Disabled warning as this is expected behaviour
+#pragma warning disable CS8603 // Possible null reference return.
         public IUser GetUser() => User;
+#pragma warning restore CS8603 // Possible null reference return.
 
         public void SetUser(string id, string email, string name)
         {
