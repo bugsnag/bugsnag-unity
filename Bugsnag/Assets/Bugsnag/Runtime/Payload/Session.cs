@@ -29,7 +29,7 @@ namespace BugsnagUnity.Payload
 
         internal User? User { get; set; }
 
-        public IUser GetUser() => User;
+        public IUser? GetUser() => User;
 
         public void SetUser(string id, string email, string name)
         {
