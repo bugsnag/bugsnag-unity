@@ -1,4 +1,7 @@
 using UnityEditor;
+#if UNITY_6000_0_OR_NEWER
+using UnityEditor.Build;
+#endif
 using UnityEngine;
 [InitializeOnLoad]
 public class BugsnagAddScriptingSymbol : MonoBehaviour
@@ -24,7 +27,11 @@ public class BugsnagAddScriptingSymbol : MonoBehaviour
 
     static void SetScriptingSymbol(BuildTargetGroup buildTargetGroup)
     {
-        var existingSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+        #if UNITY_6000_0_OR_NEWER
+            var existingSymbols = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup));
+        #else
+            var existingSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+        #endif
         if (string.IsNullOrEmpty(existingSymbols))
         {
             existingSymbols = DEFINE_SYMBOL;
@@ -33,6 +40,10 @@ public class BugsnagAddScriptingSymbol : MonoBehaviour
         {
             existingSymbols += ";" + DEFINE_SYMBOL;
         }
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, existingSymbols);
+        #if UNITY_6000_0_OR_NEWER
+            PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup), existingSymbols);
+        #else
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, existingSymbols);
+        #endif
     }
 }
