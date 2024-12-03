@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
-#if UNITY_IOS
+#if UNITY_IOS || UNITY_STANDALONE_OSX
 using UnityEditor.iOS.Xcode;
 #endif
 using UnityEngine;
@@ -71,7 +71,10 @@ namespace BugsnagUnity.Editor
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
-                // TODO - Add support for uploading macOS symbols
+                string[] parts = report.summary.outputPath.Split('/');
+                string xcprojFile = parts[^1] + ".xcodeproj";
+                var projectPath = report.summary.outputPath + "/"+xcprojFile;
+                AddMacOSPostBuildScript(projectPath, config.ApiKey, config.UploadEndpoint);
             }
 
         }
@@ -106,6 +109,9 @@ namespace BugsnagUnity.Editor
             return false;
         }
 
+
+
+        
         private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
         {
 #if UNITY_IOS
@@ -116,6 +122,7 @@ namespace BugsnagUnity.Editor
 
             // Get the PBXProject object
             string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+            Debug.Log(pbxProjectPath);
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(pbxProjectPath);
 
@@ -160,6 +167,18 @@ namespace BugsnagUnity.Editor
                 }
             }
             return project;
+        }
+
+        private void AddMacOSPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
+        {
+            var pbxProjectPath = pathToBuiltProject + "/project.pbxproj";
+            PBXProject project = new PBXProject();
+            project.ReadFromFile(pbxProjectPath);
+            string targetGuid = project.GetUnityFrameworkTargetGuid();
+            // Add your script to the build phases
+            string shellScript = "echo \"Hello, this is a macOS post-build script\"";
+            project.AddShellScriptBuildPhase(targetGuid, "Run Script", "/bin/sh", shellScript);
+            project.WriteToFile(pbxProjectPath);
         }
     }
 }
