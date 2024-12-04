@@ -3,47 +3,42 @@ using UnityEditor;
 using UnityEditor.Build;
 #endif
 using UnityEngine;
-[InitializeOnLoad]
-public class BugsnagAddScriptingSymbol : MonoBehaviour
+namespace BugsnagUnity.Editor
 {
-    private const string DEFINE_SYMBOL = "BUGSNAG_UNITY_WEB_REQUEST";
-
-    private static BuildTargetGroup[] _supportedPlatforms = { BuildTargetGroup.Android, BuildTargetGroup.Standalone, BuildTargetGroup.iOS, BuildTargetGroup.WebGL };
-
-    static BugsnagAddScriptingSymbol()
+    [InitializeOnLoad]
+    public class BugsnagAddScriptingSymbol : MonoBehaviour
     {
-        foreach (var target in _supportedPlatforms)
-        {
-            try
-            {
-                SetScriptingSymbol(target);
-            }
-            catch
-            {
-                // Some users might not have a platform installed, in that case ignore the error
-            }
-        }
-    }
+        private const string DEFINE_SYMBOL = "BUGSNAG_UNITY_WEB_REQUEST";
 
-    static void SetScriptingSymbol(BuildTargetGroup buildTargetGroup)
-    {
-        #if UNITY_6000_0_OR_NEWER
-            var existingSymbols = PlayerSettings.GetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup));
-        #else
-            var existingSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
-        #endif
-        if (string.IsNullOrEmpty(existingSymbols))
+        private static BuildTargetGroup[] _supportedPlatforms = { BuildTargetGroup.Android, BuildTargetGroup.Standalone, BuildTargetGroup.iOS, BuildTargetGroup.WebGL };
+
+        static BugsnagAddScriptingSymbol()
         {
-            existingSymbols = DEFINE_SYMBOL;
+            foreach (var target in _supportedPlatforms)
+            {
+                try
+                {
+                    SetScriptingSymbol(target);
+                }
+                catch
+                {
+                    // Some users might not have a platform installed, in that case ignore the error
+                }
+            }
         }
-        else if (!existingSymbols.Contains(DEFINE_SYMBOL))
+
+        static void SetScriptingSymbol(BuildTargetGroup buildTargetGroup)
         {
-            existingSymbols += ";" + DEFINE_SYMBOL;
+            var existingSymbols = BugsnagPlayerSettingsCompat.GetScriptingDefineSymbols(buildTargetGroup);
+            if (string.IsNullOrEmpty(existingSymbols))
+            {
+                existingSymbols = DEFINE_SYMBOL;
+            }
+            else if (!existingSymbols.Contains(DEFINE_SYMBOL))
+            {
+                existingSymbols += ";" + DEFINE_SYMBOL;
+            }
+            BugsnagPlayerSettingsCompat.SetScriptingDefineSymbols(buildTargetGroup, existingSymbols);
         }
-        #if UNITY_6000_0_OR_NEWER
-            PlayerSettings.SetScriptingDefineSymbols(NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup), existingSymbols);
-        #else
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, existingSymbols);
-        #endif
     }
 }
