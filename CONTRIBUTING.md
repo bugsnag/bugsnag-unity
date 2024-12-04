@@ -110,7 +110,7 @@ bundle exec maze-runner features/handled_errors.feature
 
 2. Checkout the `next` branch.
 
-3. Set the new version in `CHANGELOG.md`
+3. Set the new version in `CHANGELOG.md` and `Bugsnag/Assets/Bugsnag/Runtime/AssemblyInfo.cs`
 
 4. Make a pull request to merge the changes into `master`
 
