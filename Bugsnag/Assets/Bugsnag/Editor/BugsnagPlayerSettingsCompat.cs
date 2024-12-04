@@ -1,5 +1,7 @@
 using UnityEditor;
-
+#if UNITY_6000_0_OR_NEWER
+using UnityEditor.Build;
+#endif
 namespace BugsnagUnity.Editor
 {
     internal static class BugsnagPlayerSettingsCompat
