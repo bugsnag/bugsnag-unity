@@ -1,0 +1,19 @@
+agents:
+  queue: opensource
+
+steps:
+  - name: 'Append Unity 2020 Pipeline'
+    commands:
+        - buildkite-agent pipeline upload .buildkite/unity.2020.yml
+
+  - name: 'Append Full Unity 2021 Pipeline'
+    commands:
+        - buildkite-agent pipeline upload .buildkite/unity.2021.full.yml
+
+  - name: 'Append Unity 2022 Pipeline'
+    commands:
+        - buildkite-agent pipeline upload .buildkite/unity.2022.yml
+
+  - name: 'Append Unity 6000 Pipeline'
+    commands:
+        - buildkite-agent pipeline upload .buildkite/unity.6000.yml
