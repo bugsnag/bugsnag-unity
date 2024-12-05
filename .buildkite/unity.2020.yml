@@ -31,7 +31,7 @@ steps:
       # Build iOS test fixtures
       #
       - label: ":ios: Generate Xcode project - Unity 2020"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "generate-fixture-project-2020"
         env:
           UNITY_VERSION: *2020
