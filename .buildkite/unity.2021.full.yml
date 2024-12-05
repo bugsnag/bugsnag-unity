@@ -8,7 +8,7 @@ steps:
   - group: ":hammer: Build Unity 2021 full test fixtures"
     steps:
       - label: ":android: Build Android DEV test fixture for Unity 2021"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "build-android-dev-fixture-2021"
         env:
           UNITY_VERSION: *2021
@@ -28,7 +28,7 @@ steps:
               limit: 1
 
       - label: ":ios: Generate Xcode DEV project - Unity 2021"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "generate-dev-fixture-project-2021"
         env:
           UNITY_VERSION: *2021
@@ -49,7 +49,7 @@ steps:
               limit: 1
 
       - label: ":ios: Build DEV iOS test fixture for Unity 2021"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "build-ios-dev-fixture-2021"
         depends_on: "generate-dev-fixture-project-2021"
         env:
@@ -73,7 +73,7 @@ steps:
               limit: 1
       
       - label: Build Unity 2021 MacOS test fixture
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "macos-2021-fixture"
         env:
           UNITY_VERSION: *2021
@@ -113,7 +113,7 @@ steps:
               limit: 1
 
       - label: Build Unity 2021 WebGL test fixture
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "webgl-2021-fixture"
         env:
           UNITY_VERSION: *2021
@@ -133,7 +133,7 @@ steps:
               limit: 1
 
       - label: Build Unity 2021 DEV WebGL test fixture
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "webgl-2021-dev-fixture"
         env:
           UNITY_VERSION: *2021
@@ -269,7 +269,7 @@ steps:
         concurrency_method: eager
 
       - label: Run MacOS e2e tests for Unity 2021
-        timeout_in_minutes: 60
+        timeout_in_minutes: 30
         depends_on: 'macos-2021-fixture'
         agents:
           queue: macos-14
@@ -311,7 +311,7 @@ steps:
           - scripts/ci-run-macos-tests.sh dev
 
       - label: Run WebGL e2e tests for Unity 2021
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         depends_on: 'webgl-2021-fixture'
         env:
           UNITY_VERSION: *2021
@@ -330,7 +330,7 @@ steps:
           - scripts/ci-run-webgl-tests.sh release
 
       - label: Run WebGL e2e DEV tests for Unity 2021
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         depends_on: 'webgl-2021-dev-fixture'
         env:
           UNITY_VERSION: *2021

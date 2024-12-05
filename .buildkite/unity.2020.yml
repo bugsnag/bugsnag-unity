@@ -8,7 +8,7 @@ steps:
   - group: ":hammer: Build Unity 2020 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 2020"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "build-android-fixture-2020"
         env:
           UNITY_VERSION: *2020
@@ -52,7 +52,7 @@ steps:
               limit: 1
 
       - label: ":ios: Build iOS test fixture for Unity 2020"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "build-ios-fixture-2020"
         depends_on: "generate-fixture-project-2020"
         env:
@@ -76,7 +76,7 @@ steps:
               limit: 1
 
       - label: Build Unity 2020 MacOS test fixture
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "macos-2020-fixture"
         env:
           UNITY_VERSION: *2020
@@ -98,7 +98,7 @@ steps:
               limit: 1
 
       - label: Build Unity 2020 WebGL test fixture
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "webgl-2020-fixture"
         env:
           UNITY_VERSION: *2020
