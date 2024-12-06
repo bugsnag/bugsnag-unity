@@ -7,7 +7,7 @@ namespace BugsnagUnity.Editor
 public class BugsnagEditPerformanceAssemblyDeff
 {
 
-    // This script fixes and issue in versions 1.7.0 and bellow of the Bugsnag Performance package.
+    // This script fixes an issue in versions 1.7.0 and bellow of the Bugsnag Performance package.
     // The issue is that the BugsnagPerformance.asmdef file is not correctly configured to reference the BugsnagUnity package.
     // And therefore cannot access the version of the BugsnagUnityWebRequest class packaged with the notifier.
     // A fix for this issue was released in the 1.7.1 version of the Bugsnag Performance package. 
