@@ -74,7 +74,7 @@ namespace BugsnagUnity.Editor
 }";
 
             File.WriteAllText(asmdefPath, expandedJson);
-            Debug.Log("Bugsnag Updated BugsnagPerformance.asmdef. If this change does not take effect and you still see errors related to the BugsnagUnityWebRequest class after restarting unity, please consider updating or adding the reference manually.");
+            Debug.Log("Updated BugsnagPerformance.asmdef with a reference to BugsnagUnity. If you continue to see errors related to the BugsnagUnityWebRequest class after restarting Unity, please update your BugsnagPerformance package or add a reference in the .asmdef file manually.");
             AssetDatabase.Refresh();
         }
     }
