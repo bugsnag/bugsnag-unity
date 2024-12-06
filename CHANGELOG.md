@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+- Allow the notifier to be started much earlier in the Unity lifecycle. [#862](https://github.com/bugsnag/bugsnag-unity/pull/862)
+
 ## 8.3.0 (2024-12-02)
 
 ### Enhancements
