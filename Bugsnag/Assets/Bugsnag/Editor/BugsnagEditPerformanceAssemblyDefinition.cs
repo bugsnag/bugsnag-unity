@@ -1,9 +1,9 @@
 
-    // This script fixes an issue in versions 1.7.0 and below of the BugSnag Performance package where the
-    // BugsnagPerformance.asmdef file was not correctly configured to reference the BugsnagUnity package
-    // (and therefore cannot access the version of the BugsnagUnityWebRequest class packaged inside it).
-    // This script adds the reference to the BugSnag Performance package assembly definition, if not 
-    // present, for backwards compatibility with older versions (<=1.7.0).
+// This script fixes an issue in versions 1.7.0 and below of the BugSnag Performance package where the
+// BugsnagPerformance.asmdef file was not correctly configured to reference the BugsnagUnity package
+// (and therefore cannot access the version of the BugsnagUnityWebRequest class packaged inside it).
+// This script adds the reference to the BugSnag Performance package assembly definition, if not 
+// present, for backwards compatibility with older versions (<=1.7.0).
 
 using System.IO;
 using UnityEditor;
