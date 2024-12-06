@@ -489,15 +489,6 @@ namespace BugsnagUnity
             NativeCode.bugsnag_registerForSessionCallbacksAfterStart(HandleSessionCallbacks);
         }
 
-        [DllImport("__Internal")]
-        private static extern IntPtr il2cpp_gchandle_get_target(int gchandle);
-
-        [DllImport("__Internal")]
-        private static extern void il2cpp_free(IntPtr ptr);
-
-        [DllImport("__Internal")]
-        private static extern void il2cpp_native_stack_trace(IntPtr exc, out IntPtr addresses, out int numFrames, out IntPtr imageUUID, out IntPtr imageName);
-
         #nullable enable
         private static string? ExtractString(IntPtr pString)
         {
@@ -535,6 +526,17 @@ namespace BugsnagUnity
             return stackFrames;
         }
 
+#if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
+        [DllImport("__Internal")]
+        private static extern IntPtr il2cpp_gchandle_get_target(int gchandle);
+
+        [DllImport("__Internal")]
+        private static extern void il2cpp_free(IntPtr ptr);
+
+        [DllImport("__Internal")]
+        private static extern void il2cpp_native_stack_trace(IntPtr exc, out IntPtr addresses, out int numFrames, out IntPtr imageUUID, out IntPtr imageName);
+#endif
+
         public StackTraceLine[] ToStackFrames(System.Exception exception)
         {
             var notFound = new StackTraceLine[0];
@@ -544,7 +546,7 @@ namespace BugsnagUnity
                 return notFound;
             }
 
-#if ENABLE_IL2CPP
+#if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
             var hException = GCHandle.Alloc(exception);
             var pNativeAddresses = IntPtr.Zero;
             var pImageUuid = IntPtr.Zero;
@@ -603,4 +605,5 @@ namespace BugsnagUnity
         }
     }
 }
+
 #endif

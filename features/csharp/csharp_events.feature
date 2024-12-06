@@ -31,6 +31,7 @@ Feature: csharp events
     And expected app metadata is included in the event
 
   @ios_only
+  @skip_before_unity_2021
   Scenario: Uncaught Exception ios smoke test
     When I run the game in the "UncaughtExceptionSmokeTest" state
     And I wait to receive an error
