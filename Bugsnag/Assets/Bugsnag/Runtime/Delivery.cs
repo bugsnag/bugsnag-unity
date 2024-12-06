@@ -91,7 +91,7 @@ namespace BugsnagUnity
             }
             try
             {
-                MainThreadDispatchBehaviour.Instance().Enqueue(PushToServer(payload));
+                MainThreadDispatchBehaviour.Enqueue(PushToServer(payload));
             }
             catch
             {
@@ -508,7 +508,7 @@ namespace BugsnagUnity
             try
             {
                 _finishedCacheDeliveries.Clear();
-                MainThreadDispatchBehaviour.Instance().Enqueue(DeliverCachedPayloads());
+                MainThreadDispatchBehaviour.Enqueue(DeliverCachedPayloads());
             }
             catch
             {

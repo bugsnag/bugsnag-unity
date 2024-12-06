@@ -1,49 +1,50 @@
-﻿/*
-Copyright 2015 Pim de Witte All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.LowLevel;
 
-/// Author: Pim de Witte (pimdewitte.com) and contributors
-/// <summary>
-/// A thread-safe class which holds a queue with actions to execute on the next Update() method. It can be used to make calls to the main thread for
-/// things such as UI Manipulation in Unity. It was developed for use in combination with the Firebase Unity plugin, which uses separate threads for event handling
-/// </summary>
 namespace BugsnagUnity
 {
-    public class MainThreadDispatchBehaviour : MonoBehaviour
+    public class BugsnagCoroutineRunner : MonoBehaviour
+    {
+        private static BugsnagCoroutineRunner _instance;
+
+        public static BugsnagCoroutineRunner Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    var runnerObject = new GameObject("BugsnagCoroutineRunner");
+                    _instance = runnerObject.AddComponent<BugsnagCoroutineRunner>();
+                    DontDestroyOnLoad(runnerObject);
+                }
+                return _instance;
+            }
+        }
+    }
+    public class MainThreadDispatchBehaviour
     {
 
-        private static MainThreadDispatchBehaviour _instance;       
-    
         private static readonly Queue<Action> _executionQueue = new Queue<Action>();
 
-
-        public static MainThreadDispatchBehaviour Instance()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void InitializeLoop()
         {
-            if (_instance == null)
+            var playerLoop = PlayerLoop.GetCurrentPlayerLoop();
+            var newSystem = new PlayerLoopSystem
             {
-                _instance = new GameObject("Bugsnag main thread dispatcher").AddComponent<MainThreadDispatchBehaviour>();
-            }
-            return _instance;
+                updateDelegate = OnUpdate
+            };
+
+            var systems = new List<PlayerLoopSystem>(playerLoop.subSystemList);
+            systems.Insert(0, newSystem);
+            playerLoop.subSystemList = systems.ToArray();
+            PlayerLoop.SetPlayerLoop(playerLoop);
         }
 
-        public void Update()
+        private static void OnUpdate()
         {
             lock (_executionQueue)
             {
@@ -54,50 +55,23 @@ namespace BugsnagUnity
             }
         }
 
-        /// <summary>
-        /// Locks the queue and adds the IEnumerator to the queue
-        /// </summary>
-        /// <param name="action">IEnumerator function that will be executed from the main thread.</param>
-        public void Enqueue(IEnumerator action)
+        public static void Enqueue(IEnumerator action)
         {
             lock (_executionQueue)
             {
                 _executionQueue.Enqueue(() =>
                 {
-                    StartCoroutine(action);
+                    BugsnagCoroutineRunner.Instance.StartCoroutine(action);
                 });
             }
         }
 
-        /// <summary>
-        /// Locks the queue and adds the Action to the queue
-        /// </summary>
-        /// <param name="action">function that will be executed from the main thread.</param>
-        public void Enqueue(Action action)
+        public static void Enqueue(Action action)
         {
-            Enqueue(ActionWrapper(action));
+            lock (_executionQueue)
+            {
+                _executionQueue.Enqueue(action);
+            }
         }
-        IEnumerator ActionWrapper(Action a)
-        {
-            a();
-            yield return null;
-        }
-
-        public void EnqueueWithDelayCoroutine(Action action, float delay)
-        {
-            StartCoroutine(DelayAction(action, delay));
-        }
-
-        private IEnumerator DelayAction(Action action, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            action.Invoke();
-        }
-
-        private void Awake()
-        {
-            DontDestroyOnLoad(gameObject);
-        }
-
     }
 }
