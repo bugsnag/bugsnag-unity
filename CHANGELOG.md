@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 8.3.1 (2024-12-09)
 
 ### Bug Fixes
 
