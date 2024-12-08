@@ -8,7 +8,7 @@ steps:
   - group: ":hammer: Build Unity 2021 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 2021"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "build-android-fixture-2021"
         env:
           UNITY_VERSION: *2021
@@ -31,7 +31,7 @@ steps:
       # Build iOS test fixtures
       #
       - label: ":ios: Generate Xcode project - Unity 2021"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "generate-fixture-project-2021"
         env:
           UNITY_VERSION: *2021
@@ -52,7 +52,7 @@ steps:
               limit: 1
 
       - label: ":ios: Build iOS test fixture for Unity 2021"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "build-ios-fixture-2021"
         depends_on: "generate-fixture-project-2021"
         env:

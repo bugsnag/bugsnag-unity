@@ -1,25 +1,24 @@
 aliases:
   - &2021 "2021.3.36f1"
 
+agents:
+  queue: macos-14
+
 steps:
-  - group: ":hammer: Build Unity packages"
-    steps:
-      - label: Build released notifier artifact
-        key: "build_unitypackage"
-        timeout_in_minutes: 30
-        agents:
-          queue: macos-14
-        env:
-          UNITY_VERSION: *2021
-        commands:
-          - bundle install
-          - bundle exec rake plugin:export
-        artifact_paths:
-          - Bugsnag.unitypackage
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
+  - label: Build released notifier artifact
+    key: "build_unitypackage"
+    timeout_in_minutes: 30
+    env:
+      UNITY_VERSION: *2021
+    commands:
+      - bundle install
+      - bundle exec rake plugin:export
+    artifact_paths:
+      - Bugsnag.unitypackage
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: 'Run size impact reporting'
     depends_on: build_unitypackage
@@ -33,8 +32,11 @@ steps:
     commands:
       features/scripts/do_size_test.sh
 
-  - name: 'Append Unity 2021 Pipeline'
+  - label: 'Append Unity 2021 Pipeline'
     depends_on: build_unitypackage
+    agents:
+      queue: macos
+    timeout_in_minutes: 2
     commands:
         - buildkite-agent pipeline upload .buildkite/unity.2021.yml
 
@@ -43,5 +45,7 @@ steps:
   #
   - label: "Conditionally trigger full set of tests"
     depends_on: build_unitypackage
-    timeout_in_minutes: 30
+    agents:
+      queue: macos
+    timeout_in_minutes: 2
     command: sh -c .buildkite/pipeline_trigger.sh

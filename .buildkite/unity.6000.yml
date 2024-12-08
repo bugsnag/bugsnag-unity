@@ -8,7 +8,7 @@ steps:
   - group: ":hammer: Build Unity 6000 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 6000"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 20
         key: "build-android-fixture-6000"
         env:
           UNITY_VERSION: *6000
@@ -28,7 +28,7 @@ steps:
               limit: 1
 
       - label: ":ios: Generate Xcode project - Unity 6000"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "generate-fixture-project-6000"
         env:
           UNITY_VERSION: *6000
@@ -49,7 +49,7 @@ steps:
               limit: 1
 
       - label: ":ios: Build iOS test fixture for Unity 6000"
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "build-ios-fixture-6000"
         depends_on: "generate-fixture-project-6000"
         env:
@@ -73,7 +73,7 @@ steps:
               limit: 1
 
       - label: Build Unity 6000 MacOS test fixture
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "macos-6000-fixture"
         env:
           UNITY_VERSION: *6000
@@ -93,7 +93,7 @@ steps:
               limit: 1
 
       - label: Build Unity 6000 WebGL test fixture
-        timeout_in_minutes: 30
+        timeout_in_minutes: 10
         key: "webgl-6000-fixture"
         env:
           UNITY_VERSION: *6000
@@ -211,7 +211,7 @@ steps:
         timeout_in_minutes: 60
         depends_on: 'macos-6000-fixture'
         agents:
-          queue: macos-12-arm
+          queue: macos-14
         env:
           UNITY_VERSION: *6000
         plugins:
