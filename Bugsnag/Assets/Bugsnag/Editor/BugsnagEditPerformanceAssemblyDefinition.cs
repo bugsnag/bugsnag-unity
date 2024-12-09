@@ -16,7 +16,14 @@ namespace BugsnagUnity.Editor
     {
         static BugsnagEditPerformanceAssemblyDefinition()
         {
-            FixBugsnagPerformanceAsmdef();
+            try
+            {
+                FixBugsnagPerformanceAsmdef();
+            }
+            catch
+            {
+                // ignore any unexpected permissions or path errors.
+            }
         }
 
         public static void FixBugsnagPerformanceAsmdef()
