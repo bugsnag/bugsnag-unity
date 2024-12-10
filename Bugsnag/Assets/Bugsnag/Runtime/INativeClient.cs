@@ -103,13 +103,7 @@ namespace BugsnagUnity
 
         IDictionary<string, object> GetNativeMetadata();
 
-        /// <summary>
-        /// Find the native loaded image that corresponds to a native instruction address
-        /// supplied by il2cpp_native_stack_trace().
-        /// </summary>
-        /// <param name="address">The address to find the corresponding image of</param>
-        /// <returns>The corresponding image, or null</returns>
-        LoadedImage FindImageAtAddress(UInt64 address);
+        StackTraceLine[] ToStackFrames(System.Exception exception);
 
         bool ShouldAttemptDelivery();
 

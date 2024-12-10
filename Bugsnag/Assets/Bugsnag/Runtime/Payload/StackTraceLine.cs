@@ -140,6 +140,10 @@ namespace BugsnagUnity.Payload
             }
         }
 
+        internal StackTraceLine()
+        {
+        }
+
         public string File
         {
             get
@@ -176,14 +180,66 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public string FrameAddress { get; set; }
+        public string FrameAddress {
+            get
+            {
+                return this.Get("frameAddress") as string;
+            }
+            set
+            {
+                this.AddToPayload("frameAddress", value);
+            }
+        }
+
+        public string MachoLoadAddress {
+            get
+            {
+                return this.Get("machoLoadAddress") as string;
+            }
+            set
+            {
+                this.AddToPayload("machoLoadAddress", value);
+            }
+        }
+
+        public string MachoFile {
+            get
+            {
+                return this.Get("machoFile") as string;
+            }
+            set
+            {
+                this.AddToPayload("machoFile", value);
+            }
+        }
+
+        public string MachoUuid {
+            get
+            {
+                return this.Get("machoUUID") as string;
+            }
+            set
+            {
+                this.AddToPayload("machoUUID", value);
+            }
+        }
+
+        public bool? InProject
+        {
+            get
+            {
+                return this.Get("inProject") as bool?;
+            }
+            set
+            {
+                this.AddToPayload("inProject", value);
+            }
+        }
+
+
         public bool? IsLr { get; set; }
         public bool? IsPc { get; set; }
-        public string MachoFile { get; set; }
-        public string MachoLoadAddress { get; set; }
-        public string MachoUuid { get; set; }
         public string MachoVmAddress { get; set; }
         public string SymbolAddress { get; set; }
-        public bool? InProject { get; set; }
     }
 }
