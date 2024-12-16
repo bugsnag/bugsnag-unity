@@ -259,7 +259,7 @@ steps:
               - "--device=IOS_13|IOS_14|IOS_15"
               - "--no-tunnel"
               - "--aws-public-ip"
-              - "--fail-fast"
+              #- "--fail-fast"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
