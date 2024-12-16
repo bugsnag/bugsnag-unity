@@ -187,9 +187,9 @@ namespace BugsnagUnity.Editor
             return process.ExitCode;
         }
 
-        public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
+        public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint, string workspacePath)
         {
-            var command = $"{_cliExecutablePath} upload dsym --api-key={apiKey} --configuration $CONFIGURATION $DSYM_PATH";
+            var command = $"{_cliExecutablePath} upload xcode-archive --api-key={apiKey} --scheme=Unity-iPhone {workspacePath}";
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
                 command += $" --upload-api-root-url={uploadEndpoint}";

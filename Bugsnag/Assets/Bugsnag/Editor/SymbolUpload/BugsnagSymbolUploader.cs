@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Xml.Linq;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -15,26 +16,17 @@ namespace BugsnagUnity.Editor
     {
         public int callbackOrder => 1;
 
-        private const string IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE = @"
-        #!/bin/bash
-        # Iterate through all input files
-        for ((i=0; i<SCRIPT_INPUT_FILE_COUNT; i++))
-        do
-            # Dynamically get the input file variable name
-            INPUT_FILE_VAR=""SCRIPT_INPUT_FILE_$i""
-            INPUT_FILE=${!INPUT_FILE_VAR}
-            # Extract path up to and including BugsnagUnity.app.dSYM
-            DSYM_PATH=$(echo ""$INPUT_FILE"" | sed 's#/Contents.*##')
-            echo ""Uploading dSYM: $DSYM_PATH""
-            # Upload the dSYM file
-            <CLI_COMMAND>
-        done";
+        private const string IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE = @"#!/bin/bash
+osascript -e 'tell application ""Terminal"" 
+    do script ""<COMMAND>""
+    activate
+end tell'";
 
         private const string IOS_DSYM_UPLOAD_BUILD_PHASE_NAME = "BugsnagDSYMUpload";
         private const string IOS_DSYM_UPLOAD_SHELL_NAME = "/bin/sh";
 
         private string _shelScriptPattern = @"\s*\/\*\s*\w+\s*\*\/\s*=\s*\{([\s\S]*?)\};";
-        private readonly System.Collections.Generic.List<string> IOS_DSYM_UPLOAD_INPUT_FILES_LIST = new System.Collections.Generic.List<string> { "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)" };
+        //   private readonly System.Collections.Generic.List<string> IOS_DSYM_UPLOAD_INPUT_FILES_LIST = new System.Collections.Generic.List<string> { "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)" };
 
         public void OnPostprocessBuild(BuildReport report)
         {
@@ -73,7 +65,7 @@ namespace BugsnagUnity.Editor
             {
                 string[] parts = report.summary.outputPath.Split('/');
                 string xcprojFile = parts[^1] + ".xcodeproj";
-                var projectPath = report.summary.outputPath + "/"+xcprojFile;
+                var projectPath = report.summary.outputPath + "/" + xcprojFile;
                 AddMacOSPostBuildScript(projectPath, config.ApiKey, config.UploadEndpoint);
             }
 
@@ -111,49 +103,75 @@ namespace BugsnagUnity.Editor
 
 
 
-        
+
         private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
         {
 #if UNITY_IOS
-            // Prepare the shell script to upload dSYM files
             var cli = new BugsnagCLI();
-            var command = cli.GetIosDsymUploadCommand(apiKey, uploadEndpoint);
-            var dsymUploadScript = IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<CLI_COMMAND>", command);
-
-            // Get the PBXProject object
-            string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
-            Debug.Log(pbxProjectPath);
-            PBXProject pbxProject = new PBXProject();
-            pbxProject.ReadFromFile(pbxProjectPath);
-
-            // add the upload script to the main target
-            string mainAppTargetGUID = pbxProject.GetUnityMainTargetGuid();
-            foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(mainAppTargetGUID))
-            {
-                if (IOS_DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
-                {
-                    // remove existing build phase
-                    var editedProject = RemoveShellScriptPhase(pbxProject.WriteToString(), guid);
-                    pbxProject.ReadFromString(editedProject);
-                }
-            }
-
-            // add the upload script to the unity framework target
-            string unityFrameworkGUID = pbxProject.GetUnityFrameworkTargetGuid();
-            foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(unityFrameworkGUID))
-            {
-                if (IOS_DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
-                {
-                    // remove existing build phase
-                    var editedProject = RemoveShellScriptPhase(pbxProject.WriteToString(), guid);
-                    pbxProject.ReadFromString(editedProject);
-                }
-            }
-
-            pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript, IOS_DSYM_UPLOAD_INPUT_FILES_LIST);
-            pbxProject.AddShellScriptBuildPhase(unityFrameworkGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript, IOS_DSYM_UPLOAD_INPUT_FILES_LIST);
-            pbxProject.WriteToFile(pbxProjectPath);
+            var command = cli.GetIosDsymUploadCommand(apiKey, uploadEndpoint, pathToBuiltProject);
+            var script = IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<COMMAND>",command);
+            ModifyXML(pathToBuiltProject + "/Unity-iPhone.xcodeproj/xcshareddata/xcschemes/Unity-iPhone.xcscheme", script);
 #endif
+        }
+
+        private void ModifyXML(string path, string script)
+        {
+            if (string.IsNullOrEmpty(path) || !File.Exists(path))
+            {
+                Debug.LogError("XML file not found at: " + path);
+                return;
+            }
+
+            XDocument xdoc;
+            try
+            {
+                xdoc = XDocument.Load(path);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError("Failed to load XML: " + ex.Message);
+                return;
+            }
+
+            // Locate the ArchiveAction element
+            XElement archiveAction = xdoc.Root.Element("ArchiveAction");
+            if (archiveAction == null)
+            {
+                Debug.LogError("No ArchiveAction element found.");
+                return;
+            }
+
+            // Ensure PostActions element exists
+            XElement postActions = archiveAction.Element("PostActions");
+            if (postActions == null)
+            {
+                // Create new PostActions element
+                postActions = new XElement("PostActions");
+                archiveAction.Add(postActions);
+            }
+
+            // Create the new ExecutionAction we need to add
+            XElement newExecutionAction = new XElement("ExecutionAction",
+                new XAttribute("ActionType", "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction"),
+                new XElement("ActionContent",
+                    new XAttribute("title", "Run Script"),
+                    new XAttribute("scriptText", script)
+                )
+            );
+
+            // Append the new ExecutionAction into PostActions
+            postActions.Add(newExecutionAction);
+
+            // Save changes back to the same file
+            try
+            {
+                xdoc.Save(path);
+                Debug.Log("XML updated and saved successfully.");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError("Failed to save modified XML: " + ex.Message);
+            }
         }
 
         private string RemoveShellScriptPhase(string project, string guid)
