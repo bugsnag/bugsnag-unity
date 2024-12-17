@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -15,7 +16,7 @@ namespace BugsnagUnity.Editor
     {
         public int callbackOrder => 1;
 
-private const string IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE = @"#!/bin/bash
+        private const string DSYM_UPLOAD_SCRIPT_TEMPLATE = @"#!/bin/bash
 if [ ""$ACTION"" == ""install"" ]; then
     echo ""Archiving - Running Bugsnag upload script...""
     if ! <CLI_COMMAND>; then
@@ -26,11 +27,10 @@ else
 fi
 ";
 
-        private const string IOS_DSYM_UPLOAD_BUILD_PHASE_NAME = "BugsnagDSYMUpload";
-        private const string IOS_DSYM_UPLOAD_SHELL_NAME = "/bin/sh";
+        private const string DSYM_UPLOAD_BUILD_PHASE_NAME = "BugsnagDSYMUpload";
+        private const string DSYM_UPLOAD_SHELL_NAME = "/bin/sh";
 
         private string _shelScriptPattern = @"\s*\/\*\s*\w+\s*\*\/\s*=\s*\{([\s\S]*?)\};";
-        private readonly System.Collections.Generic.List<string> IOS_DSYM_UPLOAD_INPUT_FILES_LIST = new System.Collections.Generic.List<string> { "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)" };
 
         public void OnPostprocessBuild(BuildReport report)
         {
@@ -67,12 +67,19 @@ fi
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
-                string[] parts = report.summary.outputPath.Split('/');
-                string xcprojFile = parts[^1] + ".xcodeproj";
-                var projectPath = report.summary.outputPath + "/"+xcprojFile;
-                AddMacOSPostBuildScript(projectPath, config.ApiKey, config.UploadEndpoint);
+                if (IsMacosXcodeEnabled())
+                {
+                    AddMacOSPostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config.ApiKey, config.UploadEndpoint);
+                }
             }
 
+        }
+
+        string GetMacosXcodeProjectPath(string outputPath)
+        {
+            string[] parts = outputPath.Split('/');
+            string xcprojFile = parts[^1] + ".xcodeproj";
+            return outputPath + "/" + xcprojFile;
         }
 
         private bool IsSupportedPlatform(BuildTarget platform)
@@ -105,36 +112,35 @@ fi
             return false;
         }
 
+        private bool IsMacosXcodeEnabled()
+        {
+#if UNITY_STANDALONE_OSX
+            return EditorUserBuildSettings.GetPlatformSettings("Standalone", "CreateXcodeProject") == "true";
+#endif
+            return false;
+        }
 
 
-        
         private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
         {
 #if UNITY_IOS
-            // Prepare the shell script to upload dSYM files
-            var cli = new BugsnagCLI();
-            var command = cli.GetIosDsymUploadCommand(apiKey, uploadEndpoint);
-            var dsymUploadScript = IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<CLI_COMMAND>", command);
-
-            // Get the PBXProject object
             string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
             Debug.Log(pbxProjectPath);
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(pbxProjectPath);
 
-            // add the upload script to the main target
             string mainAppTargetGUID = pbxProject.GetUnityMainTargetGuid();
             foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(mainAppTargetGUID))
             {
                 if (IOS_DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
                 {
-                    // remove existing build phase
                     var editedProject = RemoveShellScriptPhase(pbxProject.WriteToString(), guid);
                     pbxProject.ReadFromString(editedProject);
                 }
             }
 
-            pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript);
+            var uploadScript = GetDsymUploadCommand(apiKey, uploadEndpoint);
+            pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, DSYM_UPLOAD_BUILD_PHASE_NAME, DSYM_UPLOAD_SHELL_NAME, uploadScript);
             pbxProject.WriteToFile(pbxProjectPath);
 #endif
         }
@@ -154,14 +160,32 @@ fi
 
         private void AddMacOSPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
         {
+#if UNITY_STANDALONE_OSX
             var pbxProjectPath = pathToBuiltProject + "/project.pbxproj";
             PBXProject project = new PBXProject();
             project.ReadFromFile(pbxProjectPath);
-            string targetGuid = project.GetUnityFrameworkTargetGuid();
-            // Add your script to the build phases
-            string shellScript = "echo \"Hello, this is a macOS post-build script\"";
-            project.AddShellScriptBuildPhase(targetGuid, "Run Script", "/bin/sh", shellScript);
+            var targetGuid = project.TargetGuidByName(Application.productName);
+
+            foreach (var guid in project.GetAllBuildPhasesForTarget(targetGuid))
+            {
+                if (DSYM_UPLOAD_BUILD_PHASE_NAME == project.GetBuildPhaseName(guid))
+                {
+                    var editedProject = RemoveShellScriptPhase(project.WriteToString(), guid);
+                    project.ReadFromString(editedProject);
+                }
+            }
+
+            var uploadScript = GetDsymUploadCommand(apiKey, uploadEndpoint);
+            project.AddShellScriptBuildPhase(targetGuid, DSYM_UPLOAD_BUILD_PHASE_NAME, DSYM_UPLOAD_SHELL_NAME, uploadScript);
             project.WriteToFile(pbxProjectPath);
+#endif
+        }
+
+        private string GetDsymUploadCommand(string apiKey, string uploadEndpoint)
+        {
+            var cli = new BugsnagCLI();
+            var command = cli.GetIosDsymUploadCommand(apiKey, uploadEndpoint);
+            return DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<CLI_COMMAND>", command);
         }
     }
 }
