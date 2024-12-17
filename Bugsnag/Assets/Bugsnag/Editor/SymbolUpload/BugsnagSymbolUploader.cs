@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.IO;
-using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -22,8 +20,6 @@ if [ ""$ACTION"" == ""install"" ]; then
     if ! <CLI_COMMAND>; then
         echo ""warning: Bugsnag upload failed, continuing build...""
     fi
-else
-    echo ""Not archiving - Skipping Bugsnag upload script.""
 fi
 ";
 
@@ -45,15 +41,13 @@ fi
                 return;
             }
 
-            Debug.Log($"Starting BugSnag symbol upload for {report.summary.platform}...");
-
             if (report.summary.platform == BuildTarget.Android)
             {
                 var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
                 EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
                 try
                 {
-                    UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode, config.UploadEndpoint);
+                    UploadAndroidSymbols(buildOutputPath, config);
                 }
                 catch (System.Exception e)
                 {
@@ -63,13 +57,13 @@ fi
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
-                AddIosPostBuildScript(report.summary.outputPath, config.ApiKey, config.UploadEndpoint);
+                AddIosPostBuildScript(report.summary.outputPath, config);
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
                 if (IsMacosXcodeEnabled())
                 {
-                    AddMacOSPostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config.ApiKey, config.UploadEndpoint);
+                    AddMacOSPostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config);
                 }
             }
 
@@ -87,7 +81,7 @@ fi
             return platform == BuildTarget.Android || platform == BuildTarget.iOS || platform == BuildTarget.StandaloneOSX;
         }
 
-        private void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint)
+        private void UploadAndroidSymbols(string buildOutputPath, BugsnagSettingsObject config)
         {
             if (!IsAndroidSymbolCreationEnabled())
             {
@@ -95,7 +89,7 @@ fi
                 return;
             }
             var cli = new BugsnagCLI();
-            cli.UploadAndroidSymbols(buildOutputPath, apiKey, versionName, versionCode, uploadEndpoint);
+            cli.UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode, config.UploadEndpoint);
         }
 
         private bool IsAndroidSymbolCreationEnabled()
@@ -117,29 +111,30 @@ fi
 #if UNITY_STANDALONE_OSX
             return EditorUserBuildSettings.GetPlatformSettings("Standalone", "CreateXcodeProject") == "true";
 #endif
+#pragma warning disable CS0162 // Unreachable code detected
             return false;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
 
-        private void AddIosPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
+        private void AddIosPostBuildScript(string pathToBuiltProject, BugsnagSettingsObject config)
         {
 #if UNITY_IOS
             string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
-            Debug.Log(pbxProjectPath);
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(pbxProjectPath);
 
             string mainAppTargetGUID = pbxProject.GetUnityMainTargetGuid();
             foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(mainAppTargetGUID))
             {
-                if (IOS_DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
+                if (DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
                 {
                     var editedProject = RemoveShellScriptPhase(pbxProject.WriteToString(), guid);
                     pbxProject.ReadFromString(editedProject);
                 }
             }
 
-            var uploadScript = GetDsymUploadCommand(apiKey, uploadEndpoint);
+            var uploadScript = GetDsymUploadCommand(config);
             pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, DSYM_UPLOAD_BUILD_PHASE_NAME, DSYM_UPLOAD_SHELL_NAME, uploadScript);
             pbxProject.WriteToFile(pbxProjectPath);
 #endif
@@ -158,7 +153,7 @@ fi
             return project;
         }
 
-        private void AddMacOSPostBuildScript(string pathToBuiltProject, string apiKey, string uploadEndpoint)
+        private void AddMacOSPostBuildScript(string pathToBuiltProject, BugsnagSettingsObject config)
         {
 #if UNITY_STANDALONE_OSX
             var pbxProjectPath = pathToBuiltProject + "/project.pbxproj";
@@ -175,16 +170,16 @@ fi
                 }
             }
 
-            var uploadScript = GetDsymUploadCommand(apiKey, uploadEndpoint);
+            var uploadScript = GetDsymUploadCommand(config);
             project.AddShellScriptBuildPhase(targetGuid, DSYM_UPLOAD_BUILD_PHASE_NAME, DSYM_UPLOAD_SHELL_NAME, uploadScript);
             project.WriteToFile(pbxProjectPath);
 #endif
         }
 
-        private string GetDsymUploadCommand(string apiKey, string uploadEndpoint)
+        private string GetDsymUploadCommand(BugsnagSettingsObject config )
         {
             var cli = new BugsnagCLI();
-            var command = cli.GetIosDsymUploadCommand(apiKey, uploadEndpoint);
+            var command = cli.GetIosDsymUploadCommand(config.ApiKey, config.UploadEndpoint, config.AppVersion);
             return DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<CLI_COMMAND>", command);
         }
     }
