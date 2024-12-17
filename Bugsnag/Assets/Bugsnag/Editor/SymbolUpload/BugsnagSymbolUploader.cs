@@ -15,20 +15,16 @@ namespace BugsnagUnity.Editor
     {
         public int callbackOrder => 1;
 
-        private const string IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE = @"
-        #!/bin/bash
-        # Iterate through all input files
-        for ((i=0; i<SCRIPT_INPUT_FILE_COUNT; i++))
-        do
-            # Dynamically get the input file variable name
-            INPUT_FILE_VAR=""SCRIPT_INPUT_FILE_$i""
-            INPUT_FILE=${!INPUT_FILE_VAR}
-            # Extract path up to and including BugsnagUnity.app.dSYM
-            DSYM_PATH=$(echo ""$INPUT_FILE"" | sed 's#/Contents.*##')
-            echo ""Uploading dSYM: $DSYM_PATH""
-            # Upload the dSYM file
-            <CLI_COMMAND>
-        done";
+private const string IOS_DSYM_UPLOAD_SCRIPT_TEMPLATE = @"#!/bin/bash
+if [ ""$ACTION"" == ""install"" ]; then
+    echo ""Archiving - Running Bugsnag upload script...""
+    if ! <CLI_COMMAND>; then
+        echo ""warning: Bugsnag upload failed, continuing build...""
+    fi
+else
+    echo ""Not archiving - Skipping Bugsnag upload script.""
+fi
+";
 
         private const string IOS_DSYM_UPLOAD_BUILD_PHASE_NAME = "BugsnagDSYMUpload";
         private const string IOS_DSYM_UPLOAD_SHELL_NAME = "/bin/sh";
@@ -138,20 +134,7 @@ namespace BugsnagUnity.Editor
                 }
             }
 
-            // add the upload script to the unity framework target
-            string unityFrameworkGUID = pbxProject.GetUnityFrameworkTargetGuid();
-            foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(unityFrameworkGUID))
-            {
-                if (IOS_DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
-                {
-                    // remove existing build phase
-                    var editedProject = RemoveShellScriptPhase(pbxProject.WriteToString(), guid);
-                    pbxProject.ReadFromString(editedProject);
-                }
-            }
-
-            pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript, IOS_DSYM_UPLOAD_INPUT_FILES_LIST);
-            pbxProject.AddShellScriptBuildPhase(unityFrameworkGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript, IOS_DSYM_UPLOAD_INPUT_FILES_LIST);
+            pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, IOS_DSYM_UPLOAD_BUILD_PHASE_NAME, IOS_DSYM_UPLOAD_SHELL_NAME, dsymUploadScript);
             pbxProject.WriteToFile(pbxProjectPath);
 #endif
         }

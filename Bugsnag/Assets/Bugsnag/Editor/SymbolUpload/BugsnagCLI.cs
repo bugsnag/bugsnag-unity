@@ -189,7 +189,7 @@ namespace BugsnagUnity.Editor
 
         public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
         {
-            var command = $"{_cliExecutablePath} upload dsym --api-key={apiKey} --configuration $CONFIGURATION $DSYM_PATH";
+            var command = $"{_cliExecutablePath} upload xcode-build --api-key={apiKey} $DWARF_DSYM_FOLDER_PATH";
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
                 command += $" --upload-api-root-url={uploadEndpoint}";
