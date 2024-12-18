@@ -61,10 +61,7 @@ fi
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
-                if (IsMacosXcodeEnabled())
-                {
-                    AddMacOSPostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config);
-                }
+                AddMacOSPostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config);
             }
 
         }
@@ -105,17 +102,6 @@ fi
 #endif
             return false;
         }
-
-        private bool IsMacosXcodeEnabled()
-        {
-#if UNITY_STANDALONE_OSX
-            return EditorUserBuildSettings.GetPlatformSettings("Standalone", "CreateXcodeProject") == "true";
-#endif
-#pragma warning disable CS0162 // Unreachable code detected
-            return false;
-#pragma warning restore CS0162 // Unreachable code detected
-        }
-
 
         private void AddIosPostBuildScript(string pathToBuiltProject, BugsnagSettingsObject config)
         {
@@ -158,6 +144,11 @@ fi
 #if UNITY_STANDALONE_OSX
             var pbxProjectPath = pathToBuiltProject + "/project.pbxproj";
             PBXProject project = new PBXProject();
+            if (!File.Exists(pbxProjectPath))
+            {
+                //Xcode export not enabled, do nothing
+                return;
+            }
             project.ReadFromFile(pbxProjectPath);
             var targetGuid = project.TargetGuidByName(Application.productName);
 
@@ -176,7 +167,7 @@ fi
 #endif
         }
 
-        private string GetDsymUploadCommand(BugsnagSettingsObject config )
+        private string GetDsymUploadCommand(BugsnagSettingsObject config)
         {
             var cli = new BugsnagCLI();
             var command = cli.GetIosDsymUploadCommand(config.ApiKey, config.UploadEndpoint, config.AppVersion);
