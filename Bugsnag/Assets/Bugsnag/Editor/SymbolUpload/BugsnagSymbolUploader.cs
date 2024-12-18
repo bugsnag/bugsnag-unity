@@ -16,9 +16,9 @@ namespace BugsnagUnity.Editor
 
         private const string DSYM_UPLOAD_SCRIPT_TEMPLATE = @"#!/bin/bash
 if [ ""$ACTION"" == ""install"" ]; then
-    echo ""Archiving - Running Bugsnag upload script...""
+    echo ""Uploading dSYMs to BugSnag ...""
     if ! <CLI_COMMAND>; then
-        echo ""warning: Bugsnag upload failed, continuing build...""
+        echo ""Failed to upload dSYMs to BugSnag.""
     fi
 fi
 ";
