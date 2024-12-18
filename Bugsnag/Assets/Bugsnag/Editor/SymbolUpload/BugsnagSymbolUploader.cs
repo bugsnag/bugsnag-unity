@@ -23,7 +23,7 @@ if [ ""$ACTION"" == ""install"" ]; then
 fi
 ";
 
-        private const string DSYM_UPLOAD_BUILD_PHASE_NAME = "BugsnagDSYMUpload";
+        private const string DSYM_UPLOAD_BUILD_PHASE_NAME = "BugSnag dSYM Upload";
         private const string DSYM_UPLOAD_SHELL_NAME = "/bin/sh";
 
         private string _shelScriptPattern = @"\s*\/\*\s*\w+\s*\*\/\s*=\s*\{([\s\S]*?)\};";
