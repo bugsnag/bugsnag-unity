@@ -39,38 +39,23 @@ fi
             {
                 return;
             }
+            var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
 
-            if (report.summary.platform == BuildTarget.Android)
+#if UNITY_ANDROID
+            EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
+            try
             {
-                var buildOutputPath = Path.GetDirectoryName(report.summary.outputPath);
-                EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
-                try
-                {
-                    UploadAndroidSymbols(buildOutputPath, config);
-                }
-                catch (System.Exception e)
-                {
-                    Debug.LogError($"Failed to upload Android symbol files to BugSnag. Error: {e.Message}");
-                }
-                EditorUtility.ClearProgressBar();
+                UploadAndroidSymbols(buildOutputPath, config);
             }
-            else if (report.summary.platform == BuildTarget.iOS)
+            catch (System.Exception e)
             {
-                AddXcodePostBuildScript(report.summary.outputPath, config);
+                Debug.LogError($"Failed to upload Android symbol files to BugSnag. Error: {e.Message}");
             }
-            else if (report.summary.platform == BuildTarget.StandaloneOSX)
-            {
-                AddXcodePostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config);
-            }
+            EditorUtility.ClearProgressBar();
+#elif UNITY_IOS || UNITY_STANDALONE_OSX
+            AddXcodePostBuildScript(report.summary.outputPath , config);
+#endif
 
-        }
-
-        // The PBX library is built to expect the layout of a unity iphone xcode project, so we have to manually find the macos xcode project path
-        string GetMacosXcodeProjectPath(string outputPath)
-        {
-            string[] parts = outputPath.Split('/');
-            string xcprojFile = parts[^1] + ".xcodeproj";
-            return outputPath + "/" + xcprojFile;
         }
 
         private bool IsSupportedPlatform(BuildTarget platform)
@@ -113,7 +98,7 @@ fi
             var pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
 #endif
 #if UNITY_STANDALONE_OSX
-            var pbxProjectPath = pathToBuiltProject + "/project.pbxproj";
+            var pbxProjectPath = GetMacosXcodeProjectPath(pathToBuiltProject);
              if (!File.Exists(pbxProjectPath))
             {
                 //Xcode export not enabled, do nothing
@@ -145,6 +130,14 @@ fi
 #endif
         }
 
+        // The PBX library is built to expect the layout of a unity iphone xcode project, so we have to manually find the macos xcode project path
+        string GetMacosXcodeProjectPath(string outputPath)
+        {
+            string[] parts = outputPath.Split('/');
+            string xcprojFile = parts[^1] + ".xcodeproj";
+            return outputPath + "/" + xcprojFile + "/project.pbxproj";
+        }
+        
         private string RemoveShellScriptPhase(string project, string guid)
         {
             // Search for and remove the phase object from the XML. only match the guid followed by the braces
