@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
 {
     internal class BugsnagCLI
     {
-        private const string DOWNLOADED_CLI_VERSION = "2.6.2";
+        private const string DOWNLOADED_CLI_VERSION = "2.7.0";
         private readonly string DOWNLOADED_CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
         private readonly string DOWNLOADED_CLI_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{DOWNLOADED_CLI_VERSION}/";
         private readonly string _cliExecutablePath;
@@ -30,15 +30,22 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode)
+        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint)
         {
             string args = $"upload unity-android --api-key={apiKey} --verbose --project-root={Application.dataPath} {buildOutputPath}";
 
             if (!string.IsNullOrEmpty(versionName))
+            {
                 args += $" --version-name={versionName}";
+            }
             if (versionCode > -1)
+            {
                 args += $" --version-code={versionCode}";
-
+            }
+            if (!string.IsNullOrEmpty(uploadEndpoint))
+            {
+                args += $" --upload-api-root-url={uploadEndpoint}";
+            }
             int exitCode = StartProcess(_cliExecutablePath, args, out string output, out string error);
 
             if (exitCode != 0)
@@ -55,7 +62,7 @@ namespace BugsnagUnity.Editor
                 return DOWNLOADED_CLI_PATH;
             }
             DownloadCLI();
-            MakeExecutable();
+            MakeFileExecutable(DOWNLOADED_CLI_PATH);
             return DOWNLOADED_CLI_PATH;
         }
 
@@ -128,14 +135,14 @@ namespace BugsnagUnity.Editor
             return fileName != null ? DOWNLOADED_CLI_URL + fileName : null;
         }
 
-        private void MakeExecutable()
+        private void MakeFileExecutable(string path)
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
-                int exitCode = StartProcess("chmod", $"+x {DOWNLOADED_CLI_PATH}", out _, out _);
+                int exitCode = StartProcess("chmod", $"+x {path}", out _, out _);
                 if (exitCode != 0)
                 {
-                    throw new InvalidOperationException($"Failed to make BugSnag CLI at {DOWNLOADED_CLI_PATH} executable");
+                    throw new InvalidOperationException($"Failed to make file at {path} executable");
                 }
             }
         }
@@ -180,5 +187,20 @@ namespace BugsnagUnity.Editor
             return process.ExitCode;
         }
 
+        public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint, string versionName)
+        {
+            var command = $"{_cliExecutablePath} upload xcode-build --api-key={apiKey} $DWARF_DSYM_FOLDER_PATH";
+            if (!string.IsNullOrEmpty(uploadEndpoint))
+            {
+                command += $" --upload-api-root-url={uploadEndpoint}";
+            }
+            if (!string.IsNullOrEmpty(versionName))
+            {
+                command += $" --app-version={versionName}";
+            }
+            return command;
+        }
+
     }
 }
+
