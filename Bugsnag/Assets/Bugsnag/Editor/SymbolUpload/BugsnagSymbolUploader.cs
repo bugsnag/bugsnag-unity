@@ -56,11 +56,11 @@ fi
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
-                AddCocoaPostBuildScript(report.summary.outputPath, config);
+                AddXcodePostBuildScript(report.summary.outputPath, config);
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
-                AddCocoaPostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config);
+                AddXcodePostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config);
             }
 
         }
@@ -100,10 +100,12 @@ fi
             return EditorUserBuildSettings.androidCreateSymbolsZip;
 #endif
 #endif
+#pragma warning disable CS0162 // Unreachable code detected
             return false;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
-        private void AddCocoaPostBuildScript(string pathToBuiltProject, BugsnagSettingsObject config)
+        private void AddXcodePostBuildScript(string pathToBuiltProject, BugsnagSettingsObject config)
         {
 #if UNITY_IOS || UNITY_STANDALONE_OSX
 
