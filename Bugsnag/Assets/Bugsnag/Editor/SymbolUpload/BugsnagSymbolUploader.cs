@@ -16,17 +16,16 @@ namespace BugsnagUnity.Editor
 
         private const string DSYM_UPLOAD_SCRIPT_TEMPLATE = @"#!/bin/bash
 if [ ""$ACTION"" == ""install"" ]; then
-    echo ""Uploading dSYMs to BugSnag ...""
     if ! <CLI_COMMAND>; then
         echo ""Failed to upload dSYMs to BugSnag.""
+    else
+        echo ""Successfully uploaded dSYMs to BugSnag.""
     fi
 fi
 ";
 
         private const string DSYM_UPLOAD_BUILD_PHASE_NAME = "BugSnag dSYM Upload";
         private const string DSYM_UPLOAD_SHELL_NAME = "/bin/sh";
-
-        private string _shelScriptPattern = @"\s*\/\*\s*\w+\s*\*\/\s*=\s*\{([\s\S]*?)\};";
 
         public void OnPostprocessBuild(BuildReport report)
         {
@@ -57,15 +56,16 @@ fi
             }
             else if (report.summary.platform == BuildTarget.iOS)
             {
-                AddIosPostBuildScript(report.summary.outputPath, config);
+                AddCocoaPostBuildScript(report.summary.outputPath, config);
             }
             else if (report.summary.platform == BuildTarget.StandaloneOSX)
             {
-                AddMacOSPostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config);
+                AddCocoaPostBuildScript(GetMacosXcodeProjectPath(report.summary.outputPath), config);
             }
 
         }
 
+        // The PBX library is built to expect the layout of a unity iphone xcode project, so we have to manually find the macos xcode project path
         string GetMacosXcodeProjectPath(string outputPath)
         {
             string[] parts = outputPath.Split('/');
@@ -103,15 +103,32 @@ fi
             return false;
         }
 
-        private void AddIosPostBuildScript(string pathToBuiltProject, BugsnagSettingsObject config)
+        private void AddCocoaPostBuildScript(string pathToBuiltProject, BugsnagSettingsObject config)
         {
+#if UNITY_IOS || UNITY_STANDALONE_OSX
+
 #if UNITY_IOS
-            string pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+            var pbxProjectPath = PBXProject.GetPBXProjectPath(pathToBuiltProject);
+#endif
+#if UNITY_STANDALONE_OSX
+            var pbxProjectPath = pathToBuiltProject + "/project.pbxproj";
+             if (!File.Exists(pbxProjectPath))
+            {
+                //Xcode export not enabled, do nothing
+                return;
+            }
+#endif
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(pbxProjectPath);
+#if UNITY_IOS
 
-            string mainAppTargetGUID = pbxProject.GetUnityMainTargetGuid();
-            foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(mainAppTargetGUID))
+            var targetGuid = pbxProject.GetUnityMainTargetGuid();
+#endif
+#if UNITY_STANDALONE_OSX
+            var targetGuid = pbxProject.TargetGuidByName(Application.productName);
+#endif
+
+            foreach (var guid in pbxProject.GetAllBuildPhasesForTarget(targetGuid))
             {
                 if (DSYM_UPLOAD_BUILD_PHASE_NAME == pbxProject.GetBuildPhaseName(guid))
                 {
@@ -121,14 +138,15 @@ fi
             }
 
             var uploadScript = GetDsymUploadCommand(config);
-            pbxProject.AddShellScriptBuildPhase(mainAppTargetGUID, DSYM_UPLOAD_BUILD_PHASE_NAME, DSYM_UPLOAD_SHELL_NAME, uploadScript);
+            pbxProject.AddShellScriptBuildPhase(targetGuid, DSYM_UPLOAD_BUILD_PHASE_NAME, DSYM_UPLOAD_SHELL_NAME, uploadScript);
             pbxProject.WriteToFile(pbxProjectPath);
 #endif
         }
 
         private string RemoveShellScriptPhase(string project, string guid)
         {
-            var matches = System.Text.RegularExpressions.Regex.Matches(project, guid + _shelScriptPattern);
+            // Search for and remove the phase object from the XML. only match the guid followed by the braces
+            var matches = System.Text.RegularExpressions.Regex.Matches(project, guid + @"\s*\/\*\s*\w+\s*\*\/\s*=\s*\{([\s\S]*?)\};");
             foreach (System.Text.RegularExpressions.Match match in matches)
             {
                 if (match.Groups[1].Value.Contains(guid))
@@ -137,34 +155,6 @@ fi
                 }
             }
             return project;
-        }
-
-        private void AddMacOSPostBuildScript(string pathToBuiltProject, BugsnagSettingsObject config)
-        {
-#if UNITY_STANDALONE_OSX
-            var pbxProjectPath = pathToBuiltProject + "/project.pbxproj";
-            PBXProject project = new PBXProject();
-            if (!File.Exists(pbxProjectPath))
-            {
-                //Xcode export not enabled, do nothing
-                return;
-            }
-            project.ReadFromFile(pbxProjectPath);
-            var targetGuid = project.TargetGuidByName(Application.productName);
-
-            foreach (var guid in project.GetAllBuildPhasesForTarget(targetGuid))
-            {
-                if (DSYM_UPLOAD_BUILD_PHASE_NAME == project.GetBuildPhaseName(guid))
-                {
-                    var editedProject = RemoveShellScriptPhase(project.WriteToString(), guid);
-                    project.ReadFromString(editedProject);
-                }
-            }
-
-            var uploadScript = GetDsymUploadCommand(config);
-            project.AddShellScriptBuildPhase(targetGuid, DSYM_UPLOAD_BUILD_PHASE_NAME, DSYM_UPLOAD_SHELL_NAME, uploadScript);
-            project.WriteToFile(pbxProjectPath);
-#endif
         }
 
         private string GetDsymUploadCommand(BugsnagSettingsObject config)
