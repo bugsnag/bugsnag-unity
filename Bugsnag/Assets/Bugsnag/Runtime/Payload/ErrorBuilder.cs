@@ -93,13 +93,19 @@ namespace BugsnagUnity.Payload
             return new Error(errorClass, exception.Message, lines);
         }
 
+
         internal Error FromSystemException(System.Exception exception, System.Diagnostics.StackFrame[] alternativeStackTrace)
         {
+            var frames = NativeClient.ToStackFrames(exception);
             var errorClass = exception.GetType().Name;
 
-            // JVM exceptions in the main thread are handled by unity and require extra formatting
-            if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
+            if (frames.Length > 0)
             {
+                return new Error(errorClass, exception.Message, frames);
+            }
+            else if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
+            {
+                // JVM exceptions in the main thread are handled by unity and require extra formatting
                 var androidErrorData = ProcessAndroidError(exception.Message);
                 var androidErrorClass = androidErrorData[0];
                 var androidErrorMessage = androidErrorData[1];
