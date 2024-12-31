@@ -14,7 +14,7 @@ namespace BugsnagUnity.Editor
         private readonly string _cliExecutablePath;
         public BugsnagCLI()
         {
-            var config = BugsnagSettingsObject.GetSettingsObject();
+            var config = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
 
             if (string.IsNullOrEmpty(config.BugsnagCLIExecutablePath))
             {

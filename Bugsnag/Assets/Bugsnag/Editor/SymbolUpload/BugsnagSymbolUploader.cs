@@ -34,7 +34,7 @@ fi
                 return;
             }
 
-            var config = BugsnagSettingsObject.GetSettingsObject();
+            var config = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
             if (config == null || !config.AutoUploadSymbols)
             {
                 return;
