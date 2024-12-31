@@ -60,7 +60,12 @@ namespace BugsnagUnity
 
         public static BugsnagSettingsObject LoadBuildTimeSettingsObject()
         {
-            return Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
+            var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
+            if (settings == null)
+            {
+                throw new Exception("No BugsnagSettingsObject found.");
+            }
+            return settings;
         }
 
         public static Configuration LoadConfiguration()
