@@ -78,6 +78,7 @@ using UnityEditor;
             settingsObject.StartAutomaticallyAtLaunch = false;
             settingsObject.AutoUploadSymbols = true;
             settingsObject.UploadEndpoint = "http://localhost:9339/uploads";
+            EditorUtility.SetDirty(settingsObject);
 #endif
             BuildAndroid(false);
         }
