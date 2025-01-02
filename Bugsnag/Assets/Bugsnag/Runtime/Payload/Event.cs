@@ -36,7 +36,7 @@ namespace BugsnagUnity.Payload
                 breadcrumbsList.Add(crumb);
             }
             Breadcrumbs = new ReadOnlyCollection<IBreadcrumb>(breadcrumbsList);
-
+            _originalUnhandledState = !handledState.Handled;
             if (session != null)
             {
                 if (handledState.Handled)
@@ -53,7 +53,7 @@ namespace BugsnagUnity.Payload
         }
 
         internal Event(Dictionary<string, object> serialisedPayload)
-        {        
+        {
             ApiKey = serialisedPayload["apiKey"].ToString();
 
             var eventObject = (Dictionary<string, object>)serialisedPayload["event"];
@@ -66,7 +66,7 @@ namespace BugsnagUnity.Payload
             {
                 Add("unhandled", false);
             }
-            
+
             if (eventObject["severity"] != null)
             {
                 Add("severity", eventObject["severity"]);
@@ -162,6 +162,8 @@ namespace BugsnagUnity.Payload
             _androidProjectPackages = packages;
         }
 
+        private bool _originalUnhandledState;
+
         private OrderedDictionary _featureFlags;
 
         HandledState _handledState;
@@ -172,13 +174,13 @@ namespace BugsnagUnity.Payload
 
         private Metadata _metadata { get; }
 
-        public void AddMetadata(string section, string key, object value) => _metadata.AddMetadata(section,key,value);
+        public void AddMetadata(string section, string key, object value) => _metadata.AddMetadata(section, key, value);
 
         public void AddMetadata(string section, IDictionary<string, object> metadata) => _metadata.AddMetadata(section, metadata);
 
         public IDictionary<string, object> GetMetadata(string section) => _metadata.GetMetadata(section);
 
-        public object GetMetadata(string section, string key) => _metadata.GetMetadata(section,key);
+        public object GetMetadata(string section, string key) => _metadata.GetMetadata(section, key);
 
         public void ClearMetadata(string section) => _metadata.ClearMetadata(section);
 
@@ -198,30 +200,37 @@ namespace BugsnagUnity.Payload
 
         internal LogType? LogType { get; }
 
-        public bool Unhandled {     
-        get {
-            var currentValue = Get("unhandled"); 
-            if (currentValue == null) 
-            {
-                return false;
-            }
-            return (bool)currentValue;
-        } 
-        set => Add("unhandled",value); 
-        }
-
-        internal bool IsHandled
+        public bool Unhandled
         {
             get
             {
-                if (Get("unhandled") is bool unhandled)
+                var currentValue = Get("unhandled");
+                if (currentValue == null)
                 {
-                    return !unhandled;
+                    return false;
                 }
-
-                return false;
+                return (bool)currentValue;
+            }
+            set
+            {
+                if(value != _originalUnhandledState && Session != null)
+                {
+                    if (value)
+                    {
+                        Session.Events.IncrementUnhandledCount();
+                        Session.Events.DecrementHandledCount();
+                    }
+                    else
+                    {
+                        Session.Events.IncrementHandledCount();
+                        Session.Events.DecrementUnhandledCount();
+                    }
+                }
+                Add("unhandled", value);
             }
         }
+
+
 
         public string Context { get; set; }
 
@@ -238,7 +247,7 @@ namespace BugsnagUnity.Payload
         public List<IError> Errors { get; }
 
         public string GroupingHash { get; set; }
-        
+
         public Severity Severity
         {
             set => HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
@@ -253,7 +262,7 @@ namespace BugsnagUnity.Payload
 
         public void SetUser(string id, string email, string name)
         {
-            _user = new User(id, email, name );
+            _user = new User(id, email, name);
         }
 
         internal bool IsAndroidJavaError()
@@ -317,7 +326,7 @@ namespace BugsnagUnity.Payload
             Add("groupingHash", GroupingHash);
             Add("payloadVersion", PayloadVersion);
             Add("exceptions", _errors);
-            if(Correlation != null)
+            if (Correlation != null)
             {
                 Add("correlation", Correlation.Payload);
             }

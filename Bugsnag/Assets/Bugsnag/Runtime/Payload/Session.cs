@@ -116,11 +116,27 @@ namespace BugsnagUnity.Payload
             }
         }
 
+        internal void DecrementHandledCount()
+        {
+            lock (_handledLock)
+            {
+                this["handled"]--;
+            }
+        }
+
         internal void IncrementUnhandledCount()
         {
             lock (_unhandledLock)
             {
                 this["unhandled"]++;
+            }
+        }
+
+        internal void DecrementUnhandledCount()
+        {
+            lock (_unhandledLock)
+            {
+                this["unhandled"]--;
             }
         }
     }
