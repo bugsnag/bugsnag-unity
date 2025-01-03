@@ -19,6 +19,12 @@ def execute_command(action, scenario_name = '')
   raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
+Then('the sourcemaps Content-Type header is valid multipart form-data') do
+  expected = /^multipart\/form-data; boundary=([^;]+)/
+  actual = Maze::Server.sourcemaps.current[:request]['content-type']
+  Maze.check.match(expected, actual)
+end
+
 When('I clear the Bugsnag cache') do
   case Maze::Helper.get_current_platform
   when 'macos', 'webgl'

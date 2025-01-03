@@ -77,7 +77,9 @@ public class Builder : MonoBehaviour
         settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";
         settingsObject.StartAutomaticallyAtLaunch = false;
         settingsObject.AutoUploadSymbols = true;
-        settingsObject.UploadEndpoint = "http://localhost:9339/uploads";
+        settingsObject.UploadEndpoint = "http://localhost:9339";
+        settingsObject.AppVersion = "1.2.3";
+        settingsObject.VersionCode = 123;
         EditorUtility.SetDirty(settingsObject);
 #endif
         BuildAndroid(false);
