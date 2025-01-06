@@ -269,6 +269,9 @@ PlayerSettings:
     banner: {fileID: 0}
   androidGamepadSupportLevel: 0
   resolutionDialogBanner: {fileID: 0}
+  AndroidMinifyWithR8: 1
+  AndroidMinifyRelease: 1
+  AndroidMinifyDebug: 1
   m_BuildTargetIcons: []
   m_BuildTargetPlatformIcons:
   - m_BuildTarget: Android
