@@ -465,7 +465,7 @@ namespace BugsnagUnity
                 {
                     try
                     {
-                        if (!onErrorCallback.Invoke(@event))
+                        if (!RunEventCallback(onErrorCallback, @event))
                         {
                             return;
                         }
@@ -481,7 +481,7 @@ namespace BugsnagUnity
             {
                 if (callback != null)
                 {
-                    if (!callback.Invoke(@event))
+                    if (!RunEventCallback(callback, @event))
                     {
                         return;
                     }
@@ -505,6 +505,24 @@ namespace BugsnagUnity
                     }
                     SessionTracking.AddException(report);
                 }
+            }
+        }
+
+        private bool RunEventCallback(Func<IEvent,bool> callback, IEvent @event)
+        {
+            try
+            {
+                var initialUnhandledState = @event.Unhandled;
+                var callbackResult = callback.Invoke(@event);
+                if (initialUnhandledState != @event.Unhandled)
+                {
+                    ((Payload.Event)@event).UnhandledOverridden();
+                }
+                return callbackResult;
+            }
+            catch
+            {
+                return true;
             }
         }
 

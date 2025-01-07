@@ -157,7 +157,6 @@ public class Scenario : MonoBehaviour
         @event.AddMetadata("test1", new Dictionary<string, object> { { "test", "test" } });
         @event.AddMetadata("test2", new Dictionary<string, object> { { "test", "test" } });
         @event.ClearMetadata("test2");
-        @event.Unhandled = true;
         @event.AddFeatureFlag("fromCallback", "a");
 
         return true;

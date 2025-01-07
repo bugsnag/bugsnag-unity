@@ -74,14 +74,7 @@ namespace BugsnagUnity.Payload
 
         internal void AddException(Report report)
         {
-            if (report.IsHandled)
-            {
-                Events.IncrementHandledCount();
-            }
-            else
-            {
-                Events.IncrementUnhandledCount();
-            }
+            Events.UpdateEventCount(report.IsHandled, true);
         }
 
         internal Session Copy()
@@ -96,48 +89,36 @@ namespace BugsnagUnity.Payload
 
     internal class SessionEvents : Dictionary<string, int>
     {
-        private readonly object _handledLock = new object();
-        private readonly object _unhandledLock = new object();
+        private readonly object _lock = new object();
+
+        private const string HANDLED_KEY = "handled";
+        private const string UNHANDLED_KEY = "unhandled";
 
         internal SessionEvents(int handled, int unhandled)
         {
-            this.AddToPayload("handled", handled);
-            this.AddToPayload("unhandled", unhandled);
+            this.AddToPayload(HANDLED_KEY, handled);
+            this.AddToPayload(UNHANDLED_KEY, unhandled);
         }
 
-        internal int Handled => this["handled"];
-        internal int Unhandled => this["unhandled"];
+        internal int Handled => this[HANDLED_KEY];
+        internal int Unhandled => this[UNHANDLED_KEY];
 
-        internal void IncrementHandledCount()
+        internal void UpdateEventCount(bool handled, bool increment)
         {
-            lock (_handledLock)
+            lock (_lock)
             {
-                this["handled"]++;
+                this[handled ? HANDLED_KEY : UNHANDLED_KEY] += increment ? 1 : -1;
             }
         }
 
-        internal void DecrementHandledCount()
+        internal void UpdateUnhandledCount(bool increment)
         {
-            lock (_handledLock)
-            {
-                this["handled"]--;
-            }
+            UpdateEventCount(false, increment);
         }
 
-        internal void IncrementUnhandledCount()
+        internal void UpdateHandledCount(bool increment)
         {
-            lock (_unhandledLock)
-            {
-                this["unhandled"]++;
-            }
-        }
-
-        internal void DecrementUnhandledCount()
-        {
-            lock (_unhandledLock)
-            {
-                this["unhandled"]--;
-            }
+            UpdateEventCount(true, increment);
         }
     }
 }

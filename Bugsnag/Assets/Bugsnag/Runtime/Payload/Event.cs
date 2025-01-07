@@ -36,17 +36,9 @@ namespace BugsnagUnity.Payload
                 breadcrumbsList.Add(crumb);
             }
             Breadcrumbs = new ReadOnlyCollection<IBreadcrumb>(breadcrumbsList);
-            _originalUnhandledState = !handledState.Handled;
             if (session != null)
             {
-                if (handledState.Handled)
-                {
-                    session.Events.IncrementHandledCount();
-                }
-                else
-                {
-                    session.Events.IncrementUnhandledCount();
-                }
+                session.Events.UpdateEventCount(handledState.Handled, true);
                 Session = session;
             }
             _featureFlags = featureFlags;
@@ -161,9 +153,6 @@ namespace BugsnagUnity.Payload
         {
             _androidProjectPackages = packages;
         }
-
-        private bool _originalUnhandledState;
-
         private OrderedDictionary _featureFlags;
 
         HandledState _handledState;
@@ -213,24 +202,28 @@ namespace BugsnagUnity.Payload
             }
             set
             {
-                if(value != _originalUnhandledState && Session != null)
-                {
-                    if (value)
-                    {
-                        Session.Events.IncrementUnhandledCount();
-                        Session.Events.DecrementHandledCount();
-                    }
-                    else
-                    {
-                        Session.Events.IncrementHandledCount();
-                        Session.Events.DecrementUnhandledCount();
-                    }
-                }
                 Add("unhandled", value);
             }
         }
 
-
+        internal void UnhandledOverridden()
+        {
+            if (Session != null)
+            {
+                var events = Session.Events;
+                if (Unhandled)
+                {
+                    events.UpdateUnhandledCount(true);
+                    events.UpdateHandledCount(false);
+                }
+                else
+                {
+                    events.UpdateUnhandledCount(false);
+                    events.UpdateHandledCount(true);
+                }
+            }
+            _handledState.UnhandledOverridden();
+        }
 
         public string Context { get; set; }
 

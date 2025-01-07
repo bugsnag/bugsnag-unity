@@ -73,7 +73,7 @@ namespace BugsnagUnity
                         {
                             try
                             {
-                                if (!onSendErrorCallback.Invoke(report.Event))
+                                if (!RunEventCallback(onSendErrorCallback, report.Event))
                                 {
                                     return;
                                 }
@@ -96,6 +96,24 @@ namespace BugsnagUnity
             catch
             {
                 // not avaliable in unit tests
+            }
+        }
+
+         private bool RunEventCallback(Func<IEvent,bool> callback, IEvent @event)
+        {
+            try
+            {
+                var initialUnhandledState = @event.Unhandled;
+                var callbackResult = callback.Invoke(@event);
+                if (initialUnhandledState != @event.Unhandled)
+                {
+                    ((Payload.Event)@event).UnhandledOverridden();
+                }
+                return callbackResult;
+            }
+            catch
+            {
+                return true;
             }
         }
 

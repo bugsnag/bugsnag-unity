@@ -11,7 +11,6 @@ public class OnErrorInConfig : Scenario
 
     public override void Run()
     {
-        Bugsnag.StartSession();
         Bugsnag.Notify(new Exception("Error 1"));
         throw new Exception("Error 2");
     }
