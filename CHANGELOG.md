@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Enhancements
+
+- Allow the notifier to be started much earlier in the Unity lifecycle. [#862](https://github.com/bugsnag/bugsnag-unity/pull/862)
+
 ### Bug Fixes
 
 - Fixed an issue where session handled/unhandled event counts were not updated if the handled status of the event was changed in a callback. [#865](https://github.com/bugsnag/bugsnag-unity/pull/865)
