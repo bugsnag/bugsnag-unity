@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -20,7 +21,7 @@ namespace BugsnagUnity
         private static NativeClient _instance;
         private bool _registeredForSessionCallbacks;
 
-        private LoadedImages loadedImages;
+        private LoadedImages loadedImages = new LoadedImages();
 
         public NativeClient(Configuration configuration)
         {
@@ -488,12 +489,121 @@ namespace BugsnagUnity
             NativeCode.bugsnag_registerForSessionCallbacksAfterStart(HandleSessionCallbacks);
         }
 
-        public LoadedImage FindImageAtAddress(UInt64 address)
+        #nullable enable
+        private static string? ExtractString(IntPtr pString)
         {
-            loadedImages.Refresh();
-            return loadedImages.FindImageAtAddress(address);
+            return (pString == IntPtr.Zero) ? null : Marshal.PtrToStringAnsi(pString);
         }
 
+        private StackTraceLine[] ToStackFrames(System.Exception exception, IntPtr[] nativeAddresses)
+        {
+            var unityTrace = new PayloadStackTrace(exception.StackTrace).StackTraceLines;
+            var length = nativeAddresses.Length < unityTrace.Length ? nativeAddresses.Length : unityTrace.Length;
+            var stackFrames = new StackTraceLine[length];
+            for (int i = 0; i < length; i++)
+            {
+                var method = unityTrace[i].Method;
+                var address = (UInt64)nativeAddresses[i].ToInt64();
+                var image = loadedImages.FindImageAtAddress(address);
+
+                var trace = new StackTraceLine();
+                trace.FrameAddress = address.ToString();
+                trace.Method = method.ToString();
+                if (image != null)
+                {
+                    if (address < image.LoadAddress)
+                    {
+                        // It's a relative address
+                        trace.FrameAddress = (address + image.LoadAddress).ToString();
+                    }
+                    trace.MachoFile = image.FileName;
+                    trace.MachoLoadAddress = image.LoadAddress.ToString();
+                    trace.MachoUuid = image.Uuid;
+                    trace.InProject = image.IsMainImage;
+                }
+                stackFrames[i] = trace;
+            }
+            return stackFrames;
+        }
+
+#if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
+        [DllImport("__Internal")]
+        private static extern IntPtr il2cpp_gchandle_get_target(int gchandle);
+
+        [DllImport("__Internal")]
+        private static extern void il2cpp_free(IntPtr ptr);
+
+        [DllImport("__Internal")]
+        private static extern void il2cpp_native_stack_trace(IntPtr exc, out IntPtr addresses, out int numFrames, out IntPtr imageUUID, out IntPtr imageName);
+#endif
+
+        public StackTraceLine[] ToStackFrames(System.Exception exception)
+        {
+            var notFound = new StackTraceLine[0];
+
+            if (exception == null)
+            {
+                return notFound;
+            }
+
+#if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
+            var hException = GCHandle.Alloc(exception);
+            var pNativeAddresses = IntPtr.Zero;
+            var pImageUuid = IntPtr.Zero;
+            var pImageName = IntPtr.Zero;
+            try
+            {
+                if (hException == null)
+                {
+                    return notFound;
+                }
+
+                var pException = il2cpp_gchandle_get_target(GCHandle.ToIntPtr(hException).ToInt32());
+                if (pException == IntPtr.Zero)
+                {
+                    return notFound;
+                }
+
+                var frameCount = 0;
+                string? mainImageFileName = null;
+
+                il2cpp_native_stack_trace(pException, out pNativeAddresses, out frameCount, out pImageUuid, out pImageName);
+                if (pNativeAddresses == IntPtr.Zero)
+                {
+                    return notFound;
+                }
+
+                mainImageFileName = ExtractString(pImageName);
+                var nativeAddresses = new IntPtr[frameCount];
+                Marshal.Copy(pNativeAddresses, nativeAddresses, 0, frameCount);
+
+                loadedImages.Refresh(mainImageFileName);
+                return ToStackFrames(exception, nativeAddresses);
+            }
+            finally
+            {
+                if (pImageUuid != IntPtr.Zero)
+                {
+                    il2cpp_free(pImageUuid);
+                }
+                if (pImageName != IntPtr.Zero)
+                {
+                    il2cpp_free(pImageName);
+                }
+                if (pNativeAddresses != IntPtr.Zero)
+                {
+                    il2cpp_free(pNativeAddresses);
+                }
+                if (hException != null)
+                {
+                    hException.Free();
+                }
+            }
+#else
+            return notFound;
+#endif
+        }
     }
 }
+
 #endif

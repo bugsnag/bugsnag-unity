@@ -218,9 +218,9 @@ namespace BugsnagUnity
             // Not Used on this platform
         }
 
-        public LoadedImage FindImageAtAddress(UInt64 address)
+        public StackTraceLine[] ToStackFrames(System.Exception exception)
         {
-            return null;
+            return new StackTraceLine[0];
         }
     }
 }

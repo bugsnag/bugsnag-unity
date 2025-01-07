@@ -6,6 +6,12 @@
 
 - Allow the notifier to be started much earlier in the Unity lifecycle. [#862](https://github.com/bugsnag/bugsnag-unity/pull/862)
 
+## 8.3.1 (2024-12-09)
+
+### Bug Fixes
+
+- Fix a compiler error that occurs when using v8.3.0 of this SDK in conjunction with v1.7.0 and below of the BugSnag Unity Performance SDK. [#863](https://github.com/bugsnag/bugsnag-unity/pull/863)
+
 ## 8.3.0 (2024-12-02)
 
 ### Enhancements
