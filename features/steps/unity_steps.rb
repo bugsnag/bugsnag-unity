@@ -167,6 +167,26 @@ Then('the stack frame methods should match:') do |expected_values|
   end
 end
 
+Then('the stack frame files should match:') do |expected_values|
+  stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
+  expected_frame_values = expected_values.raw
+
+  flunk('The stacktrace is empty') if stacktrace.length == 0
+
+  files = stacktrace.map { |item| item['file'] }
+
+  expected_frame_values.each do |expected_frames|
+    file_index = 0
+    frame_matches = false
+    until frame_matches || file_index.eql?(files.size)
+      file = files[file_index]
+      frame_matches = expected_frames.any? { |frame| frame == file }
+      file_index += 1
+    end
+    Maze.check.true(frame_matches, "None of the files match the expected frames #{expected_frames}")
+  end
+end
+
 Then('the current error request events match one of:') do |table|
   events = Maze::Server.errors.all.map do |error|
     Maze::Helper.read_key_path(error[:body], 'events')
@@ -361,4 +381,18 @@ Then('the event {string} equals one of these ints:') do |string, table|
 
   # Check if the integer event value is one of the expected values
   Maze.check.true(expected_values.include?(event_value), "Expected one of #{expected_values} but got #{event_value}")
+end
+
+When('the exception {string} equals one of:') do |path, table|
+  # Convert the table rows into a simple array of expected values
+  expected_values = table.raw.flatten
+
+  # Read the actual exception value from the Maze::Server error payload
+  actual_value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], path)
+
+  # Check if the value is one of the expected values
+  Maze.check.true(
+    expected_values.include?(actual_value),
+    "Expected '#{actual_value}' to be one of #{expected_values}"
+  )
 end
