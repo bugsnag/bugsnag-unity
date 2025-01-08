@@ -29,8 +29,9 @@ Feature: Android JVM Exceptions
         # Stacktrace validation
     And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
     And the event "exceptions.0.stacktrace.0.method" equals "com.example.bugsnagcrashplugin.CrashHelper.triggerJvmException()"
-    And the stack frame files should match:
-    | CrashHelper.java  | SourceFile |
+    And the exception "stacktrace.0.file" equals one of:
+      | CrashHelper.java  |
+      | SourceFile |
     And the error payload field "events.0.exceptions.0.stacktrace.0.lineNumber" is a number
     And the error payload field "events.0.threads" is null
 
@@ -62,8 +63,9 @@ Feature: Android JVM Exceptions
 
         # Stacktrace validation
     And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-    And the stack frame files should match:
-    | CrashHelper.java  | SourceFile |
+    And the exception "stacktrace.0.file" equals one of:
+      | CrashHelper.java  |
+      | SourceFile |
     And the error payload field "events.0.exceptions.0.stacktrace.0.lineNumber" is a number
     And the error payload field "events.0.threads" is not null
 
