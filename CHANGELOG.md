@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 8.4.0 (2024-12-10)
 
 ### Enhancements
 
@@ -8,7 +8,7 @@
 
 ### Bug Fixes
 
-- Fixed an issue where session handled/unhandled event counts were not updated if the handled status of the event was changed in a callback. [#865](https://github.com/bugsnag/bugsnag-unity/pull/865)
+- Fixed an issue where session handled/unhandled event counts were not updated if the handled status of the event was changed in a callback and send unhandledOveridden in the error payload [#865](https://github.com/bugsnag/bugsnag-unity/pull/865)
 
 ## 8.3.1 (2024-12-09)
 
