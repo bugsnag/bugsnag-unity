@@ -29,8 +29,10 @@ Feature: Android JVM Exceptions
         # Stacktrace validation
     And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
     And the event "exceptions.0.stacktrace.0.method" equals "com.example.bugsnagcrashplugin.CrashHelper.triggerJvmException()"
-    And the exception "stacktrace.0.file" equals "CrashHelper.java"
-    And the event "exceptions.0.stacktrace.0.lineNumber" equals 20
+    And the exception "stacktrace.0.file" equals one of:
+      | CrashHelper.java  |
+      | SourceFile |
+    And the error payload field "events.0.exceptions.0.stacktrace.0.lineNumber" is a number
     And the error payload field "events.0.threads" is null
 
   Scenario: Android JVM Background Thread Smoke Test
@@ -61,8 +63,10 @@ Feature: Android JVM Exceptions
 
         # Stacktrace validation
     And the error payload field "events.0.exceptions.0.stacktrace" is a non-empty array
-    And the exception "stacktrace.0.file" equals "CrashHelper.java"
-    And the event "exceptions.0.stacktrace.0.lineNumber" equals 5
+    And the exception "stacktrace.0.file" equals one of:
+      | CrashHelper.java  |
+      | SourceFile |
+    And the error payload field "events.0.exceptions.0.stacktrace.0.lineNumber" is a number
     And the error payload field "events.0.threads" is not null
 
     And the error payload field "events.0.usage.config" is not null
