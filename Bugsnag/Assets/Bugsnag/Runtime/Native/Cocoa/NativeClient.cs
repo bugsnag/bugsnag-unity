@@ -540,68 +540,69 @@ namespace BugsnagUnity
         public StackTraceLine[] ToStackFrames(System.Exception exception)
         {
             var notFound = new StackTraceLine[0];
-
-            if (exception == null)
-            {
-                return notFound;
-            }
-
-#if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
-            var hException = GCHandle.Alloc(exception);
-            var pNativeAddresses = IntPtr.Zero;
-            var pImageUuid = IntPtr.Zero;
-            var pImageName = IntPtr.Zero;
-            try
-            {
-                if (hException == null)
-                {
-                    return notFound;
-                }
-
-                var pException = il2cpp_gchandle_get_target(GCHandle.ToIntPtr(hException).ToInt32());
-                if (pException == IntPtr.Zero)
-                {
-                    return notFound;
-                }
-
-                var frameCount = 0;
-                string? mainImageFileName = null;
-
-                il2cpp_native_stack_trace(pException, out pNativeAddresses, out frameCount, out pImageUuid, out pImageName);
-                if (pNativeAddresses == IntPtr.Zero)
-                {
-                    return notFound;
-                }
-
-                mainImageFileName = ExtractString(pImageName);
-                var nativeAddresses = new IntPtr[frameCount];
-                Marshal.Copy(pNativeAddresses, nativeAddresses, 0, frameCount);
-
-                loadedImages.Refresh(mainImageFileName);
-                return ToStackFrames(exception, nativeAddresses);
-            }
-            finally
-            {
-                if (pImageUuid != IntPtr.Zero)
-                {
-                    il2cpp_free(pImageUuid);
-                }
-                if (pImageName != IntPtr.Zero)
-                {
-                    il2cpp_free(pImageName);
-                }
-                if (pNativeAddresses != IntPtr.Zero)
-                {
-                    il2cpp_free(pNativeAddresses);
-                }
-                if (hException != null)
-                {
-                    hException.Free();
-                }
-            }
-#else
             return notFound;
-#endif
+// Disabled until we can get this working with IL2CPP and Unity 6. raised in PLAT-13394
+//             if (exception == null)
+//             {
+//                 return notFound;
+//             }
+
+// #if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
+//             var hException = GCHandle.Alloc(exception);
+//             var pNativeAddresses = IntPtr.Zero;
+//             var pImageUuid = IntPtr.Zero;
+//             var pImageName = IntPtr.Zero;
+//             try
+//             {
+//                 if (hException == null)
+//                 {
+//                     return notFound;
+//                 }
+
+//                 var pException = il2cpp_gchandle_get_target(GCHandle.ToIntPtr(hException).ToInt32());
+//                 if (pException == IntPtr.Zero)
+//                 {
+//                     return notFound;
+//                 }
+
+//                 var frameCount = 0;
+//                 string? mainImageFileName = null;
+
+//                 il2cpp_native_stack_trace(pException, out pNativeAddresses, out frameCount, out pImageUuid, out pImageName);
+//                 if (pNativeAddresses == IntPtr.Zero)
+//                 {
+//                     return notFound;
+//                 }
+
+//                 mainImageFileName = ExtractString(pImageName);
+//                 var nativeAddresses = new IntPtr[frameCount];
+//                 Marshal.Copy(pNativeAddresses, nativeAddresses, 0, frameCount);
+
+//                 loadedImages.Refresh(mainImageFileName);
+//                 return ToStackFrames(exception, nativeAddresses);
+//             }
+//             finally
+//             {
+//                 if (pImageUuid != IntPtr.Zero)
+//                 {
+//                     il2cpp_free(pImageUuid);
+//                 }
+//                 if (pImageName != IntPtr.Zero)
+//                 {
+//                     il2cpp_free(pImageName);
+//                 }
+//                 if (pNativeAddresses != IntPtr.Zero)
+//                 {
+//                     il2cpp_free(pNativeAddresses);
+//                 }
+//                 if (hException != null)
+//                 {
+//                     hException.Free();
+//                 }
+//             }
+// #else
+//             return notFound;
+// #endif
         }
     }
 }
