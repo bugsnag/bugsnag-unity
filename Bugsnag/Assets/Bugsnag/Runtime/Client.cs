@@ -452,6 +452,9 @@ namespace BugsnagUnity
                 @event.AddAndroidProjectPackagesToEvent(Configuration.ProjectPackages);
             }
 
+            // save handled state before callbacks so we can check later if it was overidden
+            var initialUnhandledState = @event.Unhandled;
+
             lock (CallbackLock)
             {
                 foreach (var onErrorCallback in Configuration.GetOnErrorCallbacks())
@@ -485,6 +488,11 @@ namespace BugsnagUnity
                 // If the callback causes an exception, ignore it and execute the next one
             }
 
+            if (initialUnhandledState != @event.Unhandled)
+            {
+                @event.UnhandledOverridden();
+            }
+
             var report = new Report(Configuration, @event);
             if (!report.Ignored)
             {
@@ -500,7 +508,6 @@ namespace BugsnagUnity
                 }
             }
         }
-
 
         private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
         {

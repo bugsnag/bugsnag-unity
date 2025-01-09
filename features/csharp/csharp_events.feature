@@ -15,6 +15,8 @@ Feature: csharp events
       | NotifySmokeTest.Run()                                                       | Main+<RunNextMazeCommand>d__8.MoveNext() |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
+    And the error payload field "events.0.severityReason.unhandledOverridden" is false
+
 
   Scenario: Uncaught Exception smoke test
     When I run the game in the "UncaughtExceptionSmokeTest" state
