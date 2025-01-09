@@ -74,7 +74,14 @@ namespace BugsnagUnity.Payload
 
         internal void AddException(Report report)
         {
-            Events.UpdateEventCount(report.IsHandled, true);
+            if(report.IsHandled)
+            {
+                Events.UpdateHandledCount(true);
+            }
+            else
+            {
+                Events.UpdateUnhandledCount(true);
+            }
         }
 
         internal Session Copy()
@@ -103,7 +110,7 @@ namespace BugsnagUnity.Payload
         internal int Handled => this[HANDLED_KEY];
         internal int Unhandled => this[UNHANDLED_KEY];
 
-        internal void UpdateEventCount(bool handled, bool increment)
+        private void UpdateEventCount(bool handled, bool increment)
         {
             lock (_lock)
             {

@@ -38,7 +38,14 @@ namespace BugsnagUnity.Payload
             Breadcrumbs = new ReadOnlyCollection<IBreadcrumb>(breadcrumbsList);
             if (session != null)
             {
-                session.Events.UpdateEventCount(handledState.Handled, true);
+                if(handledState.Handled)
+                {
+                    session.Events.UpdateHandledCount(true);
+                }
+                else
+                {
+                    session.Events.UpdateUnhandledCount(true);
+                }
                 Session = session;
             }
             _featureFlags = featureFlags;

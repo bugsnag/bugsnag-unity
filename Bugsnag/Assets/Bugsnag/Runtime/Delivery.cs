@@ -67,13 +67,15 @@ namespace BugsnagUnity
                 var report = (Report)payload;
                 if (_configuration.GetOnSendErrorCallbacks().Count > 0)
                 {
+                    // save handled state before callbacks so we can check later if it was overidden
+                    var initialUnhandledState = report.Event.Unhandled;
                     lock (_callbackLock)
                     {
                         foreach (var onSendErrorCallback in _configuration.GetOnSendErrorCallbacks())
                         {
                             try
                             {
-                                if (!RunEventCallback(onSendErrorCallback, report.Event))
+                                if (!onSendErrorCallback.Invoke(report.Event))
                                 {
                                     return;
                                 }
@@ -83,6 +85,10 @@ namespace BugsnagUnity
                                 // If the callback causes an exception, ignore it and execute the next one
                             }
                         }
+                    }
+                    if (initialUnhandledState != report.Event.Unhandled)
+                    {
+                        report.Event.UnhandledOverridden();
                     }
                 }
                 report.Event.RedactMetadata(_configuration);
@@ -99,24 +105,6 @@ namespace BugsnagUnity
             }
         }
 
-         private bool RunEventCallback(Func<IEvent,bool> callback, IEvent @event)
-        {
-            try
-            {
-                var initialUnhandledState = @event.Unhandled;
-                var callbackResult = callback.Invoke(@event);
-                if (initialUnhandledState != @event.Unhandled)
-                {
-                    ((Payload.Event)@event).UnhandledOverridden();
-                }
-                return callbackResult;
-            }
-            catch
-            {
-                return true;
-            }
-        }
-
         // Push to the server and handle the result
         IEnumerator PushToServer(IPayload payload)
         {
@@ -128,7 +116,8 @@ namespace BugsnagUnity
             else
             {
                 var networkCheckDone = false;
-                new Thread(() => {
+                new Thread(() =>
+                {
                     shouldDeliver = _client.NativeClient.ShouldAttemptDelivery();
                     networkCheckDone = true;
                 }).Start();
@@ -176,7 +165,8 @@ namespace BugsnagUnity
                 else
                 {
                     var bodyReady = false;
-                    new Thread(() => {
+                    new Thread(() =>
+                    {
                         try
                         {
                             body = PrepareEventBody(payload);
@@ -228,7 +218,7 @@ namespace BugsnagUnity
                     _payloadManager.RemovePayload(payload);
                     StartDeliveringCachedPayloads();
                 }
-                else if ( code == 0 || code == 408 || code == 429 || code >= 500)
+                else if (code == 0 || code == 408 || code == 429 || code >= 500)
                 {
                     // sending failed with no network or retryable error, cache payload to disk
                     _payloadManager.SendPayloadFailed(payload);
@@ -268,7 +258,7 @@ namespace BugsnagUnity
                     }
                 }
             }
-           
+
             return serialisedPayload;
         }
 
@@ -295,7 +285,7 @@ namespace BugsnagUnity
                     }
                 }
             }
-           
+
             return serialisedPayload;
         }
 
@@ -605,7 +595,7 @@ namespace BugsnagUnity
                         }
                         Deliver(report);
                     }
-                    
+
                     yield return new WaitUntil(() => CachedPayloadProcessed(id));
                 }
             }

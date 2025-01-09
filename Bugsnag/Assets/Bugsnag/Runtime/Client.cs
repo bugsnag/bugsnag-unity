@@ -452,13 +452,16 @@ namespace BugsnagUnity
                 @event.AddAndroidProjectPackagesToEvent(Configuration.ProjectPackages);
             }
 
+            // save handled state before callbacks so we can check later if it was overidden
+            var initialUnhandledState = @event.Unhandled;
+
             lock (CallbackLock)
             {
                 foreach (var onErrorCallback in Configuration.GetOnErrorCallbacks())
                 {
                     try
                     {
-                        if (!RunEventCallback(onErrorCallback, @event))
+                        if (!onErrorCallback.Invoke(@event))
                         {
                             return;
                         }
@@ -474,7 +477,7 @@ namespace BugsnagUnity
             {
                 if (callback != null)
                 {
-                    if (!RunEventCallback(callback, @event))
+                    if (!callback.Invoke(@event))
                     {
                         return;
                     }
@@ -483,6 +486,11 @@ namespace BugsnagUnity
             catch
             {
                 // If the callback causes an exception, ignore it and execute the next one
+            }
+
+            if (initialUnhandledState != @event.Unhandled)
+            {
+                @event.UnhandledOverridden();
             }
 
             var report = new Report(Configuration, @event);
@@ -500,25 +508,6 @@ namespace BugsnagUnity
                 }
             }
         }
-
-        private bool RunEventCallback(Func<IEvent,bool> callback, IEvent @event)
-        {
-            try
-            {
-                var initialUnhandledState = @event.Unhandled;
-                var callbackResult = callback.Invoke(@event);
-                if (initialUnhandledState != @event.Unhandled)
-                {
-                    ((Payload.Event)@event).UnhandledOverridden();
-                }
-                return callbackResult;
-            }
-            catch
-            {
-                return true;
-            }
-        }
-
 
         private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
         {
