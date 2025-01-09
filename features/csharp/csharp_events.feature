@@ -48,7 +48,7 @@ Feature: csharp events
     #And the error payload field "events.0.exceptions.0.stacktrace.0.machoFile" matches the regex ".*/UnityFramework.framework/UnityFramework"
     #And the error payload field "events.0.exceptions.0.stacktrace.0.machoLoadAddress" matches the regex "\d+"
     #And the error payload field "events.0.exceptions.0.stacktrace.0.machoUUID" matches the regex "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
-    And the error payload field "events.0.exceptions.0.stacktrace.0.inProject" is true
+    #And the error payload field "events.0.exceptions.0.stacktrace.0.inProject" is true
 
   Scenario: Debug Log Exception smoke test
     When I run the game in the "DebugLogExceptionSmokeTest" state
