@@ -64,7 +64,7 @@ namespace BugsnagUnity.Payload
 
         internal Session Session => Event.Session;
 
-        internal bool IsHandled => Event.IsHandled;
+        internal bool IsHandled => !Event.Unhandled;
 
         internal string Context => Event.Context;
 

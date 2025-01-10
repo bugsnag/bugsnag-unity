@@ -1,5 +1,15 @@
 # Changelog
 
+## 8.4.0 (2025-12-10)
+
+### Enhancements
+
+- Allow the notifier to be started much earlier in the Unity lifecycle. [#862](https://github.com/bugsnag/bugsnag-unity/pull/862)
+
+### Bug Fixes
+
+- Fixed an issue where session handled/unhandled event counts were not updated if the handled status of the event was changed in a callback and send unhandledOveridden in the error payload [#865](https://github.com/bugsnag/bugsnag-unity/pull/865)
+
 ## 8.3.1 (2024-12-09)
 
 ### Bug Fixes
