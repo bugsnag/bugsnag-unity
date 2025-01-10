@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+- Fixed an issue where Android minification was removing some classes from the native BugSnag Android SDK. [#867](https://github.com/bugsnag/bugsnag-unity/pull/867)
+
 - Fixed an issue where session handled/unhandled event counts were not updated if the handled status of the event was changed in a callback and send unhandledOveridden in the error payload [#865](https://github.com/bugsnag/bugsnag-unity/pull/865)
 
 ## 8.3.1 (2024-12-09)
