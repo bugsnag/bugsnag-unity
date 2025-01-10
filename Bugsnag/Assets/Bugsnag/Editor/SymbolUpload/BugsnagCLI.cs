@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
 {
     internal class BugsnagCLI
     {
-        private const string DOWNLOADED_CLI_VERSION = "2.7.0";
+        private const string DOWNLOADED_CLI_VERSION = "2.8.0";
         private readonly string DOWNLOADED_CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
         private readonly string DOWNLOADED_CLI_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{DOWNLOADED_CLI_VERSION}/";
         private readonly string _cliExecutablePath;
@@ -187,16 +187,12 @@ namespace BugsnagUnity.Editor
             return process.ExitCode;
         }
 
-        public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint, string versionName)
+        public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
         {
             var command = $"{_cliExecutablePath} upload xcode-build --api-key={apiKey} $DWARF_DSYM_FOLDER_PATH";
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
                 command += $" --upload-api-root-url={uploadEndpoint}";
-            }
-            if (!string.IsNullOrEmpty(versionName))
-            {
-                command += $" --app-version={versionName}";
             }
             return command;
         }

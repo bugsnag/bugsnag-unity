@@ -69,10 +69,11 @@ public class Builder : MonoBehaviour
         BuildAndroid(true);
     }
 
-    public static void AndroidRelease()
+    private static void EnableAndroidSymbolUpload()
     {
 #if UNITY_ANDROID
         EditorUserBuildSettings.androidCreateSymbols = AndroidCreateSymbols.Public;
+#endif
         var settingsObject = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
         settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";
         settingsObject.StartAutomaticallyAtLaunch = false;
@@ -81,7 +82,11 @@ public class Builder : MonoBehaviour
         settingsObject.AppVersion = "1.2.3";
         settingsObject.VersionCode = 123;
         EditorUtility.SetDirty(settingsObject);
-#endif
+    }
+
+    public static void AndroidRelease()
+    {
+        EnableAndroidSymbolUpload();
         BuildAndroid(false);
     }
     // Generates the Mazerunner APK
@@ -114,7 +119,19 @@ public class Builder : MonoBehaviour
 
     public static void IosRelease()
     {
+        EnableIosSymbolUpload();
         IosBuild(false);
+    }
+
+    private static void EnableIosSymbolUpload()
+    {
+        var settingsObject = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
+        settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";
+        settingsObject.StartAutomaticallyAtLaunch = false;
+        settingsObject.AutoUploadSymbols = true;
+        settingsObject.UploadEndpoint = "http://localhost:9339";
+        settingsObject.AppVersion = "1.2.3";
+        EditorUtility.SetDirty(settingsObject);
     }
     static void IosBuild(bool dev)
     {

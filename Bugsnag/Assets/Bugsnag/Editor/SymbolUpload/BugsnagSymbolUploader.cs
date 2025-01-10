@@ -155,7 +155,7 @@ fi
         private string GetDsymUploadCommand(BugsnagSettingsObject config)
         {
             var cli = new BugsnagCLI();
-            var command = cli.GetIosDsymUploadCommand(config.ApiKey, config.UploadEndpoint, config.AppVersion);
+            var command = cli.GetIosDsymUploadCommand(config.ApiKey, config.UploadEndpoint);
             return DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<CLI_COMMAND>", command);
         }
     }
