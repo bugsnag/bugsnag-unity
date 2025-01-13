@@ -15,6 +15,8 @@ Feature: csharp events
       | NotifySmokeTest.Run()                                                       | Main+<RunNextMazeCommand>d__8.MoveNext() |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
+    And the error payload field "events.0.severityReason.unhandledOverridden" is false
+
 
   Scenario: Uncaught Exception smoke test
     When I run the game in the "UncaughtExceptionSmokeTest" state
@@ -29,6 +31,26 @@ Feature: csharp events
       | ScenarioRunner.RunScenario(System.String scenarioName, System.String apiKey, System.String host) | Main+<RunNextMazeCommand>d__8.MoveNext() |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
+
+  @ios_only
+  @skip_unity_2020
+  Scenario: Uncaught Exception ios smoke test with more frame information
+    When I run the game in the "UncaughtExceptionSmokeTest" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "errorClass" equals "Exception"
+    And the exception "message" equals "UncaughtExceptionSmokeTest"
+    And the event "unhandled" is false
+    And custom metadata is included in the event
+    And expected device metadata is included in the event
+    And expected app metadata is included in the event
+    # some skipped steps pending: PLAT-13392
+    #And the error payload field "events.0.exceptions.0.stacktrace.0.frameAddress" matches the regex "\d+"
+    And the error payload field "events.0.exceptions.0.stacktrace.0.method" equals "UncaughtExceptionSmokeTest.Run()"
+    #And the error payload field "events.0.exceptions.0.stacktrace.0.machoFile" matches the regex ".*/UnityFramework.framework/UnityFramework"
+    #And the error payload field "events.0.exceptions.0.stacktrace.0.machoLoadAddress" matches the regex "\d+"
+    #And the error payload field "events.0.exceptions.0.stacktrace.0.machoUUID" matches the regex "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"
+    #And the error payload field "events.0.exceptions.0.stacktrace.0.inProject" is true
 
   Scenario: Debug Log Exception smoke test
     When I run the game in the "DebugLogExceptionSmokeTest" state

@@ -368,3 +368,8 @@ Then('the event {string} equals one of these ints:') do |string, table|
   # Check if the integer event value is one of the expected values
   Maze.check.true(expected_values.include?(event_value), "Expected one of #{expected_values} but got #{event_value}")
 end
+
+Then("the exception {string} equals one of:") do |keypath, possible_values|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
+  Maze.check.include(possible_values.raw.flatten, value)
+end
