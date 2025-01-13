@@ -171,6 +171,9 @@ end
 AfterAll do
   case Maze::Helper.get_current_platform
   when 'macos'
+    if Maze.config.app.nil?
+      return
+    end
     app_name = Maze.config.app.gsub /\.app$/, ''
     Maze::Runner.run_command("log show --predicate '(process == \"#{app_name}\")' --style syslog --start '#{Maze.start_time}' > #{app_name}.log")
   end
