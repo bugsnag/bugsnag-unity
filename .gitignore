@@ -65,4 +65,5 @@ upm/UPMImportProject/Library
 upm-package
 upm/UPMImportProject/.vscode
 UPMImportProject.sln
-!features/build/build_android.feature
+!features/build/
+
