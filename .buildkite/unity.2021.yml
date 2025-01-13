@@ -21,6 +21,7 @@ steps:
               - features/fixtures/build_android_apk.log
         command:
               - "bundle install"
+              - "bundle exec maze-runner"
               - "features/build/build_android.feature"
               - "--os macos"
         retry:
