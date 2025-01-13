@@ -19,9 +19,10 @@ steps:
             upload:
               - features/fixtures/maze_runner/mazerunner_2021.apk
               - features/fixtures/build_android_apk.log
-        commands:
-          - bundle install
-          - rake test:android:build
+        command:
+              - "bundle install"
+              - "features/build/build_android.feature"
+              - "--os macos"
         retry:
           automatic:
             - exit_status: "*"
