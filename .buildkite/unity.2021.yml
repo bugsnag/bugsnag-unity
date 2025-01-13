@@ -22,8 +22,8 @@ steps:
         command:
               - "bundle install"
               - "bundle exec maze-runner"
-              - "features/build/build_android.feature"
               - "--os macos"
+              - "features/build/build_android.feature"
         retry:
           automatic:
             - exit_status: "*"
