@@ -134,10 +134,10 @@ fi
         string GetMacosXcodeProjectPath(string outputPath)
         {
             string[] parts = outputPath.Split('/');
-            string xcprojFile = parts[^1] + ".xcodeproj";
+            string xcprojFile = parts[parts.Length - 1] + ".xcodeproj";
             return outputPath + "/" + xcprojFile + "/project.pbxproj";
         }
-        
+
         private string RemoveShellScriptPhase(string project, string guid)
         {
             // Search for and remove the phase object from the XML. only match the guid followed by the braces
