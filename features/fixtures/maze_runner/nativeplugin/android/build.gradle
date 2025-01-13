@@ -22,6 +22,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 30
         ndkVersion = "21.4.7075529"
+        consumerProguardFiles 'proguard-rules.pro'
     }
     externalNativeBuild.cmake.path "CMakeLists.txt"
 }

@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311932, g: 0.38073996, b: 0.3587271, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1146,6 +1145,7 @@ GameObject:
   - component: {fileID: 1160627406}
   - component: {fileID: 1160627409}
   - component: {fileID: 1160627407}
+  - component: {fileID: 1160627410}
   m_Layer: 0
   m_Name: Callbacks
   m_TagString: Untagged
@@ -1264,6 +1264,18 @@ MonoBehaviour:
 
     Main.CUSTOM2
     () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1160627410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1160627402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df293b62197504f21a7d582167548183, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1338701864
 GameObject:
   m_ObjectHideFlags: 0
@@ -1394,6 +1406,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cbe76e3ceae047ee85769786e2840dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!114 &1338701872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1406,6 +1422,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36160400d18884e48983505794649646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1388241496
 GameObject:
   m_ObjectHideFlags: 0

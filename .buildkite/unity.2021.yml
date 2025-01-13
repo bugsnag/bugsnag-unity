@@ -19,33 +19,9 @@ steps:
             upload:
               - features/fixtures/maze_runner/mazerunner_2021.apk
               - features/fixtures/build_android_apk.log
-        commands:
-          - bundle install
-          - rake test:android:build
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      #
-      # Build iOS test fixtures
-      #
-      - label: ":ios: Generate Xcode project - Unity 2021"
-        timeout_in_minutes: 20
-        key: "generate-fixture-project-2021"
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.5.0:
-            download:
-              - Bugsnag.unitypackage
-            upload:
-              - features/fixtures/unity.log
-              - project_2021.tgz
-        commands:
-          - bundle install
-          - rake test:ios:generate_xcode
-          - tar -zvcf project_2021.tgz features/fixtures/maze_runner/mazerunner_xcode
+        command:
+              - "bundle install"
+              - "bundle exec maze-runner --os macos features/build/build_android.feature"
         retry:
           automatic:
             - exit_status: "*"
@@ -54,7 +30,6 @@ steps:
       - label: ":ios: Build iOS test fixture for Unity 2021"
         timeout_in_minutes: 10
         key: "build-ios-fixture-2021"
-        depends_on: "generate-fixture-project-2021"
         env:
           UNITY_VERSION: *2021
           XCODE_VERSION: "15.3.0"
@@ -62,14 +37,12 @@ steps:
           artifacts#v1.5.0:
             download:
               - Bugsnag.unitypackage
-              - project_2021.tgz
             upload:
               - features/fixtures/maze_runner/mazerunner_2021.ipa
               - features/fixtures/unity.log
-        commands:
-          - bundle install
-          - tar -zxf project_2021.tgz features/fixtures/maze_runner
-          - rake test:ios:build_xcode
+        command:
+              - "bundle install"
+              - "bundle exec maze-runner --os macos features/build/build_ios.feature"
         retry:
           automatic:
             - exit_status: "*"

@@ -116,7 +116,6 @@ namespace BugsnagUnity
 
         public Client(INativeClient nativeClient)
         {
-            InitMainthreadDispatcher();
             NativeClient = nativeClient;
             _errorBuilder = new ErrorBuilder(nativeClient);
             CacheManager = new CacheManager(Configuration);
@@ -142,11 +141,6 @@ namespace BugsnagUnity
             ListenForSceneLoad();
             SetupNetworkListeners();
             InitLogHandlers();
-        }
-
-        private void InitMainthreadDispatcher()
-        {
-            MainThreadDispatchBehaviour.Instance();
         }
 
         private bool IsUnity2019OrHigher()
@@ -384,8 +378,7 @@ namespace BugsnagUnity
             {
                 try
                 {
-                    var asyncHandler = MainThreadDispatchBehaviour.Instance();
-                    asyncHandler.Enqueue(() => { NotifyOnMainThread(exceptions, handledState, callback,logType, correlation); });
+                    MainThreadDispatchBehaviour.Enqueue(() => { NotifyOnMainThread(exceptions, handledState, callback,logType, correlation); });
                 }
                 catch
                 {
@@ -459,6 +452,9 @@ namespace BugsnagUnity
                 @event.AddAndroidProjectPackagesToEvent(Configuration.ProjectPackages);
             }
 
+            // save handled state before callbacks so we can check later if it was overidden
+            var initialUnhandledState = @event.Unhandled;
+
             lock (CallbackLock)
             {
                 foreach (var onErrorCallback in Configuration.GetOnErrorCallbacks())
@@ -492,6 +488,11 @@ namespace BugsnagUnity
                 // If the callback causes an exception, ignore it and execute the next one
             }
 
+            if (initialUnhandledState != @event.Unhandled)
+            {
+                @event.UnhandledOverridden();
+            }
+
             var report = new Report(Configuration, @event);
             if (!report.Ignored)
             {
@@ -507,7 +508,6 @@ namespace BugsnagUnity
                 }
             }
         }
-
 
         private bool ShouldAddProjectPackagesToEvent(Payload.Event theEvent)
         {

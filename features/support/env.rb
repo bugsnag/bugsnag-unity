@@ -9,6 +9,15 @@ Before('@skip_unity_2018') do |_scenario|
   end
 end
 
+Before('@skip_unity_2020') do |_scenario|
+  if ENV['UNITY_VERSION']
+    unity_version = ENV['UNITY_VERSION'][0..3].to_i
+    if unity_version == 2020
+      skip_this_scenario('Skipping scenario on Unity 2020')
+    end
+  end
+end
+
 
 Before('@skip_webgl') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze.config.browser.nil?
@@ -171,7 +180,9 @@ end
 AfterAll do
   case Maze::Helper.get_current_platform
   when 'macos'
-    app_name = Maze.config.app.gsub /\.app$/, ''
-    Maze::Runner.run_command("log show --predicate '(process == \"#{app_name}\")' --style syslog --start '#{Maze.start_time}' > #{app_name}.log")
+    if !Maze.config.app.nil?
+      app_name = Maze.config.app.gsub /\.app$/, ''
+      Maze::Runner.run_command("log show --predicate '(process == \"#{app_name}\")' --style syslog --start '#{Maze.start_time}' > #{app_name}.log")
+    end
   end
 end

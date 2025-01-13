@@ -9,6 +9,12 @@ namespace BugsnagUnity.Payload
     /// </summary>
     class HandledState : Dictionary<string, object>
     {
+
+        public void UnhandledOverridden()
+        {
+            var severityReason = this["severityReason"] as SeverityReason;
+            severityReason["unhandledOverridden"] = true;
+        }
         /// <summary>
         /// Creates a HandledState object for an error report payload where the exception was not handled by the application
         /// and caught by a global error handler.
@@ -145,6 +151,7 @@ namespace BugsnagUnity.Payload
             {
                 this.AddToPayload("type", type);
                 this.AddToPayload("attributes", attributes);
+                this.AddToPayload("unhandledOverridden",false);
             }
         }
     }
