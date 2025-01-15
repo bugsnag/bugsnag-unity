@@ -30,7 +30,6 @@ steps:
       - label: ":ios: Build iOS test fixture for Unity 6000"
         timeout_in_minutes: 10
         key: "build-ios-fixture-6000"
-        depends_on: "generate-fixture-project-6000"
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.0.0"

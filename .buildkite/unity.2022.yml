@@ -30,7 +30,6 @@ steps:
       - label: ":ios: Build iOS test fixture for Unity 2022"
         timeout_in_minutes: 10
         key: "build-ios-fixture-2022"
-        depends_on: "generate-fixture-project-2022"
         env:
           UNITY_VERSION: *2022
           XCODE_VERSION: "15.3.0"

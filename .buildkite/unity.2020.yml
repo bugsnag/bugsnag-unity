@@ -33,7 +33,6 @@ steps:
       - label: ":ios: Build iOS test fixture for Unity 2020"
         timeout_in_minutes: 10
         key: "build-ios-fixture-2020"
-        depends_on: "generate-fixture-project-2020"
         env:
           XCODE_VERSION: "15.3.0"
           UNITY_VERSION: *2020
