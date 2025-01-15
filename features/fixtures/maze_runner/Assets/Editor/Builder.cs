@@ -72,7 +72,11 @@ public class Builder : MonoBehaviour
     private static void EnableAndroidSymbolUpload()
     {
 #if UNITY_ANDROID
+        #if UNITY_2020_1_OR_NEWER
+        EditorUserBuildSettings.androidCreateSymbolsZip = true;
+        #else
         EditorUserBuildSettings.androidCreateSymbols = AndroidCreateSymbols.Public;
+        #endif
 #endif
         var settingsObject = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
         settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";
