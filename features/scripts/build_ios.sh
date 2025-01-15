@@ -36,9 +36,7 @@ else
   exit 1
 fi
 
-# ------------------------------------------------------------------------------
-# 1. ARCHIVE (equivalent to Product > Archive)
-# ------------------------------------------------------------------------------
+# ARCHIVE (equivalent to Product > Archive)
 xcrun xcodebuild \
   -project "$project_path/$XCODE_PROJECT" \
   -scheme Unity-iPhone \
@@ -55,10 +53,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# ------------------------------------------------------------------------------
-# 2. EXPORT ARCHIVE
-# ------------------------------------------------------------------------------
-xcrun xcodebuild -exportArchive \
+# EXPORT ARCHIVE
   -archivePath "$project_path/archive/Unity-iPhone.xcarchive" \
   -exportPath "$project_path/output/" \
   -exportOptionsPlist "$script_path/exportOptions.plist" \
@@ -69,9 +64,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# ------------------------------------------------------------------------------
-# 3. MOVE IPA TO A KNOWN LOCATION
-# ------------------------------------------------------------------------------
+# MOVE IPA TO A KNOWN LOCATION
 find "$project_path/output/" -name "*.ipa" -exec mv '{}' "$project_path/$OUTPUT_IPA" \;
 
 echo "Successfully built and exported: $OUTPUT_IPA"
