@@ -54,6 +54,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # EXPORT ARCHIVE
+xcrun xcodebuild -exportArchive \
   -archivePath "$project_path/archive/Unity-iPhone.xcarchive" \
   -exportPath "$project_path/output/" \
   -exportOptionsPlist "$script_path/exportOptions.plist" \
