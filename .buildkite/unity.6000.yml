@@ -19,30 +19,9 @@ steps:
             upload:
               - features/fixtures/maze_runner/mazerunner_6000.apk
               - features/fixtures/build_android_apk.log
-        commands:
-          - bundle install
-          - rake test:android:build
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: ":ios: Generate Xcode project - Unity 6000"
-        timeout_in_minutes: 10
-        key: "generate-fixture-project-6000"
-        env:
-          UNITY_VERSION: *6000
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - Bugsnag.unitypackage
-            upload:
-              - features/fixtures/unity.log
-              - project_6000.tgz
-        commands:
-          - bundle install
-          - rake test:ios:generate_xcode
-          - tar -zvcf project_6000.tgz features/fixtures/maze_runner/mazerunner_xcode
+        command:
+              - "bundle install"
+              - "bundle exec maze-runner --os macos features/build/build_android.feature"
         retry:
           automatic:
             - exit_status: "*"
@@ -63,10 +42,9 @@ steps:
             upload:
               - features/fixtures/maze_runner/mazerunner_6000.ipa
               - features/fixtures/unity.log
-        commands:
-          - bundle install
-          - tar -zxf project_6000.tgz features/fixtures/maze_runner
-          - rake test:ios:build_xcode
+        command:
+              - "bundle install"
+              - "bundle exec maze-runner --os macos features/build/build_ios.feature"
         retry:
           automatic:
             - exit_status: "*"
