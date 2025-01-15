@@ -37,7 +37,6 @@ steps:
           artifacts#v1.9.0:
             download:
               - Bugsnag.unitypackage
-              - project_6000.tgz
             upload:
               - features/fixtures/maze_runner/mazerunner_6000.ipa
               - features/fixtures/unity.log
