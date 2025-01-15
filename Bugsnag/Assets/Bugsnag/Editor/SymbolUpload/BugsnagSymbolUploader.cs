@@ -45,7 +45,8 @@ fi
             EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
             try
             {
-                UploadAndroidSymbols(buildOutputPath, config);
+                var bundleId = PlayerSettings.GetApplicationIdentifier(report.summary.platformGroup);
+                UploadAndroidSymbols(buildOutputPath, config, bundleId);
             }
             catch (System.Exception e)
             {
@@ -63,7 +64,7 @@ fi
             return platform == BuildTarget.Android || platform == BuildTarget.iOS || platform == BuildTarget.StandaloneOSX;
         }
 
-        private void UploadAndroidSymbols(string buildOutputPath, BugsnagSettingsObject config)
+        private void UploadAndroidSymbols(string buildOutputPath, BugsnagSettingsObject config, string bundleId)
         {
             if (!IsAndroidSymbolCreationEnabled())
             {
@@ -71,7 +72,7 @@ fi
                 return;
             }
             var cli = new BugsnagCLI();
-            cli.UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode, config.UploadEndpoint);
+            cli.UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode, config.UploadEndpoint, bundleId);
         }
 
         private bool IsAndroidSymbolCreationEnabled()

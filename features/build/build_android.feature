@@ -9,6 +9,8 @@ Feature: Build Android
     And the sourcemap payload field "apiKey" equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the sourcemap payload field "versionCode" equals "123"
     And the sourcemap payload field "versionName" equals "1.2.3"
+    And the sourcemap payload field "appId" equals "com.bugsnag.fixtures.unity.notifier.android"
+    
 
   @unity_2020_only
   Scenario: Auto Symbol Upload Unity 2020
@@ -19,3 +21,4 @@ Feature: Build Android
     And the sourcemap payload field "apiKey" equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
     And the sourcemap payload field "versionCode" equals "123"
     And the sourcemap payload field "versionName" equals "1.2.3"
+    And the sourcemap payload field "appId" equals "com.bugsnag.fixtures.unity.notifier.android"

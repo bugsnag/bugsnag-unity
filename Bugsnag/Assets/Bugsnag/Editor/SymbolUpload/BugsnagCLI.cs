@@ -30,7 +30,7 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint)
+        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint, string bundleId)
         {
             string args = $"upload unity-android --api-key={apiKey} --verbose --project-root={Application.dataPath} {buildOutputPath}";
 
@@ -45,6 +45,10 @@ namespace BugsnagUnity.Editor
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
                 args += $" --upload-api-root-url={uploadEndpoint}";
+            }
+            if (!string.IsNullOrEmpty(bundleId))
+            {
+                args += $" --application-id={bundleId}";
             }
             int exitCode = StartProcess(_cliExecutablePath, args, out string output, out string error);
 
