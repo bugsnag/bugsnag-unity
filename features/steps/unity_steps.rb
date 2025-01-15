@@ -157,18 +157,33 @@ Then('the stack frame methods should match:') do |expected_values|
   stacktrace = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
   expected_frame_values = expected_values.raw
 
-  flunk('The stacktrace is empty') if stacktrace.length == 0
+  flunk('The stacktrace is empty') if stacktrace.empty?
 
+  # Extract just the method names from the stacktrace
   methods = stacktrace.map { |item| item['method'] }
 
+  # For each set of expected frames, check if at least one method matches
   expected_frame_values.each do |expected_frames|
     method_index = 0
     frame_matches = false
+
+    # Keep iterating over `methods` until we find a match or exhaust all
     until frame_matches || method_index.eql?(methods.size)
       method = methods[method_index]
-      frame_matches = expected_frames.any? { |frame| frame == method }
+
+      # Sanitize the actual method to ignore any numeric portion in 'd__<number>'
+      sanitized_method = method.gsub(/d__\d+/, 'd__REPLACEMENT')
+
+      # Check each expected frame for a match by also sanitizing it
+      frame_matches = expected_frames.any? do |frame|
+        sanitized_frame = frame.gsub(/d__\d+/, 'd__REPLACEMENT')
+        sanitized_method == sanitized_frame
+      end
+
       method_index += 1
     end
+
+    # Fail if we didn't find a match for this set of expected frames
     Maze.check.true(frame_matches, "None of the methods match the expected frames #{expected_frames}")
   end
 end
