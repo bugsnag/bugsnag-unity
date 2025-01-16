@@ -5,6 +5,9 @@ using UnityEditor.Build.Reporting;
 #if UNITY_IOS || UNITY_STANDALONE_OSX
 using UnityEditor.iOS.Xcode;
 #endif
+#if UNITY_6000_0_OR_NEWER && UNITY_ANDROID
+using UnityEditor.Android;
+#endif
 using UnityEngine;
 
 namespace BugsnagUnity.Editor
@@ -78,8 +81,10 @@ fi
         private bool IsAndroidSymbolCreationEnabled()
         {
 #if UNITY_ANDROID
-
-#if UNITY_2021_1_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
+    return  UserBuildSettings.DebugSymbols.level == Unity.Android.Types.DebugSymbolLevel.SymbolTable ||
+            UserBuildSettings.DebugSymbols.level == Unity.Android.Types.DebugSymbolLevel.Full;
+#elif UNITY_2021_1_OR_NEWER
             return EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Public ||
                    EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Debugging;
 #else
