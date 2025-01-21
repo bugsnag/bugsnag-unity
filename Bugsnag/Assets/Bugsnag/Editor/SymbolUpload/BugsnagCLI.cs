@@ -8,13 +8,13 @@ namespace BugsnagUnity.Editor
 {
     internal class BugsnagCLI
     {
-        private const string DOWNLOADED_CLI_VERSION = "2.7.0";
+        private const string DOWNLOADED_CLI_VERSION = "2.8.0";
         private readonly string DOWNLOADED_CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
         private readonly string DOWNLOADED_CLI_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{DOWNLOADED_CLI_VERSION}/";
         private readonly string _cliExecutablePath;
         public BugsnagCLI()
         {
-            var config = BugsnagSettingsObject.GetSettingsObject();
+            var config = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
 
             if (string.IsNullOrEmpty(config.BugsnagCLIExecutablePath))
             {
@@ -30,7 +30,7 @@ namespace BugsnagUnity.Editor
             }
         }
 
-        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint)
+        public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint, string bundleId)
         {
             string args = $"upload unity-android --api-key={apiKey} --verbose --project-root={Application.dataPath} {buildOutputPath}";
 
@@ -45,6 +45,10 @@ namespace BugsnagUnity.Editor
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
                 args += $" --upload-api-root-url={uploadEndpoint}";
+            }
+            if (!string.IsNullOrEmpty(bundleId))
+            {
+                args += $" --application-id={bundleId}";
             }
             int exitCode = StartProcess(_cliExecutablePath, args, out string output, out string error);
 
@@ -187,16 +191,12 @@ namespace BugsnagUnity.Editor
             return process.ExitCode;
         }
 
-        public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint, string versionName)
+        public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
         {
             var command = $"{_cliExecutablePath} upload xcode-build --api-key={apiKey} $DWARF_DSYM_FOLDER_PATH";
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
                 command += $" --upload-api-root-url={uploadEndpoint}";
-            }
-            if (!string.IsNullOrEmpty(versionName))
-            {
-                command += $" --app-version={versionName}";
             }
             return command;
         }

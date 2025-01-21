@@ -19,30 +19,9 @@ steps:
             upload:
               - features/fixtures/maze_runner/mazerunner_2022.apk
               - features/fixtures/build_android_apk.log
-        commands:
-          - bundle install
-          - rake test:android:build
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: ":ios: Generate Xcode project - Unity 2022"
-        timeout_in_minutes: 10
-        key: "generate-fixture-project-2022"
-        env:
-          UNITY_VERSION: *2022
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - Bugsnag.unitypackage
-            upload:
-              - features/fixtures/unity.log
-              - project_2022.tgz
-        commands:
-          - bundle install
-          - rake test:ios:generate_xcode
-          - tar -zvcf project_2022.tgz features/fixtures/maze_runner/mazerunner_xcode
+        command:
+              - "bundle install"
+              - "bundle exec maze-runner --os macos features/build/build_android.feature"
         retry:
           automatic:
             - exit_status: "*"
@@ -51,7 +30,6 @@ steps:
       - label: ":ios: Build iOS test fixture for Unity 2022"
         timeout_in_minutes: 10
         key: "build-ios-fixture-2022"
-        depends_on: "generate-fixture-project-2022"
         env:
           UNITY_VERSION: *2022
           XCODE_VERSION: "15.3.0"
@@ -59,14 +37,12 @@ steps:
           artifacts#v1.9.0:
             download:
               - Bugsnag.unitypackage
-              - project_2022.tgz
             upload:
               - features/fixtures/maze_runner/mazerunner_2022.ipa
               - features/fixtures/unity.log
-        commands:
-          - bundle install
-          - tar -zxf project_2022.tgz features/fixtures/maze_runner
-          - rake test:ios:build_xcode
+        command:
+              - "bundle install"
+              - "bundle exec maze-runner --os macos features/build/build_ios.feature"
         retry:
           automatic:
             - exit_status: "*"

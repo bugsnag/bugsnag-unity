@@ -1,12 +1,9 @@
 ﻿using System.Linq;
 using UnityEngine;
-using BugsnagUnity.Editor;
-
-#if UNITY_EDITOR
+using BugsnagUnity;
 using UnityEditor;
-using UnityEditor.Callbacks;
-
-public class Builder : MonoBehaviour {
+public class Builder : MonoBehaviour
+{
 
     static void BuildStandalone(string folder, BuildTarget target, bool dev)
     {
@@ -72,14 +69,37 @@ public class Builder : MonoBehaviour {
         BuildAndroid(true);
     }
 
+    private static void EnableAndroidSymbolUpload()
+    {
+#if UNITY_ANDROID
+        #if UNITY_2020_1_OR_NEWER
+        EditorUserBuildSettings.androidCreateSymbolsZip = true;
+        #else
+        EditorUserBuildSettings.androidCreateSymbols = AndroidCreateSymbols.Public;
+        #endif
+#endif
+        var settingsObject = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
+        settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";
+        settingsObject.StartAutomaticallyAtLaunch = false;
+        settingsObject.AutoUploadSymbols = true;
+        settingsObject.UploadEndpoint = "http://localhost:9339";
+        settingsObject.AppVersion = "1.2.3";
+        settingsObject.VersionCode = 123;
+        EditorUtility.SetDirty(settingsObject);
+    }
+
     public static void AndroidRelease()
     {
+        EnableAndroidSymbolUpload();
         BuildAndroid(false);
     }
     // Generates the Mazerunner APK
     static void BuildAndroid(bool dev)
     {
+#if UNITY_ANDROID
+
         Debug.Log("Building Android app...");
+        PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64;
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.fixtures.unity.notifier.android");
         var opts = CommonMobileBuildOptions(dev ? "mazerunner_dev.apk" : "mazerunner.apk", dev);
         opts.target = BuildTarget.Android;
@@ -90,6 +110,7 @@ public class Builder : MonoBehaviour {
 
         var result = BuildPipeline.BuildPlayer(opts);
         Debug.Log("Result: " + result);
+#endif
     }
 
 
@@ -102,7 +123,19 @@ public class Builder : MonoBehaviour {
 
     public static void IosRelease()
     {
+        EnableIosSymbolUpload();
         IosBuild(false);
+    }
+
+    private static void EnableIosSymbolUpload()
+    {
+        var settingsObject = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
+        settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";
+        settingsObject.StartAutomaticallyAtLaunch = false;
+        settingsObject.AutoUploadSymbols = true;
+        settingsObject.UploadEndpoint = "http://localhost:9339";
+        settingsObject.AppVersion = "1.2.3";
+        EditorUtility.SetDirty(settingsObject);
     }
     static void IosBuild(bool dev)
     {
@@ -121,7 +154,7 @@ public class Builder : MonoBehaviour {
     {
         Debug.Log("Building Switch app...");
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Switch, "com.bugsnag.fixtures.unity.notifier.ios");
-        var opts = CommonMobileBuildOptions("mazerunner.nspd",false);
+        var opts = CommonMobileBuildOptions("mazerunner.nspd", false);
         opts.target = BuildTarget.Switch;
         opts.options = BuildOptions.Development;
 
@@ -145,4 +178,3 @@ public class Builder : MonoBehaviour {
         return opts;
     }
 }
-#endif

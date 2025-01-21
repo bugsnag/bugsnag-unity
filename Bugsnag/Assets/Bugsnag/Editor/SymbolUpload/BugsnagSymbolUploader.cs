@@ -5,6 +5,9 @@ using UnityEditor.Build.Reporting;
 #if UNITY_IOS || UNITY_STANDALONE_OSX
 using UnityEditor.iOS.Xcode;
 #endif
+#if UNITY_6000_0_OR_NEWER && UNITY_ANDROID
+using UnityEditor.Android;
+#endif
 using UnityEngine;
 
 namespace BugsnagUnity.Editor
@@ -34,7 +37,7 @@ fi
                 return;
             }
 
-            var config = BugsnagSettingsObject.GetSettingsObject();
+            var config = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
             if (config == null || !config.AutoUploadSymbols)
             {
                 return;
@@ -45,7 +48,8 @@ fi
             EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
             try
             {
-                UploadAndroidSymbols(buildOutputPath, config);
+                var bundleId = PlayerSettings.GetApplicationIdentifier(report.summary.platformGroup);
+                UploadAndroidSymbols(buildOutputPath, config, bundleId);
             }
             catch (System.Exception e)
             {
@@ -63,7 +67,7 @@ fi
             return platform == BuildTarget.Android || platform == BuildTarget.iOS || platform == BuildTarget.StandaloneOSX;
         }
 
-        private void UploadAndroidSymbols(string buildOutputPath, BugsnagSettingsObject config)
+        private void UploadAndroidSymbols(string buildOutputPath, BugsnagSettingsObject config, string bundleId)
         {
             if (!IsAndroidSymbolCreationEnabled())
             {
@@ -71,14 +75,16 @@ fi
                 return;
             }
             var cli = new BugsnagCLI();
-            cli.UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode, config.UploadEndpoint);
+            cli.UploadAndroidSymbols(buildOutputPath, config.ApiKey, config.AppVersion, config.VersionCode, config.UploadEndpoint, bundleId);
         }
 
         private bool IsAndroidSymbolCreationEnabled()
         {
 #if UNITY_ANDROID
-
-#if UNITY_2021_1_OR_NEWER
+#if UNITY_6000_0_OR_NEWER
+    return  UserBuildSettings.DebugSymbols.level == Unity.Android.Types.DebugSymbolLevel.SymbolTable ||
+            UserBuildSettings.DebugSymbols.level == Unity.Android.Types.DebugSymbolLevel.Full;
+#elif UNITY_2021_1_OR_NEWER
             return EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Public ||
                    EditorUserBuildSettings.androidCreateSymbols == AndroidCreateSymbols.Debugging;
 #else
@@ -134,10 +140,10 @@ fi
         string GetMacosXcodeProjectPath(string outputPath)
         {
             string[] parts = outputPath.Split('/');
-            string xcprojFile = parts[^1] + ".xcodeproj";
+            string xcprojFile = parts[parts.Length - 1] + ".xcodeproj";
             return outputPath + "/" + xcprojFile + "/project.pbxproj";
         }
-        
+
         private string RemoveShellScriptPhase(string project, string guid)
         {
             // Search for and remove the phase object from the XML. only match the guid followed by the braces
@@ -155,7 +161,7 @@ fi
         private string GetDsymUploadCommand(BugsnagSettingsObject config)
         {
             var cli = new BugsnagCLI();
-            var command = cli.GetIosDsymUploadCommand(config.ApiKey, config.UploadEndpoint, config.AppVersion);
+            var command = cli.GetIosDsymUploadCommand(config.ApiKey, config.UploadEndpoint);
             return DSYM_UPLOAD_SCRIPT_TEMPLATE.Replace("<CLI_COMMAND>", command);
         }
     }
