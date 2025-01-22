@@ -1,6 +1,12 @@
 # Changelog
 
-## 8.4.0 (2025-12-10)
+## TBD
+
+### Enhancements
+
+- Add auto symbol uploads for Android and Xcode builds. [#871](https://github.com/bugsnag/bugsnag-unity/pull/871)
+
+## 8.4.0 (2025-12-1)
 
 ### Enhancements
 
