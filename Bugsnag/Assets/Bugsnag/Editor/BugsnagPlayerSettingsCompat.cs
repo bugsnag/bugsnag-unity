@@ -16,6 +16,15 @@ namespace BugsnagUnity.Editor
 #endif
         }
 
+        public static string GetApplicationIdentifier(BuildTargetGroup buildTargetGroup)
+        {
+#if UNITY_6000_0_OR_NEWER
+                return PlayerSettings.GetApplicationIdentifier(NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup));
+#else
+                return PlayerSettings.GetApplicationIdentifier(buildTargetGroup);
+#endif
+        }
+
         // Get Scripting Define Symbols
         public static string GetScriptingDefineSymbols(BuildTargetGroup buildTargetGroup)
         {

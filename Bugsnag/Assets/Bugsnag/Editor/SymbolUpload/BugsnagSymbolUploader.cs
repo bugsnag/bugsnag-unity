@@ -48,7 +48,7 @@ fi
             EditorUtility.DisplayProgressBar("BugSnag Symbol Upload", "Uploading Android symbol files", 0.0f);
             try
             {
-                var bundleId = PlayerSettings.GetApplicationIdentifier(report.summary.platformGroup);
+                var bundleId = BugsnagPlayerSettingsCompat.GetApplicationIdentifier(report.summary.platformGroup);
                 UploadAndroidSymbols(buildOutputPath, config, bundleId);
             }
             catch (System.Exception e)
