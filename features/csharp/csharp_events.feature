@@ -12,7 +12,7 @@ Feature: csharp events
     And the event "unhandled" is false
     And custom metadata is included in the event
     And the stack frame methods should match:
-      | NotifySmokeTest.Run()                                                       | Main+<RunNextMazeCommand>d__8.MoveNext() |
+      | NotifySmokeTest.Run()                                                       | Main+<RunNextMazeCommand>d__8.MoveNext() | BugsnagUnity.Client.Notify(Exception exception, HandledState handledState, Func<T, TResult> callback) |
     And expected device metadata is included in the event
     And expected app metadata is included in the event
     And the error payload field "events.0.severityReason.unhandledOverridden" is false

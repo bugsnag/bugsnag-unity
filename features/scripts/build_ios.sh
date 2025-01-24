@@ -14,15 +14,17 @@ fi
 
 BUILD_TYPE=$1
 
-pushd "${0%/*}"
-  script_path=`pwd`
-popd
-pushd "$script_path/../fixtures"
-project_path=`pwd`/maze_runner
+pushd "${0%/*}" >/dev/null
+  script_path=$(pwd)
+popd >/dev/null
+pushd "$script_path/../fixtures" >/dev/null
+  project_path="$(pwd)/maze_runner"
+popd >/dev/null
 
 # Clean any previous builds
-find $project_path/output/ -name "*.ipa" -exec rm '{}' \;
+find "$project_path/output/" -name "*.ipa" -exec rm '{}' \;
 
+# Determine which Xcode project and IPA name to use
 if [ "$BUILD_TYPE" == "dev" ]; then
   XCODE_PROJECT="mazerunner_dev_xcode/Unity-iPhone.xcodeproj"
   OUTPUT_IPA="mazerunner_dev_${UNITY_VERSION:0:4}.ipa"
@@ -34,33 +36,36 @@ else
   exit 1
 fi
 
-# Archive and export the project
-xcrun xcodebuild -project $project_path/$XCODE_PROJECT \
-                 -scheme Unity-iPhone \
-                 -configuration Debug \
-                 -archivePath $project_path/archive/Unity-iPhone.xcarchive \
-                 -allowProvisioningUpdates \
-                 -allowProvisioningDeviceRegistration \
-                 -quiet \
-                 GCC_WARN_INHIBIT_ALL_WARNINGS=YES \
-                 archive
+# ARCHIVE (equivalent to Product > Archive)
+xcrun xcodebuild \
+  -project "$project_path/$XCODE_PROJECT" \
+  -scheme Unity-iPhone \
+  -configuration Release \
+  clean archive \
+  -archivePath "$project_path/archive/Unity-iPhone.xcarchive" \
+  -allowProvisioningUpdates \
+  -allowProvisioningDeviceRegistration \
+  -quiet \
+  GCC_WARN_INHIBIT_ALL_WARNINGS=YES
 
-if [ $? -ne 0 ]
-then
+if [ $? -ne 0 ]; then
   echo "Failed to archive project"
   exit 1
 fi
 
+# EXPORT ARCHIVE
 xcrun xcodebuild -exportArchive \
-                 -archivePath $project_path/archive/Unity-iPhone.xcarchive \
-                 -exportPath $project_path/output/ \
-                 -quiet \
-                 -exportOptionsPlist $script_path/exportOptions.plist
+  -archivePath "$project_path/archive/Unity-iPhone.xcarchive" \
+  -exportPath "$project_path/output/" \
+  -exportOptionsPlist "$script_path/exportOptions.plist" \
+  -quiet
 
 if [ $? -ne 0 ]; then
   echo "Failed to export app"
   exit 1
 fi
 
-# Move to known location for running (note - the name of the .ipa differs between Xcode versions)
-find $project_path/output/ -name "*.ipa" -exec mv '{}' $project_path/$OUTPUT_IPA \;
+# MOVE IPA TO A KNOWN LOCATION
+find "$project_path/output/" -name "*.ipa" -exec mv '{}' "$project_path/$OUTPUT_IPA" \;
+
+echo "Successfully built and exported: $OUTPUT_IPA"
