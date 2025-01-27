@@ -1,6 +1,6 @@
 # Changelog
 
-## 8.5.0 (2025-27-01)
+## 8.5.0 (2025-01-27)
 
 You can now automatically upload all your Android and iOS files for stacktrace symbolication in a few simple steps. Please see our online docs for information on how to enable this feature or script it yourself: https://docs.bugsnag.com/platforms/unity/showing-full-stacktraces/
 
