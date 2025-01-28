@@ -15,7 +15,7 @@ namespace BugsnagUnity.Editor
 
         private bool _showBasicConfig = true;
 
-        private bool _showAdvancedSettings, _showAppInformation, _showEndpoints, _showEnabledErrorTypes, _showSwitch;
+        private bool _showAdvancedSettings, _showAppInformation, _showEndpoints, _showEnabledErrorTypes, _showSwitch, _showSymbolUpload;
 
         public Texture DarkIcon, LightIcon;
 
@@ -116,6 +116,13 @@ namespace BugsnagUnity.Editor
                 DrawSwitchOptions(so);
             }
 
+            GUILayout.Space(5);
+            _showSymbolUpload = EditorGUILayout.Foldout(_showSymbolUpload, new GUIContent("Automatic Symbol Upload ⓘ", "Android and Xcode builds only"), true);
+            if (_showSymbolUpload)
+            {
+                DrawSymbolUploadOptions(so);
+            }
+
             GUILayout.Space(10);
 
             GUILayout.EndVertical();
@@ -141,12 +148,14 @@ namespace BugsnagUnity.Editor
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(so.FindProperty("NotifyEndpoint"));
             EditorGUILayout.PropertyField(so.FindProperty("SessionEndpoint"));
+            EditorGUILayout.PropertyField(so.FindProperty("UploadEndpoint"));
             EditorGUI.indentLevel--;
         }
 
         private void DrawAppInfo(SerializedObject so, BugsnagSettingsObject settings)
         {
             EditorGUI.indentLevel++;
+            EditorGUIUtility.labelWidth = 270;
             EditorGUILayout.PropertyField(so.FindProperty("AppType"));
             EditorGUILayout.PropertyField(so.FindProperty("AppVersion"));
             EditorGUILayout.PropertyField(so.FindProperty("ReleaseStage"));
@@ -196,10 +205,20 @@ namespace BugsnagUnity.Editor
         private void DrawSwitchOptions(SerializedObject so)
         {
             EditorGUI.indentLevel++;
+            EditorGUIUtility.labelWidth = 270;
             EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheIndex"));
             EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheMaxSize"));
             EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheMountName"));
             EditorGUILayout.PropertyField(so.FindProperty("SwitchCacheType"));
+            EditorGUI.indentLevel--;
+        }
+
+        private void DrawSymbolUploadOptions(SerializedObject so)
+        {
+            EditorGUI.indentLevel++;
+            EditorGUIUtility.labelWidth = 270;
+            EditorGUILayout.PropertyField(so.FindProperty("AutoUploadSymbols"));
+            EditorGUILayout.PropertyField(so.FindProperty("BugsnagCLIExecutablePath"));
             EditorGUI.indentLevel--;
         }
 

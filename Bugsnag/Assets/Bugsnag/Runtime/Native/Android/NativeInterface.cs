@@ -1140,7 +1140,7 @@ namespace BugsnagUnity
                         return true;
                     }
                 }
-                catch (System.Exception _)
+                catch
                 { // use legacy API on older versions
                     return false;
                 }

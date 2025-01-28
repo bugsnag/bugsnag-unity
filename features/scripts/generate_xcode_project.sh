@@ -22,7 +22,7 @@ popd
 
 pushd "$script_path/../fixtures"
 
-DEFAULT_CLI_ARGS="-quit -nographics -batchmode -logFile unity.log"
+DEFAULT_CLI_ARGS="-quit -nographics -batchmode -logFile unity.log -buildTarget iOS"
 
 project_path=`pwd`/maze_runner
 
