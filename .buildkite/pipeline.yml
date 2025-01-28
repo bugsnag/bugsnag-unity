@@ -20,32 +20,7 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: 'Run size impact reporting'
-    depends_on: build_unitypackage
-    timeout_in_minutes: 30
-    env:
-      UNITY_VERSION: *2021
-    plugins:
-      'artifacts#v1.9.0':
-        download:
-          - Bugsnag.unitypackage
-    commands:
-      features/scripts/do_size_test.sh
-
-  - label: 'Append Unity 2021 Pipeline'
-    depends_on: build_unitypackage
-    agents:
-      queue: macos
+  - label: 'Append Unity 6000 Pipeline'
     timeout_in_minutes: 2
     commands:
-        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
-
-  #
-  # Conditionally trigger full pipeline
-  #
-  - label: "Conditionally trigger full set of tests"
-    depends_on: build_unitypackage
-    agents:
-      queue: macos
-    timeout_in_minutes: 2
-    command: sh -c .buildkite/pipeline_trigger.sh
+        - buildkite-agent pipeline upload .buildkite/unity.6000.yml
