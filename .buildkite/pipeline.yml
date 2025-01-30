@@ -13,8 +13,11 @@ steps:
     commands:
       - bundle install
       - bundle exec rake plugin:export
+      - zip -r upm-package.zip upm-package
     artifact_paths:
       - Bugsnag.unitypackage
+      - upm-package.zip
+
     retry:
       automatic:
         - exit_status: "*"
