@@ -52,3 +52,23 @@ steps:
       queue: macos
     timeout_in_minutes: 2
     command: sh -c .buildkite/pipeline_trigger.sh
+
+      #
+      # test UPM import
+      #
+  - label: "Test UPM Package Import"
+    depends_on: build_unitypackage
+    timeout_in_minutes: 10
+    env:
+      UNITY_VERSION: *2021
+    key: "import-upm-2020"
+    env:
+      UNITY_VERSION: *2020
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - upm-package.zip
+        upload:
+          - upm-import.log
+    commands:
+          - "features/scripts/test_upm_package_import.sh"
