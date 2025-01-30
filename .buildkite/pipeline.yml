@@ -62,8 +62,6 @@ steps:
     env:
       UNITY_VERSION: *2021
     key: "import-upm-2020"
-    env:
-      UNITY_VERSION: *2020
     plugins:
       artifacts#v1.9.0:
         download:
