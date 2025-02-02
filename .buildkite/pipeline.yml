@@ -28,7 +28,7 @@ steps:
     timeout_in_minutes: 10
     env:
       UNITY_VERSION: *2021
-    key: "import-upm-2020"
+    key: "import-upm-2021"
     plugins:
       artifacts#v1.9.0:
         download:
