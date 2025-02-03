@@ -1,0 +1,60 @@
+name: update-cli
+
+on:
+  repository_dispatch:
+    types: [update-cli]
+  workflow_dispatch:
+    inputs:
+      target_version:
+        description: 'Version of the CLI to update to'
+        required: true
+        type: string
+
+jobs:
+  update-cli:
+    runs-on: ubuntu-latest
+    env:
+      # If triggered via repository_dispatch, read from payload;
+      # otherwise, read from workflow_dispatch input:
+      CLI_VERSION: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.cli_version || inputs.cli_version }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          # Or 'main' or 'next' or whichever branch is your baseline
+          ref: next
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "Bumpsnag Bot"
+          git config --global user.email ""
+
+      - name: Fetch full history
+        run: git fetch --prune --unshallow
+
+      - name: Install Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Install dependencies
+        run: bundle install
+
+      - name: Create update branch
+        run: |
+          git checkout -b cli-bump-${{ env.CLI_VERSION }} next
+
+      - name: Update the CLI reference
+        run: |
+          echo "Bumping CLI to version $CLI_VERSION"
+          bundle exec rake "bump:cli[$CLI_VERSION]"
+
+      - name: Commit & create PR
+        run: |
+          # This command auto-commits changes, pushes a branch,
+          # and creates a pull request. You can pass options
+          # like --title or --base if needed. Example:
+          bundle exec bumpsnag commit-update \
+            --branch-name "cli-bump-${CLI_VERSION}" \
+            --pr-title "Bump CLI to v${CLI_VERSION}" \
+            --pr-base "next"
