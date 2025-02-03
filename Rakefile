@@ -540,3 +540,25 @@ namespace :test do
     end
   end
 end 
+
+namespace :bump do
+  desc "Bump the CLI version in BugsnagCLI.cs. Usage: rake 'bump:cli[3.0.0]'"
+  task :cli, [:new_version] do |t, args|
+    unless args[:new_version]
+      raise "Please provide a version. Example: rake 'bump:cli[3.0.0]'"
+    end
+
+    cli_file = File.join("Bugsnag", "Assets", "Bugsnag", "Editor", "SymbolUpload", "BugsnagCLI.cs")
+    old_content = File.read(cli_file)
+
+    # Replace the line with the new version
+    new_content = old_content.gsub(
+      /private const string DOWNLOADED_CLI_VERSION = ".*";/,
+      "private const string DOWNLOADED_CLI_VERSION = \"#{args[:new_version]}\";"
+    )
+
+    File.write(cli_file, new_content)
+
+    puts "Successfully updated DOWNLOADED_CLI_VERSION to '#{args[:new_version]}' in #{cli_file}"
+  end
+end
