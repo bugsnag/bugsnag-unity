@@ -1,5 +1,5 @@
 aliases:
-  - &2021 "2021.3.36f1"
+  - &2021 "2021.3.45f1"
 
 agents:
   queue: macos-14
