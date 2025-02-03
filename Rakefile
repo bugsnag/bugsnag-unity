@@ -247,6 +247,23 @@ def update_package_git(package_dir)
   end
 end
 
+def build_upm_package
+  assembly_info_path = File.join("Bugsnag", "Assets", "Bugsnag", "Runtime", "AssemblyInfo.cs")
+  version_match = File.read(assembly_info_path).match(/AssemblyVersion\("(\d+\.\d+\.\d+)/)
+
+  unless version_match
+    raise "Could not extract version from #{assembly_info_path}"
+  end
+
+  version = version_match[1]
+  script = File.join("upm", "build-upm-package.sh")
+  command = "#{script} #{version}"
+
+  unless system command
+    raise 'build upm package failed'
+  end
+end
+
 namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
@@ -414,6 +431,7 @@ namespace :plugin do
     Rake::Task["plugin:build:native_plugins"].invoke unless is_windows?
     run_unit_tests
     export_package("Bugsnag.unitypackage")
+    build_upm_package
   end
 end
 
