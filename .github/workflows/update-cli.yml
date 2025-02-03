@@ -49,12 +49,12 @@ jobs:
           echo "Bumping CLI to version $CLI_VERSION"
           bundle exec rake "bump:cli[$CLI_VERSION]"
 
-      - name: Commit & create PR
-        run: |
-          # This command auto-commits changes, pushes a branch,
-          # and creates a pull request. You can pass options
-          # like --title or --base if needed. Example:
-          bundle exec bumpsnag commit-update \
-            --branch-name "cli-bump-${CLI_VERSION}" \
-            --pr-title "Bump CLI to v${CLI_VERSION}" \
-            --pr-base "next"
+      - run: bundle exec bumpsnag commit-update CLI $CLI_VERSION
+
+      - name: Create pull request
+        run: >
+         gh pr create -B next
+         -H bumpsnag-CLI-$CLI_VERSION
+         --title "Update CLI to version $CLI_VERSION"
+         --body 'Created by bumpsnag'
+         --reviewer rich-bugsnag
