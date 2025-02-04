@@ -5,7 +5,7 @@ on:
     types: [update-cli]
   workflow_dispatch:
     inputs:
-      target_version:
+      cli_version:
         description: 'Version of the CLI to update to'
         required: true
         type: string
