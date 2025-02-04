@@ -14,8 +14,6 @@ jobs:
   update-cli:
     runs-on: ubuntu-latest
     env:
-      # If triggered via repository_dispatch, read from payload;
-      # otherwise, read from workflow_dispatch input:
       RAW_VERSION: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.cli_version || inputs.cli_version }}
       BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_ACCESS_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -33,14 +31,6 @@ jobs:
       - name: Fetch full history
         run: git fetch --prune --unshallow
 
-      - name: Install Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-
-      - name: Install dependencies
-        run: bundle install
-
       - name: Remove leading 'v'
         shell: bash
         run: |
@@ -55,7 +45,11 @@ jobs:
           echo "Bumping CLI to version $CLI_VERSION"
           bundle exec rake "bump:cli[$CLI_VERSION]"
 
-      - run: bundle exec bumpsnag commit-update CLI $CLI_VERSION
+      - name: Create bump commit
+        run: |
+          git add Bugsnag/Assets/Bugsnag/Editor/SymbolUpload/BugsnagCLI.cs
+          git commit -m "Update BugsnagCLI version number"
+          git push origin cli-bump-${CLI_VERSION}
 
       - name: Create pull request
         run: >
@@ -64,3 +58,6 @@ jobs:
           --title "Update CLI to version $CLI_VERSION"
           --body 'Created by bumpsnag'
           --reviewer rich-bugsnag
+
+
+          Bugsnag/Assets/Bugsnag/Editor/SymbolUpload/BugsnagCLI.cs
