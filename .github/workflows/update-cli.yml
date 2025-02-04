@@ -44,7 +44,7 @@ jobs:
         run: |
           echo "Bumping CLI to version $CLI_VERSION"
           ls
-          ./scripts/bump_cli.sh "$CLI_VERSION"
+          sed -i -E "s/private const string DOWNLOADED_CLI_VERSION = \".*\";/private const string DOWNLOADED_CLI_VERSION = \"$CLI_VERSION\";/g" Bugsnag/Assets/Bugsnag/Editor/SymbolUpload/BugsnagCLI.cs
 
       - name: Create bump commit
         run: |
