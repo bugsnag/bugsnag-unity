@@ -14,6 +14,7 @@ jobs:
   update-cli:
     runs-on: ubuntu-latest
     env:
+      TARGET_REPO: "bugsnag-cli"
       RAW_VERSION: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.cli_version || inputs.cli_version }}
       BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_ACCESS_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,14 +55,14 @@ jobs:
 
       - name: Create bump commit
         run: |
-          bundle exec bumpsnag commit-update bugsnag-cli $RAW_VERSION 
+          bundle exec bumpsnag commit-update $TARGET_REPO $RAW_VERSION
 
       - name: Create pull request
         if: ${{ steps.current-branch.outputs.branch != 'next'}}
         run: >
          gh pr create -B next
-         -H bumpsnag-bugsnag-cli-$RAW_VERSION
-         --title "Update bugsnag-cli to version $RAW_VERSION"
+         -H bumpsnag-$TARGET_REPO-$RAW_VERSION
+         --title "Update $TARGET_REPO to version $RAW_VERSION"
          --body 'Created by bumpsnag'
          --reviewer richardelms
 
