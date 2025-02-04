@@ -30,6 +30,9 @@ jobs:
           git config --global user.name "Bumpsnag Bot"
           git config --global user.email ""
 
+      - name: get git history
+        run: git fetch --prune --unshallow
+
       - name: Install ruby
         uses: ruby/setup-ruby@v1
         with:
