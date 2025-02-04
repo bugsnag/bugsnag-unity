@@ -54,7 +54,7 @@ jobs:
 
       - name: Create bump commit
         run: |
-          bundle exec bumpsnag commit_update bugsnag-cli $RAW_VERSION 
+          bundle exec bumpsnag commit-update bugsnag-cli $RAW_VERSION 
 
       - name: Create pull request
         if: ${{ steps.current-branch.outputs.branch != 'next'}}
