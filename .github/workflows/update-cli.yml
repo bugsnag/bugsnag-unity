@@ -43,7 +43,7 @@ jobs:
       - name: Update the CLI reference
         run: |
           echo "Bumping CLI to version $CLI_VERSION"
-          bundle exec rake "bump:cli[$CLI_VERSION]"
+          scripts/bump_cli.sh "$CLI_VERSION"
 
       - name: Create bump commit
         run: |
