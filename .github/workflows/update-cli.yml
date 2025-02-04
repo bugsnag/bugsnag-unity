@@ -42,34 +42,27 @@ jobs:
       - name: Install dependencies
         run: bundle install
 
-      # - name: Remove leading 'v'
-      #   shell: bash
-      #   run: |
-      #     echo "CLI_VERSION=${RAW_VERSION#v}" >> $GITHUB_ENV
+      - name: Remove leading 'v'
+        shell: bash
+        run: |
+          echo "CLI_VERSION=${RAW_VERSION#v}" >> $GITHUB_ENV
 
-      # - name: Create update branch
-      #   run: |
-      #     git checkout -b cli-bump-${CLI_VERSION} next
+      - name: Update the CLI reference
+        run: |
+          echo "Bumping CLI to version $CLI_VERSION"
+          sed -i -E "s/private const string DOWNLOADED_CLI_VERSION = \".*\";/private const string DOWNLOADED_CLI_VERSION = \"$CLI_VERSION\";/g" Bugsnag/Assets/Bugsnag/Editor/SymbolUpload/BugsnagCLI.cs
 
-      # - name: Update the CLI reference
-      #   run: |
-      #     echo "Bumping CLI to version $CLI_VERSION"
-      #     sed -i -E "s/private const string DOWNLOADED_CLI_VERSION = \".*\";/private const string DOWNLOADED_CLI_VERSION = \"$CLI_VERSION\";/g" Bugsnag/Assets/Bugsnag/Editor/SymbolUpload/BugsnagCLI.cs
+      - name: Create bump commit
+        run: |
+          bundle exec bumpsnag commit_update bugsnag-cli $RAW_VERSION 
 
-      # - name: Create Changelog Entry
-
-      # - name: Create bump commit
-      #   run: |
-      #     git add Bugsnag/Assets/Bugsnag/Editor/SymbolUpload/BugsnagCLI.cs
-      #     git commit -m "Update BugsnagCLI version number"
-      #     git push origin cli-bump-${CLI_VERSION}
-
-      # - name: Create pull request
-      #   run: >
-      #     gh pr create -B next
-      #     -H cli-bump-${CLI_VERSION}
-      #     --title "Update CLI to version $CLI_VERSION"
-      #     --body 'Created by bumpsnag'
-      #     --reviewer richardelms
+      - name: Create pull request
+        if: ${{ steps.current-branch.outputs.branch != 'next'}}
+        run: >
+         gh pr create -B next
+         -H bumpsnag-bugsnag-cli-$RAW_VERSION
+         --title "Update bugsnag-cli to version $RAW_VERSION"
+         --body 'Created by bumpsnag'
+         --reviewer richardelms
 
 
