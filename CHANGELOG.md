@@ -1,9 +1,14 @@
 # Changelog
 
+## TBD
+
+### Dependencies
+
+Update bugsnag-cocoa to [v6.32.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.0) [#881](https://github.com/bugsnag/bugsnag-unity/pull/881)
+
 ## 8.5.0 (2025-01-27)
 
 You can now automatically upload all your Android and iOS files for stacktrace symbolication in a few simple steps. Please see our online docs for information on how to enable this feature or script it yourself: https://docs.bugsnag.com/platforms/unity/showing-full-stacktraces/
-
 ### Enhancements
 
 - Add auto symbol uploads for Android and Xcode builds. [#871](https://github.com/bugsnag/bugsnag-unity/pull/871)
@@ -17,7 +22,6 @@ You can now automatically upload all your Android and iOS files for stacktrace s
 ### Bug Fixes
 
 - Fixed an issue where Android minification was removing some classes from the native BugSnag Android SDK. [#867](https://github.com/bugsnag/bugsnag-unity/pull/867)
-
 - Fixed an issue where session handled/unhandled event counts were not updated if the handled status of the event was changed in a callback and send unhandledOveridden in the error payload [#865](https://github.com/bugsnag/bugsnag-unity/pull/865)
 
 ## 8.3.1 (2024-12-09)
@@ -31,7 +35,6 @@ You can now automatically upload all your Android and iOS files for stacktrace s
 ### Enhancements
 
 - Added support for Unity V6. [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
-
 - Changed from shipping the C# layer of the SDK as precomiled DLLs to shipping source. Please see the PR description for a full list of the benefits. [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
 
 ### Dependencies
@@ -39,7 +42,6 @@ You can now automatically upload all your Android and iOS files for stacktrace s
 - Update bugsnag-cocoa to [v6.30.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.30.2) [#849](https://github.com/bugsnag/bugsnag-unity/pull/849)
 - Update bugsnag-android to [v6.10.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.10.0) [#854](https://github.com/bugsnag/bugsnag-unity/pull/854)
 - Updated BugsnagUnityWebRequest to remove deprecation warnings and add new PostWwwForm methods introduced in Unity 2022.2 [#847](https://github.com/bugsnag/bugsnag-unity/pull/847)
-
 
 ## 8.2.0 (2024-09-23)
 
