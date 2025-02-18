@@ -1,6 +1,7 @@
 #if (UNITY_ANDROID && !UNITY_EDITOR) || BSG_ANDROID_DEV
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
+        private const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
+
         public Configuration Configuration { get; }
 
         public IBreadcrumbs Breadcrumbs { get; }
@@ -56,7 +59,7 @@ namespace BugsnagUnity
             {
                 user.Payload.AddToPayload(entry.Key, entry.Value.ToString());
             }
-        }       
+        }
 
         private void MergeDictionaries(IDictionary<string, object> dest, IDictionary<string, object> another)
         {
@@ -128,7 +131,7 @@ namespace BugsnagUnity
 
         public void AddNativeMetadata(string section, IDictionary<string, object> data)
         {
-            NativeInterface.AddMetadata(section,data);   
+            NativeInterface.AddMetadata(section,data);
         }
 
         public void AddFeatureFlag(string name, string variant = null)
@@ -164,9 +167,144 @@ namespace BugsnagUnity
             NativeInterface.RegisterForOnSessionCallbacks();
         }
 
+        private StackTraceLine[] ToStackFrames(System.Exception exception, IntPtr[] nativeAddresses, String mainImageFileName, String mainImageUuid)
+        {
+            StackTraceLine[] lines;
+            if (!string.IsNullOrEmpty(exception.StackTrace))
+            {
+                lines = new PayloadStackTrace(exception.StackTrace).StackTraceLines;
+            }
+            else
+            {
+                return new StackTraceLine[0];
+            }
+
+            var StackTraceLength = nativeAddresses.Length;
+            StackTraceLine[] Trace = new StackTraceLine[StackTraceLength];
+
+            for (int i = 0; i < StackTraceLength; i++)
+            {
+                StackTraceLine Frame = new StackTraceLine();
+
+                Frame.File = mainImageFileName;
+                Frame.Method = lines[i].Method;
+                Frame.FrameAddress = string.Format("0x{0:X}", nativeAddresses[i].ToInt64());
+                Frame.LoadAddress = "0x0";
+                Frame.CodeIdentifier = mainImageUuid;
+                Frame.Type = "c";
+
+                // we mark every stack frame as "PC" so that the addresses are not adjusted
+                Frame.IsPc = true;
+
+                Trace[i] = Frame;
+            }
+
+            return Trace;
+        }
+
+#if ENABLE_IL2CPP && UNITY_2023_1_OR_NEWER
+
+        [DllImport("__Internal")]
+        private static extern IntPtr il2cpp_gchandle_get_target(IntPtr gchandle);
+        private static IntPtr Il2cpp_GHandle_Get_Target(IntPtr gchandle) => il2cpp_gchandle_get_target(gchandle);
+
+#elif ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
+
+        [DllImport("__Internal")]
+        private static extern IntPtr il2cpp_gchandle_get_target(int gchandle);
+        private static IntPtr Il2cpp_GHandle_Get_Target(IntPtr gchandle) => il2cpp_gchandle_get_target(gchandle.ToInt32());
+
+#endif
+
+#if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
+
+        [DllImport("__Internal")]
+        private static extern void il2cpp_free(IntPtr ptr);
+
+        [DllImport("__Internal")]
+        private static extern void il2cpp_native_stack_trace(IntPtr exc, out IntPtr addresses, out int numFrames, out IntPtr imageUUID, out IntPtr imageName);
+
+#endif
+
+        #nullable enable
+        private static string? ExtractString(IntPtr pString)
+        {
+            return (pString == IntPtr.Zero) ? null : Marshal.PtrToStringAnsi(pString);
+        }
+
         public StackTraceLine[] ToStackFrames(System.Exception exception)
         {
-            return new StackTraceLine[0];
+             var notFound = new StackTraceLine[0];
+             if (exception == null)
+             {
+                 return notFound;
+             }
+
+             var errorClass = exception.GetType().Name;
+             if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
+             {
+                return notFound;
+             }
+
+ #if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
+             var hException = GCHandle.Alloc(exception);
+             var pNativeAddresses = IntPtr.Zero;
+             var pImageUuid = IntPtr.Zero;
+             var pImageName = IntPtr.Zero;
+             try
+             {
+                 if (hException == null)
+                 {
+                     return notFound;
+                 }
+
+                 var pException = Il2cpp_GHandle_Get_Target(GCHandle.ToIntPtr(hException));
+
+                 if (pException == IntPtr.Zero)
+                 {
+                     return notFound;
+                 }
+
+                 var frameCount = 0;
+                 string? mainImageFileName = null;
+                 string? mainImageUuid = null;
+
+                 il2cpp_native_stack_trace(pException, out pNativeAddresses, out frameCount, out pImageUuid, out pImageName);
+                 if (pNativeAddresses == IntPtr.Zero)
+                 {
+                     return notFound;
+                 }
+
+                 mainImageFileName = ExtractString(pImageName);
+                 mainImageUuid = ExtractString(pImageUuid);
+
+                 var nativeAddresses = new IntPtr[frameCount];
+                 Marshal.Copy(pNativeAddresses, nativeAddresses, 0, frameCount);
+
+                 return ToStackFrames(exception, nativeAddresses, mainImageFileName, mainImageUuid);
+             }
+             finally
+             {
+                 if (pImageUuid != IntPtr.Zero)
+                 {
+                     il2cpp_free(pImageUuid);
+                 }
+                 if (pImageName != IntPtr.Zero)
+                 {
+                     il2cpp_free(pImageName);
+                 }
+                 if (pNativeAddresses != IntPtr.Zero)
+                 {
+                     il2cpp_free(pNativeAddresses);
+                 }
+                 if (hException != null)
+                 {
+                     hException.Free();
+                 }
+             }
+ #else
+             return notFound;
+ #endif
         }
     }
 
