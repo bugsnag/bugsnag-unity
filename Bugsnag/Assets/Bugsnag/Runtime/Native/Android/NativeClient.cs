@@ -186,7 +186,7 @@ namespace BugsnagUnity
             {
                 StackTraceLine Frame = new StackTraceLine();
 
-                Frame.File = mainImageFileName;
+                Frame.File = TrimFilenameIfRequired(mainImageFileName);
                 Frame.Method = lines[i].Method;
                 Frame.FrameAddress = string.Format("0x{0:X}", nativeAddresses[i].ToInt64());
                 Frame.LoadAddress = "0x0";
@@ -200,6 +200,25 @@ namespace BugsnagUnity
             }
 
             return Trace;
+        }
+
+        private string TrimFilenameIfRequired(string filename)
+        {
+            // trim any excess characters from the filename that may appear after the `.so` extension
+            const string extension = ".so";
+            var lastSlashIndex = filename.LastIndexOf('/');
+            if (lastSlashIndex == -1)
+            {
+                return filename;
+            }
+
+            var extensionIndex = filename.LastIndexOf(extension, lastSlashIndex + 1);
+            if (extensionIndex == -1)
+            {
+                return filename;
+            }
+
+            return filename.Substring(0, extensionIndex + extension.Length);
         }
 
 #if ENABLE_IL2CPP && UNITY_2023_1_OR_NEWER
