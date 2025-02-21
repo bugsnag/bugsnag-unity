@@ -14,9 +14,11 @@ steps:
       - bundle install
       - bundle exec rake plugin:export
       - zip -r upm-package.zip upm-package
+      - zip -r upm-edm4u-package.zip upm-edm4u-package
     artifact_paths:
       - Bugsnag.unitypackage
       - upm-package.zip
+      - upm-edm4u-package.zip
 
     retry:
       automatic:

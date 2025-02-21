@@ -264,6 +264,14 @@ def build_upm_package
   end
 end
 
+def build_upm_edm4u_package
+  script = File.join("upm", "build-upm-package.sh")
+  command = "#{script}"
+  unless system command
+    raise 'build upm edm4u package failed'
+  end
+end
+
 namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
@@ -432,6 +440,7 @@ namespace :plugin do
     run_unit_tests
     export_package("Bugsnag.unitypackage")
     build_upm_package
+    build_upm_edm4u_package
   end
 end
 
