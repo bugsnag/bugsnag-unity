@@ -9,7 +9,7 @@ public class Test : MonoBehaviour
     void Start()
     {
         Bugsnag.Start(GetDefaultConfig());
-        throw new System.Exception("EDM");
+        throw new System.Exception("EDM4U");
     }
 
     private Configuration GetDefaultConfig()
