@@ -40,3 +40,22 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
                   -importPackage $script_path/../../Bugsnag.unitypackage
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+
+cd maze_runner/packages
+rm -rf performance-package
+git clone https://github.com/bugsnag/bugsnag-unity-performance-upm.git performance-package
+
+
+# Open the Unity fixture
+echo "Opening Unity fixture..."
+$UNITY_PATH/Unity -projectPath $project_path &
+
+UNITY_PID=$!
+echo "Unity running with PID $UNITY_PID"
+
+# Wait for 10 seconds
+sleep 40
+
+# Close the Unity fixture
+echo "Closing Unity fixture..."
+kill $UNITY_PID
