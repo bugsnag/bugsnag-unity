@@ -265,7 +265,7 @@ def build_upm_package
 end
 
 def build_upm_edm4u_package
-  script = File.join("upm", "build-upm-package.sh")
+  script = File.join("upm", "build-edm-package.sh")
   command = "#{script}"
   unless system command
     raise 'build upm edm4u package failed'
