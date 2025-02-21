@@ -10,6 +10,11 @@ namespace BugsnagUnity.Editor
 
         static BugsnagAddScriptingSymbol()
         {
+            AddScriptingSymbol();
+        }
+
+        public static void AddScriptingSymbol()
+        {
             foreach (var target in _supportedPlatforms)
             {
                 try

@@ -2,8 +2,18 @@
 using UnityEngine;
 using BugsnagUnity;
 using UnityEditor;
+using BugsnagUnity.Editor;
+using UnityEditor.Compilation;
 public class Builder : MonoBehaviour
 {
+
+    // This method is what you'll call from the command line:
+    public static void EnsureScriptingSymbolIsSet()
+    {
+        BugsnagAddScriptingSymbol.AddScriptingSymbol();
+        AssetDatabase.Refresh();
+        CompilationPipeline.RequestScriptCompilation();
+    }
 
     static void BuildStandalone(string folder, BuildTarget target, bool dev)
     {
@@ -72,11 +82,11 @@ public class Builder : MonoBehaviour
     private static void EnableAndroidSymbolUpload()
     {
 #if UNITY_ANDROID
-        #if UNITY_2020_1_OR_NEWER
+#if UNITY_2020_1_OR_NEWER
         EditorUserBuildSettings.androidCreateSymbolsZip = true;
-        #else
+#else
         EditorUserBuildSettings.androidCreateSymbols = AndroidCreateSymbols.Public;
-        #endif
+#endif
 #endif
         var settingsObject = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
         settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";

@@ -41,6 +41,16 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
+
+# Ensure scripting symbol is set
+echo "Ensure scripting symbol is set"
+$UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
+                  -projectPath $project_path \
+                  -executeMethod Builder.EnsureScriptingSymbolIsSet
+RESULT=$?
+if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+
+echo "Add bugsnag performance"
 cd maze_runner/packages
 rm -rf performance-package
 git clone https://github.com/bugsnag/bugsnag-unity-performance-upm.git performance-package
