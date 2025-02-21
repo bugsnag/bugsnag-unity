@@ -1,5 +1,6 @@
 #if (UNITY_ANDROID && !UNITY_EDITOR) || BSG_ANDROID_DEV
 using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
@@ -10,6 +11,8 @@ namespace BugsnagUnity
     class NativeClient : INativeClient
     {
         private const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
+
+        private const int IL2CPP_BUILD_ID_MAX_LENGTH = 40;
 
         public Configuration Configuration { get; }
 
@@ -186,7 +189,7 @@ namespace BugsnagUnity
             {
                 StackTraceLine Frame = new StackTraceLine();
 
-                Frame.File = TrimFilenameIfRequired(mainImageFileName);
+                Frame.File = mainImageFileName;
                 Frame.Method = lines[i].Method;
                 Frame.FrameAddress = string.Format("0x{0:X}", nativeAddresses[i].ToInt64());
                 Frame.LoadAddress = "0x0";
@@ -200,25 +203,6 @@ namespace BugsnagUnity
             }
 
             return Trace;
-        }
-
-        private string TrimFilenameIfRequired(string filename)
-        {
-            // trim any excess characters from the filename that may appear after the `.so` extension
-            const string extension = ".so";
-            var lastSlashIndex = filename.LastIndexOf('/');
-            if (lastSlashIndex == -1)
-            {
-                return filename;
-            }
-
-            var extensionIndex = filename.LastIndexOf(extension, lastSlashIndex + 1);
-            if (extensionIndex == -1)
-            {
-                return filename;
-            }
-
-            return filename.Substring(0, extensionIndex + extension.Length);
         }
 
 #if ENABLE_IL2CPP && UNITY_2023_1_OR_NEWER
@@ -246,9 +230,50 @@ namespace BugsnagUnity
 #endif
 
         #nullable enable
-        private static string? ExtractString(IntPtr pString)
+        private static string? ExtractString(IntPtr pString, Int32 iLimit)
         {
-            return (pString == IntPtr.Zero) ? null : Marshal.PtrToStringAnsi(pString);
+            return (pString == IntPtr.Zero) ? null : Marshal.PtrToStringAnsi(pString, iLimit);
+        }
+
+        private static Int32 FindStringTerminator(IntPtr pString, string terminator)
+        {
+            if (pString == IntPtr.Zero)
+            {
+                return 0;
+            }
+
+            var i = 0;
+            var terminatorIndex = 0;
+            while (true)
+            {
+                var b = Marshal.ReadByte(pString, i);
+
+                if (b == 0)
+                {
+                    break;
+                }
+
+                // next index
+                i++;
+
+                var ch = Convert.ToChar(b);
+
+                if (terminator[terminatorIndex] == ch)
+                {
+                    terminatorIndex++;
+
+                    if (terminatorIndex == terminator.Length)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    terminatorIndex = 0;
+                }
+            }
+
+            return i;
         }
 
         public StackTraceLine[] ToStackFrames(System.Exception exception)
@@ -294,8 +319,13 @@ namespace BugsnagUnity
                      return notFound;
                  }
 
-                 mainImageFileName = ExtractString(pImageName);
-                 mainImageUuid = ExtractString(pImageUuid);
+                 // Marshal.PtrToStringAnsi without a limit is unsafe due to an off-by-one error where `strncpy` is
+                 // incorrectly given `strlen` instead of `strlen + 1`, so we look for ".so" as a terminator (or NULL
+                 // whichever comes first)
+
+                 var iMainImageFileNameLimit = FindStringTerminator(pImageName, ".so");
+                 mainImageFileName = ExtractString(pImageName, iMainImageFileNameLimit);
+                 mainImageUuid = ExtractString(pImageUuid, IL2CPP_BUILD_ID_MAX_LENGTH);
 
                  var nativeAddresses = new IntPtr[frameCount];
                  Marshal.Copy(pNativeAddresses, nativeAddresses, 0, frameCount);
