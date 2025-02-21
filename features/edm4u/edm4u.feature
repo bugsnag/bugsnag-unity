@@ -1,10 +1,7 @@
 Feature: Android EDM4U smoke test
 
-  Background:
-    Given I clear the Bugsnag cache
-
   Scenario: Android EDM4U smoke test
-    When I run the game in the "UncaughtExceptionSmokeTest" state
+    When On Mobile I relaunch the app
     And I wait to receive an error
-    And the exception "message" equals "UncaughtExceptionSmokeTest"
+    And the exception "message" equals "EDM4U"
 
