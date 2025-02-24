@@ -6,6 +6,13 @@ public class NotifySmokeTest : Scenario
     public override void Run()
     {
         AddTestingMetadata();
-        Bugsnag.Notify(new Exception("NotifySmokeTest"));
+        try
+        {
+          throw new Exception("NotifySmokeTest");
+        }
+        catch (System.Exception e)
+        {
+          Bugsnag.Notify(e);
+        }
     }
 }
