@@ -264,6 +264,14 @@ def build_upm_package
   end
 end
 
+def build_upm_edm4u_package
+  script = File.join("upm", "build-edm-package.sh")
+  command = "#{script}"
+  unless system command
+    raise 'build upm edm4u package failed'
+  end
+end
+
 namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
@@ -432,6 +440,7 @@ namespace :plugin do
     run_unit_tests
     export_package("Bugsnag.unitypackage")
     build_upm_package
+    build_upm_edm4u_package
   end
 end
 
@@ -452,6 +461,18 @@ namespace :test do
       script = File.join("features", "scripts", "build_android.sh release")
       unless system env, script
         raise 'Android APK build failed'
+      end
+    end
+
+    task :build_edm4u do
+      # Check that a Unity version has been selected and the path exists before calling the build script
+      unity_path, unity = get_required_unity_paths
+
+      # Prepare the test fixture project by importing the plugins
+      env = { "UNITY_PATH" => File.dirname(unity) }
+      script = File.join("features", "scripts", "build_edm4u_android.sh")
+      unless system env, script
+        raise 'Building EDM4U Failed'
       end
     end
 
