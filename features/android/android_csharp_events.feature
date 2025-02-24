@@ -3,6 +3,7 @@ Feature: csharp events on Android have a il2cpp addresses
   Background:
     Given I clear the Bugsnag cache
 
+  @skip_unity_2020
   Scenario: Android Uncaught Exception has il2cpp addresses
     When I run the game in the "UncaughtExceptionSmokeTest" state
     And I wait to receive an error
@@ -37,6 +38,7 @@ Feature: csharp events on Android have a il2cpp addresses
     And expected app metadata is included in the event
     And the error payload field "events.0.severityReason.unhandledOverridden" is false
 
+  @skip_unity_2020
   Scenario: Android Notify Exception has il2cpp addresses
     When I run the game in the "NotifySmokeTest" state
     And I wait to receive an error
