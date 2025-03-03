@@ -1,5 +1,5 @@
 aliases:
-  - &2021 "2021.3.36f1"
+  - &2021 "2021.3.45f1"
 
 agents:
   queue: macos-14
@@ -13,12 +13,32 @@ steps:
     commands:
       - bundle install
       - bundle exec rake plugin:export
+      - zip -r upm-package.zip upm-package
+      - zip -r upm-edm4u-package.zip upm-edm4u-package
     artifact_paths:
       - Bugsnag.unitypackage
+      - upm-package.zip
+      - upm-edm4u-package.zip
+
     retry:
       automatic:
         - exit_status: "*"
           limit: 1
+
+  - label: "Test UPM Package Import"
+    depends_on: build_unitypackage
+    timeout_in_minutes: 10
+    env:
+      UNITY_VERSION: *2021
+    key: "import-upm-2021"
+    plugins:
+      artifacts#v1.9.0:
+        download:
+          - upm-package.zip
+        upload:
+          - upm-import.log
+    commands:
+          - "features/scripts/test_upm_package_import.sh"
 
   - label: 'Run size impact reporting'
     depends_on: build_unitypackage

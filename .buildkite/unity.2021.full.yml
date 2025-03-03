@@ -1,5 +1,5 @@
 aliases:
-  - &2021 "2021.3.36f1"
+  - &2021 "2021.3.45f1"
 
 agents:
   queue: macos-14
@@ -22,6 +22,26 @@ steps:
         commands:
           - bundle install
           - rake test:android:build_dev
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: ":android: Build Android edm4u test fixture for Unity 2021"
+        timeout_in_minutes: 20
+        key: "build-android-edm4u-fixture-2021"
+        env:
+          UNITY_VERSION: *2021
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - upm-edm4u-package.zip
+            upload:
+              - features/fixtures/EDM_Fixture/edm4u_2021.apk
+              - build-edm4u.log
+        commands:
+          - bundle install
+          - rake test:android:build_edm4u
         retry:
           automatic:
             - exit_status: "*"
@@ -220,6 +240,40 @@ steps:
               - "features/csharp"
               - "features/android"
               - "--app=features/fixtures/maze_runner/mazerunner_dev_2021.apk"
+              - "--farm=bb"
+              - "--appium-version=1.22"
+              - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
+              - "--no-tunnel"
+              - "--aws-public-ip"
+          test-collector#v1.10.2:
+            files: "reports/TEST-*.xml"
+            format: "junit"
+            branch: "^master|next$$"
+        concurrency: 25
+        concurrency_group: "bitbar"
+        concurrency_method: eager
+
+      - label: ":bitbar: :android: Run Android edm4u e2e tests for Unity 2021"
+        timeout_in_minutes: 60
+        depends_on: "build-android-edm4u-fixture-2021"
+        agents:
+          queue: opensource
+        env:
+          UNITY_VERSION: *2021
+        plugins:
+          artifacts#v1.5.0:
+            download:
+              - "features/fixtures/EDM_Fixture/edm4u_2021.apk"
+            upload:
+              - "maze_output/**/*"
+              - "maze_output/metrics.csv"
+          docker-compose#v4.7.0:
+            pull: maze-runner-bitbar
+            run: maze-runner-bitbar
+            service-ports: true
+            command:
+              - "features/edm4u"
+              - "--app=features/fixtures/EDM_Fixture/edm4u_2021.apk"
               - "--farm=bb"
               - "--appium-version=1.22"
               - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"

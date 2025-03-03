@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using BugsnagUnity.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ public class Builder : MonoBehaviour
     {
         Debug.Log("Building Android app...");
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.edm");
-        var opts = CommonOptions("edm.apk");
+        var opts = CommonOptions("edm4u.apk");
         opts.target = BuildTarget.Android;
 
         var result = BuildPipeline.BuildPlayer(opts);
@@ -29,10 +28,5 @@ public class Builder : MonoBehaviour
         opts.options = BuildOptions.None;
 
         return opts;
-    }
-
-    public static void EnableEDM()
-    {
-        BugsnagEditor.EnableEDM();
     }
 }
