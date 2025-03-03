@@ -1,11 +1,5 @@
 require 'cgi'
 
-When('On Mobile I relaunch the app') do
-  next unless %w[android ios].include? Maze::Helper.get_current_platform
-  Maze.driver.launch_app
-  sleep 3
-end
-
 def execute_command(action, scenario_name = '')
   command = {
     action: action,
@@ -342,21 +336,6 @@ Then("expected app metadata is included in the event") do
     And the event "metaData.app.companyName" equals "bugsnag"
     And the event "metaData.app.name" equals "Mazerunner"
   }
-end
-
-When("I clear any error dialogue") do
-  click_if_present 'android:id/button1'
-  click_if_present 'android:id/aerr_close'
-  click_if_present 'android:id/aerr_restart'
-end
-
-def click_if_present(element)
-  return false unless Maze.driver.wait_for_element(element, 1)
-
-  Maze.driver.click_element_if_present(element)
-rescue Selenium::WebDriver::Error::UnknownError
-  # Ignore Appium errors (e.g. during an ANR)
-  return false
 end
 
 def switch_run_on_target
