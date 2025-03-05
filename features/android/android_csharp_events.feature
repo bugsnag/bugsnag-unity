@@ -28,9 +28,9 @@ Feature: csharp events on Android have a il2cpp addresses
     And the event "exceptions.0.stacktrace.1.type" equals "c"
 
     And the event "exceptions.0.stacktrace.2.loadAddress" equals "0x0"
-    And the error payload field "events.0.exceptions.0.stacktrace.1.file" matches the regex ".*/libil2cpp.so$"
-    And the error payload field "events.0.exceptions.0.stacktrace.1.codeIdentifier" matches the regex "[0-9a-fA-F]{40}"
-    And the error payload field "events.0.exceptions.0.stacktrace.1.frameAddress" matches the regex "0x[0-9a-fA-F]{1,16}"
+    And the error payload field "events.0.exceptions.0.stacktrace.2.file" matches the regex ".*/libil2cpp.so$"
+    And the error payload field "events.0.exceptions.0.stacktrace.2.codeIdentifier" matches the regex "[0-9a-fA-F]{40}"
+    And the error payload field "events.0.exceptions.0.stacktrace.2.frameAddress" matches the regex "0x[0-9a-fA-F]{1,16}"
     And the event "exceptions.0.stacktrace.2.isPC" is true
     And the event "exceptions.0.stacktrace.2.type" equals "c"
 
@@ -63,9 +63,9 @@ Feature: csharp events on Android have a il2cpp addresses
     And the event "exceptions.0.stacktrace.1.type" equals "c"
 
     And the event "exceptions.0.stacktrace.2.loadAddress" equals "0x0"
-    And the error payload field "events.0.exceptions.0.stacktrace.1.file" matches the regex ".*/libil2cpp.so$"
-    And the error payload field "events.0.exceptions.0.stacktrace.1.codeIdentifier" matches the regex "[0-9a-fA-F]{40}"
-    And the error payload field "events.0.exceptions.0.stacktrace.1.frameAddress" matches the regex "0x[0-9a-fA-F]{1,16}"
+    And the error payload field "events.0.exceptions.0.stacktrace.2.file" matches the regex ".*/libil2cpp.so$"
+    And the error payload field "events.0.exceptions.0.stacktrace.2.codeIdentifier" matches the regex "[0-9a-fA-F]{40}"
+    And the error payload field "events.0.exceptions.0.stacktrace.2.frameAddress" matches the regex "0x[0-9a-fA-F]{1,16}"
     And the event "exceptions.0.stacktrace.2.isPC" is true
     And the event "exceptions.0.stacktrace.2.type" equals "c"
 
