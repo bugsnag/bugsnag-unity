@@ -497,6 +497,9 @@ namespace BugsnagUnity
 
             var mainImageFormattedUuid = FormatImageUuid(mainImageUuid);
 
+            // if il2cpp doesn't report a mainImageFileName, we assume the default "UnityFramework" name
+            var safeMainImageFileName = string.IsNullOrEmpty(mainImageFileName) ? "UnityFramework" : mainImageFileName;
+
             var unityTrace = new PayloadStackTrace(exception.StackTrace).StackTraceLines;
             var length = nativeAddresses.Length < unityTrace.Length ? nativeAddresses.Length : unityTrace.Length;
             var stackFrames = new StackTraceLine[length];
@@ -523,7 +526,7 @@ namespace BugsnagUnity
                 }
                 else
                 {
-                    trace.MachoFile = mainImageFileName;
+                    trace.MachoFile = safeMainImageFileName;
                     trace.MachoLoadAddress = "0x0";
                     trace.MachoUuid = mainImageFormattedUuid;
                     trace.InProject = true;
