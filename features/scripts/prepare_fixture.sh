@@ -45,4 +45,4 @@ if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 #import performance to ensure no breaking changes
 echo "Cloning latest perf release into packages"
 rm -rf "$project_path/packages/performance-package"
-git clone https://github.com/bugsnag/bugsnag-unity-performance-upm.git "$project_path/packages/performance-package"
+git clone --branch playerSettingsCompact https://github.com/bugsnag/bugsnag-unity-performance-upm.git "$project_path/packages/performance-package"
