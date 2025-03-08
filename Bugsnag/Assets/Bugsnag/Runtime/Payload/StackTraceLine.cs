@@ -191,6 +191,18 @@ namespace BugsnagUnity.Payload
             }
         }
 
+        public string LoadAddress
+        {
+            get
+            {
+                return this.Get("loadAddress") as string;
+            }
+            set
+            {
+                this.AddToPayload("loadAddress", value);
+            }
+        }
+
         public string MachoLoadAddress {
             get
             {
@@ -236,9 +248,44 @@ namespace BugsnagUnity.Payload
             }
         }
 
+        public string CodeIdentifier
+        {
+            get
+            {
+                return this.Get("codeIdentifier") as string;
+            }
+            set
+            {
+                this.AddToPayload("codeIdentifier", value);
+            }
+        }
+
+        public string Type
+        {
+            get
+            {
+                return this.Get("type") as string;
+            }
+            set
+            {
+                this.AddToPayload("type", value);
+            }
+        }
+
 
         public bool? IsLr { get; set; }
-        public bool? IsPc { get; set; }
+        public bool? IsPc
+        {
+            get
+            {
+                return this.Get("isPC") as bool?;
+            }
+            set
+            {
+                this.AddToPayload("isPC", value);
+            }
+        }
+
         public string MachoVmAddress { get; set; }
         public string SymbolAddress { get; set; }
     }
