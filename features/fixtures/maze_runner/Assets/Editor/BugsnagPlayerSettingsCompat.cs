@@ -2,7 +2,7 @@ using UnityEditor;
 #if UNITY_2021_2_OR_NEWER
 using UnityEditor.Build;
 #endif
-namespace BugsnagUnity.Editor
+namespace Mazerunner.Editor
 {
     internal static class BugsnagPlayerSettingsCompat
     {
