@@ -1,11 +1,16 @@
 # Changelog
 
+## TBD
+
+### Dependencies
+
+Update bugsnag-cocoa to [v6.32.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.2) [#895](https://github.com/bugsnag/bugsnag-unity/pull/895)
+
 ## 8.5.1 (2025-03-03)
 
 ### Dependencies
 
 - Update bugsnag-android to [v6.12.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.12.0) [#882](https://github.com/bugsnag/bugsnag-unity/pull/882)
-
 - Update bugsnag-cocoa to [v6.32.1](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.1) [#886](https://github.com/bugsnag/bugsnag-unity/pull/886)
 
 ## 8.5.0 (2025-01-27)
