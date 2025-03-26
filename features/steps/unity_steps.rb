@@ -1,8 +1,9 @@
 require 'cgi'
 
 When('On Mobile I relaunch the app') do
-  next unless %w[android ios].include? Maze::Helper.get_current_platform
-  Maze.driver.launch_app
+  next unless Maze.config.device
+  manager = Maze::Api::Appium::AppManager.new
+  manager.launch
   sleep 3
 end
 
@@ -351,9 +352,10 @@ When("I clear any error dialogue") do
 end
 
 def click_if_present(element)
-  return false unless Maze.driver.wait_for_element(element, 1)
+  manager = Maze::Api::Appium::UiManager.new
+  return false unless manager.wait_for_element(element, 1)
 
-  Maze.driver.click_element_if_present(element)
+  manager.click_element_if_present(element)
 rescue Selenium::WebDriver::Error::UnknownError
   # Ignore Appium errors (e.g. during an ANR)
   return false
