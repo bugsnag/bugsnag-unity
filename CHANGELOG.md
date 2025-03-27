@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+- Update Bugsnag Editor PlayerSettingsCompat to prevent compiler warnings. [#892](https://github.com/bugsnag/bugsnag-unity/pull/892)
+
 ## 8.5.1 (2025-03-03)
 
 ### Dependencies
