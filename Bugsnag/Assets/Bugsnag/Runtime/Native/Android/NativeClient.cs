@@ -1,13 +1,19 @@
 #if (UNITY_ANDROID && !UNITY_EDITOR) || BSG_ANDROID_DEV
 using System;
+using System.Text;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
+using BugsnagUnity;
 using UnityEngine;
 
 namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
+
+        private const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
+
         public Configuration Configuration { get; }
 
         public IBreadcrumbs Breadcrumbs { get; }
@@ -56,7 +62,7 @@ namespace BugsnagUnity
             {
                 user.Payload.AddToPayload(entry.Key, entry.Value.ToString());
             }
-        }       
+        }
 
         private void MergeDictionaries(IDictionary<string, object> dest, IDictionary<string, object> another)
         {
@@ -128,7 +134,7 @@ namespace BugsnagUnity
 
         public void AddNativeMetadata(string section, IDictionary<string, object> data)
         {
-            NativeInterface.AddMetadata(section,data);   
+            NativeInterface.AddMetadata(section,data);
         }
 
         public void AddFeatureFlag(string name, string variant = null)
@@ -164,9 +170,60 @@ namespace BugsnagUnity
             NativeInterface.RegisterForOnSessionCallbacks();
         }
 
+        private StackTraceLine[] ToStackFrames(System.Exception exception, IntPtr[] nativeAddresses, String mainImageFileName, String mainImageUuid)
+        {
+            StackTraceLine[] lines;
+            if (!string.IsNullOrEmpty(exception.StackTrace))
+            {
+                lines = new PayloadStackTrace(exception.StackTrace).StackTraceLines;
+            }
+            else
+            {
+                return new StackTraceLine[0];
+            }
+
+            var StackTraceLength = nativeAddresses.Length;
+            StackTraceLine[] Trace = new StackTraceLine[StackTraceLength];
+
+            for (int i = 0; i < StackTraceLength; i++)
+            {
+                StackTraceLine Frame = new StackTraceLine();
+
+                Frame.File = mainImageFileName;
+                Frame.Method = lines[i].Method;
+                Frame.FrameAddress = string.Format("0x{0:X}", nativeAddresses[i].ToInt64());
+                Frame.LoadAddress = "0x0";
+                Frame.CodeIdentifier = mainImageUuid;
+                Frame.Type = "c";
+
+                // we mark every stack frame as "PC" so that the addresses are not adjusted
+                Frame.IsPc = true;
+
+                Trace[i] = Frame;
+            }
+
+            return Trace;
+        }
+
         public StackTraceLine[] ToStackFrames(System.Exception exception)
         {
-            return new StackTraceLine[0];
+            var notFound = new StackTraceLine[0];
+            if (exception == null)
+            {
+                return notFound;
+            }
+
+            var errorClass = exception.GetType().Name;
+            if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
+            {
+                return notFound;
+            }
+
+            return Il2cppUtils.ToStackFrames(
+                exception,
+                (exception, nativeAddresses, mainImageFileName, mainImageUuid) =>
+                    ToStackFrames(exception, nativeAddresses, mainImageFileName, mainImageUuid)
+            );
         }
     }
 

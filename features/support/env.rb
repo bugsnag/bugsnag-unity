@@ -165,7 +165,7 @@ end
 
 device_logs = []
 After do |scenario|
-  if Maze.driver && Maze.driver.is_a?(Maze::Driver::Appium)
+  if Maze.config.device
     log_file = Maze::Api::Appium::FileManager.new.read_app_file('mazerunner-unity.log')
     device_logs << {
       file: log_file,
