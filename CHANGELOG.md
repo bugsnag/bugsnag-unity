@@ -4,7 +4,11 @@
 
 ### Dependencies
 
-Update bugsnag-cocoa to [v6.32.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.2) [#895](https://github.com/bugsnag/bugsnag-unity/pull/895)
+- Update bugsnag-cocoa to [v6.32.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.2) [#895](https://github.com/bugsnag/bugsnag-unity/pull/895)
+
+### Enhancements
+
+- Update Bugsnag Editor PlayerSettingsCompat to prevent compiler warnings. [#892](https://github.com/bugsnag/bugsnag-unity/pull/892)
 
 ## 8.5.1 (2025-03-03)
 

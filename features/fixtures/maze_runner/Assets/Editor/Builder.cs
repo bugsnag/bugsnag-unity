@@ -167,8 +167,6 @@ public class Builder : MonoBehaviour
         var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
 
         PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, "UNITY_ASSERTIONS");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, "UNITY_ASSERTIONS");
 
         BuildPlayerOptions opts = new BuildPlayerOptions();
         opts.scenes = scenes;
