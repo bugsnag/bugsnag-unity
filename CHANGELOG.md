@@ -2,15 +2,13 @@
 
 ## TBD
 
-### Dependencies
-
-- Update bugsnag-cocoa to [v6.32.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.2) [#895](https://github.com/bugsnag/bugsnag-unity/pull/895)
-
 ### Enhancements
 
 - Update Bugsnag Editor PlayerSettingsCompat to prevent compiler warnings. [#892](https://github.com/bugsnag/bugsnag-unity/pull/892)
 
 ### Dependencies
+
+- Update bugsnag-cocoa to [v6.32.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.2) [#895](https://github.com/bugsnag/bugsnag-unity/pull/895)
 
 - Update bugsnag-android to [v6.12.1](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.12.1) [#888](https://github.com/bugsnag/bugsnag-unity/pull/888)
 
