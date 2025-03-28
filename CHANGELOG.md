@@ -6,6 +6,10 @@
 
 - Update Bugsnag Editor PlayerSettingsCompat to prevent compiler warnings. [#892](https://github.com/bugsnag/bugsnag-unity/pull/892)
 
+### Dependencies
+
+- Update bugsnag-android to [v6.12.1](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.12.1) [#888](https://github.com/bugsnag/bugsnag-unity/pull/888)
+
 ## 8.5.1 (2025-03-03)
 
 ### Dependencies
