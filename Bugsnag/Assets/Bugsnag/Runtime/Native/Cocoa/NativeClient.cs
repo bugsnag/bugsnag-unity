@@ -9,11 +9,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using AOT;
 using BugsnagUnity.Payload;
+using BugsnagUnity;
 
 namespace BugsnagUnity
 {
     class NativeClient : INativeClient
     {
+
         public Configuration Configuration { get; }
         public IBreadcrumbs Breadcrumbs { get; }
         private static Session _nativeSession;
@@ -67,7 +69,7 @@ namespace BugsnagUnity
                 NativeCode.bugsnag_registerForSessionCallbacks(obj, HandleSessionCallbacks);
             }
 
-            
+
 
 
             NativeCode.bugsnag_setAppHangThresholdMillis(obj, config.AppHangThresholdMillis);
@@ -227,7 +229,7 @@ namespace BugsnagUnity
         private void SetEnabledErrorTypes(IntPtr obj, Configuration config)
         {
             var enabledTypes = new List<string>();
-           
+
             if (config.EnabledErrorTypes.AppHangs)
             {
                 enabledTypes.Add("AppHangs");
@@ -247,7 +249,7 @@ namespace BugsnagUnity
             {
                 enabledTypes.Add("OOMs");
             }
-            
+
             NativeCode.bugsnag_setEnabledErrorTypes(obj, enabledTypes.ToArray(), enabledTypes.Count);
         }
 
@@ -275,7 +277,7 @@ namespace BugsnagUnity
         public void PopulateAppWithState(AppWithState app)
         {
             PopulateApp(app);
-        }     
+        }
 
         public void PopulateDevice(Device device)
         {
@@ -489,14 +491,15 @@ namespace BugsnagUnity
             NativeCode.bugsnag_registerForSessionCallbacksAfterStart(HandleSessionCallbacks);
         }
 
-        #nullable enable
-        private static string? ExtractString(IntPtr pString)
+        private StackTraceLine[] ToStackFrames(System.Exception exception, IntPtr[] nativeAddresses, String mainImageFileName, String mainImageUuid)
         {
-            return (pString == IntPtr.Zero) ? null : Marshal.PtrToStringAnsi(pString);
-        }
+            loadedImages.Refresh(mainImageFileName);
 
-        private StackTraceLine[] ToStackFrames(System.Exception exception, IntPtr[] nativeAddresses)
-        {
+            var mainImageFormattedUuid = FormatImageUuid(mainImageUuid);
+
+            // if il2cpp doesn't report a mainImageFileName, we assume the default "UnityFramework" name
+            var safeMainImageFileName = string.IsNullOrEmpty(mainImageFileName) ? "UnityFramework" : mainImageFileName;
+
             var unityTrace = new PayloadStackTrace(exception.StackTrace).StackTraceLines;
             var length = nativeAddresses.Length < unityTrace.Length ? nativeAddresses.Length : unityTrace.Length;
             var stackFrames = new StackTraceLine[length];
@@ -507,103 +510,56 @@ namespace BugsnagUnity
                 var image = loadedImages.FindImageAtAddress(address);
 
                 var trace = new StackTraceLine();
-                trace.FrameAddress = address.ToString();
+                trace.FrameAddress = string.Format("0x{0:X}", address);
                 trace.Method = method.ToString();
                 if (image != null)
                 {
                     if (address < image.LoadAddress)
                     {
                         // It's a relative address
-                        trace.FrameAddress = (address + image.LoadAddress).ToString();
+                        trace.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
                     }
                     trace.MachoFile = image.FileName;
-                    trace.MachoLoadAddress = image.LoadAddress.ToString();
+                    trace.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
                     trace.MachoUuid = image.Uuid;
                     trace.InProject = image.IsMainImage;
+                }
+                else
+                {
+                    trace.MachoFile = safeMainImageFileName;
+                    trace.MachoLoadAddress = "0x0";
+                    trace.MachoUuid = mainImageFormattedUuid;
+                    trace.InProject = true;
                 }
                 stackFrames[i] = trace;
             }
             return stackFrames;
         }
 
-#if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
-        [DllImport("__Internal")]
-        private static extern IntPtr il2cpp_gchandle_get_target(int gchandle);
+        private string FormatImageUuid(string imageUuid)
+        {
+            if (imageUuid == null || imageUuid.Length != 32)
+            {
+                return null;
+            }
 
-        [DllImport("__Internal")]
-        private static extern void il2cpp_free(IntPtr ptr);
-
-        [DllImport("__Internal")]
-        private static extern void il2cpp_native_stack_trace(IntPtr exc, out IntPtr addresses, out int numFrames, out IntPtr imageUUID, out IntPtr imageName);
-#endif
+            byte[] mainImageUuidBytes = new byte[16];
+            for (int i = 0; i < 16; i++)
+            {
+                mainImageUuidBytes[i] = Convert.ToByte(imageUuid.Substring(i * 2, 2), 16);
+            }
+            return new Guid(mainImageUuidBytes).ToString();
+        }
 
         public StackTraceLine[] ToStackFrames(System.Exception exception)
         {
-            var notFound = new StackTraceLine[0];
-            return notFound;
-// Disabled until we can get this working with IL2CPP and Unity 6. raised in PLAT-13394
-//             if (exception == null)
-//             {
-//                 return notFound;
-//             }
-
-// #if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
-//             var hException = GCHandle.Alloc(exception);
-//             var pNativeAddresses = IntPtr.Zero;
-//             var pImageUuid = IntPtr.Zero;
-//             var pImageName = IntPtr.Zero;
-//             try
-//             {
-//                 if (hException == null)
-//                 {
-//                     return notFound;
-//                 }
-
-//                 var pException = il2cpp_gchandle_get_target(GCHandle.ToIntPtr(hException).ToInt32());
-//                 if (pException == IntPtr.Zero)
-//                 {
-//                     return notFound;
-//                 }
-
-//                 var frameCount = 0;
-//                 string? mainImageFileName = null;
-
-//                 il2cpp_native_stack_trace(pException, out pNativeAddresses, out frameCount, out pImageUuid, out pImageName);
-//                 if (pNativeAddresses == IntPtr.Zero)
-//                 {
-//                     return notFound;
-//                 }
-
-//                 mainImageFileName = ExtractString(pImageName);
-//                 var nativeAddresses = new IntPtr[frameCount];
-//                 Marshal.Copy(pNativeAddresses, nativeAddresses, 0, frameCount);
-
-//                 loadedImages.Refresh(mainImageFileName);
-//                 return ToStackFrames(exception, nativeAddresses);
-//             }
-//             finally
-//             {
-//                 if (pImageUuid != IntPtr.Zero)
-//                 {
-//                     il2cpp_free(pImageUuid);
-//                 }
-//                 if (pImageName != IntPtr.Zero)
-//                 {
-//                     il2cpp_free(pImageName);
-//                 }
-//                 if (pNativeAddresses != IntPtr.Zero)
-//                 {
-//                     il2cpp_free(pNativeAddresses);
-//                 }
-//                 if (hException != null)
-//                 {
-//                     hException.Free();
-//                 }
-//             }
-// #else
-//             return notFound;
-// #endif
+            return Il2cppUtils.ToStackFrames(
+                exception,
+                (exception, nativeAddresses, mainImageFileName, mainImageUuid) =>
+                    ToStackFrames(exception, nativeAddresses, mainImageFileName, mainImageUuid)
+            );
         }
+
     }
 }
 
