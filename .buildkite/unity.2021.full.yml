@@ -2,7 +2,7 @@ aliases:
   - &2021 "2021.3.45f1"
 
 agents:
-  queue: macao-14-6
+  queue: macos-14-6
 
 steps:
   - group: ":hammer: Build Unity 2021 full test fixtures"
@@ -326,7 +326,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: 'macos-2021-fixture'
         agents:
-          queue: macao-14-6
+          queue: macos-14-6
         env:
           UNITY_VERSION: *2021
         plugins:
@@ -347,7 +347,7 @@ steps:
         timeout_in_minutes: 60
         depends_on: 'macos-2021-dev-fixture'
         agents:
-          queue: macao-14-6
+          queue: macos-14-6
         env:
           UNITY_VERSION: *2021
         plugins:
