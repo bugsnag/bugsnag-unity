@@ -18,4 +18,4 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $PROJECT_PATH -executeMethod "U
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-dotnet format "Bugsnag/Bugsnag.sln"
+dotnet format --verify-no-changes "Bugsnag/Bugsnag.sln"
