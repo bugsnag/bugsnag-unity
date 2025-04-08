@@ -1,0 +1,12 @@
+# Use four spaces for indentation in C#
+[*.cs]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+charset = utf-8
+
+# Style rules
+dotnet_sort_system_directives_first = true
+csharp_new_line_before_open_brace_types = all
+csharp_new_line_before_open_brace_methods = true
+csharp_new_line_before_open_brace_accessors = true
