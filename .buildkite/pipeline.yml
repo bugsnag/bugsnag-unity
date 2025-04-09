@@ -25,6 +25,14 @@ steps:
         - exit_status: "*"
           limit: 1
 
+  - label: Lint Code
+    timeout_in_minutes: 5
+    env:
+      UNITY_VERSION: *2021
+    commands:
+      - rake code:verify
+
+
   - label: "Test UPM Package Import"
     depends_on: build_unitypackage
     timeout_in_minutes: 10
