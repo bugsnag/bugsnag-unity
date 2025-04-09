@@ -10,7 +10,7 @@ namespace BugsnagUnity
 
         private Dictionary<LogType, int> CurrentCounts { get; }
 
-        private double FlushAt { get; set; } = -1; 
+        private double FlushAt { get; set; } = -1;
 
         private double MaximumLogsTimePeriod => Configuration.MaximumLogsTimePeriod.TotalSeconds;
 
@@ -20,7 +20,7 @@ namespace BugsnagUnity
 
         private void EnsureFlushTimeIsSet()
         {
-            if (FlushAt < 0) 
+            if (FlushAt < 0)
             {
                 FlushAt = Time.ElapsedSeconds + MaximumLogsTimePeriod;
             }

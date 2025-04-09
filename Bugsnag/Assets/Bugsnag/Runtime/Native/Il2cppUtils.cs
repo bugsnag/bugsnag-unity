@@ -46,11 +46,11 @@ namespace BugsnagUnity
 
 #else
 
-        private static void Free(IntPtr ptr) {}
+        private static void Free(IntPtr ptr) { }
 
 #endif
 
-        #nullable enable
+#nullable enable
         private static string? ExtractString(IntPtr pString, Int32 iLimit)
         {
             return (pString == IntPtr.Zero) ? null : Marshal.PtrToStringAnsi(pString, iLimit);
@@ -104,13 +104,13 @@ namespace BugsnagUnity
 
         internal static StackTraceLine[] ToStackFrames(System.Exception exception, Func<System.Exception, IntPtr[], String, String, StackTraceLine[]> stackTransformer)
         {
-             var notFound = new StackTraceLine[0];
-             if (exception == null)
-             {
-                 return notFound;
-             }
+            var notFound = new StackTraceLine[0];
+            if (exception == null)
+            {
+                return notFound;
+            }
 
- #if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
+#if ENABLE_IL2CPP && UNITY_2021_3_OR_NEWER
              var hException = GCHandle.Alloc(exception);
              var pNativeAddresses = IntPtr.Zero;
              var pImageUuid = IntPtr.Zero;
@@ -179,9 +179,9 @@ namespace BugsnagUnity
                      hException.Free();
                  }
              }
- #else
-             return notFound;
- #endif
+#else
+            return notFound;
+#endif
         }
     }
 }

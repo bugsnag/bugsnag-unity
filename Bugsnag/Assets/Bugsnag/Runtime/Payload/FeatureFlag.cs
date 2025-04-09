@@ -6,7 +6,7 @@ namespace BugsnagUnity.Payload
     public class FeatureFlag : PayloadContainer
     {
 
-        internal FeatureFlag(Dictionary<string,object> data)
+        internal FeatureFlag(Dictionary<string, object> data)
         {
             Add(data);
         }

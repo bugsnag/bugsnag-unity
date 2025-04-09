@@ -57,7 +57,7 @@ fi
             }
             EditorUtility.ClearProgressBar();
 #elif UNITY_IOS || UNITY_STANDALONE_OSX
-            AddXcodePostBuildScript(report.summary.outputPath , config);
+            AddXcodePostBuildScript(report.summary.outputPath, config);
 #endif
 
         }
@@ -105,7 +105,7 @@ fi
 #endif
 #if UNITY_STANDALONE_OSX
             var pbxProjectPath = GetMacosXcodeProjectPath(pathToBuiltProject);
-             if (!File.Exists(pbxProjectPath))
+            if (!File.Exists(pbxProjectPath))
             {
                 //Xcode export not enabled, do nothing
                 return;

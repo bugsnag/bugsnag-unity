@@ -19,7 +19,7 @@ namespace BugsnagUnity.Payload
 
         }
 
-        public User(string id,  string email, string name)
+        public User(string id, string email, string name)
         {
             Id = id;
             Name = name;
@@ -28,19 +28,20 @@ namespace BugsnagUnity.Payload
 
         public string Id
         {
-            get {
+            get
+            {
                 var @object = Get(ID_KEY);
                 if (@object == null)
                 {
                     return string.Empty;
                 }
                 return (string)@object;
-            } 
+            }
             set
             {
                 Add(ID_KEY, value);
                 PropertyChanged.Invoke();
-            }  
+            }
         }
 
         public string Name

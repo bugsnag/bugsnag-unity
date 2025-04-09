@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
     {
         private const string MENU_PATH = "Window/BugSnag/Enable Symbol Uploads";
 
-        [MenuItem(MENU_PATH,false,50)]
+        [MenuItem(MENU_PATH, false, 50)]
         private static void ToggleAutoUpload()
         {
             SetEnabled(!IsEnabled());
@@ -22,7 +22,7 @@ namespace BugsnagUnity.Editor
         }
 
         static bool IsEnabled()
-        {   
+        {
             var settings = GetSettingsObject();
             return settings != null && settings.AutoUploadSymbols;
         }
@@ -30,7 +30,7 @@ namespace BugsnagUnity.Editor
         static void SetEnabled(bool enabled)
         {
             var settings = GetSettingsObject();
-            if(settings != null)
+            if (settings != null)
             {
                 settings.AutoUploadSymbols = enabled;
                 EditorUtility.SetDirty(settings);

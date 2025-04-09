@@ -32,6 +32,6 @@ namespace BugsnagUnity
 
         public double CreatedAt { get; }
 
-        
+
     }
 }

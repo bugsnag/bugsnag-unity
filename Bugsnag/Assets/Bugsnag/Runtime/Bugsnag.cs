@@ -54,7 +54,7 @@ namespace BugsnagUnity
 
         public static List<Breadcrumb> Breadcrumbs => Client.Breadcrumbs.Retrieve();
 
-        public static void LeaveBreadcrumb(string message, Dictionary<string, object> metadata = null, BreadcrumbType type = BreadcrumbType.Manual ) => InternalClient.Breadcrumbs.Leave(message, metadata, type);
+        public static void LeaveBreadcrumb(string message, Dictionary<string, object> metadata = null, BreadcrumbType type = BreadcrumbType.Manual) => InternalClient.Breadcrumbs.Leave(message, metadata, type);
 
         public static void LeaveBreadcrumb(UnityWebRequest request, TimeSpan? duration) => InternalClient.LeaveNetworkBreadcrumb(request, duration);
 
@@ -76,9 +76,9 @@ namespace BugsnagUnity
         /// <param name="inFocus"></param>
         public static void SetApplicationState(bool inFocus)
         {
-            if(Client != null)
+            if (Client != null)
             {
-                 Client.SetApplicationState(inFocus);
+                Client.SetApplicationState(inFocus);
             }
         }
 
@@ -103,12 +103,12 @@ namespace BugsnagUnity
         /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
         /// </summary>
         public static void MarkLaunchCompleted() => Client.MarkLaunchCompleted();
-      
+
         /// <summary>
         /// Get information regarding the last application run. This will be null on non mobile platforms.
         /// </summary>
         public static LastRunInfo GetLastRunInfo() => Client.LastRunInfo;
-       
+
 
         /// <summary>
         /// Add an OnError callback to run when an error occurs
@@ -119,12 +119,12 @@ namespace BugsnagUnity
         /// Remove an OnError callback
         /// </summary>
         public static void RemoveOnError(Func<IEvent, bool> bugsnagCallback) => Client.RemoveOnError(bugsnagCallback);
-       
+
         /// <summary>
         /// Add an OnSession callback to run when an session is created
         /// </summary>
         public static void AddOnSession(Func<ISession, bool> callback) => Client.AddOnSession(callback);
-       
+
         /// <summary>
         /// Remove an OnSession callback
         /// </summary>
@@ -160,7 +160,7 @@ namespace BugsnagUnity
         /// </summary>
         public static object GetMetadata(string section, string key) => Client.GetMetadata(section, key);
 
-        public static void AddFeatureFlag(string name, string variant = null) => Client.AddFeatureFlag(name,variant);
+        public static void AddFeatureFlag(string name, string variant = null) => Client.AddFeatureFlag(name, variant);
 
         public static void AddFeatureFlags(FeatureFlag[] featureFlags) => Client.AddFeatureFlags(featureFlags);
 

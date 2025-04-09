@@ -48,9 +48,9 @@ namespace BugsnagUnity.Payload
         }
 
         internal Error(string errorClass, string message, StackTraceLine[] stackTrace)
-          : this(errorClass, message, stackTrace, HandledState.ForHandledException(),false) { }
+          : this(errorClass, message, stackTrace, HandledState.ForHandledException(), false) { }
 
-        internal Error(string errorClass, string message, IStackframe[] stackTrace, HandledState handledState,bool isAndroidJavaException)
+        internal Error(string errorClass, string message, IStackframe[] stackTrace, HandledState handledState, bool isAndroidJavaException)
         {
             ErrorClass = errorClass;
             ErrorMessage = message;

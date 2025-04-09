@@ -51,7 +51,7 @@ namespace BugsnagUnity
             {
                 return Client.NativeClient.GetCurrentSession();
             }
-            
+
         }
 
         internal SessionTracker(Client client)
@@ -88,12 +88,15 @@ namespace BugsnagUnity
 
             foreach (var sessionCallback in Client.Configuration.GetOnSessionCallbacks())
             {
-                try {
+                try
+                {
                     if (!sessionCallback.Invoke(session))
                     {
                         return;
                     }
-                } catch {
+                }
+                catch
+                {
                     // If the callback causes an exception, ignore it and execute the next one
                 }
             }
@@ -145,7 +148,7 @@ namespace BugsnagUnity
             {
                 return Client.NativeClient.ResumeSession();
             }
-             
+
         }
 
         private bool ResumeManagedSession()

@@ -31,7 +31,7 @@ namespace BugsnagUnity.Payload
 
         internal PayloadStackTrace(string stackTrace, StackTraceFormat format)
         {
-            string[] lines = stackTrace.Split(new[] {"\r\n","\r","\n", System.Environment.NewLine },
+            string[] lines = stackTrace.Split(new[] { "\r\n", "\r", "\n", System.Environment.NewLine },
                                               System.StringSplitOptions.RemoveEmptyEntries);
             var frames = new List<StackTraceLine>();
             for (int i = 0; i < lines.Length; i++)
@@ -180,7 +180,8 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public string FrameAddress {
+        public string FrameAddress
+        {
             get
             {
                 return this.Get("frameAddress") as string;
@@ -203,7 +204,8 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public string MachoLoadAddress {
+        public string MachoLoadAddress
+        {
             get
             {
                 return this.Get("machoLoadAddress") as string;
@@ -214,7 +216,8 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public string MachoFile {
+        public string MachoFile
+        {
             get
             {
                 return this.Get("machoFile") as string;
@@ -225,7 +228,8 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        public string MachoUuid {
+        public string MachoUuid
+        {
             get
             {
                 return this.Get("machoUUID") as string;

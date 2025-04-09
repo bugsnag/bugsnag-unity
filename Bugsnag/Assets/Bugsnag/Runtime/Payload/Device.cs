@@ -127,7 +127,7 @@ namespace BugsnagUnity.Payload
             Model = SystemInfo.deviceModel;
         }
 
-      
+
 
         private void AddOsInfo()
         {

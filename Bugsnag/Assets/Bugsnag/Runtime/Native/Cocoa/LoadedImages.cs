@@ -17,7 +17,7 @@ namespace BugsnagUnity
         /// <remarks>
         /// Note: If anything goes wrong during the refresh, the currently cached state won't change.
         /// </remarks>
-        #nullable enable
+#nullable enable
         public void Refresh(String? mainImageFileName)
         {
             UInt64 loadedNativeImagesAt = NativeCode.bugsnag_lastChangedLoadedImages();
@@ -84,7 +84,7 @@ namespace BugsnagUnity
         /// </summary>
         /// <param name="address">The address to find the corresponding image of</param>
         /// <returns>The corresponding image, or null</returns>
-        #nullable enable
+#nullable enable
         public LoadedImage? FindImageAtAddress(UInt64 address)
         {
             if (address < LowestImageLoadAddress)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace BugsnagUnity.Payload
 {
-   
+
     public class PayloadContainer
     {
         internal PayloadDictionary Payload = new PayloadDictionary();
@@ -37,7 +37,7 @@ namespace BugsnagUnity.Payload
                 return null;
             }
         }
-       
+
     }
 
     internal class PayloadDictionary : Dictionary<string, object?>, IFilterable

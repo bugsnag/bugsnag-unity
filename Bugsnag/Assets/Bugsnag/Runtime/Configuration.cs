@@ -58,7 +58,7 @@ namespace BugsnagUnity
         internal OrderedDictionary FeatureFlags = new OrderedDictionary();
 
 
-        public List<Regex> RedactedKeys = new List<Regex>{new Regex(".*password.*",RegexOptions.IgnoreCase)};
+        public List<Regex> RedactedKeys = new List<Regex> { new Regex(".*password.*", RegexOptions.IgnoreCase) };
         public bool KeyIsRedacted(string key)
         {
             if (RedactedKeys == null)
@@ -350,7 +350,7 @@ namespace BugsnagUnity
         {
             foreach (var flag in featureFlags)
             {
-                AddFeatureFlag(flag.Name,flag.Variant);
+                AddFeatureFlag(flag.Name, flag.Variant);
             }
         }
 
@@ -364,8 +364,9 @@ namespace BugsnagUnity
             FeatureFlags.Clear();
         }
 
-        public static AssemblyName GetAssemblyName() {
-            return typeof(Configuration).Assembly.GetName(); 
+        public static AssemblyName GetAssemblyName()
+        {
+            return typeof(Configuration).Assembly.GetName();
         }
     }
 
@@ -378,7 +379,7 @@ namespace BugsnagUnity
         public bool Crashes = true;
         public bool ThermalKills = true;
         public bool UnityLog = true;
-        
+
         public EnabledErrorTypes()
         { }
     }

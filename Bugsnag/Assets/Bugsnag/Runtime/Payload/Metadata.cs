@@ -21,7 +21,7 @@ namespace BugsnagUnity.Payload
 
         public void AddMetadata(string section, string key, object value)
         {
-            AddMetadata(section, new Dictionary<string, object>{{ key, value }});
+            AddMetadata(section, new Dictionary<string, object> { { key, value } });
         }
 
         public void AddMetadata(string section, IDictionary<string, object> metadataSection)
@@ -50,15 +50,15 @@ namespace BugsnagUnity.Payload
             }
             else
             {
-                Add(section,metadataSection);
+                Add(section, metadataSection);
             }
             if (_nativeClient != null)
             {
-                _nativeClient.AddNativeMetadata(section,metadataSection);
+                _nativeClient.AddNativeMetadata(section, metadataSection);
             }
         }
 
-       
+
 
         public void ClearMetadata(string section)
         {
@@ -80,11 +80,11 @@ namespace BugsnagUnity.Payload
                 if (existingSection.ContainsKey(key))
                 {
                     existingSection.Remove(key);
-                }                
+                }
             }
             if (_nativeClient != null)
             {
-                _nativeClient.ClearNativeMetadata(section,key);
+                _nativeClient.ClearNativeMetadata(section, key);
             }
         }
 
