@@ -52,7 +52,7 @@ namespace BugsnagUnity.Payload
             set => Add(IS_LAUNCHING_KEY, value);
         }
 
-        internal AppWithState(Dictionary<string, object> cachedData) : base(cachedData){}
+        internal AppWithState(Dictionary<string, object> cachedData) : base(cachedData) { }
 
         internal AppWithState(Configuration configuration) : base(configuration)
         {

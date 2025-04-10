@@ -10,7 +10,7 @@ namespace BugsnagUnity
             var settings = Resources.Load<BugsnagSettingsObject>("Bugsnag/BugsnagSettingsObject");
             if (settings != null && settings.StartAutomaticallyAtLaunch)
             {
-                if(string.IsNullOrEmpty(settings.ApiKey))
+                if (string.IsNullOrEmpty(settings.ApiKey))
                 {
                     Debug.LogError("Bugsnag not auto started as the API key is not set in the Bugsnag Settings window.");
                     return;

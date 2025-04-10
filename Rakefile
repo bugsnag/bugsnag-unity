@@ -561,3 +561,17 @@ namespace :test do
     end
   end
 end 
+
+namespace :code do
+  desc "Verify code formatting (dotnet format --verify-no-changes)"
+  task :verify do
+    # Call your script with the --verify argument
+    sh "scripts/code_format.sh --verify"
+  end
+
+  desc "Apply code formatting (dotnet format)"
+  task :format do
+    # Call your script without the --verify argument
+    sh "scripts/code_format.sh"
+  end
+end

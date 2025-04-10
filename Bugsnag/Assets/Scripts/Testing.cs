@@ -8,22 +8,22 @@ using UnityEngine;
 
 public class Testing : MonoBehaviour
 {
-   // Start is called before the first frame update
-   public void Throw()
-   {
-      throw new System.Exception("This is an exception");
-   }
+    // Start is called before the first frame update
+    public void Throw()
+    {
+        throw new System.Exception("This is an exception");
+    }
 
-   public void DoTriggerCocoaCppException()
-   {
-#if UNITY_IOS 
+    public void DoTriggerCocoaCppException()
+    {
+#if UNITY_IOS
       TriggerCocoaCppException();
 #endif
 
 #if UNITY_STANDALONE_OSX
-    crashy_signal_runner(8);
+        crashy_signal_runner(8);
 #endif
-   }
+    }
 
 #if UNITY_STANDALONE_OSX
 

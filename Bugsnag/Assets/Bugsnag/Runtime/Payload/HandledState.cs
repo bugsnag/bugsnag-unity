@@ -151,7 +151,7 @@ namespace BugsnagUnity.Payload
             {
                 this.AddToPayload("type", type);
                 this.AddToPayload("attributes", attributes);
-                this.AddToPayload("unhandledOverridden",false);
+                this.AddToPayload("unhandledOverridden", false);
             }
         }
     }

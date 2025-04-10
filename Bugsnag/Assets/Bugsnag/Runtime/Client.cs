@@ -378,7 +378,7 @@ namespace BugsnagUnity
             {
                 try
                 {
-                    MainThreadDispatchBehaviour.Enqueue(() => { NotifyOnMainThread(exceptions, handledState, callback,logType, correlation); });
+                    MainThreadDispatchBehaviour.Enqueue(() => { NotifyOnMainThread(exceptions, handledState, callback, logType, correlation); });
                 }
                 catch
                 {
@@ -388,7 +388,7 @@ namespace BugsnagUnity
             else
             {
                 NotifyOnMainThread(exceptions, handledState, callback, logType, correlation);
-            }            
+            }
         }
 
         private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType, Correlation correlation)

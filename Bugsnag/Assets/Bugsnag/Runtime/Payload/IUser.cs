@@ -6,7 +6,7 @@ namespace BugsnagUnity
         string Id { get; }
 
         string Name { get; }
-      
+
         string Email { get; }
     }
 }

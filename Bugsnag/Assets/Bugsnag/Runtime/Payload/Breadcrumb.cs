@@ -46,7 +46,7 @@ namespace BugsnagUnity.Payload
         /// </summary>
         internal Breadcrumb(string message, string timestamp, string type, IDictionary<string, object> metadata)
         {
-            Timestamp = DateTimeOffset.Parse( timestamp );
+            Timestamp = DateTimeOffset.Parse(timestamp);
             Metadata = metadata;
             if (string.IsNullOrEmpty(type))
             {
@@ -59,7 +59,7 @@ namespace BugsnagUnity.Payload
             Message = message;
         }
 
-        internal Breadcrumb(string message,IDictionary<string, object> metadata, BreadcrumbType type)
+        internal Breadcrumb(string message, IDictionary<string, object> metadata, BreadcrumbType type)
         {
             Timestamp = DateTime.UtcNow;
             Metadata = metadata;
@@ -89,17 +89,20 @@ namespace BugsnagUnity.Payload
             set { Add(MESSAGE_KEY, value); }
         }
 
-        public BreadcrumbType Type {
-            get {
+        public BreadcrumbType Type
+        {
+            get
+            {
                 var stringValue = (string)Get(TYPE_KEY);
                 return ParseBreadcrumbType(stringValue);
             }
             set { Add(TYPE_KEY, value.ToString().ToLowerInvariant()); }
         }
 
-        public DateTimeOffset? Timestamp {
+        public DateTimeOffset? Timestamp
+        {
             get { return (DateTimeOffset)Get(TIMESTAMP_KEY); }
-            set { Add(TIMESTAMP_KEY,value); }
+            set { Add(TIMESTAMP_KEY, value); }
         }
 
         internal static BreadcrumbType ParseBreadcrumbType(string name)
@@ -136,7 +139,7 @@ namespace BugsnagUnity.Payload
             {
                 return BreadcrumbType.Manual;
             }
-            return BreadcrumbType.Manual;            
+            return BreadcrumbType.Manual;
         }
 
     }

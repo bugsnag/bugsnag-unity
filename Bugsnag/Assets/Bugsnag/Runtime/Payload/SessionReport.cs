@@ -30,11 +30,11 @@ namespace BugsnagUnity.Payload
             this.AddToPayload("notifier", NotifierInfo.Instance);
             this.AddToPayload("app", ((App)session.App).Payload);
             this.AddToPayload("device", ((Device)session.Device).Payload);
-            var sessionObject = new Dictionary<string,object>();
+            var sessionObject = new Dictionary<string, object>();
             sessionObject.AddToPayload("id", session.Id);
             sessionObject.AddToPayload("startedAt", session.StartedAt);
             sessionObject.AddToPayload("user", session.User.Payload);
-            this.AddToPayload("sessions", new [] { sessionObject });
+            this.AddToPayload("sessions", new[] { sessionObject });
             Id = session.Id;
         }
 
