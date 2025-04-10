@@ -21,7 +21,7 @@ steps:
               - features/fixtures/build_android_apk.log
         command:
               - "bundle install"
-              - "bundle exec maze-runner --os macos features/build/build_android.feature"
+              - "bundle exec maze-runner --port=$((MAZE_RUNNER_PORT)) --os macos features/build/build_android.feature"
         retry:
           automatic:
             - exit_status: "*"
@@ -45,7 +45,7 @@ steps:
               - features/fixtures/unity.log
         command:
               - "bundle install"
-              - "bundle exec maze-runner --os macos features/build/build_ios.feature"
+              - "bundle exec maze-runner --port=$((MAZE_RUNNER_PORT)) --os macos features/build/build_ios.feature"
         retry:
           automatic:
             - exit_status: "*"
