@@ -13,16 +13,6 @@ namespace BugsnagUnity
         static object _clientLock = new object();
 
         public static void Start(string apiKey)
-
-
-
-
-
-
-
-
-
-            
         {
             Start(new Configuration(apiKey));
         }
