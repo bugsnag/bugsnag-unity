@@ -25,7 +25,7 @@ steps:
         - exit_status: "*"
           limit: 1
 
-  - label: Lint Code
+  - label: Verify code formatting
     timeout_in_minutes: 5
     env:
       UNITY_VERSION: *2021
