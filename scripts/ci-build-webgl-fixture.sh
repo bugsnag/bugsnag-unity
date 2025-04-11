@@ -17,8 +17,16 @@ BUILD_TYPE=$1
 
 pushd features/fixtures/maze_runner/build
   if [ "$BUILD_TYPE" == "release" ]; then
-    zip -r WebGL-release-${UNITY_VERSION:0:4}.zip WebGL
+    FIXTURE_NAME=Mazerunner
+    BUILD_FOLDER=WebGL-release-${UNITY_VERSION:0:4}
   else
-    zip -r WebGL-dev-${UNITY_VERSION:0:4}.zip WebGL
+    FIXTURE_NAME=Mazerunner_dev
+    BUILD_FOLDER=WebGL-dev-${UNITY_VERSION:0:4}
+  fi
+  zip -r "${BUILD_FOLDER}.zip" WebGL
+  # Check if index.html exists in the build folder
+  if [ ! -f "WebGL/${FIXTURE_NAME}/index.html" ]; then
+    echo "index.html not found in the build folder"
+    exit 3
   fi
 popd
