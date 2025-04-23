@@ -31,6 +31,8 @@ steps:
       # Build iOS test fixtures
       #
       - label: ":ios: Build iOS test fixture for Unity 2020"
+        agents:
+          queue: macos-14-unity-isolated
         timeout_in_minutes: 10
         key: "build-ios-fixture-2020"
         env:
@@ -74,6 +76,8 @@ steps:
               limit: 1
 
       - label: Build Unity 2020 WebGL test fixture
+        agents:
+          queue: macos-14-unity-isolated
         timeout_in_minutes: 20
         key: "webgl-2020-fixture"
         env:
