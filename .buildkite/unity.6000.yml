@@ -8,6 +8,8 @@ steps:
   - group: ":hammer: Build Unity 6000 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 6000"
+        agents:
+          queue: macos-14-isolated
         timeout_in_minutes: 20
         key: "build-android-fixture-6000"
         env:
@@ -49,6 +51,8 @@ steps:
               limit: 1
 
       - label: Build Unity 6000 MacOS test fixture
+        agents:
+          queue: macos-14-isolated
         timeout_in_minutes: 10
         key: "macos-6000-fixture"
         env:

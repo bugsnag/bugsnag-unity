@@ -8,6 +8,8 @@ steps:
   - group: ":hammer: Build Unity 2022 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 2022"
+        agents:
+          queue: macos-14-isolated
         timeout_in_minutes: 30
         key: "build-android-fixture-2022"
         env:
