@@ -9,7 +9,7 @@ steps:
     steps:
       - label: ":android: Build Android test fixture for Unity 6000"
         agents:
-          queue: macos-14-unity-isolated
+          queue: macos-14-isolated
         timeout_in_minutes: 20
         key: "build-android-fixture-6000"
         env:
@@ -52,7 +52,7 @@ steps:
 
       - label: Build Unity 6000 MacOS test fixture
         agents:
-          queue: macos-14-unity-isolated
+          queue: macos-14-isolated
         timeout_in_minutes: 10
         key: "macos-6000-fixture"
         env:
