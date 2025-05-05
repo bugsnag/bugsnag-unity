@@ -19,7 +19,7 @@ namespace BugsnagUnity.Payload
 #if ENABLE_IL2CPP
         const string COMPILATION_PLATFORM = "il2cpp"; 
 #elif ENABLE_MONO
-        const string COMPILATION_PLATFORM = "mono"; 
+        const string COMPILATION_PLATFORM = "mono";
 #else
         const string COMPILATION_PLATFORM = "unknown"; 
 #endif
@@ -86,7 +86,7 @@ namespace BugsnagUnity.Payload
             set => this.AddToPayload(MESSAGE_KEY, value);
         }
 
-        public string Type 
+        public string Type
         {
             get => this.Get(ERROR_TYPE_KEY) as string;
             set => this.AddToPayload(ERROR_TYPE_KEY, value);

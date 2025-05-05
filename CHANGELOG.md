@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+- Add compilation platform type to error payloads to enable IL2CPP symbolication in future [#904](https://github.com/bugsnag/bugsnag-unity/pull/904)
+
 ## 8.5.2 (2025-03-31)
 
 ### Enhancements
