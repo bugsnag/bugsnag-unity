@@ -16,6 +16,14 @@ namespace BugsnagUnity.Payload
 
         internal bool IsAndroidJavaException;
 
+#if ENABLE_IL2CPP
+        const string COMPILATION_PLATFORM = "il2cpp"; 
+#elif ENABLE_MONO
+        const string COMPILATION_PLATFORM = "mono"; 
+#else
+        const string COMPILATION_PLATFORM = "unknown"; 
+#endif
+
         private const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
         private const string ERROR_CLASS_MESSAGE_PATTERN = @"^(?<errorClass>\S+):\s+(?<message>.*)";
         private const string NATIVE_ANDROID_ERROR_CLASS = "java.lang.Error";
@@ -24,6 +32,7 @@ namespace BugsnagUnity.Payload
         private const string ERROR_CLASS_KEY = "errorClass";
         private const string MESSAGE_KEY = "message";
         private const string STACKTRACE_KEY = "stacktrace";
+        private const string ERROR_TYPE_KEY = "type";
 
         internal Error(Dictionary<string, object> data)
         {
@@ -57,6 +66,7 @@ namespace BugsnagUnity.Payload
             _stacktrace = stackTrace.ToList();
             HandledState = handledState;
             IsAndroidJavaException = isAndroidJavaException;
+            Type = COMPILATION_PLATFORM;
         }
 
 
@@ -76,8 +86,11 @@ namespace BugsnagUnity.Payload
             set => this.AddToPayload(MESSAGE_KEY, value);
         }
 
-        public string Type { get => "Unity"; }
-
+        public string Type 
+        {
+            get => this.Get(ERROR_TYPE_KEY) as string;
+            set => this.AddToPayload(ERROR_TYPE_KEY, value);
+        }
         public static bool ShouldSend(System.Exception exception)
         {
             var errorClass = exception.GetType().Name;
