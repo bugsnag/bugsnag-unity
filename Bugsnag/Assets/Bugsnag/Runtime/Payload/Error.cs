@@ -16,13 +16,15 @@ namespace BugsnagUnity.Payload
 
         internal bool IsAndroidJavaException;
 
+    private const string COMPILATION_PLATFORM = 
 #if ENABLE_IL2CPP
-        const string COMPILATION_PLATFORM = "il2cpp"; 
+        "il2cpp"
 #elif ENABLE_MONO
-        const string COMPILATION_PLATFORM = "mono";
+        "mono"
 #else
-        const string COMPILATION_PLATFORM = "unknown"; 
+        "unknown" 
 #endif
+        ;
 
         private const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
         private const string ERROR_CLASS_MESSAGE_PATTERN = @"^(?<errorClass>\S+):\s+(?<message>.*)";
