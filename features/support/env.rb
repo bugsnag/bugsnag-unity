@@ -78,6 +78,14 @@ Before('@android_only') do |_scenario|
   skip_this_scenario('Skipping scenario') unless Maze::Helper.get_current_platform == 'android'
 end
 
+Before('@mobile_only') do |_scenario|
+  mobile_platforms = %w[android ios]
+  current_platform = Maze::Helper.get_current_platform
+  unless mobile_platforms.include?(current_platform)
+    skip_this_scenario('Skipping scenario, this scenario is only for Android or iOS')
+  end
+end
+
 
 BeforeAll do
   $api_key = 'a35a2a72bd230ac0aa0f52715bbdc6aa'
