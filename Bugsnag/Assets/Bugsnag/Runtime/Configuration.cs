@@ -165,7 +165,7 @@ namespace BugsnagUnity
 
         public string AppVersion = Application.version;
 
-        public EndpointConfiguration Endpoints = new EndpointConfiguration();
+        public EndpointConfiguration Endpoints;
 
         internal string PayloadVersion { get; } = "4.0";
 

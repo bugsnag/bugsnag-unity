@@ -21,7 +21,7 @@ namespace BugsnagUnity.Payload
         {
             Id = Guid.NewGuid().ToString();
             Ignored = false;
-            Endpoint = configuration.Endpoints.Notify;
+            Endpoint = configuration.Endpoints._notify;
             Headers = new[] {
                 new KeyValuePair<string, string>("Bugsnag-Api-Key", @event.ApiKey),
                 new KeyValuePair<string, string>("Bugsnag-Payload-Version", configuration.PayloadVersion),
@@ -34,7 +34,7 @@ namespace BugsnagUnity.Payload
         internal Report(Configuration configuration, Dictionary<string, object> serialisedPayload)
         {
             Id = serialisedPayload["id"].ToString();
-            Endpoint = configuration.Endpoints.Notify;
+            Endpoint = configuration.Endpoints._notify;
             var apiKey = serialisedPayload["apiKey"].ToString();
             Headers = new[] {
                 new KeyValuePair<string, string>("Bugsnag-Api-Key", apiKey),

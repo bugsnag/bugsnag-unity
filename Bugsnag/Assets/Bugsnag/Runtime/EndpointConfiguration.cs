@@ -5,52 +5,73 @@ namespace BugsnagUnity
 {
     public class EndpointConfiguration
     {
-
         private const string DefaultNotifyEndpoint = "https://notify.bugsnag.com";
-
+        private const string AlternateNotifyEndpoint = "https://notify.insighthub.smartbear.com";
         private const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
-
-        internal Uri Notify;
-
-        internal Uri Session;
-
-        internal bool NotifyIsCustom => Notify != null && Notify.ToString() != new Uri(DefaultNotifyEndpoint).ToString();
-
-        internal bool SessionIsCustom => Session != null && Session.ToString() != new Uri(DefaultSessionEndpoint).ToString();
-
-        internal bool IsValid
+        private const string AlternateSessionEndpoint = "https://sessions.insighthub.smartbear.com";
+        private string _customNotifyEndpoint = string.Empty;
+        private string _customSessionEndpoint = string.Empty;
+        internal Uri NotifyEndpoint;
+        internal Uri SessionEndpoint;
+        internal bool IsValidConfiguration()
         {
-            get
+
+        }
+
+        internal void Configure(string apiKey)
+        {
+            if (NotifyEndpoint != null)
             {
-                return Notify != null && Session != null && (NotifyIsCustom && SessionIsCustom || !NotifyIsCustom && !SessionIsCustom);
+                return;
             }
-        }
-
-        internal EndpointConfiguration()
-        {
-            Notify = new Uri(DefaultNotifyEndpoint);
-            Session = new Uri(DefaultSessionEndpoint);
-        }
-
-        public EndpointConfiguration(string notifyEndpoint, string sessionEndpoint)
-        {
             try
             {
-                Notify = new Uri(notifyEndpoint);
+                if (!string.IsNullOrEmpty(_customNotifyEndpoint))
+                {
+                    NotifyEndpoint = new Uri(_customNotifyEndpoint);
+                }
+                else if (apiKey.StartsWith("00000"))
+                {
+                    NotifyEndpoint = new Uri(AlternateNotifyEndpoint);
+                }
+                else
+                {
+                    NotifyEndpoint = new Uri(DefaultNotifyEndpoint);
+                }
             }
             catch (Exception e)
             {
                 UnityEngine.Debug.LogWarning(string.Format("Invalid configuration. Endpoints.Notify should be a valid URI. Error message: {0}. Events will not be sent to Bugsnag. ", e.Message));
+                throw e;
             }
+
             try
             {
-                Session = new Uri(sessionEndpoint);
+                if (!string.IsNullOrEmpty(_customSessionEndpoint))
+                {
+                    SessionEndpoint = new Uri(_customSessionEndpoint);
+                }
+                else if (apiKey.StartsWith("00000"))
+                {
+                    SessionEndpoint = new Uri(AlternateSessionEndpoint);
+                }
+                else
+                {
+                    SessionEndpoint = new Uri(DefaultSessionEndpoint);
+                }
             }
             catch (Exception e)
             {
                 UnityEngine.Debug.LogWarning(string.Format("Invalid configuration. Endpoints.Session should be a valid URI. Error message:  {0}. Sessions will not be sent to Bugsnag. ", e.Message));
 
             }
+
+        }
+
+        public EndpointConfiguration(string notifyEndpoint, string sessionEndpoint)
+        {
+            _customNotifyEndpoint = notifyEndpoint;
+            _customSessionEndpoint = sessionEndpoint;
         }
 
         internal EndpointConfiguration Clone()
