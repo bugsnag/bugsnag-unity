@@ -14,8 +14,8 @@ namespace BugsnagUnityTests
     {
         private const string DefaultNotify = "https://notify.bugsnag.com";
         private const string DefaultSession = "https://sessions.bugsnag.com";
-        private const string AlternateNotify = "https://notify.insighthub.smartbear.com";
-        private const string AlternateSession = "https://sessions.insighthub.smartbear.com";
+        private const string HubNotify = "https://notify.insighthub.smartbear.com";
+        private const string HubSession = "https://sessions.insighthub.smartbear.com";
         private const string CustomNotify = "https://www.customNotify.com/";
         private const string CustomSession = "https://www.customSession.com/";
         [Test]
@@ -100,8 +100,8 @@ namespace BugsnagUnityTests
             cfg.Configure("00000‑abcdef");
 
             Assert.That(cfg.IsConfigured, Is.True);
-            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(AlternateNotify));
-            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(AlternateSession));
+            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(HubNotify));
+            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(HubSession));
         }
 
         //-----------------------------------------------------------------

@@ -135,7 +135,6 @@ namespace BugsnagUnity
             }
             InitTimingTracker();
             StartInitialSession();
-            ConfigureEndpoints();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
             ListenForSceneLoad();
@@ -224,11 +223,6 @@ namespace BugsnagUnity
             }
             // listen for changes and pass the data to the native layer
             _cachedUser.PropertyChanged.AddListener(() => { NativeClient.SetUser(_cachedUser); });
-        }
-
-        private void ConfigureEndpoints()
-        {
-            Configuration.Endpoints.Configure(Configuration.ApiKey);
         }
 
         private void AddBugsnagLoadedBreadcrumb()
