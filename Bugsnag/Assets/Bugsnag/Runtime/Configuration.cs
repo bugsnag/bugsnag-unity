@@ -165,7 +165,7 @@ namespace BugsnagUnity
 
         public string AppVersion = Application.version;
 
-        public EndpointConfiguration Endpoints;
+        public EndpointConfiguration Endpoints = new EndpointConfiguration();
 
         internal string PayloadVersion { get; } = "4.0";
 
@@ -334,10 +334,7 @@ namespace BugsnagUnity
             {
                 clone._user = _user.Clone();
             }
-            if (Endpoints.IsValid)
-            {
-                clone.Endpoints = Endpoints.Clone();
-            }
+            clone.Endpoints = Endpoints.Clone();
             return clone;
         }
 

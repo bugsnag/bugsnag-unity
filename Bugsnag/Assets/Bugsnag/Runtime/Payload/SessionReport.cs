@@ -17,7 +17,7 @@ namespace BugsnagUnity.Payload
 
         private void SetRequestInfo(Configuration configuration)
         {
-            Endpoint = configuration.Endpoints._session;
+            Endpoint = configuration.Endpoints.SessionEndpoint;
             Headers = new KeyValuePair<string, string>[] {
                 new KeyValuePair<string, string>("Bugsnag-Api-Key", configuration.ApiKey),
                 new KeyValuePair<string, string>("Bugsnag-Payload-Version", configuration.SessionPayloadVersion),

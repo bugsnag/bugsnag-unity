@@ -135,7 +135,7 @@ namespace BugsnagUnity
             }
             InitTimingTracker();
             StartInitialSession();
-            CheckForMisconfiguredEndpointsWarning();
+            ConfigureEndpoints();
             AddBugsnagLoadedBreadcrumb();
             _delivery.StartDeliveringCachedPayloads();
             ListenForSceneLoad();
@@ -226,21 +226,9 @@ namespace BugsnagUnity
             _cachedUser.PropertyChanged.AddListener(() => { NativeClient.SetUser(_cachedUser); });
         }
 
-        private void CheckForMisconfiguredEndpointsWarning()
+        private void ConfigureEndpoints()
         {
-            var endpoints = Configuration.Endpoints;
-            if (endpoints.IsValid)
-            {
-                return;
-            }
-            if (endpoints.NotifyIsCustom && !endpoints.SessionIsCustom)
-            {
-                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Notify cannot be set without also setting endpoints.Session. Events will not be sent to Bugsnag.");
-            }
-            if (!endpoints.NotifyIsCustom && endpoints.SessionIsCustom)
-            {
-                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.Session cannot be set without also setting endpoints.Notify. Sessions will not be sent to Bugsnag.");
-            }
+            Configuration.Endpoints.Configure(Configuration.ApiKey);
         }
 
         private void AddBugsnagLoadedBreadcrumb()
@@ -368,7 +356,7 @@ namespace BugsnagUnity
 
         private void Notify(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType)
         {
-            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsConfigured)
             {
                 return;
             }
@@ -393,7 +381,7 @@ namespace BugsnagUnity
 
         private void NotifyOnMainThread(Error[] exceptions, HandledState handledState, Func<IEvent, bool> callback, LogType? logType, Correlation correlation)
         {
-            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsValid)
+            if (!ShouldSendRequests() || EventContainsDiscardedClass(exceptions) || !Configuration.Endpoints.IsConfigured)
             {
                 return;
             }
