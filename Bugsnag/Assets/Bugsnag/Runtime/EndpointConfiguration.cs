@@ -17,7 +17,7 @@ namespace BugsnagUnity
 
         internal void Configure(string apiKey)
         {
-            if (IsConfigured)
+            if (IsConfigured || string.IsNullOrEmpty(apiKey))
             {
                 return;
             }
