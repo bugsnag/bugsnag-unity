@@ -6,9 +6,9 @@ namespace BugsnagUnity
     public class EndpointConfiguration
     {
         private const string DefaultNotifyEndpoint = "https://notify.bugsnag.com";
-        private const string AlternateNotifyEndpoint = "https://notify.insighthub.smartbear.com";
+        private const string HubNotifyEndpoint = "https://notify.insighthub.smartbear.com";
         private const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
-        private const string AlternateSessionEndpoint = "https://sessions.insighthub.smartbear.com";
+        private const string HubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
         private string _customNotifyEndpoint = string.Empty;
         private string _customSessionEndpoint = string.Empty;
         internal Uri NotifyEndpoint;
@@ -40,7 +40,7 @@ namespace BugsnagUnity
                 }
                 else if (apiKey.StartsWith("00000"))
                 {
-                    NotifyEndpoint = new Uri(AlternateNotifyEndpoint);
+                    NotifyEndpoint = new Uri(HubNotifyEndpoint);
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace BugsnagUnity
                 }
                 else if (apiKey.StartsWith("00000"))
                 {
-                    SessionEndpoint = new Uri(AlternateSessionEndpoint);
+                    SessionEndpoint = new Uri(HubSessionEndpoint);
                 }
                 else
                 {
