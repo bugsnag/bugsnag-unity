@@ -25,6 +25,8 @@ namespace BugsnagUnity
                 if (InternalClient == null)
                 {
                     var configClone = configuration.Clone();
+                    //endpoints must be configured before the native client is created
+                    configClone.Endpoints.Configure(configClone.ApiKey);
                     var nativeClient = new NativeClient(configClone);
                     InternalClient = new Client(nativeClient);
                 }

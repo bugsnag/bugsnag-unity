@@ -12,6 +12,12 @@ namespace BugsnagUnityTests
     [TestFixture]
     public class ConfigurationTests
     {
+        private const string DefaultNotify = "https://notify.bugsnag.com";
+        private const string DefaultSession = "https://sessions.bugsnag.com";
+        private const string HubNotify = "https://notify.insighthub.smartbear.com";
+        private const string HubSession = "https://sessions.insighthub.smartbear.com";
+        private const string CustomNotify = "https://www.customNotify.com/";
+        private const string CustomSession = "https://www.customSession.com/";
         [Test]
         public void DefaultConfigurationValues()
         {
@@ -20,8 +26,8 @@ namespace BugsnagUnityTests
             Assert.IsTrue(config.AutoDetectErrors);
             Assert.IsTrue(config.AutoTrackSessions);
             Assert.AreEqual("production", config.ReleaseStage);
-            Assert.AreEqual("https://notify.bugsnag.com/", config.Endpoints.Notify.ToString());
-            Assert.AreEqual("https://sessions.bugsnag.com/", config.Endpoints.Session.ToString());
+            Assert.AreEqual("https://notify.bugsnag.com/", config.Endpoints.NotifyEndpoint.ToString());
+            Assert.AreEqual("https://sessions.bugsnag.com/", config.Endpoints.SessionEndpoint.ToString());
             Assert.AreEqual("foo", config.ApiKey);
         }
 
@@ -66,24 +72,78 @@ namespace BugsnagUnityTests
             Assert.AreEqual("2", clone.GetUser().Name);
         }
 
+
+
+
+        //-----------------------------------------------------------------
+        // DEFAULTS (no custom endpoints, api‑key that does NOT trigger the
+        //           alternate endpoints)
+        //-----------------------------------------------------------------
         [Test]
-        public void EndpointValidation()
+        public void Configure_SetsDefaultEndpoints_WhenNoCustomisation()
         {
-            var config = new Configuration("foo");
+            var cfg = new EndpointConfiguration();
+            cfg.Configure("foo-bar");
 
-            Assert.IsTrue(config.Endpoints.IsValid);
+            Assert.That(cfg.IsConfigured, Is.True);
+            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(DefaultNotify));
+            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(DefaultSession));
+        }
 
-            config.Endpoints.Notify = new Uri("https://www.richIsCool.com/");
+        //-----------------------------------------------------------------
+        // ALTERNATE (api‑key with leading "00000" should map to InsightHub)
+        //-----------------------------------------------------------------
+        [Test]
+        public void Configure_SetsAlternateEndpoints_WhenApiKeyStartsWith00000()
+        {
+            var cfg = new EndpointConfiguration();
+            cfg.Configure("00000abcdef");
 
-            Assert.IsFalse(config.Endpoints.IsValid);
+            Assert.That(cfg.IsConfigured, Is.True);
+            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(HubNotify));
+            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(HubSession));
+        }
 
-            config.Endpoints.Session = new Uri("https://www.richIsSuperCool.com/");
+        //-----------------------------------------------------------------
+        // CUSTOM (both endpoints supplied explicitly)
+        //-----------------------------------------------------------------
+        [Test]
+        public void Configure_UsesCustomEndpoints_WhenBothProvided()
+        {
+            var cfg = new EndpointConfiguration(CustomNotify, CustomSession);
+            cfg.Configure("foo-bar");
 
-            Assert.IsTrue(config.Endpoints.IsValid);
+            Assert.That(cfg.IsConfigured, Is.True);
+            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(CustomNotify));
+            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(CustomSession));
+        }
 
-            config.Endpoints.Notify = null;
+        //-----------------------------------------------------------------
+        // INVALID: Notify only
+        //-----------------------------------------------------------------
+        [Test]
+        public void Configure_Fails_WhenOnlyNotifyCustomised()
+        {
+            var cfg = new EndpointConfiguration(CustomNotify, string.Empty);
+            cfg.Configure("foo-bar");
 
-            Assert.IsFalse(config.Endpoints.IsValid);
+            Assert.That(cfg.IsConfigured, Is.False, "Partial customisation should leave config in an unconfigured state");
+            Assert.That(cfg.NotifyEndpoint, Is.Null);
+            Assert.That(cfg.SessionEndpoint, Is.Null);
+        }
+
+        //-----------------------------------------------------------------
+        // INVALID: Session only
+        //-----------------------------------------------------------------
+        [Test]
+        public void Configure_Fails_WhenOnlySessionCustomised()
+        {
+            var cfg = new EndpointConfiguration(string.Empty, CustomSession);
+            cfg.Configure("foo-bar");
+
+            Assert.That(cfg.IsConfigured, Is.False);
+            Assert.That(cfg.NotifyEndpoint, Is.Null);
+            Assert.That(cfg.SessionEndpoint, Is.Null);
         }
 
         [Test]

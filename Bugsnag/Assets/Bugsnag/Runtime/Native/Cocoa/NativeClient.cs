@@ -43,7 +43,7 @@ namespace BugsnagUnity
             NativeCode.bugsnag_setAutoNotifyConfig(obj, config.AutoDetectErrors);
             NativeCode.bugsnag_setReleaseStage(obj, config.ReleaseStage);
             NativeCode.bugsnag_setAppVersion(obj, config.AppVersion);
-            NativeCode.bugsnag_setEndpoints(obj, config.Endpoints.Notify.ToString(), config.Endpoints.Session.ToString());
+            NativeCode.bugsnag_setEndpoints(obj, config.Endpoints.NotifyEndpoint.ToString(), config.Endpoints.SessionEndpoint.ToString());
             NativeCode.bugsnag_setMaxBreadcrumbs(obj, config.MaximumBreadcrumbs);
             if (!string.IsNullOrEmpty(config.BundleVersion))
             {

@@ -39,10 +39,10 @@ namespace BugsnagUnity
         public int MaxPersistedSessions = 128;
         public int MaxReportedThreads = 200;
         public int MaxStringValueLength = 10000;
-        public string NotifyEndpoint = "https://notify.bugsnag.com";
+        public string NotifyEndpoint = string.Empty;
         public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
         public bool PersistUser = true;
-        public string SessionEndpoint = "https://sessions.bugsnag.com";
+        public string SessionEndpoint = string.Empty;
         public ThreadSendPolicy SendThreads = ThreadSendPolicy.UnhandledOnly;
         public string[] RedactedKeys = new string[] { ".*password.*" };
         public string ReleaseStage;

@@ -334,10 +334,7 @@ namespace BugsnagUnity
             {
                 clone._user = _user.Clone();
             }
-            if (Endpoints.IsValid)
-            {
-                clone.Endpoints = Endpoints.Clone();
-            }
+            clone.Endpoints = Endpoints.Clone();
             return clone;
         }
 

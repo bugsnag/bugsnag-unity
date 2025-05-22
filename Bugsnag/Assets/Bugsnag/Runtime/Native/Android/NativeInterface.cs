@@ -368,8 +368,8 @@ namespace BugsnagUnity
             }
 
             // set endpoints
-            var notify = config.Endpoints.Notify.ToString();
-            var sessions = config.Endpoints.Session.ToString();
+            var notify = config.Endpoints.NotifyEndpoint.ToString();
+            var sessions = config.Endpoints.SessionEndpoint.ToString();
             using (AndroidJavaObject endpointConfig = new AndroidJavaObject("com.bugsnag.android.EndpointConfiguration", notify, sessions))
             {
                 obj.Call("setEndpoints", endpointConfig);

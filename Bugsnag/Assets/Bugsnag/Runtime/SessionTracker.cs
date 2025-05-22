@@ -101,7 +101,7 @@ namespace BugsnagUnity
                 }
             }
 
-            if (Client.Configuration.Endpoints.IsValid)
+            if (Client.Configuration.Endpoints.IsConfigured)
             {
                 var payload = new SessionReport(Client.Configuration, session);
                 if (Client.PayloadManager.AddPendingPayload(payload))
