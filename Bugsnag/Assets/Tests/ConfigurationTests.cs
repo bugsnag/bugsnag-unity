@@ -97,7 +97,7 @@ namespace BugsnagUnityTests
         public void Configure_SetsAlternateEndpoints_WhenApiKeyStartsWith00000()
         {
             var cfg = new EndpointConfiguration();
-            cfg.Configure("00000‑abcdef");
+            cfg.Configure("00000abcdef");
 
             Assert.That(cfg.IsConfigured, Is.True);
             Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(HubNotify));

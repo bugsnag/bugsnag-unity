@@ -9,6 +9,7 @@ namespace BugsnagUnity
         private const string HubNotifyEndpoint = "https://notify.insighthub.smartbear.com";
         private const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
         private const string HubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
+        private const string HubApiPrefix = "00000";
         private string _customNotifyEndpoint = string.Empty;
         private string _customSessionEndpoint = string.Empty;
         internal Uri NotifyEndpoint;
@@ -24,12 +25,12 @@ namespace BugsnagUnity
             // Check that if one endpoint is customised the other is also customised
             if (!string.IsNullOrEmpty(_customNotifyEndpoint) && string.IsNullOrEmpty(_customSessionEndpoint))
             {
-                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.NotifyEndpoint cannot be set without also setting endpoints.SessionEndpoint. Events will not be sent to Bugsnag.");
+                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.NotifyEndpoint cannot be set without also setting endpoints.SessionEndpoint. Events will not be sent.");
                 return;
             }
             if (!string.IsNullOrEmpty(_customSessionEndpoint) && string.IsNullOrEmpty(_customNotifyEndpoint))
             {
-                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.SessionEndpoint cannot be set without also setting endpoints.NotifyEndpoint. Sessions will not be sent to Bugsnag.");
+                UnityEngine.Debug.LogWarning("Invalid configuration. endpoints.SessionEndpoint cannot be set without also setting endpoints.NotifyEndpoint. Sessions will not be sent.");
                 return;
             }
             try
@@ -49,7 +50,7 @@ namespace BugsnagUnity
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogWarning(string.Format("Invalid configuration. Endpoints.NotifyEndpoint should be a valid URI. Error message: {0}. Events will not be sent to Bugsnag. ", e.Message));
+                UnityEngine.Debug.LogWarning(string.Format("Invalid configuration. Endpoints.NotifyEndpoint should be a valid URI. Error message: {0}. Events will not be sent. ", e.Message));
                 return;
             }
 
@@ -59,7 +60,7 @@ namespace BugsnagUnity
                 {
                     SessionEndpoint = new Uri(_customSessionEndpoint);
                 }
-                else if (apiKey.StartsWith("00000"))
+                else if (IsHubApiKey(apiKey))
                 {
                     SessionEndpoint = new Uri(HubSessionEndpoint);
                 }
@@ -70,10 +71,15 @@ namespace BugsnagUnity
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogWarning(string.Format("Invalid configuration. Endpoints.SessionEndpoint should be a valid URI. Error message:  {0}. Sessions will not be sent to Bugsnag. ", e.Message));
+                UnityEngine.Debug.LogWarning(string.Format("Invalid configuration. Endpoints.SessionEndpoint should be a valid URI. Error message:  {0}. Sessions will not be sent. ", e.Message));
                 return;
             }
             IsConfigured = true;
+        }
+
+        private bool IsHubApiKey(string apiKey)
+        {
+            return apiKey.StartsWith(HubApiPrefix);
         }
 
         public EndpointConfiguration()
