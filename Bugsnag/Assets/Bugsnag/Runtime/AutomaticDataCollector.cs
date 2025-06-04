@@ -14,7 +14,7 @@ namespace BugsnagUnity
             var appMetadata = new Dictionary<string, object>();
             appMetadata.Add("companyName", Application.companyName);
             appMetadata.Add("name", Application.productName);
-            nativeClient.AddNativeMetadata("app",appMetadata);
+            nativeClient.AddNativeMetadata("app", appMetadata);
 
             //data added to metadata.device
             var deviceMetadata = new Dictionary<string, object>();
@@ -42,7 +42,7 @@ namespace BugsnagUnity
                 deviceMetadata.Add("batteryLevel", SystemInfo.batteryLevel);
             }
             deviceMetadata.Add("charging", SystemInfo.batteryStatus.Equals(BatteryStatus.Charging));
-            metadata.AddMetadata("device", deviceMetadata);            
+            metadata.AddMetadata("device", deviceMetadata);
         }
 
     }

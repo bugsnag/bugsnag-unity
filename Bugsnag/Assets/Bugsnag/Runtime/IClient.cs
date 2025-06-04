@@ -51,7 +51,7 @@ namespace BugsnagUnity
 
         User GetUser();
 
-        void SetUser(string id,string email,string name);
+        void SetUser(string id, string email, string name);
 
     }
 }

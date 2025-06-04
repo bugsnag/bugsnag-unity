@@ -55,7 +55,7 @@ namespace BugsnagUnity
 
                 return correlation;
             }
-            catch 
+            catch
             {
                 // Silently handle case where performance library is not available or out of date
                 _isPerformanceLibraryAvailable = false;

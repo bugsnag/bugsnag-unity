@@ -52,7 +52,7 @@ namespace BugsnagUnity
         private string[] GetCachedSessionFiles()
         {
 
-            return GetFilesBySuffix(_sessionsDirectory,SESSION_FILE_SUFFIX);
+            return GetFilesBySuffix(_sessionsDirectory, SESSION_FILE_SUFFIX);
         }
 
         private string[] GetFilesBySuffix(string path, string suffix)
@@ -120,7 +120,7 @@ namespace BugsnagUnity
             }
         }
 
-        public void SaveSessionToCache(string id,string json)
+        public void SaveSessionToCache(string id, string json)
         {
             var path = _sessionsDirectory + "/" + id + SESSION_FILE_SUFFIX;
             WritePayloadToDisk(json, path);
@@ -153,7 +153,7 @@ namespace BugsnagUnity
             foreach (var file in ordered.Take(numToRemove))
             {
                 DeleteFile(file);
-            }            
+            }
         }
 
         public void RemoveCachedEvent(string id)
@@ -183,7 +183,8 @@ namespace BugsnagUnity
             try
             {
                 File.Delete(path);
-            }catch{}
+            }
+            catch { }
         }
 
         private void WriteFile(string path, string data)
@@ -195,20 +196,23 @@ namespace BugsnagUnity
                 file.Write(System.Text.Encoding.UTF8.GetBytes(data), 0, data.Length);
                 file.Flush();
                 file.Close();
-            }catch { }
+            }
+            catch { }
         }
 
         private string GetJsonFromCachePath(string path)
         {
-            try {
+            try
+            {
                 if (File.Exists(path))
                 {
                     return File.ReadAllText(path);
                 }
-            } catch { }
+            }
+            catch { }
             return null;
         }
-       
+
         private static void CheckForDirectoryCreation()
         {
             try

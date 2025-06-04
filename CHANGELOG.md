@@ -1,5 +1,13 @@
 # Changelog
 
+## 8.6.0 (2025-06-03)
+
+### Enhancements
+
+- Set default endpoints based on API key [#905](https://github.com/bugsnag/bugsnag-unity/pull/905)
+
+- Add compilation platform as `error.type` to event payloads to enable IL2CPP symbolication in future [#904](https://github.com/bugsnag/bugsnag-unity/pull/904)
+
 ## 8.5.2 (2025-03-31)
 
 ### Enhancements

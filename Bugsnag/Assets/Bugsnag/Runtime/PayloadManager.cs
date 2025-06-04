@@ -128,6 +128,6 @@ namespace BugsnagUnity
         {
             _cacheManager.RemoveCachedSession(id);
         }
-      
+
     }
 }

@@ -24,7 +24,7 @@ namespace BugsnagUnity
         /// <summary>
         /// Add a breadcrumb to the collection with the specified type and metadata
         /// </summary>
-        public void Leave(string message, Dictionary<string, object> metadata,BreadcrumbType type )
+        public void Leave(string message, Dictionary<string, object> metadata, BreadcrumbType type)
         {
             Leave(new Breadcrumb(message, metadata, type));
         }
@@ -61,7 +61,7 @@ namespace BugsnagUnity
             }
         }
 
-      
+
     }
 }
 #endif

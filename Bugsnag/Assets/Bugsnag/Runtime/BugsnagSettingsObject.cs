@@ -39,10 +39,10 @@ namespace BugsnagUnity
         public int MaxPersistedSessions = 128;
         public int MaxReportedThreads = 200;
         public int MaxStringValueLength = 10000;
-        public string NotifyEndpoint = "https://notify.bugsnag.com";
+        public string NotifyEndpoint = string.Empty;
         public EditorLogLevel NotifyLogLevel = EditorLogLevel.Exception;
         public bool PersistUser = true;
-        public string SessionEndpoint = "https://sessions.bugsnag.com";
+        public string SessionEndpoint = string.Empty;
         public ThreadSendPolicy SendThreads = ThreadSendPolicy.UnhandledOnly;
         public string[] RedactedKeys = new string[] { ".*password.*" };
         public string ReleaseStage;
@@ -98,9 +98,10 @@ namespace BugsnagUnity
             }
             config.BundleVersion = BundleVersion;
 
-            config.BreadcrumbLogLevel = GetLogTypeFromLogLevel( BreadcrumbLogLevel );
+            config.BreadcrumbLogLevel = GetLogTypeFromLogLevel(BreadcrumbLogLevel);
             config.Context = Context;
-            foreach(string discardedClass in DiscardClasses){
+            foreach (string discardedClass in DiscardClasses)
+            {
                 try
                 {
                     config.DiscardClasses.Add(new System.Text.RegularExpressions.Regex(discardedClass));
@@ -122,13 +123,13 @@ namespace BugsnagUnity
             config.MaxPersistedSessions = MaxPersistedSessions;
             config.MaxReportedThreads = MaxReportedThreads;
             config.MaxStringValueLength = MaxStringValueLength;
-            config.NotifyLogLevel = GetLogTypeFromLogLevel( NotifyLogLevel );
+            config.NotifyLogLevel = GetLogTypeFromLogLevel(NotifyLogLevel);
             config.SendThreads = SendThreads;
             if (!string.IsNullOrEmpty(NotifyEndpoint) && !string.IsNullOrEmpty(SessionEndpoint))
             {
                 config.Endpoints = new EndpointConfiguration(NotifyEndpoint, SessionEndpoint);
             }
-            foreach(string key in RedactedKeys)
+            foreach (string key in RedactedKeys)
             {
                 try
                 {
@@ -212,11 +213,11 @@ namespace BugsnagUnity
         [Serializable]
         public enum EditorLogLevel
         {
-           Exception,
-           Error,
-           Assert,
-           Warning,
-           Log
+            Exception,
+            Error,
+            Assert,
+            Warning,
+            Log
         }
 
 
