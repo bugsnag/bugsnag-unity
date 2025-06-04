@@ -1,5 +1,5 @@
 aliases:
-  - &6000 "6000.0.47f1"
+  - &6000 "6000.0.49f1"
 
 agents:
   queue: macos-15-isolated
