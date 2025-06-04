@@ -36,7 +36,7 @@ steps:
         timeout_in_minutes: 10
         key: "build-ios-fixture-2020"
         env:
-          XCODE_VERSION: "15.3.0"
+          XCODE_VERSION: "16.3.0"
           UNITY_VERSION: *2020
         plugins:
           artifacts#v1.9.0:
@@ -58,7 +58,7 @@ steps:
         key: "macos-2020-fixture"
         env:
           UNITY_VERSION: *2020
-          XCODE_VERSION: "15.3.0"
+          XCODE_VERSION: "16.3.0"
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
@@ -82,7 +82,7 @@ steps:
         key: "webgl-2020-fixture"
         env:
           UNITY_VERSION: *2020
-          XCODE_VERSION: "15.3.0"
+          XCODE_VERSION: "16.3.0"
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
