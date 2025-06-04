@@ -26,11 +26,6 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
-        agents:
-          queue: macos-15-unity-isolated
-        concurrency: 1
-        concurrency_group: "unity-license-server"
-        concurrency_method: eager
 
       - label: ":ios: Build iOS test fixture for Unity 2021"
         timeout_in_minutes: 10
@@ -52,12 +47,6 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
-        agents:
-          queue: macos-15-unity-isolated
-        concurrency: 1
-        concurrency_group: "unity-license-server"
-        concurrency_method: eager
-
 
   - group: ":test_tube: E2E tests Unity 2021"
     steps:
