@@ -2,7 +2,7 @@ aliases:
   - &2021 "2021.3.45f1"
 
 agents:
-  queue: macos-14-isolated
+  queue: macos-15-isolated
 
 steps:
   - group: ":hammer: Build Unity 2021 test fixtures"
@@ -27,7 +27,7 @@ steps:
             - exit_status: "*"
               limit: 1
         agents:
-          queue: macos-14-unity-isolated
+          queue: macos-15-unity-isolated
         concurrency: 1
         concurrency_group: "unity-license-server"
         concurrency_method: eager
@@ -53,7 +53,7 @@ steps:
             - exit_status: "*"
               limit: 1
         agents:
-          queue: macos-14-unity-isolated
+          queue: macos-15-unity-isolated
         concurrency: 1
         concurrency_group: "unity-license-server"
         concurrency_method: eager

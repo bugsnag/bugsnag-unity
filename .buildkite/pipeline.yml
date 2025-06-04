@@ -2,7 +2,7 @@ aliases:
   - &2021 "2021.3.45f1"
 
 agents:
-  queue: macos-14-isolated
+  queue: macos-15-isolated
 
 steps:
   - label: Build released notifier artifact
