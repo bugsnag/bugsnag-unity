@@ -2,7 +2,7 @@ aliases:
   - &2021 "2021.3.45f1"
 
 agents:
-  queue: macos-15-isolated
+  queue: macos-15
 
 steps:
   - group: ":hammer: Build Unity 2021 test fixtures"
