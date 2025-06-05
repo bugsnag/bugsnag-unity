@@ -32,11 +32,11 @@ steps:
       #
       - label: ":ios: Build iOS test fixture for Unity 2020"
         agents:
-          queue: macos-15-isolated
+          queue: macos-14-isolated
         timeout_in_minutes: 10
         key: "build-ios-fixture-2020"
         env:
-          XCODE_VERSION: "16.2.0"
+          XCODE_VERSION: "15.3.0"
           UNITY_VERSION: *2020
         plugins:
           artifacts#v1.9.0:
@@ -58,7 +58,7 @@ steps:
         key: "macos-2020-fixture"
         env:
           UNITY_VERSION: *2020
-          XCODE_VERSION: "16.2.0"
+          XCODE_VERSION: "15.3.0"
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
@@ -76,13 +76,11 @@ steps:
               limit: 1
 
       - label: Build Unity 2020 WebGL test fixture
-        agents:
-          queue: macos-15-isolated
         timeout_in_minutes: 20
         key: "webgl-2020-fixture"
         env:
           UNITY_VERSION: *2020
-          XCODE_VERSION: "16.3.0"
+          XCODE_VERSION: "15.3.0"
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
