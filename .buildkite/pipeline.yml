@@ -2,7 +2,7 @@ aliases:
   - &2021 "2021.3.45f1"
 
 agents:
-  queue: macos-14-isolated
+  queue: macos-15
 
 steps:
   - label: Build released notifier artifact
@@ -19,7 +19,6 @@ steps:
       - Bugsnag.unitypackage
       - upm-package.zip
       - upm-edm4u-package.zip
-
     retry:
       automatic:
         - exit_status: "*"
@@ -31,7 +30,6 @@ steps:
       UNITY_VERSION: *2021
     commands:
       - rake code:verify
-
 
   - label: "Test UPM Package Import"
     depends_on: build_unitypackage
