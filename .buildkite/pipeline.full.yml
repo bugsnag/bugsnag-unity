@@ -2,10 +2,10 @@ agents:
   queue: macos
 
 steps:
-#  - label: 'Append Unity 2020 Pipeline'
-#    timeout_in_minutes: 2
-#    commands:
-#        - buildkite-agent pipeline upload .buildkite/unity.2020.yml
+  - label: 'Append Unity 2020 Pipeline'
+    timeout_in_minutes: 2
+    commands:
+        - buildkite-agent pipeline upload .buildkite/unity.2020.yml
 
   - label: 'Append Full Unity 2021 Pipeline'
     timeout_in_minutes: 2
