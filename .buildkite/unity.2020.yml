@@ -215,6 +215,8 @@ steps:
           - scripts/ci-run-macos-tests.sh release
 
       - label: Run WebGL e2e tests for Unity 2020
+        agents:
+          queue: macos-15-isolated
         timeout_in_minutes: 30
         depends_on: "webgl-2020-fixture"
         env:
