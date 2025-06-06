@@ -187,6 +187,8 @@ steps:
       - label: Run MacOS e2e tests for Unity 2022
         timeout_in_minutes: 60
         depends_on: 'macos-2022-fixture'
+        agents:
+          queue: macos-15-isolated
         env:
           UNITY_VERSION: *2022
         plugins:
@@ -206,6 +208,8 @@ steps:
       - label: Run WebGL e2e tests for Unity 2022
         timeout_in_minutes: 30
         depends_on: 'webgl-2022-fixture'
+        agents:
+          queue: macos-15-isolated
         env:
           UNITY_VERSION: *2022
         plugins:
