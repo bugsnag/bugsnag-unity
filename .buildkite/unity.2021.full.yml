@@ -299,7 +299,6 @@ steps:
             upload:
               - "maze_output/**/*"
               - "maze_output/metrics.csv"
-
           docker-compose#v4.7.0:
             pull: maze-runner-bitbar
             run: maze-runner-bitbar
@@ -323,10 +322,10 @@ steps:
         concurrency_method: eager
 
       - label: Run MacOS e2e tests for Unity 2021
+        agents:
+          queue: macos-15-isolated
         timeout_in_minutes: 30
         depends_on: 'macos-2021-fixture'
-        agents:
-          queue: macos-14-isolated
         env:
           UNITY_VERSION: *2021
         plugins:
@@ -344,10 +343,10 @@ steps:
           - scripts/ci-run-macos-tests.sh release
 
       - label: Run MacOS e2e DEV tests for Unity 2021
+        agents:
+          queue: macos-15-isolated
         timeout_in_minutes: 60
         depends_on: 'macos-2021-dev-fixture'
-        agents:
-          queue: macos-14-isolated
         env:
           UNITY_VERSION: *2021
         plugins:

@@ -195,6 +195,8 @@ steps:
         concurrency_method: eager
 
       - label: Run MacOS e2e tests for Unity 2020
+        agents:
+          queue: macos-15-isolated
         timeout_in_minutes: 60
         depends_on: "macos-2020-fixture"
         env:
