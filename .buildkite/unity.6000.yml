@@ -34,7 +34,7 @@ steps:
         key: "build-ios-fixture-6000"
         env:
           UNITY_VERSION: *6000
-          XCODE_VERSION: "16.0.0"
+          XCODE_VERSION: "16.3.0"
         plugins:
           artifacts#v1.9.0:
             download:
@@ -57,7 +57,7 @@ steps:
         key: "macos-6000-fixture"
         env:
           UNITY_VERSION: *6000
-          XCODE_VERSION: "16.0.0"
+          XCODE_VERSION: "16.3.0"
         plugins:
           artifacts#v1.9.0:
             download:
@@ -77,7 +77,7 @@ steps:
         key: "webgl-6000-fixture"
         env:
           UNITY_VERSION: *6000
-          XCODE_VERSION: "16.0.0"
+          XCODE_VERSION: "16.3.0"
         plugins:
           artifacts#v1.9.0:
             download:
