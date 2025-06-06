@@ -9,7 +9,7 @@ steps:
     steps:
       - label: ":android: Build Android test fixture for Unity 2020"
         agents:
-          queue: macos-15-isolated
+          queue: macos-15
         timeout_in_minutes: 20
         key: "build-android-fixture-2020"
         env:
@@ -34,7 +34,7 @@ steps:
       #
       - label: ":ios: Build iOS test fixture for Unity 2020"
         agents:
-          queue: macos-15-isolated
+          queue: macos-15
         timeout_in_minutes: 10
         key: "build-ios-fixture-2020"
         env:
@@ -196,7 +196,7 @@ steps:
 
       - label: Run MacOS e2e tests for Unity 2020
         agents:
-          queue: macos-15-isolated
+          queue: macos-15
         timeout_in_minutes: 60
         depends_on: "macos-2020-fixture"
         env:
@@ -218,7 +218,7 @@ steps:
 
       - label: Run WebGL e2e tests for Unity 2020
         agents:
-          queue: macos-15-isolated
+          queue: macos-15
         timeout_in_minutes: 30
         depends_on: "webgl-2020-fixture"
         env:

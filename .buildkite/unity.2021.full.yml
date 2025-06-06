@@ -323,7 +323,7 @@ steps:
 
       - label: Run MacOS e2e tests for Unity 2021
         agents:
-          queue: macos-15-isolated
+          queue: macos-15
         timeout_in_minutes: 30
         depends_on: 'macos-2021-fixture'
         env:
@@ -344,7 +344,7 @@ steps:
 
       - label: Run MacOS e2e DEV tests for Unity 2021
         agents:
-          queue: macos-15-isolated
+          queue: macos-15
         timeout_in_minutes: 60
         depends_on: 'macos-2021-dev-fixture'
         env:
@@ -365,7 +365,7 @@ steps:
 
       - label: Run WebGL e2e tests for Unity 2021
         agents:
-          queue: macos-15-isolated
+          queue: macos-15
         timeout_in_minutes: 20
         depends_on: 'webgl-2021-fixture'
         env:
@@ -386,7 +386,7 @@ steps:
 
       - label: Run WebGL e2e DEV tests for Unity 2021
         agents:
-          queue: macos-15-isolated
+          queue: macos-15
         timeout_in_minutes: 20
         depends_on: 'webgl-2021-dev-fixture'
         env:

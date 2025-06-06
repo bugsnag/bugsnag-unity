@@ -82,7 +82,15 @@ public class Builder : MonoBehaviour
         settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";
         settingsObject.StartAutomaticallyAtLaunch = false;
         settingsObject.AutoUploadSymbols = true;
-        settingsObject.UploadEndpoint = "http://localhost:9339";
+        string port = Environment.GetEnvironmentVariable("MAZE_RUNNER_PORT");
+        if (!string.IsNullOrEmpty(port))
+        {
+            settingsObject.UploadEndpoint = $"http://localhost:{port}";
+        }
+        else
+        {
+            settingsObject.UploadEndpoint = "http://localhost:9339";
+        }
         settingsObject.AppVersion = "1.2.3";
         settingsObject.VersionCode = 123;
         EditorUtility.SetDirty(settingsObject);
@@ -133,7 +141,15 @@ public class Builder : MonoBehaviour
         settingsObject.ApiKey = "a35a2a72bd230ac0aa0f52715bbdc6aa";
         settingsObject.StartAutomaticallyAtLaunch = false;
         settingsObject.AutoUploadSymbols = true;
-        settingsObject.UploadEndpoint = "http://localhost:9339";
+        string port = Environment.GetEnvironmentVariable("MAZE_RUNNER_PORT");
+        if (!string.IsNullOrEmpty(port))
+        {
+            settingsObject.UploadEndpoint = $"http://localhost:{port}";
+        }
+        else
+        {
+            settingsObject.UploadEndpoint = "http://localhost:9339";
+        }
         settingsObject.AppVersion = "1.2.3";
         EditorUtility.SetDirty(settingsObject);
     }
