@@ -12,12 +12,12 @@ steps:
     commands:
         - buildkite-agent pipeline upload .buildkite/unity.2021.full.yml
 
-#  - label: 'Append Unity 2022 Pipeline'
-#    timeout_in_minutes: 2
-#    commands:
-#        - buildkite-agent pipeline upload .buildkite/unity.2022.yml
-#
-#  - label: 'Append Unity 6000 Pipeline'
-#    timeout_in_minutes: 2
-#    commands:
-#        - buildkite-agent pipeline upload .buildkite/unity.6000.yml
+  - label: 'Append Unity 2022 Pipeline'
+    timeout_in_minutes: 2
+    commands:
+        - buildkite-agent pipeline upload .buildkite/unity.2022.yml
+
+  - label: 'Append Unity 6000 Pipeline'
+    timeout_in_minutes: 2
+    commands:
+        - buildkite-agent pipeline upload .buildkite/unity.6000.yml

@@ -1,15 +1,15 @@
 aliases:
-  - &6000 "6000.0.47f1"
+  - &6000 "6000.0.49f1"
 
 agents:
-  queue: macos-14-isolated
+  queue: macos-15-isolated
 
 steps:
   - group: ":hammer: Build Unity 6000 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 6000"
         agents:
-          queue: macos-14-isolated
+          queue: macos-15-isolated
         timeout_in_minutes: 20
         key: "build-android-fixture-6000"
         env:
@@ -52,7 +52,7 @@ steps:
 
       - label: Build Unity 6000 MacOS test fixture
         agents:
-          queue: macos-14-isolated
+          queue: macos-15-isolated
         timeout_in_minutes: 10
         key: "macos-6000-fixture"
         env:
@@ -191,7 +191,7 @@ steps:
         timeout_in_minutes: 60
         depends_on: 'macos-6000-fixture'
         agents:
-          queue: macos-14-isolated
+          queue: macos-15-isolated
         env:
           UNITY_VERSION: *6000
         plugins:
