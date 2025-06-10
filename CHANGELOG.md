@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 8.6.0 (2025-06-03)
 
 ### Enhancements
 
