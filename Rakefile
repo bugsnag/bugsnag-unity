@@ -437,7 +437,6 @@ namespace :plugin do
   desc "Generate release artifacts"
   task export: ["plugin:build:clean"] do
     Rake::Task["plugin:build:native_plugins"].invoke unless is_windows?
-    run_unit_tests
     export_package("Bugsnag.unitypackage")
     build_upm_package
     build_upm_edm4u_package
@@ -445,6 +444,12 @@ namespace :plugin do
 end
 
 namespace :test do
+
+  desc "Run In Editor Unit Tests"
+  task :run_editor_unit_tests do
+    run_unit_tests
+  end
+
   namespace :android do
     task :build do
       # Check that a Unity version has been selected and the path exists before calling the build script

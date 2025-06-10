@@ -5,6 +5,23 @@ agents:
   queue: macos-15
 
 steps:
+
+  - label: Verify code formatting
+    timeout_in_minutes: 5
+    env:
+      UNITY_VERSION: *2021
+    commands:
+      - rake code:verify
+
+  - label: Run Unit Tests
+    timeout_in_minutes: 5
+    env:
+      UNITY_PERFORMANCE_VERSION: *2021
+    commands:
+      - rake test:run_editor_unit_tests
+    artifact_paths:
+      - testResults.xml
+
   - label: Build released notifier artifact
     key: "build_unitypackage"
     timeout_in_minutes: 30
@@ -23,13 +40,6 @@ steps:
       automatic:
         - exit_status: "*"
           limit: 1
-
-  - label: Verify code formatting
-    timeout_in_minutes: 5
-    env:
-      UNITY_VERSION: *2021
-    commands:
-      - rake code:verify
 
   - label: "Test UPM Package Import"
     depends_on: build_unitypackage
