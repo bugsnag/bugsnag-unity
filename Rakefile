@@ -85,8 +85,9 @@ def plugins_dir
 end
 
 def run_unit_tests
-  unity "-runTests", "-projectPath", project_path, "-testPlatform", "EditMode", "-testResults", File.join(current_directory, "testResults.xml")
+    unity "-runTests", "-batchmode", "-projectPath", project_path, "-testPlatform", "EditMode", "-testResults", File.join(current_directory, "testResults.xml")
 end
+
 
 def apply_plugin_import_settings
   unity "-projectPath", project_path, "-executeMethod", "ForceImportSettings.ApplyImportSettings"
