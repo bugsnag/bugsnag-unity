@@ -22,7 +22,7 @@ namespace BugsnagUnityTests
         public void DefaultConfigurationValues()
         {
             var config = new Configuration("foo");
-            config.Endpoints.Configure("00000");
+            config.Endpoints.Configure("foo");
             Assert.IsTrue(config.ReportExceptionLogsAsHandled);
             Assert.IsTrue(config.AutoDetectErrors);
             Assert.IsTrue(config.AutoTrackSessions);
