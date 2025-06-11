@@ -58,12 +58,19 @@ end
 #
 # Run a command with the Unity executable and apply default command line parameters.
 #
-def unity(*cmd)
+def unity(*cmd, quit: true)
   raise "Unable to locate Unity executable in #{unity_directory}" unless unity_executable
 
-  unity_options = [unity_executable, "-batchmode", "-logFile", "unity.log", "-quit", "-nographics"]
+  unity_options = [
+    unity_executable,
+    "-batchmode",
+    "-logFile", "unity.log",
+    "-nographics"
+  ]
+  unity_options << "-quit" if quit        # add it only when requested
 
   full_cmd = unity_options + cmd
+
   sh *full_cmd do |ok, res|
     unless ok
       puts File.read("unity.log") if File.exist?("unity.log")
@@ -85,8 +92,16 @@ def plugins_dir
 end
 
 def run_unit_tests
-  unity "-runTests", "-projectPath", project_path, "-testPlatform", "EditMode", "-testResults", File.join(current_directory, "testResults.xml")
+  unity(
+    "-runTests",
+    "-batchmode",
+    "-projectPath",   project_path,
+    "-testPlatform",  "EditMode",
+    "-testResults",   File.join(current_directory, "testResults.xml"),
+    quit: false                       
+  )
 end
+
 
 def apply_plugin_import_settings
   unity "-projectPath", project_path, "-executeMethod", "ForceImportSettings.ApplyImportSettings"
@@ -437,7 +452,6 @@ namespace :plugin do
   desc "Generate release artifacts"
   task export: ["plugin:build:clean"] do
     Rake::Task["plugin:build:native_plugins"].invoke unless is_windows?
-    run_unit_tests
     export_package("Bugsnag.unitypackage")
     build_upm_package
     build_upm_edm4u_package
@@ -445,6 +459,12 @@ namespace :plugin do
 end
 
 namespace :test do
+
+  desc "Run In Editor Unit Tests"
+  task :run_editor_unit_tests do
+    run_unit_tests
+  end
+
   namespace :android do
     task :build do
       # Check that a Unity version has been selected and the path exists before calling the build script
