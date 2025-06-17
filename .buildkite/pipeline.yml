@@ -2,7 +2,7 @@ aliases:
   - &2021 "2021.3.45f1"
 
 agents:
-  queue: macos-15
+  queue: macos-15-4
 
 steps:
 
@@ -68,20 +68,20 @@ steps:
     commands:
       features/scripts/do_size_test.sh
 
-  - label: 'Append Unity 2021 Pipeline'
-    depends_on: build_unitypackage
-    agents:
-      queue: macos
-    timeout_in_minutes: 2
-    commands:
-        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
-
-  #
-  # Conditionally trigger full pipeline
-  #
-  - label: "Conditionally trigger full set of tests"
-    depends_on: build_unitypackage
-    agents:
-      queue: macos
-    timeout_in_minutes: 2
-    command: sh -c .buildkite/pipeline_trigger.sh
+#  - label: 'Append Unity 2021 Pipeline'
+#    depends_on: build_unitypackage
+#    agents:
+#      queue: macos
+#    timeout_in_minutes: 2
+#    commands:
+#        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
+#
+#  #
+#  # Conditionally trigger full pipeline
+#  #
+#  - label: "Conditionally trigger full set of tests"
+#    depends_on: build_unitypackage
+#    agents:
+#      queue: macos
+#    timeout_in_minutes: 2
+#    command: sh -c .buildkite/pipeline_trigger.sh
