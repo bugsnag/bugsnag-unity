@@ -1,48 +1,45 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-if [ -z "$UNITY_VERSION" ]
-then
-  echo "UNITY_VERSION must be set"
+# === Check environment ===
+if [[ -z "${UNITY_VERSION:-}" ]]; then
+  echo "❌ UNITY_VERSION must be set"
   exit 1
 fi
 
-UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS"
+# === Constants ===
+UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo "script_dir: $SCRIPT_DIR"
+FIXTURE_DIR="$SCRIPT_DIR/../fixtures"
+PROJECT_PATH="$FIXTURE_DIR/maze_runner"
+BUGSNAG_PACKAGE="$SCRIPT_DIR/../../Bugsnag.unitypackage"
+PERF_REPO_URL="https://github.com/bugsnag/bugsnag-unity-performance-upm.git"
+PERF_PACKAGE_PATH="$PROJECT_PATH/packages/performance-package"
+AAR_OUTPUT="$PROJECT_PATH/Assets/Plugins/Android/mazerunner_code.aar"
 
-pushd "${0%/*}"
-  script_path=`pwd`
-popd
+DEFAULT_CLI_ARGS="-quit -batchmode -nographics -logFile unity.log"
 
-pushd "$script_path/../fixtures"
+cd "$FIXTURE_DIR"
 
-# Assemble the Android AAR and copy it into the Unity plugins directory
-echo "Assembling Android mazerunner code into AAR"
+# === Assemble AAR ===
+echo "🛠️  Building Android mazerunner AAR..."
 ./maze_runner/nativeplugin/android/gradlew -p maze_runner/nativeplugin/android assembleRelease
 
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+# === Copy AAR to Unity project ===
+echo "📦 Copying AAR to Unity plugins directory..."
+cp maze_runner/nativeplugin/android/build/outputs/aar/android-release.aar "$AAR_OUTPUT"
 
-echo "Copying Android mazerunner AAR into Unity plugins dir"
-cp maze_runner/nativeplugin/android/build/outputs/aar/android-release.aar maze_runner/Assets/Plugins/Android/mazerunner_code.aar
+# === Import Bugsnag package ===
+echo "📥 Importing Bugsnag.unitypackage into Unity project..."
+"$UNITY_PATH" $DEFAULT_CLI_ARGS \
+  -projectPath "$PROJECT_PATH" \
+  -ignoreCompilerErrors \
+  -importPackage "$BUGSNAG_PACKAGE"
 
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+# === Import performance UPM package ===
+echo "🧬 Cloning bugsnag-unity-performance-upm..."
+rm -rf "$PERF_PACKAGE_PATH"
+git clone --depth=1 "$PERF_REPO_URL" "$PERF_PACKAGE_PATH"
 
-# Run unity and immediately exit afterwards, log all output, disable the
-# package manager (we just don't need it and it slows things down)
-DEFAULT_CLI_ARGS="-quit -batchmode -nographics -logFile unity.log"
-project_path=`pwd`/maze_runner
-
-# Installing the Bugsnag package
-echo "Importing Bugsnag.unitypackage into $project_path"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
-                  -projectPath $project_path \
-                  -ignoreCompilerErrors \
-                  -importPackage $script_path/../../Bugsnag.unitypackage
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
-
-#import performance to ensure no breaking changes
-echo "Cloning latest perf release into packages"
-rm -rf "$project_path/packages/performance-package"
-git clone https://github.com/bugsnag/bugsnag-unity-performance-upm.git "$project_path/packages/performance-package"
+echo "✅ Build completed successfully!"

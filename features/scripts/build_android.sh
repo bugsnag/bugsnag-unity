@@ -1,48 +1,53 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-if [ -z "$UNITY_VERSION" ]
-then
-  echo "UNITY_VERSION must be set"
+# === Check environment variables ===
+if [[ -z "${UNITY_VERSION:-}" ]]; then
+  echo "❌ UNITY_VERSION must be set"
   exit 1
 fi
 
-if [ -z "$1" ]
-then
-  echo "Build type must be specified: 'release' or 'dev'"
+# === Validate arguments ===
+if [[ $# -lt 1 ]]; then
+  echo "❌ Build type must be specified: 'release' or 'dev'"
   exit 1
 fi
 
-BUILD_TYPE=$1
+BUILD_TYPE="$1"
 
-UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS"
+if [[ "$BUILD_TYPE" != "dev" && "$BUILD_TYPE" != "release" ]]; then
+  echo "❌ Invalid build type: must be 'release' or 'dev'"
+  exit 1
+fi
 
-pushd "${0%/*}"
-  script_path=`pwd`
-popd
+# === Constants ===
+UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+FIXTURE_DIR="$SCRIPT_DIR/../fixtures"
+PROJECT_PATH="$FIXTURE_DIR/maze_runner"
+LOG_FILE="build_android_apk.log"
+UNITY_CLI_ARGS="-quit -batchmode -nographics -logFile $LOG_FILE -buildTarget Android"
 
-pushd "$script_path/../fixtures"
+cd "$FIXTURE_DIR"
 
-# Run unity and immediately exit afterwards, log all output
-DEFAULT_CLI_ARGS="-quit -batchmode -nographics -logFile build_android_apk.log -buildTarget Android"
-
-project_path=`pwd`/maze_runner
-
-if [ "$BUILD_TYPE" == "dev" ]; then
+# === Set build method and APK filenames ===
+if [[ "$BUILD_TYPE" == "dev" ]]; then
   BUILD_METHOD="Builder.AndroidDev"
   OUTPUT_APK="mazerunner_dev.apk"
-  RENAMED_APK="mazerunner_dev_${UNITY_VERSION:0:4}.apk"
-elif [ "$BUILD_TYPE" == "release" ]; then
+else
   BUILD_METHOD="Builder.AndroidRelease"
   OUTPUT_APK="mazerunner.apk"
-  RENAMED_APK="mazerunner_${UNITY_VERSION:0:4}.apk"
-else
-  echo "Invalid build type specified: 'release' or 'dev' only"
-  exit 1
 fi
 
-# Build for Android
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod $BUILD_METHOD
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+VERSION_SUFFIX="${UNITY_VERSION:0:4}"
+RENAMED_APK="${OUTPUT_APK%.apk}_${VERSION_SUFFIX}.apk"
 
-mv $project_path/$OUTPUT_APK $project_path/$RENAMED_APK
+# === Build APK with Unity ===
+echo "📦 Building APK ($BUILD_TYPE)..."
+"$UNITY_PATH" $UNITY_CLI_ARGS -projectPath "$PROJECT_PATH" -executeMethod "$BUILD_METHOD"
+
+# === Rename output APK ===
+echo "📝 Renaming APK to $RENAMED_APK..."
+mv "$PROJECT_PATH/$OUTPUT_APK" "$PROJECT_PATH/$RENAMED_APK"
+
+echo "✅ Build completed: $RENAMED_APK"
