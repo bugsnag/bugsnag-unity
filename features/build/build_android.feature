@@ -2,7 +2,7 @@ Feature: Build Android
 
   @skip_unity_2020 # Unity 2020 only produces 4 symbol files
   Scenario: Auto Symbol Upload
-  	When I run the script "features/scripts/prepare_fixture.sh" synchronously
+  	When I run the script "features/scripts/prepare_fixture.sh android" synchronously
   	When I run the script "features/scripts/build_android.sh release" synchronously
   	Then I wait to receive 6 sourcemaps
     Then the sourcemaps Content-Type header is valid multipart form-data

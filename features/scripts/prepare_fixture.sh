@@ -22,13 +22,21 @@ DEFAULT_CLI_ARGS="-quit -batchmode -nographics -logFile unity.log"
 
 cd "$FIXTURE_DIR"
 
-# === Assemble AAR ===
-echo "🛠️  Building Android mazerunner AAR..."
-./maze_runner/nativeplugin/android/gradlew -p maze_runner/nativeplugin/android assembleRelease
+if [ "$1" == "android" ]; then
+  echo "🛠️  Building Android mazerunner AAR..."
+  ./maze_runner/nativeplugin/android/gradlew -p maze_runner/nativeplugin/android assembleRelease
+  if [ $? -ne 0 ]; then
+    echo "❌ Failed to build Android AAR"
+    exit 1
+  fi
 
-# === Copy AAR to Unity project ===
-echo "📦 Copying AAR to Unity plugins directory..."
-cp maze_runner/nativeplugin/android/build/outputs/aar/android-release.aar "$AAR_OUTPUT"
+  echo "📦 Copying AAR to Unity plugins directory..."
+  cp maze_runner/nativeplugin/android/build/outputs/aar/android-release.aar "$AAR_OUTPUT"
+  if [ $? -ne 0 ]; then
+    echo "❌ Failed to copy AAR to Unity plugins directory"
+    exit 1
+  fi
+fi
 
 # === Import Bugsnag package ===
 echo "📥 Importing Bugsnag.unitypackage into Unity project..."
