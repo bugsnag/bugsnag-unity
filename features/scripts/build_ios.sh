@@ -37,7 +37,11 @@ fi
 
 # === Clean old builds ===
 echo "🧹 Cleaning previous IPA builds..."
-find "$OUTPUT_DIR" -name "*.ipa" -exec rm -f {} +
+if [ -d "$OUTPUT_DIR" ]; then
+  find "$OUTPUT_DIR" -name "*.ipa" -exec rm -f {} +
+else
+  echo "ℹ️ Output directory does not exist, skipping clean."
+fi
 
 # === Archive build ===
 echo "📦 Archiving Xcode project ($BUILD_TYPE)..."
