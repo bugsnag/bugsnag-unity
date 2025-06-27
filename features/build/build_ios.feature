@@ -1,7 +1,7 @@
 Feature: Build iOS
 
   Scenario: Auto Symbol Upload
-  	When I run the script "features/scripts/prepare_fixture.sh" synchronously
+  	When I run the script "features/scripts/prepare_fixture.sh ios" synchronously
     When I run the script "features/scripts/generate_xcode_project.sh release" synchronously
   	When I run the script "features/scripts/build_ios.sh release" synchronously
   	Then I wait to receive 2 sourcemaps
