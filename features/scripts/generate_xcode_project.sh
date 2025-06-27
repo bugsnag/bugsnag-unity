@@ -30,7 +30,7 @@ UNITY_CLI_ARGS="-quit -nographics -batchmode -logFile $LOG_FILE -buildTarget iOS
 cd "$FIXTURE_DIR"
 
 # === Select build method ===
-BUILD_METHOD="Builder.Ios${BUILD_TYPE^}"  # Capitalize first letter
+BUILD_METHOD="Builder.Ios$(echo "$BUILD_TYPE" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')"
 
 # === Build Xcode project (twice, due to Unity IL2CPP linker flag bug) ===
 for i in {1..2}; do
