@@ -472,7 +472,7 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("features", "scripts", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "prepare_fixture.sh android")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end
@@ -502,7 +502,7 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("features", "scripts", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "prepare_fixture.sh android")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end
@@ -523,7 +523,7 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("features", "scripts", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "prepare_fixture.sh ios")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end
@@ -543,7 +543,7 @@ namespace :test do
 
       # Prepare the test fixture project by importing the plugins
       env = { "UNITY_PATH" => File.dirname(unity) }
-      script = File.join("features", "scripts", "prepare_fixture.sh")
+      script = File.join("features", "scripts", "prepare_fixture.sh ios")
       unless system env, script
         raise 'Preparation of test fixture failed'
       end

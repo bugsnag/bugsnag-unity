@@ -17,21 +17,21 @@ PLATFORM_TYPE="$2"
 # === Determine platform-specific config ===
 case "$PLATFORM_TYPE" in
   macos)
-    PLATFORM="MacOS${BUILD_TYPE^}"
+    PLATFORM="MacOS$(echo "$BUILD_TYPE" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')"
     UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
     ;;
   windows)
-    PLATFORM="Win64${BUILD_TYPE^}"
+    PLATFORM="Win64$(echo "$BUILD_TYPE" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')"
     UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
     set -m
     ;;
   wsl)
-    PLATFORM="Win64${BUILD_TYPE^}"
+    PLATFORM="Win64$(echo "$BUILD_TYPE" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')"
     UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
     set -m
     ;;
   webgl)
-    PLATFORM="WebGL${BUILD_TYPE^}"
+    PLATFORM="WebGL$(echo "$BUILD_TYPE" | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')"
     if [[ "$(uname)" == "Darwin" ]]; then
       UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
     else
