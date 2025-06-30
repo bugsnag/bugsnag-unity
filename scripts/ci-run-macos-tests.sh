@@ -1,26 +1,49 @@
 #!/bin/bash -e
 
+# === Validate Inputs ===
 if [ -z "$UNITY_VERSION" ]; then
-  echo "UNITY_VERSION must be set, to e.g. 2018.4.36f1"
+  echo "❌ UNITY_VERSION must be set (e.g. 2021.3.45f1)"
   exit 1
 fi
 
-if [[ $# != 1 ]]; then
-  echo "Build type (release/dev) must be passed as a parameter"
+if [[ $# -ne 1 ]]; then
+  echo "❌ Usage: $0 <release|dev>"
   exit 2
 fi
 
 BUILD_TYPE=$1
+UNITY_VERSION_SHORT="${UNITY_VERSION:0:4}"
+BUILD_DIR="features/fixtures/maze_runner/build"
+APP_DIR="$BUILD_DIR/MacOS"
 
-pushd features/fixtures/maze_runner/build
+echo "📦 Extracting MacOS $BUILD_TYPE build..."
+
+# === Extract App ===
+(
+  cd "$BUILD_DIR"
+  ZIP_NAME="MacOS-${BUILD_TYPE}-${UNITY_VERSION_SHORT}.zip"
+  unzip -q "$ZIP_NAME"
+
   if [ "$BUILD_TYPE" == "release" ]; then
-    unzip MacOS-release-${UNITY_VERSION:0:4}.zip
-    APP_PATH="features/fixtures/maze_runner/build/MacOS/Mazerunner.app"
+    APP_PATH="$APP_DIR/Mazerunner.app"
   else
-    unzip MacOS-dev-${UNITY_VERSION:0:4}.zip
-    APP_PATH="features/fixtures/maze_runner/build/MacOS/Mazerunner_dev.app"
+    APP_PATH="$APP_DIR/Mazerunner_dev.app"
   fi
-popd
 
+  # Export for use outside the subshell
+  echo "$APP_PATH"
+) > .extracted_app_path
+
+APP_PATH=$(cat .extracted_app_path)
+rm .extracted_app_path
+
+# === Validate App Path ===
+if [ ! -d "$APP_PATH" ]; then
+  echo "❌ Expected app not found at: $APP_PATH"
+  exit 3
+fi
+
+# === Run Maze Runner ===
+echo "🚀 Running Maze Runner with app: $APP_PATH"
 bundle install
-bundle exec maze-runner --app=$APP_PATH --os=macos features/macos features/csharp
+bundle exec maze-runner --app="$APP_PATH" --os=macos features/macos features/csharp

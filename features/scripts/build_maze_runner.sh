@@ -1,117 +1,80 @@
 #!/bin/bash -e
 
+# === Validate input ===
 if [ -z "$UNITY_VERSION" ]; then
-  echo "UNITY_VERSION must be set, to e.g. 2018.4.36f1"
+  echo "❌ UNITY_VERSION must be set (e.g. 2021.3.45f1)"
   exit 1
 fi
 
-if [[ $# != 2 ]]; then
-  echo "Build type (release/dev) and platform (macos/webgl/windows/wsl) must be passed as parameters"
+if [ $# -ne 2 ]; then
+  echo "❌ Usage: $0 <release|dev> <macos|webgl|windows|wsl>"
   exit 2
 fi
 
-BUILD_TYPE=$1
-PLATFORM_TYPE=$2
+BUILD_TYPE="$1"
+PLATFORM_TYPE="$2"
 
-if [ "$PLATFORM_TYPE" == "macos" ]; then
-  if [ "$BUILD_TYPE" == "release" ]; then
-    PLATFORM="MacOSRelease"
-  else
-    PLATFORM="MacOSDev"
-  fi
-  UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
-elif [ "$PLATFORM_TYPE" == "windows" ]; then
-  if [ "$BUILD_TYPE" == "release" ]; then
-    PLATFORM="Win64Release"
-  else
-    PLATFORM="Win64Dev"
-  fi
-  set -m
-  UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-elif [ "$PLATFORM_TYPE" == "wsl" ]; then
-  if [ "$BUILD_TYPE" == "release" ]; then
-    PLATFORM="Win64Release"
-  else
-    PLATFORM="Win64Dev"
-  fi
-  set -m
-  UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-elif [ "$PLATFORM_TYPE" == "webgl" ]; then
-  if [ "$BUILD_TYPE" == "release" ]; then
-    PLATFORM="WebGLRelease"
-  else
-    PLATFORM="WebGLDev"
-  fi
-  if [ "$(uname)" == "Darwin" ]; then
+# === Determine platform-specific config ===
+case "$PLATFORM_TYPE" in
+  macos)
+    PLATFORM="MacOS${BUILD_TYPE^}"
     UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
-  else
+    ;;
+  windows)
+    PLATFORM="Win64${BUILD_TYPE^}"
     UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
-  fi
-else
-  echo "Unsupported platform: $PLATFORM_TYPE"
-  exit 3
+    set -m
+    ;;
+  wsl)
+    PLATFORM="Win64${BUILD_TYPE^}"
+    UNITY_PATH="/mnt/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+    set -m
+    ;;
+  webgl)
+    PLATFORM="WebGL${BUILD_TYPE^}"
+    if [[ "$(uname)" == "Darwin" ]]; then
+      UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS/Unity"
+    else
+      UNITY_PATH="/c/Program Files/Unity/Hub/Editor/$UNITY_VERSION/Editor/Unity.exe"
+    fi
+    ;;
+  *)
+    echo "❌ Unsupported platform: $PLATFORM_TYPE"
+    exit 3
+    ;;
+esac
+
+# === Prepare paths ===
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+FIXTURES_DIR="$REPO_ROOT/features/fixtures"
+PROJECT_PATH="$FIXTURES_DIR/maze_runner"
+PACKAGE_PATH="$REPO_ROOT/Bugsnag.unitypackage"
+IMPORT_LOG_FILE="$REPO_ROOT/unity_import.log"
+BUILD_LOG_FILE="$REPO_ROOT/unity.log"
+
+# === Handle WSL paths if needed ===
+if [ "$PLATFORM_TYPE" == "wsl" ]; then
+  touch "$IMPORT_LOG_FILE" "$BUILD_LOG_FILE"  # prevent wslpath failure
+  IMPORT_LOG_FILE=$(wslpath -w "$IMPORT_LOG_FILE")
+  BUILD_LOG_FILE=$(wslpath -w "$BUILD_LOG_FILE")
+  PACKAGE_PATH=$(wslpath -w "$PACKAGE_PATH")
+  PROJECT_PATH=$(wslpath -w "$PROJECT_PATH")
 fi
 
-# Set project_path to the repo root
-SCRIPT_DIR=$(dirname "$(realpath $0)")
-pushd $SCRIPT_DIR
-  pushd ../..
-    root_path=`pwd`
-  popd
-  pushd ../fixtures
+# === Import package ===
+echo "📦 Importing $PACKAGE_PATH into $PROJECT_PATH"
+"$UNITY_PATH" -nographics -quit -batchmode \
+  -logFile "$IMPORT_LOG_FILE" \
+  -projectPath "$PROJECT_PATH" \
+  -ignoreCompilerErrors \
+  -importPackage "$PACKAGE_PATH"
 
-    import_log_file="$root_path/unity_import.log"
-    log_file="$root_path/unity.log"
-    package_path="$root_path/Bugsnag.unitypackage"
-    project_path="$root_path/features/fixtures/maze_runner"
+# === Build project ===
+echo "🏗️  Building project for platform: $PLATFORM"
+"$UNITY_PATH" -nographics -quit -batchmode \
+  -logFile "$BUILD_LOG_FILE" \
+  -projectPath "$PROJECT_PATH" \
+  -executeMethod "Builder.$PLATFORM"
 
-    if [ "$PLATFORM_TYPE" == "wsl" ]; then
-      # Solves an issue on WSL were wslpath fails if the file does not exist.
-      if [ ! -f "$import_log_file" ]; then
-        touch $import_log_file
-      fi
-
-      if [ ! -f "$log_file" ]; then
-        touch $log_file
-      fi
-
-      import_log_file=`wslpath -w "$import_log_file"`
-      log_file=`wslpath -w "$log_file"`
-      package_path=`wslpath -w "$package_path"`
-      project_path=`wslpath -w "$project_path"`
-    fi
-
-    echo "Expecting to find Bugsnag package in: $package_path"
-
-    # Run unity and immediately exit afterwards, log all output
-    DEFAULT_CLI_ARGS="-nographics -quit -batchmode"
-
-    echo "Importing $package_path into $project_path"
-    echo "$UNITY_PATH" $DEFAULT_CLI_ARGS \
-      -logFile $import_log_file \
-      -projectPath "$project_path" \
-      -ignoreCompilerErrors \
-      -importPackage "$package_path"
-
-    "$UNITY_PATH" $DEFAULT_CLI_ARGS \
-      -logFile $import_log_file \
-      -projectPath "$project_path" \
-      -ignoreCompilerErrors \
-      -importPackage "$package_path"
-    RESULT=$?
-    if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-
-    echo "Building the fixture for $PLATFORM"
-
-    echo "$UNITY_PATH" $DEFAULT_CLI_ARGS \
-      -logFile "$log_file" \
-      -projectPath "$project_path" \
-      -executeMethod "Builder.$PLATFORM"
-    "$UNITY_PATH" $DEFAULT_CLI_ARGS \
-      -logFile "$log_file" \
-      -projectPath "$project_path" \
-      -executeMethod "Builder.$PLATFORM"
-    RESULT=$?
-    if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-  popd
-popd
+echo "✅ Build completed successfully for $PLATFORM_TYPE ($BUILD_TYPE)"

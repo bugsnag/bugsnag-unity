@@ -3,7 +3,7 @@ set -euo pipefail
 
 # === Check environment variables ===
 if [[ -z "${UNITY_VERSION:-}" ]]; then
-  echo "❌ UNITY_VERSION must be set"
+  echo "❌ UNITY_VERSION must be set (e.g. 2021.3.45f1)"
   exit 1
 fi
 

@@ -1,37 +1,52 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-if [ -z "$UNITY_VERSION" ]; then
-  echo "UNITY_VERSION must be set"
+# === Validate Environment ===
+if [[ -z "${UNITY_VERSION:-}" ]]; then
+  echo "❌ UNITY_VERSION must be set (e.g. 2021.3.45f1)"
   exit 1
 fi
 
-UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS"
+# === Constants & Paths ===
+UNITY_PATH="/Applications/Unity/Hub/Editor/${UNITY_VERSION}/Unity.app/Contents/MacOS/Unity"
+FIXTURE_PATH="features/fixtures/EDM_Fixture"
 OUTPUT_APK="edm4u.apk"
 RENAMED_APK="edm4u_${UNITY_VERSION:0:4}.apk"
+ROOT_PATH="$(pwd)"
+DESTINATION="$FIXTURE_PATH/Packages"
+PACKAGE_ZIP="$ROOT_PATH/upm-edm4u-package.zip"
+LOG_FILE="build-edm4u.log"
+DEFAULT_CLI_ARGS="-batchmode -nographics -quit -ignoreCompilerErrors -logFile $LOG_FILE"
 
-FIXTURE_PATH="features/fixtures/EDM_Fixture"
-DEFAULT_CLI_ARGS="-batchmode -nographics -quit"
+# === Unzip UPM Package ===
+echo "📦 Unzipping EDM4U package into $DESTINATION..."
+rm -rf "$DESTINATION/package"
+mkdir -p "$DESTINATION"
+unzip -q "$PACKAGE_ZIP" -d "$DESTINATION"
 
-# Proceed with unzipping the main package
-root_path=$(pwd)
-destination="features/fixtures/EDM_Fixture/Packages"
-package="$root_path/upm-edm4u-package.zip"
-
-rm -rf "$destination/package"
-unzip -q "$package" -d "$destination"
-
-# Remove the __MACOSX directory if it exists
-if [ -d "$destination/__MACOSX" ]; then
-  rm -rf "$destination/__MACOSX"
+# === Clean macOS metadata ===
+MACOSX_DIR="$DESTINATION/__MACOSX"
+if [[ -d "$MACOSX_DIR" ]]; then
+  echo "🧹 Removing macOS metadata folder..."
+  rm -rf "$MACOSX_DIR"
 fi
 
-echo "Package unzipped successfully"
+echo "✅ Package unzipped successfully"
 
-$UNITY_PATH/Unity -batchmode -quit -nographics -ignoreCompilerErrors -projectPath $FIXTURE_PATH -logFile build-edm4u.log -executeMethod Builder.AndroidBuild
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+# === Build Android APK with Unity ===
+echo "🚀 Building Android APK..."
+"$UNITY_PATH" $DEFAULT_CLI_ARGS \
+  -projectPath "$FIXTURE_PATH" \
+  -executeMethod Builder.AndroidBuild
 
+# === Rename APK with version suffix ===
+APK_PATH="$FIXTURE_PATH/$OUTPUT_APK"
+if [[ ! -f "$APK_PATH" ]]; then
+  echo "❌ Expected APK not found at: $APK_PATH"
+  exit 2
+fi
 
-mv $FIXTURE_PATH/$OUTPUT_APK $FIXTURE_PATH/$RENAMED_APK
+echo "📝 Renaming APK to $RENAMED_APK..."
+mv -f "$APK_PATH" "$FIXTURE_PATH/$RENAMED_APK"
 
-  
+echo "🎉 Build completed: $FIXTURE_PATH/$RENAMED_APK"

@@ -1,63 +1,62 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-if [ -z "$UNITY_VERSION" ]
-then
-  echo "UNITY_PERFORMANCE_VERSION must be set"
+if [ -z "${UNITY_VERSION:-}" ]; then
+  echo "❌ UNITY_VERSION must be set (e.g. 2021.3.45f1)"
   exit 1
 fi
 
 UNITY_PATH="/Applications/Unity/Hub/Editor/$UNITY_VERSION/Unity.app/Contents/MacOS"
-
 DEFAULT_CLI_ARGS="-quit -batchmode -nographics"
+PROJECT_PATH="features/fixtures/minimalapp"
+PACKAGE_PATH="Bugsnag.unitypackage"
+IMPORTED_SDK_PATH="$PROJECT_PATH/Assets/Bugsnag"
 
-project_path=features/fixtures/minimalapp
-
-package_path=Bugsnag.unitypackage
-
-imported_sdk_path="$project_path/Assets/Bugsnag"
-
+echo "📦 Installing required gems..."
 bundle install
 
-rm -rf "$project_path/Assets/Bugsnag"
+echo "🧹 Removing any existing Bugsnag SDK import..."
+rm -rf "$IMPORTED_SDK_PATH"
 
-echo "building android without bugsnag"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Builder.BuildAndroidWithout -logFile build_android_minimal_without.log
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+echo "📱 Building Android (without Bugsnag)..."
+"$UNITY_PATH/Unity" $DEFAULT_CLI_ARGS \
+  -projectPath "$PROJECT_PATH" \
+  -executeMethod Builder.BuildAndroidWithout \
+  -logFile build_android_minimal_without.log
 
-echo "building ios without bugsnag"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Builder.BuildIosWithout -logFile export_ios_xcode_project_minimal_without.log
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+echo "🍎 Building iOS (without Bugsnag)..."
+"$UNITY_PATH/Unity" $DEFAULT_CLI_ARGS \
+  -projectPath "$PROJECT_PATH" \
+  -executeMethod Builder.BuildIosWithout \
+  -logFile export_ios_xcode_project_minimal_without.log
 
-source ./features/scripts/build_xcode_project.sh features/fixtures/minimalapp/minimal_without_xcode without_bugsnag
+echo "🏗️ Building Xcode project (without Bugsnag)..."
+source ./features/scripts/build_xcode_project.sh "$PROJECT_PATH/minimal_without_xcode" without_bugsnag
 
-ls
+echo "📦 Re-importing Bugsnag SDK..."
+mv -f "$PACKAGE_PATH" "$PROJECT_PATH"
 
-mv -f $package_path $project_path
+"$UNITY_PATH/Unity" $DEFAULT_CLI_ARGS \
+  -projectPath "$PROJECT_PATH" \
+  -ignoreCompilerErrors \
+  -importPackage "$PROJECT_PATH/$(basename $PACKAGE_PATH)"
 
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS \
-                  -projectPath $project_path \
-                  -ignoreCompilerErrors \
-                  -importPackage $package_path
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+echo "📱 Building Android (with Bugsnag)..."
+"$UNITY_PATH/Unity" $DEFAULT_CLI_ARGS \
+  -projectPath "$PROJECT_PATH" \
+  -executeMethod Builder.BuildAndroidWith \
+  -logFile build_android_minimal_with.log
 
+echo "🍎 Building iOS (with Bugsnag)..."
+"$UNITY_PATH/Unity" $DEFAULT_CLI_ARGS \
+  -projectPath "$PROJECT_PATH" \
+  -executeMethod Builder.BuildIosWith \
+  -logFile export_ios_xcode_project_minimal_with.log
 
-echo "building android with bugsnag"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Builder.BuildAndroidWith -logFile build_android_minimal_with.log
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
+echo "🏗️ Building Xcode project (with Bugsnag)..."
+source ./features/scripts/build_xcode_project.sh "$PROJECT_PATH/minimal_with_xcode" with_bugsnag
 
-echo "building ios with bugsnag"
-$UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod Builder.BuildIosWith -logFile export_ios_xcode_project_minimal_with.log
-RESULT=$?
-if [ $RESULT -ne 0 ]; then exit $RESULT; fi
-ls
-
-source ./features/scripts/build_xcode_project.sh features/fixtures/minimalapp/minimal_with_xcode with_bugsnag
-
-cd features/fixtures/minimalapp
-
+echo "🚨 Running Danger..."
+cd "$PROJECT_PATH"
 bundle install
 bundle exec danger

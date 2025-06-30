@@ -1,23 +1,32 @@
 #!/bin/bash -e
 
+# === Validate Environment ===
 if [ -z "$UNITY_VERSION" ]; then
-  echo "UNITY_VERSION must be set, to e.g. 2018.4.36f1"
+  echo "❌ UNITY_VERSION must be set (e.g. 2021.3.45f1)"
   exit 1
 fi
 
-if [[ $# != 1 ]]; then
-  echo "Build type (release/dev) must be passed as a parameter"
+if [[ $# -ne 1 ]]; then
+  echo "❌ Usage: $0 <release|dev>"
   exit 2
 fi
 
 BUILD_TYPE=$1
+UNITY_VERSION_SHORT="${UNITY_VERSION:0:4}"
+ZIP_PREFIX="Windows-${BUILD_TYPE}-${UNITY_VERSION_SHORT}.zip"
 
-cd features/scripts
-./build_maze_runner.sh $BUILD_TYPE wsl
-cd ../fixtures/maze_runner/build
+# === Build Windows Fixture via WSL ===
+echo "🛠️  Building Windows fixture via WSL..."
+(
+  cd features/scripts
+  ./build_maze_runner.sh "$BUILD_TYPE" wsl
+)
 
-if [ "$BUILD_TYPE" == "release" ]; then
-  zip -r Windows-release-${UNITY_VERSION:0:4}.zip Windows
-else
-  zip -r Windows-dev-${UNITY_VERSION:0:4}.zip Windows
-fi
+# === Archive the Build Output ===
+echo "📦 Zipping build directory as $ZIP_PREFIX..."
+(
+  cd features/fixtures/maze_runner/build
+  zip -r "$ZIP_PREFIX" Windows
+)
+
+echo "✅ Successfully created: $ZIP_PREFIX"
