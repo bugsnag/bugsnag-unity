@@ -3,11 +3,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
 using UnityEngine;
 using System.Threading;
-using System.Text;
 
 namespace BugsnagUnity
 {
