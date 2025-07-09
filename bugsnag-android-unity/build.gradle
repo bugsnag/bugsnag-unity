@@ -22,14 +22,6 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 34
-        ndk {
-            if (project.hasProperty("ABI_FILTERS")) {
-                abiFilters project.ABI_FILTERS.split(",")
-            } else {
-                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
-            }
-        }
-        ndkVersion = "21.4.7075529"
         consumerProguardFiles 'proguard-rules.pro'
     }
 }
