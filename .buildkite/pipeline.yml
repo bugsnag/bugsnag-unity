@@ -27,6 +27,7 @@ steps:
     timeout_in_minutes: 30
     env:
       UNITY_VERSION: *2021
+      JAVA_VERSION: 17
     commands:
       - bundle install
       - bundle exec rake plugin:export
