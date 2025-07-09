@@ -166,7 +166,7 @@ PlayerSettings:
     Standalone: 111
     iOS: 333
   AndroidBundleVersionCode: 444
-  AndroidMinSdkVersion: 16
+  AndroidMinSdkVersion: 21
   AndroidTargetSdkVersion: 0
   AndroidPreferredInstallLocation: 1
   aotOptions: 
