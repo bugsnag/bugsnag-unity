@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.1"
+        classpath "com.android.tools.build:gradle:8.4.0"
     }
 }
 
@@ -16,29 +16,16 @@ repositories {
 
 apply plugin: "com.android.library"
 android {
-    compileSdkVersion 30
+    namespace "com.bugsnag.android.unity"
+    compileSdkVersion 34
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 30
-        ndk {
-            if (project.hasProperty("ABI_FILTERS")) {
-                abiFilters project.ABI_FILTERS.split(",")
-            } else {
-                abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
-            }
-        }
-        ndkVersion = "21.4.7075529"
+        minSdkVersion 21
+        targetSdkVersion 34
         consumerProguardFiles 'proguard-rules.pro'
-    }
-
-    externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
-        }
     }
 }
 
 dependencies {
-    api "com.bugsnag:bugsnag-android-core:5.9.4"
+    api "com.bugsnag:bugsnag-android-core:6.15.0"
 }
