@@ -1,15 +1,15 @@
 aliases:
-  - &2022 "2022.3.61f1"
+  - &2022 "2022.3.62f1"
 
 agents:
-  queue: macos-14-isolated
+  queue: macos-15
 
 steps:
   - group: ":hammer: Build Unity 2022 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 2022"
         agents:
-          queue: macos-14-isolated
+          queue: macos-15
         timeout_in_minutes: 30
         key: "build-android-fixture-2022"
         env:
@@ -34,7 +34,7 @@ steps:
         key: "build-ios-fixture-2022"
         env:
           UNITY_VERSION: *2022
-          XCODE_VERSION: "15.3.0"
+          XCODE_VERSION: "16.3.0"
         plugins:
           artifacts#v1.9.0:
             download:
@@ -55,7 +55,7 @@ steps:
         key: "macos-2022-fixture"
         env:
           UNITY_VERSION: *2022
-          XCODE_VERSION: "15.3.0"
+          XCODE_VERSION: "16.3.0"
         plugins:
           artifacts#v1.9.0:
             download:
@@ -75,7 +75,7 @@ steps:
         key: "webgl-2022-fixture"
         env:
           UNITY_VERSION: *2022
-          XCODE_VERSION: "15.3.0"
+          XCODE_VERSION: "16.3.0"
         plugins:
           artifacts#v1.9.0:
             download:
@@ -187,6 +187,8 @@ steps:
       - label: Run MacOS e2e tests for Unity 2022
         timeout_in_minutes: 60
         depends_on: 'macos-2022-fixture'
+        agents:
+          queue: macos-15-isolated
         env:
           UNITY_VERSION: *2022
         plugins:
@@ -206,6 +208,8 @@ steps:
       - label: Run WebGL e2e tests for Unity 2022
         timeout_in_minutes: 30
         depends_on: 'webgl-2022-fixture'
+        agents:
+          queue: macos-15-isolated
         env:
           UNITY_VERSION: *2022
         plugins:

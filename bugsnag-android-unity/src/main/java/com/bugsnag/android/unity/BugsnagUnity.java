@@ -8,12 +8,6 @@ import com.bugsnag.android.Event;
 import com.bugsnag.android.OnErrorCallback;
 
 public class BugsnagUnity {
-    static {
-        System.loadLibrary("bugsnag-unity");
-    }
-
-    public static native boolean isJNIAttached();
-
     public static OnErrorCallback getNativeCallback() {
         String discardedEventErrorClass = "java.lang.Error";
         Pattern pattern = Pattern.compile("signal \\d+ \\(SIG\\w+\\)", Pattern.CASE_INSENSITIVE);

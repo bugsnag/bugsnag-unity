@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.6.1 (2025-07-10)
+
+### Bug Fixes
+
+- Remove unused import to ensure Android builds meet the google play 16 KB page size requirements [#913](https://github.com/bugsnag/bugsnag-unity/pull/913)
+
 ## 8.6.0 (2025-06-03)
 
 ### Enhancements

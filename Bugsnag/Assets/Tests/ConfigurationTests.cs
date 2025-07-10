@@ -12,16 +12,17 @@ namespace BugsnagUnityTests
     [TestFixture]
     public class ConfigurationTests
     {
-        private const string DefaultNotify = "https://notify.bugsnag.com";
-        private const string DefaultSession = "https://sessions.bugsnag.com";
-        private const string HubNotify = "https://notify.insighthub.smartbear.com";
-        private const string HubSession = "https://sessions.insighthub.smartbear.com";
-        private const string CustomNotify = "https://www.customNotify.com/";
-        private const string CustomSession = "https://www.customSession.com/";
+        private const string DefaultNotify = "https://notify.bugsnag.com/";
+        private const string DefaultSession = "https://sessions.bugsnag.com/";
+        private const string HubNotify = "https://notify.insighthub.smartbear.com/";
+        private const string HubSession = "https://sessions.insighthub.smartbear.com/";
+        private const string CustomNotify = "https://www.customnotify.com/";
+        private const string CustomSession = "https://www.customsession.com/";
         [Test]
         public void DefaultConfigurationValues()
         {
             var config = new Configuration("foo");
+            config.Endpoints.Configure("foo");
             Assert.IsTrue(config.ReportExceptionLogsAsHandled);
             Assert.IsTrue(config.AutoDetectErrors);
             Assert.IsTrue(config.AutoTrackSessions);

@@ -3,11 +3,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
 using UnityEngine;
 using System.Threading;
-using System.Text;
 
 namespace BugsnagUnity
 {
@@ -852,7 +850,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            bool isAttached = bsg_unity_isJNIAttached();
+            bool isAttached = IsJNIAttached();
             if (!isAttached)
             {
                 AndroidJNI.AttachCurrentThread();
@@ -880,7 +878,7 @@ namespace BugsnagUnity
             {
                 return breadcrumbs;
             }
-            bool isAttached = bsg_unity_isJNIAttached();
+            bool isAttached = IsJNIAttached();
             if (!isAttached)
             {
                 AndroidJNI.AttachCurrentThread();
@@ -912,7 +910,7 @@ namespace BugsnagUnity
             {
                 return new Dictionary<string, object>();
             }
-            bool isAttached = bsg_unity_isJNIAttached();
+            bool isAttached = IsJNIAttached();
             if (!isAttached)
             {
                 AndroidJNI.AttachCurrentThread();
@@ -972,7 +970,7 @@ namespace BugsnagUnity
             {
                 return;
             }
-            bool isAttached = bsg_unity_isJNIAttached();
+            bool isAttached = IsJNIAttached();
             if (!isAttached)
             {
                 AndroidJNI.AttachCurrentThread();
@@ -997,7 +995,7 @@ namespace BugsnagUnity
             {
                 return IntPtr.Zero;
             }
-            bool isAttached = bsg_unity_isJNIAttached();
+            bool isAttached = IsJNIAttached();
             if (!isAttached)
             {
                 AndroidJNI.AttachCurrentThread();
@@ -1049,7 +1047,7 @@ namespace BugsnagUnity
             {
                 return "";
             }
-            bool isAttached = bsg_unity_isJNIAttached();
+            bool isAttached = IsJNIAttached();
             if (!isAttached)
             {
                 AndroidJNI.AttachCurrentThread();
@@ -1082,7 +1080,7 @@ namespace BugsnagUnity
             {
                 return false;
             }
-            bool isAttached = bsg_unity_isJNIAttached();
+            bool isAttached = IsJNIAttached();
             if (!isAttached)
             {
                 AndroidJNI.AttachCurrentThread();
@@ -1101,8 +1099,10 @@ namespace BugsnagUnity
             return nativeValue;
         }
 
-        [DllImport("bugsnag-unity")]
-        private static extern bool bsg_unity_isJNIAttached();
+        private bool IsJNIAttached()
+        { 
+            return AndroidJNI.AttachCurrentThread() == 0;
+        }
 
         private Breadcrumb ConvertToBreadcrumb(IntPtr javaBreadcrumb)
         {
