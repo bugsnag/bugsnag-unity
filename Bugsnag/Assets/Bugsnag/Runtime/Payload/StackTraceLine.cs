@@ -113,7 +113,7 @@ namespace BugsnagUnity.Payload
             return FromLogMessage(message);
         }
 
-        internal static StackTraceLine FromStackFrame(StackFrame stackFrame)
+        public static StackTraceLine FromStackFrame(StackFrame stackFrame)
         {
             var method = stackFrame.GetMethod();
             var file = stackFrame.GetFileName();
