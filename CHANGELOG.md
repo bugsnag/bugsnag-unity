@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+- Enable fallback support for linux builds [#916](https://github.com/bugsnag/bugsnag-unity/pull/916)
+
 ## 8.6.1 (2025-07-10)
 
 ### Bug Fixes
