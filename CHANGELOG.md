@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 8.6.1 (2025-07-10)
 
 ### Bug Fixes
 
