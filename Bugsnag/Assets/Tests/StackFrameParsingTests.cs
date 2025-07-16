@@ -122,5 +122,28 @@ namespace BugsnagUnityTests
             Assert.AreEqual("BugsnagCrash.java", stackframe.File);
             Assert.AreEqual(14, stackframe.LineNumber);
         }
+
+        [Test]
+        public void ConvertSystemStackTraceFrames()
+        {
+            var systemStackTrace = new System.Diagnostics.StackTrace(true);
+            var systemFrames = systemStackTrace.GetFrames();
+
+            Assert.IsNotNull(systemFrames, "Expected non-null StackFrame array from System.Diagnostics.StackTrace");
+            Assert.IsNotEmpty(systemFrames, "Expected at least one frame in the captured stack trace");
+
+            foreach (var frame in systemFrames)
+            {
+                var expectedMethod = new Method(frame.GetMethod()).DisplayName();
+                var expectedFile = frame.GetFileName();
+                var expectedLine = frame.GetFileLineNumber();
+
+                var bugsnagFrame = StackTraceLine.FromStackFrame(frame);
+
+                Assert.AreEqual(expectedMethod, bugsnagFrame.Method, "Method name did not match for frame {0}", expectedMethod);
+                Assert.AreEqual(expectedFile, bugsnagFrame.File, "File path did not match for method {0}", expectedMethod);
+                Assert.AreEqual(expectedLine, bugsnagFrame.LineNumber, "Line number did not match for method {0}", expectedMethod);
+            }
+        }
     }
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 8.6.2 (2025-07-16)
+
+### Enhancements
+
+- Enable fallback support for linux builds [#916](https://github.com/bugsnag/bugsnag-unity/pull/916)
+
+- Add helper method for converting system stacktraces [#917](https://github.com/bugsnag/bugsnag-unity/pull/917)
+
 ## 8.6.1 (2025-07-10)
 
 ### Bug Fixes
