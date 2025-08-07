@@ -509,29 +509,30 @@ namespace BugsnagUnity
                 var address = (UInt64)nativeAddresses[i].ToInt64();
                 var image = loadedImages.FindImageAtAddress(address);
 
-                var trace = new StackTraceLine();
-                trace.FrameAddress = string.Format("0x{0:X}", address);
-                trace.Method = method.ToString();
+                var frame = new StackTraceLine();
+                frame.FrameAddress = string.Format("0x{0:X}", address);
+                frame.Method = method.ToString();
+                frame.Type = "cocoa";
                 if (image != null)
                 {
                     if (address < image.LoadAddress)
                     {
                         // It's a relative address
-                        trace.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
+                        frame.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
                     }
-                    trace.MachoFile = image.FileName;
-                    trace.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
-                    trace.MachoUuid = image.Uuid;
-                    trace.InProject = image.IsMainImage;
+                    frame.MachoFile = image.FileName;
+                    frame.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
+                    frame.MachoUuid = image.Uuid;
+                    frame.InProject = image.IsMainImage;
                 }
                 else
                 {
-                    trace.MachoFile = safeMainImageFileName;
-                    trace.MachoLoadAddress = "0x0";
-                    trace.MachoUuid = mainImageFormattedUuid;
-                    trace.InProject = true;
+                    frame.MachoFile = safeMainImageFileName;
+                    frame.MachoLoadAddress = "0x0";
+                    frame.MachoUuid = mainImageFormattedUuid;
+                    frame.InProject = true;
                 }
-                stackFrames[i] = trace;
+                stackFrames[i] = frame;
             }
             return stackFrames;
         }

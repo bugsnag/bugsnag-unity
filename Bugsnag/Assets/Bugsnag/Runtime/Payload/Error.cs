@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-
+using UnityEngine;
 namespace BugsnagUnity.Payload
 {
     /// <summary>
@@ -16,16 +16,6 @@ namespace BugsnagUnity.Payload
 
         internal bool IsAndroidJavaException;
 
-        private const string COMPILATION_PLATFORM =
-#if ENABLE_IL2CPP
-        "il2cpp"
-#elif ENABLE_MONO
-            "mono"
-#else
-        "unknown" 
-#endif
-            ;
-
         private const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
         private const string ERROR_CLASS_MESSAGE_PATTERN = @"^(?<errorClass>\S+):\s+(?<message>.*)";
         private const string NATIVE_ANDROID_ERROR_CLASS = "java.lang.Error";
@@ -35,6 +25,8 @@ namespace BugsnagUnity.Payload
         private const string MESSAGE_KEY = "message";
         private const string STACKTRACE_KEY = "stacktrace";
         private const string ERROR_TYPE_KEY = "type";
+        
+        private static string _cachedErrorType;
 
         internal Error(Dictionary<string, object> data)
         {
@@ -68,7 +60,7 @@ namespace BugsnagUnity.Payload
             _stacktrace = stackTrace.ToList();
             HandledState = handledState;
             IsAndroidJavaException = isAndroidJavaException;
-            Type = COMPILATION_PLATFORM;
+            Type = GetErrorType();
         }
 
 
@@ -139,6 +131,32 @@ namespace BugsnagUnity.Payload
 
             match = Regex.Match(logMessage.StackTrace, NATIVE_ANDROID_MESSAGE_PATTERN, RegexOptions.Singleline);
             return !match.Success;
+        }
+
+        private static string GetErrorType()
+        {
+            if (_cachedErrorType != null)
+            {
+                return _cachedErrorType;
+            }
+
+#if ENABLE_IL2CPP
+            switch (Application.platform)
+            {
+                case RuntimePlatform.IPhonePlayer:
+                    _cachedErrorType = "cocoa";
+                    break;
+                case RuntimePlatform.Android:
+                    _cachedErrorType = "c";
+                    break;
+                default:
+                    _cachedErrorType = null;
+                    break;
+            }
+#else
+            _cachedErrorType = null;
+#endif
+            return _cachedErrorType;
         }
     }
 }
