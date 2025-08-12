@@ -17,14 +17,23 @@ Feature: csharp events
     And expected app metadata is included in the event
     And the error payload field "events.0.severityReason.unhandledOverridden" is false
 
-  @mobile_only
-  Scenario: Error type IL2CPP
+  @android_only
+  Scenario: Error type Android IL2CPP
     When I run the game in the "NotifySmokeTest" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "errorClass" equals "Exception"
     And the exception "message" equals "NotifySmokeTest"
-    And the exception "type" equals "il2cpp"
+    And the exception "type" equals "c"
+
+  @ios_only
+  Scenario: Error type iOS IL2CPP
+    When I run the game in the "NotifySmokeTest" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "errorClass" equals "Exception"
+    And the exception "message" equals "NotifySmokeTest"
+    And the exception "type" equals "cocoa"
    
   @macos_only
   Scenario: Error type MONO
