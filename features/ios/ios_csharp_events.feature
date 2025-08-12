@@ -19,12 +19,12 @@ Feature: csharp events on iOS have a il2cpp addresses
     And the error payload field "events.0.exceptions.0.stacktrace.0.machoLoadAddress" matches the regex "[0-9a-fA-F]{1,32}"
 
     And the error payload field "events.0.exceptions.0.stacktrace.1.machoFile" matches the regex ".*UnityFramework.*"
-    And the error payload field "events.0.exceptions.0.stacktrace.1.machoUUID" matches the regex "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    And the error payload field "events.0.exceptions.0.stacktrace.1.machoUUID" matches the regex "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
     And the error payload field "events.0.exceptions.0.stacktrace.1.frameAddress" matches the regex "[0-9a-fA-F]{1,32}"
     And the error payload field "events.0.exceptions.0.stacktrace.1.machoLoadAddress" matches the regex "[0-9a-fA-F]{1,32}"
 
     And the error payload field "events.0.exceptions.0.stacktrace.2.machoFile" matches the regex ".*UnityFramework.*"
-    And the error payload field "events.0.exceptions.0.stacktrace.2.machoUUID" matches the regex "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    And the error payload field "events.0.exceptions.0.stacktrace.2.machoUUID" matches the regex "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
     And the error payload field "events.0.exceptions.0.stacktrace.2.frameAddress" matches the regex "[0-9a-fA-F]{1,32}"
     And the error payload field "events.0.exceptions.0.stacktrace.2.machoLoadAddress" matches the regex "[0-9a-fA-F]{1,32}"
 
