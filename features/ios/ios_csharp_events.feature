@@ -14,7 +14,7 @@ Feature: csharp events on iOS have a il2cpp addresses
     And custom metadata is included in the event
 
     And the error payload field "events.0.exceptions.0.stacktrace.0.machoFile" matches the regex ".*UnityFramework.*"
-    And the error payload field "events.0.exceptions.0.stacktrace.0.machoUUID" matches the regex "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    And the error payload field "events.0.exceptions.0.stacktrace.0.machoUUID" matches the regex "^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$"
     And the error payload field "events.0.exceptions.0.stacktrace.0.frameAddress" matches the regex "[0-9a-fA-F]{1,32}"
     And the error payload field "events.0.exceptions.0.stacktrace.0.machoLoadAddress" matches the regex "[0-9a-fA-F]{1,32}"
 
