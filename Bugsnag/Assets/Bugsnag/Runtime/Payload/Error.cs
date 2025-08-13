@@ -25,7 +25,7 @@ namespace BugsnagUnity.Payload
         private const string MESSAGE_KEY = "message";
         private const string STACKTRACE_KEY = "stacktrace";
         private const string ERROR_TYPE_KEY = "type";
-        
+
         private static string _cachedErrorType;
 
         internal Error(Dictionary<string, object> data)
