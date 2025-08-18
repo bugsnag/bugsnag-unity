@@ -509,46 +509,80 @@ namespace BugsnagUnity
                 var address = (UInt64)nativeAddresses[i].ToInt64();
                 var image = loadedImages.FindImageAtAddress(address);
 
-                var trace = new StackTraceLine();
-                trace.FrameAddress = string.Format("0x{0:X}", address);
-                trace.Method = method.ToString();
+                var frame = new StackTraceLine();
+                frame.FrameAddress = string.Format("0x{0:X}", address);
+                frame.Method = method.ToString();
+                frame.Type = "cocoa";
                 if (image != null)
                 {
                     if (address < image.LoadAddress)
                     {
                         // It's a relative address
-                        trace.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
+                        frame.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
                     }
-                    trace.MachoFile = image.FileName;
-                    trace.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
-                    trace.MachoUuid = image.Uuid;
-                    trace.InProject = image.IsMainImage;
+                    frame.MachoFile = image.FileName;
+                    frame.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
+                    frame.MachoUuid = FormatImageUuid(image.Uuid);
+                    frame.InProject = image.IsMainImage;
                 }
                 else
                 {
-                    trace.MachoFile = safeMainImageFileName;
-                    trace.MachoLoadAddress = "0x0";
-                    trace.MachoUuid = mainImageFormattedUuid;
-                    trace.InProject = true;
+                    frame.MachoFile = safeMainImageFileName;
+                    frame.MachoLoadAddress = "0x0";
+                    frame.MachoUuid = mainImageFormattedUuid;
+                    frame.InProject = true;
                 }
-                stackFrames[i] = trace;
+                stackFrames[i] = frame;
             }
             return stackFrames;
         }
 
         private string FormatImageUuid(string imageUuid)
         {
-            if (imageUuid == null || imageUuid.Length != 32)
+            if (string.IsNullOrEmpty(imageUuid))
             {
-                return null;
+                return imageUuid; // Return the original value (null or empty)
             }
 
-            byte[] mainImageUuidBytes = new byte[16];
-            for (int i = 0; i < 16; i++)
+            // Remove any existing dashes and convert to lowercase for processing
+            string cleanUuid = imageUuid.Replace("-", "").ToLower();
+            
+            // If it's not 32 hex characters, return the original value
+            if (cleanUuid.Length != 32)
             {
-                mainImageUuidBytes[i] = Convert.ToByte(imageUuid.Substring(i * 2, 2), 16);
+                return imageUuid;
             }
-            return new Guid(mainImageUuidBytes).ToString();
+
+            // Check if all characters are hex digits
+            foreach (char c in cleanUuid)
+            {
+                if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
+                {
+                    return imageUuid; // Return original if not valid hex
+                }
+            }
+
+            // Parse the UUID string and rearrange bytes for big-endian format
+            // Input format: f3b24c50e8f98330b0b1be8986b51d78
+            // Expected:     504cb2f3f9e83083b0b1be8986b51d78 -> 504CB2F3-F9E8-3083-90B1-BE8986B51D78
+            
+            string reorderedUuid = 
+                // First 4 bytes reversed: f3b24c50 -> 504cb2f3
+                cleanUuid.Substring(6, 2) + cleanUuid.Substring(4, 2) + cleanUuid.Substring(2, 2) + cleanUuid.Substring(0, 2) +
+                // Next 2 bytes reversed: e8f9 -> f9e8  
+                cleanUuid.Substring(10, 2) + cleanUuid.Substring(8, 2) +
+                // Next 2 bytes reversed: 8330 -> 3083
+                cleanUuid.Substring(14, 2) + cleanUuid.Substring(12, 2) +
+                // Last 8 bytes unchanged: b0b1be8986b51d78
+                cleanUuid.Substring(16);
+
+            // Convert to proper GUID format
+            if (reorderedUuid.Length == 32)
+            {
+                return $"{reorderedUuid.Substring(0, 8)}-{reorderedUuid.Substring(8, 4)}-{reorderedUuid.Substring(12, 4)}-{reorderedUuid.Substring(16, 4)}-{reorderedUuid.Substring(20)}".ToUpper();
+            }
+            
+            return imageUuid; // Fallback to original
         }
 
         public StackTraceLine[] ToStackFrames(System.Exception exception)
