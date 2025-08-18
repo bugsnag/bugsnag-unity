@@ -152,9 +152,7 @@ namespace BugsnagUnity.Payload
                 default:
                     _cachedErrorType = null;
                     break;
-            }
-#else
-            _cachedErrorType = null;
+            }      
 #endif
             return _cachedErrorType;
         }
