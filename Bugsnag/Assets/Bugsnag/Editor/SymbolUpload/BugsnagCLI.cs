@@ -193,7 +193,7 @@ namespace BugsnagUnity.Editor
 
         public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
         {
-            var command = $"{_cliExecutablePath} upload unity-ios --api-key={apiKey} --dsym-path=$DWARF_DSYM_FOLDER_PATH --project-root={Application.dataPath} {Application.dataPath.Replace("/Assets",string.Empty)}" ;
+            var command = $"{_cliExecutablePath} upload unity-ios --api-key={apiKey} --dsym-path=$DWARF_DSYM_FOLDER_PATH --project-root={Application.dataPath} {Application.dataPath.Replace("/Assets", string.Empty)}";
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
                 command += $" --upload-api-root-url={uploadEndpoint}";
