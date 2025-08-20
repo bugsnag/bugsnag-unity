@@ -75,7 +75,7 @@ steps:
       queue: macos
     timeout_in_minutes: 2
     commands:
-        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
+        - buildkite-agent pipeline upload .buildkite/unity.2021.full.yml
 
   #
   # Conditionally trigger full pipeline

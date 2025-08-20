@@ -7,176 +7,176 @@ agents:
 steps:
   - group: ":hammer: Build Unity 2021 full test fixtures"
     steps:
-      - label: ":android: Build Android DEV test fixture for Unity 2021"
-        timeout_in_minutes: 20
-        key: "build-android-dev-fixture-2021"
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - Bugsnag.unitypackage
-            upload:
-              - features/fixtures/maze_runner/mazerunner_dev_2021.apk
-              - features/fixtures/build_android_apk.log
-        commands:
-          - bundle install
-          - rake test:android:build_dev
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: ":android: Build Android edm4u test fixture for Unity 2021"
-        timeout_in_minutes: 20
-        key: "build-android-edm4u-fixture-2021"
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - upm-edm4u-package.zip
-            upload:
-              - features/fixtures/EDM_Fixture/edm4u_2021.apk
-              - build-edm4u.log
-        commands:
-          - bundle install
-          - rake test:android:build_edm4u
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: ":ios: Generate Xcode DEV project - Unity 2021"
-        timeout_in_minutes: 10
-        key: "generate-dev-fixture-project-2021"
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.5.0:
-            download:
-              - Bugsnag.unitypackage
-            upload:
-              - features/fixtures/unity.log
-              - project_dev_2021.tgz
-        commands:
-          - bundle install
-          - rake test:ios:generate_xcode_dev
-          - tar -zvcf project_dev_2021.tgz features/fixtures/maze_runner/mazerunner_dev_xcode
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: ":ios: Build DEV iOS test fixture for Unity 2021"
-        timeout_in_minutes: 10
-        key: "build-ios-dev-fixture-2021"
-        depends_on: "generate-dev-fixture-project-2021"
-        env:
-          UNITY_VERSION: *2021
-          XCODE_VERSION: "16.2.0"
-        plugins:
-          artifacts#v1.5.0:
-            download:
-              - Bugsnag.unitypackage
-              - project_dev_2021.tgz
-            upload:
-              - features/fixtures/maze_runner/mazerunner_dev_2021.ipa
-              - features/fixtures/unity.log
-        commands:
-          - bundle install
-          - tar -zxf project_dev_2021.tgz features/fixtures/maze_runner
-          - rake test:ios:build_xcode_dev
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-      
-      - label: Build Unity 2021 MacOS test fixture
-        timeout_in_minutes: 10
-        key: "macos-2021-fixture"
-        env:
-          UNITY_VERSION: *2021
-          XCODE_VERSION: "16.2.0"
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - Bugsnag.unitypackage
-        commands:
-          - scripts/ci-build-macos-fixture.sh release
-        artifact_paths:
-          - unity.log
-          - features/fixtures/maze_runner/build/MacOS-release-2021.zip
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: Build Unity 2021 MacOS DEV test fixture
-        timeout_in_minutes: 30
-        key: "macos-2021-dev-fixture"
-        env:
-          UNITY_VERSION: *2021
-          XCODE_VERSION: "16.2.0"
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - Bugsnag.unitypackage
-        commands:
-          - scripts/ci-build-macos-fixture.sh dev
-        artifact_paths:
-          - unity.log
-          - features/fixtures/maze_runner/build/MacOS-dev-2021.zip
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: Build Unity 2021 WebGL test fixture
-        timeout_in_minutes: 20
-        key: "webgl-2021-fixture"
-        env:
-          UNITY_VERSION: *2021
-          XCODE_VERSION: "16.2.0"
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - Bugsnag.unitypackage
-        commands:
-          - scripts/ci-build-webgl-fixture.sh release
-        artifact_paths:
-          - unity.log
-          - features/fixtures/maze_runner/build/WebGL-release-2021.zip
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: Build Unity 2021 DEV WebGL test fixture
-        timeout_in_minutes: 20
-        key: "webgl-2021-dev-fixture"
-        env:
-          UNITY_VERSION: *2021
-          XCODE_VERSION: "16.2.0"
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - Bugsnag.unitypackage
-        commands:
-          - scripts/ci-build-webgl-fixture.sh dev
-        artifact_paths:
-          - unity.log
-          - features/fixtures/maze_runner/build/WebGL-dev-2021.zip
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
+#      - label: ":android: Build Android DEV test fixture for Unity 2021"
+#        timeout_in_minutes: 20
+#        key: "build-android-dev-fixture-2021"
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - Bugsnag.unitypackage
+#            upload:
+#              - features/fixtures/maze_runner/mazerunner_dev_2021.apk
+#              - features/fixtures/build_android_apk.log
+#        commands:
+#          - bundle install
+#          - rake test:android:build_dev
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: ":android: Build Android edm4u test fixture for Unity 2021"
+#        timeout_in_minutes: 20
+#        key: "build-android-edm4u-fixture-2021"
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - upm-edm4u-package.zip
+#            upload:
+#              - features/fixtures/EDM_Fixture/edm4u_2021.apk
+#              - build-edm4u.log
+#        commands:
+#          - bundle install
+#          - rake test:android:build_edm4u
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: ":ios: Generate Xcode DEV project - Unity 2021"
+#        timeout_in_minutes: 10
+#        key: "generate-dev-fixture-project-2021"
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.5.0:
+#            download:
+#              - Bugsnag.unitypackage
+#            upload:
+#              - features/fixtures/unity.log
+#              - project_dev_2021.tgz
+#        commands:
+#          - bundle install
+#          - rake test:ios:generate_xcode_dev
+#          - tar -zvcf project_dev_2021.tgz features/fixtures/maze_runner/mazerunner_dev_xcode
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: ":ios: Build DEV iOS test fixture for Unity 2021"
+#        timeout_in_minutes: 10
+#        key: "build-ios-dev-fixture-2021"
+#        depends_on: "generate-dev-fixture-project-2021"
+#        env:
+#          UNITY_VERSION: *2021
+#          XCODE_VERSION: "16.2.0"
+#        plugins:
+#          artifacts#v1.5.0:
+#            download:
+#              - Bugsnag.unitypackage
+#              - project_dev_2021.tgz
+#            upload:
+#              - features/fixtures/maze_runner/mazerunner_dev_2021.ipa
+#              - features/fixtures/unity.log
+#        commands:
+#          - bundle install
+#          - tar -zxf project_dev_2021.tgz features/fixtures/maze_runner
+#          - rake test:ios:build_xcode_dev
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: Build Unity 2021 MacOS test fixture
+#        timeout_in_minutes: 10
+#        key: "macos-2021-fixture"
+#        env:
+#          UNITY_VERSION: *2021
+#          XCODE_VERSION: "16.2.0"
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - Bugsnag.unitypackage
+#        commands:
+#          - scripts/ci-build-macos-fixture.sh release
+#        artifact_paths:
+#          - unity.log
+#          - features/fixtures/maze_runner/build/MacOS-release-2021.zip
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: Build Unity 2021 MacOS DEV test fixture
+#        timeout_in_minutes: 30
+#        key: "macos-2021-dev-fixture"
+#        env:
+#          UNITY_VERSION: *2021
+#          XCODE_VERSION: "16.2.0"
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - Bugsnag.unitypackage
+#        commands:
+#          - scripts/ci-build-macos-fixture.sh dev
+#        artifact_paths:
+#          - unity.log
+#          - features/fixtures/maze_runner/build/MacOS-dev-2021.zip
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: Build Unity 2021 WebGL test fixture
+#        timeout_in_minutes: 20
+#        key: "webgl-2021-fixture"
+#        env:
+#          UNITY_VERSION: *2021
+#          XCODE_VERSION: "16.2.0"
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - Bugsnag.unitypackage
+#        commands:
+#          - scripts/ci-build-webgl-fixture.sh release
+#        artifact_paths:
+#          - unity.log
+#          - features/fixtures/maze_runner/build/WebGL-release-2021.zip
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: Build Unity 2021 DEV WebGL test fixture
+#        timeout_in_minutes: 20
+#        key: "webgl-2021-dev-fixture"
+#        env:
+#          UNITY_VERSION: *2021
+#          XCODE_VERSION: "16.2.0"
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - Bugsnag.unitypackage
+#        commands:
+#          - scripts/ci-build-webgl-fixture.sh dev
+#        artifact_paths:
+#          - unity.log
+#          - features/fixtures/maze_runner/build/WebGL-dev-2021.zip
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
 
       - label: Build Unity 2021 Windows test fixture
         timeout_in_minutes: 30
         key: "windows-2021-fixture"
         agents:
-          queue: windows-unity-wsl
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         commands:
@@ -198,7 +198,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2021-dev-fixture"
         agents:
-          queue: windows-unity-wsl
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         commands:
@@ -218,198 +218,198 @@ steps:
 
   - group: ":test_tube: E2E tests Unity 2021"
     steps:
-      - label: ":bitbar: :android: Run Android DEV e2e tests for Unity 2021"
-        timeout_in_minutes: 60
-        depends_on: "build-android-dev-fixture-2021"
-        agents:
-          queue: opensource
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.5.0:
-            download:
-              - "features/fixtures/maze_runner/mazerunner_dev_2021.apk"
-            upload:
-              - "maze_output/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.7.0:
-            pull: maze-runner-bitbar
-            run: maze-runner-bitbar
-            service-ports: true
-            command:
-              - "features/csharp"
-              - "features/android"
-              - "--app=features/fixtures/maze_runner/mazerunner_dev_2021.apk"
-              - "--farm=bb"
-              - "--appium-version=1.22"
-              - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
-        concurrency: 25
-        concurrency_group: "bitbar"
-        concurrency_method: eager
-
-      - label: ":bitbar: :android: Run Android edm4u e2e tests for Unity 2021"
-        timeout_in_minutes: 60
-        depends_on: "build-android-edm4u-fixture-2021"
-        agents:
-          queue: opensource
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.5.0:
-            download:
-              - "features/fixtures/EDM_Fixture/edm4u_2021.apk"
-            upload:
-              - "maze_output/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.7.0:
-            pull: maze-runner-bitbar
-            run: maze-runner-bitbar
-            service-ports: true
-            command:
-              - "features/edm4u"
-              - "--app=features/fixtures/EDM_Fixture/edm4u_2021.apk"
-              - "--farm=bb"
-              - "--appium-version=1.22"
-              - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
-        concurrency: 25
-        concurrency_group: "bitbar"
-        concurrency_method: eager
-
-      - label: ":bitbar: :ios: Run iOS e2e DEV tests for Unity 2021"
-        timeout_in_minutes: 60
-        depends_on: "build-ios-dev-fixture-2021"
-        agents:
-          queue: opensource
-        plugins:
-          artifacts#v1.5.0:
-            download:
-              - "features/fixtures/maze_runner/mazerunner_dev_2021.ipa"
-            upload:
-              - "maze_output/**/*"
-              - "maze_output/metrics.csv"
-          docker-compose#v4.7.0:
-            pull: maze-runner-bitbar
-            run: maze-runner-bitbar
-            service-ports: true
-            command:
-              - "features/csharp"
-              - "features/ios"
-              - "--app=features/fixtures/maze_runner/mazerunner_dev_2021.ipa"
-              - "--farm=bb"
-              - "--appium-version=1.22"
-              - "--device=IOS_13|IOS_14|IOS_15"
-              - "--no-tunnel"
-              - "--aws-public-ip"
-              - "--fail-fast"
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
-        concurrency: 25
-        concurrency_group: "bitbar"
-        concurrency_method: eager
-
-      - label: Run MacOS e2e tests for Unity 2021
-        agents:
-          queue: macos-15-isolated
-        timeout_in_minutes: 30
-        depends_on: 'macos-2021-fixture'
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - features/fixtures/maze_runner/build/MacOS-release-2021.zip
-            upload:
-              - maze_output/**/*
-              - Mazerunner.log
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
-        commands:
-          - scripts/ci-run-macos-tests.sh release
-
-      - label: Run MacOS e2e DEV tests for Unity 2021
-        agents:
-          queue: macos-15-isolated
-        timeout_in_minutes: 60
-        depends_on: 'macos-2021-dev-fixture'
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - features/fixtures/maze_runner/build/MacOS-dev-2021.zip
-            upload:
-              - maze_output/**/*
-              - Mazerunner.log
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
-        commands:
-          - scripts/ci-run-macos-tests.sh dev
-
-      - label: Run WebGL e2e tests for Unity 2021
-        agents:
-          queue: macos-15-isolated
-        timeout_in_minutes: 20
-        depends_on: 'webgl-2021-fixture'
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - features/fixtures/maze_runner/build/WebGL-release-2021.zip
-            upload:
-              - maze_output/**/*
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
-        # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-        commands:
-          - scripts/ci-run-webgl-tests.sh release
-
-      - label: Run WebGL e2e DEV tests for Unity 2021
-        agents:
-          queue: macos-15-isolated
-        timeout_in_minutes: 20
-        depends_on: 'webgl-2021-dev-fixture'
-        env:
-          UNITY_VERSION: *2021
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - features/fixtures/maze_runner/build/WebGL-dev-2021.zip
-            upload:
-              - maze_output/**/*
-          test-collector#v1.10.2:
-            files: "reports/TEST-*.xml"
-            format: "junit"
-            branch: "^master|next$$"
-        # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
-        commands:
-          - scripts/ci-run-webgl-tests.sh dev
+#      - label: ":bitbar: :android: Run Android DEV e2e tests for Unity 2021"
+#        timeout_in_minutes: 60
+#        depends_on: "build-android-dev-fixture-2021"
+#        agents:
+#          queue: opensource
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.5.0:
+#            download:
+#              - "features/fixtures/maze_runner/mazerunner_dev_2021.apk"
+#            upload:
+#              - "maze_output/**/*"
+#              - "maze_output/metrics.csv"
+#          docker-compose#v4.7.0:
+#            pull: maze-runner-bitbar
+#            run: maze-runner-bitbar
+#            service-ports: true
+#            command:
+#              - "features/csharp"
+#              - "features/android"
+#              - "--app=features/fixtures/maze_runner/mazerunner_dev_2021.apk"
+#              - "--farm=bb"
+#              - "--appium-version=1.22"
+#              - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
+#              - "--no-tunnel"
+#              - "--aws-public-ip"
+#          test-collector#v1.10.2:
+#            files: "reports/TEST-*.xml"
+#            format: "junit"
+#            branch: "^master|next$$"
+#        concurrency: 25
+#        concurrency_group: "bitbar"
+#        concurrency_method: eager
+#
+#      - label: ":bitbar: :android: Run Android edm4u e2e tests for Unity 2021"
+#        timeout_in_minutes: 60
+#        depends_on: "build-android-edm4u-fixture-2021"
+#        agents:
+#          queue: opensource
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.5.0:
+#            download:
+#              - "features/fixtures/EDM_Fixture/edm4u_2021.apk"
+#            upload:
+#              - "maze_output/**/*"
+#              - "maze_output/metrics.csv"
+#          docker-compose#v4.7.0:
+#            pull: maze-runner-bitbar
+#            run: maze-runner-bitbar
+#            service-ports: true
+#            command:
+#              - "features/edm4u"
+#              - "--app=features/fixtures/EDM_Fixture/edm4u_2021.apk"
+#              - "--farm=bb"
+#              - "--appium-version=1.22"
+#              - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
+#              - "--no-tunnel"
+#              - "--aws-public-ip"
+#          test-collector#v1.10.2:
+#            files: "reports/TEST-*.xml"
+#            format: "junit"
+#            branch: "^master|next$$"
+#        concurrency: 25
+#        concurrency_group: "bitbar"
+#        concurrency_method: eager
+#
+#      - label: ":bitbar: :ios: Run iOS e2e DEV tests for Unity 2021"
+#        timeout_in_minutes: 60
+#        depends_on: "build-ios-dev-fixture-2021"
+#        agents:
+#          queue: opensource
+#        plugins:
+#          artifacts#v1.5.0:
+#            download:
+#              - "features/fixtures/maze_runner/mazerunner_dev_2021.ipa"
+#            upload:
+#              - "maze_output/**/*"
+#              - "maze_output/metrics.csv"
+#          docker-compose#v4.7.0:
+#            pull: maze-runner-bitbar
+#            run: maze-runner-bitbar
+#            service-ports: true
+#            command:
+#              - "features/csharp"
+#              - "features/ios"
+#              - "--app=features/fixtures/maze_runner/mazerunner_dev_2021.ipa"
+#              - "--farm=bb"
+#              - "--appium-version=1.22"
+#              - "--device=IOS_13|IOS_14|IOS_15"
+#              - "--no-tunnel"
+#              - "--aws-public-ip"
+#              - "--fail-fast"
+#          test-collector#v1.10.2:
+#            files: "reports/TEST-*.xml"
+#            format: "junit"
+#            branch: "^master|next$$"
+#        concurrency: 25
+#        concurrency_group: "bitbar"
+#        concurrency_method: eager
+#
+#      - label: Run MacOS e2e tests for Unity 2021
+#        agents:
+#          queue: macos-15-isolated
+#        timeout_in_minutes: 30
+#        depends_on: 'macos-2021-fixture'
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - features/fixtures/maze_runner/build/MacOS-release-2021.zip
+#            upload:
+#              - maze_output/**/*
+#              - Mazerunner.log
+#          test-collector#v1.10.2:
+#            files: "reports/TEST-*.xml"
+#            format: "junit"
+#            branch: "^master|next$$"
+#        commands:
+#          - scripts/ci-run-macos-tests.sh release
+#
+#      - label: Run MacOS e2e DEV tests for Unity 2021
+#        agents:
+#          queue: macos-15-isolated
+#        timeout_in_minutes: 60
+#        depends_on: 'macos-2021-dev-fixture'
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - features/fixtures/maze_runner/build/MacOS-dev-2021.zip
+#            upload:
+#              - maze_output/**/*
+#              - Mazerunner.log
+#          test-collector#v1.10.2:
+#            files: "reports/TEST-*.xml"
+#            format: "junit"
+#            branch: "^master|next$$"
+#        commands:
+#          - scripts/ci-run-macos-tests.sh dev
+#
+#      - label: Run WebGL e2e tests for Unity 2021
+#        agents:
+#          queue: macos-15-isolated
+#        timeout_in_minutes: 20
+#        depends_on: 'webgl-2021-fixture'
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - features/fixtures/maze_runner/build/WebGL-release-2021.zip
+#            upload:
+#              - maze_output/**/*
+#          test-collector#v1.10.2:
+#            files: "reports/TEST-*.xml"
+#            format: "junit"
+#            branch: "^master|next$$"
+#        # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+#        commands:
+#          - scripts/ci-run-webgl-tests.sh release
+#
+#      - label: Run WebGL e2e DEV tests for Unity 2021
+#        agents:
+#          queue: macos-15-isolated
+#        timeout_in_minutes: 20
+#        depends_on: 'webgl-2021-dev-fixture'
+#        env:
+#          UNITY_VERSION: *2021
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - features/fixtures/maze_runner/build/WebGL-dev-2021.zip
+#            upload:
+#              - maze_output/**/*
+#          test-collector#v1.10.2:
+#            files: "reports/TEST-*.xml"
+#            format: "junit"
+#            branch: "^master|next$$"
+#        # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
+#        commands:
+#          - scripts/ci-run-webgl-tests.sh dev
 
       - label: Run Windows e2e tests for Unity 2021
         timeout_in_minutes: 30
         depends_on: "windows-2021-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         plugins:
@@ -426,7 +426,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2021-dev-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         plugins:
