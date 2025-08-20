@@ -176,7 +176,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2021-fixture"
         agents:
-          queue: win-general-2
+          queue: windows-general-wsl
         env:
           UNITY_VERSION: *2021
         commands:
@@ -198,7 +198,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2021-dev-fixture"
         agents:
-          queue: win-general-2
+          queue: windows-general-wsl
         env:
           UNITY_VERSION: *2021
         commands:
