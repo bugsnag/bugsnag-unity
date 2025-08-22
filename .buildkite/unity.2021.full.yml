@@ -91,7 +91,7 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
-      
+
       - label: Build Unity 2021 MacOS test fixture
         timeout_in_minutes: 10
         key: "macos-2021-fixture"
@@ -176,7 +176,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2021-fixture"
         agents:
-          queue: windows-unity-wsl
+          queue: windows-general-wsl
         env:
           UNITY_VERSION: *2021
         commands:
@@ -198,7 +198,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2021-dev-fixture"
         agents:
-          queue: windows-unity-wsl
+          queue: windows-general-wsl
         env:
           UNITY_VERSION: *2021
         commands:
@@ -409,7 +409,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2021-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: windows-general-isolated
         env:
           UNITY_VERSION: *2021
         plugins:
@@ -426,7 +426,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2021-dev-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: windows-general-isolated
         env:
           UNITY_VERSION: *2021
         plugins:

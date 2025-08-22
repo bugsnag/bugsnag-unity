@@ -94,7 +94,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2022-fixture"
         agents:
-          queue: windows-unity-wsl
+          queue: windows-general-wsl
         env:
           UNITY_VERSION: *2022
         commands:
@@ -230,7 +230,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2022-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: windows-general-isolated
         env:
           UNITY_VERSION: *2022
         plugins:
