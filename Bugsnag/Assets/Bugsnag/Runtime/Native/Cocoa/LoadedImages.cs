@@ -129,22 +129,24 @@ namespace BugsnagUnity
                 return 0;
             }
         }
-
-        private static string UuidTextFromBigEndianBytes(ReadOnlySpan<byte> b)
+        
+        private static string UuidTextFromBigEndianBytes(byte[] b)
         {
-            if (b.Length != 16) throw new ArgumentException(nameof(b));
+            if (b == null || b.Length != 16) throw new ArgumentException(nameof(b));
 
-            Span<char> s = stackalloc char[36];
+            char[] chars = new char[36];
             int j = 0;
             for (int i = 0; i < 16; i++)
             {
-                if (i == 4 || i == 6 || i == 8 || i == 10) s[j++] = '-';
+                if (i == 4 || i == 6 || i == 8 || i == 10)
+                    chars[j++] = '-';
+
                 byte v = b[i];
                 int hi = v >> 4, lo = v & 0xF;
-                s[j++] = (char)(hi < 10 ? '0' + hi : 'A' + (hi - 10));
-                s[j++] = (char)(lo < 10 ? '0' + lo : 'A' + (lo - 10));
+                chars[j++] = (char)(hi < 10 ? '0' + hi : 'A' + (hi - 10));
+                chars[j++] = (char)(lo < 10 ? '0' + lo : 'A' + (lo - 10));
             }
-            return new string(s);
+            return new string(chars);
         }
 
     }
