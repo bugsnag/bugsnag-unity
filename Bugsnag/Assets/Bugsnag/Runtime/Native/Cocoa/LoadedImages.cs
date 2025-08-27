@@ -18,23 +18,6 @@ namespace BugsnagUnity
         /// Note: If anything goes wrong during the refresh, the currently cached state won't change.
         /// </remarks>
 #nullable enable
-        private static string UuidTextFromBigEndianBytes(ReadOnlySpan<byte> b)
-        {
-            if (b.Length != 16) throw new ArgumentException(nameof(b));
-
-            Span<char> s = stackalloc char[36];
-            int j = 0;
-            for (int i = 0; i < 16; i++)
-            {
-                if (i == 4 || i == 6 || i == 8 || i == 10) s[j++] = '-';
-                byte v = b[i];
-                int hi = v >> 4, lo = v & 0xF;
-                s[j++] = (char)(hi < 10 ? '0' + hi : 'A' + (hi - 10));
-                s[j++] = (char)(lo < 10 ? '0' + lo : 'A' + (lo - 10));
-            }
-            return new string(s);
-        }
-
         public void Refresh(String? mainImageFileName)
         {
             UInt64 loadedNativeImagesAt = NativeCode.bugsnag_lastChangedLoadedImages();
@@ -146,6 +129,24 @@ namespace BugsnagUnity
                 return 0;
             }
         }
+
+        private static string UuidTextFromBigEndianBytes(ReadOnlySpan<byte> b)
+        {
+            if (b.Length != 16) throw new ArgumentException(nameof(b));
+
+            Span<char> s = stackalloc char[36];
+            int j = 0;
+            for (int i = 0; i < 16; i++)
+            {
+                if (i == 4 || i == 6 || i == 8 || i == 10) s[j++] = '-';
+                byte v = b[i];
+                int hi = v >> 4, lo = v & 0xF;
+                s[j++] = (char)(hi < 10 ? '0' + hi : 'A' + (hi - 10));
+                s[j++] = (char)(lo < 10 ? '0' + lo : 'A' + (lo - 10));
+            }
+            return new string(s);
+        }
+
     }
 }
 #endif
