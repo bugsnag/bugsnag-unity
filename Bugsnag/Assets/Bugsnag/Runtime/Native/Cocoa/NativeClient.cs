@@ -537,52 +537,23 @@ namespace BugsnagUnity
             return stackFrames;
         }
 
-        private string FormatImageUuid(string imageUuid)
+        private static string FormatImageUuid(string uuid)
         {
-            if (string.IsNullOrEmpty(imageUuid))
+            if (string.IsNullOrEmpty(uuid)) return uuid;
+
+            string hex = uuid.Replace("-", "").Trim();
+            if (hex.Length != 32) return uuid; // leave unexpected formats alone
+
+            // validate hex chars if you like
+            for (int i = 0; i < 32; i++)
             {
-                return imageUuid; // Return the original value (null or empty)
+                char c = hex[i];
+                bool ok = (c >= '0' && c <= '9') || (c | 0x20) >= 'a' && (c | 0x20) <= 'f';
+                if (!ok) return uuid;
             }
 
-            // Remove any existing dashes and convert to lowercase for processing
-            string cleanUuid = imageUuid.Replace("-", "").ToLower();
-            
-            // If it's not 32 hex characters, return the original value
-            if (cleanUuid.Length != 32)
-            {
-                return imageUuid;
-            }
-
-            // Check if all characters are hex digits
-            foreach (char c in cleanUuid)
-            {
-                if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f')))
-                {
-                    return imageUuid; // Return original if not valid hex
-                }
-            }
-
-            // Parse the UUID string and rearrange bytes for big-endian format
-            // Input format: f3b24c50e8f98330b0b1be8986b51d78
-            // Expected:     504cb2f3f9e83083b0b1be8986b51d78 -> 504CB2F3-F9E8-3083-90B1-BE8986B51D78
-            
-            string reorderedUuid = 
-                // First 4 bytes reversed: f3b24c50 -> 504cb2f3
-                cleanUuid.Substring(6, 2) + cleanUuid.Substring(4, 2) + cleanUuid.Substring(2, 2) + cleanUuid.Substring(0, 2) +
-                // Next 2 bytes reversed: e8f9 -> f9e8  
-                cleanUuid.Substring(10, 2) + cleanUuid.Substring(8, 2) +
-                // Next 2 bytes reversed: 8330 -> 3083
-                cleanUuid.Substring(14, 2) + cleanUuid.Substring(12, 2) +
-                // Last 8 bytes unchanged: b0b1be8986b51d78
-                cleanUuid.Substring(16);
-
-            // Convert to proper GUID format
-            if (reorderedUuid.Length == 32)
-            {
-                return $"{reorderedUuid.Substring(0, 8)}-{reorderedUuid.Substring(8, 4)}-{reorderedUuid.Substring(12, 4)}-{reorderedUuid.Substring(16, 4)}-{reorderedUuid.Substring(20)}".ToUpper();
-            }
-            
-            return imageUuid; // Fallback to original
+            hex = hex.ToUpperInvariant();
+            return $"{hex.Substring(0,8)}-{hex.Substring(8,4)}-{hex.Substring(12,4)}-{hex.Substring(16,4)}-{hex.Substring(20)}";
         }
 
         public StackTraceLine[] ToStackFrames(System.Exception exception)
