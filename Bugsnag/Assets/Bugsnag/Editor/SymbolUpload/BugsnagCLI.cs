@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
 {
     internal class BugsnagCLI
     {
-        private const string DOWNLOADED_CLI_VERSION = "3.3.0";
+        private const string DOWNLOADED_CLI_VERSION = "3.3.1";
         private readonly string DOWNLOADED_CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
         private readonly string DOWNLOADED_CLI_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{DOWNLOADED_CLI_VERSION}/";
         private readonly string _cliExecutablePath;
