@@ -97,7 +97,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-6000-fixture"
         agents:
-          queue: windows-unity-wsl
+          queue: windows-general-wsl
         env:
           UNITY_VERSION: *6000
         commands:
@@ -234,7 +234,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-6000-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: windows-general-isolated
         env:
           UNITY_VERSION: *6000
         plugins:
