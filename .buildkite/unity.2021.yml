@@ -39,6 +39,7 @@ steps:
               - Bugsnag.unitypackage
             upload:
               - features/fixtures/maze_runner/mazerunner_2021.ipa
+              - features/fixtures/maze_runner/build.xcresult
               - features/fixtures/unity.log
         command:
               - "bundle install"
