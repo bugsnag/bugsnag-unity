@@ -79,7 +79,7 @@ namespace BugsnagUnity
                     var image = new LoadedImage(nativeImage.LoadAddress,
                                                 nativeImage.Size,
                                                 fileName,
-                                                uuidText,          // <- was: new Guid(uuid).ToString()
+                                                uuidText,
                                                 isMainImage);
 
                     if (isMainImage)
