@@ -544,7 +544,6 @@ namespace BugsnagUnity
             string hex = uuid.Replace("-", "").Trim();
             if (hex.Length != 32) return uuid; // leave unexpected formats alone
 
-            // validate hex chars if you like
             for (int i = 0; i < 32; i++)
             {
                 char c = hex[i];
