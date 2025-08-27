@@ -50,6 +50,9 @@ namespace BugsnagUnity.Editor
             {
                 args += $" --application-id={bundleId}";
             }
+#if !UNITY_2021_1_OR_NEWER
+            args += " --no-upload-il2cpp-mapping";
+#endif
             int exitCode = StartProcess(_cliExecutablePath, args, out string output, out string error);
 
             if (exitCode != 0)
@@ -193,10 +196,9 @@ namespace BugsnagUnity.Editor
 
         public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
         {
-#if UNITY_2021_1_OR_NEWER
             var command = $"{_cliExecutablePath} upload unity-ios --api-key={apiKey} --dsym-path=$DWARF_DSYM_FOLDER_PATH --project-root={Application.dataPath} {Application.dataPath.Replace("/Assets", string.Empty)}";
-#else
-            var command = $"{_cliExecutablePath} upload unity-ios --api-key={apiKey} --dsym-path=$DWARF_DSYM_FOLDER_PATH --no-upload-il2cpp-mapping --project-root={Application.dataPath} {Application.dataPath.Replace("/Assets", string.Empty)}";
+#if !UNITY_2021_1_OR_NEWER
+            command += " --no-upload-il2cpp-mapping";
 #endif
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
