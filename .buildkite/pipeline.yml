@@ -12,6 +12,10 @@ steps:
       UNITY_VERSION: *2021
     commands:
       - rake code:verify
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 
   - label: Run Unit Tests
     timeout_in_minutes: 5
