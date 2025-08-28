@@ -46,6 +46,7 @@ xcrun xcodebuild \
   -allowProvisioningUpdates \
   -allowProvisioningDeviceRegistration \
   -quiet \
+  -resultBundlePath "$project_path/build.xcresult" \
   GCC_WARN_INHIBIT_ALL_WARNINGS=YES
 
 if [ $? -ne 0 ]; then

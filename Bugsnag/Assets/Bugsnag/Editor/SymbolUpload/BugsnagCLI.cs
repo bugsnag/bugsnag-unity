@@ -8,7 +8,7 @@ namespace BugsnagUnity.Editor
 {
     internal class BugsnagCLI
     {
-        private const string DOWNLOADED_CLI_VERSION = "2.9.1";
+        private const string DOWNLOADED_CLI_VERSION = "3.3.1";
         private readonly string DOWNLOADED_CLI_PATH = Path.Combine(Application.dataPath, "../bugsnag/bin/bugsnag_cli");
         private readonly string DOWNLOADED_CLI_URL = $"https://github.com/bugsnag/bugsnag-cli/releases/download/v{DOWNLOADED_CLI_VERSION}/";
         private readonly string _cliExecutablePath;
@@ -50,6 +50,9 @@ namespace BugsnagUnity.Editor
             {
                 args += $" --application-id={bundleId}";
             }
+#if !UNITY_2021_1_OR_NEWER
+            args += " --no-upload-il2cpp-mapping";
+#endif
             int exitCode = StartProcess(_cliExecutablePath, args, out string output, out string error);
 
             if (exitCode != 0)
@@ -193,7 +196,10 @@ namespace BugsnagUnity.Editor
 
         public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
         {
-            var command = $"{_cliExecutablePath} upload xcode-build --api-key={apiKey} $DWARF_DSYM_FOLDER_PATH";
+            var command = $"{_cliExecutablePath} upload unity-ios --api-key={apiKey} --dsym-path=$DWARF_DSYM_FOLDER_PATH --project-root={Application.dataPath} {Application.dataPath.Replace("/Assets", string.Empty)}";
+#if !UNITY_2021_1_OR_NEWER
+            command += " --no-upload-il2cpp-mapping";
+#endif
             if (!string.IsNullOrEmpty(uploadEndpoint))
             {
                 command += $" --upload-api-root-url={uploadEndpoint}";

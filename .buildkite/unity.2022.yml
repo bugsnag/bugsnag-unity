@@ -23,7 +23,7 @@ steps:
               - features/fixtures/build_android_apk.log
         command:
               - "bundle install"
-              - "bundle exec maze-runner --os macos features/build/build_android.feature"
+              - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_android.feature"
         retry:
           automatic:
             - exit_status: "*"
@@ -44,7 +44,7 @@ steps:
               - features/fixtures/unity.log
         command:
               - "bundle install"
-              - "bundle exec maze-runner --os macos features/build/build_ios.feature"
+              - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_ios.feature"
         retry:
           automatic:
             - exit_status: "*"
@@ -94,7 +94,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2022-fixture"
         agents:
-          queue: windows-unity-wsl
+          queue: windows-general-wsl
         env:
           UNITY_VERSION: *2022
         commands:
@@ -230,7 +230,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2022-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: windows-general-isolated
         env:
           UNITY_VERSION: *2022
         plugins:

@@ -509,46 +509,50 @@ namespace BugsnagUnity
                 var address = (UInt64)nativeAddresses[i].ToInt64();
                 var image = loadedImages.FindImageAtAddress(address);
 
-                var trace = new StackTraceLine();
-                trace.FrameAddress = string.Format("0x{0:X}", address);
-                trace.Method = method.ToString();
+                var frame = new StackTraceLine();
+                frame.FrameAddress = string.Format("0x{0:X}", address);
+                frame.Method = method.ToString();
+                frame.Type = "cocoa";
                 if (image != null)
                 {
                     if (address < image.LoadAddress)
                     {
                         // It's a relative address
-                        trace.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
+                        frame.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
                     }
-                    trace.MachoFile = image.FileName;
-                    trace.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
-                    trace.MachoUuid = image.Uuid;
-                    trace.InProject = image.IsMainImage;
+                    frame.MachoFile = image.FileName;
+                    frame.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
+                    frame.MachoUuid = FormatImageUuid(image.Uuid);
+                    frame.InProject = image.IsMainImage;
                 }
                 else
                 {
-                    trace.MachoFile = safeMainImageFileName;
-                    trace.MachoLoadAddress = "0x0";
-                    trace.MachoUuid = mainImageFormattedUuid;
-                    trace.InProject = true;
+                    frame.MachoFile = safeMainImageFileName;
+                    frame.MachoLoadAddress = "0x0";
+                    frame.MachoUuid = mainImageFormattedUuid;
+                    frame.InProject = true;
                 }
-                stackFrames[i] = trace;
+                stackFrames[i] = frame;
             }
             return stackFrames;
         }
 
-        private string FormatImageUuid(string imageUuid)
+        private static string FormatImageUuid(string uuid)
         {
-            if (imageUuid == null || imageUuid.Length != 32)
+            if (string.IsNullOrEmpty(uuid)) return uuid;
+
+            string hex = uuid.Replace("-", "").Trim();
+            if (hex.Length != 32) return uuid; // leave unexpected formats alone
+
+            for (int i = 0; i < 32; i++)
             {
-                return null;
+                char c = hex[i];
+                bool ok = (c >= '0' && c <= '9') || (c | 0x20) >= 'a' && (c | 0x20) <= 'f';
+                if (!ok) return uuid;
             }
 
-            byte[] mainImageUuidBytes = new byte[16];
-            for (int i = 0; i < 16; i++)
-            {
-                mainImageUuidBytes[i] = Convert.ToByte(imageUuid.Substring(i * 2, 2), 16);
-            }
-            return new Guid(mainImageUuidBytes).ToString();
+            hex = hex.ToUpperInvariant();
+            return $"{hex.Substring(0,8)}-{hex.Substring(8,4)}-{hex.Substring(12,4)}-{hex.Substring(16,4)}-{hex.Substring(20)}";
         }
 
         public StackTraceLine[] ToStackFrames(System.Exception exception)

@@ -45,19 +45,26 @@ namespace BugsnagUnity
 
                 UInt64 mainLoadAddress = 0;
                 var images = new LoadedImage[count];
+
                 for (UInt64 i = 0; i < count; i++)
                 {
                     var nativeImage = nativeImages[i];
-                    var uuid = new byte[16];
-                    Marshal.Copy(nativeImage.UuidBytes, uuid, 0, 16);
-                    var fileName = Marshal.PtrToStringAnsi(nativeImage.FileName);
+
+                    var uuidBytes = new byte[16];
+                    Marshal.Copy(nativeImage.UuidBytes, uuidBytes, 0, 16);
+
+                    var fileName    = Marshal.PtrToStringAnsi(nativeImage.FileName);
                     var isMainImage = fileName == mainImageFileName;
+
+                    // Build canonical RFC-4122 text directly from the 16 bytes (no swapping)
+                    string uuidText = UuidTextFromBigEndianBytes(uuidBytes);
 
                     var image = new LoadedImage(nativeImage.LoadAddress,
                                                 nativeImage.Size,
                                                 fileName,
-                                                new Guid(uuid).ToString(),
+                                                uuidText,
                                                 isMainImage);
+
                     if (isMainImage)
                     {
                         mainLoadAddress = image.LoadAddress;
@@ -122,6 +129,26 @@ namespace BugsnagUnity
                 return 0;
             }
         }
+        
+        private static string UuidTextFromBigEndianBytes(byte[] b)
+        {
+            if (b == null || b.Length != 16) throw new ArgumentException(nameof(b));
+
+            char[] chars = new char[36];
+            int j = 0;
+            for (int i = 0; i < 16; i++)
+            {
+                if (i == 4 || i == 6 || i == 8 || i == 10)
+                    chars[j++] = '-';
+
+                byte v = b[i];
+                int hi = v >> 4, lo = v & 0xF;
+                chars[j++] = (char)(hi < 10 ? '0' + hi : 'A' + (hi - 10));
+                chars[j++] = (char)(lo < 10 ? '0' + lo : 'A' + (lo - 10));
+            }
+            return new string(chars);
+        }
+
     }
 }
 #endif
