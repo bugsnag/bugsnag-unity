@@ -25,22 +25,8 @@ x-common-environment: &common-environment
   UNITY_VERSION:
 
 services:
-  maze-runner:
-    image: 855461928732.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
-    environment:
-      DEBUG:
-      BUILDKITE:
-      BUILDKITE_PIPELINE_NAME:
-      BROWSER_STACK_USERNAME:
-      BROWSER_STACK_ACCESS_KEY:
-      UNITY_VERSION:
-    volumes:
-      - ./test:/app/test
-      - ./features/:/app/features
-      - ./maze_output:/app/maze_output
-
   maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v9-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v10-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
