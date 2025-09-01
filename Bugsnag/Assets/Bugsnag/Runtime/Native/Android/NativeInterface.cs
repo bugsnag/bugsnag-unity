@@ -611,6 +611,11 @@ namespace BugsnagUnity
             }
         }
 
+        public void SetGroupingDiscriminator(string groupingDiscriminator)
+        {
+            CallNativeVoidMethod("setGroupingDiscriminator", "(Ljava/lang/String;)V", new object[] { groupingDiscriminator });
+        }
+
         public void StartSession()
         {
             CallNativeVoidMethod("startSession", "()V", new object[] { });

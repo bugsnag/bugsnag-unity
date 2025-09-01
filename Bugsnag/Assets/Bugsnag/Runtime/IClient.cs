@@ -53,5 +53,9 @@ namespace BugsnagUnity
 
         void SetUser(string id, string email, string name);
 
+        string SetGroupingDiscriminator(string groupingDiscriminator);
+
+        string GetGroupingDiscriminator();
+
     }
 }
