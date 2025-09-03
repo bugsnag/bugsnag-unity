@@ -18,6 +18,7 @@ namespace BugsnagUnity
         private const string CONTEXT_KEY = "context";
         private const string API_KEY_KEY = "apiKey";
         private const string GROUPING_HASH_KEY = "groupingHash";
+        private const string GROUPING_DISCRIMINATOR_KEY = "groupingDiscriminator";
         private const string UNHANDLED_KEY = "unhandled";
 
         public string Context { get => GetNativeString(CONTEXT_KEY); set => SetNativeString(CONTEXT_KEY, value); }
@@ -29,6 +30,8 @@ namespace BugsnagUnity
         public string ApiKey { get => GetNativeString(API_KEY_KEY); set => SetNativeString(API_KEY_KEY, value); }
 
         public string GroupingHash { get => GetNativeString(GROUPING_HASH_KEY); set => SetNativeString(GROUPING_HASH_KEY, value); }
+
+        public string GroupingDiscriminator { get => GetNativeString(GROUPING_DISCRIMINATOR_KEY); set => SetNativeString(GROUPING_DISCRIMINATOR_KEY, value); }
 
         public bool Unhandled { 
             get {
