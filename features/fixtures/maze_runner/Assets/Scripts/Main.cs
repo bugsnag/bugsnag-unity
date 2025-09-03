@@ -49,7 +49,7 @@ public class Main : MonoBehaviour
 #if UNITY_STANDALONE_OSX
         PreventCrashPopups();
 #endif
-        InvokeRepeating("DoRunNextMazeCommand",0,1);
+        InvokeRepeating("DoRunNextMazeCommand", 0, 1);
     }
 
     private IEnumerator GetFixtureConfig()
@@ -122,7 +122,7 @@ public class Main : MonoBehaviour
                     Log("No Maze Runner command to process at present");
                 }
                 else
-                { 
+                {
                     var command = JsonUtility.FromJson<Command>(response);
                     if (command != null)
                     {
@@ -161,7 +161,7 @@ public class Main : MonoBehaviour
 #endif
         if (Directory.Exists(Application.persistentDataPath + "/Bugsnag"))
         {
-            Directory.Delete(Application.persistentDataPath + "/Bugsnag",true);
+            Directory.Delete(Application.persistentDataPath + "/Bugsnag", true);
         }
         if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
@@ -183,10 +183,16 @@ public class Main : MonoBehaviour
 
     private static void Log(string msg)
     {
-        Logger.I(msg);
+        try
+        {
+            Logger.I(msg);
+        }
+        catch
+        {
+            // can fail on windows
+        }
+
     }
 
+
 }
-
-
-
