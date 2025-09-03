@@ -36,6 +36,7 @@ steps:
         env:
           UNITY_VERSION: *2022
           XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -57,6 +58,7 @@ steps:
         env:
           UNITY_VERSION: *2022
           XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -77,6 +79,7 @@ steps:
         env:
           UNITY_VERSION: *2022
           XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -98,6 +101,7 @@ steps:
           queue: windows-general-wsl
         env:
           UNITY_VERSION: *2022
+          JAVA_VERSION: 17
         commands:
           - scripts/ci-build-windows-fixture-wsl.sh release
         plugins:
