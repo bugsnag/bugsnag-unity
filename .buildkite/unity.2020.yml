@@ -14,6 +14,7 @@ steps:
         key: "build-android-fixture-2020"
         env:
           UNITY_VERSION: *2020
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
