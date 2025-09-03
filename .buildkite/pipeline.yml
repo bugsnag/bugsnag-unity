@@ -15,7 +15,7 @@ steps:
     retry:
       automatic:
         - exit_status: "*"
-          limit: 1
+          limit: 3
 
   - label: Run Unit Tests
     timeout_in_minutes: 5
