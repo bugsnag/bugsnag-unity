@@ -183,10 +183,16 @@ public class Main : MonoBehaviour
 
     private static void Log(string msg)
     {
-        Logger.I(msg);
-    }
+        try
+        {
+            Logger.I(msg);
+        }
+        catch
+        {
+            // can fail on windows
+        }
 
-}
+    }
 
 
 
