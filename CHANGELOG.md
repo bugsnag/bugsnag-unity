@@ -1,5 +1,13 @@
 # Changelog
 
+## TBD
+
+### Bug Fixes
+
+- Fix an issue where additional IL2CPP arguments were added without proper whitespace checks [#928](https://github.com/bugsnag/bugsnag-unity/pull/928)
+
+## 8.7.0 (2025-08-28)
+
 ### Enhancements
 
 - Enable IL2CPP line number symbolication fo riOS and Android via the BugSnag CLI [#920](https://github.com/bugsnag/bugsnag-unity/pull/920)
