@@ -12,6 +12,7 @@ steps:
         key: "build-android-dev-fixture-2021"
         env:
           UNITY_VERSION: *2021
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -32,6 +33,7 @@ steps:
         key: "build-android-edm4u-fixture-2021"
         env:
           UNITY_VERSION: *2021
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -52,6 +54,7 @@ steps:
         key: "generate-dev-fixture-project-2021"
         env:
           UNITY_VERSION: *2021
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.5.0:
             download:
@@ -75,6 +78,7 @@ steps:
         env:
           UNITY_VERSION: *2021
           XCODE_VERSION: "16.2.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.5.0:
             download:
@@ -98,6 +102,7 @@ steps:
         env:
           UNITY_VERSION: *2021
           XCODE_VERSION: "16.2.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -118,6 +123,7 @@ steps:
         env:
           UNITY_VERSION: *2021
           XCODE_VERSION: "16.2.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -138,6 +144,7 @@ steps:
         env:
           UNITY_VERSION: *2021
           XCODE_VERSION: "16.2.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -158,6 +165,7 @@ steps:
         env:
           UNITY_VERSION: *2021
           XCODE_VERSION: "16.2.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -179,6 +187,7 @@ steps:
           queue: windows-general-wsl
         env:
           UNITY_VERSION: *2021
+          JAVA_VERSION: 17
         commands:
           - scripts/ci-build-windows-fixture-wsl.sh release
         plugins:
@@ -201,6 +210,7 @@ steps:
           queue: windows-general-wsl
         env:
           UNITY_VERSION: *2021
+          JAVA_VERSION: 17
         commands:
           - scripts/ci-build-windows-fixture-wsl.sh dev
         plugins:

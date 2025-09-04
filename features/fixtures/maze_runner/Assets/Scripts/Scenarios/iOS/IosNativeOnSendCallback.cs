@@ -10,7 +10,8 @@ public class IosNativeOnSendCallback : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AddOnSendError((@event) => {
+        Configuration.AddOnSendError((@event) =>
+        {
             try
             {
                 //AppWithState
@@ -42,7 +43,7 @@ public class IosNativeOnSendCallback : Scenario
                 device.Time = new DateTimeOffset(1985, 08, 21, 01, 01, 01, TimeSpan.Zero);
                 device.TotalMemory = 999;
                 device.ModelNumber = "Custom ModelNumber";
-                
+
                 // breadcrumbs
                 foreach (var crumb in @event.Breadcrumbs)
                 {
@@ -71,6 +72,8 @@ public class IosNativeOnSendCallback : Scenario
 
                 @event.Unhandled = false;
 
+                @event.GroupingDiscriminator = "Custom GroupingDiscriminator";
+
                 // Threads
                 foreach (var thread in @event.Threads)
                 {
@@ -96,7 +99,8 @@ public class IosNativeOnSendCallback : Scenario
 
                 return true;
             }
-            catch (Exception e){
+            catch (Exception e)
+            {
                 Debug.Log("ERROR");
                 Debug.LogException(e);
             }

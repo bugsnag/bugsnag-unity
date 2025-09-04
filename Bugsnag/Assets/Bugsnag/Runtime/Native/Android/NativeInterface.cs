@@ -611,6 +611,11 @@ namespace BugsnagUnity
             }
         }
 
+        public void SetGroupingDiscriminator(string groupingDiscriminator)
+        {
+            CallNativeStringMethod("setGroupingDiscriminator", "(Ljava/lang/String;)Ljava/lang/String;", new object[] { groupingDiscriminator });
+        }
+
         public void StartSession()
         {
             CallNativeVoidMethod("startSession", "()V", new object[] { });
@@ -1005,7 +1010,7 @@ namespace BugsnagUnity
             jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(convertedArgs);
             IntPtr methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
             IntPtr nativeValue = AndroidJNI.CallStaticObjectMethod(BugsnagNativeInterface, methodID, jargs);
-            AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+            AndroidJNIHelper.DeleteJNIArgArray(convertedArgs, jargs);
             ReleaseConvertedStringArgs(args, convertedArgs);
 
             if (!isAttached)
@@ -1057,7 +1062,7 @@ namespace BugsnagUnity
             jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(convertedArgs);
             IntPtr methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
             IntPtr nativeValue = AndroidJNI.CallStaticObjectMethod(BugsnagNativeInterface, methodID, jargs);
-            AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+            AndroidJNIHelper.DeleteJNIArgArray(convertedArgs, jargs);
             ReleaseConvertedStringArgs(args, convertedArgs);
 
             string value = null;
@@ -1090,7 +1095,7 @@ namespace BugsnagUnity
             jvalue[] jargs = AndroidJNIHelper.CreateJNIArgArray(convertedArgs);
             IntPtr methodID = AndroidJNI.GetStaticMethodID(BugsnagNativeInterface, methodName, methodSig);
             bool nativeValue = AndroidJNI.CallStaticBooleanMethod(BugsnagNativeInterface, methodID, jargs);
-            AndroidJNIHelper.DeleteJNIArgArray(args, jargs);
+            AndroidJNIHelper.DeleteJNIArgArray(convertedArgs, jargs);
             ReleaseConvertedStringArgs(args, convertedArgs);
             if (!isAttached)
             {

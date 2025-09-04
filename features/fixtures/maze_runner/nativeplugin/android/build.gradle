@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.1"
+        classpath "com.android.tools.build:gradle:8.5.2"
     }
 }
 
@@ -16,13 +16,26 @@ repositories {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdk 34
+    buildToolsVersion "34.0.0"
+
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 30
-        ndkVersion = "21.4.7075529"
+        minSdkVersion 21
+        targetSdkVersion 34
+        ndkVersion = "26.3.11579264"
         consumerProguardFiles 'proguard-rules.pro'
     }
-    externalNativeBuild.cmake.path "CMakeLists.txt"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
+    namespace 'com.example.bugsnagcrashplugin'
 }

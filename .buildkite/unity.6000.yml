@@ -14,6 +14,7 @@ steps:
         key: "build-android-fixture-6000"
         env:
           UNITY_VERSION: *6000
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -35,6 +36,7 @@ steps:
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -58,6 +60,7 @@ steps:
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -78,6 +81,7 @@ steps:
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -100,6 +104,7 @@ steps:
           queue: windows-general-wsl
         env:
           UNITY_VERSION: *6000
+          JAVA_VERSION: 17
         commands:
           - scripts/ci-build-windows-fixture-wsl.sh release
         plugins:

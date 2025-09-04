@@ -225,6 +225,11 @@ namespace BugsnagUnity
                     ToStackFrames(exception, nativeAddresses, mainImageFileName, mainImageUuid)
             );
         }
+
+        public void SetGroupingDiscriminator(string groupingDiscriminator)
+        {
+            NativeInterface.SetGroupingDiscriminator(groupingDiscriminator);
+        }
     }
 
 }

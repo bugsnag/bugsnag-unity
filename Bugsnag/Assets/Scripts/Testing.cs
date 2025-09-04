@@ -42,4 +42,13 @@ public class Testing : MonoBehaviour
    [DllImport("__Internal")]
    private static extern void TriggerCocoaAppHang();
 #endif
+
+    void Update()
+    {
+        // Check for Android back button (mapped to Escape in Unity)
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
 }
