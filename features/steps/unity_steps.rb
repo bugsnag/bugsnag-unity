@@ -26,6 +26,25 @@ Then('the sourcemaps Content-Type header is valid multipart form-data') do
   Maze.check.match(expected, actual)
 end
 
+Then('the sourcemap is valid for the Android Build API') do
+  steps %(
+    And the sourcemap payload field "apiKey" equals "#{$api_key}"
+    And the sourcemap payload field "appId" is not null
+  )
+end
+
+Then('the sourcemap is valid for the Unity Line Mapping API') do
+  steps %(
+    And the sourcemap payload field "apiKey" equals "#{$api_key}"
+    And the sourcemap payload field "mappingFile" is not null
+  )
+end
+
+And(/^I sort the sourcemaps by path$/) do
+  list = Maze::Server.list_for('sourcemap')
+  list.sort_by_request_path!
+end
+
 When('I clear the Bugsnag cache') do
   case Maze::Helper.get_current_platform
   when 'macos', 'webgl'
