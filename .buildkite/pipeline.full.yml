@@ -20,4 +20,9 @@ steps:
   - label: 'Append Unity 6000 Pipeline'
     timeout_in_minutes: 2
     commands:
-        - buildkite-agent pipeline upload .buildkite/unity.6000.yml
+      - buildkite-agent pipeline upload .buildkite/unity.6000.yml
+
+  - label: 'Append Unity 6.2 Pipeline'
+    timeout_in_minutes: 2
+    commands:
+      - buildkite-agent pipeline upload .buildkite/unity.6.2.yml
