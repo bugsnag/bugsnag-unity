@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.7.1 (2025-09-08)
+
+- Fix an issue where additional IL2CPP arguments were added without proper whitespace checks [#928](https://github.com/bugsnag/bugsnag-unity/pull/928)
+
 ## 8.7.0 (2025-08-28)
 
 ### Enhancements
