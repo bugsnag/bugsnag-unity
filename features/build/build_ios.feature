@@ -1,6 +1,7 @@
 Feature: Build iOS
 
-  Scenario: Auto Symbol Upload
+  @skip_unity_2020 # Unity 2020 only produces 2 symbol files
+  Scenario: Auto Symbol Upload 2021+
   	When I run the script "features/scripts/prepare_fixture.sh" synchronously
     When I run the script "features/scripts/generate_xcode_project.sh release" synchronously
   	When I run the script "features/scripts/build_ios.sh release" synchronously
@@ -21,3 +22,12 @@ Feature: Build iOS
     And the sourcemap payload field "appBundleVersion" equals "333"
     And the sourcemap payload field "dsymUUID" is not null
     And the sourcemap payload field "appId" equals "com.apple.xcode.dsym.com.bugsnag.fixtures.unity.notifier.ios"
+
+  @unity_2020_only
+  Scenario: Auto Symbol Upload 2020
+    When I run the script "features/scripts/prepare_fixture.sh" synchronously
+    When I run the script "features/scripts/generate_xcode_project.sh release" synchronously
+    When I run the script "features/scripts/build_ios.sh release" synchronously
+    Then I wait to receive 2 sourcemaps
+    Then the sourcemaps Content-Type header is valid multipart form-data
+    And the sourcemap payload field "apiKey" equals "a35a2a72bd230ac0aa0f52715bbdc6aa"
