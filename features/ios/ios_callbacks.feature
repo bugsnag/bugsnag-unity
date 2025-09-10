@@ -18,6 +18,8 @@ Feature: Callbacks
     And the event "context" equals "Custom Context"
     And the event "severity" equals "info"
     And the event "unhandled" is false
+    And the event "groupingDiscriminator" equals "Custom GroupingDiscriminator"
+
 
     # metadata
     And the event "metaData.test.scoop" equals "dewoop"

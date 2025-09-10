@@ -14,6 +14,7 @@ steps:
         key: "build-android-fixture-2020"
         env:
           UNITY_VERSION: *2020
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -40,6 +41,8 @@ steps:
         env:
           XCODE_VERSION: "15.3.0"
           UNITY_VERSION: *2020
+          JAVA_VERSION: 17
+
         plugins:
           artifacts#v1.9.0:
             download:
@@ -61,6 +64,8 @@ steps:
         env:
           UNITY_VERSION: *2020
           XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: 17
+
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
@@ -83,6 +88,7 @@ steps:
         env:
           UNITY_VERSION: *2020
           XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: 17
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
@@ -106,6 +112,7 @@ steps:
           queue: windows-general-wsl
         env:
           UNITY_VERSION: *2020
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:

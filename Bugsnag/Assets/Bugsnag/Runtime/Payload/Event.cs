@@ -10,7 +10,7 @@ namespace BugsnagUnity.Payload
     public class Event : PayloadContainer, IEvent
     {
 
-        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey, OrderedDictionary featureFlags, Correlation correlation, LogType? logType = null)
+        internal Event(string context, Metadata metadata, AppWithState app, DeviceWithState device, User user, Error[] errors, HandledState handledState, List<Breadcrumb> breadcrumbs, Session session, string apiKey, OrderedDictionary featureFlags, Correlation correlation, string groupingDiscriminator = null, LogType? logType = null)
         {
             ApiKey = apiKey;
             OriginalSeverity = handledState;
@@ -24,6 +24,7 @@ namespace BugsnagUnity.Payload
             _errors = errors.ToList();
             Errors = new List<IError>();
             Correlation = correlation;
+            GroupingDiscriminator = groupingDiscriminator;
             foreach (var error in _errors)
             {
                 Errors.Add(error);
@@ -122,6 +123,11 @@ namespace BugsnagUnity.Payload
             if (eventObject.ContainsKey("groupingHash"))
             {
                 GroupingHash = eventObject["groupingHash"].ToString();
+            }
+
+            if (eventObject.ContainsKey("groupingDiscriminator"))
+            {
+                GroupingDiscriminator = eventObject["groupingDiscriminator"].ToString();
             }
 
             _errors = new List<Error>();
@@ -248,6 +254,8 @@ namespace BugsnagUnity.Payload
 
         public string GroupingHash { get; set; }
 
+        public string GroupingDiscriminator { get; set; }
+
         public Severity Severity
         {
             set => HandledState = HandledState.ForCallbackSpecifiedSeverity(value, _handledState);
@@ -324,6 +332,7 @@ namespace BugsnagUnity.Payload
             Add("user", _user.Payload);
             Add("context", Context);
             Add("groupingHash", GroupingHash);
+            Add("groupingDiscriminator", GroupingDiscriminator);
             Add("payloadVersion", PayloadVersion);
             Add("exceptions", _errors);
             if (Correlation != null)
