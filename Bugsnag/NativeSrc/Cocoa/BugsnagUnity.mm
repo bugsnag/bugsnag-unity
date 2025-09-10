@@ -223,6 +223,14 @@ static const char * getJson(id obj) {
     return NULL;
 }
 
+void bugsnag_setGroupingDiscriminator(char *groupingDiscriminator) {
+    // Passing NULL clears the custom discriminator
+    NSString *value = groupingDiscriminator == NULL
+                      ? nil
+                      : [NSString stringWithUTF8String:groupingDiscriminator];
+    [Bugsnag setGroupingDiscriminator:value];
+}
+
 void bugsnag_clearMetadata(const char * section){
     if(section == NULL)
     {

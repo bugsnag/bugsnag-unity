@@ -60,6 +60,10 @@ namespace BugsnagUnity
 
         private ErrorBuilder _errorBuilder;
 
+        private string _groupingDiscriminator;
+
+        private readonly object _groupingDiscriminatorLock = new object();
+
         private class BugsnagLogHandler : ILogHandler
         {
 
@@ -426,7 +430,8 @@ namespace BugsnagUnity
               SessionTracking.CurrentSession,
               Configuration.ApiKey,
               featureFlags,
-              correlation);
+              correlation,
+              GetGroupingDiscriminator());
 
             //Check for adding project packages to an android java error event
             if (ShouldAddProjectPackagesToEvent(@event))
@@ -604,6 +609,25 @@ namespace BugsnagUnity
         {
             _cachedUser = new User(id, email, name);
             NativeClient.SetUser(_cachedUser);
+        }
+
+        public string SetGroupingDiscriminator(string groupingDiscriminator)
+        {
+            lock (_groupingDiscriminatorLock)
+            {
+                var previousValue = _groupingDiscriminator;
+                _groupingDiscriminator = groupingDiscriminator;
+                NativeClient.SetGroupingDiscriminator(groupingDiscriminator);
+                return previousValue;
+            }
+        }
+
+        public string GetGroupingDiscriminator()
+        {
+            lock (_groupingDiscriminatorLock)
+            {
+                return _groupingDiscriminator;
+            }
         }
 
         public void AddFeatureFlag(string name, string variant = null)

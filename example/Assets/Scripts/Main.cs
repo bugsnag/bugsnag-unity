@@ -48,6 +48,15 @@ public class Main : MonoBehaviour
 	private static extern void TriggerCocoaAppHang();
 #endif
 
+	void Update()
+	{
+		// Check for Android back button (mapped to Escape in Unity)
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			Application.Quit();
+		}
+	}
+
 	public Button
 		ManagedCrash,
 		BugsnagNotify,

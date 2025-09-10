@@ -564,6 +564,11 @@ namespace BugsnagUnity
             );
         }
 
+        public void SetGroupingDiscriminator(string groupingDiscriminator)
+        {
+            NativeCode.bugsnag_setGroupingDiscriminator(groupingDiscriminator);
+        }
+
     }
 }
 
