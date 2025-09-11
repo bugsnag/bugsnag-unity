@@ -1,5 +1,17 @@
 # Changelog
 
+## TBD
+
+### Enhancements
+
+- Added `GroupingDiscriminator` property to events and methods for setting and getting the global `GroupingDiscriminator` to `Bugsnag` [#925](https://github.com/bugsnag/bugsnag-unity/pull/925)
+
+### Dependencies
+
+- Update bugsnag-cocoa to [v6.33.1](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.33.1) [#934](https://github.com/bugsnag/bugsnag-unity/pull/934)
+
+- Update bugsnag-android to [v6.18.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.18.0) [#934](https://github.com/bugsnag/bugsnag-unity/pull/934)
+
 ## 8.7.1 (2025-09-08)
 
 - Fix an issue where additional IL2CPP arguments were added without proper whitespace checks [#928](https://github.com/bugsnag/bugsnag-unity/pull/928)
