@@ -27,14 +27,29 @@ fi
 echo "==> Generating solution via Unity (${UNITY_VERSION})"
 echo "    Log: $UNITY_LOG"
 
-# --- Run SyncVS with a retry (Unity can be moody on cold caches) ---
 attempt_sync() {
   "$UNITY_BIN" "${DEFAULT_CLI_ARGS[@]}" \
     -projectPath "$PROJECT_DIR" \
     -executeMethod "$SYNC_METHOD"
 }
 
+wait_for_solution() {
+  # Wait up to MAX_WAIT seconds for .sln and at least one .csproj
+  local MAX_WAIT=300
+  local waited=0
+  while (( waited < MAX_WAIT )); do
+    if [[ -f "$SLN_PATH" ]] && compgen -G "$PROJECT_DIR/"'*.csproj' > /dev/null; then
+      return 0
+    fi
+    sleep 2
+    (( waited+=2 ))
+  done
+  return 1
+}
+
+# --- Sync with retry ---
 SYNC_ATTEMPTS=2
+SUCCESS=0
 for attempt in $(seq 1 "$SYNC_ATTEMPTS"); do
   echo "---- Sync attempt $attempt/$SYNC_ATTEMPTS"
   set +e
@@ -42,39 +57,36 @@ for attempt in $(seq 1 "$SYNC_ATTEMPTS"); do
   UNITY_EXIT=$?
   set -e
 
-  # Poll for .sln and at least one .csproj (up to 30s)
-  FOUND_SOLUTION=0
-  for i in {1..30}; do
-    if [[ -f "$SLN_PATH" ]] && compgen -G "$PROJECT_DIR/*.csproj" > /dev/null; then
-      FOUND_SOLUTION=1
-      break
-    fi
-    sleep 1
-  done
-
-  if [[ "$UNITY_EXIT" -eq 0 && "$FOUND_SOLUTION" -eq 1 ]]; then
+  if wait_for_solution; then
     echo "    ✔ Solution generated: $SLN_PATH"
+    SUCCESS=1
     break
   fi
 
   echo "    Waiting for files failed or Unity exit was $UNITY_EXIT. Retrying..."
 done
 
-# --- Validate artifacts before continuing ---
-if [[ ! -f "$SLN_PATH" ]]; then
-  echo "✖ Solution file not found after retries: $SLN_PATH" >&2
-  echo "---- Unity log tail ----" >&2
-  tail -n 200 "$UNITY_LOG" || true
-  exit 2
-fi
-if ! compgen -G "$PROJECT_DIR/*.csproj" > /dev/null; then
-  echo "✖ No .csproj files found under $PROJECT_DIR (required by dotnet format)." >&2
-  echo "---- Unity log tail ----" >&2
-  tail -n 200 "$UNITY_LOG" || true
-  exit 3
+# One last **forced** SyncVS after the waits (helps on cold caches)
+if [[ $SUCCESS -eq 0 ]]; then
+  echo "---- Final SyncVS invocation after wait"
+  set +e
+  attempt_sync
+  set -e
+  if wait_for_solution; then
+    echo "    ✔ Solution generated after final sync: $SLN_PATH"
+    SUCCESS=1
+  fi
 fi
 
-# --- Decide dotnet format mode ---
+# --- Validate artifacts before continuing ---
+if [[ $SUCCESS -eq 0 ]]; then
+  echo "✖ Solution file not found after retries: $SLN_PATH" >&2
+  echo "---- Unity log tail ----" >&2
+  tail -n 300 "$UNITY_LOG" || true
+  exit 2
+fi
+
+# --- dotnet format (solution mode) ---
 FORMAT_ARGS=( --no-restore )
 if [[ "${1:-}" == "--verify" ]]; then
   FORMAT_ARGS+=( --verify-no-changes )
