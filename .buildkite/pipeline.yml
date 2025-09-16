@@ -69,13 +69,13 @@ steps:
     commands:
       features/scripts/do_size_test.sh
 
-  - label: 'Append Unity 2021 Pipeline'
-    depends_on: build_unitypackage
-    agents:
-      queue: macos
-    timeout_in_minutes: 2
-    commands:
-        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
+#  - label: 'Append Unity 2021 Pipeline'
+#    depends_on: build_unitypackage
+#    agents:
+#      queue: macos
+#    timeout_in_minutes: 2
+#    commands:
+#        - buildkite-agent pipeline upload .buildkite/unity.2021.yml
 
   #
   # Conditionally trigger full pipeline
