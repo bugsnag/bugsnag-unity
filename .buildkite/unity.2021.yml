@@ -12,6 +12,7 @@ steps:
         key: "build-android-fixture-2021"
         env:
           UNITY_VERSION: *2021
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.9.0:
             download:
@@ -33,6 +34,7 @@ steps:
         env:
           UNITY_VERSION: *2021
           XCODE_VERSION: "16.2.0"
+          JAVA_VERSION: 17
         plugins:
           artifacts#v1.5.0:
             download:

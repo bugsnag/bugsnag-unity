@@ -1276,6 +1276,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df293b62197504f21a7d582167548183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &1338701864
 GameObject:
   m_ObjectHideFlags: 0
@@ -2324,6 +2328,7 @@ GameObject:
   - component: {fileID: 2039813475}
   - component: {fileID: 2039813474}
   - component: {fileID: 2039813477}
+  - component: {fileID: 2039813478}
   m_Layer: 0
   m_Name: Events
   m_TagString: Untagged
@@ -2602,6 +2607,18 @@ MonoBehaviour:
 
     Main.CUSTOM2
     () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &2039813478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039813460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46d1b367baa7b44d09fd2de8ba62c4e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2059449697
 GameObject:
   m_ObjectHideFlags: 0

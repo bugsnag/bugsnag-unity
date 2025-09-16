@@ -25,6 +25,16 @@ namespace BugsnagUnity
 
         public string GroupingHash { get => GetNativeString("getGroupingHash"); set =>  SetNativeString("setGroupingHash", value); }
 
+        public string GroupingDiscriminator
+        {
+            get => GetNativeString("getGroupingDiscriminator");
+            set
+            {
+                // Special case because setGroupingDiscriminator also returns a string and the usual SetNativeString call will not work 
+                NativePointer.Call<string>("setGroupingDiscriminator", value);
+            }
+        }
+
         public Severity Severity { get => GetSeverity(); set => SetSeverity(value); }
 
         public List<IThread> Threads => GetThreads();

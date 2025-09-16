@@ -102,6 +102,21 @@ namespace BugsnagUnity
         }
 
         /// <summary>
+        /// Gets or sets the grouping discriminator for the Bugsnag client.
+        /// </summary>
+        public static string GroupingDiscriminator
+        {
+            get
+            {
+                return Client.GetGroupingDiscriminator();
+            }
+            set
+            {
+                Client.SetGroupingDiscriminator(value);
+            }
+        }
+
+        /// <summary>
         /// Setting Configuration.LaunchDurationMillis to 0 will cause Bugsnag to consider the app to be launching until Bugsnag.MarkLaunchCompleted() has been called.
         /// </summary>
         public static void MarkLaunchCompleted() => Client.MarkLaunchCompleted();

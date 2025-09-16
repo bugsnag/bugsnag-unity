@@ -175,6 +175,11 @@ namespace BugsnagUnity
         {
             return new StackTraceLine[0];
         }
+
+        public void SetGroupingDiscriminator(string groupingDiscriminator)
+        {
+            // No-op on fallback platform
+        }
     }
 }
 #endif

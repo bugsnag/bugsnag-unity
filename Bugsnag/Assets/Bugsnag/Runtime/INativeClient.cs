@@ -112,5 +112,10 @@ namespace BugsnagUnity
         /// </summary>
         void RegisterForOnSessionCallbacks();
 
+        /// <summary>
+        /// Sets the grouping discriminator for native crash reports synchronization
+        /// </summary>
+        void SetGroupingDiscriminator(string groupingDiscriminator);
+
     }
 }

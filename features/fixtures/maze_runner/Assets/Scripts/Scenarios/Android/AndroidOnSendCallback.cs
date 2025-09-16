@@ -10,7 +10,8 @@ public class AndroidOnSendCallback : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.AddOnSendError((@event) => {
+        Configuration.AddOnSendError((@event) =>
+        {
             @event.ApiKey = "Custom ApiKey";
             // AppWithState
             var app = @event.App;
@@ -71,6 +72,8 @@ public class AndroidOnSendCallback : Scenario
 
             @event.Unhandled = false;
 
+            @event.GroupingDiscriminator = "Custom GroupingDiscriminator";
+
             // Threads
             foreach (var thread in @event.Threads)
             {
@@ -90,7 +93,7 @@ public class AndroidOnSendCallback : Scenario
 
             @event.AddMetadata("test", "scoop", "dewoop");
 
-            @event.AddFeatureFlag("test","variant");
+            @event.AddFeatureFlag("test", "variant");
             @event.AddFeatureFlag("deleteMe");
             @event.ClearFeatureFlag("deleteMe");
 

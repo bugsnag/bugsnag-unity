@@ -220,6 +220,9 @@ namespace BugsnagUnity
         internal static extern void bugsnag_setUser(string id, string email, string name);
 
         [DllImport(Import)]
+        internal static extern void bugsnag_setGroupingDiscriminator(string groupingDiscriminator);
+
+        [DllImport(Import)]
         internal static extern void bugsnag_startSession();
 
         [DllImport(Import)]

@@ -209,5 +209,22 @@ Feature: csharp events
     And I wait to receive 1 error
     And the exception "message" equals "SerialisationError"
 
+  Scenario: Grouping Discriminator
+    When I run the game in the "GroupingDiscriminator" state
+    And I wait to receive 3 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
+
+    And the exception "message" equals "GroupingDiscriminator-1"
+    And the event "groupingDiscriminator" is null
+    And I discard the oldest error
+    And the exception "message" equals "GroupingDiscriminator-2"
+    And the event "groupingDiscriminator" equals "Global GroupingDiscriminator"
+    And I discard the oldest error
+    And the exception "message" equals "GroupingDiscriminator-3"
+    And the event "groupingDiscriminator" equals "Callback GroupingDiscriminator"
+
+
+    
+
 
 
