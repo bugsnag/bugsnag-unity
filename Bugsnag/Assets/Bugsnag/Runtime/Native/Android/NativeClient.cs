@@ -182,10 +182,11 @@ namespace BugsnagUnity
                 return new StackTraceLine[0];
             }
 
-            var StackTraceLength = nativeAddresses.Length;
-            StackTraceLine[] Trace = new StackTraceLine[StackTraceLength];
+            // Use the minimum of both lengths to avoid out-of-bounds access
+            var length = nativeAddresses.Length < lines.Length ? nativeAddresses.Length : lines.Length;
+            StackTraceLine[] Trace = new StackTraceLine[length];
 
-            for (int i = 0; i < StackTraceLength; i++)
+            for (int i = 0; i < length; i++)
             {
                 StackTraceLine Frame = new StackTraceLine();
 
