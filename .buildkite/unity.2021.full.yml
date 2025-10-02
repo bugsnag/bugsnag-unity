@@ -184,7 +184,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2021-fixture"
         agents:
-          queue: win-general-3
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
           JAVA_VERSION: 17
@@ -207,7 +207,7 @@ steps:
         timeout_in_minutes: 30
         key: "windows-2021-dev-fixture"
         agents:
-          queue: win-general-3
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
           JAVA_VERSION: 17
@@ -431,7 +431,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2021-fixture"
         agents:
-          queue: win-general-3
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         plugins:
@@ -448,7 +448,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2021-fixture"
         agents:
-          queue: win-general-3
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         plugins:
@@ -466,7 +466,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2021-fixture"
         agents:
-          queue: win-general-3
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         plugins:
@@ -483,7 +483,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2021-fixture"
         agents:
-          queue: win-general-3
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         plugins:
@@ -500,7 +500,7 @@ steps:
         timeout_in_minutes: 30
         depends_on: "windows-2021-dev-fixture"
         agents:
-          queue: win-general-3
+          queue: win-general-2
         env:
           UNITY_VERSION: *2021
         plugins:
