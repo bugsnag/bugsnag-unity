@@ -1,6 +1,12 @@
 # Changelog
 
-## TBD
+## 8.8.1 (2025-09-23)
+
+### Bug Fixes
+
+- Fix an issue where building native stack traces could trigger an out of bounds exception [#941](https://github.com/bugsnag/bugsnag-unity/pull/941)
+
+## 8.8.0 (2025-09-16)
 
 ### Enhancements
 
@@ -13,6 +19,8 @@
 - Update bugsnag-android to [v6.18.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.18.0) [#934](https://github.com/bugsnag/bugsnag-unity/pull/934)
 
 ## 8.7.1 (2025-09-08)
+
+### Bug Fixes
 
 - Fix an issue where additional IL2CPP arguments were added without proper whitespace checks [#928](https://github.com/bugsnag/bugsnag-unity/pull/928)
 

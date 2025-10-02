@@ -10,6 +10,10 @@ steps:
     timeout_in_minutes: 5
     env:
       UNITY_VERSION: *2021
+    plugins:
+      artifacts#v1.9.0:
+        upload:
+          - "Bugsnag/Library/Logs/*.log"
     commands:
       - rake code:verify
 
