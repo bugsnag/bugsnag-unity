@@ -63,7 +63,7 @@ When('I clear the Bugsnag cache') do
   when 'android', 'ios'
     execute_command('clear_cache')
   when 'browser'
-    url = "http://localhost:#{Maze.config.document_server_port}/index.html"
+    url = "http://localhost:#{Maze.config.port}/docs/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
     execute_command('clear_cache')
@@ -111,7 +111,7 @@ When('I run the game in the {string} state') do |state|
 
   when 'browser'
     # WebGL in a browser
-    url = "http://localhost:#{Maze.config.document_server_port}/index.html"
+    url = "http://localhost:#{Maze.config.port}/docs/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
     execute_command('run_scenario', state)
