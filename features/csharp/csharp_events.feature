@@ -139,7 +139,6 @@ Feature: csharp events
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
-  @skip_unity_2018
   Scenario: Reporting an inner exception
     When I run the game in the "InnerException" state
     And I wait to receive an error

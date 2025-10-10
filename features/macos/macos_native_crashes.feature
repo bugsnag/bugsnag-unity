@@ -1,9 +1,13 @@
 Feature: MacOS native crashes
 
+  Background:
+    Given I clear the Bugsnag cache
+
   @macos_only
   Scenario: Reporting a MacOS native crash
     When I run the game in the "MacOSNativeCrash" state
     And I wait for 2 seconds
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the native Unity notifier
@@ -29,6 +33,7 @@ Feature: MacOS native crashes
   Scenario: Reporting a MacOS native crash with an onsend callback
     When I run the game in the "MacOSNativeCrash" state
     And I wait for 2 seconds
+    And I start the Unity app
     And I run the game in the "MacOSNativeCrashCallback" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the native Unity notifier
@@ -94,6 +99,7 @@ Feature: MacOS native crashes
   Scenario: Set User After Init Native Error
     When I run the game in the "MacOSSetUserAfterInitNativeCrash" state
     And I wait for 2 seconds
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the native Unity notifier
@@ -108,6 +114,7 @@ Feature: MacOS native crashes
   Scenario: Native crash outside of release stage
     When I run the game in the "MacOSNativeCrashOutsideReleaseStages" state
     And I wait for 2 seconds
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     Then I should receive no errors
 
@@ -115,13 +122,15 @@ Feature: MacOS native crashes
   Scenario: Reporting a native crash when AutoDetectErrors = false
     When I run the game in the "MacOSNativeCrashAutoDetectErrorsFalse" state
     And I wait for 2 seconds
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     Then I should receive no errors
 
-   @macos_only
+  @macos_only
   Scenario: Reporting a native crash when EnabledErrorTypes.Crashes = false
     When I run the game in the "MacOSNativeCrashEnabledErrorTypes" state
     And I wait for 2 seconds
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     Then I should receive no errors
 
