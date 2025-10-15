@@ -12,7 +12,7 @@ public class DiscardErrorClass : Scenario
 
     public override void Run()
     {
-        Bugsnag.Notify(new System.IndexOutOfRangeException("Error 1"));
-        Bugsnag.Notify(new System.Exception("Error 2"));
+        Bugsnag.Notify(new System.IndexOutOfRangeException("DiscardErrorClass 1"));
+        Bugsnag.Notify(new System.Exception("DiscardErrorClass 2"));
     }
 }

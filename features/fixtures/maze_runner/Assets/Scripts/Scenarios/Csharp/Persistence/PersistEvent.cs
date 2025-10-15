@@ -5,11 +5,11 @@ public class PersistEvent : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.Context = "Error 1";
+        Configuration.Context = "PersistEvent 1";
     }
 
     public override void Run()
     {
-        throw new System.Exception("Error 1");
+        throw new System.Exception("PersistEvent 1");
     }
 }

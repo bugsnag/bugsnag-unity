@@ -8,6 +8,6 @@
 
     public override void Run()
     {
-        throw new System.Exception("Error 1");
+        throw new System.Exception("AutoNotifyFalse 1");
     }
 }

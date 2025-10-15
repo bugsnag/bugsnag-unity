@@ -6,7 +6,7 @@ public class PersistEventReportCallback : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.Context = "Error 2";
+        Configuration.Context = "PersistEvent 2";
         Configuration.AddOnSendError((@event) => {
 
             @event.App.BinaryArch = "Persist BinaryArch";
@@ -30,6 +30,6 @@ public class PersistEventReportCallback : Scenario
 
     public override void Run()
     {
-        throw new System.Exception("Error 2");
+        throw new System.Exception("PersistEvent 2");
     }
 }

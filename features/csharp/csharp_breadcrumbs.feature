@@ -16,7 +16,7 @@ Feature: Csharp Breadcrumbs
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     And I discard the oldest error
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "Error2"
+    And the exception "message" equals "EnableBreadcrumbs 2"
     And the event "breadcrumbs.0.name" equals "Debug.Log"
 
   Scenario: Setting max breadcrumbs
@@ -38,7 +38,7 @@ Feature: Csharp Breadcrumbs
     And I discard the oldest error
     And I discard the oldest error
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "Error3"
+    And the exception "message" equals "ManualAndAutoBreadcrumbs 3"
 
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.0.type" equals "state"
@@ -57,11 +57,11 @@ Feature: Csharp Breadcrumbs
 
     And the event "breadcrumbs.5.name" equals "Exception"
     And the event "breadcrumbs.5.type" equals "error"
-    And the event "breadcrumbs.5.metaData.message" equals "Error1"
+    And the event "breadcrumbs.5.metaData.message" equals "ManualAndAutoBreadcrumbs 1"
 
     And the event "breadcrumbs.6.name" equals "Exception"
     And the event "breadcrumbs.6.type" equals "error"
-    And the event "breadcrumbs.6.metaData.message" equals "Error2"
+    And the event "breadcrumbs.6.metaData.message" equals "ManualAndAutoBreadcrumbs 2"
 
     And the event "breadcrumbs.7.name" equals "Metadata"
     And the event "breadcrumbs.7.type" equals "manual"
