@@ -194,6 +194,8 @@ public class Main : MonoBehaviour
             DeleteTargets(cacheRoot, new[] { "bugsnag", "StrictModeDiscScenarioFile" }, Array.Empty<string>());
             DeleteTargets(filesRoot, new[] { "background-service-dir" }, new[] { "device-id", "internal-device-id" });
 
+            ClearAndroidSharedPreferences("com.bugsnag.android");
+
             ListFolder(cacheRoot, "CACHE");
             ListFolder(filesRoot, "FILES");
         }
@@ -220,6 +222,24 @@ public class Main : MonoBehaviour
             {
                 filesRoot = filesDir.Call<string>("getAbsolutePath");
             }
+        }
+    }
+
+    private void ClearAndroidSharedPreferences(string name)
+    {
+        try
+        {
+            using (var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+            using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
+            using (var prefs = activity.Call<AndroidJavaObject>("getSharedPreferences", name, 0))
+            using (var editor = prefs.Call<AndroidJavaObject>("edit"))
+            {
+                editor.Call<AndroidJavaObject>("clear").Call<bool>("commit");
+            }
+        }
+        catch (Exception e)
+        {
+            Log($"[Cleaner] Failed to clear SharedPreferences '{name}': {e}");
         }
     }
 #endif
