@@ -74,7 +74,7 @@ Feature: Callbacks
     And the event "session.events.handled" equals 1
     And I discard the oldest error
 
-    And the exception "message" equals "HandledInNotifyCallback"
+    And the exception "message" equals "EditUnhandled HandledInNotifyCallback"
     And the event "unhandled" is true
     And the event "severityReason.unhandledOverridden" is true
     And the event "session.events.unhandled" equals 1
