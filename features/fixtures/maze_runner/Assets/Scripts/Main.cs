@@ -43,9 +43,7 @@ public class Main : MonoBehaviour
     public IEnumerator Start()
     {
         Log("Maze Runner app started");
-
         yield return GetFixtureConfig();
-
 #if UNITY_STANDALONE_OSX
         PreventCrashPopups();
 #endif
@@ -132,7 +130,7 @@ public class Main : MonoBehaviour
 
                         if ("clear_cache".Equals(command.action))
                         {
-                            ClearUnityCache();
+                            ClearCache();
                         }
                         else if ("run_scenario".Equals(command.action))
                         {
@@ -153,46 +151,161 @@ public class Main : MonoBehaviour
         Application.Quit();
     }
 
-
-    private void ClearUnityCache()
+    private void ClearCache()
     {
 #if UNITY_SWITCH
         return;
 #endif
-        if (Directory.Exists(Application.persistentDataPath + "/Bugsnag"))
+        ClearUnityCache();
+        if (Application.platform == RuntimePlatform.Android)
         {
-            Directory.Delete(Application.persistentDataPath + "/Bugsnag", true);
+            ClearAndroidCache();
+            return;
         }
         if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
-            ClearIOSData();
+            ClearIOSCache();
+            return;
         }
-        if (Application.platform != RuntimePlatform.Android &&
-            Application.platform != RuntimePlatform.IPhonePlayer)
-        {
-            Invoke("CloseFixture", 0.25f);
-        }
+        Invoke("CloseFixture", 0.25f);
     }
 
-    public static void ClearIOSData()
+    private void ClearUnityCache()
+    {
+        DeleteTargets(Application.persistentDataPath, new[] { "Bugsnag" }, Array.Empty<string>());
+    }
+
+    public static void ClearIOSCache()
     {
 #if UNITY_IOS
         ClearPersistentData();
 #endif
     }
 
-    private static void Log(string msg)
+    private void ClearAndroidCache()
+    {
+#if UNITY_ANDROID
+        try
+        {
+            string cacheRoot;
+            string filesRoot;
+            GetAndroidRoots(out cacheRoot, out filesRoot);
+
+            DeleteTargets(cacheRoot, new[] { "bugsnag", "StrictModeDiscScenarioFile" }, Array.Empty<string>());
+            DeleteTargets(filesRoot, new[] { "background-service-dir" }, new[] { "device-id", "internal-device-id" });
+
+            ListFolder(cacheRoot, "CACHE");
+            ListFolder(filesRoot, "FILES");
+        }
+        catch (Exception e)
+        {
+            Log($"[Cleaner] Failed to clear Android persistent data: {e}");
+        }
+#endif
+    }
+
+#if UNITY_ANDROID
+    private static void GetAndroidRoots(out string cacheRoot, out string filesRoot)
+    {
+        cacheRoot = null;
+        filesRoot = null;
+        using (var unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+        using (var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
+        {
+            using (var cacheDir = activity.Call<AndroidJavaObject>("getCacheDir"))
+            {
+                cacheRoot = cacheDir.Call<string>("getAbsolutePath");
+            }
+            using (var filesDir = activity.Call<AndroidJavaObject>("getFilesDir"))
+            {
+                filesRoot = filesDir.Call<string>("getAbsolutePath");
+            }
+        }
+    }
+#endif
+
+    private static void DeleteTargets(string root, string[] dirs, string[] files)
+    {
+        foreach (var d in dirs)
+        {
+            var p = Path.Combine(root, d);
+            DeleteDirectoryIfExists(p);
+        }
+        foreach (var f in files)
+        {
+            var p = Path.Combine(root, f);
+            DeleteFileIfExists(p);
+        }
+    }
+
+    private static void DeleteDirectoryIfExists(string path)
     {
         try
         {
-            Logger.I(msg);
+            if (Directory.Exists(path))
+            {
+                LogStatic($"[Cleaner] Deleting dir: {path}");
+                Directory.Delete(path, true);
+            }
+            else
+            {
+                LogStatic($"[Cleaner] Dir not found (skip): {path}");
+            }
         }
-        catch
+        catch (Exception e)
         {
-            // can fail on windows
+            LogStatic($"[Cleaner] Could not delete dir {path}: {e.Message}");
         }
-
     }
 
+    private static void DeleteFileIfExists(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                LogStatic($"[Cleaner] Deleting file: {path}");
+                File.Delete(path);
+            }
+            else
+            {
+                LogStatic($"[Cleaner] File not found (skip): {path}");
+            }
+        }
+        catch (Exception e)
+        {
+            LogStatic($"[Cleaner] Could not delete file {path}: {e.Message}");
+        }
+    }
 
+    private static void ListFolder(string root, string label)
+    {
+        try
+        {
+            LogStatic($"[Cleaner] Contents of {label} root: {root}");
+            if (!Directory.Exists(root))
+            {
+                LogStatic($"[Cleaner] Root does not exist: {root}");
+                return;
+            }
+            foreach (var entry in Directory.EnumerateFileSystemEntries(root, "*", SearchOption.AllDirectories))
+            {
+                LogStatic(entry);
+            }
+        }
+        catch (Exception e)
+        {
+            LogStatic($"[Cleaner] Could not list {label} root {root}: {e.Message}");
+        }
+    }
+
+    private static void LogStatic(string msg)
+    {
+        try { Logger.I(msg); } catch { }
+    }
+
+    private static void Log(string msg)
+    {
+        try { Logger.I(msg); } catch { }
+    }
 }
