@@ -6,8 +6,8 @@ public class OnErrorAfterStart : Scenario
     public override void Run()
     {
         Bugsnag.AddOnError(SimpleEventCallback);
-        Bugsnag.Notify(new Exception("Error 1"));
-        throw new Exception("Error 2");
+        Bugsnag.Notify(new Exception("OnErrorAfterStart 1"));
+        throw new Exception("OnErrorAfterStart 2");
     }
 
    

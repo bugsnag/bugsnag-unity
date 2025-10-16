@@ -6,7 +6,7 @@ public class PersistSessionReport : Scenario
         base.PrepareConfig(apiKey, host);
         Configuration.AddOnSession((session) =>
         {
-            session.App.ReleaseStage = "Session 2";
+            session.App.ReleaseStage = "PersistSession 2";
             return true;
         });
     }

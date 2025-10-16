@@ -13,12 +13,12 @@ public class ManualAndAutoBreadcrumbs : Scenario
         Debug.Log("Debug.Log");
         Debug.LogWarning("Debug.LogWarning");
         Debug.LogError("Debug.LogError");
-        Debug.LogException(new Exception("Error1"));
-        Bugsnag.Notify(new Exception("Error2"));
+        Debug.LogException(new Exception("ManualAndAutoBreadcrumbs 1"));
+        Bugsnag.Notify(new Exception("ManualAndAutoBreadcrumbs 2"));
         Bugsnag.LeaveBreadcrumb("Metadata", new Dictionary<string, object>() {
             {"test" , "value" },
             {"nullTest" , null }
         });
-        throw new Exception("Error3");
+        throw new Exception("ManualAndAutoBreadcrumbs 3");
     }
 }

@@ -14,11 +14,11 @@ public class ResumedSession : Scenario
     public override void Run()
     {
         Bugsnag.StartSession();
-        Bugsnag.Notify(new System.Exception( "Error 1"));
+        Bugsnag.Notify(new System.Exception("ResumedSession 1"));
         Bugsnag.PauseSession();
-        Bugsnag.Notify(new System.Exception("Error 2"));
+        Bugsnag.Notify(new System.Exception("ResumedSession 2"));
         Bugsnag.ResumeSession();
-        Bugsnag.Notify(new System.Exception("Error 3"));
+        Bugsnag.Notify(new System.Exception("ResumedSession 3"));
     }
 
 }

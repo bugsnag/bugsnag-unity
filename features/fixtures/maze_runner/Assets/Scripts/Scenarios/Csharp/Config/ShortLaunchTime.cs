@@ -19,11 +19,11 @@ public class ShortLaunchTime : Scenario
 
     private void DoNotify1()
     {
-        Bugsnag.Notify(new System.Exception("Error 1"));
+        Bugsnag.Notify(new System.Exception("ShortLaunchTime 1"));
     }
 
     private void DoNotify2()
     {
-        Bugsnag.Notify(new System.Exception("Error 2"));
+        Bugsnag.Notify(new System.Exception("ShortLaunchTime 2"));
     }
 }

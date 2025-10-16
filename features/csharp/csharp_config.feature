@@ -21,10 +21,10 @@ Feature: csharp events
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "Error 1"
+    And the exception "message" equals "MarkLaunchComplete 1"
     And the event "app.isLaunching" is true
     And I discard the oldest error
-    And the exception "message" equals "Error 2"
+    And the exception "message" equals "MarkLaunchComplete 2"
     And the event "app.isLaunching" is false
 
   @skip_cocoa @skip_windows @skip_webgl # PLAT-9061
@@ -33,10 +33,10 @@ Feature: csharp events
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "Error 1"
+    And the exception "message" equals "LongLaunchTime 1"
     And the event "app.isLaunching" is true
     And I discard the oldest error
-    And the exception "message" equals "Error 2"
+    And the exception "message" equals "LongLaunchTime 2"
     And the event "app.isLaunching" is false
 
   @skip_cocoa @skip_windows @skip_webgl # PLAT-9061
@@ -45,10 +45,10 @@ Feature: csharp events
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "Error 1"
+    And the exception "message" equals "ShortLaunchTime 1"
     And the event "app.isLaunching" is true
     And I discard the oldest error
-    And the exception "message" equals "Error 2"
+    And the exception "message" equals "ShortLaunchTime 2"
     And the event "app.isLaunching" is false
 
   Scenario: Auto notify false
@@ -74,7 +74,7 @@ Feature: csharp events
     When I run the game in the "DiscardErrorClass" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "Error 2"
+    And the exception "message" equals "DiscardErrorClass 2"
 
   Scenario: App Type
     When I run the game in the "AppType" state

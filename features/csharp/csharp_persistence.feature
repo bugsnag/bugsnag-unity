@@ -16,9 +16,9 @@ Feature: Unity Persistence
     And I wait to receive 2 sessions
     And I sort the sessions by the payload field "app.releaseStage"
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
-    And the session payload field "app.releaseStage" equals "Session 1"
+    And the session payload field "app.releaseStage" equals "PersistSession 1"
     And I discard the oldest session
-    And the session payload field "app.releaseStage" equals "Session 2"
+    And the session payload field "app.releaseStage" equals "PersistSession 2"
 
   @skip_macos # Pending-PLAT-13035
   Scenario: Receive a persisted event
@@ -33,12 +33,12 @@ Feature: Unity Persistence
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     And the error is valid for the error reporting API sent by the Unity notifier
-    And the event "context" equals "Error 1"
-    And the exception "message" equals "Error 1"
+    And the event "context" equals "PersistEvent 1"
+    And the exception "message" equals "PersistEvent 1"
     And I discard the oldest error
     And the error is valid for the error reporting API sent by the Unity notifier
-    And the event "context" equals "Error 2"
-    And the exception "message" equals "Error 2"
+    And the event "context" equals "PersistEvent 2"
+    And the exception "message" equals "PersistEvent 2"
 
   @skip_macos # Pending-PLAT-13035
   Scenario: Receive a persisted event with on send callback
@@ -52,8 +52,8 @@ Feature: Unity Persistence
     And I run the game in the "PersistEventReportCallback" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
-    And the event "context" equals "Error 1"
-    And the exception "message" equals "Error 1"
+    And the event "context" equals "PersistEvent 1"
+    And the exception "message" equals "PersistEvent 1"
     And the event "device.id" equals "Persist Id"
     And the event "app.binaryArch" equals "Persist BinaryArch"
     And the event "exceptions.0.errorClass" equals "Persist ErrorClass"
@@ -117,6 +117,6 @@ Feature: Unity Persistence
     And I wait for requests to persist
     And I wait to receive 1 errors
     And the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "Error 2"
+    And the exception "message" equals "PersistEvent 2"
 
 
