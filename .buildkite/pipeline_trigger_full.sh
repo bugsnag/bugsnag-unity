@@ -9,7 +9,6 @@ if [[ "$BUILDKITE_MESSAGE" == *"[full ci]"* ||
   echo "Running full build"
   buildkite-agent pipeline upload .buildkite/pipeline.full.yml
 else
-  # Basic build, but allow a full build to be triggered
-  echo "Running basic build"
-  buildkite-agent pipeline upload .buildkite/block.yml
+  # Allow full build to be triggered
+  buildkite-agent pipeline upload .buildkite/block.full.yml
 fi
