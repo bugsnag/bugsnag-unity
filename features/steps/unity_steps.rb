@@ -62,7 +62,7 @@ end
 When('I run the game in the {string} state') do |state|
   platform = Maze::Helper.get_current_platform
   case platform
-  when 'macos','android', 'ios', 'switch'
+  when 'macos','android', 'ios', 'switch', 'windows'
     execute_command('run_scenario', state)
   when 'browser'
     # WebGL in a browser
@@ -102,17 +102,7 @@ Then('the error is valid for the error reporting API sent by the native Unity no
 end
 
 Then('the error is valid for the error reporting API sent by the Unity notifier') do
-
-  os = if Maze.config.farm == :bs
-    # Mobile - could be ios or android
-    Maze.config.capabilities['os']
-  else
-    # Could be windows or macos
-    Maze.config.os
-  end
-
   notifier_name = 'Unity Bugsnag Notifier'
-
   check_error_reporting_api notifier_name
 end
 
