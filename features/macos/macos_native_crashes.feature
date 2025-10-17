@@ -6,7 +6,7 @@ Feature: MacOS native crashes
   @macos_only
   Scenario: Reporting a MacOS native crash
     When I run the game in the "MacOSNativeCrash" state
-    And I wait for 2 seconds
+    And I wait for the macOS Unity app to stop
     And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
@@ -27,12 +27,11 @@ Feature: MacOS native crashes
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"
 
-#NOTE to be improved in PLAT-9129
-
+  #NOTE to be improved in PLAT-9129
   @macos_only
   Scenario: Reporting a MacOS native crash with an onsend callback
     When I run the game in the "MacOSNativeCrash" state
-    And I wait for 2 seconds
+    And I wait for the macOS Unity app to stop
     And I start the Unity app
     And I run the game in the "MacOSNativeCrashCallback" state
     And I wait to receive an error
@@ -98,7 +97,7 @@ Feature: MacOS native crashes
   @macos_only
   Scenario: Set User After Init Native Error
     When I run the game in the "MacOSSetUserAfterInitNativeCrash" state
-    And I wait for 2 seconds
+    And I wait for the macOS Unity app to stop
     And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
@@ -113,7 +112,7 @@ Feature: MacOS native crashes
   @macos_only
   Scenario: Native crash outside of release stage
     When I run the game in the "MacOSNativeCrashOutsideReleaseStages" state
-    And I wait for 2 seconds
+    And I wait for the macOS Unity app to stop
     And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     Then I should receive no errors
@@ -121,7 +120,7 @@ Feature: MacOS native crashes
   @macos_only
   Scenario: Reporting a native crash when AutoDetectErrors = false
     When I run the game in the "MacOSNativeCrashAutoDetectErrorsFalse" state
-    And I wait for 2 seconds
+    And I wait for the macOS Unity app to stop
     And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     Then I should receive no errors
@@ -129,7 +128,7 @@ Feature: MacOS native crashes
   @macos_only
   Scenario: Reporting a native crash when EnabledErrorTypes.Crashes = false
     When I run the game in the "MacOSNativeCrashEnabledErrorTypes" state
-    And I wait for 2 seconds
+    And I wait for the macOS Unity app to stop
     And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     Then I should receive no errors

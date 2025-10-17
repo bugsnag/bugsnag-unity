@@ -303,6 +303,19 @@ Then("expected app metadata is included in the event") do
   }
 end
 
+When("I wait for the macOS Unity app to stop") do
+  # The macOS app can vary wildly in how long it takes to stop, so use pgrep to detect when it has fully exited
+  # Also wait for a second before polling as pgrep may return false positives if checked too quickly
+  sleep 1
+  wait = Maze::Wait.new(timeout: 30, interval: 1)
+  stopped = wait.until do
+    `pgrep Mazerunner`
+    running = $?.exitstatus
+    running == 1
+  end
+  Maze.check.true(stopped, "The app did not stop within the timeout period")
+end
+
 When("I clear any error dialogue") do
   click_if_present 'android:id/button1'
   click_if_present 'android:id/aerr_close'
