@@ -374,13 +374,16 @@ def start_app
     manager.activate
   when 'switch'
     switch_run_on_target
+  when 'browser'
+    # WebGL - do nothing
   else
     raise "Platform #{platform} has not been considered"
   end
 end
 
 def stop_app
-  case Maze::Helper.get_current_platform
+  platform = Maze::Helper.get_current_platform
+  case platform
   when 'macos'
     `killall Mazerunner`
   when 'windows'
@@ -392,6 +395,8 @@ def stop_app
   when 'switch'
     # Terminate the app
     Maze::Runner.run_command('ControlTarget.exe terminate')
+  when 'browser'
+    # WebGL - do nothing
   else
     raise "Platform #{platform} has not been considered"
   end
