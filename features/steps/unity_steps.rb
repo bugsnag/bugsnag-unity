@@ -391,7 +391,8 @@ def stop_app
     `killall Mazerunner`
   when 'windows'
     # This assumes Maze Runner is being run under WSL
-    `/mnt/c/Windows/system32/taskkill.exe /F /IM Mazerunner.exe`
+    process_name = File.basename(Maze.config.app)
+    `/mnt/c/Windows/system32/taskkill.exe /F /IM #{process_name}`
   when 'android', 'ios'
     manager = Maze::Api::Appium::AppManager.new
     manager.terminate
