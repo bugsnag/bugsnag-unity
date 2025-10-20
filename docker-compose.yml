@@ -26,7 +26,7 @@ x-common-environment: &common-environment
 
 services:
   maze-runner-bitbar:
-    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner:tms-PLAT-15012-enhanced-idempotent-cli
+    image: 855461928731.dkr.ecr.us-west-1.amazonaws.com/maze-runner-releases:latest-v10-cli
     environment:
       <<: *common-environment
       BITBAR_USERNAME:
