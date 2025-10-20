@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Dependencies
+
+Update bugsnag-cli to [v3.4.1](https//github.com/bugsnag/bugsnag-cli/releases/tag/v3.4.1) [#945](https://github.com/bugsnag/bugsnag-unity/pull/945)
+
 ## 8.8.1 (2025-09-23)
 
 ### Bug Fixes
@@ -15,7 +21,6 @@
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.33.1](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.33.1) [#934](https://github.com/bugsnag/bugsnag-unity/pull/934)
-
 - Update bugsnag-android to [v6.18.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.18.0) [#934](https://github.com/bugsnag/bugsnag-unity/pull/934)
 
 ## 8.7.1 (2025-09-08)
@@ -35,7 +40,6 @@
 ### Enhancements
 
 - Enable fallback support for linux builds [#916](https://github.com/bugsnag/bugsnag-unity/pull/916)
-
 - Add helper method for converting system stacktraces [#917](https://github.com/bugsnag/bugsnag-unity/pull/917)
 
 ## 8.6.1 (2025-07-10)
@@ -49,7 +53,6 @@
 ### Enhancements
 
 - Set default endpoints based on API key [#905](https://github.com/bugsnag/bugsnag-unity/pull/905)
-
 - Add compilation platform as `error.type` to event payloads to enable IL2CPP symbolication in future [#904](https://github.com/bugsnag/bugsnag-unity/pull/904)
 
 ## 8.5.2 (2025-03-31)
@@ -61,7 +64,6 @@
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.32.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.2) [#895](https://github.com/bugsnag/bugsnag-unity/pull/895)
-
 - Update bugsnag-android to [v6.12.1](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.12.1) [#888](https://github.com/bugsnag/bugsnag-unity/pull/888)
 
 ## 8.5.1 (2025-03-03)
