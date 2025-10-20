@@ -1,5 +1,11 @@
 # Changelog
 
+## TBD
+
+### Bug Fixes
+
+- Ensure that file paths passed to the Bugsnag CLI are wrapped in quotes [#950](https://github.com/bugsnag/bugsnag-unity/pull/950)
+
 ## 8.8.1 (2025-09-23)
 
 ### Bug Fixes
