@@ -1,11 +1,10 @@
 steps:
-  - block: 'Trigger a full build'
-    key: 'trigger-full-build'
+  - block: "Trigger a full build"
+    key: "trigger-full-build"
 
-  - label: 'Upload the full test pipeline'
+  - label: "Upload the full test pipeline"
     agents:
-      queue: macos
+      queue: "macos"
     timeout_in_minutes: 2
-    depends_on: 'trigger-full-build'
-    command: >
-      buildkite-agent pipeline upload .buildkite/pipeline.full.yml
+    depends_on: "trigger-full-build"
+    command: "buildkite-agent pipeline upload .buildkite/pipeline.full.yml"
