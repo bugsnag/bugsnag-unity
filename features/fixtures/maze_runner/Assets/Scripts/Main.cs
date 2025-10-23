@@ -43,6 +43,8 @@ public class Main : MonoBehaviour
 
     public ScenarioRunner ScenarioRunner;
 
+    private bool _isProcessingCommand = false;
+
     public IEnumerator Start()
     {
         Log("Maze Runner app started");
@@ -71,7 +73,7 @@ public class Main : MonoBehaviour
         Log("Last command UUID is: " + LastCommandUuid);
     }
 
-    private void SetLastCommandUuid(String uuid) 
+    private void SetLastCommandUuid(String uuid)
     {
         Log("Setting last command UUID: " + uuid);
         var uuidFilePath = Application.persistentDataPath + _commandUuidFileName;
@@ -122,59 +124,70 @@ public class Main : MonoBehaviour
 
     private void DoRunNextMazeCommand()
     {
-        StartCoroutine(RunNextMazeCommand());
+        if (!_isProcessingCommand)
+        {
+            StartCoroutine(RunNextMazeCommand());
+        }
     }
 
     IEnumerator RunNextMazeCommand()
     {
-        var url = MazeHost + "/idem-command?after=" + LastCommandUuid;
-        Log("Requesting maze command from: " + url);
-        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        _isProcessingCommand = true;
+        try
         {
-            yield return request.SendWebRequest();
-            var result = request != null && request.result == UnityWebRequest.Result.Success;
-
-            if (result)
+            var url = MazeHost + "/idem-command?after=" + LastCommandUuid;
+            Log("Requesting maze command from: " + url);
+            using (UnityWebRequest request = UnityWebRequest.Get(url))
             {
-                var response = request.downloadHandler?.text;
-                if (response == null || response == "null")
-                {
-                    Log("No Maze Runner command to process at present");
-                }
-                else
-                {
-                    var command = JsonUtility.FromJson<Command>(response);
-                    if (command != null)
-                    {
-                        Log("Received Maze Runner command:\n" + response);
+                yield return request.SendWebRequest();
+                var result = request != null && request.result == UnityWebRequest.Result.Success;
 
-                        switch(command.action) 
+                if (result)
+                {
+                    var response = request.downloadHandler?.text;
+                    if (response == null || response == "null")
+                    {
+                        Log("No Maze Runner command to process at present");
+                    }
+                    else
+                    {
+                        var command = JsonUtility.FromJson<Command>(response);
+                        if (command != null)
                         {
-                            case "noop":
-                                break;
-                            case "reset_uuid":
-                                SetLastCommandUuid("");
-                                break;
-                            case "clear_cache":
-                                ClearUnityCache();
-                                SetLastCommandUuid(command.uuid);
-                                break;
-                            case "run_scenario":
-                                SetLastCommandUuid(command.uuid);
-                                ScenarioRunner.RunScenario(command.scenarioName, API_KEY, MazeHost);
-                                break;
-                            case "close_application":
-                                SetLastCommandUuid(command.uuid);
-                                CloseFixture();
-                                break;
+                            Log("Received Maze Runner command:\n" + response);
+
+                            switch (command.action)
+                            {
+                                case "noop":
+                                    break;
+                                case "reset_uuid":
+                                    SetLastCommandUuid("");
+                                    break;
+                                case "clear_cache":
+                                    ClearUnityCache();
+                                    SetLastCommandUuid(command.uuid);
+                                    break;
+                                case "run_scenario":
+                                    SetLastCommandUuid(command.uuid);
+                                    ScenarioRunner.RunScenario(command.scenarioName, API_KEY, MazeHost);
+                                    break;
+                                case "close_application":
+                                    SetLastCommandUuid(command.uuid);
+                                    CloseFixture();
+                                    break;
+                            }
                         }
                     }
                 }
+                else
+                {
+                    Log("Request error: " + request.error);
+                }
             }
-            else 
-            {
-                Log("Request error: " + request.error);
-            }
+        }
+        finally
+        {
+            _isProcessingCommand = false;
         }
     }
 
