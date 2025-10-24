@@ -6,7 +6,8 @@ Feature: Switch Specific Tests
     And I wait to receive an error
     And I wait for requests to persist
     And I discard the oldest error
-    And I close the Unity app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "SwitchCacheNone" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
@@ -21,7 +22,8 @@ Feature: Switch Specific Tests
     And I wait for requests to persist
     And I discard the oldest error
     And I discard the oldest error
-    And I close the Unity app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     And I wait to receive 1 errors
     And the exception "message" equals "LARGE PAYLOAD 2"

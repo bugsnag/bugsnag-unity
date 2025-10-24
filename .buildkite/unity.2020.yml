@@ -2,26 +2,26 @@ aliases:
   - &2020 "2020.3.48f1"
 
 agents:
-  queue: macos-15
+  queue: "macos-15"
 
 steps:
   - group: ":hammer: Build Unity 2020 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 2020"
         agents:
-          queue: macos-15
+          queue: "macos-15"
         timeout_in_minutes: 20
         key: "build-android-fixture-2020"
         env:
           UNITY_VERSION: *2020
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
             upload:
-              - features/fixtures/maze_runner/mazerunner_2020.apk
-              - features/fixtures/build_android_apk.log
+              - "features/fixtures/maze_runner/mazerunner_2020.apk"
+              - "features/fixtures/build_android_apk.log"
         command:
               - "bundle install"
               - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_android.feature"
@@ -35,21 +35,22 @@ steps:
       #
       - label: ":ios: Build iOS test fixture for Unity 2020"
         agents:
-          queue: macos-14
+          # macOS 14 needed to a Unity issue build for iOS.  Only macos-14-2 has a license.
+          queue: "macos-14-2"
         timeout_in_minutes: 10
         key: "build-ios-fixture-2020"
         env:
           XCODE_VERSION: "15.3.0"
           UNITY_VERSION: *2020
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
 
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
             upload:
-              - features/fixtures/maze_runner/mazerunner_2020.ipa
-              - features/fixtures/unity.log
+              - "features/fixtures/maze_runner/mazerunner_2020.ipa"
+              - "features/fixtures/unity.log"
         command:
               - "bundle install"
               - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_ios.feature"
@@ -58,70 +59,70 @@ steps:
             - exit_status: "*"
               limit: 1
 
-      - label: Build Unity 2020 MacOS test fixture
+      - label: "Build Unity 2020 MacOS test fixture"
         timeout_in_minutes: 10
         key: "macos-2020-fixture"
         env:
           UNITY_VERSION: *2020
           XCODE_VERSION: "16.3.0"
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
 
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
         commands:
-          - scripts/ci-build-macos-fixture.sh release
+          - "scripts/ci-build-macos-fixture.sh release"
         artifact_paths:
-          - unity.log
-          - features/fixtures/maze_runner/build/MacOS-release-2020.zip
+          - "unity.log"
+          - "features/fixtures/maze_runner/build/MacOS-release-2020.zip"
         retry:
           automatic:
             - exit_status: "*"
               limit: 1
 
-      - label: Build Unity 2020 WebGL test fixture
+      - label: "Build Unity 2020 WebGL test fixture"
         timeout_in_minutes: 20
         key: "webgl-2020-fixture"
         env:
           UNITY_VERSION: *2020
           XCODE_VERSION: "16.3.0"
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
         commands:
-          - scripts/ci-build-webgl-fixture.sh release
+          - "scripts/ci-build-webgl-fixture.sh release"
         artifact_paths:
-          - unity.log
-          - features/fixtures/maze_runner/build/WebGL-release-2020.zip
+          - "unity.log"
+          - "features/fixtures/maze_runner/build/WebGL-release-2020.zip"
         retry:
           automatic:
             - exit_status: "*"
               limit: 1
 
-      - label: Build Unity 2020 Windows test fixture
+      - label: "Build Unity 2020 Windows test fixture"
         timeout_in_minutes: 30
         key: "windows-2020-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: "windows-general-wsl"
         env:
           UNITY_VERSION: *2020
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
             upload:
-              - unity.log
-              - features/fixtures/maze_runner/build/Windows-release-2020.zip
+              - "unity.log"
+              - "features/fixtures/maze_runner/build/Windows-release-2020.zip"
         commands:
-          - scripts/ci-build-windows-fixture-wsl.sh release
+          - "scripts/ci-build-windows-fixture-wsl.sh release"
         retry:
           automatic:
             - exit_status: "*"

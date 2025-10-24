@@ -5,11 +5,13 @@ namespace BugsnagUnity
 {
     public class EndpointConfiguration
     {
-        private const string DefaultNotifyEndpoint = "https://notify.bugsnag.com";
-        private const string HubNotifyEndpoint = "https://notify.insighthub.smartbear.com";
-        private const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
-        private const string HubSessionEndpoint = "https://sessions.insighthub.smartbear.com";
-        private const string HubApiPrefix = "00000";
+        // Base domain for secondary (previously InsightHub) endpoints
+        private const string SECONDARY_URL_FORMAT = "bugsnag.smartbear.com";
+        private const string DEFAULT_NOTIFY_ENDPOINT = "https://notify.bugsnag.com";
+        private const string DEFAULT_SESSION_ENDPOINT = "https://sessions.bugsnag.com";
+        private const string SECONDARY_NOTIFY_ENDPOINT = "https://notify." + SECONDARY_URL_FORMAT;
+        private const string SECONDARY_SESSION_ENDPOINT = "https://sessions." + SECONDARY_URL_FORMAT;
+        private const string SECONDARY_API_PREFIX = "00000"; // previously HubApiPrefix
         private string _customNotifyEndpoint = string.Empty;
         private string _customSessionEndpoint = string.Empty;
         internal Uri NotifyEndpoint;
@@ -41,11 +43,11 @@ namespace BugsnagUnity
                 }
                 else if (apiKey.StartsWith("00000"))
                 {
-                    NotifyEndpoint = new Uri(HubNotifyEndpoint);
+                    NotifyEndpoint = new Uri(SECONDARY_NOTIFY_ENDPOINT);
                 }
                 else
                 {
-                    NotifyEndpoint = new Uri(DefaultNotifyEndpoint);
+                    NotifyEndpoint = new Uri(DEFAULT_NOTIFY_ENDPOINT);
                 }
             }
             catch (Exception e)
@@ -60,13 +62,13 @@ namespace BugsnagUnity
                 {
                     SessionEndpoint = new Uri(_customSessionEndpoint);
                 }
-                else if (IsHubApiKey(apiKey))
+                else if (IsSecondaryApiKey(apiKey))
                 {
-                    SessionEndpoint = new Uri(HubSessionEndpoint);
+                    SessionEndpoint = new Uri(SECONDARY_SESSION_ENDPOINT);
                 }
                 else
                 {
-                    SessionEndpoint = new Uri(DefaultSessionEndpoint);
+                    SessionEndpoint = new Uri(DEFAULT_SESSION_ENDPOINT);
                 }
             }
             catch (Exception e)
@@ -77,9 +79,9 @@ namespace BugsnagUnity
             IsConfigured = true;
         }
 
-        private bool IsHubApiKey(string apiKey)
+        private bool IsSecondaryApiKey(string apiKey)
         {
-            return apiKey.StartsWith(HubApiPrefix);
+            return apiKey.StartsWith(SECONDARY_API_PREFIX);
         }
 
         public EndpointConfiguration()

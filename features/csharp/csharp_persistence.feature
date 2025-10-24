@@ -10,8 +10,8 @@ Feature: Unity Persistence
     And I wait to receive 1 session
     And I wait for requests to persist
     And I discard the oldest session
-    And I close the Unity app
-    And On Mobile I relaunch the app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "PersistSessionReport" state
     And I wait to receive 2 sessions
     And I sort the sessions by the payload field "app.releaseStage"
@@ -27,8 +27,8 @@ Feature: Unity Persistence
     And I wait to receive an error
     And I wait for requests to persist
     And I discard the oldest error
-    And I close the Unity app
-    And On Mobile I relaunch the app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "PersistEventReport" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
@@ -47,8 +47,8 @@ Feature: Unity Persistence
     And I wait to receive an error
     And I wait for requests to persist
     And I discard the oldest error
-    And I close the Unity app
-    And On Mobile I relaunch the app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "PersistEventReportCallback" state
     And I wait to receive 2 errors
     And I sort the errors by the payload field "events.0.exceptions.0.message"
@@ -71,8 +71,8 @@ Feature: Unity Persistence
     And I discard the oldest error
     And I discard the oldest error
     And I discard the oldest error
-    And I close the Unity app
-    And On Mobile I relaunch the app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "ReportMaxPersistedEvents" state
     And I wait to receive an error
     And the exception "message" equals "true"
@@ -87,8 +87,8 @@ Feature: Unity Persistence
     And I discard the oldest session
     And I discard the oldest session
     And I discard the oldest session
-    And I close the Unity app
-    And On Mobile I relaunch the app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "ReportMaxPersistedSessions" state
     And I wait to receive an error
     And the exception "message" equals "true"
@@ -100,8 +100,8 @@ Feature: Unity Persistence
     And the exception "message" equals "PersistDeviceId"
     And the error payload field "events.0.device.id" is stored as the value "device_id"
     And I discard the oldest error
-    And I close the Unity app
-    And On Mobile I relaunch the app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "PersistDeviceId" state
     And I wait to receive an error
     And the exception "message" equals "PersistDeviceId"
@@ -111,8 +111,8 @@ Feature: Unity Persistence
   Scenario: Handle Corrupt Json
     And I run the game in the "CorruptedCacheFile" state
     And I wait for requests to persist
-    And I close the Unity app
-    And On Mobile I relaunch the app
+    And I stop the Unity app
+    And I start the Unity app
     And I run the game in the "PersistEventReport" state
     And I wait for requests to persist
     And I wait to receive 1 errors

@@ -6,6 +6,11 @@
 
 - Ensure that file paths passed to the Bugsnag CLI are wrapped in quotes [#950](https://github.com/bugsnag/bugsnag-unity/pull/950)
 
+### Changes
+
+- Amend secondary instance URL to bugsnag.smartbear.com [#951](https://github.com/bugsnag/bugsnag-unity/pull/951)
+
+
 ## 8.8.1 (2025-09-23)
 
 ### Bug Fixes
