@@ -35,7 +35,8 @@ steps:
       #
       - label: ":ios: Build iOS test fixture for Unity 2020"
         agents:
-          queue: "macos-14"
+          # macOS 14 needed to a Unity issue build for iOS.  Only macos-14-2 has a license.
+          queue: "macos-14-2"
         timeout_in_minutes: 10
         key: "build-ios-fixture-2020"
         env:
