@@ -1,12 +1,11 @@
 steps:
-  - block: 'Trigger a basic build'
-    key: 'trigger-basic-build'
+  - block: "Trigger a basic build"
+    key: "trigger-basic-build"
 
-  - label: 'Upload the basic test pipeline'
-    key: 'upload-basic-build'
+  - label: "Upload the basic test pipeline"
+    key: "upload-basic-build"
     agents:
-      queue: macos
+      queue: "macos"
     timeout_in_minutes: 2
-    depends_on: 'trigger-basic-build'
-    command: >
-      buildkite-agent pipeline upload .buildkite/pipeline.basic.yml
+    depends_on: "trigger-basic-build"
+    command: "buildkite-agent pipeline upload .buildkite/pipeline.basic.yml"

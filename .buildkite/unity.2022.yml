@@ -2,26 +2,26 @@ aliases:
   - &2022 "2022.3.62f1"
 
 agents:
-  queue: macos-15
+  queue: "macos-15"
 
 steps:
   - group: ":hammer: Build Unity 2022 test fixtures"
     steps:
       - label: ":android: Build Android test fixture for Unity 2022"
         agents:
-          queue: macos-15
+          queue: "macos-15"
         timeout_in_minutes: 30
         key: "build-android-fixture-2022"
         env:
           UNITY_VERSION: *2022
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
             upload:
-              - features/fixtures/maze_runner/mazerunner_2022.apk
-              - features/fixtures/build_android_apk.log
+              - "features/fixtures/maze_runner/mazerunner_2022.apk"
+              - "features/fixtures/build_android_apk.log"
         command:
               - "bundle install"
               - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_android.feature"
@@ -36,14 +36,14 @@ steps:
         env:
           UNITY_VERSION: *2022
           XCODE_VERSION: "16.3.0"
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
             upload:
-              - features/fixtures/maze_runner/mazerunner_2022.ipa
-              - features/fixtures/unity.log
+              - "features/fixtures/maze_runner/mazerunner_2022.ipa"
+              - "features/fixtures/unity.log"
         command:
               - "bundle install"
               - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_ios.feature"
@@ -52,66 +52,66 @@ steps:
             - exit_status: "*"
               limit: 1
 
-      - label: Build Unity 2022 MacOS fixture
+      - label: "Build Unity 2022 MacOS fixture"
         timeout_in_minutes: 10
         key: "macos-2022-fixture"
         env:
           UNITY_VERSION: *2022
           XCODE_VERSION: "16.3.0"
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
         commands:
-          - scripts/ci-build-macos-fixture.sh release
+          - "scripts/ci-build-macos-fixture.sh release"
         artifact_paths:
-          - unity.log
-          - features/fixtures/maze_runner/build/MacOS-release-2022.zip
+          - "unity.log"
+          - "features/fixtures/maze_runner/build/MacOS-release-2022.zip"
         retry:
           automatic:
             - exit_status: "*"
               limit: 1
 
-      - label: Build Unity 2022 WebGL test fixture
+      - label: "Build Unity 2022 WebGL test fixture"
         timeout_in_minutes: 10
         key: "webgl-2022-fixture"
         env:
           UNITY_VERSION: *2022
           XCODE_VERSION: "16.3.0"
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
         commands:
-          - scripts/ci-build-webgl-fixture.sh release
+          - "scripts/ci-build-webgl-fixture.sh release"
         artifact_paths:
-          - unity.log
-          - features/fixtures/maze_runner/build/WebGL-release-2022.zip
+          - "unity.log"
+          - "features/fixtures/maze_runner/build/WebGL-release-2022.zip"
         retry:
           automatic:
             - exit_status: "*"
               limit: 1
 
-      - label: Build Unity 2022 Windows test fixture
+      - label: "Build Unity 2022 Windows test fixture"
         timeout_in_minutes: 30
         key: "windows-2022-fixture"
         agents:
-          queue: windows-general-wsl
+          queue: "windows-general-wsl"
         env:
           UNITY_VERSION: *2022
-          JAVA_VERSION: 17
+          JAVA_VERSION: "17"
         commands:
-          - scripts/ci-build-windows-fixture-wsl.sh release
+          - "scripts/ci-build-windows-fixture-wsl.sh release"
         plugins:
           artifacts#v1.9.0:
             download:
-              - Bugsnag.unitypackage
+              - "Bugsnag.unitypackage"
             upload:
-              - unity.log
-              - unity_import.log
-              - features/fixtures/maze_runner/build/Windows-release-2022.zip
+              - "unity.log"
+              - "unity_import.log"
+              - "features/fixtures/maze_runner/build/Windows-release-2022.zip"
         retry:
           automatic:
             - exit_status: "*"
@@ -123,7 +123,7 @@ steps:
         timeout_in_minutes: 60
         depends_on: "build-android-fixture-2022"
         agents:
-          queue: opensource
+          queue: "opensource"
         env:
           UNITY_VERSION: *2022
         plugins:
@@ -131,11 +131,12 @@ steps:
             download:
               - "features/fixtures/maze_runner/mazerunner_2022.apk"
             upload:
-              - "maze_output/**/*"
+              - "maze_output/failed/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           docker-compose#v4.7.0:
-            pull: maze-runner-bitbar
-            run: maze-runner-bitbar
+            pull: "maze-runner-bitbar"
+            run: "maze-runner-bitbar"
             service-ports: true
             command:
               - "features/csharp"
@@ -153,7 +154,7 @@ steps:
             branch: "^master|next$$"
         concurrency: 25
         concurrency_group: "bitbar"
-        concurrency_method: eager
+        concurrency_method: "eager"
         retry:
           automatic:
             - exit_status: 103  # Appium session failed
@@ -163,17 +164,18 @@ steps:
         timeout_in_minutes: 60
         depends_on: "build-ios-fixture-2022"
         agents:
-          queue: opensource
+          queue: "opensource"
         plugins:
           artifacts#v1.9.0:
             download:
               - "features/fixtures/maze_runner/mazerunner_2022.ipa"
             upload:
-              - "maze_output/**/*"
+              - "maze_output/failed/*"
+              - "maze_output/maze_output.zip"
               - "maze_output/metrics.csv"
           docker-compose#v4.7.0:
-            pull: maze-runner-bitbar
-            run: maze-runner-bitbar
+            pull: "maze-runner-bitbar"
+            run: "maze-runner-bitbar"
             service-ports: true
             command:
               - "features/csharp"
@@ -191,67 +193,70 @@ steps:
             branch: "^master|next$$"
         concurrency: 25
         concurrency_group: "bitbar"
-        concurrency_method: eager
+        concurrency_method: "eager"
         retry:
           automatic:
             - exit_status: 103  # Appium session failed
               limit: 2
 
-      - label: Run MacOS e2e tests for Unity 2022
+      - label: "Run MacOS e2e tests for Unity 2022"
         timeout_in_minutes: 60
-        depends_on: 'macos-2022-fixture'
+        depends_on: "macos-2022-fixture"
         agents:
-          queue: macos-15-isolated
+          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *2022
         plugins:
           artifacts#v1.9.0:
             download:
-              - features/fixtures/maze_runner/build/MacOS-release-2022.zip
+              - "features/fixtures/maze_runner/build/MacOS-release-2022.zip"
             upload:
-              - maze_output/**/*
-              - '*-mazerunner.log'
+              - "maze_output/failed/*"
+              - "maze_output/maze_output.zip"
+              - "'*-mazerunner.log'"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^master|next$$"
         commands:
-          - scripts/ci-run-macos-tests.sh release
+          - "scripts/ci-run-macos-tests.sh release"
 
-      - label: Run WebGL e2e tests for Unity 2022
+      - label: "Run WebGL e2e tests for Unity 2022"
         timeout_in_minutes: 30
-        depends_on: 'webgl-2022-fixture'
+        depends_on: "webgl-2022-fixture"
         agents:
-          queue: macos-15-isolated
+          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *2022
         plugins:
           artifacts#v1.9.0:
             download:
-              - features/fixtures/maze_runner/build/WebGL-release-2022.zip
+              - "features/fixtures/maze_runner/build/WebGL-release-2022.zip"
             upload:
-              - maze_output/**/*
+              - "maze_output/failed/*"
+              - "maze_output/maze_output.zip"
           test-collector#v1.10.2:
             files: "reports/TEST-*.xml"
             format: "junit"
             branch: "^master|next$$"
         # TODO: WebGL persistence tests are currently skipped pending PLAT-8151
         commands:
-          - scripts/ci-run-webgl-tests.sh release
+          - "scripts/ci-run-webgl-tests.sh release"
 
-      - label: Run Windows e2e tests for Unity 2022
+      - label: "Run Windows e2e tests for Unity 2022"
         timeout_in_minutes: 30
         depends_on: "windows-2022-fixture"
         agents:
-          queue: windows-general-isolated
+          queue: "windows-general-isolated"
         env:
           UNITY_VERSION: *2022
         plugins:
           artifacts#v1.9.0:
             download:
-              - features/fixtures/maze_runner/build/Windows-release-2022.zip
+              - "features/fixtures/maze_runner/build/Windows-release-2022.zip"
             upload:
-              - maze_output/**/*
-              - maze_output/metrics.csv
+              - "maze_output/failed/*"
+              - "maze_output/maze_output.zip"
+              - "maze_output/metrics.csv"
         commands:
-          - scripts/ci-run-windows-tests-wsl.sh release
+          - "scripts/ci-run-windows-tests-wsl.sh release"

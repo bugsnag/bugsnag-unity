@@ -5,6 +5,6 @@ steps:
   #
   - label: "Conditionally trigger basic pipeline"
     agents:
-      queue: macos
+      queue: "macos"
     timeout_in_minutes: 2
-    command: sh -c .buildkite/pipeline_trigger_basic.sh
+    command: "sh -c .buildkite/pipeline_trigger_basic.sh"
