@@ -32,7 +32,7 @@ namespace BugsnagUnity.Editor
 
         public void UploadAndroidSymbols(string buildOutputPath, string apiKey, string versionName, int versionCode, string uploadEndpoint, string bundleId)
         {
-            string args = $"upload unity-android --api-key={apiKey} --verbose --project-root={Application.dataPath} {buildOutputPath}";
+            string args = $"upload unity-android --api-key={apiKey} --verbose --project-root=\"{Application.dataPath}\" \"{buildOutputPath}\"";
 
             if (!string.IsNullOrEmpty(versionName))
             {
@@ -196,7 +196,7 @@ namespace BugsnagUnity.Editor
 
         public string GetIosDsymUploadCommand(string apiKey, string uploadEndpoint)
         {
-            var command = $"{_cliExecutablePath} upload unity-ios --api-key={apiKey} --dsym-path=$DWARF_DSYM_FOLDER_PATH --project-root={Application.dataPath} {Application.dataPath.Replace("/Assets", string.Empty)}";
+            var command = $"{_cliExecutablePath} upload unity-ios --api-key={apiKey} --dsym-path=\"$DWARF_DSYM_FOLDER_PATH\" --project-root=\"{Application.dataPath}\" \"{Application.dataPath.Replace("/Assets", string.Empty)}\"";
 #if !UNITY_2021_1_OR_NEWER
             command += " --no-upload-il2cpp-mapping";
 #endif
