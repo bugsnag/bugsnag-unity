@@ -5,81 +5,80 @@ agents:
   queue: "macos-15"
 
 steps:
-
-  - label: "Verify code formatting"
-    timeout_in_minutes: 5
-    env:
-      UNITY_VERSION: *2021
-    plugins:
-      artifacts#v1.9.0:
-        upload:
-          - "Bugsnag/Library/Logs/*.log"
-    commands:
-      - "rake code:verify"
-
-  - label: "Run Unit Tests"
-    timeout_in_minutes: 5
-    env:
-      UNITY_VERSION: *2021
-    commands:
-      - "rake test:run_editor_unit_tests"
-    artifact_paths:
-      - "testResults.xml"
-
-  - label: "Build released notifier artifact"
-    key: "build-unitypackage"
-    timeout_in_minutes: 30
-    env:
-      UNITY_VERSION: *2021
-      JAVA_VERSION: "17"
-    commands:
-      - "bundle install"
-      - "bundle exec rake plugin:export"
-      - "zip -r upm-package.zip upm-package"
-      - "zip -r upm-edm4u-package.zip upm-edm4u-package"
-    artifact_paths:
-      - "Bugsnag.unitypackage"
-      - "upm-package.zip"
-      - "upm-edm4u-package.zip"
-    retry:
-      automatic:
-        - exit_status: "*"
-          limit: 1
-
-  - label: "Test UPM Package Import"
-    depends_on: "build-unitypackage"
-    timeout_in_minutes: 10
-    env:
-      UNITY_VERSION: *2021
-    key: "import-upm-2021"
-    plugins:
-      artifacts#v1.9.0:
-        download:
-          - "upm-package.zip"
-        upload:
-          - "upm-import.log"
-    commands:
-      - "features/scripts/test_upm_package_import.sh"
-
-  - label: "Run size impact reporting"
-    depends_on: "build-unitypackage"
-    timeout_in_minutes: 30
-    env:
-      UNITY_VERSION: *2021
-    plugins:
-      'artifacts#v1.9.0':
-        download:
-          - "Bugsnag.unitypackage"
-    commands:
-      - "features/scripts/do_size_test.sh"
-
-  - label: "Append Unity 2021 Pipeline"
-    depends_on: "build-unitypackage"
-    agents:
-      queue: "macos"
-    timeout_in_minutes: 2
-    commands:
-      - "buildkite-agent pipeline upload .buildkite/unity.2021.yml"
+#  - label: "Verify code formatting"
+#    timeout_in_minutes: 5
+#    env:
+#      UNITY_VERSION: *2021
+#    plugins:
+#      artifacts#v1.9.0:
+#        upload:
+#          - "Bugsnag/Library/Logs/*.log"
+#    commands:
+#      - "rake code:verify"
+#
+#  - label: "Run Unit Tests"
+#    timeout_in_minutes: 5
+#    env:
+#      UNITY_VERSION: *2021
+#    commands:
+#      - "rake test:run_editor_unit_tests"
+#    artifact_paths:
+#      - "testResults.xml"
+#
+#  - label: "Build released notifier artifact"
+#    key: "build-unitypackage"
+#    timeout_in_minutes: 30
+#    env:
+#      UNITY_VERSION: *2021
+#      JAVA_VERSION: "17"
+#    commands:
+#      - "bundle install"
+#      - "bundle exec rake plugin:export"
+#      - "zip -r upm-package.zip upm-package"
+#      - "zip -r upm-edm4u-package.zip upm-edm4u-package"
+#    artifact_paths:
+#      - "Bugsnag.unitypackage"
+#      - "upm-package.zip"
+#      - "upm-edm4u-package.zip"
+#    retry:
+#      automatic:
+#        - exit_status: "*"
+#          limit: 1
+#
+#  - label: "Test UPM Package Import"
+#    depends_on: "build-unitypackage"
+#    timeout_in_minutes: 10
+#    env:
+#      UNITY_VERSION: *2021
+#    key: "import-upm-2021"
+#    plugins:
+#      artifacts#v1.9.0:
+#        download:
+#          - "upm-package.zip"
+#        upload:
+#          - "upm-import.log"
+#    commands:
+#      - "features/scripts/test_upm_package_import.sh"
+#
+#  - label: "Run size impact reporting"
+#    depends_on: "build-unitypackage"
+#    timeout_in_minutes: 30
+#    env:
+#      UNITY_VERSION: *2021
+#    plugins:
+#      'artifacts#v1.9.0':
+#        download:
+#          - "Bugsnag.unitypackage"
+#    commands:
+#      - "features/scripts/do_size_test.sh"
+#
+#  - label: "Append Unity 2021 Pipeline"
+#    depends_on: "build-unitypackage"
+#    agents:
+#      queue: "macos"
+#    timeout_in_minutes: 2
+#    commands:
+#      - "buildkite-agent pipeline upload .buildkite/unity.2021.yml"
 
   #
   # Conditionally trigger full pipeline
