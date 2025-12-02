@@ -12,17 +12,22 @@ fi
 
 BUILD_TYPE=$1
 
+if [ "$BUILD_TYPE" == "release" ]; then
+  FIXTURE_NAME=Mazerunner
+  BUILD_FOLDER=WebGL-release-${UNITY_VERSION:0:4}
+else
+  FIXTURE_NAME=Mazerunner_dev
+  BUILD_FOLDER=WebGL-dev-${UNITY_VERSION:0:4}
+fi
+
+# Ensure the WebGL output directory exists and is writable
+mkdir -p "features/fixtures/maze_runner/build/WebGL/${FIXTURE_NAME}"
+chmod -R u+rwX "features/fixtures/maze_runner/build/WebGL"
+
 # Build the WebGL fixture
 ./features/scripts/build_maze_runner.sh $BUILD_TYPE webgl
 
 pushd features/fixtures/maze_runner/build
-  if [ "$BUILD_TYPE" == "release" ]; then
-    FIXTURE_NAME=Mazerunner
-    BUILD_FOLDER=WebGL-release-${UNITY_VERSION:0:4}
-  else
-    FIXTURE_NAME=Mazerunner_dev
-    BUILD_FOLDER=WebGL-dev-${UNITY_VERSION:0:4}
-  fi
   zip -r "${BUILD_FOLDER}.zip" WebGL
   # Check if index.html exists in the build folder
   if [ ! -f "WebGL/${FIXTURE_NAME}/index.html" ]; then
