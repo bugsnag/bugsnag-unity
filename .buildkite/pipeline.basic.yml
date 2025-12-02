@@ -25,25 +25,25 @@ steps:
 #    artifact_paths:
 #      - "testResults.xml"
 #
-#  - label: "Build released notifier artifact"
-#    key: "build-unitypackage"
-#    timeout_in_minutes: 30
-#    env:
-#      UNITY_VERSION: *2021
-#      JAVA_VERSION: "17"
-#    commands:
-#      - "bundle install"
-#      - "bundle exec rake plugin:export"
-#      - "zip -r upm-package.zip upm-package"
-#      - "zip -r upm-edm4u-package.zip upm-edm4u-package"
-#    artifact_paths:
-#      - "Bugsnag.unitypackage"
-#      - "upm-package.zip"
-#      - "upm-edm4u-package.zip"
-#    retry:
-#      automatic:
-#        - exit_status: "*"
-#          limit: 1
+  - label: "Build released notifier artifact"
+    key: "build-unitypackage"
+    timeout_in_minutes: 30
+    env:
+      UNITY_VERSION: *2021
+      JAVA_VERSION: "17"
+    commands:
+      - "bundle install"
+      - "bundle exec rake plugin:export"
+      - "zip -r upm-package.zip upm-package"
+      - "zip -r upm-edm4u-package.zip upm-edm4u-package"
+    artifact_paths:
+      - "Bugsnag.unitypackage"
+      - "upm-package.zip"
+      - "upm-edm4u-package.zip"
+    retry:
+      automatic:
+        - exit_status: "*"
+          limit: 1
 #
 #  - label: "Test UPM Package Import"
 #    depends_on: "build-unitypackage"
