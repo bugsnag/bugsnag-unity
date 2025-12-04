@@ -10,7 +10,7 @@ steps:
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
         agents:
-          queue: "macos-15-1"
+          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.4.0"
@@ -32,7 +32,7 @@ steps:
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
         agents:
-          queue: "macos-15-2"
+          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.4.0"
@@ -54,7 +54,7 @@ steps:
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
         agents:
-          queue: "macos-15-3"
+          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.4.0"
@@ -76,7 +76,7 @@ steps:
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
         agents:
-          queue: "macos-15-4"
+          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.4.0"
