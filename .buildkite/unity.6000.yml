@@ -2,7 +2,7 @@ aliases:
   - &6000 "6000.2.10f1"
 
 agents:
-  queue: "macos-15"
+  queue: "macos-15-isolated"
 
 steps:
   - group: ":hammer: Build Unity 6000 test fixtures"
