@@ -10,6 +10,8 @@ if [[ $# != 1 ]]; then
   exit 2
 fi
 
+rm -rf ./Library/Bee ./Library/Artifacts ./Library/Il2cppBuildCache ./Library/ScriptAssemblies
+
 BUILD_TYPE=$1
 
 if [ "$BUILD_TYPE" == "release" ]; then
@@ -21,8 +23,8 @@ else
 fi
 
 # Ensure the WebGL output directory exists and is writable
-mkdir -p "features/fixtures/maze_runner/build/WebGL/${FIXTURE_NAME}"
-chmod -R u+rwX "features/fixtures/maze_runner/build/WebGL"
+#mkdir -p "features/fixtures/maze_runner/build/WebGL/${FIXTURE_NAME}"
+#chmod -R u+rwX "features/fixtures/maze_runner/build/WebGL"
 
 # Build the WebGL fixture
 ./features/scripts/build_maze_runner.sh $BUILD_TYPE webgl
