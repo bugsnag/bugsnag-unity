@@ -9,8 +9,6 @@ steps:
     steps:
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
-        agents:
-          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.4.0"
@@ -31,8 +29,6 @@ steps:
 
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
-        agents:
-          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.4.0"
@@ -53,8 +49,6 @@ steps:
 
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
-        agents:
-          queue: "macos-15-isolated"
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.4.0"
@@ -75,8 +69,86 @@ steps:
 
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
-        agents:
-          queue: "macos-15-isolated"
+        env:
+          UNITY_VERSION: *6000
+          XCODE_VERSION: "16.4.0"
+          JAVA_VERSION: "17"
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - "Bugsnag.unitypackage"
+        commands:
+          - "scripts/ci-build-webgl-fixture.sh release"
+        artifact_paths:
+          - "unity.log"
+          - "features/fixtures/maze_runner/build/WebGL-release-6000.zip"
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: "Build Unity 6000 WebGL test fixture"
+        timeout_in_minutes: 10
+        env:
+          UNITY_VERSION: *6000
+          XCODE_VERSION: "16.4.0"
+          JAVA_VERSION: "17"
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - "Bugsnag.unitypackage"
+        commands:
+          - "scripts/ci-build-webgl-fixture.sh release"
+        artifact_paths:
+          - "unity.log"
+          - "features/fixtures/maze_runner/build/WebGL-release-6000.zip"
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: "Build Unity 6000 WebGL test fixture"
+        timeout_in_minutes: 10
+        env:
+          UNITY_VERSION: *6000
+          XCODE_VERSION: "16.4.0"
+          JAVA_VERSION: "17"
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - "Bugsnag.unitypackage"
+        commands:
+          - "scripts/ci-build-webgl-fixture.sh release"
+        artifact_paths:
+          - "unity.log"
+          - "features/fixtures/maze_runner/build/WebGL-release-6000.zip"
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: "Build Unity 6000 WebGL test fixture"
+        timeout_in_minutes: 10
+        env:
+          UNITY_VERSION: *6000
+          XCODE_VERSION: "16.4.0"
+          JAVA_VERSION: "17"
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - "Bugsnag.unitypackage"
+        commands:
+          - "scripts/ci-build-webgl-fixture.sh release"
+        artifact_paths:
+          - "unity.log"
+          - "features/fixtures/maze_runner/build/WebGL-release-6000.zip"
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: "Build Unity 6000 WebGL test fixture"
+        timeout_in_minutes: 10
         env:
           UNITY_VERSION: *6000
           XCODE_VERSION: "16.4.0"
