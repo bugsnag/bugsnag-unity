@@ -12,12 +12,12 @@ namespace BugsnagUnityTests
     [TestFixture]
     public class ConfigurationTests
     {
-        private const string DefaultNotify = "https://notify.bugsnag.com/";
-        private const string DefaultSession = "https://sessions.bugsnag.com/";
-        private const string HubNotify = "https://notify.insighthub.smartbear.com/";
-        private const string HubSession = "https://sessions.insighthub.smartbear.com/";
-        private const string CustomNotify = "https://www.customnotify.com/";
-        private const string CustomSession = "https://www.customsession.com/";
+        private const string DEFAULT_NOTIFY = "https://notify.bugsnag.com/";
+        private const string DEFAULT_SESSION = "https://sessions.bugsnag.com/";
+        private const string SECONDARY_NOTIFY = "https://notify.bugsnag.smartbear.com/";
+        private const string SECONDARY_SESSION = "https://sessions.bugsnag.smartbear.com/";
+        private const string CUSTOM_NOTIFY = "https://www.customnotify.com/";
+        private const string CUSTOM_SESSION = "https://www.customsession.com/";
         [Test]
         public void DefaultConfigurationValues()
         {
@@ -27,8 +27,8 @@ namespace BugsnagUnityTests
             Assert.IsTrue(config.AutoDetectErrors);
             Assert.IsTrue(config.AutoTrackSessions);
             Assert.AreEqual("production", config.ReleaseStage);
-            Assert.AreEqual("https://notify.bugsnag.com/", config.Endpoints.NotifyEndpoint.ToString());
-            Assert.AreEqual("https://sessions.bugsnag.com/", config.Endpoints.SessionEndpoint.ToString());
+            Assert.AreEqual(DEFAULT_NOTIFY, config.Endpoints.NotifyEndpoint.ToString());
+            Assert.AreEqual(DEFAULT_SESSION, config.Endpoints.SessionEndpoint.ToString());
             Assert.AreEqual("foo", config.ApiKey);
         }
 
@@ -87,8 +87,8 @@ namespace BugsnagUnityTests
             cfg.Configure("foo-bar");
 
             Assert.That(cfg.IsConfigured, Is.True);
-            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(DefaultNotify));
-            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(DefaultSession));
+            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(DEFAULT_NOTIFY));
+            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(DEFAULT_SESSION));
         }
 
         //-----------------------------------------------------------------
@@ -101,8 +101,8 @@ namespace BugsnagUnityTests
             cfg.Configure("00000abcdef");
 
             Assert.That(cfg.IsConfigured, Is.True);
-            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(HubNotify));
-            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(HubSession));
+            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(SECONDARY_NOTIFY));
+            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(SECONDARY_SESSION));
         }
 
         //-----------------------------------------------------------------
@@ -111,12 +111,12 @@ namespace BugsnagUnityTests
         [Test]
         public void Configure_UsesCustomEndpoints_WhenBothProvided()
         {
-            var cfg = new EndpointConfiguration(CustomNotify, CustomSession);
+            var cfg = new EndpointConfiguration(CUSTOM_NOTIFY, CUSTOM_SESSION);
             cfg.Configure("foo-bar");
 
             Assert.That(cfg.IsConfigured, Is.True);
-            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(CustomNotify));
-            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(CustomSession));
+            Assert.That(cfg.NotifyEndpoint.ToString(), Is.EqualTo(CUSTOM_NOTIFY));
+            Assert.That(cfg.SessionEndpoint.ToString(), Is.EqualTo(CUSTOM_SESSION));
         }
 
         //-----------------------------------------------------------------
@@ -125,7 +125,7 @@ namespace BugsnagUnityTests
         [Test]
         public void Configure_Fails_WhenOnlyNotifyCustomised()
         {
-            var cfg = new EndpointConfiguration(CustomNotify, string.Empty);
+            var cfg = new EndpointConfiguration(CUSTOM_NOTIFY, string.Empty);
             cfg.Configure("foo-bar");
 
             Assert.That(cfg.IsConfigured, Is.False, "Partial customisation should leave config in an unconfigured state");
@@ -139,7 +139,7 @@ namespace BugsnagUnityTests
         [Test]
         public void Configure_Fails_WhenOnlySessionCustomised()
         {
-            var cfg = new EndpointConfiguration(string.Empty, CustomSession);
+            var cfg = new EndpointConfiguration(string.Empty, CUSTOM_SESSION);
             cfg.Configure("foo-bar");
 
             Assert.That(cfg.IsConfigured, Is.False);

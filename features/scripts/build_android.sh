@@ -45,4 +45,4 @@ $UNITY_PATH/Unity $DEFAULT_CLI_ARGS -projectPath $project_path -executeMethod $B
 RESULT=$?
 if [ $RESULT -ne 0 ]; then exit $RESULT; fi
 
-mv $project_path/$OUTPUT_APK $project_path/$RENAMED_APK
+mv "$project_path/$OUTPUT_APK" "$project_path/$RENAMED_APK"

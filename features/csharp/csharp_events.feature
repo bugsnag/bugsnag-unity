@@ -139,13 +139,12 @@ Feature: csharp events
     And expected device metadata is included in the event
     And expected app metadata is included in the event
 
-  @skip_unity_2018
   Scenario: Reporting an inner exception
     When I run the game in the "InnerException" state
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
-    And the event "exceptions.0.message" equals "Outer"
-    And the event "exceptions.1.message" equals "Inner"
+    And the event "exceptions.0.message" equals "InnerException Outer"
+    And the event "exceptions.1.message" equals "InnerException Inner"
     And the event "exceptions.2" is null
 
   Scenario: Reporting an uncaught exception in an async method

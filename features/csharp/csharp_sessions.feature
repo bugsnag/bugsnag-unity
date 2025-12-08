@@ -104,10 +104,10 @@ Feature: Session Tracking
     And I wait to receive 3 errors
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
     And the current error request events match one of:
-      | message           | handled | unhandled |
-      | Handled Error 1   | 1       | 0         |
-      | Handled Error 2   | 2       | 0         |
-      | Unhandled Error 1 | 2       | 1         |
+      | message                               | handled | unhandled |
+      | MultipleEventCounts Handled Error 1   | 1       | 0         |
+      | MultipleEventCounts Handled Error 2   | 2       | 0         |
+      | MultipleEventCounts Unhandled Error 1 | 2       | 1         |
 
   Scenario: No Auto session when not in enabled release stage
     When I run the game in the "SessionNotInReleaseStage" state
@@ -130,15 +130,15 @@ Feature: Session Tracking
     And I sort the errors by the payload field "events.0.exceptions.0.message"
     Then the session is valid for the session reporting API version "1.0" for the "Unity Bugsnag Notifier" notifier
     And the error is valid for the error reporting API sent by the Unity notifier
-    And the exception "message" equals "Error 1"
+    And the exception "message" equals "ResumedSession 1"
     And the error payload field "session.id" is stored as the value "session_id"
     And the error payload field "session.startedAt" is stored as the value "session_startedAt"
     And the error payload field "events.0.session.events.handled" equals 1
     And I discard the oldest error
-    And the exception "message" equals "Error 2"
+    And the exception "message" equals "ResumedSession 2"
     And the event "session" is null
     And I discard the oldest error
-    And the exception "message" equals "Error 3"
+    And the exception "message" equals "ResumedSession 3"
     And the error is valid for the error reporting API sent by the Unity notifier
     And the error payload field "session.id" equals the stored value "session_id"
     And the error payload field "session.startedAt" equals the stored value "session_startedAt"

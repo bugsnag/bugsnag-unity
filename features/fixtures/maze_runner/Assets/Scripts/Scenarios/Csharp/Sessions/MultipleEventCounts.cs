@@ -14,8 +14,8 @@ public class MultipleEventCounts : Scenario
     public override void Run()
     {
         Bugsnag.StartSession();
-        Bugsnag.Notify(new System.Exception("Handled Error 1"));
-        Bugsnag.Notify(new System.Exception("Handled Error 2"));
-        throw new System.Exception("Unhandled Error 1");
+        Bugsnag.Notify(new System.Exception("MultipleEventCounts Handled Error 1"));
+        Bugsnag.Notify(new System.Exception("MultipleEventCounts Handled Error 2"));
+        throw new System.Exception("MultipleEventCounts Unhandled Error 1");
     }
 }

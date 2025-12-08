@@ -6,7 +6,7 @@ Feature: iOS Native Errors
   Scenario: Disable Crashes
     When I run the game in the "IosDisableCrashes" state
     And I wait for 2 seconds
-    And On Mobile I relaunch the app
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     And I should receive no errors
 
@@ -14,19 +14,18 @@ Feature: iOS Native Errors
     When I run the game in the "IosNativeException" state
     And I wait for 2 seconds
     And I clear any error dialogue
-    And On Mobile I relaunch the app
+    And I start the Unity app
     And I run the game in the "IosLastRunInfo" state
     And I wait for 3 seconds
     And I wait to receive 2 errors
     And I discard the oldest error
     And the exception "message" equals "Last Run Info Correct"
 
-  @skip_unity_2018
   Scenario: iOS native exception Smoke Test
     When I run the game in the "IosNativeException" state
     And I wait for 2 seconds
     And I clear any error dialogue
-    And On Mobile I relaunch the app
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
     And expected device metadata is included in the event
@@ -60,12 +59,11 @@ Feature: iOS Native Errors
     And the error payload field "events.0.usage.config" is not null
     And the error payload field "events.0.usage.callbacks.onSession" equals 1
 
-  @skip_unity_2018
   Scenario: iOS signal Smoke Test
     When I run the game in the "IosSignal" state
     And I wait for 2 seconds
     And I clear any error dialogue
-    And On Mobile I relaunch the app
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
     And I wait to receive an error
     And expected device metadata is included in the event

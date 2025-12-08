@@ -20,7 +20,7 @@ public class MaxPersistEvents : Scenario
     {
         for (int i = 0; i < 4; i++)
         {
-            Bugsnag.Notify(new Exception("Error " + i));
+            Bugsnag.Notify(new Exception("MaxPersistEvents " + i));
             yield return new WaitForSeconds(2f);
         }
     }

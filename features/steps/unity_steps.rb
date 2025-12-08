@@ -1,23 +1,11 @@
 require 'cgi'
 
-When('On Mobile I relaunch the app') do
-  next unless Maze.config.device
-  manager = Maze::Api::Appium::AppManager.new
-  manager.launch
-  sleep 3
-end
-
 def execute_command(action, scenario_name = '')
   command = {
     action: action,
     scenarioName: scenario_name
   }
   Maze::Server.commands.add command
-
-  # Ensure fixture has read the command
-  count = 300
-  sleep 0.1 until Maze::Server.commands.remaining.empty? || (count -= 1) < 1
-  raise 'Test fixture did not GET /command' unless Maze::Server.commands.remaining.empty?
 end
 
 Then('the sourcemaps Content-Type header is valid multipart form-data') do
@@ -47,80 +35,41 @@ end
 
 When('I clear the Bugsnag cache') do
   case Maze::Helper.get_current_platform
-  when 'macos', 'webgl'
-    # Call executable directly rather than use open, which flakes on CI
-    log = File.join(Dir.pwd, 'mazerunner.log')
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
-    Maze::Runner.run_command(command, blocking: false)
-    execute_command('clear_cache')
-
-  when 'windows'
-    win_log = File.join(Dir.pwd, 'mazerunner.log')
-    command = "#{Maze.config.app} --args -logfile #{win_log}"
-    Maze::Runner.run_command(command, blocking: false)
-    execute_command('clear_cache')
-
-  when 'android', 'ios'
+  when 'macos', 'windows', 'android', 'ios', 'switch'
     execute_command('clear_cache')
   when 'browser'
-    url = "http://localhost:#{Maze.config.document_server_port}/index.html"
+    url = "http://localhost:#{Maze.config.port}/docs/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
     execute_command('clear_cache')
-
-  when 'switch'
-    switch_run_on_target
-    execute_command('clear_cache')
-
   else
     raise "Platform #{platform} has not been considered"
   end
-
-  sleep 2
-
 end
 
 When('I wait for requests to persist') do
   sleep 1
 end
 
-When('I close the Unity app') do
-  execute_command('close_application')
+When('I stop the Unity app') do
+  stop_app
+end
+
+When('I start the Unity app') do
+  start_app
 end
 
 When('I run the game in the {string} state') do |state|
   platform = Maze::Helper.get_current_platform
   case platform
-  when 'macos'
-    # Call executable directly rather than use open, which flakes on CI
-    log = File.join(Dir.pwd, "#{state}-mazerunner.log")
-    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args -logfile #{log} > /dev/null"
-    Maze::Runner.run_command(command, blocking: false)
-
+  when 'macos','android', 'ios', 'switch', 'windows'
     execute_command('run_scenario', state)
-
-  when 'windows'
-    win_log = File.join(Dir.pwd, "#{state}-mazerunner.log")
-    command = "#{Maze.config.app} --args -logfile #{win_log}"
-    Maze::Runner.run_command(command, blocking: false)
-
-    execute_command('run_scenario', state)
-
-  when 'android', 'ios'
-    execute_command('run_scenario', state)
-
   when 'browser'
     # WebGL in a browser
-    url = "http://localhost:#{Maze.config.document_server_port}/index.html"
+    url = "http://localhost:#{Maze.config.port}/docs/index.html"
     $logger.debug "Navigating to URL: #{url}"
     step("I navigate to the URL \"#{url}\"")
     execute_command('run_scenario', state)
-
-  when 'switch'
-
-    switch_run_on_target
-    execute_command('run_scenario', state)
-
   else
     raise "Platform #{platform} has not been considered"
   end
@@ -153,17 +102,7 @@ Then('the error is valid for the error reporting API sent by the native Unity no
 end
 
 Then('the error is valid for the error reporting API sent by the Unity notifier') do
-
-  os = if Maze.config.farm == :bs
-    # Mobile - could be ios or android
-    Maze.config.capabilities['os']
-  else
-    # Could be windows or macos
-    Maze.config.os
-  end
-
   notifier_name = 'Unity Bugsnag Notifier'
-
   check_error_reporting_api notifier_name
 end
 
@@ -364,6 +303,19 @@ Then("expected app metadata is included in the event") do
   }
 end
 
+When("I wait for the macOS Unity app to stop") do
+  # The macOS app can vary wildly in how long it takes to stop, so use pgrep to detect when it has fully exited
+  # Also wait for a second before polling as pgrep may return false positives if checked too quickly
+  sleep 1
+  wait = Maze::Wait.new(timeout: 30, interval: 1)
+  stopped = wait.until do
+    `pgrep Mazerunner`
+    running = $?.exitstatus
+    running == 1
+  end
+  Maze.check.true(stopped, "The app did not stop within the timeout period")
+end
+
 When("I clear any error dialogue") do
   click_if_present 'android:id/button1'
   click_if_present 'android:id/aerr_close'
@@ -408,4 +360,48 @@ end
 Then("the exception {string} equals one of:") do |keypath, possible_values|
   value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
   Maze.check.include(possible_values.raw.flatten, value)
+end
+
+def start_app
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'macos'
+    # Open the fixture - call executable directly rather than use open, which flakes on CI
+    command = "#{Maze.config.app}/Contents/MacOS/Mazerunner --args > /dev/null"
+    Maze::Runner.run_command(command, blocking: false)
+  when 'windows'
+    command = "#{Maze.config.app}"
+    Maze::Runner.run_command(command, blocking: false)
+  when 'android', 'ios'
+    manager = Maze::Api::Appium::AppManager.new
+    manager.activate
+  when 'switch'
+    switch_run_on_target
+  when 'browser'
+    # WebGL - do nothing
+  else
+    raise "Platform #{platform} has not been considered"
+  end
+end
+
+def stop_app
+  platform = Maze::Helper.get_current_platform
+  case platform
+  when 'macos'
+    `killall Mazerunner`
+  when 'windows'
+    # This assumes Maze Runner is being run under WSL
+    process_name = File.basename(Maze.config.app)
+    `/mnt/c/Windows/system32/taskkill.exe /F /IM #{process_name}`
+  when 'android', 'ios'
+    manager = Maze::Api::Appium::AppManager.new
+    manager.terminate
+  when 'switch'
+    # Terminate the app
+    Maze::Runner.run_command('ControlTarget.exe terminate')
+  when 'browser'
+    # WebGL - do nothing
+  else
+    raise "Platform #{platform} has not been considered"
+  end
 end

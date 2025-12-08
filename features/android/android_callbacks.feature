@@ -8,7 +8,7 @@ Feature: Callbacks
     When I run the game in the "AndroidBackgroundJVMSmokeTest" state
     And I wait for 2 seconds
     And I clear any error dialogue
-    And On Mobile I relaunch the app
+    And I start the Unity app
     And I run the game in the "AndroidOnSendCallback" state
     And I wait to receive an error
 

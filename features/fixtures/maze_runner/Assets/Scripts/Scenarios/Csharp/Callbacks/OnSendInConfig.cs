@@ -11,7 +11,7 @@ public class OnSendInConfig : Scenario
 
     public override void Run()
     {
-        Bugsnag.Notify(new Exception("Error 1"));
-        throw new Exception("Error 2");
+        Bugsnag.Notify(new Exception("OnSendInConfig 1"));
+        throw new Exception("OnSendInConfig 2");
     }
 }

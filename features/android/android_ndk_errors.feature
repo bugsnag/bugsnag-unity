@@ -9,7 +9,7 @@ Feature: Android NDK crash
     When I run the game in the "AndroidNDKSignal" state
     And I wait for 3 seconds
     And I clear any error dialogue
-    And On Mobile I relaunch the app
+    And I start the Unity app
     And I run the game in the "StartSDKDefault" state
         # Intentionally adding long wait times here - a core component of this
         # feature is ensuring that only a SINGLE event is sent. Unity includes

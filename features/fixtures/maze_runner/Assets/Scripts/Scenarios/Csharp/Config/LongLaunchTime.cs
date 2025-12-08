@@ -16,11 +16,11 @@ public class LongLaunchTime : Scenario
 
     private void DoNotify1()
     {
-        Bugsnag.Notify(new System.Exception("Error 1"));
+        Bugsnag.Notify(new System.Exception("LongLaunchTime 1"));
     }
 
     private void DoNotify2()
     {
-        Bugsnag.Notify(new System.Exception("Error 2"));
+        Bugsnag.Notify(new System.Exception("LongLaunchTime 2"));
     }
 }
