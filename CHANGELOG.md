@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 8.8.2 (2025-12-08)
 
 ### Bug Fixes
 
@@ -9,7 +9,6 @@
 ### Changes
 
 - Amend secondary instance URL to bugsnag.smartbear.com [#951](https://github.com/bugsnag/bugsnag-unity/pull/951)
-
 
 ## 8.8.1 (2025-09-23)
 
