@@ -8,7 +8,7 @@ Feature: Feature Flags
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "FeatureFlagsInConfig"
-    And the event "featureFlags.0.featureFlag" equals "testName2"
+    And the event "featureFlags.0.name" equals "testName2"
     And the event "featureFlags.0.variant" equals "testVariant2"
     And the event "featureFlags.1" is null
 
@@ -24,7 +24,7 @@ Feature: Feature Flags
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "FeatureFlagsAfterInit"
-    And the event "featureFlags.0.featureFlag" equals "testName2"
+    And the event "featureFlags.0.name" equals "testName2"
     And the event "featureFlags.0.variant" equals "testVariant2"
     And the event "featureFlags.1" is null
 
@@ -40,9 +40,9 @@ Feature: Feature Flags
     And I wait to receive an error
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "FeatureFlagsInCallback"
-    And the event "featureFlags.1.featureFlag" equals "testName3"
+    And the event "featureFlags.1.name" equals "testName3"
     And the event "featureFlags.1.variant" equals "testVariant3"
-    And the event "featureFlags.0.featureFlag" equals "testName2"
+    And the event "featureFlags.0.name" equals "testName2"
     And the event "featureFlags.0.variant" equals "testVariant2"
     And the event "featureFlags.2" is null
 

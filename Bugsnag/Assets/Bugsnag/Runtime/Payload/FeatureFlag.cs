@@ -24,8 +24,17 @@ namespace BugsnagUnity.Payload
 
         public string Name
         {
-            get => (string)Get("featureFlag");
-            set => Add("featureFlag", value);
+            get
+            {
+                // Try new key first, then fall back to deprecated key for backward compatibility
+                var name = (string)Get("name");
+                if (name == null)
+                {
+                    name = (string)Get("featureFlag");
+                }
+                return name;
+            }
+            set => Add("name", value);
         }
 
         public string Variant

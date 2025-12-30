@@ -82,7 +82,7 @@ Feature: MacOS native crashes
     And the event "breadcrumbs.0.metaData.test" equals "test"
 
     # Feature flags
-    And the event "featureFlags.2.featureFlag" equals "fromCallback"
+    And the event "featureFlags.2.name" equals "fromCallback"
     And the event "featureFlags.2.variant" equals "a"
 
     # Metadata

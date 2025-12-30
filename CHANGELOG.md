@@ -10,6 +10,10 @@
 
 - Amend secondary instance URL to bugsnag.smartbear.com [#951](https://github.com/bugsnag/bugsnag-unity/pull/951)
 
+### Deprecations
+
+- The `FeatureFlag` JSON payload now uses `name` instead of the incorrect `featureFlag` key. The getter maintains backward compatibility by falling back to `featureFlag` when reading old data.
+
 
 ## 8.8.1 (2025-09-23)
 

@@ -63,9 +63,9 @@ Feature: Callbacks
     And the event "breadcrumbs.0.metaData.Custom" equals "Metadata"
 
     # Feature flags
-    And the event "featureFlags.0.featureFlag" equals "flag1"
+    And the event "featureFlags.0.name" equals "flag1"
     And the event "featureFlags.0.variant" equals "variant1"
-    And the event "featureFlags.2.featureFlag" equals "test"
+    And the event "featureFlags.2.name" equals "test"
     And the event "featureFlags.2.variant" equals "variant"
     And the event "featureFlags.3" is null
 
