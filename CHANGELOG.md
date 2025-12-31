@@ -4,16 +4,18 @@
 
 ### Bug Fixes
 
+- The `FeatureFlag` JSON payload now uses `name` instead of the incorrect `featureFlag` key. The getter maintains backward compatibility by falling back to `featureFlag` when reading old data. [#958](https://github.com/bugsnag/bugsnag-unity/pull/958)
+
+
+## 8.8.2 (2025-12-08)
+
+### Bug Fixes
+
 - Ensure that file paths passed to the Bugsnag CLI are wrapped in quotes [#950](https://github.com/bugsnag/bugsnag-unity/pull/950)
 
 ### Changes
 
 - Amend secondary instance URL to bugsnag.smartbear.com [#951](https://github.com/bugsnag/bugsnag-unity/pull/951)
-
-### Deprecations
-
-- The `FeatureFlag` JSON payload now uses `name` instead of the incorrect `featureFlag` key. The getter maintains backward compatibility by falling back to `featureFlag` when reading old data.
-
 
 ## 8.8.1 (2025-09-23)
 
