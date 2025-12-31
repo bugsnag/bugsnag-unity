@@ -186,9 +186,9 @@ end
 
 Then("feature flags are included in the event") do
   steps %Q{
-    And the event "featureFlags.0.featureFlag" equals "flag1"
+    And the event "featureFlags.0.name" equals "flag1"
     And the event "featureFlags.0.variant" equals "variant1"
-    And the event "featureFlags.1.featureFlag" equals "flag3"
+    And the event "featureFlags.1.name" equals "flag3"
     And the event "featureFlags.1.variant" equals "variant3"
     And the event "featureFlags.2" is null
   }
@@ -232,7 +232,7 @@ Then("all possible parameters have been edited in a callback") do
     And the event "breadcrumbs.0.metaData.test" equals "test"
 
   # Feature flags
-    And the event "featureFlags.0.featureFlag" equals "fromCallback"
+    And the event "featureFlags.0.name" equals "fromCallback"
     And the event "featureFlags.0.variant" equals "a"
 
     # Metadata
