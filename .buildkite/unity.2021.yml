@@ -10,6 +10,8 @@ steps:
       - label: ":android: Build Android test fixture for Unity 2021"
         timeout_in_minutes: 20
         key: "build-android-fixture-2021"
+        agents:
+          queue: "macos-15-1"
         env:
           UNITY_VERSION: *2021
           JAVA_VERSION: "17"
