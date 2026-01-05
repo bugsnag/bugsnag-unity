@@ -10,6 +10,8 @@ steps:
       - label: ":android: Build Android DEV test fixture for Unity 2021"
         timeout_in_minutes: 20
         key: "build-android-dev-fixture-2021"
+        agents:
+          queue: "macos-15-1"
         env:
           UNITY_VERSION: *2021
           JAVA_VERSION: "17"
@@ -31,6 +33,8 @@ steps:
       - label: ":android: Build Android edm4u test fixture for Unity 2021"
         timeout_in_minutes: 20
         key: "build-android-edm4u-fixture-2021"
+        agents:
+          queue: "macos-15-1"
         env:
           UNITY_VERSION: *2021
           JAVA_VERSION: "17"
