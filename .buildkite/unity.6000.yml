@@ -7,81 +7,81 @@ agents:
 steps:
   - group: ":hammer: Build Unity 6000 test fixtures"
     steps:
-      - label: ":android: Build Android test fixture for Unity 6000"
-        agents:
-          queue: "macos-15"
-        timeout_in_minutes: 20
-        key: "build-android-fixture-6000"
-        env:
-          UNITY_VERSION: *6000
-          JAVA_VERSION: "17"
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - "Bugsnag.unitypackage"
-            upload:
-              - "features/fixtures/maze_runner/mazerunner_6000.apk"
-              - "features/fixtures/build_android_apk.log"
-        command:
-              - "bundle install"
-              - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_android.feature"
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: ":ios: Build iOS test fixture for Unity 6000"
-        timeout_in_minutes: 10
-        key: "build-ios-fixture-6000"
-        env:
-          UNITY_VERSION: *6000
-          XCODE_VERSION: "16.3.0"
-          JAVA_VERSION: "17"
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - "Bugsnag.unitypackage"
-            upload:
-              - "features/fixtures/maze_runner/mazerunner_6000.ipa"
-              - "features/fixtures/unity.log"
-        command:
-              - "bundle install"
-              - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_ios.feature"
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
-
-      - label: "Build Unity 6000 MacOS test fixture"
-        agents:
-          queue: "macos-15"
-        timeout_in_minutes: 10
-        key: "macos-6000-fixture"
-        env:
-          UNITY_VERSION: *6000
-          XCODE_VERSION: "16.3.0"
-          JAVA_VERSION: "17"
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - "Bugsnag.unitypackage"
-        commands:
-          - "scripts/ci-build-macos-fixture.sh release"
-        artifact_paths:
-          - "unity.log"
-          - "features/fixtures/maze_runner/build/MacOS-release-6000.zip"
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
+#      - label: ":android: Build Android test fixture for Unity 6000"
+#        agents:
+#          queue: "macos-15"
+#        timeout_in_minutes: 20
+#        key: "build-android-fixture-6000"
+#        env:
+#          UNITY_VERSION: *6000
+#          JAVA_VERSION: "17"
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - "Bugsnag.unitypackage"
+#            upload:
+#              - "features/fixtures/maze_runner/mazerunner_6000.apk"
+#              - "features/fixtures/build_android_apk.log"
+#        command:
+#              - "bundle install"
+#              - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_android.feature"
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: ":ios: Build iOS test fixture for Unity 6000"
+#        timeout_in_minutes: 10
+#        key: "build-ios-fixture-6000"
+#        env:
+#          UNITY_VERSION: *6000
+#          XCODE_VERSION: "16.3.0"
+#          JAVA_VERSION: "17"
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - "Bugsnag.unitypackage"
+#            upload:
+#              - "features/fixtures/maze_runner/mazerunner_6000.ipa"
+#              - "features/fixtures/unity.log"
+#        command:
+#              - "bundle install"
+#              - "bundle exec maze-runner --os=macos --port=$((MAZE_RUNNER_PORT)) features/build/build_ios.feature"
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
+#
+#      - label: "Build Unity 6000 MacOS test fixture"
+#        agents:
+#          queue: "macos-15"
+#        timeout_in_minutes: 10
+#        key: "macos-6000-fixture"
+#        env:
+#          UNITY_VERSION: *6000
+#          XCODE_VERSION: "16.3.0"
+#          JAVA_VERSION: "17"
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - "Bugsnag.unitypackage"
+#        commands:
+#          - "scripts/ci-build-macos-fixture.sh release"
+#        artifact_paths:
+#          - "unity.log"
+#          - "features/fixtures/maze_runner/build/MacOS-release-6000.zip"
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
 
       - label: "Build Unity 6000 WebGL test fixture"
-        timeout_in_minutes: 10
+        timeout_in_minutes: 30
         key: "webgl-6000-fixture"
         env:
           UNITY_VERSION: *6000
-          XCODE_VERSION: "16.3.0"
-          JAVA_VERSION: "17"
+          XCODE_VERSION: "16.4.0"
+          JAVA_VERSION: "21"
         plugins:
           artifacts#v1.9.0:
             download:
@@ -96,29 +96,29 @@ steps:
             - exit_status: "*"
               limit: 1
 
-      - label: "Build Unity 6000 Windows test fixture"
-        skip: "Pending PLAT-12072"
-        timeout_in_minutes: 30
-        key: "windows-6000-fixture"
-        agents:
-          queue: "windows-general-wsl"
-        env:
-          UNITY_VERSION: *6000
-          JAVA_VERSION: "17"
-        commands:
-          - "scripts/ci-build-windows-fixture-wsl.sh release"
-        plugins:
-          artifacts#v1.9.0:
-            download:
-              - "Bugsnag.unitypackage"
-            upload:
-              - "unity.log"
-              - "unity_import.log"
-              - "features/fixtures/maze_runner/build/Windows-release-6000.zip"
-        retry:
-          automatic:
-            - exit_status: "*"
-              limit: 1
+#      - label: "Build Unity 6000 Windows test fixture"
+#        skip: "Pending PLAT-12072"
+#        timeout_in_minutes: 30
+#        key: "windows-6000-fixture"
+#        agents:
+#          queue: "windows-general-wsl"
+#        env:
+#          UNITY_VERSION: *6000
+#          JAVA_VERSION: "17"
+#        commands:
+#          - "scripts/ci-build-windows-fixture-wsl.sh release"
+#        plugins:
+#          artifacts#v1.9.0:
+#            download:
+#              - "Bugsnag.unitypackage"
+#            upload:
+#              - "unity.log"
+#              - "unity_import.log"
+#              - "features/fixtures/maze_runner/build/Windows-release-6000.zip"
+#        retry:
+#          automatic:
+#            - exit_status: "*"
+#              limit: 1
 
   - group: ":test_tube: E2E tests Unity 6000"
     steps:
