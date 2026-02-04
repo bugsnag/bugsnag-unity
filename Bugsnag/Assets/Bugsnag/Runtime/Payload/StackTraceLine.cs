@@ -72,31 +72,43 @@ namespace BugsnagUnity.Payload
     public class StackTraceLine : Dictionary<string, object>, IStackframe
     {
         private static Regex StackTraceLineRegex { get; } = new Regex(@"(?:\s*at\s)?(?<method>(?:\(.*\)\s)?[^()]+)(?<methodargs>\([^()]*?\))(?:\s(?:\[.*\]\s*in\s|\(at\s*\s*)(?<file>.*):(?<linenumber>\d+))?");
+        private static Regex StackTraceAndroidCSLineRegex { get; } = new Regex(@"^\s*(?:at\s)?(?<method>[a-zA-Z][^()]+)\s?(?<methodargs>\([^()]*?\))\s?\(at\s(?<file>[^:]*)?(?::(?<linenumber>\d+))\)");
         private static Regex StackTraceAndroidJavaLineRegex { get; } = new Regex(@"^\s*(?:at\s)?(?<method>[a-z][^()]+)\((?<file>[^:]*)?(?::(?<linenumber>\d+))?\)");
 
+
+        private static StackTraceLine FromMatchedLogMessage(Match match)
+        {
+            int? lineNumber = null;
+            int parsedValue;
+            if (System.Int32.TryParse(match.Groups["linenumber"].Value, out parsedValue))
+            {
+                lineNumber = parsedValue;
+            }
+            string method = string.Join("", new string[]{match.Groups["method"].Value.Trim(),
+                                                 match.Groups["methodargs"].Value});
+            return new StackTraceLine(match.Groups["file"].Value, lineNumber, method);
+        }
 
         public static StackTraceLine FromLogMessage(string message)
         {
             Match match = StackTraceLineRegex.Match(message);
             if (match.Success)
             {
-                int? lineNumber = null;
-                int parsedValue;
-                if (System.Int32.TryParse(match.Groups["linenumber"].Value, out parsedValue))
-                {
-                    lineNumber = parsedValue;
-                }
-                string method = string.Join("", new string[]{match.Groups["method"].Value.Trim(),
-                                                     match.Groups["methodargs"].Value});
-                return new StackTraceLine(match.Groups["file"].Value,
-                                          lineNumber, method);
+                return FromMatchedLogMessage(match);
             }
             return new StackTraceLine("", null, message);
         }
 
         public static StackTraceLine FromAndroidJavaMessage(string message)
         {
-            Match match = StackTraceAndroidJavaLineRegex.Match(message);
+            // Hitting AndroidJNISafe.CheckException switches the stack frame format from Android -> Standard
+            // as such we always check if the log message is a Standard match first
+            Match match = StackTraceAndroidCSLineRegex.Match(message);
+            if (!match.Success)
+            {
+                match = StackTraceAndroidJavaLineRegex.Match(message);
+            }
+
             if (match.Success)
             {
                 int? lineNumber = null;
@@ -105,9 +117,11 @@ namespace BugsnagUnity.Payload
                 {
                     lineNumber = parsedValue;
                 }
-                string method = string.Join("", new string[] { match.Groups["method"].Value.Trim(), "()" });
-                return new StackTraceLine(match.Groups["file"].Value,
-                                          lineNumber, method);
+                Group argsGroup = match.Groups["methodargs"];
+                string args = argsGroup.Success ? argsGroup.Value : "()";
+
+                string method = string.Join("", new string[] { match.Groups["method"].Value.Trim(), args });
+                return new StackTraceLine(match.Groups["file"].Value, lineNumber, method);
             }
             // Likely a C# line in the Android stacktrace
             return FromLogMessage(message);
