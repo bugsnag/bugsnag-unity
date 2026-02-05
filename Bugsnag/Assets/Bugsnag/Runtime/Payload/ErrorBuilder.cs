@@ -101,7 +101,10 @@ namespace BugsnagUnity.Payload
 
             if (frames.Length > 0)
             {
-                return new Error(errorClass, exception.Message, frames);
+                // Check if these are IL2CPP frames by looking for frame addresses
+                // IL2CPP frames have FrameAddress set, while managed frames don't
+                bool hasIl2cppFrames = frames.Length > 0 && !string.IsNullOrEmpty(frames[0].FrameAddress);
+                return new Error(errorClass, exception.Message, frames, hasIl2cppFrames);
             }
             else if (errorClass == ANDROID_JAVA_EXCEPTION_CLASS)
             {

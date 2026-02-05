@@ -51,16 +51,25 @@ namespace BugsnagUnity.Payload
         }
 
         internal Error(string errorClass, string message, StackTraceLine[] stackTrace)
-          : this(errorClass, message, stackTrace, HandledState.ForHandledException(), false) { }
+          : this(errorClass, message, stackTrace, HandledState.ForHandledException(), false, false) { }
+
+        internal Error(string errorClass, string message, StackTraceLine[] stackTrace, bool hasIl2cppFrames)
+          : this(errorClass, message, stackTrace, HandledState.ForHandledException(), false, hasIl2cppFrames) { }
 
         internal Error(string errorClass, string message, IStackframe[] stackTrace, HandledState handledState, bool isAndroidJavaException)
+          : this(errorClass, message, stackTrace, handledState, isAndroidJavaException, false) { }
+
+        internal Error(string errorClass, string message, IStackframe[] stackTrace, HandledState handledState, bool isAndroidJavaException, bool hasIl2cppFrames)
         {
             ErrorClass = errorClass;
             ErrorMessage = message;
             _stacktrace = stackTrace.ToList();
             HandledState = handledState;
             IsAndroidJavaException = isAndroidJavaException;
-            Type = GetErrorType();
+            if (hasIl2cppFrames)
+            {
+                Type = GetErrorType();
+            }
         }
 
 

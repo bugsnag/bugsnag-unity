@@ -145,5 +145,27 @@ namespace BugsnagUnityTests
                 Assert.AreEqual(expectedLine, bugsnagFrame.LineNumber, "Line number did not match for method {0}", expectedMethod);
             }
         }
+
+        [Test]
+        public void MixedAndroidStackTrace()
+        {
+            var stackTraceMessage = "java.lang.ClassNotFoundException: java.lang.String\n" +
+                "  at java.lang.Class.forName(Class.java:453)\n" +
+                "  at UnityEngine.AndroidJavaClass._AndroidJavaClass (System.String className) (at <00000000000000000000000000000000>:0)\n";
+
+            var lines = new PayloadStackTrace(stackTraceMessage, StackTraceFormat.AndroidJava).StackTraceLines;
+
+            Assert.AreEqual(2, lines.Length);
+
+            var javaFrame = lines[0];
+            Assert.AreEqual("java.lang.Class.forName()", javaFrame.Method);
+            Assert.AreEqual("Class.java", javaFrame.File);
+            Assert.AreEqual(453, javaFrame.LineNumber);
+
+            var standardFrame = lines[1];
+            Assert.AreEqual("UnityEngine.AndroidJavaClass._AndroidJavaClass(System.String className)", standardFrame.Method);
+            Assert.AreEqual("<00000000000000000000000000000000>", standardFrame.File);
+            Assert.AreEqual(0, standardFrame.LineNumber);
+        }
     }
 }

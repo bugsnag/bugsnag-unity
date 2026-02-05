@@ -493,6 +493,14 @@ namespace BugsnagUnity
 
         private StackTraceLine[] ToStackFrames(System.Exception exception, IntPtr[] nativeAddresses, String mainImageFileName, String mainImageUuid)
         {
+            var unityTrace = new PayloadStackTrace(exception.StackTrace).StackTraceLines;
+
+            // If native addresses is empty, return the managed trace instead
+            if (nativeAddresses == null || nativeAddresses.Length == 0)
+            {
+                return unityTrace;
+            }
+
             loadedImages.Refresh(mainImageFileName);
 
             var mainImageFormattedUuid = FormatImageUuid(mainImageUuid);
@@ -500,7 +508,6 @@ namespace BugsnagUnity
             // if il2cpp doesn't report a mainImageFileName, we assume the default "UnityFramework" name
             var safeMainImageFileName = string.IsNullOrEmpty(mainImageFileName) ? "UnityFramework" : mainImageFileName;
 
-            var unityTrace = new PayloadStackTrace(exception.StackTrace).StackTraceLines;
             var length = nativeAddresses.Length < unityTrace.Length ? nativeAddresses.Length : unityTrace.Length;
             var stackFrames = new StackTraceLine[length];
             for (int i = 0; i < length; i++)
@@ -512,7 +519,6 @@ namespace BugsnagUnity
                 var frame = new StackTraceLine();
                 frame.FrameAddress = string.Format("0x{0:X}", address);
                 frame.Method = method.ToString();
-                frame.Type = "cocoa";
                 if (image != null)
                 {
                     if (address < image.LoadAddress)
@@ -534,6 +540,7 @@ namespace BugsnagUnity
                 }
                 stackFrames[i] = frame;
             }
+
             return stackFrames;
         }
 
