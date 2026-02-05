@@ -1,6 +1,6 @@
 # Changelog
 
-## TBD
+## 8.8.3 (2026-02-05)
 
 ### Bug Fixes
 
