@@ -1,5 +1,5 @@
 aliases:
-  - &6000 "6000.2.10f1"
+  - &6000 "6000.3.2f1"
 
 agents:
   queue: "macos-15"
@@ -185,8 +185,7 @@ steps:
               - "features/ios"
               - "--app=features/fixtures/maze_runner/mazerunner_6000.ipa"
               - "--farm=bb"
-              - "--appium-version=1.22"
-              - "--device=IOS_13|IOS_14|IOS_15"
+              - "--device=IOS_17|IOS_18|IOS_26"
               - "--no-tunnel"
               - "--aws-public-ip"
               - "--fail-fast"
