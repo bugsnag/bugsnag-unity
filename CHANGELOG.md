@@ -2,6 +2,10 @@
 
 ## TBD
 
+### Enhancements
+
+- Send managed trace if native trace is empty and update frame.type and error.type setting [#960](https://github.com/bugsnag/bugsnag-unity/pull/960)
+
 ### Bug Fixes
 
 - Correctly handle mixed C#/Java stack traces on Android [#962](https://github.com/bugsnag/bugsnag-unity/pull/962)

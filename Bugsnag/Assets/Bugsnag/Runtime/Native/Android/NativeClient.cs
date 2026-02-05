@@ -182,6 +182,12 @@ namespace BugsnagUnity
                 return new StackTraceLine[0];
             }
 
+            // If native addresses is empty, return the managed trace instead
+            if (nativeAddresses == null || nativeAddresses.Length == 0)
+            {
+                return lines;
+            }
+
             // Use the minimum of both lengths to avoid out-of-bounds access
             var length = nativeAddresses.Length < lines.Length ? nativeAddresses.Length : lines.Length;
             StackTraceLine[] Trace = new StackTraceLine[length];
@@ -195,7 +201,6 @@ namespace BugsnagUnity
                 Frame.FrameAddress = string.Format("0x{0:X}", nativeAddresses[i].ToInt64());
                 Frame.LoadAddress = "0x0";
                 Frame.CodeIdentifier = mainImageUuid;
-                Frame.Type = "c";
 
                 // we mark every stack frame as "PC" so that the addresses are not adjusted
                 Frame.IsPc = true;
