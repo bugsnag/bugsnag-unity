@@ -291,7 +291,7 @@ namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
 
-    task native_plugins: [:cocoa, :android, :apply_plugin_settings]
+    task native_plugins: [:cocoa, :android, :copy_webgl_jslib, :apply_plugin_settings]
     
     desc "Delete all build artifacts"
     task :clean do
@@ -446,6 +446,18 @@ namespace :plugin do
 
     task :apply_plugin_settings do
       apply_plugin_import_settings
+    end
+
+    task :copy_webgl_jslib do
+      webgl_src = File.join(current_directory, "Bugsnag", "NativeSrc", "WebGL", "BugsnagWebGL.jslib")
+      webgl_plugins_dir = File.join(plugins_dir, "WebGL")
+      FileUtils.mkdir_p(webgl_plugins_dir)
+      if File.exist?(webgl_src)
+        FileUtils.cp(webgl_src, webgl_plugins_dir)
+        puts "Copied BugsnagWebGL.jslib to #{webgl_plugins_dir}"
+      else
+        puts "Warning: BugsnagWebGL.jslib not found at #{webgl_src}"
+      end
     end
   end
 
