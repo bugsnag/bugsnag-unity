@@ -110,7 +110,29 @@ end
 def export_package name="Bugsnag.unitypackage"
   package_output = File.join(current_directory, name)
   FileUtils.rm_rf package_output
-  unity "-projectPath", project_path, "-exportPackage", "Assets/Bugsnag", package_output
+
+  # WebGL plugin files are generated into Assets/Bugsnag/Plugins/WebGL as part of the build.
+  # To avoid shipping duplicate copies, temporarily exclude Assets/Bugsnag/Runtime/WebGL from
+  # the exported unitypackage and restore it afterwards.
+  runtime_webgl_dir = File.join(project_path, "Assets", "Bugsnag", "Runtime", "WebGL")
+  runtime_webgl_meta = File.join(project_path, "Assets", "Bugsnag", "Runtime", "WebGL.meta")
+  tmp_dir = nil
+
+  begin
+    if File.exist?(runtime_webgl_dir) || File.exist?(runtime_webgl_meta)
+      tmp_dir = Dir.mktmpdir("bugsnag-runtime-webgl-")
+      FileUtils.mv(runtime_webgl_dir, File.join(tmp_dir, "WebGL")) if File.exist?(runtime_webgl_dir)
+      FileUtils.mv(runtime_webgl_meta, File.join(tmp_dir, "WebGL.meta")) if File.exist?(runtime_webgl_meta)
+    end
+
+    unity "-projectPath", project_path, "-exportPackage", "Assets/Bugsnag", package_output
+  ensure
+    if tmp_dir
+      FileUtils.mv(File.join(tmp_dir, "WebGL"), runtime_webgl_dir) if File.exist?(File.join(tmp_dir, "WebGL"))
+      FileUtils.mv(File.join(tmp_dir, "WebGL.meta"), runtime_webgl_meta) if File.exist?(File.join(tmp_dir, "WebGL.meta"))
+      FileUtils.remove_entry(tmp_dir) if File.directory?(tmp_dir)
+    end
+  end
 end
 
 def assemble_android filter_abis=true
@@ -291,7 +313,7 @@ namespace :plugin do
   namespace :build do
     cocoa_build_dir = "bugsnag-cocoa-build"
 
-    task native_plugins: [:cocoa, :android, :apply_plugin_settings]
+    task native_plugins: [:cocoa, :android, :webgl, :apply_plugin_settings]
     
     desc "Delete all build artifacts"
     task :clean do
@@ -442,6 +464,26 @@ namespace :plugin do
 
     task :android do
       assemble_android(false)
+    end
+
+    task :webgl do
+      # WebGL plugin files (the .jslib and its .meta) are stored under Assets/Bugsnag/Runtime/WebGL (tracked)
+      # and copied into Assets/Bugsnag/Plugins/WebGL during the build, because Plugins/
+      # is treated as a generated build artifact and is cleaned on export.
+      webgl_src_dir = File.join(project_path, "Assets", "Bugsnag", "Runtime", "WebGL")
+      webgl_dst_dir = File.join(plugins_dir, "WebGL")
+
+      unless File.directory?(webgl_src_dir)
+        puts "WebGL source directory not found: #{webgl_src_dir}"
+        next
+      end
+
+      FileUtils.mkdir_p(webgl_dst_dir)
+      ["BugsnagWebGL.jslib", "BugsnagWebGL.jslib.meta"].each do |filename|
+        src = File.join(webgl_src_dir, filename)
+        next unless File.exist?(src)
+        FileUtils.cp(src, File.join(webgl_dst_dir, filename))
+      end
     end
 
     task :apply_plugin_settings do
