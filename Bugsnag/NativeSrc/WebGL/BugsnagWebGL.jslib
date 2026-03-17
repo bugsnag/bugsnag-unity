@@ -18,32 +18,51 @@ mergeInto(LibraryManager.library, {
       window.BugsnagWebGL.lastChangeTime = now;
     }
 
+    function bugsnagNotifyStateChange(newState) {
+      // Send state change message directly to C#
+      var gameObjectName = "Bugsnag app lifecycle tracker";
+      var methodName = "SetApplicationStateFromWebGL";
+      var stateValue = newState ? "1" : "0";
+      
+      try {
+        SendMessage(gameObjectName, methodName, stateValue);
+      } catch (e) {
+        // Silently ignore if not yet initialized
+      }
+    }
+
     // Listen for visibility change events
     document.addEventListener('visibilitychange', function() {
       bugsnagUpdateDuration();
-      window.BugsnagWebGL.isInForeground = !document.hidden;
+      var newState = !document.hidden;
+      window.BugsnagWebGL.isInForeground = newState;
+      bugsnagNotifyStateChange(newState);
     });
 
     // Listen for blur/focus events as fallback
     window.addEventListener('blur', function() {
       bugsnagUpdateDuration();
       window.BugsnagWebGL.isInForeground = false;
+      bugsnagNotifyStateChange(false);
     });
 
     window.addEventListener('focus', function() {
       bugsnagUpdateDuration();
       window.BugsnagWebGL.isInForeground = true;
+      bugsnagNotifyStateChange(true);
     });
 
     // Listen for page visibility events
     window.addEventListener('pageshow', function() {
       bugsnagUpdateDuration();
       window.BugsnagWebGL.isInForeground = true;
+      bugsnagNotifyStateChange(true);
     });
 
     window.addEventListener('pagehide', function() {
       bugsnagUpdateDuration();
       window.BugsnagWebGL.isInForeground = false;
+      bugsnagNotifyStateChange(false);
     });
   },
 

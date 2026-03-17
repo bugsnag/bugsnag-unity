@@ -31,7 +31,9 @@ public class WebGLDurationInForeground : Scenario
   window.BugsnagWebGL.lastChangeTime = now;
 }})();";
 
+#pragma warning disable CS0618
         Application.ExternalEval(js);
+#pragma warning restore CS0618
     }
 
     private IEnumerator NotifyNextFrame()
