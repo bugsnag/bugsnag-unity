@@ -46,8 +46,8 @@ namespace BugsnagUnity
 
         private Stopwatch _backgroundStopwatch;
 
-        bool InForeground => Application.platform == RuntimePlatform.WebGLPlayer 
-            ? BugsnagWebGLBridge.IsInForeground() 
+        bool InForeground => Application.platform == RuntimePlatform.WebGLPlayer
+            ? BugsnagWebGLBridge.IsInForeground()
             : _foregroundStopwatch.IsRunning;
 
         private Thread MainThread;

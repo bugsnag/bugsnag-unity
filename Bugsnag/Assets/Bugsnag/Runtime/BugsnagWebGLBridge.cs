@@ -22,7 +22,7 @@ namespace BugsnagUnity
         // Fallback implementations for editor and other platforms
         private static void BugsnagWebGL_Initialize() { }
         private static int BugsnagWebGL_IsInForeground() => 1;
-    private static double BugsnagWebGL_GetDurationInForegroundMs() => 0;
+        private static double BugsnagWebGL_GetDurationInForegroundMs() => 0;
 #endif
 
         /// <summary>

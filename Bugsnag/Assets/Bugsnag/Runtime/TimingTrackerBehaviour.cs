@@ -12,7 +12,7 @@ namespace BugsnagUnity
         {
             // Make sure that the tracker persists accross scenes.
             DontDestroyOnLoad(gameObject);
-            
+
             // Initialize WebGL foreground detection if on WebGL platform
             if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
@@ -35,7 +35,7 @@ namespace BugsnagUnity
         void OnApplicationPause(bool paused)
         {
             var hasFocus = !paused;
-            
+
             // On non-WebGL platforms, use the native callback
             if (Application.platform != RuntimePlatform.WebGLPlayer)
             {
