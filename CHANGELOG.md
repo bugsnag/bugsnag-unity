@@ -1,5 +1,12 @@
 # Changelog
 
+## TBD
+
+### Bug Fixes
+
+- Fix WebGL foreground/background state tracking with proper indentation
+[#968](https://github.com/bugsnag/bugsnag-unity/pull/968)
+
 ## 8.9.0 (2026-02-05)
 
 ### Enhancements
