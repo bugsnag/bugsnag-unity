@@ -464,6 +464,8 @@ namespace :plugin do
   desc "Generate release artifacts"
   task export: ["plugin:build:clean"] do
     Rake::Task["plugin:build:native_plugins"].invoke unless is_windows?
+    # Always copy WebGL jslib on all platforms (it's just file operations)
+    Rake::Task["plugin:build:copy_webgl_jslib"].invoke if is_windows?
     export_package("Bugsnag.unitypackage")
     build_upm_package
     build_upm_edm4u_package

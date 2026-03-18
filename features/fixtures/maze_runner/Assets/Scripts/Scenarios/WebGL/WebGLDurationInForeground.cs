@@ -23,12 +23,18 @@ public class WebGLDurationInForeground : Scenario
         var js = $@"
 (function() {{
   var now = Date.now();
-  if (!window.BugsnagWebGL) {{
-    window.BugsnagWebGL = {{ isInForeground: false, totalForegroundMs: 0, lastChangeTime: now }};
+  var bugsnagWebGLKey = (typeof Symbol === 'function' && Symbol.for)
+    ? Symbol.for('bugsnag.webgl')
+    : '__bugsnag_webgl__';
+  
+  var bugsnagWebGL = window[bugsnagWebGLKey];
+  if (!bugsnagWebGL) {{
+    bugsnagWebGL = {{ isInForeground: false, totalForegroundMs: 0, lastChangeTime: now, listenersRegistered: false }};
+    window[bugsnagWebGLKey] = bugsnagWebGL;
   }}
-  window.BugsnagWebGL.isInForeground = false;
-  window.BugsnagWebGL.totalForegroundMs = {totalForegroundMs};
-  window.BugsnagWebGL.lastChangeTime = now;
+  bugsnagWebGL.isInForeground = false;
+  bugsnagWebGL.totalForegroundMs = {totalForegroundMs};
+  bugsnagWebGL.lastChangeTime = now;
 }})();";
 
 #pragma warning disable CS0618
