@@ -6,14 +6,22 @@ def execute_command(action, scenario_name = '')
     scenarioName: scenario_name
   }
 
+  enqueued = false
+
   # Unity fixtures poll `/idem-command` (idempotent command queue).
   # Older fixtures may poll `/command`, so enqueue to both when available.
   if Maze::Server.respond_to?(:idem_commands)
     Maze::Server.idem_commands.add command
+    enqueued = true
   end
 
   if Maze::Server.respond_to?(:commands)
     Maze::Server.commands.add command
+    enqueued = true
+  end
+
+  unless enqueued
+    raise 'No Maze::Server command queue available (expected Maze::Server.commands and/or Maze::Server.idem_commands)'
   end
 end
 
