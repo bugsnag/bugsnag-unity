@@ -42,9 +42,6 @@ namespace BugsnagUnity
 
         internal INativeClient NativeClient { get; }
 
-        // Tracks total time since Bugsnag initialization. Must never be reset.
-        private Stopwatch _appDurationStopwatch;
-
         private Stopwatch _foregroundStopwatch;
 
         private Stopwatch _backgroundStopwatch;
@@ -210,7 +207,6 @@ namespace BugsnagUnity
 
         private void InitStopwatches()
         {
-            _appDurationStopwatch = Stopwatch.StartNew();
             _foregroundStopwatch = new Stopwatch();
             _backgroundStopwatch = new Stopwatch();
             // Required in case the focus event is not recieved (if Bugsnag is started after it is sent)
@@ -398,9 +394,8 @@ namespace BugsnagUnity
                 durationInForeground = BugsnagWebGLBridge.GetDurationInForeground();
             }
 
-            // Total duration since Bugsnag initialization (do not derive from foreground/background stopwatches
-            // because _backgroundStopwatch is reset for session-threshold logic).
-            var totalDuration = _appDurationStopwatch.Elapsed;
+            // Total duration since app start
+            var totalDuration = UptimeClock.Elapsed;
 
             var app = new AppWithState(Configuration, totalDuration)
             {

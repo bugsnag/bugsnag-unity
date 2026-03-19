@@ -7,6 +7,9 @@
 - Fix WebGL foreground/background state tracking with proper indentation
 [#968](https://github.com/bugsnag/bugsnag-unity/pull/968)
 
+- Fix launch detection to use a monotonic app-uptime clock on fallback platforms
+[#969](https://github.com/bugsnag/bugsnag-unity/pull/969)
+
 ## 8.9.0 (2026-02-05)
 
 ### Enhancements
