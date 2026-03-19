@@ -394,7 +394,10 @@ namespace BugsnagUnity
                 durationInForeground = BugsnagWebGLBridge.GetDurationInForeground();
             }
 
-            var app = new AppWithState(Configuration)
+            // Calculate total duration since Bugsnag initialization from stopwatches
+            var totalDuration = _foregroundStopwatch.Elapsed + _backgroundStopwatch.Elapsed;
+
+            var app = new AppWithState(Configuration, totalDuration)
             {
                 InForeground = InForeground,
                 DurationInForeground = durationInForeground,

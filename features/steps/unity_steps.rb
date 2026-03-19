@@ -5,7 +5,16 @@ def execute_command(action, scenario_name = '')
     action: action,
     scenarioName: scenario_name
   }
-  Maze::Server.commands.add command
+
+  # Unity fixtures poll `/idem-command` (idempotent command queue).
+  # Older fixtures may poll `/command`, so enqueue to both when available.
+  if Maze::Server.respond_to?(:idem_commands)
+    Maze::Server.idem_commands.add command
+  end
+
+  if Maze::Server.respond_to?(:commands)
+    Maze::Server.commands.add command
+  end
 end
 
 Then('the sourcemaps Content-Type header is valid multipart form-data') do
@@ -360,6 +369,13 @@ end
 Then("the exception {string} equals one of:") do |keypath, possible_values|
   value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.exceptions.0.#{keypath}")
   Maze.check.include(possible_values.raw.flatten, value)
+end
+
+Then('the event {string} is less than {int}') do |field, expected_value|
+  value = Maze::Helper.read_key_path(Maze::Server.errors.current[:body], "events.0.#{field}")
+
+  Maze.check.not_nil(value, "Expected '#{field}' to be present")
+  Maze.check.true(value.to_f < expected_value, "Expected '#{field}' to be < #{expected_value} but was #{value}")
 end
 
 def start_app
