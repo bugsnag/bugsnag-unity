@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using BugsnagUnity;
 using UnityEngine;
@@ -33,7 +34,7 @@ namespace BugsnagUnity.Payload
             // Convert large ulongs to strings (> Int64.MaxValue causes JSON errors)
             if (value is ulong ulongValue && ulongValue > long.MaxValue)
             {
-                return ulongValue.ToString();
+                return ulongValue.ToString(CultureInfo.InvariantCulture);
             }
 
             // Recursively sanitize dictionaries
@@ -117,6 +118,17 @@ namespace BugsnagUnity.Payload
                 return sanitized;
             }
 
+            // Preserve JsonArray type for Delivery string truncation
+            if (value is JsonArray jsonArray)
+            {
+                var sanitized = new JsonArray();
+                for (int i = 0; i < jsonArray.Count; i++)
+                {
+                    sanitized.Add(SanitizeValue(jsonArray[i]));
+                }
+                return sanitized;
+            }
+
             // Generic arrays/lists (preserving as object[] for mixed types)
             if (value is System.Collections.IList list)
             {
@@ -134,7 +146,7 @@ namespace BugsnagUnity.Payload
 
         public void AddMetadata(string section, string key, object value)
         {
-            AddMetadata(section, new Dictionary<string, object> { { key, SanitizeValue(value) } });
+            AddMetadata(section, new Dictionary<string, object> { { key, value } });
         }
 
         public void AddMetadata(string section, IDictionary<string, object> metadataSection)
