@@ -58,11 +58,11 @@ Feature: csharp events
     Then the error is valid for the error reporting API sent by the Unity notifier
     And the exception "message" equals "DelayedBugsnagStart 1"
     And the event "app.isLaunching" is true
-    And the event "app.duration" is less than 4000
+    And the event "app.duration" is less than 6000
     And I discard the oldest error
     And the exception "message" equals "DelayedBugsnagStart 2"
     And the event "app.isLaunching" is false
-    And the event "app.duration" is greater than 4000
+    And the event "app.duration" is greater than 6000
 
   Scenario: Auto notify false
     When I run the game in the "AutoNotifyFalse" state
