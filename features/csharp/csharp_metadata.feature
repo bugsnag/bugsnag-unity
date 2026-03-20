@@ -54,6 +54,27 @@ Feature: Metadata
     And the event "metaData.numeric.negativeLong" is not null
     And the event "metaData.numeric.largeLong" equals "12345678901234567890"
 
+  Scenario: Complex metadata sanitization with various dictionary types
+    When I run the game in the "ComplexMetadataSanitization" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "ComplexMetadataSanitization"
+    And the event "metaData.generic.dict.small" equals 100
+    And the event "metaData.generic.dict.large" equals "18446744073709551615"
+    And the event "metaData.nonGeneric.hashtable.stringKey" equals "12345678901234567890"
+    And the event "metaData.nonGeneric.hashtable.normalKey" equals "valueWithStringKey"
+    And the event "metaData.nonGeneric.hashtable.nested.deep" equals "18446744073709551000"
+    And the event "metaData.custom.dict.custom1" equals "18446744073709551615"
+    And the event "metaData.custom.dict.custom2" equals "normalValue"
+    And the event "metaData.nested.level1.level2.level3.level4" equals "18446744073709551615"
+    And the event "metaData.nested.level1.level2.level3.array.1" equals "12345678901234567890"
+    And the event "metaData.arrays.mixedArray.0" equals "12345678901234567890"
+    And the event "metaData.arrays.mixedArray.1.inArray" equals "18446744073709551615"
+    And the event "metaData.edgeCases.nullValue" is null
+    And the event "metaData.edgeCases.zeroUlong" equals 0
+    And the event "metaData.edgeCases.maxLong" is not null
+    And the event "metaData.edgeCases.overMaxLong" equals "9223372036854775808"
+
   # these platform specific tests are smoke tests, if os name is wrong then it's a sign that the native information has not been properly retrieved from the native layer and the unity placeholder data is being used
   @ios_only
   Scenario: iOS specific metadata

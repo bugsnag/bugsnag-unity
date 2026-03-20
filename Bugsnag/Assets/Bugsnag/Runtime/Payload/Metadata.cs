@@ -48,50 +48,47 @@ namespace BugsnagUnity.Payload
                 return sanitized;
             }
 
-            // Handle non-generic IDictionary with string keys
+            // Handle non-generic IDictionary (convert keys to strings for JSON compatibility)
             if (value is System.Collections.IDictionary nonGenericDict)
             {
                 var sanitized = new Dictionary<string, object>();
                 foreach (System.Collections.DictionaryEntry entry in nonGenericDict)
                 {
-                    if (entry.Key is string keyString)
-                    {
-                        sanitized[keyString] = SanitizeValue(entry.Value);
-                    }
+                    var keyString = entry.Key is string str
+                        ? str
+                        : entry.Key?.ToString() ?? "null";
+                    sanitized[keyString] = SanitizeValue(entry.Value);
                 }
                 return sanitized;
             }
 
             // Handle generic IDictionary<string, T> variants
             var valueType = value.GetType();
-            if (valueType.IsGenericType)
+            foreach (var iface in valueType.GetInterfaces())
             {
-                foreach (var iface in valueType.GetInterfaces())
+                if (iface.IsGenericType &&
+                    iface.GetGenericTypeDefinition() == typeof(IDictionary<,>))
                 {
-                    if (iface.IsGenericType &&
-                        iface.GetGenericTypeDefinition() == typeof(IDictionary<,>))
+                    var genericArgs = iface.GetGenericArguments();
+                    if (genericArgs[0] == typeof(string))
                     {
-                        var genericArgs = iface.GetGenericArguments();
-                        if (genericArgs[0] == typeof(string))
+                        var sanitized = new Dictionary<string, object>();
+                        foreach (var item in (System.Collections.IEnumerable)value)
                         {
-                            var sanitized = new Dictionary<string, object>();
-                            foreach (var item in (System.Collections.IEnumerable)value)
+                            var itemType = item.GetType();
+                            var keyProp = itemType.GetProperty("Key");
+                            var valueProp = itemType.GetProperty("Value");
+                            if (keyProp != null && valueProp != null)
                             {
-                                var itemType = item.GetType();
-                                var keyProp = itemType.GetProperty("Key");
-                                var valueProp = itemType.GetProperty("Value");
-                                if (keyProp != null && valueProp != null)
+                                var key = keyProp.GetValue(item) as string;
+                                if (key != null)
                                 {
-                                    var key = keyProp.GetValue(item) as string;
-                                    if (key != null)
-                                    {
-                                        var dictValue = valueProp.GetValue(item);
-                                        sanitized[key] = SanitizeValue(dictValue);
-                                    }
+                                    var dictValue = valueProp.GetValue(item);
+                                    sanitized[key] = SanitizeValue(dictValue);
                                 }
                             }
-                            return sanitized;
                         }
+                        return sanitized;
                     }
                 }
             }
