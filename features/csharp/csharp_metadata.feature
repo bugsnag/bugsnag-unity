@@ -42,6 +42,18 @@ Feature: Metadata
     And the event "metaData.dictionary.foo" equals "bar"
     And the event "metaData.number.testKey" equals 123
 
+  @cocoa_only
+  Scenario: Large long values in metadata on Cocoa platforms
+    When I run the game in the "LargeLongMetadata" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "LargeLongMetadata"
+    And the event "metaData.numeric.normalInt" equals 42
+    And the event "metaData.numeric.normalDouble" equals 123.456
+    And the event "metaData.numeric.validLong" is not null
+    And the event "metaData.numeric.negativeLong" is not null
+    And the event "metaData.numeric.largeLong" is not null
+
   # these platform specific tests are smoke tests, if os name is wrong then it's a sign that the native information has not been properly retrieved from the native layer and the unity placeholder data is being used
   @ios_only
   Scenario: iOS specific metadata
