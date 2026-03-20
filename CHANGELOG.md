@@ -10,6 +10,9 @@
 - Fix launch detection to use a monotonic app-uptime clock on fallback platforms
 [#969](https://github.com/bugsnag/bugsnag-unity/pull/969)
 
+- (Cocoa) Fix JSON serialization errors when metadata contains large ulong values
+[#970](https://github.com/bugsnag/bugsnag-unity/pull/970)
+
 ## 8.9.0 (2026-02-05)
 
 ### Enhancements
