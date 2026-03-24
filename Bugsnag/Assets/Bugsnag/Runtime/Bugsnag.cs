@@ -42,7 +42,7 @@ namespace BugsnagUnity
             return InternalClient != null;
         }
 
-        internal static void ResetForTesting()
+        public static void ResetForTesting()
         {
             lock (_clientLock)
             {
