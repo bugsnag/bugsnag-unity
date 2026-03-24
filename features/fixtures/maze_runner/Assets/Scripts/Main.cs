@@ -212,6 +212,16 @@ public class Main : MonoBehaviour
         {
             Directory.Delete(Application.persistentDataPath + "/Bugsnag", true);
         }
+
+        try
+        {
+            BugsnagUnity.Bugsnag.ResetForTesting();
+        }
+        catch
+        {
+            Log("Resetting got failed");
+            // Best-effort: fixture cache clearing should not fail if Bugsnag isn't available.
+        }
         if (Application.platform == RuntimePlatform.IPhonePlayer)
         {
             ClearIOSData();
