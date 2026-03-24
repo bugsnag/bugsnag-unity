@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using BugsnagUnity;
+using BugsnagUnity.Payload;
 using System;
 
 public class EnableBreadcrumbs : Scenario
@@ -8,7 +9,7 @@ public class EnableBreadcrumbs : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
-        Configuration.EnabledBreadcrumbTypes = new BugsnagUnity.Payload.BreadcrumbType[] {BugsnagUnity.Payload.BreadcrumbType.Log };
+        Configuration.EnabledBreadcrumbTypes = new [] { BreadcrumbType.Log };
     }
 
     public override void Run()

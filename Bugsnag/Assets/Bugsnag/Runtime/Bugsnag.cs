@@ -42,14 +42,6 @@ namespace BugsnagUnity
             return InternalClient != null;
         }
 
-        public static void ResetForTesting()
-        {
-            lock (_clientLock)
-            {
-                InternalClient = null;
-            }
-        }
-
         private static Client InternalClient { get; set; }
 
         private static IClient Client => InternalClient;

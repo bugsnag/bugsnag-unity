@@ -7,6 +7,7 @@ public class DisableBreadcrumbs : Scenario
     public override void PrepareConfig(string apiKey, string host)
     {
         base.PrepareConfig(apiKey, host);
+        Configuration.EnabledBreadcrumbTypes = new [] { BreadcrumbType.Log };
         Configuration.EnabledBreadcrumbTypes = new BreadcrumbType[0];
     }
 
