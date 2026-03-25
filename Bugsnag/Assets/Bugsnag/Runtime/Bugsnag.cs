@@ -185,5 +185,20 @@ namespace BugsnagUnity
 
         public static void ClearFeatureFlags() => Client.ClearFeatureFlags();
 
+#if UNITY_ASSERTIONS
+        /// <summary>
+        /// Resets the Bugsnag client for testing purposes.
+        /// This allows Start() to be called again with a new configuration.
+        /// Only available in test/development builds.
+        /// </summary>
+        public static void ResetForTesting()
+        {
+            lock (_clientLock)
+            {
+                InternalClient = null;
+            }
+        }
+#endif
+
     }
 }

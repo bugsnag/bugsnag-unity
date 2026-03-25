@@ -9,8 +9,11 @@ public class Builder : MonoBehaviour
     static void BuildStandalone(string folder, BuildTarget target, bool dev)
     {
         BuildPlayerOptions opts = new BuildPlayerOptions();
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "UNITY_ASSERTIONS");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "UNITY_ASSERTIONS");
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "UNITY_ASSERTIONS;BUGSNAG_UNITY_WEB_REQUEST");
+        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.WebGL, "UNITY_ASSERTIONS;BUGSNAG_UNITY_WEB_REQUEST");
+        var settingsObject = BugsnagSettingsObject.LoadBuildTimeSettingsObject();
+        settingsObject.StartAutomaticallyAtLaunch = false;
+        UnityEditor.EditorUtility.SetDirty(settingsObject);
         var scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray();
         opts.scenes = scenes;
         opts.locationPathName = folder;

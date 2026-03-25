@@ -27,6 +27,9 @@ public class ScenarioRunner : MonoBehaviour
 
     public void RunScenario(string scenarioName, string apiKey, string host)
     {
+#if UNITY_ASSERTIONS
+        Bugsnag.ResetForTesting();
+#endif
 
         var scenario = GetScenario(scenarioName);
         scenario.PrepareConfig(apiKey, host);
