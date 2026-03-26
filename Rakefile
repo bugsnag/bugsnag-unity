@@ -4,6 +4,7 @@ require "rbconfig"
 require 'fileutils'
 require 'tmpdir'
 require "json"
+require 'date'
 
 HOST_OS = RbConfig::CONFIG['host_os']
 def is_mac?; HOST_OS =~ /darwin/i; end
@@ -285,6 +286,47 @@ def build_upm_edm4u_package
   unless system command
     raise 'build upm edm4u package failed'
   end
+end
+
+desc 'Bump project version files. Usage: rake bump VERSION="1.2.3"'
+task :bump do
+  version = ENV['VERSION']
+  unless version && version.match(/^\d+\.\d+\.\d+$/)
+    raise 'Usage: rake bump VERSION="1.2.3" (version must be in X.Y.Z format)'
+  end
+
+  puts "Bumping version to #{version}"
+
+  # Update AssemblyInfo.cs
+  assembly_info_path = File.join("Bugsnag", "Assets", "Bugsnag", "Runtime", "AssemblyInfo.cs")
+  if File.exist?(assembly_info_path)
+    assembly_content = File.read(assembly_info_path)
+    new_assembly = assembly_content.gsub(/AssemblyVersion\("\d+\.\d+\.\d+(?:\.\d+)?"\)/, "AssemblyVersion(\"#{version}.0\")")
+    File.write(assembly_info_path, new_assembly)
+    puts "Updated #{assembly_info_path}"
+  else
+    puts "Warning: #{assembly_info_path} not found"
+  end
+
+    # Update CHANGELOG.md: replace the leading '## TBD' section with a release header only
+    changelog_path = File.join("CHANGELOG.md")
+    if File.exist?(changelog_path)
+      changelog = File.read(changelog_path)
+      date_str = Date.today.strftime('%Y-%m-%d')
+      version_header = "## #{version} (#{date_str})"
+
+      if changelog =~ /^##\s+TBD/m
+        updated = changelog.sub(/^##\s+TBD/m, version_header)
+        File.write(changelog_path, updated)
+        puts "Updated #{changelog_path} with release #{version}"
+      else
+        puts "No '## TBD' section found in #{changelog_path}; please update version manually"
+      end
+    else
+      puts "Warning: #{changelog_path} not found"
+    end
+
+    puts "Done."
 end
 
 namespace :plugin do
