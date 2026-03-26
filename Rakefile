@@ -291,7 +291,7 @@ end
 desc 'Bump project version files. Usage: rake bump VERSION="1.2.3"'
 task :bump do
   version = ENV['VERSION']
-  unless version && version.match(/^\d+\.\d+\.\d+$/)
+  unless version && version.match(/\A\d+\.\d+\.\d+\z/)
     raise 'Usage: rake bump VERSION="1.2.3" (version must be in X.Y.Z format)'
   end
 
@@ -301,32 +301,43 @@ task :bump do
   assembly_info_path = File.join("Bugsnag", "Assets", "Bugsnag", "Runtime", "AssemblyInfo.cs")
   if File.exist?(assembly_info_path)
     assembly_content = File.read(assembly_info_path)
-    new_assembly = assembly_content.gsub(/AssemblyVersion\("\d+\.\d+\.\d+(?:\.\d+)?"\)/, "AssemblyVersion(\"#{version}.0\")")
-    File.write(assembly_info_path, new_assembly)
-    puts "Updated #{assembly_info_path}"
+    pattern = /AssemblyVersion\("\d+\.\d+\.\d+(?:\.\d+)?"\)/
+    target = "AssemblyVersion(\"#{version}.0\")"
+
+    if assembly_content =~ pattern
+      if assembly_content.include?(target)
+        puts "AssemblyVersion already set to #{version} in #{assembly_info_path}; skipping"
+      else
+        new_assembly = assembly_content.sub(pattern, target)
+        File.write(assembly_info_path, new_assembly)
+        puts "Updated #{assembly_info_path}"
+      end
+    else
+      raise "AssemblyVersion(...) not found or not in expected format in #{assembly_info_path}; version #{version} was not applied"
+    end
   else
     puts "Warning: #{assembly_info_path} not found"
   end
 
-    # Update CHANGELOG.md: replace the leading '## TBD' section with a release header only
-    changelog_path = File.join("CHANGELOG.md")
-    if File.exist?(changelog_path)
-      changelog = File.read(changelog_path)
-      date_str = Date.today.strftime('%Y-%m-%d')
-      version_header = "## #{version} (#{date_str})"
+  # Update CHANGELOG.md: replace the leading '## TBD' section with a release header only
+  changelog_path = File.join("CHANGELOG.md")
+  if File.exist?(changelog_path)
+    changelog = File.read(changelog_path)
+    date_str = Date.today.strftime('%Y-%m-%d')
+    version_header = "## #{version} (#{date_str})"
 
-      if changelog =~ /^##\s+TBD/m
-        updated = changelog.sub(/^##\s+TBD/m, version_header)
-        File.write(changelog_path, updated)
-        puts "Updated #{changelog_path} with release #{version}"
-      else
-        puts "No '## TBD' section found in #{changelog_path}; please update version manually"
-      end
+    if changelog =~ /^##\s+TBD/
+      updated = changelog.sub(/^##\s+TBD/, version_header)
+      File.write(changelog_path, updated)
+      puts "Updated #{changelog_path} with release #{version}"
     else
-      puts "Warning: #{changelog_path} not found"
+      puts "No '## TBD' section found in #{changelog_path}; please update version manually"
     end
+  else
+    puts "Warning: #{changelog_path} not found"
+  end
 
-    puts "Done."
+  puts "Done."
 end
 
 namespace :plugin do
