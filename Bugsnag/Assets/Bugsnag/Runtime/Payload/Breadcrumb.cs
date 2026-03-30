@@ -79,7 +79,38 @@ namespace BugsnagUnity.Payload
             }
             set
             {
-                Add(METADATA_KEY, value);
+                // Sanitize metadata to avoid JSON serializer reflection errors.
+                if (value == null)
+                {
+                    Add(METADATA_KEY, null);
+                    return;
+                }
+
+                var sanitized = new Dictionary<string, object>();
+                var warnings = new List<string>();
+
+                foreach (var kvp in value)
+                {
+                    var val = kvp.Value;
+                    if (SanitizationHelpers.IsTriviallySerializable(val) || val == null)
+                    {
+                        sanitized[kvp.Key] = val;
+                    }
+                    else
+                    {
+                        // Convert unexpected types to string to ensure safe serialization
+                        sanitized[kvp.Key] = val?.ToString();
+                        var typeName = val.GetType().FullName;
+                        warnings.Add($"Could not serialize breadcrumb metadata key '{kvp.Key}' (type: {typeName})");
+                    }
+                }
+
+                if (warnings.Count > 0)
+                {
+                    sanitized["__bugsnag_unserializable_values"] = warnings;
+                }
+
+                Add(METADATA_KEY, sanitized);
             }
         }
 

@@ -154,11 +154,30 @@ namespace BugsnagUnity.Payload
                 return;
             }
 
-            // Sanitize all values before storing
+            // Sanitize all values before storing. Collect warnings for values
+            // that still cannot be safely serialized and convert them to strings.
             var sanitizedSection = new Dictionary<string, object>();
+            var warnings = new List<string>();
             foreach (var kvp in metadataSection)
             {
-                sanitizedSection[kvp.Key] = SanitizeValue(kvp.Value);
+                var original = kvp.Value;
+                var sanitized = SanitizeValue(original);
+
+                if (!SanitizationHelpers.IsTriviallySerializable(sanitized) && sanitized != null)
+                {
+                    // convert to string to avoid serializer reflection
+                    var typeName = sanitized.GetType().FullName;
+                    warnings.Add($"Could not serialize value for key '{kvp.Key}' (type: {typeName})");
+                    sanitizedSection[kvp.Key] = sanitized.ToString();
+                }
+                else
+                {
+                    sanitizedSection[kvp.Key] = sanitized;
+                }
+            }
+            if (warnings.Count > 0)
+            {
+                sanitizedSection["__bugsnag_unserializable_values"] = warnings;
             }
 
             if (SectionExists(section))

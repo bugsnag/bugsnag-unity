@@ -75,6 +75,13 @@ Feature: Metadata
     And the event "metaData.edgeCases.maxLong" is not null
     And the event "metaData.edgeCases.overMaxLong" equals "9223372036854775808"
 
+  Scenario: Unserializable metadata gets warning
+    When I run the game in the "UnserializableMetadata" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "UnserializableMetadata"
+    And the event "metaData.unserializable.__bugsnag_unserializable_values.0" is not null
+
   # these platform specific tests are smoke tests, if os name is wrong then it's a sign that the native information has not been properly retrieved from the native layer and the unity placeholder data is being used
   @ios_only
   Scenario: iOS specific metadata
