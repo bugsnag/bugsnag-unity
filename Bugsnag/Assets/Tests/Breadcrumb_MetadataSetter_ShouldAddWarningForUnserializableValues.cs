@@ -35,8 +35,11 @@ namespace BugsnagUnityTests.SerializationSanitizationTests
 
             const string warnKey = "__bugsnag_unserializable_values";
             Assert.IsTrue(stored.ContainsKey(warnKey));
-            var warnings = stored[warnKey] as System.Collections.IEnumerable;
+            var warnings = stored[warnKey] as string[];
             Assert.IsNotNull(warnings);
+            Assert.AreEqual(1, warnings.Length);
+            Assert.IsTrue(warnings[0].Contains("'bad'"));
+            Assert.IsTrue(warnings[0].Contains("UnserializableObj"));
         }
     }
 }
