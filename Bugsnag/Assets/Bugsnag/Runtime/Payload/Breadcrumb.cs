@@ -79,7 +79,75 @@ namespace BugsnagUnity.Payload
             }
             set
             {
-                Add(METADATA_KEY, value);
+                // Sanitize metadata to avoid JSON serializer reflection errors.
+                if (value == null)
+                {
+                    Add(METADATA_KEY, null);
+                    return;
+                }
+
+                var sanitized = new Dictionary<string, object>();
+                var warnings = new List<string>();
+
+                SanitizeAndCollectWarnings(value, sanitized, warnings, "");
+
+                if (warnings.Count > 0)
+                {
+                    const string warnKey = "__bugsnag_unserializable_values";
+                    if (sanitized.TryGetValue(warnKey, out var existing))
+                    {
+                        switch (existing)
+                        {
+                            case List<string> existingList:
+                                existingList.AddRange(warnings);
+                                break;
+                            case IEnumerable<object> existingEnum:
+                                var merged = new List<string>();
+                                foreach (var o in existingEnum)
+                                    merged.Add(o?.ToString());
+                                merged.AddRange(warnings);
+                                sanitized[warnKey] = merged.ToArray();
+                                break;
+                            default:
+                                sanitized[warnKey] = new List<string> { existing?.ToString() }.Concat(warnings).ToArray();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        sanitized[warnKey] = warnings.ToArray();
+                    }
+                }
+
+                Add(METADATA_KEY, sanitized);
+            }
+        }
+
+        private static void SanitizeAndCollectWarnings(IDictionary<string, object> source, IDictionary<string, object> dest, List<string> warnings, string path)
+        {
+            foreach (var kvp in source)
+            {
+                var fullPath = string.IsNullOrEmpty(path) ? kvp.Key : $"{path}.{kvp.Key}";
+                var original = kvp.Value;
+                var sVal = SanitizationHelpers.SanitizeValue(original);
+                
+                // Check if the sanitized value is a nested dictionary that needs recursive processing
+                if (sVal is IDictionary<string, object> nestedDict && original is IDictionary<string, object>)
+                {
+                    var sanitizedNested = new Dictionary<string, object>();
+                    SanitizeAndCollectWarnings(nestedDict, sanitizedNested, warnings, fullPath);
+                    dest[kvp.Key] = sanitizedNested;
+                }
+                else if (!SanitizationHelpers.IsTriviallySerializable(sVal) && sVal != null)
+                {
+                    var typeName = sVal.GetType().FullName;
+                    warnings.Add($"Could not serialize breadcrumb metadata key '{fullPath}' (type: {typeName})");
+                    dest[kvp.Key] = sVal.ToString();
+                }
+                else
+                {
+                    dest[kvp.Key] = sVal;
+                }
             }
         }
 
