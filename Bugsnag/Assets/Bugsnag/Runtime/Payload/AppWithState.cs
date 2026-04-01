@@ -54,9 +54,10 @@ namespace BugsnagUnity.Payload
 
         internal AppWithState(Dictionary<string, object> cachedData) : base(cachedData) { }
 
-        internal AppWithState(Configuration configuration) : base(configuration)
+        internal AppWithState(Configuration configuration, TimeSpan? duration = null) : base(configuration)
         {
-            Duration = TimeSpan.FromSeconds(UnityEngine.Time.realtimeSinceStartup);
+            // Use provided duration (from stopwatches) if available, otherwise fall back to realtimeSinceStartup
+            Duration = duration ?? TimeSpan.FromSeconds(UnityEngine.Time.realtimeSinceStartup);
         }
 
     }

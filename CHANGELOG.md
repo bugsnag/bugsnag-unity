@@ -1,5 +1,18 @@
 # Changelog
 
+## 8.9.1 (2026-04-01)
+
+### Bug Fixes
+
+- Fix WebGL foreground/background state tracking with proper indentation
+[#968](https://github.com/bugsnag/bugsnag-unity/pull/968)
+
+- Fix launch detection to use a monotonic app-uptime clock on fallback platforms
+[#969](https://github.com/bugsnag/bugsnag-unity/pull/969)
+
+- (Cocoa) Fix JSON serialization errors when metadata contains large ulong values
+[#970](https://github.com/bugsnag/bugsnag-unity/pull/970)
+
 ## 8.9.0 (2026-02-05)
 
 ### Enhancements

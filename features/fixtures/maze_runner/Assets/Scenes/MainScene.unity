@@ -147,6 +147,7 @@ GameObject:
   - component: {fileID: 355371106}
   - component: {fileID: 355371107}
   - component: {fileID: 355371108}
+  - component: {fileID: 355371109}
   m_Layer: 0
   m_Name: Config
   m_TagString: Untagged
@@ -409,6 +410,22 @@ MonoBehaviour:
 
     Main.CUSTOM2
     () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &355371109
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355371092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4771497587e244e838eb27933cf1e297, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
 --- !u!1 &372057234
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,6 +664,8 @@ GameObject:
   - component: {fileID: 547010192}
   - component: {fileID: 547010191}
   - component: {fileID: 547010190}
+  - component: {fileID: 547010193}
+  - component: {fileID: 547010195}
   m_Layer: 0
   m_Name: Metadata
   m_TagString: Untagged
@@ -711,6 +730,38 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0ebd005ad77d4465dba6cc32040aec06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &547010193
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547010188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d76787639cb40b5ad6fffbe709f9bdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &547010195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 547010188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f98909861ed52f7ce8bbbc8920b1dee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
@@ -1092,6 +1143,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1114049720}
   - component: {fileID: 1114049721}
+  - component: {fileID: 1114049722}
   m_Layer: 0
   m_Name: WebGL
   m_TagString: Untagged
@@ -1124,6 +1176,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e84e72df185f344be9e23af93b2cabc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)
+
+    Main.CUSTOM2
+    () (at Assets/Scripts/Main.cs:123)'
+--- !u!114 &1114049722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114049719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80667ff4906f4162bde57e86dd8a9a6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CustomStacktrace: 'Main.CUSTOM1 () (at Assets/Scripts/Main.cs:123)

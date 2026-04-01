@@ -11,6 +11,7 @@ public class ForceImportSettings : MonoBehaviour
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/MacOS", new List<BuildTarget> { BuildTarget.StandaloneOSX });
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/tvOS", new List<BuildTarget> { BuildTarget.tvOS });
         ApplyPluginImportSettings("Assets/Bugsnag/Plugins/Android", new List<BuildTarget> { BuildTarget.Android });
+        ApplyPluginImportSettings("Assets/Bugsnag/Plugins/WebGL", new List<BuildTarget> { BuildTarget.WebGL });
         // There is a bug in some unity versions where MacOS bundle plugins are imported as a directory instead of a single plugin file.
         // This causes issues for UPM installs, because if the plugin is imported as a directory, then the package manager will expect
         // each file to have a .meta file with it and throws an error when non is found.

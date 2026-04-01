@@ -51,6 +51,19 @@ Feature: csharp events
     And the exception "message" equals "ShortLaunchTime 2"
     And the event "app.isLaunching" is false
 
+  Scenario: Duration uses app uptime clock
+    When I run the game in the "DelayedBugsnagStart" state
+    And I wait to receive 2 errors
+    And I sort the errors by the payload field "events.0.exceptions.0.message"
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "DelayedBugsnagStart 1"
+    And the event "app.isLaunching" is true
+    And the event "app.duration" is less than 6000
+    And I discard the oldest error
+    And the exception "message" equals "DelayedBugsnagStart 2"
+    And the event "app.isLaunching" is false
+    And the event "app.duration" is greater than 6000
+
   Scenario: Auto notify false
     When I run the game in the "AutoNotifyFalse" state
     And I should receive no errors

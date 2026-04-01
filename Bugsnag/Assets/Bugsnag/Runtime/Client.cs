@@ -46,7 +46,9 @@ namespace BugsnagUnity
 
         private Stopwatch _backgroundStopwatch;
 
-        bool InForeground => _foregroundStopwatch.IsRunning;
+        bool InForeground => Application.platform == RuntimePlatform.WebGLPlayer
+            ? BugsnagWebGLBridge.IsInForeground()
+            : _foregroundStopwatch.IsRunning;
 
         private Thread MainThread;
 
@@ -386,10 +388,19 @@ namespace BugsnagUnity
 
             var user = _cachedUser.Clone();
 
-            var app = new AppWithState(Configuration)
+            var durationInForeground = _foregroundStopwatch.Elapsed;
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
+            {
+                durationInForeground = BugsnagWebGLBridge.GetDurationInForeground();
+            }
+
+            // Total duration since app start
+            var totalDuration = UptimeClock.Elapsed;
+
+            var app = new AppWithState(Configuration, totalDuration)
             {
                 InForeground = InForeground,
-                DurationInForeground = _foregroundStopwatch.Elapsed,
+                DurationInForeground = durationInForeground,
             };
 
             NativeClient.PopulateAppWithState(app);
