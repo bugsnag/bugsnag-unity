@@ -4,6 +4,13 @@
 
 ### Bug Fixes
 
+Fix breadcrumb sanitization: emit bugsnag_unserializable_values as string[], preserve warnings.
+[#975](https://github.com/bugsnag/bugsnag-unity/pull/975)
+
+## TBD
+
+### Bug Fixes
+
 - Fix WebGL foreground/background state tracking with proper indentation
 [#968](https://github.com/bugsnag/bugsnag-unity/pull/968)
 
