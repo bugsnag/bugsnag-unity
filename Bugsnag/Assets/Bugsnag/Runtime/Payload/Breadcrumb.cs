@@ -44,7 +44,12 @@ namespace BugsnagUnity.Payload
         /// Used to construct a breadcrumb from the native data obtained from a
         /// native notifier if present.
         /// </summary>
-        internal Breadcrumb(string message, string timestamp, string type, IDictionary<string, object> metadata)
+        internal Breadcrumb(
+            string message,
+            string timestamp,
+            string type,
+            IDictionary<string, object> metadata
+        )
         {
             Timestamp = DateTimeOffset.Parse(timestamp);
             Metadata = metadata;
@@ -59,7 +64,11 @@ namespace BugsnagUnity.Payload
             Message = message;
         }
 
-        internal Breadcrumb(string message, IDictionary<string, object> metadata, BreadcrumbType type)
+        internal Breadcrumb(
+            string message,
+            IDictionary<string, object> metadata,
+            BreadcrumbType type
+        )
         {
             Timestamp = DateTime.UtcNow;
             Metadata = metadata;
@@ -110,7 +119,9 @@ namespace BugsnagUnity.Payload
                                 sanitized[warnKey] = merged.ToArray();
                                 break;
                             default:
-                                sanitized[warnKey] = new List<string> { existing?.ToString() }.Concat(warnings).ToArray();
+                                sanitized[warnKey] = new List<string> { existing?.ToString() }
+                                    .Concat(warnings)
+                                    .ToArray();
                                 break;
                         }
                     }
@@ -124,7 +135,12 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        private static void SanitizeAndCollectWarnings(IDictionary<string, object> source, IDictionary<string, object> dest, List<string> warnings, string path)
+        private static void SanitizeAndCollectWarnings(
+            IDictionary<string, object> source,
+            IDictionary<string, object> dest,
+            List<string> warnings,
+            string path
+        )
         {
             foreach (var kvp in source)
             {
@@ -133,10 +149,14 @@ namespace BugsnagUnity.Payload
             }
         }
 
-        private static object SanitizeValueAndCollectWarnings(object value, List<string> warnings, string path)
+        private static object SanitizeValueAndCollectWarnings(
+            object value,
+            List<string> warnings,
+            string path
+        )
         {
             var sVal = SanitizationHelpers.SanitizeValue(value);
-            
+
             // Recurse into nested dictionaries
             if (sVal is IDictionary<string, object> nestedDict)
             {
@@ -144,7 +164,7 @@ namespace BugsnagUnity.Payload
                 SanitizeAndCollectWarnings(nestedDict, sanitizedNested, warnings, path);
                 return sanitizedNested;
             }
-            
+
             // Recurse into collections (but not strings)
             if (sVal is System.Collections.IEnumerable enumerable && !(sVal is string))
             {
@@ -158,15 +178,17 @@ namespace BugsnagUnity.Payload
                 }
                 return sanitizedList;
             }
-            
+
             // Check if the value is unserializable
             if (!SanitizationHelpers.IsTriviallySerializable(sVal) && sVal != null)
             {
                 var typeName = sVal.GetType().FullName;
-                warnings.Add($"Could not serialize breadcrumb metadata key '{path}' (type: {typeName})");
+                warnings.Add(
+                    $"Could not serialize breadcrumb metadata key '{path}' (type: {typeName})"
+                );
                 return sVal.ToString();
             }
-            
+
             return sVal;
         }
 
@@ -228,6 +250,5 @@ namespace BugsnagUnity.Payload
             }
             return BreadcrumbType.Manual;
         }
-
     }
 }
