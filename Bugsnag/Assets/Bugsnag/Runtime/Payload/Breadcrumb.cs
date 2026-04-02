@@ -155,29 +155,43 @@ namespace BugsnagUnity.Payload
             string path
         )
         {
-            var sVal = SanitizationHelpers.SanitizeValue(value);
-
-            // Recurse into nested dictionaries
-            if (sVal is IDictionary<string, object> nestedDict)
+            // Check type of original value first to decide if we need to recurse
+            // Recurse into nested dictionaries (use original, not sanitized)
+            if (value is IDictionary<string, object> dictValue)
             {
                 var sanitizedNested = new Dictionary<string, object>();
-                SanitizeAndCollectWarnings(nestedDict, sanitizedNested, warnings, path);
+                SanitizeAndCollectWarnings(dictValue, sanitizedNested, warnings, path);
                 return sanitizedNested;
             }
 
-            // Recurse into collections (but not strings)
-            if (sVal is System.Collections.IEnumerable enumerable && !(sVal is string))
+            // Recurse into collections (but not strings) - use original
+            // Special case: don't recurse into string arrays/lists - preserve their type
+            // exactly as-is for proper truncation in Delivery
+            if (
+                value is string[]
+                || value is System.Collections.Generic.List<string>
+                || value is System.Collections.Generic.Dictionary<string, string>
+            )
             {
-                var sanitizedList = new List<object>();
+                return value;
+            }
+
+            if (value is System.Collections.IEnumerable enumValue && !(value is string))
+            {
+                // For other collections, use List<object>
+                var sanitizedObjList = new List<object>();
                 int index = 0;
-                foreach (var item in enumerable)
+                foreach (var item in enumValue)
                 {
                     var itemPath = $"{path}[{index}]";
-                    sanitizedList.Add(SanitizeValueAndCollectWarnings(item, warnings, itemPath));
+                    sanitizedObjList.Add(SanitizeValueAndCollectWarnings(item, warnings, itemPath));
                     index++;
                 }
-                return sanitizedList;
+                return sanitizedObjList;
             }
+
+            // For leaf values (strings, numbers, etc.), sanitize them
+            var sVal = SanitizationHelpers.SanitizeValue(value);
 
             // Check if the value is unserializable
             if (!SanitizationHelpers.IsTriviallySerializable(sVal) && sVal != null)

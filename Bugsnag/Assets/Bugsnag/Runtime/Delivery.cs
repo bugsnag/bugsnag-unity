@@ -476,6 +476,39 @@ namespace BugsnagUnity
                         }
                     }
                 }
+                else if (valueType == typeof(List<object>))
+                {
+                    var objectList = section[key] as List<object>;
+                    if (objectList != null)
+                    {
+                        for (int i = 0; i < objectList.Count; i++)
+                        {
+                            if (objectList[i] is string originalValue)
+                            {
+                                if (ShouldTruncateString(originalValue))
+                                {
+                                    objectList[i] = TruncateString(originalValue);
+                                    stringTruncated = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (section[key] is System.Collections.IList listValue)
+                {
+                    // Handle any other IList implementation (including arrays deserialized as IList)
+                    for (int i = 0; i < listValue.Count; i++)
+                    {
+                        if (listValue[i] is string originalValue)
+                        {
+                            if (ShouldTruncateString(originalValue))
+                            {
+                                listValue[i] = TruncateString(originalValue);
+                                stringTruncated = true;
+                            }
+                        }
+                    }
+                }
             }
             return stringTruncated;
         }
