@@ -199,7 +199,6 @@ public class Scenario : MonoBehaviour
         @event.Errors[0].ErrorMessage = "Custom ErrorMessage";
 
         @event.App.Duration = TimeSpan.FromMilliseconds(1000);
-        @event.Device.Time = new DateTimeOffset(1985, 08, 21, 01, 01, 01, TimeSpan.Zero);
 
         var testDict = new Dictionary<string, object>();
         testDict.Add("scoop", "dewoop");
