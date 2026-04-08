@@ -113,8 +113,8 @@ namespace BugsnagUnity.Payload
                                 break;
                             case IEnumerable<object> existingEnum:
                                 var merged = new List<string>();
-                                foreach (var o in existingEnum)
-                                    merged.Add(o?.ToString());
+                                foreach (var obj in existingEnum)
+                                    merged.Add(obj?.ToString());
                                 merged.AddRange(warnings);
                                 sanitized[warnKey] = merged.ToArray();
                                 break;
