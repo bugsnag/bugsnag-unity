@@ -7,8 +7,8 @@ SLN_PATH="$PROJECT_DIR/Bugsnag.sln"
 UNITY_BIN="/Applications/Unity/Hub/Editor/${UNITY_VERSION}/Unity.app/Contents/MacOS/Unity"
 UNITY_LOG="${PROJECT_DIR}/Library/Logs/SyncVS-$(date +%Y%m%d-%H%M%S).log"
 
-DEFAULT_CLI_ARGS=(-batchmode -nographics -logFile "$UNITY_LOG")
-UNITY_PID=""
+DEFAULT_CLI_ARGS=(-quit -batchmode -nographics -logFile "$UNITY_LOG")
+SYNC_METHOD="UnityEditor.SyncVS.SyncSolution"
 
 # --- Preflight ---
 if [[ -z "${UNITY_VERSION:-}" ]]; then
@@ -27,68 +27,56 @@ fi
 echo "==> Generating solution via Unity (${UNITY_VERSION})"
 echo "    Log: $UNITY_LOG"
 
-# Always delete old solution files to force regeneration
-echo "    Removing old solution files to force regeneration..."
-rm -f "$PROJECT_DIR/"*.sln "$PROJECT_DIR/"*.csproj
-
-cleanup_unity() {
-  if [[ -n "$UNITY_PID" ]] && kill -0 "$UNITY_PID" 2>/dev/null; then
-    echo "    Stopping Unity (PID: $UNITY_PID)"
-    kill "$UNITY_PID" 2>/dev/null || true
-    wait "$UNITY_PID" 2>/dev/null || true
-  fi
-}
-
-trap cleanup_unity EXIT
-
 attempt_sync() {
   "$UNITY_BIN" "${DEFAULT_CLI_ARGS[@]}" \
-    -projectPath "$PROJECT_DIR" &
-  UNITY_PID=$!
-  echo "    Unity started (PID: $UNITY_PID)"
+    -projectPath "$PROJECT_DIR" \
+    -executeMethod "$SYNC_METHOD"
 }
 
 wait_for_solution() {
   # Wait up to MAX_WAIT seconds for .sln and at least one .csproj
-  local MAX_WAIT=60
+  local MAX_WAIT=600
   local waited=0
-  echo "    Waiting for Unity to generate solution files..."
   while (( waited < MAX_WAIT )); do
-    # Check if Unity is still running
-    if [[ -n "$UNITY_PID" ]] && ! kill -0 "$UNITY_PID" 2>/dev/null; then
-      echo "    Unity process exited early"
-      return 1
-    fi
-    
     if [[ -f "$SLN_PATH" ]] && compgen -G "$PROJECT_DIR/"'*.csproj' > /dev/null; then
       return 0
     fi
-    sleep 1
-    (( waited+=1 ))
-    if (( waited % 10 == 0 )); then
-      echo "    ... still waiting (${waited}s elapsed)"
-    fi
+    sleep 2
+    (( waited+=2 ))
   done
   return 1
 }
 
 # --- Sync with retry ---
+SYNC_ATTEMPTS=2
 SUCCESS=0
-SYNC_ATTEMPTS=1
 for attempt in $(seq 1 "$SYNC_ATTEMPTS"); do
   echo "---- Sync attempt $attempt/$SYNC_ATTEMPTS"
+  set +e
   attempt_sync
+  UNITY_EXIT=$?
+  set -e
 
   if wait_for_solution; then
     echo "    ✔ Solution generated: $SLN_PATH"
-    cleanup_unity
     SUCCESS=1
     break
   fi
 
-  cleanup_unity
-  echo "    ✖ Solution files not found within timeout"
+  echo "    Waiting for files failed or Unity exit was $UNITY_EXIT. Retrying..."
 done
+
+# One last **forced** SyncVS after the waits (helps on cold caches)
+if [[ $SUCCESS -eq 0 ]]; then
+  echo "---- Final SyncVS invocation after wait"
+  set +e
+  attempt_sync
+  set -e
+  if wait_for_solution; then
+    echo "    ✔ Solution generated after final sync: $SLN_PATH"
+    SUCCESS=1
+  fi
+fi
 
 # --- Validate artifacts before continuing ---
 if [[ $SUCCESS -eq 0 ]]; then
