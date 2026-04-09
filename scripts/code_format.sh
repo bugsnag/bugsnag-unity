@@ -27,29 +27,36 @@ fi
 echo "==> Generating solution via Unity (${UNITY_VERSION})"
 echo "    Log: $UNITY_LOG"
 
+# Always delete old solution files to force regeneration
+echo "    Removing old solution files to force regeneration..."
+rm -f "$PROJECT_DIR/"*.sln "$PROJECT_DIR/"*.csproj
+
 attempt_sync() {
   "$UNITY_BIN" "${DEFAULT_CLI_ARGS[@]}" \
-    -projectPath "$PROJECT_DIR" \
-    -executeMethod "$SYNC_METHOD"
+    -projectPath "$PROJECT_DIR"
 }
 
 wait_for_solution() {
   # Wait up to MAX_WAIT seconds for .sln and at least one .csproj
-  local MAX_WAIT=300
+  local MAX_WAIT=60
   local waited=0
+  echo "    Waiting for Unity to generate solution files..."
   while (( waited < MAX_WAIT )); do
     if [[ -f "$SLN_PATH" ]] && compgen -G "$PROJECT_DIR/"'*.csproj' > /dev/null; then
       return 0
     fi
-    sleep 2
-    (( waited+=2 ))
+    sleep 1
+    (( waited+=1 ))
+    if (( waited % 10 == 0 )); then
+      echo "    ... still waiting (${waited}s elapsed)"
+    fi
   done
   return 1
 }
 
 # --- Sync with retry ---
-SYNC_ATTEMPTS=2
 SUCCESS=0
+SYNC_ATTEMPTS=1
 for attempt in $(seq 1 "$SYNC_ATTEMPTS"); do
   echo "---- Sync attempt $attempt/$SYNC_ATTEMPTS"
   set +e
@@ -63,20 +70,8 @@ for attempt in $(seq 1 "$SYNC_ATTEMPTS"); do
     break
   fi
 
-  echo "    Waiting for files failed or Unity exit was $UNITY_EXIT. Retrying..."
+  echo "    ✖ Unity exited with code $UNITY_EXIT but solution files not found"
 done
-
-# One last **forced** SyncVS after the waits (helps on cold caches)
-if [[ $SUCCESS -eq 0 ]]; then
-  echo "---- Final SyncVS invocation after wait"
-  set +e
-  attempt_sync
-  set -e
-  if wait_for_solution; then
-    echo "    ✔ Solution generated after final sync: $SLN_PATH"
-    SUCCESS=1
-  fi
-fi
 
 # --- Validate artifacts before continuing ---
 if [[ $SUCCESS -eq 0 ]]; then
