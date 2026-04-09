@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BugsnagUnity.Payload;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace BugsnagUnity
@@ -29,6 +30,12 @@ namespace BugsnagUnity
                     configClone.Endpoints.Configure(configClone.ApiKey);
                     var nativeClient = new NativeClient(configClone);
                     InternalClient = new Client(nativeClient);
+
+                    // On Android, set context once to force MANUAL mode (prevents Activity auto-context).
+                    if (Application.platform == RuntimePlatform.Android)
+                    {
+                        InternalClient.SetContext(configClone.Context);
+                    }
                 }
                 else
                 {

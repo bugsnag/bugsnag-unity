@@ -1,7 +1,5 @@
 Feature: Callbacks
 
-#NOTE to be improved in PLAT-9129
-
   Background:
     Given I clear the Bugsnag cache
 
@@ -19,6 +17,7 @@ Feature: Callbacks
     And the event "severity" equals "info"
     And the event "unhandled" is false
     And the event "groupingDiscriminator" equals "Custom GroupingDiscriminator"
+    And the event "groupingHash" equals "Custom GroupingHash"
 
 
     # metadata
@@ -55,8 +54,6 @@ Feature: Callbacks
     And the event "device.modelNumber" equals "Custom ModelNumber"
     And the event "device.totalMemory" equals 999
 
-
-
     # Breadcrumbs
     And the event "breadcrumbs.0.name" equals "Custom Message"
     And the event "breadcrumbs.0.type" equals "user"
@@ -75,3 +72,6 @@ Feature: Callbacks
     # errors
     And the event "exceptions.0.errorClass" equals "Custom ErrorClass"
     And the event "exceptions.0.message" equals "Custom ErrorMessage"
+
+    # stacktrace
+    And the event "exceptions.0.stacktrace.0.method" equals "Custom Method"

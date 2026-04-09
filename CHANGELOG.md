@@ -4,10 +4,13 @@
 
 ### Bug Fixes
 
-Fix breadcrumb sanitization: emit bugsnag_unserializable_values as string[], preserve warnings.
+- Fix breadcrumb sanitization: emit bugsnag_unserializable_values as string[], preserve warnings.
 [#975](https://github.com/bugsnag/bugsnag-unity/pull/975)
 
-## TBD
+- Fix Android context being overwritten by Activity
+[#977](https://github.com/bugsnag/bugsnag-unity/pull/977)
+
+## 8.9.1 (2026-04-01)
 
 ### Bug Fixes
 

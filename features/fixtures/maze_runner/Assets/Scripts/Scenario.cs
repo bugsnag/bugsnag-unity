@@ -190,7 +190,19 @@ public class Scenario : MonoBehaviour
         EditAllAppData(@event);
         EditAllDeviceData(@event);
 
+        @event.Context = "Custom Context";
+        @event.Severity = Severity.Info;
+        @event.GroupingHash = "Custom GroupingHash";
+        @event.GroupingDiscriminator = "Custom GroupingDiscriminator";
+
         @event.Errors[0].ErrorClass = "ErrorClass";
+        @event.Errors[0].ErrorMessage = "Custom ErrorMessage";
+
+        @event.App.Duration = TimeSpan.FromMilliseconds(1000);
+
+        var testDict = new Dictionary<string, object>();
+        testDict.Add("scoop", "dewoop");
+        @event.Device.RuntimeVersions = testDict;
 
         @event.Errors[0].Stacktrace[0].Method = "Method";
 

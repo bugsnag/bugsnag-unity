@@ -15,7 +15,7 @@ MonoBehaviour:
   AutoUploadSymbols: 0
   BugsnagCLIExecutablePath: 
   UploadEndpoint: 
-  StartAutomaticallyAtLaunch: 1
+  StartAutomaticallyAtLaunch: 0
   AutoDetectErrors: 1
   AutoTrackSessions: 1
   ApiKey: 

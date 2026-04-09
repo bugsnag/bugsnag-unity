@@ -27,7 +27,6 @@ Feature: MacOS native crashes
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"
 
-  #NOTE to be improved in PLAT-9129
   @macos_only
   Scenario: Reporting a MacOS native crash with an onsend callback
     When I run the game in the "MacOSNativeCrash" state
@@ -40,6 +39,12 @@ Feature: MacOS native crashes
     And the event "unhandled" is true
     And the error payload field "notifier.name" equals "Unity Bugsnag Notifier"
     
+    # Event properties
+    And the event "context" equals "Custom Context"
+    And the event "severity" equals "info"
+    And the event "groupingHash" equals "Custom GroupingHash"
+    And the event "groupingDiscriminator" equals "Custom GroupingDiscriminator"
+    
      # Device metadata
     And the event "device.osName" equals "OsName"
     And the event "device.osVersion" equals "OsVersion"
@@ -51,6 +56,7 @@ Feature: MacOS native crashes
     And the event "device.freeMemory" equals 456
     And the event "device.jailbroken" is true
     And the event "device.locale" equals "Locale"
+    And the event "device.runtimeVersions.scoop" equals "dewoop"
 
     # App metadata
     And the event "app.id" equals "Id"
@@ -60,12 +66,13 @@ Feature: MacOS native crashes
     And the event "app.bundleVersion" equals "BundleVersion"
     And the event "app.binaryArch" equals "BinaryArch"
     And the event "app.codeBundleId" equals "CodeBundleId"
-    And the event "app.dsymUUIDs" is not null
+    And the event "app.duration" equals 1000
     And the event "app.inForeground" is false
     And the event "app.isLaunching" is false
 
     # Exception data
     And the event "exceptions.0.errorClass" equals "ErrorClass"
+    And the event "exceptions.0.message" equals "Custom ErrorMessage"
     And the event "exceptions.0.stacktrace.0.method" equals "Method"
     #And the event "exceptions.0.stacktrace.0.frameAddress" equals "FrameAddress"
     And the event "exceptions.0.stacktrace.0.isLR" is true
@@ -81,11 +88,11 @@ Feature: MacOS native crashes
     And the event "breadcrumbs.0.name" equals "Custom Message"
     And the event "breadcrumbs.0.metaData.test" equals "test"
 
-    # Feature flags
+    # Feature flags - NOTE: These work for native crashes but may not persist if added in managed OnSendError callbacks
     And the event "featureFlags.2.featureFlag" equals "fromCallback"
     And the event "featureFlags.2.variant" equals "a"
 
-    # Metadata
+    # Metadata - NOTE: These work for native crashes but may not persist if added in managed OnSendError callbacks
     And the event "metaData.test1.test" equals "test"
     And the event "metaData.test2" is null
 
