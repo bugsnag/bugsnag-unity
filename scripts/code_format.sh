@@ -28,6 +28,11 @@ echo "==> Generating solution via Unity (${UNITY_VERSION})"
 echo "    Log: $UNITY_LOG"
 
 attempt_sync() {
+  # Delete old solution files to force fresh generation
+  echo "    Removing old solution files..."
+  rm -f "$SLN_PATH"
+  rm -f "$PROJECT_DIR/"*.csproj
+  
   "$UNITY_BIN" "${DEFAULT_CLI_ARGS[@]}" \
     -projectPath "$PROJECT_DIR" \
     -executeMethod "$SYNC_METHOD"
@@ -35,7 +40,7 @@ attempt_sync() {
 
 wait_for_solution() {
   # Wait up to MAX_WAIT seconds for .sln and at least one .csproj
-  local MAX_WAIT=600
+  local MAX_WAIT=180
   local waited=0
   while (( waited < MAX_WAIT )); do
     if [[ -f "$SLN_PATH" ]] && compgen -G "$PROJECT_DIR/"'*.csproj' > /dev/null; then
