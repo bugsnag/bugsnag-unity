@@ -68,6 +68,26 @@ Feature: Csharp Breadcrumbs
     And the event "breadcrumbs.7.metaData.test" equals "value"
     And the event "breadcrumbs.7.metaData.nullTest" is null
 
+@android_only
+    Scenario: Breadcrumb Unserializable Metadata
+    When I run the game in the "BreadcrumbUnserializableMetadata" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "breadcrumb-unserializable"
+    And the error payload field "events.0.breadcrumbs" is a non-empty array
+    And the event "breadcrumbs.1.name" equals "Test breadcrumb"
+    And the error payload field "events.0.breadcrumbs.1.metaData.__bugsnag_unserializable_values" matches the regex "Could not serialize breadcrumb metadata key 'unserializable'"
+
+@skip_android
+  Scenario: Breadcrumb Unserializable Metadata
+    When I run the game in the "BreadcrumbUnserializableMetadata" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "breadcrumb-unserializable"
+    And the error payload field "events.0.breadcrumbs" is a non-empty array
+    And the event "breadcrumbs.1.name" equals "Test breadcrumb"
+    And the error payload field "events.0.breadcrumbs.1.metaData.__bugsnag_unserializable_values.0" matches the regex "Could not serialize breadcrumb metadata key 'unserializable'"
+    
   @skip_webgl
   Scenario: Breadcrumb Truncation
     When I run the game in the "BreadcrumbTruncation" state

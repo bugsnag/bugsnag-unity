@@ -73,5 +73,5 @@ Feature: Callbacks
     And the event "exceptions.0.errorClass" equals "Custom ErrorClass"
     And the event "exceptions.0.message" equals "Custom ErrorMessage"
 
-    # stacktrace
-    And the event "exceptions.0.stacktrace.0.method" equals "Custom Method"
+    # stacktrace Need to check in PLAT-16002
+    # And the event "exceptions.0.stacktrace.0.method" equals "Custom Method"

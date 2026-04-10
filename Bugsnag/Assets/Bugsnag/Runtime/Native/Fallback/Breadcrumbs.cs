@@ -36,7 +36,12 @@ namespace BugsnagUnity
                 return;
             }
             // Clone the metadata to prevent thread related exceptions
-            breadcrumb.Metadata = breadcrumb.Metadata.ToDictionary(entry => entry.Key, entry => entry.Value);
+            // Use Get() to avoid re-triggering the Metadata setter which would lose sanitization warnings
+            var existingMetadata = breadcrumb.Get("metaData") as IDictionary<string, object>;
+            if (existingMetadata != null)
+            {
+                breadcrumb.Add("metaData", existingMetadata.ToDictionary(entry => entry.Key, entry => entry.Value));
+            }
             lock (_lock)
             {
 

@@ -44,7 +44,12 @@ namespace BugsnagUnity.Payload
         /// Used to construct a breadcrumb from the native data obtained from a
         /// native notifier if present.
         /// </summary>
-        internal Breadcrumb(string message, string timestamp, string type, IDictionary<string, object> metadata)
+        internal Breadcrumb(
+            string message,
+            string timestamp,
+            string type,
+            IDictionary<string, object> metadata
+        )
         {
             Timestamp = DateTimeOffset.Parse(timestamp);
             Metadata = metadata;
@@ -59,7 +64,11 @@ namespace BugsnagUnity.Payload
             Message = message;
         }
 
-        internal Breadcrumb(string message, IDictionary<string, object> metadata, BreadcrumbType type)
+        internal Breadcrumb(
+            string message,
+            IDictionary<string, object> metadata,
+            BreadcrumbType type
+        )
         {
             Timestamp = DateTime.UtcNow;
             Metadata = metadata;
@@ -79,8 +88,122 @@ namespace BugsnagUnity.Payload
             }
             set
             {
-                Add(METADATA_KEY, value);
+                // Sanitize metadata to avoid JSON serializer reflection errors.
+                if (value == null)
+                {
+                    Add(METADATA_KEY, null);
+                    return;
+                }
+
+                var sanitized = new Dictionary<string, object>();
+                var warnings = new List<string>();
+
+                SanitizeAndCollectWarnings(value, sanitized, warnings, "");
+
+                if (warnings.Count > 0)
+                {
+                    const string warnKey = "__bugsnag_unserializable_values";
+                    if (sanitized.TryGetValue(warnKey, out var existing))
+                    {
+                        switch (existing)
+                        {
+                            case List<string> existingList:
+                                existingList.AddRange(warnings);
+                                sanitized[warnKey] = existingList.ToArray();
+                                break;
+                            case IEnumerable<object> existingEnum:
+                                var merged = new List<string>();
+                                foreach (var obj in existingEnum)
+                                    merged.Add(obj?.ToString());
+                                merged.AddRange(warnings);
+                                sanitized[warnKey] = merged.ToArray();
+                                break;
+                            default:
+                                sanitized[warnKey] = new List<string> { existing?.ToString() }
+                                    .Concat(warnings)
+                                    .ToArray();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        sanitized[warnKey] = warnings.ToArray();
+                    }
+                }
+
+                Add(METADATA_KEY, sanitized);
             }
+        }
+
+        private static void SanitizeAndCollectWarnings(
+            IDictionary<string, object> source,
+            IDictionary<string, object> dest,
+            List<string> warnings,
+            string path
+        )
+        {
+            foreach (var kvp in source)
+            {
+                var fullPath = string.IsNullOrEmpty(path) ? kvp.Key : $"{path}.{kvp.Key}";
+                dest[kvp.Key] = SanitizeValueAndCollectWarnings(kvp.Value, warnings, fullPath);
+            }
+        }
+
+        private static object SanitizeValueAndCollectWarnings(
+            object value,
+            List<string> warnings,
+            string path
+        )
+        {
+            // Check type of original value first to decide if we need to recurse
+            // Recurse into nested dictionaries (use original, not sanitized)
+            if (value is IDictionary<string, object> dictValue)
+            {
+                var sanitizedNested = new Dictionary<string, object>();
+                SanitizeAndCollectWarnings(dictValue, sanitizedNested, warnings, path);
+                return sanitizedNested;
+            }
+
+            // Recurse into collections (but not strings) - use original
+            // Special case: don't recurse into string arrays/lists - preserve their type
+            // exactly as-is for proper truncation in Delivery
+            if (
+                value is string[]
+                || value is System.Collections.Generic.List<string>
+                || value is System.Collections.Generic.Dictionary<string, string>
+            )
+            {
+                return value;
+            }
+
+            if (value is System.Collections.IEnumerable enumValue && !(value is string))
+            {
+                // For other collections, use List<object>
+                var sanitizedObjList = new List<object>();
+                int index = 0;
+                foreach (var item in enumValue)
+                {
+                    var itemPath = $"{path}[{index}]";
+                    sanitizedObjList.Add(SanitizeValueAndCollectWarnings(item, warnings, itemPath));
+                    index++;
+                }
+                return sanitizedObjList;
+            }
+
+            // For leaf values (strings, numbers, etc.), sanitize them
+            var sVal = SanitizationHelpers.SanitizeValue(value);
+
+            // Check if the value is unserializable
+            if (!SanitizationHelpers.IsTriviallySerializable(sVal) && sVal != null)
+            {
+                var typeName = sVal.GetType().FullName;
+                warnings.Add(
+                    $"Could not serialize breadcrumb metadata key '{path}' (type: {typeName})"
+                );
+                return sVal.ToString();
+            }
+
+            return sVal;
         }
 
         public string Message
@@ -141,6 +264,5 @@ namespace BugsnagUnity.Payload
             }
             return BreadcrumbType.Manual;
         }
-
     }
 }
