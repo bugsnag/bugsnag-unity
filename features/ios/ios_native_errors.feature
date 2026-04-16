@@ -48,6 +48,12 @@ Feature: iOS Native Errors
     And the event "metaData.app.companyName" equals "bugsnag"
     And the event "metaData.app.name" matches ".azerunner"
 
+    # Thread validation - verify state is present for native threads
+    And the error payload field "events.0.threads" is a non-empty array
+    And the error payload field "events.0.threads.0.state" is not null
+    And the error payload field "events.0.threads.0.name" is not null
+    And the event "threads.0.id" is not null
+
     # Exception details
     And the error payload field "events" is an array with 1 elements
     And the exception "errorClass" equals "St13runtime_error"

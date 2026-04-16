@@ -8,6 +8,7 @@ namespace BugsnagUnity.Payload
         string Id { get; set; }
         bool? ErrorReportingThread { get; }
         string Name { get; set; }
+        string State { get; set; }
         List<IStackframe> Stacktrace { get; }
         string Type { get; }
     }

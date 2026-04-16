@@ -15,6 +15,18 @@ namespace BugsnagUnity
 
         public string Name { get => GetNativeString("getName"); set => SetNativeString("setName",value); }
 
+        public string State 
+        { 
+            get => NativePointer.Call<AndroidJavaObject>("getState").Call<string>("getDescriptor"); 
+            set 
+            {
+                // Convert string descriptor to Thread.State enum and call setState
+                var threadStateClass = new AndroidJavaClass("com.bugsnag.android.Thread$State");
+                var stateEnum = threadStateClass.CallStatic<AndroidJavaObject>("byDescriptor", value);
+                NativePointer.Call("setState", stateEnum);
+            }
+        }
+
         public List<IStackframe> Stacktrace => GetStacktrace();
 
         public string Type => NativePointer.Call<AndroidJavaObject>("getType").Call<string>("toString");

@@ -14,6 +14,7 @@ namespace BugsnagUnity
         private const string ID_KEY = "id";
         private const string ERROR_REPORTING_THREAD_KEY = "errorReportingThread";
         private const string NAME_KEY = "name";
+        private const string STATE_KEY = "state";
 
         public NativeThread(IntPtr nativePointer) : base(nativePointer)
         {
@@ -28,6 +29,8 @@ namespace BugsnagUnity
         public bool? ErrorReportingThread => GetNativeBool(ERROR_REPORTING_THREAD_KEY);
 
         public string Name { get => GetNativeString(NAME_KEY); set => SetNativeString(NAME_KEY, value); }
+
+        public string State { get => GetNativeString(STATE_KEY); set => SetNativeString(STATE_KEY, value); }
 
         private List<IStackframe> _stacktrace = new List<IStackframe>();
 
