@@ -77,7 +77,7 @@ steps:
               - "features/android"
               - "--app=features/fixtures/maze_runner/mazerunner_2021.apk"
               - "--farm=bb"
-              - "--appium-version=1.22"
+              - "--appium-version=2.19"
               - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
               - "--no-tunnel"
               - "--aws-public-ip"
