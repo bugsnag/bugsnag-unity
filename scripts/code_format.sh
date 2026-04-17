@@ -27,6 +27,15 @@ fi
 echo "==> Generating solution via Unity (${UNITY_VERSION})"
 echo "    Log: $UNITY_LOG"
 
+# Ensure Unity has resolved packages first
+resolve_packages() {
+  echo "    Resolving packages and refreshing asset database..."
+  "$UNITY_BIN" "${DEFAULT_CLI_ARGS[@]}" \
+    -projectPath "$PROJECT_DIR" \
+    -executeMethod UnityEditor.AssetDatabase.Refresh \
+    || true
+}
+
 attempt_sync() {
   # Delete old solution files to force fresh generation
   echo "    Removing old solution files..."
@@ -40,7 +49,7 @@ attempt_sync() {
 
 wait_for_solution() {
   # Wait up to MAX_WAIT seconds for .sln and at least one .csproj
-  local MAX_WAIT=180
+  local MAX_WAIT=300
   local waited=0
   while (( waited < MAX_WAIT )); do
     if [[ -f "$SLN_PATH" ]] && compgen -G "$PROJECT_DIR/"'*.csproj' > /dev/null; then
@@ -53,6 +62,9 @@ wait_for_solution() {
 }
 
 # --- Sync with retry ---
+# First, let Unity resolve packages and initialize
+resolve_packages
+
 SYNC_ATTEMPTS=2
 SUCCESS=0
 for attempt in $(seq 1 "$SYNC_ATTEMPTS"); do
