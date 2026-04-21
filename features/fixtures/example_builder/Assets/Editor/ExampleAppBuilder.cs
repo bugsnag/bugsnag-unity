@@ -2,7 +2,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
-public class ExampleAppBuilder : MonoBehaviour
+public class ExampleAppBuilder
 {
     public static void AndroidRelease()
     {
@@ -16,7 +16,6 @@ public class ExampleAppBuilder : MonoBehaviour
 
     static void BuildAndroid(bool dev)
     {
-#if UNITY_ANDROID
         Debug.Log("Building Example Android app...");
         PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64;
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.unity.example.android");
@@ -30,7 +29,6 @@ public class ExampleAppBuilder : MonoBehaviour
 
         var result = BuildPipeline.BuildPlayer(opts);
         Debug.Log("Build Result: " + result);
-#endif
     }
 
     public static void IosRelease()
