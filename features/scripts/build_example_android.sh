@@ -21,14 +21,7 @@ RENAMED_APK="example_${UNITY_VERSION:0:4}.apk"
 
 echo "Building Android example app with Unity $UNITY_VERSION"
 
-# Copy example app assets to builder project
-echo "Setting up builder project..."
-rm -rf "$builder_path/Assets/Scenes" "$builder_path/Assets/Scripts"
-cp -R "$example_source/Assets/Scenes" "$builder_path/Assets/"
-cp -R "$example_source/Assets/Scripts" "$builder_path/Assets/"
-cp -R "$example_source/ProjectSettings" "$builder_path/"
-
-# Import Bugsnag package
+# Import Bugsnag package FIRST (example scripts depend on it)
 echo "Importing Bugsnag.unitypackage into builder project"
 $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
   -nographics \
@@ -37,6 +30,13 @@ $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
   -logFile "$log_file" \
   -projectPath "$builder_path" \
   -importPackage "$(pwd)/Bugsnag.unitypackage"
+
+# Then copy example app assets (which reference Bugsnag types)
+echo "Copying example assets to builder project..."
+rm -rf "$builder_path/Assets/Scenes" "$builder_path/Assets/Scripts"
+cp -R "$example_source/Assets/Scenes" "$builder_path/Assets/"
+cp -R "$example_source/Assets/Scripts" "$builder_path/Assets/"
+cp -R "$example_source/ProjectSettings" "$builder_path/"
 
 # Build Android
 $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
