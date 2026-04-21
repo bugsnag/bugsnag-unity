@@ -13,11 +13,13 @@ if [ ! -d "$UNITY_PATH" ]; then
 fi
 
 # CI-specific builder project
-builder_path="$(pwd)/features/fixtures/example_builder"
-example_source="$(pwd)/example"
+REPO_ROOT="$(pwd)"
+builder_path="$REPO_ROOT/features/fixtures/example_builder"
+example_source="$REPO_ROOT/example"
 log_file="$builder_path/build_ios_example.log"
 XCODE_PROJECT="example_xcode"
 IPA_OUTPUT="example_${UNITY_VERSION:0:4}.ipa"
+EXPORT_OPTIONS="$REPO_ROOT/features/scripts/exportOptions.plist"
 
 echo "Building iOS example app with Unity $UNITY_VERSION"
 
@@ -29,7 +31,7 @@ $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
   -batchmode \
   -logFile "$log_file" \
   -projectPath "$builder_path" \
-  -importPackage "$(pwd)/Bugsnag.unitypackage"
+  -importPackage "$REPO_ROOT/Bugsnag.unitypackage"
 
 # Then copy example app assets (which reference Bugsnag types)
 echo "Copying example assets to builder project..."
@@ -71,7 +73,7 @@ xcodebuild \
   -exportArchive \
   -archivePath "$builder_path/archive/Unity-iPhone.xcarchive" \
   -exportPath "$builder_path" \
-  -exportOptionsPlist "$(pwd)/features/scripts/exportOptions.plist"
+  -exportOptionsPlist "$EXPORT_OPTIONS"
 
 # Move to example directory for artifact upload
 if [ -f "$builder_path/Unity-iPhone.ipa" ]; then

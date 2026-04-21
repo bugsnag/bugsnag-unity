@@ -13,8 +13,9 @@ if [ ! -d "$UNITY_PATH" ]; then
 fi
 
 # CI-specific builder project
-builder_path="$(pwd)/features/fixtures/example_builder"
-example_source="$(pwd)/example"
+REPO_ROOT="$(pwd)"
+builder_path="$REPO_ROOT/features/fixtures/example_builder"
+example_source="$REPO_ROOT/example"
 log_file="$builder_path/build_android_example.log"
 OUTPUT_APK="example.apk"
 RENAMED_APK="example_${UNITY_VERSION:0:4}.apk"
@@ -29,7 +30,7 @@ $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
   -batchmode \
   -logFile "$log_file" \
   -projectPath "$builder_path" \
-  -importPackage "$(pwd)/Bugsnag.unitypackage"
+  -importPackage "$REPO_ROOT/Bugsnag.unitypackage"
 
 # Then copy example app assets (which reference Bugsnag types)
 echo "Copying example assets to builder project..."
