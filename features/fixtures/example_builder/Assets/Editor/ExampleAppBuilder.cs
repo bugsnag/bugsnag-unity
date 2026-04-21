@@ -17,6 +17,9 @@ public class ExampleAppBuilder
     static void BuildAndroid(bool dev)
     {
         Debug.Log("Building Example Android app...");
+        
+        // Set scripting backend to IL2CPP (required for ARM64 and native libraries)
+        PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
         PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64;
         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.bugsnag.unity.example.android");
         
