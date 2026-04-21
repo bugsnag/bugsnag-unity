@@ -19,7 +19,6 @@ example_source="$REPO_ROOT/example"
 log_file="$builder_path/build_ios_example.log"
 XCODE_PROJECT="example_xcode"
 IPA_OUTPUT="example_${UNITY_VERSION:0:4}.ipa"
-EXPORT_OPTIONS="$REPO_ROOT/features/scripts/exportOptions.plist"
 
 echo "Building iOS example app with Unity $UNITY_VERSION"
 
@@ -68,18 +67,19 @@ xcodebuild \
   CODE_SIGNING_REQUIRED=NO \
   CODE_SIGNING_ALLOWED=NO
 
-# Export IPA
-xcodebuild \
-  -exportArchive \
-  -archivePath "$builder_path/archive/Unity-iPhone.xcarchive" \
-  -exportPath "$builder_path" \
-  -exportOptionsPlist "$EXPORT_OPTIONS"
+# Create IPA from archive without code signing
+# (xcodebuild -exportArchive requires provisioning profiles even for unsigned builds)
+cd "$builder_path"
+mkdir -p Payload
+cp -R archive/Unity-iPhone.xcarchive/Products/Applications/example.app Payload/
+zip -qr "$IPA_OUTPUT" Payload
+rm -rf Payload
 
 # Move to example directory for artifact upload
-if [ -f "$builder_path/Unity-iPhone.ipa" ]; then
-  mv "$builder_path/Unity-iPhone.ipa" "$example_source/$IPA_OUTPUT"
+if [ -f "$builder_path/$IPA_OUTPUT" ]; then
+  mv "$builder_path/$IPA_OUTPUT" "$example_source/$IPA_OUTPUT"
   echo "iOS example app built successfully: $example_source/$IPA_OUTPUT"
 else
-  echo "ERROR: IPA not found at $builder_path/Unity-iPhone.ipa"
+  echo "ERROR: IPA not found at $builder_path/$IPA_OUTPUT"
   exit 1
 fi
