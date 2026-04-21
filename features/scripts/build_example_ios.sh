@@ -22,7 +22,13 @@ IPA_OUTPUT="example_${UNITY_VERSION:0:4}.ipa"
 
 echo "Building iOS example app with Unity $UNITY_VERSION"
 
-# Import Bugsnag package FIRST (example scripts depend on it)
+# Initialize ProjectSettings FIRST if needed (before any Unity operations)
+if [ ! -d "$builder_path/ProjectSettings" ]; then
+  echo "Creating ProjectSettings from example project (before import)"
+  cp -R "$example_source/ProjectSettings" "$builder_path/"
+fi
+
+# Import Bugsnag package (example scripts depend on it)
 echo "Importing Bugsnag.unitypackage into builder project"
 $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
   -nographics \
@@ -34,10 +40,12 @@ $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
 
 # Then copy example app assets (which reference Bugsnag types)
 echo "Copying example assets to builder project..."
-rm -rf "$builder_path/Assets/Scenes" "$builder_path/Assets/Scripts"
+rm -rf "$builder_path/Assets/Scenes" "$builder_path/Assets/Scripts" "$builder_path/Assets/Resources"
 cp -R "$example_source/Assets/Scenes" "$builder_path/Assets/"
 cp -R "$example_source/Assets/Scripts" "$builder_path/Assets/"
-cp -R "$example_source/ProjectSettings" "$builder_path/"
+if [ -d "$example_source/Assets/Resources" ]; then
+  cp -R "$example_source/Assets/Resources" "$builder_path/Assets/"
+fi
 
 # Build iOS Xcode project
 $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
