@@ -38,6 +38,26 @@ cp "$example_source/ProjectSettings/EditorBuildSettings.asset" "$builder_path/Pr
 cp "$example_source/ProjectSettings/InputManager.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
 cp "$example_source/ProjectSettings/GraphicsSettings.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
 
+# Ensure the builder project directory exists and print contents for CI debugging
+mkdir -p "$builder_path"
+echo "Builder project path: $builder_path"
+echo "Contents of builder project (top-level):"
+ls -la "$builder_path" || true
+
+# Copy Packages/ to ensure Unity Package Manager manifest is present (eg. com.unity.ugui)
+echo "Copying Packages/manifest.json if present (skipping for Unity 2021 to preserve behavior)..."
+if [[ "$UNITY_VERSION" == 2021.* ]]; then
+  echo "Unity 2021 detected; skipping Packages copy to preserve 2021 behavior"
+else
+  if [ -d "$example_source/Packages" ] || [ -f "$example_source/Packages/manifest.json" ]; then
+    mkdir -p "$builder_path/Packages"
+    cp -R "$example_source/Packages/" "$builder_path/Packages/" 2>/dev/null || true
+    echo "Packages copied:" && ls -la "$builder_path/Packages" || true
+  else
+    echo "No Packages/ found in example source"
+  fi
+fi
+
 # Import Bugsnag package (example scripts depend on it)
 echo "Importing Bugsnag.unitypackage into builder project"
 set +e
