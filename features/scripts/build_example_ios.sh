@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -Eeuo pipefail
 
 if [ -z "$UNITY_VERSION" ]; then
   echo "UNITY_VERSION must be set"
@@ -16,11 +16,18 @@ fi
 REPO_ROOT="$(pwd)"
 builder_path="$REPO_ROOT/features/fixtures/example_builder"
 example_source="$REPO_ROOT/example"
-log_file="$builder_path/build_ios_example.log"
+
+# Write the Unity log into the example folder so Buildkite artifact upload can always find it
+log_file="$example_source/build_ios_example.log"
 XCODE_PROJECT="example_xcode"
 IPA_OUTPUT="example_${UNITY_VERSION:0:4}.ipa"
 
 echo "Building iOS example app with Unity $UNITY_VERSION"
+
+# Always try to preserve the Unity log for CI debugging
+mkdir -p "$example_source"
+touch "$log_file" || true
+trap 'cp -f "$log_file" "$example_source/build_ios_example.log" 2>/dev/null || true' EXIT
 
 # Unity needs ProjectSettings to know about scenes and build settings
 # Copy minimal required ProjectSettings files only
@@ -32,13 +39,26 @@ cp "$example_source/ProjectSettings/GraphicsSettings.asset" "$builder_path/Proje
 
 # Import Bugsnag package (example scripts depend on it)
 echo "Importing Bugsnag.unitypackage into builder project"
+set +e
 $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
   -nographics \
   -quit \
   -batchmode \
+  -silent-crashes \
   -logFile "$log_file" \
   -projectPath "$builder_path" \
   -importPackage "$REPO_ROOT/Bugsnag.unitypackage"
+IMPORT_RESULT=$?
+set -e
+
+if [ $IMPORT_RESULT -ne 0 ]; then
+  echo "Unity import failed with exit code $IMPORT_RESULT"
+  echo "=== Unity log tail (import) ==="
+  tail -n 200 "$log_file" || true
+  echo "=== Compiler errors (import) ==="
+  grep -E "error CS[0-9]+|Scripts have compiler errors" -n "$log_file" || true
+  exit $IMPORT_RESULT
+fi
 
 # Then copy example app assets (which reference Bugsnag types)
 echo "Copying example assets to builder project..."
@@ -50,13 +70,27 @@ if [ -d "$example_source/Assets/Resources" ]; then
 fi
 
 # Build iOS Xcode project
+set +e
 $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
   -nographics \
   -quit \
   -batchmode \
+  -silent-crashes \
   -logFile "$log_file" \
   -projectPath "$builder_path" \
   -executeMethod ExampleAppBuilder.IosRelease
+
+BUILD_RESULT=$?
+set -e
+
+if [ $BUILD_RESULT -ne 0 ]; then
+  echo "iOS example build failed with exit code $BUILD_RESULT"
+  echo "=== Unity log tail (build) ==="
+  tail -n 200 "$log_file" || true
+  echo "=== Compiler errors (build) ==="
+  grep -E "error CS[0-9]+|Scripts have compiler errors" -n "$log_file" || true
+  exit $BUILD_RESULT
+fi
 
 RESULT=$?
 if [ $RESULT -ne 0 ]; then 
