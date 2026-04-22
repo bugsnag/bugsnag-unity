@@ -1,0 +1,54 @@
+using System;
+using System.IO;
+using System.Linq;
+using UnityEditor.Android;
+
+public class ExampleGradlePostProcessor : IPostGenerateGradleAndroidProject
+{
+    public int callbackOrder => 0;
+
+    public void OnPostGenerateGradleAndroidProject(string path)
+    {
+        // Unity passes the module path (often .../Gradle/unityLibrary).
+        // gradle.properties lives at the Gradle project root (the parent directory).
+        var gradleRoot = Directory.GetParent(path)?.FullName;
+        if (string.IsNullOrEmpty(gradleRoot))
+        {
+            return;
+        }
+
+        var gradlePropertiesPath = Path.Combine(gradleRoot, "gradle.properties");
+        if (!File.Exists(gradlePropertiesPath))
+        {
+            return;
+        }
+
+        var lines = File.ReadAllLines(gradlePropertiesPath).ToList();
+
+        // Ensure AndroidX is enabled, and disable Jetifier. Bugsnag is AndroidX-native and
+        // Jetifier can produce transformed jars that occasionally trigger D8 issues.
+        SetOrAdd(lines, "android.useAndroidX", "true");
+        SetOrAdd(lines, "android.enableJetifier", "false");
+        SetOrAdd(lines, "android.enableDexingArtifactTransform", "false");
+        
+        // Increase JVM heap to prevent StackOverflowError in D8 (especially Unity 2021)
+        SetOrAdd(lines, "org.gradle.jvmargs", "-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+HeapDumpOnOutOfMemoryError");
+
+        File.WriteAllLines(gradlePropertiesPath, lines);
+    }
+
+    private static void SetOrAdd(System.Collections.Generic.List<string> lines, string key, string value)
+    {
+        var prefix = key + "=";
+        for (var index = 0; index < lines.Count; index++)
+        {
+            if (lines[index].StartsWith(prefix, StringComparison.Ordinal))
+            {
+                lines[index] = prefix + value;
+                return;
+            }
+        }
+
+        lines.Add(prefix + value);
+    }
+}

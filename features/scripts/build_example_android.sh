@@ -44,6 +44,12 @@ cp "$example_source/ProjectSettings/EditorBuildSettings.asset" "$builder_path/Pr
 cp "$example_source/ProjectSettings/InputManager.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
 cp "$example_source/ProjectSettings/GraphicsSettings.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
 
+# Ensure the builder project directory exists and print contents for CI debugging
+mkdir -p "$builder_path"
+echo "Builder project path: $builder_path"
+echo "Contents of builder project (top-level):"
+ls -la "$builder_path" || true
+
 # Import Bugsnag package (example scripts depend on it)
 echo "Importing Bugsnag.unitypackage into builder project"
 set +e
