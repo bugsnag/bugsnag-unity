@@ -22,12 +22,6 @@ RENAMED_APK="example_${UNITY_VERSION:0:4}.apk"
 
 echo "Building Android example app with Unity $UNITY_VERSION"
 
-# Initialize ProjectSettings FIRST if needed (before any Unity operations)
-if [ ! -d "$builder_path/ProjectSettings" ]; then
-  echo "Creating ProjectSettings from example project (before import)"
-  cp -R "$example_source/ProjectSettings" "$builder_path/"
-fi
-
 # Import Bugsnag package (example scripts depend on it)
 echo "Importing Bugsnag.unitypackage into builder project"
 $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
