@@ -22,6 +22,13 @@ IPA_OUTPUT="example_${UNITY_VERSION:0:4}.ipa"
 
 echo "Building iOS example app with Unity $UNITY_VERSION"
 
+# Unity needs ProjectSettings to know about scenes and build settings
+# Copy minimal required ProjectSettings files only
+echo "Copying required ProjectSettings (EditorBuildSettings, InputManager)..."
+mkdir -p "$builder_path/ProjectSettings"
+cp "$example_source/ProjectSettings/EditorBuildSettings.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
+cp "$example_source/ProjectSettings/InputManager.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
+cp "$example_source/ProjectSettings/GraphicsSettings.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
 
 # Import Bugsnag package (example scripts depend on it)
 echo "Importing Bugsnag.unitypackage into builder project"

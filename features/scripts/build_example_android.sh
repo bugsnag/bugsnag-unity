@@ -22,6 +22,14 @@ RENAMED_APK="example_${UNITY_VERSION:0:4}.apk"
 
 echo "Building Android example app with Unity $UNITY_VERSION"
 
+# Unity needs ProjectSettings to know about scenes and build settings
+# Copy minimal required ProjectSettings files only
+echo "Copying required ProjectSettings (EditorBuildSettings, InputManager)..."
+mkdir -p "$builder_path/ProjectSettings"
+cp "$example_source/ProjectSettings/EditorBuildSettings.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
+cp "$example_source/ProjectSettings/InputManager.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
+cp "$example_source/ProjectSettings/GraphicsSettings.asset" "$builder_path/ProjectSettings/" 2>/dev/null || true
+
 # Import Bugsnag package (example scripts depend on it)
 echo "Importing Bugsnag.unitypackage into builder project"
 $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
@@ -52,7 +60,10 @@ $UNITY_PATH/Unity.app/Contents/MacOS/Unity \
 
 RESULT=$?
 if [ $RESULT -ne 0 ]; then 
-  echo "Android example build failed"
+  echo "Android example build failed with exit code $RESULT"
+  echo "=== Build log tail ==="
+  tail -100 "$log_file" || true
+  cp "$log_file" "$example_source/build_android_example.log" 2>/dev/null || true
   exit $RESULT
 fi
 
@@ -64,6 +75,9 @@ if [ ! -f "$builder_path/$OUTPUT_APK" ]; then
     cp "$GRADLE_APK" "$builder_path/$OUTPUT_APK"
   else
     echo "ERROR: APK not found at $builder_path/$OUTPUT_APK or $GRADLE_APK"
+    echo "=== Build log tail ==="
+    tail -100 "$log_file" || true
+    cp "$log_file" "$example_source/build_android_example.log" 2>/dev/null || true
     exit 1
   fi
 fi
