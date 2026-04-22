@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEditor.Android;
+using UnityEngine;
 
 public class ExampleGradlePostProcessor : IPostGenerateGradleAndroidProject
 {
@@ -29,7 +30,14 @@ public class ExampleGradlePostProcessor : IPostGenerateGradleAndroidProject
         // Jetifier can produce transformed jars that occasionally trigger D8 issues.
         SetOrAdd(lines, "android.useAndroidX", "true");
         SetOrAdd(lines, "android.enableJetifier", "false");
-        SetOrAdd(lines, "android.enableDexingArtifactTransform", "false");
+        // Only enable the alternative transform option for Unity 6000+ (AGP
+        // versions used by Unity 6000). Leave 2021/2022 behavior unchanged so
+        // CI builds for those editors are not affected.
+        var majorVersionString = Application.unityVersion.Split('.')[0];
+        if (int.TryParse(majorVersionString, out var majorVersion) && majorVersion >= 6000)
+        {
+            SetOrAdd(lines, "android.useFullClasspathForDexingTransform", "true");
+        }
         
         // Increase JVM heap to prevent StackOverflowError in D8 (especially Unity 2021)
         SetOrAdd(lines, "org.gradle.jvmargs", "-Xmx4096m -XX:MaxMetaspaceSize=1024m -XX:+HeapDumpOnOutOfMemoryError");
