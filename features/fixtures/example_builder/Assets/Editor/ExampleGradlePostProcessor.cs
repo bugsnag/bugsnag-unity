@@ -37,6 +37,25 @@ public class ExampleGradlePostProcessor : IPostGenerateGradleAndroidProject
         if (int.TryParse(majorVersionString, out var majorVersion) && majorVersion >= 6000)
         {
             SetOrAdd(lines, "android.useFullClasspathForDexingTransform", "true");
+
+            // Remove embedded kotlin stdlib jars from the generated Gradle
+            // project to avoid duplicate-class errors when AGP pulls a
+            // kotlin stdlib dependency (seen as KotlinNullPointerException
+            // duplicate-class errors during assemble). This only runs for
+            // Unity 6000+ to avoid changing older CI behavior.
+            try
+            {
+                var embeddedJars = Directory.GetFiles(gradleRoot, "kotlin-stdlib*.jar", SearchOption.AllDirectories);
+                foreach (var jar in embeddedJars)
+                {
+                    try { File.Delete(jar); }
+                    catch (Exception ex) { Debug.LogWarning($"Failed to delete embedded jar '{jar}': {ex.Message}"); }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Error while scanning for embedded kotlin stdlib jars: {ex.Message}");
+            }
         }
         
         // Increase JVM heap to prevent StackOverflowError in D8 (especially Unity 2021)
