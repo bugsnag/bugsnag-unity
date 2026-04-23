@@ -45,16 +45,23 @@ public class ExampleGradlePostProcessor : IPostGenerateGradleAndroidProject
             // Unity 6000+ to avoid changing older CI behavior.
             try
             {
-                var embeddedJars = Directory.GetFiles(gradleRoot, "kotlin-stdlib*.jar", SearchOption.AllDirectories);
-                foreach (var jar in embeddedJars)
+                // Remove commonly embedded Kotlin/JetBrains jars that can conflict
+                // with Gradle-resolved dependencies (e.g. kotlin-annotations.jar,
+                // kotlin-stdlib*.jar). Match several patterns to be resilient.
+                var patterns = new[] { "kotlin-stdlib*.jar", "kotlin-annotations*.jar", "kotlin-*.jar" };
+                foreach (var pattern in patterns)
                 {
-                    try { File.Delete(jar); }
-                    catch (Exception ex) { Debug.LogWarning($"Failed to delete embedded jar '{jar}': {ex.Message}"); }
+                    var embeddedJars = Directory.GetFiles(gradleRoot, pattern, SearchOption.AllDirectories);
+                    foreach (var jar in embeddedJars)
+                    {
+                        try { File.Delete(jar); }
+                        catch (Exception ex) { Debug.LogWarning($"Failed to delete embedded jar '{jar}': {ex.Message}"); }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Error while scanning for embedded kotlin stdlib jars: {ex.Message}");
+                Debug.LogWarning($"Error while scanning for embedded kotlin jars: {ex.Message}");
             }
         }
         
