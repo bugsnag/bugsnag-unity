@@ -290,6 +290,7 @@ steps:
             command:
               - "features/edm4u"
               - "--app=features/fixtures/EDM_Fixture/edm4u_2021.apk"
+              - "--app-activity=com.unity3d.player.UnityPlayerActivity"
               - "--farm=bb"
               - "--appium-version=2.19"
               - "--device=ANDROID_10|ANDROID_11|ANDROID_12|ANDROID_13"
