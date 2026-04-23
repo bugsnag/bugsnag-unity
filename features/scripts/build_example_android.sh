@@ -57,7 +57,8 @@ if [[ "$UNITY_VERSION" == 2021.* ]]; then
 else
   if [ -d "$example_source/Packages" ] || [ -f "$example_source/Packages/manifest.json" ]; then
     mkdir -p "$builder_path/Packages"
-    cp -R "$example_source/Packages/" "$builder_path/Packages/" 2>/dev/null || true
+    # Copy the contents of Packages/ into the builder project's Packages/
+    cp -R "$example_source/Packages/." "$builder_path/Packages/" 2>/dev/null || true
     echo "Packages copied:" && ls -la "$builder_path/Packages" || true
   else
     echo "No Packages/ found in example source"
