@@ -114,26 +114,17 @@ bundle exec maze-runner features/handled_errors.feature
 
 4. Make a pull request to merge the changes into `master`
 
-5. Once merged, tag the new release version, pushing the tag to GitHub using:
+5. Once merged, tag the master merge commit with the new release version, pushing the tag to GitHub. Tag example: `v1.2.3`
 
-   ```
-   rake plugin:release
-   ```
+6. Go to the buildkite build from the merge commit. Download the unitypackage, upm package and edm4u upm package from the build notifier artifacts section. 
 
-6. Wait. The CI build will build the new package and create a draft release.
-
-7. Verify that the release looks good, upload the unity packages to the release, copy in the changelog entry into the release notes and publish the draft.
+7. Verify locally that the release looks good, upload the unity package to the github release create from the new tag, copy in the changelog entry into the release notes and publish the release.
 
 #### Making the UPM release
 
-Once the UnityPackage release is confirmed a UPM release should be deployed
+Once the UnityPackage release is confirmed a UPM and EDM4U UPM release should be deployed
 
-1. Make sure that the package used in the github release is present in the root of the repo.
-
-2. Run:
-   ```
-   rake plugin:package
-   ```
+Replace the contents of each UPM repo with the contents of the package, push all changes to main with the commit message Release `v1.2.3` and then tag that commit with the tag `v1.2.3` and push the tag.
 
 #### Post-release
 
