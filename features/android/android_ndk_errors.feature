@@ -36,6 +36,12 @@ Feature: Android NDK crash
     And the event "exceptions.0.stacktrace.0.method" is not null
     And the error payload field "events.0.exceptions.0.stacktrace.0.frameAddress" starts with "0x"
 
+        # Thread validation - verify state is present for native threads
+    And the error payload field "events.0.threads" is a non-empty array
+    And the error payload field "events.0.threads.0.state" is not null
+    And the error payload field "events.0.threads.0.name" is not null
+    And the event "threads.0.id" matches "^[0-9]+$"
+
         #breadcrumbs
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "test"

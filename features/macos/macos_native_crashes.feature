@@ -23,6 +23,12 @@ Feature: MacOS native crashes
     And feature flags are included in the event
     And the event "breadcrumbs.0.name" equals "Bugsnag loaded"
     And the event "breadcrumbs.1.name" equals "test"
+
+    # Thread validation - verify state is present for native threads
+    And the error payload field "events.0.threads" is a non-empty array
+    And the error payload field "events.0.threads.0.state" is not null
+    And the error payload field "events.0.threads.0.name" is not null
+    And the event "threads.0.id" is not null
     And the event "user.id" equals "1"
     And the event "user.email" equals "2"
     And the event "user.name" equals "3"

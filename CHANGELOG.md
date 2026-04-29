@@ -2,9 +2,13 @@
 
 ## TBD
 
+### Enhancements
+Added `State` property to `IThread` interface to expose thread state information from native error reports
+[#981](https://github.com/bugsnag/bugsnag-unity/pull/981)
+
 ### Bug Fixes
 
-- Fix breadcrumb sanitization: emit bugsnag_unserializable_values as string[], preserve warnings.
+- Fix breadcrumb sanitization: emit bugsnag_unserializable_values as string[], preserve warnings
 [#975](https://github.com/bugsnag/bugsnag-unity/pull/975)
 
 - Fix Android context being overwritten by Activity
