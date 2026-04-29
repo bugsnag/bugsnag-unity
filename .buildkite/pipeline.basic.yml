@@ -45,6 +45,9 @@ steps:
       automatic:
         - exit_status: "*"
           limit: 1
+    concurrency: 5
+    concurrency_method: "eager"
+    concurrency_group: "unity-floating"
 
   - label: "Test UPM Package Import"
     depends_on: "build-unitypackage"
@@ -60,6 +63,9 @@ steps:
           - "upm-import.log"
     commands:
       - "features/scripts/test_upm_package_import.sh"
+    concurrency: 5
+    concurrency_method: "eager"
+    concurrency_group: "unity-floating"
 
   - label: "Run size impact reporting"
     depends_on: "build-unitypackage"

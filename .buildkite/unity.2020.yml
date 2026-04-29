@@ -29,6 +29,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       #
       # Build iOS test fixtures
@@ -43,7 +46,6 @@ steps:
           XCODE_VERSION: "15.3.0"
           UNITY_VERSION: *2020
           JAVA_VERSION: "17"
-
         plugins:
           artifacts#v1.9.0:
             download:
@@ -58,6 +60,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2020 MacOS test fixture"
         timeout_in_minutes: 10
@@ -66,7 +71,6 @@ steps:
           UNITY_VERSION: *2020
           XCODE_VERSION: "16.3.0"
           JAVA_VERSION: "17"
-
           # Python2 needed for WebGL to build
           EMSDK_PYTHON: "/Library/Frameworks/Python.framework/Versions/2.7/bin/python"
         plugins:
@@ -82,6 +86,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2020 WebGL test fixture"
         timeout_in_minutes: 20
@@ -105,6 +112,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2020 Windows test fixture"
         timeout_in_minutes: 30
@@ -127,3 +137,6 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
