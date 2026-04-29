@@ -52,6 +52,53 @@ steps:
             - exit_status: "*"
               limit: 1
 
+  - group: ":package: Build Unity 2022 example app"
+    steps:
+      - label: ":android: Build Android example app for Unity 2022"
+        # NOTE: This is a smoke test build - Bugsnag Android AARs are removed to avoid D8 crashes.
+        # The build verifies package import and C# compilation work correctly.
+        timeout_in_minutes: 20
+        key: "build-android-example-2022"
+        env:
+          UNITY_VERSION: *2022
+          JAVA_VERSION: "17"
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - "Bugsnag.unitypackage"
+            upload:
+              - "example/example_2022.apk"
+              - "example/build_android_example.log"
+        commands:
+          - "features/scripts/build_example_android.sh"
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+      - label: ":ios: Build iOS example app for Unity 2022"
+        timeout_in_minutes: 15
+        key: "build-ios-example-2022"
+        env:
+          UNITY_VERSION: *2022
+          XCODE_VERSION: "16.3.0"
+          JAVA_VERSION: "17"
+        plugins:
+          artifacts#v1.9.0:
+            download:
+              - "Bugsnag.unitypackage"
+            upload:
+              - "example/example_2022.ipa"
+              - "example/build_ios_example.log"
+        commands:
+          - "features/scripts/build_example_ios.sh"
+        retry:
+          automatic:
+            - exit_status: "*"
+              limit: 1
+
+  - group: ":hammer: Build Unity 2022 platform test fixtures"
+    steps:
       - label: "Build Unity 2022 MacOS fixture"
         timeout_in_minutes: 10
         key: "macos-2022-fixture"
