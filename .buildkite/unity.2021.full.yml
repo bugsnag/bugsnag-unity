@@ -27,6 +27,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: ":android: Build Android edm4u test fixture for Unity 2021"
         timeout_in_minutes: 20
@@ -48,6 +51,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: ":ios: Generate Xcode DEV project - Unity 2021"
         timeout_in_minutes: 10
@@ -70,6 +76,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: ":ios: Build DEV iOS test fixture for Unity 2021"
         timeout_in_minutes: 10
@@ -95,6 +104,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2021 MacOS test fixture"
         timeout_in_minutes: 10
@@ -116,6 +128,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2021 MacOS DEV test fixture"
         timeout_in_minutes: 30
@@ -137,6 +152,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2021 WebGL test fixture"
         timeout_in_minutes: 20
@@ -158,6 +176,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2021 DEV WebGL test fixture"
         timeout_in_minutes: 20
@@ -179,6 +200,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2021 Windows test fixture"
         timeout_in_minutes: 30
@@ -202,6 +226,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 2021 Windows DEV test fixture"
         timeout_in_minutes: 30
@@ -225,6 +252,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
   - group: ":test_tube: E2E tests Unity 2021"
     steps:

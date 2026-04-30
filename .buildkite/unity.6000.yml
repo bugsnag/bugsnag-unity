@@ -29,6 +29,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: ":ios: Build iOS test fixture for Unity 6000"
         timeout_in_minutes: 10
@@ -51,6 +54,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
   - group: ":package: Build Unity 6000 example app"
     steps:
@@ -121,6 +127,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 6000 WebGL test fixture"
         timeout_in_minutes: 10
@@ -142,6 +151,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
       - label: "Build Unity 6000 Windows test fixture"
         skip: "Pending PLAT-12072"
@@ -166,6 +178,9 @@ steps:
           automatic:
             - exit_status: "*"
               limit: 1
+        concurrency: 5
+        concurrency_group: "unity-floating"
+        concurrency_method: "eager"
 
   - group: ":test_tube: E2E tests Unity 6000"
     steps:
