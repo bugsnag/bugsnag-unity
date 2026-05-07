@@ -39,15 +39,23 @@ steps:
           "**Unit test coverage** — Line: $${LINE}% | Methods: $${METHOD}%" || true
 
         # Post a sticky PR comment on GitHub if this is a pull request
-        echo "BUILDKITE_PULL_REQUEST=$$BUILDKITE_PULL_REQUEST"
-        if [ -z "$$BUILDKITE_PULL_REQUEST" ] || [ "$$BUILDKITE_PULL_REQUEST" = "false" ]; then
-          echo "Not a pull request, skipping PR comment"
-          exit 0
-        fi
-
         REPO="$$BUILDKITE_REPO"
         REPO=$$(echo "$$REPO" | sed 's|https://github.com/||' | sed 's|git@github.com:||' | sed 's|\.git$$||')
+
         PR="$$BUILDKITE_PULL_REQUEST"
+        if [ -z "$$PR" ] || [ "$$PR" = "false" ]; then
+          # Direct branch push — look up the open PR for this branch via GitHub API
+          PR=$$(curl -s \
+            -H "Authorization: token $$DANGER_GITHUB_API_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$${REPO}/pulls?state=open&head=bugsnag:$$BUILDKITE_BRANCH" \
+            | python3 -c 'import json,sys; prs=json.load(sys.stdin); print(prs[0]["number"] if prs else "")' 2>/dev/null)
+        fi
+
+        if [ -z "$$PR" ]; then
+          echo "No open PR found for branch $$BUILDKITE_BRANCH, skipping PR comment"
+          exit 0
+        fi
         echo "Posting comment to repo=$${REPO} PR=$${PR}"
 
         MARKER="<!-- unit-test-coverage -->"
