@@ -92,15 +92,46 @@ def plugins_dir
   File.join(project_path, "Assets", "Bugsnag/Plugins")
 end
 
-def run_unit_tests
-  unity(
+def run_unit_tests(coverage: false)
+  coverage_results_path = File.join(current_directory, "coverage")
+  test_results_path = File.join(current_directory, "testResults.xml")
+  args = [
     "-runTests",
-    "-batchmode",
     "-projectPath",   project_path,
     "-testPlatform",  "EditMode",
-    "-testResults",   File.join(current_directory, "testResults.xml"),
-    quit: false                       
-  )
+    "-testResults",   test_results_path,
+  ]
+  if coverage
+    args += [
+      "-enableCodeCoverage",
+      "-debugCodeOptimization",
+      "-coverageResultsPath", coverage_results_path,
+      "-coverageOptions",
+      "generateAdditionalMetrics;generateBadgeReport;generateHtmlReport;assemblyFilters:+BugsnagUnity",
+    ]
+  end
+
+  # Unity -runTests exits with code 1 even when all tests pass (especially with
+  # coverage enabled). Check the XML results directly instead of relying on the
+  # exit code.
+  unity_cmd = [unity_executable, "-batchmode", "-logFile", "unity.log", "-nographics"] + args
+  system(*unity_cmd)
+  unity_exit = $?.exitstatus
+
+  if File.exist?(test_results_path)
+    require "rexml/document"
+    doc = REXML::Document.new(File.read(test_results_path))
+    failed = doc.root.attributes["failed"].to_i
+    if failed > 0
+      puts File.read("unity.log") if File.exist?("unity.log")
+      raise "Unity unit tests failed: #{failed} failure(s). See testResults.xml for details."
+    end
+    # Tests passed (XML exists and failed == 0) — ignore Unity's exit code
+  elsif unity_exit != 0
+    # No XML produced and Unity exited non-zero — genuine crash
+    puts File.read("unity.log") if File.exist?("unity.log")
+    raise "Unity unit tests did not produce testResults.xml (exit #{unity_exit}) — Unity may have crashed."
+  end
 end
 
 
@@ -529,7 +560,7 @@ namespace :test do
 
   desc "Run In Editor Unit Tests"
   task :run_editor_unit_tests do
-    run_unit_tests
+    run_unit_tests(coverage: true)
   end
 
   namespace :android do
