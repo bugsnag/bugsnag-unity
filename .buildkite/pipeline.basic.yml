@@ -24,7 +24,7 @@ steps:
     commands:
       - "rake test:run_editor_unit_tests"
       - |
-        set +e
+        set -euo pipefail
         SUMMARY="coverage/Report/Summary.xml"
         if [ ! -f "$$SUMMARY" ]; then echo "No coverage summary found, skipping"; exit 0; fi
 
@@ -34,7 +34,7 @@ steps:
         METHOD=$${METHOD:-N/A}
         echo "Coverage: Line=$${LINE}% Methods=$${METHOD}%"
 
-        # Buildkite annotation
+        # Non-critical: annotation failure should not fail the build
         buildkite-agent annotate --style info --context coverage \
           "**Unit test coverage** — Line: $${LINE}% | Methods: $${METHOD}%" || true
 
@@ -45,11 +45,11 @@ steps:
         PR="$$BUILDKITE_PULL_REQUEST"
         if [ -z "$$PR" ] || [ "$$PR" = "false" ]; then
           # Direct branch push — look up the open PR for this branch via GitHub API
-          PR=$$(curl -s \
+          PR=$$(curl -sf \
             -H "Authorization: token $$DANGER_GITHUB_API_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/$${REPO}/pulls?state=open&head=bugsnag:$$BUILDKITE_BRANCH" \
-            | python3 -c 'import json,sys; prs=json.load(sys.stdin); print(prs[0]["number"] if prs else "")' 2>/dev/null)
+            | python3 -c 'import json,sys; prs=json.load(sys.stdin); print(prs[0]["number"] if prs else "")')
         fi
 
         if [ -z "$$PR" ]; then
@@ -62,26 +62,25 @@ steps:
         BODY=$$(printf '%s\n## :bar_chart: Unit Test Coverage\n\n| Lines | Methods |\n|-------|---------|\n| %s%% | %s%% |' \
           "$$MARKER" "$$LINE" "$$METHOD")
 
-        # Find existing comment with our marker
-        COMMENT_ID=$$(curl -s \
+        JSON_BODY=$$(python3 -c 'import json,sys; print(json.dumps({"body": sys.argv[1]}))' "$$BODY")
+
+        # Find existing comment with our marker — non-critical if this lookup fails
+        COMMENT_ID=$$(curl -sf \
           -H "Authorization: token $$DANGER_GITHUB_API_TOKEN" \
           -H "Accept: application/vnd.github+json" \
           "https://api.github.com/repos/$${REPO}/issues/$${PR}/comments" \
-          | python3 -c 'import json,sys; comments=json.load(sys.stdin); print(next((str(c["id"]) for c in comments if c.get("body","").startswith("<!-- unit-test-coverage -->")), ""))' 2>/dev/null)
-        echo "Existing comment ID: '$${COMMENT_ID}'"
-
-        JSON_BODY=$$(python3 -c 'import json,sys; print(json.dumps({"body": sys.argv[1]}))' "$$BODY")
+          | python3 -c 'import json,sys; comments=json.load(sys.stdin); print(next((str(c["id"]) for c in comments if c.get("body","").startswith("<!-- unit-test-coverage -->")), ""))') || COMMENT_ID=""
 
         if [ -n "$$COMMENT_ID" ]; then
           echo "Updating existing comment $${COMMENT_ID}"
-          curl -s -X PATCH \
+          curl -sf -X PATCH \
             -H "Authorization: token $$DANGER_GITHUB_API_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/$${REPO}/issues/comments/$${COMMENT_ID}" \
             -d "$$JSON_BODY"
         else
           echo "Creating new comment"
-          curl -s -X POST \
+          curl -sf -X POST \
             -H "Authorization: token $$DANGER_GITHUB_API_TOKEN" \
             -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/$${REPO}/issues/$${PR}/comments" \
