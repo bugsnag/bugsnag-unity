@@ -181,11 +181,40 @@ namespace BugsnagUnity
 
         public LogTypeSeverityMapping LogTypeSeverityMapping { get; } = new LogTypeSeverityMapping();
 
-        public string ScriptingBackend;
+        public string ScriptingBackend = DetectScriptingBackend();
 
-        public string DotnetScriptingRuntime;
+        public string DotnetScriptingRuntime = DetectDotnetScriptingRuntime();
 
-        public string DotnetApiCompatibility;
+        public string DotnetApiCompatibility = DetectDotnetApiCompatibility();
+
+        private static string DetectScriptingBackend()
+        {
+#if ENABLE_MONO
+            return "Mono";
+#elif ENABLE_IL2CPP
+            return "IL2CPP";
+#else
+            return "Unknown";
+#endif
+        }
+
+        private static string DetectDotnetScriptingRuntime()
+        {
+#if NET_4_6
+            return ".NET 4.6 equivalent";
+#else
+            return ".NET 3.5 equivalent";
+#endif
+        }
+
+        private static string DetectDotnetApiCompatibility()
+        {
+#if NET_2_0_SUBSET
+            return ".NET 2.0 Subset";
+#else
+            return ".NET 2.0";
+#endif
+        }
 
         public EnabledErrorTypes EnabledErrorTypes = new EnabledErrorTypes();
 
