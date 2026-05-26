@@ -12,7 +12,7 @@ namespace BugsnagUnity
 
         private static List<PendingPayload> _pendingPayloads = new List<PendingPayload>();
 
-        private CacheManager _cacheManager;
+        private ICacheManager _cacheManager;
 
         private class PendingPayload
         {
@@ -26,7 +26,7 @@ namespace BugsnagUnity
             }
         }
 
-        internal PayloadManager(CacheManager cacheManager)
+        internal PayloadManager(ICacheManager cacheManager)
         {
             _cacheManager = cacheManager;
         }

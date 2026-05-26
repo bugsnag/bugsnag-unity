@@ -406,6 +406,28 @@ namespace BugsnagUnityTests
         }
 
         [Test]
+        public void AddMetadata_IDictionary_AllKeysCanBeRetrieved()
+        {
+            var config = new Configuration("foo");
+            var dict = new Dictionary<string, object>
+            {
+                { "key1", "val1" },
+                { "key2", 42 }
+            };
+            config.AddMetadata("section", (IDictionary<string, object>)dict);
+            Assert.AreEqual("val1", config.GetMetadata("section", "key1"));
+            Assert.AreEqual(42, config.GetMetadata("section", "key2"));
+        }
+
+        [Test]
+        public void GetAssemblyName_ReturnsNonNull()
+        {
+            var name = Configuration.GetAssemblyName();
+            Assert.IsNotNull(name);
+            Assert.IsNotNull(name.Name);
+        }
+
+        [Test]
         public void ClearMetadata_Section_RemovesAllKeysInSection()
         {
             var config = new Configuration("foo");
@@ -463,6 +485,110 @@ namespace BugsnagUnityTests
             LogAssert.Expect(LogType.Warning, new System.Text.RegularExpressions.Regex(".*SessionEndpoint.*"));
             cfg.Configure("foo");
             Assert.IsFalse(cfg.IsConfigured);
+        }
+    }
+
+    [TestFixture]
+    public class EndpointConfigurationTests
+    {
+        [Test]
+        public void Configure_DefaultApiKey_SetsNotifyEndpoint()
+        {
+            var ec = new EndpointConfiguration();
+            ec.Configure("my-api-key-1234");
+            Assert.AreEqual("https://notify.bugsnag.com", ec.NotifyEndpoint.ToString().TrimEnd('/'));
+        }
+
+        [Test]
+        public void Configure_DefaultApiKey_SetsSessionEndpoint()
+        {
+            var ec = new EndpointConfiguration();
+            ec.Configure("my-api-key-1234");
+            Assert.AreEqual("https://sessions.bugsnag.com", ec.SessionEndpoint.ToString().TrimEnd('/'));
+        }
+
+        [Test]
+        public void Configure_SetsIsConfiguredTrue()
+        {
+            var ec = new EndpointConfiguration();
+            ec.Configure("regular-key");
+            Assert.IsTrue(ec.IsConfigured);
+        }
+
+        [Test]
+        public void Configure_SecondaryApiKey_SetsSecondaryNotifyEndpoint()
+        {
+            var ec = new EndpointConfiguration();
+            ec.Configure("00000abc-key");
+            StringAssert.Contains("smartbear.com", ec.NotifyEndpoint.ToString());
+        }
+
+        [Test]
+        public void Configure_SecondaryApiKey_SetsSecondarySessionEndpoint()
+        {
+            var ec = new EndpointConfiguration();
+            ec.Configure("00000abc-key");
+            StringAssert.Contains("smartbear.com", ec.SessionEndpoint.ToString());
+        }
+
+        [Test]
+        public void Configure_CustomEndpoints_UsesCustomNotify()
+        {
+            var ec = new EndpointConfiguration("https://custom.notify.example.com", "https://custom.sessions.example.com");
+            ec.Configure("any-key");
+            Assert.AreEqual("https://custom.notify.example.com", ec.NotifyEndpoint.ToString().TrimEnd('/'));
+        }
+
+        [Test]
+        public void Configure_CustomEndpoints_UsesCustomSession()
+        {
+            var ec = new EndpointConfiguration("https://custom.notify.example.com", "https://custom.sessions.example.com");
+            ec.Configure("any-key");
+            Assert.AreEqual("https://custom.sessions.example.com", ec.SessionEndpoint.ToString().TrimEnd('/'));
+        }
+
+        [Test]
+        public void Configure_OnlyNotifyCustomised_IsNotConfigured()
+        {
+            var ec = new EndpointConfiguration("https://custom.notify.example.com", "");
+            ec.Configure("any-key");
+            Assert.IsFalse(ec.IsConfigured);
+        }
+
+        [Test]
+        public void Configure_OnlySessionCustomised_IsNotConfigured()
+        {
+            var ec = new EndpointConfiguration("", "https://custom.sessions.example.com");
+            ec.Configure("any-key");
+            Assert.IsFalse(ec.IsConfigured);
+        }
+
+        [Test]
+        public void Configure_CalledTwice_DoesNotReconfigure()
+        {
+            var ec = new EndpointConfiguration();
+            ec.Configure("first-key");
+            var original = ec.NotifyEndpoint;
+            ec.Configure("00000different-key");
+            Assert.AreEqual(original, ec.NotifyEndpoint);
+        }
+
+        [Test]
+        public void Configure_EmptyApiKey_DoesNotConfigure()
+        {
+            var ec = new EndpointConfiguration();
+            ec.Configure("");
+            Assert.IsFalse(ec.IsConfigured);
+        }
+
+        [Test]
+        public void Clone_ReturnsNewInstance()
+        {
+            var ec = new EndpointConfiguration();
+            ec.Configure("key");
+            var clone = ec.Clone();
+            Assert.AreNotSame(ec, clone);
+            Assert.AreEqual(ec.NotifyEndpoint, clone.NotifyEndpoint);
         }
     }
 }
