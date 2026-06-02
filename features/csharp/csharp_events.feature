@@ -222,6 +222,16 @@ Feature: csharp events
     And the exception "message" equals "GroupingDiscriminator-3"
     And the event "groupingDiscriminator" equals "Callback GroupingDiscriminator"
 
+  @windows_only
+  Scenario: Windows device state includes freeDisk and freeMemory
+    When I run the game in the "DeviceStateSmokeTest" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "errorClass" equals "Exception"
+    And the exception "message" equals "DeviceStateSmokeTest"
+    And the error payload field "events.0.device.freeDisk" is greater than 0
+    And the error payload field "events.0.device.freeMemory" is greater than 0
+
 
     
 
