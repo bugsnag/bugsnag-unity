@@ -10,9 +10,8 @@ bugsnag-osx/bugsnag-osx/Bugsnag.framework
 xcuserdata
 *.log
 *.so
-build.log
 *.unitypackage
-.vs
+*.vs
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -27,8 +26,6 @@ tools/
 TestResult.xml
 .idea/
 bugsnag-cocoa-build/
-unity.log
-unity_import.log
 bugsnag-android-unity/.cxx
 features/**/*.zip
 *.ipa
@@ -37,7 +34,6 @@ features/**/*.zip
 *.csproj
 **/maze_runner/output/
 **/maze_runner/SwitchIL2CPPCache/
-**/maze_runner/Mazerunner.log
 **/maze_output
 PackageBranch
 example/Assets/Bugsnag
@@ -48,7 +44,6 @@ upm-tools/UPMImportProject/Library
 upm-tools/UPMImportProject/Assets/Bugsnag
 Bugsnag.meta
 unity/PackageProject/Assets/Bugsnag
-nunit-agent*.log
 features/fixtures/maze_runner/Assets/Bugsnag
 features/fixtures/minimalapp/Assets/Bugsnag
 features/fixtures/minimalapp/minimal_with_xcode
