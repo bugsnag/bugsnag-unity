@@ -936,6 +936,9 @@ const char * bugsnag_retrieveAppData() {
     if (app.bundleVersion != nil) {
         [appDictionary setObject:app.bundleVersion forKey:@"bundleVersion"];
     }
+    if (app.dsymUuid != nil) {
+        [appDictionary setObject:app.dsymUuid forKey:@"dsymUuid"];
+    }
     if (app.id != nil) {
         [appDictionary setObject:app.id forKey:@"id"];
     }
