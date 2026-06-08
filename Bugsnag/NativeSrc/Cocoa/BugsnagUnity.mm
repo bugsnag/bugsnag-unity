@@ -925,6 +925,18 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
     }];
 }
 
+static NSString * getUnityFrameworkUuid() {
+    std::lock_guard<std::mutex> guard(allImagesMutex);
+    for (const auto& image : allImages) {
+        if (image.FileName && strstr(image.FileName, "UnityFramework") != nullptr) {
+            if (image.UuidBytes != NULL) {
+                return [[[NSUUID alloc] initWithUUIDBytes:image.UuidBytes] UUIDString];
+            }
+        }
+    }
+    return nil;
+}
+
 const char * bugsnag_retrieveAppData() {
     BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
     if (app == nil) {
@@ -936,8 +948,9 @@ const char * bugsnag_retrieveAppData() {
     if (app.bundleVersion != nil) {
         [appDictionary setObject:app.bundleVersion forKey:@"bundleVersion"];
     }
-    if (app.dsymUuid != nil) {
-        [appDictionary setObject:app.dsymUuid forKey:@"dsymUuid"];
+    NSString *dsymUuid = getUnityFrameworkUuid() ?: app.dsymUuid;
+    if (dsymUuid != nil) {
+        [appDictionary setObject:@[dsymUuid] forKey:@"dsymUUIDs"];
     }
     if (app.id != nil) {
         [appDictionary setObject:app.id forKey:@"id"];

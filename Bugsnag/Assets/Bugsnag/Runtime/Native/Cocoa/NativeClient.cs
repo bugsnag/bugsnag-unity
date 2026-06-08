@@ -267,6 +267,14 @@ namespace BugsnagUnity
                         app.Add(pair.Key, stringValue == "true");
                     }
                 }
+                else if (pair.Key == "dsymUUIDs")
+                {
+                    var uuids = pair.Value as JsonArray;
+                    if (uuids != null && uuids.Count > 0)
+                    {
+                        app.DsymUuid = uuids[0] as string;
+                    }
+                }
                 else
                 {
                     app.Add(pair.Key, pair.Value);
