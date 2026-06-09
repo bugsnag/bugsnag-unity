@@ -128,6 +128,15 @@ Feature: csharp events
     And the event "breadcrumbs.1.metaData.dictionary.stringArray.0" equals "12345678901234567890***80 CHARS TRUNCATED***"
     And the event "breadcrumbs.1.metaData.stringDictionary.testKey" equals "12345678901234567890***80 CHARS TRUNCATED***"
 
+  Scenario: Scripting backend fields are auto-populated for manual start
+    When I run the game in the "ScriptingBackendPopulated" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "ScriptingBackendPopulated"
+    And the event "device.runtimeVersions.unityScriptingBackend" is not null
+    And the event "device.runtimeVersions.dotnetScriptingRuntime" is not null
+    And the event "device.runtimeVersions.dotnetApiCompatibility" is not null
+
   @skip_cocoa #not supported on these platforms
   Scenario: GenerateAnonymousId
     When I run the game in the "GenerateAnonymousId" state

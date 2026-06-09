@@ -3,8 +3,12 @@
 ## TBD
 
 ### Enhancements
-Added `State` property to `IThread` interface to expose thread state information from native error reports
+- Added `State` property to `IThread` interface to expose thread state information from native error reports
 [#981](https://github.com/bugsnag/bugsnag-unity/pull/981)
+
+- Auto-detect `ScriptingBackend`, `DotnetScriptingRuntime`, and `DotnetApiCompatibility` on `Configuration` initialisation
+[#992](https://github.com/bugsnag/bugsnag-unity/pull/992)
+
 
 ### Bug Fixes
 
