@@ -84,6 +84,7 @@ namespace BugsnagUnity.Payload
             }
             catch
             {
+                // Best effort to populate free memory, ignore failures.
             }
         }
 
@@ -108,6 +109,7 @@ namespace BugsnagUnity.Payload
             }
             catch
             {
+                // Best effort to populate free disk, ignore failures.
             }
         }
 
