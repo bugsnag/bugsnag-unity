@@ -6,6 +6,7 @@ using UnityEngine;
 #if ENABLE_WINMD_SUPPORT && UNITY_WSA && !UNITY_EDITOR
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.System;
 #endif
@@ -94,15 +95,8 @@ namespace BugsnagUnity.Payload
         {
             try
             {
-                var properties = Task.Run(async () =>
-                    await ApplicationData.Current.LocalFolder.Properties
-                        .RetrievePropertiesAsync(new[] { UWP_SYSTEM_FREE_SPACE })
-                        .AsTask()
-                ).GetAwaiter().GetResult();
-
-                if (properties != null
-                    && properties.TryGetValue(UWP_SYSTEM_FREE_SPACE, out object freeDisk)
-                    && TryConvertToLong(freeDisk, out long freeDiskValue))
+                if (TryGetUwpFreeDisk(Package.Current.InstalledLocation, out long freeDiskValue)
+                    || TryGetUwpFreeDisk(ApplicationData.Current.LocalFolder, out freeDiskValue))
                 {
                     FreeDisk = freeDiskValue;
                 }
@@ -110,6 +104,28 @@ namespace BugsnagUnity.Payload
             catch
             {
                 // Best effort to populate free disk, ignore failures.
+            }
+        }
+
+        private static bool TryGetUwpFreeDisk(StorageFolder folder, out long freeDisk)
+        {
+            freeDisk = 0;
+
+            try
+            {
+                var properties = Task.Run(async () =>
+                    await folder.Properties
+                        .RetrievePropertiesAsync(new[] { UWP_SYSTEM_FREE_SPACE })
+                        .AsTask()
+                ).GetAwaiter().GetResult();
+
+                return properties != null
+                    && properties.TryGetValue(UWP_SYSTEM_FREE_SPACE, out object freeDiskValue)
+                    && TryConvertToLong(freeDiskValue, out freeDisk);
+            }
+            catch
+            {
+                return false;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿#if (UNITY_STANDALONE_WIN && !UNITY_EDITOR) || BSG_WIN_DEV
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using BugsnagUnity.Payload;
 using UnityEngine;
@@ -69,15 +70,18 @@ namespace BugsnagUnity
                 device.FreeMemory = (long)memStatus.ullAvailPhys;
             }
 
-            // This is generally the main drive on a Windows machine
-            // A future enhancement would be to determine which drive the application
-            // is running on and use that drive letter instead of defaulting to C
-            if (GetDiskFreeSpaceEx(@"C:\",
+            var applicationDrive = Path.GetPathRoot(Application.dataPath);
+            if (string.IsNullOrEmpty(applicationDrive))
+            {
+                applicationDrive = @"C:\";
+            }
+
+            if (GetDiskFreeSpaceEx(applicationDrive,
                                               out ulong freeBytesAvailable,
                                               out ulong totalNumberOfBytes,
                                               out ulong totalNumberOfFreeBytes))
             {
-                device.FreeDisk = (long)freeBytesAvailable;
+                device.FreeDisk = (long)totalNumberOfFreeBytes;
             }
         }
 
