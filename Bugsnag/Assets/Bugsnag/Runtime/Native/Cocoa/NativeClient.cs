@@ -24,7 +24,11 @@ namespace BugsnagUnity
         private bool _registeredForSessionCallbacks;
 
         private LoadedImages loadedImages = new LoadedImages();
-
+        private const string DsymUuidsKey = "dsymUUIDs";
+        private const string IsLaunchingKey = "isLaunching";
+        private const string JailbrokenKey = "jailbroken";
+        private const string OsBuildKey = "osBuild";
+        
         public NativeClient(Configuration configuration)
         {
             _instance = this;
@@ -259,7 +263,7 @@ namespace BugsnagUnity
             var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
             foreach (var pair in dictionary)
             {
-                if (pair.Key == "isLaunching")
+                if (pair.Key == IsLaunchingKey)
                 {
                     if (pair.Value != null)
                     {
@@ -267,7 +271,7 @@ namespace BugsnagUnity
                         app.Add(pair.Key, stringValue == "true");
                     }
                 }
-                else if (pair.Key == "dsymUUIDs")
+                else if (pair.Key == DsymUuidsKey)
                 {
                     var uuids = pair.Value as JsonArray;
                     if (uuids != null && uuids.Count > 0)
@@ -293,7 +297,7 @@ namespace BugsnagUnity
             var dictionary = ((JsonObject)SimpleJson.DeserializeObject(result)).GetDictionary();
             foreach (var pair in dictionary)
             {
-                if (pair.Key == "jailbroken")
+                if (pair.Key == JailbrokenKey)
                 {
                     if (pair.Value != null)
                     {
@@ -301,7 +305,7 @@ namespace BugsnagUnity
                         device.Add(pair.Key, stringValue == "true");
                     }
                 }
-                else if (pair.Key == "osBuild")
+                else if (pair.Key == OsBuildKey)
                 {
                     device.RuntimeVersions.AddToPayload(pair.Key, pair.Value);
                 }
