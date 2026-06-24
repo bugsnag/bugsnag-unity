@@ -4,6 +4,24 @@
 #import <mutex>
 #import <vector>
 
+static NSString * const kIsLaunchingKey = @"isLaunching";
+static NSString * const kDsymUuidsKey = @"dsymUUIDs";
+static NSString * const kJailbrokenKey = @"jailbroken";
+static NSString * const kOsBuildKey = @"osBuild";
+static NSString * const kBundleVersionKey = @"bundleVersion";
+static NSString * const kIdKey = @"id";
+static NSString * const kTypeKey = @"type";
+static NSString * const kVersionKey = @"version";
+static NSString * const kFreeDiskKey = @"freeDisk";
+static NSString * const kFreeMemoryKey = @"freeMemory";
+static NSString * const kLocaleKey = @"locale";
+static NSString * const kManufacturerKey = @"manufacturer";
+static NSString * const kModelKey = @"model";
+static NSString * const kModelNumberKey = @"modelNumber";
+static NSString * const kOsNameKey = @"osName";
+static NSString * const kOsVersionKey = @"osVersion";
+static NSString * const kUnityFrameworkName = @"UnityFramework";
+
 extern "C" {
 
 struct bugsnag_user {
@@ -925,6 +943,18 @@ void bugsnag_retrieveBreadcrumbs(const void *managedBreadcrumbs, void (*breadcru
     }];
 }
 
+static NSString * getUnityFrameworkUuid() {
+    std::lock_guard<std::mutex> guard(allImagesMutex);
+    for (const auto& image : allImages) {
+        if (image.FileName && strstr(image.FileName, [kUnityFrameworkName UTF8String]) != nullptr) {
+            if (image.UuidBytes != NULL) {
+                return [[[NSUUID alloc] initWithUUIDBytes:image.UuidBytes] UUIDString];
+            }
+        }
+    }
+    return nil;
+}
+
 const char * bugsnag_retrieveAppData() {
     BugsnagAppWithState *app = [Bugsnag.client generateAppWithState:BSGGetSystemInfo()];
     if (app == nil) {
@@ -934,17 +964,21 @@ const char * bugsnag_retrieveAppData() {
     NSMutableDictionary *appDictionary = [NSMutableDictionary dictionary];
 
     if (app.bundleVersion != nil) {
-        [appDictionary setObject:app.bundleVersion forKey:@"bundleVersion"];
+        [appDictionary setObject:app.bundleVersion forKey:kBundleVersionKey];
+    }
+    NSString *dsymUuid = getUnityFrameworkUuid() ?: app.dsymUuid;
+    if (dsymUuid != nil) {
+        [appDictionary setObject:@[dsymUuid] forKey:kDsymUuidsKey];
     }
     if (app.id != nil) {
-        [appDictionary setObject:app.id forKey:@"id"];
+        [appDictionary setObject:app.id forKey:kIdKey];
     }
-    [appDictionary setObject:(app.isLaunching ? @"true" : @"false") forKey:@"isLaunching"];
+    [appDictionary setObject:(app.isLaunching ? @"true" : @"false") forKey:kIsLaunchingKey];
     if (app.type != nil) {
-        [appDictionary setObject:app.type forKey:@"type"];
+        [appDictionary setObject:app.type forKey:kTypeKey];
     }
     if (app.version != nil) {
-        [appDictionary setObject:app.version forKey:@"version"];
+        [appDictionary setObject:app.version forKey:kVersionKey];
     }
 
     return getJson(appDictionary);
@@ -964,21 +998,21 @@ const char * bugsnag_retrieveDeviceData(const void *deviceData, void (*callback)
     BugsnagDeviceWithState *device = [Bugsnag.client generateDeviceWithState:BSGGetSystemInfo()];
     NSMutableDictionary *deviceDictionary = [[NSMutableDictionary alloc] init];
 
-    if (device.freeDisk != nil) [deviceDictionary setObject:device.freeDisk forKey:@"freeDisk"];
-    if (device.freeMemory != nil) [deviceDictionary setObject:device.freeMemory forKey:@"freeMemory"];
-    if (device.id != nil) [deviceDictionary setObject:device.id forKey:@"id"];
+    if (device.freeDisk != nil) [deviceDictionary setObject:device.freeDisk forKey:kFreeDiskKey];
+    if (device.freeMemory != nil) [deviceDictionary setObject:device.freeMemory forKey:kFreeMemoryKey];
+    if (device.id != nil) [deviceDictionary setObject:device.id forKey:kIdKey];
     if (device.jailbroken) {
-        [deviceDictionary setObject:@"true" forKey:@"jailbroken"];
+        [deviceDictionary setObject:@"true" forKey:kJailbrokenKey];
     } else {
-        [deviceDictionary setObject:@"false" forKey:@"jailbroken"];
+        [deviceDictionary setObject:@"false" forKey:kJailbrokenKey];
     }
-    if (device.locale != nil) [deviceDictionary setObject:device.locale forKey:@"locale"];
-    if (device.manufacturer != nil) [deviceDictionary setObject:device.manufacturer forKey:@"manufacturer"];
-    if (device.model != nil) [deviceDictionary setObject:device.model forKey:@"model"];
-    if (device.modelNumber != nil) [deviceDictionary setObject:device.modelNumber forKey:@"modelNumber"];
-    if (device.runtimeVersions[@"osBuild"] != nil) [deviceDictionary setObject:device.runtimeVersions[@"osBuild"] forKey:@"osBuild"];
-    if (device.osName != nil) [deviceDictionary setObject:device.osName forKey:@"osName"];
-    if (device.osVersion != nil) [deviceDictionary setObject:device.osVersion forKey:@"osVersion"];
+    if (device.locale != nil) [deviceDictionary setObject:device.locale forKey:kLocaleKey];
+    if (device.manufacturer != nil) [deviceDictionary setObject:device.manufacturer forKey:kManufacturerKey];
+    if (device.model != nil) [deviceDictionary setObject:device.model forKey:kModelKey];
+    if (device.modelNumber != nil) [deviceDictionary setObject:device.modelNumber forKey:kModelNumberKey];
+    if (device.runtimeVersions[kOsBuildKey] != nil) [deviceDictionary setObject:device.runtimeVersions[kOsBuildKey] forKey:kOsBuildKey];
+    if (device.osName != nil) [deviceDictionary setObject:device.osName forKey:kOsNameKey];
+    if (device.osVersion != nil) [deviceDictionary setObject:device.osVersion forKey:kOsVersionKey];
 
     return getJson(deviceDictionary);
 }

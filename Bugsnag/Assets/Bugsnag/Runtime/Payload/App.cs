@@ -15,7 +15,7 @@ namespace BugsnagUnity.Payload
         private const string BUILD_UUID_KEY = "buildUuid";
         private const string BUNDLE_VERSION_KEY = "bundleVersion";
         private const string CODE_BUNDLE_ID = "codeBundleId";
-        private const string DSYM_UUID_KEY = "dsymUuid";
+        private const string DSYM_UUIDS_KEY = "dsymUUIDs";
         private const string ID_KEY = "id";
         private const string RELEASESTAGE_KEY = "releaseStage";
         private const string TYPE_KEY = "type";
@@ -49,8 +49,12 @@ namespace BugsnagUnity.Payload
 
         public string? DsymUuid
         {
-            get => (string?)Get(DSYM_UUID_KEY);
-            set => Add(DSYM_UUID_KEY, value);
+            get
+            {
+                var list = Get(DSYM_UUIDS_KEY) as List<string>;
+                return list != null && list.Count > 0 ? list[0] : null;
+            }
+            set => Add(DSYM_UUIDS_KEY, value != null ? new List<string> { value } : null);
         }
 
         public string? Id
