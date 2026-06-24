@@ -3,7 +3,7 @@
 ## TBD
 
 ### Enhancements
-Added `State` property to `IThread` interface to expose thread state information from native error reports
+- Added `State` property to `IThread` interface to expose thread state information from native error reports
 [#981](https://github.com/bugsnag/bugsnag-unity/pull/981)
 
 ### Bug Fixes
@@ -13,6 +13,9 @@ Added `State` property to `IThread` interface to expose thread state information
 
 - Fix Android context being overwritten by Activity
 [#977](https://github.com/bugsnag/bugsnag-unity/pull/977)
+
+- Added `DsymUUID` in managed event app metadata
+[#997](https://github.com/bugsnag/bugsnag-unity/pull/997)
 
 ## 8.9.1 (2026-04-01)
 
