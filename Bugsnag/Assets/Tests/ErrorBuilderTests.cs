@@ -522,6 +522,39 @@ UnityEngine.EventSystems.EventSystem:Update()";
             while (enumerator.MoveNext()) count++;
             Assert.AreEqual(1, count);
         }
+
+        [Test]
+        public void StackTrace_FiltersRethrowMarker()
+        {
+            // Test that rethrow markers are filtered out to prevent IL2CPP off-by-one alignment issues
+            var trace = @"  at AnimationTask.DoTick () [0x0] in AnimationTask.cs:13
+--- End of stack trace from previous location where exception was thrown ---
+  at TestRethrow.ThrowNullReferenceAsync() [0x0] in TestRethrow.cs:77
+  at ClassManager.Update () [0x0] in ClassManager.cs:35";
+            var st = new PayloadStackTrace(trace);
+            
+            // Should only contain 3 frames, not 4 (rethrow marker should be filtered)
+            Assert.AreEqual(3, st.StackTraceLines.Length);
+            Assert.AreEqual("AnimationTask.DoTick()", st.StackTraceLines[0].Method);
+            Assert.AreEqual("TestRethrow.ThrowNullReferenceAsync()", st.StackTraceLines[1].Method);
+            Assert.AreEqual("ClassManager.Update()", st.StackTraceLines[2].Method);
+        }
+
+        [Test]
+        public void StackTrace_FiltersMultipleRethrowMarkers()
+        {
+            var trace = @"  at Method1 () [0x0] in File1.cs:1
+--- End of stack trace from previous location where exception was thrown ---
+  at Method2 () [0x0] in File2.cs:2
+--- End of inner exception stack trace ---
+  at Method3 () [0x0] in File3.cs:3";
+            var st = new PayloadStackTrace(trace);
+            
+            Assert.AreEqual(3, st.StackTraceLines.Length);
+            Assert.AreEqual("Method1()", st.StackTraceLines[0].Method);
+            Assert.AreEqual("Method2()", st.StackTraceLines[1].Method);
+            Assert.AreEqual("Method3()", st.StackTraceLines[2].Method);
+        }
     }
 
     [TestFixture]
