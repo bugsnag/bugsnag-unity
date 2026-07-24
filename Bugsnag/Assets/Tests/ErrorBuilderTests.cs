@@ -532,7 +532,6 @@ UnityEngine.EventSystems.EventSystem:Update()";
   at TestRethrow.ThrowNullReferenceAsync() [0x0] in TestRethrow.cs:77
   at ClassManager.Update () [0x0] in ClassManager.cs:35";
             var st = new PayloadStackTrace(trace);
-            
             // Should only contain 3 frames, not 4 (rethrow marker should be filtered)
             Assert.AreEqual(3, st.StackTraceLines.Length);
             Assert.AreEqual("AnimationTask.DoTick()", st.StackTraceLines[0].Method);
@@ -549,7 +548,6 @@ UnityEngine.EventSystems.EventSystem:Update()";
 --- End of inner exception stack trace ---
   at Method3 () [0x0] in File3.cs:3";
             var st = new PayloadStackTrace(trace);
-            
             Assert.AreEqual(3, st.StackTraceLines.Length);
             Assert.AreEqual("Method1()", st.StackTraceLines[0].Method);
             Assert.AreEqual("Method2()", st.StackTraceLines[1].Method);

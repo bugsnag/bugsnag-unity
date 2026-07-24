@@ -40,14 +40,13 @@ namespace BugsnagUnity.Payload
                 { // Skip the first line as it isn't a stack frame
                     continue;
                 }
-                
                 // Skip rethrow markers that appear in exception stack traces
                 // These lines don't have corresponding native addresses in IL2CPP builds
                 if (lines[i].TrimStart().StartsWith("---"))
                 {
                     continue;
                 }
-                
+
                 var frame = format == StackTraceFormat.AndroidJava
                   ? StackTraceLine.FromAndroidJavaMessage(lines[i])
                   : StackTraceLine.FromLogMessage(lines[i]);
