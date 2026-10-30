@@ -12,6 +12,8 @@ fi
 VERSION=$1
 
 echo "Copying over the unpacked sdk files"
+rm -rf "$PACKAGE_DIR"
+mkdir -p "$PACKAGE_DIR"
 cp -r "Bugsnag/Assets/Bugsnag/." $PACKAGE_DIR
 
 echo "Copying over the package manifest and readme"

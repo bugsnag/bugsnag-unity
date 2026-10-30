@@ -7,6 +7,7 @@ PACKAGE_DIR=upm-package
 EDM_PACKAGE_DIR=upm-edm4u-package
 
 # Create a copy of the package directory
+rm -rf "$EDM_PACKAGE_DIR"
 cp -r "$PACKAGE_DIR" "$EDM_PACKAGE_DIR"
 
 # Remove bundled Kotlin libs from the copied package
