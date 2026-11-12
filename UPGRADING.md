@@ -9,6 +9,19 @@ If you are using the `DiscardClasses` and `RedactedKeys` sections of the Bugsnag
 
 `Event.Unhandled` (accessed via OnError and OnSend callbacks) is now non-nullable.
 
+## iOS simulator support
+
+The iOS library is now supplied as an XCFramework. When upgrading an installation
+made with a Unity package, the editor automatically deletes the old
+`Assets/Bugsnag/Plugins/iOS/libbugsnag-ios.a` once `Bugsnag.xcframework` is present.
+If it remains (for example, the editor was not open), delete it manually to avoid
+duplicate symbol errors.
+
+For arm64 simulator builds, select Simulator SDK and ARM64 (or Universal) as
+the simulator architecture in Unity's iOS Player Settings. Unity 2022 and
+Unity 6 provide these settings; Unity 2021 builds the simulator player for
+x86_64 only.
+
 ## 6.x to 7.x
 
 When building using Unity 2019+, the Bugsnag SDK now uses a new method to intercept uncaught C# exceptions. This allows us access to the original exception object, meaning more accurate exception data and full support for inner exceptions.

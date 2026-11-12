@@ -3,6 +3,8 @@
 ## TBD
 
 ### Enhancements
+- Add arm64 iOS simulator support using an XCFramework.
+
 - Added `State` property to `IThread` interface to expose thread state information from native error reports
 [#981](https://github.com/bugsnag/bugsnag-unity/pull/981)
 
