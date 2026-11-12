@@ -167,6 +167,24 @@ public class Builder : MonoBehaviour
         Debug.Log("Result: " + result);
     }
 
+    // Generates an Xcode project targeting the arm64 iOS simulator (build-only, not run by e2e tests)
+    public static void IosSimulator()
+    {
+#if UNITY_2022_1_OR_NEWER
+        Debug.Log("Building iOS simulator app...");
+        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.bugsnag.fixtures.unity.notifier.ios");
+        PlayerSettings.iOS.sdkVersion = iOSSdkVersion.SimulatorSDK;
+        PlayerSettings.iOS.simulatorSdkArchitecture = AppleMobileArchitectureSimulator.ARM64;
+        PlayerSettings.iOS.allowHTTPDownload = true;
+        var opts = CommonMobileBuildOptions("mazerunner_simulator_xcode", true);
+        opts.target = BuildTarget.iOS;
+        var result = BuildPipeline.BuildPlayer(opts);
+        Debug.Log("Result: " + result);
+#else
+        throw new Exception("arm64 iOS simulator builds require Unity 2022 or newer");
+#endif
+    }
+
     public static void SwitchBuild()
     {
         Debug.Log("Building Switch app...");
