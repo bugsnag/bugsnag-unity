@@ -520,36 +520,57 @@ namespace BugsnagUnity
             // if il2cpp doesn't report a mainImageFileName, we assume the default "UnityFramework" name
             var safeMainImageFileName = string.IsNullOrEmpty(mainImageFileName) ? "UnityFramework" : mainImageFileName;
 
-            var length = nativeAddresses.Length < unityTrace.Length ? nativeAddresses.Length : unityTrace.Length;
-            var stackFrames = new StackTraceLine[length];
-            for (int i = 0; i < length; i++)
+            // Send ALL managed frames with 1:1 positional mapping to native addresses
+            var stackFrames = new StackTraceLine[unityTrace.Length];
+            for (int i = 0; i < unityTrace.Length; i++)
             {
                 var method = unityTrace[i].Method;
-                var address = (UInt64)nativeAddresses[i].ToInt64();
-                var image = loadedImages.FindImageAtAddress(address);
-
                 var frame = new StackTraceLine();
-                frame.FrameAddress = string.Format("0x{0:X}", address);
                 frame.Method = method.ToString();
-                if (image != null)
+                
+                // Filter out IL2CPP's placeholder file path
+                var filePath = unityTrace[i].File;
+                if (!string.IsNullOrEmpty(filePath) && 
+                    !filePath.Contains("<00000000000000000000000000000000>"))
                 {
-                    if (address < image.LoadAddress)
+                    frame.File = filePath;
+                }
+                
+                frame.LineNumber = unityTrace[i].LineNumber;
+                
+                // Add native address if available at this position
+                if (i < nativeAddresses.Length)
+                {
+                    var address = (UInt64)nativeAddresses[i].ToInt64();
+                    var image = loadedImages.FindImageAtAddress(address);
+
+                    frame.FrameAddress = string.Format("0x{0:X}", address);
+                    if (image != null)
                     {
-                        // It's a relative address
-                        frame.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
+                        if (address < image.LoadAddress)
+                        {
+                            // It's a relative address
+                            frame.FrameAddress = string.Format("0x{0:X}", address + image.LoadAddress);
+                        }
+                        frame.MachoFile = image.FileName;
+                        frame.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
+                        frame.MachoUuid = FormatImageUuid(image.Uuid);
+                        frame.InProject = image.IsMainImage;
                     }
-                    frame.MachoFile = image.FileName;
-                    frame.MachoLoadAddress = string.Format("0x{0:X}", image.LoadAddress);
-                    frame.MachoUuid = FormatImageUuid(image.Uuid);
-                    frame.InProject = image.IsMainImage;
+                    else
+                    {
+                        frame.MachoFile = safeMainImageFileName;
+                        frame.MachoLoadAddress = "0x0";
+                        frame.MachoUuid = mainImageFormattedUuid;
+                        frame.InProject = true;
+                    }
                 }
                 else
                 {
-                    frame.MachoFile = safeMainImageFileName;
-                    frame.MachoLoadAddress = "0x0";
-                    frame.MachoUuid = mainImageFormattedUuid;
+                    // No native address available for this position, just use managed info
                     frame.InProject = true;
                 }
+                
                 stackFrames[i] = frame;
             }
 
@@ -560,7 +581,14 @@ namespace BugsnagUnity
         {
             if (string.IsNullOrEmpty(uuid)) return uuid;
 
-            string hex = uuid.Replace("-", "").Trim();
+            // Strip angle brackets if present (native code returns UUIDs as <UUID>)
+            string trimmed = uuid.Trim();
+            if (trimmed.StartsWith("<") && trimmed.EndsWith(">"))
+            {
+                trimmed = trimmed.Substring(1, trimmed.Length - 2);
+            }
+
+            string hex = trimmed.Replace("-", "").Trim();
             if (hex.Length != 32) return uuid; // leave unexpected formats alone
 
             for (int i = 0; i < 32; i++)

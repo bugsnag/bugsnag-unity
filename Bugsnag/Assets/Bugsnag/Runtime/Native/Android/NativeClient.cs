@@ -188,22 +188,41 @@ namespace BugsnagUnity
                 return lines;
             }
 
-            // Use the minimum of both lengths to avoid out-of-bounds access
-            var length = nativeAddresses.Length < lines.Length ? nativeAddresses.Length : lines.Length;
-            StackTraceLine[] Trace = new StackTraceLine[length];
+            // Send ALL managed frames with 1:1 positional mapping to native addresses
+            StackTraceLine[] Trace = new StackTraceLine[lines.Length];
 
-            for (int i = 0; i < length; i++)
+            for (int i = 0; i < lines.Length; i++)
             {
                 StackTraceLine Frame = new StackTraceLine();
 
-                Frame.File = mainImageFileName;
                 Frame.Method = lines[i].Method;
-                Frame.FrameAddress = string.Format("0x{0:X}", nativeAddresses[i].ToInt64());
-                Frame.LoadAddress = "0x0";
-                Frame.CodeIdentifier = mainImageUuid;
-
-                // we mark every stack frame as "PC" so that the addresses are not adjusted
-                Frame.IsPc = true;
+                
+                // Filter out IL2CPP's placeholder file path
+                var filePath = lines[i].File;
+                if (!string.IsNullOrEmpty(filePath) && 
+                    !filePath.Contains("<00000000000000000000000000000000>"))
+                {
+                    Frame.File = filePath;
+                }
+                
+                Frame.LineNumber = lines[i].LineNumber;
+                
+                // Add native address if available at this position
+                if (i < nativeAddresses.Length)
+                {
+                    // IL2CPP gives no managed file path, so report the native library (e.g. libil2cpp.so)
+                    if (string.IsNullOrEmpty(Frame.File) && !string.IsNullOrEmpty(mainImageFileName))
+                    {
+                        Frame.File = mainImageFileName;
+                    }
+                    Frame.FrameAddress = string.Format("0x{0:X}", nativeAddresses[i].ToInt64());
+                    Frame.LoadAddress = "0x0";
+                    Frame.CodeIdentifier = mainImageUuid;
+                    // we mark every stack frame as "PC" so that the addresses are not adjusted
+                    Frame.IsPc = true;
+                }
+                
+                Frame.InProject = true;
 
                 Trace[i] = Frame;
             }
