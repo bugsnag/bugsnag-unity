@@ -18,14 +18,17 @@ namespace BugsnagUnity
         /// Note: If anything goes wrong during the refresh, the currently cached state won't change.
         /// </remarks>
 #nullable enable
-        public void Refresh(String? mainImageFileName)
+        public void Refresh(String? mainImageFileName, String? mainImageUuid)
         {
             UInt64 loadedNativeImagesAt = NativeCode.bugsnag_lastChangedLoadedImages();
-            if (loadedNativeImagesAt == LastLoadedNativeImagesAt)
+            if (loadedNativeImagesAt == LastLoadedNativeImagesAt &&
+                mainImageFileName == LastMainImageFileName &&
+                mainImageUuid == LastMainImageUuid)
             {
                 // Only refresh if something changed.
                 return;
             }
+            var canonicalMainUuid = CanonicalUuid(mainImageUuid);
 
             var imageCount = NativeCode.bugsnag_getLoadedImageCount();
             if (imageCount == 0)
@@ -44,7 +47,27 @@ namespace BugsnagUnity
                 }
 
                 UInt64 mainLoadAddress = 0;
+                LoadedImage? mainImage = null;
                 var images = new LoadedImage[count];
+
+                // il2cpp's image name is not reliably NUL terminated, so it may carry trailing bytes.
+                // Match it by prefix against the loaded images instead, taking the longest match.
+                var fileNames = new string?[count];
+                var uuidTexts = new string[count];
+                long mainIndex = -1;
+                long uuidMainIndex = -1;
+                for (UInt64 i = 0; i < count; i++)
+                {
+                    var name = Marshal.PtrToStringAnsi(nativeImages[i].FileName);
+                    fileNames[i] = name;
+                    if (!string.IsNullOrEmpty(name) &&
+                        !string.IsNullOrEmpty(mainImageFileName) &&
+                        mainImageFileName!.StartsWith(name, StringComparison.Ordinal) &&
+                        (mainIndex < 0 || name!.Length > fileNames[mainIndex]!.Length))
+                    {
+                        mainIndex = (long)i;
+                    }
+                }
 
                 for (UInt64 i = 0; i < count; i++)
                 {
@@ -53,11 +76,29 @@ namespace BugsnagUnity
                     var uuidBytes = new byte[16];
                     Marshal.Copy(nativeImage.UuidBytes, uuidBytes, 0, 16);
 
-                    var fileName    = Marshal.PtrToStringAnsi(nativeImage.FileName);
-                    var isMainImage = fileName == mainImageFileName;
-
                     // Build canonical RFC-4122 text directly from the 16 bytes (no swapping)
                     string uuidText = UuidTextFromBigEndianBytes(uuidBytes);
+
+                    // A UUID match is authoritative; otherwise fall back to the file name prefix match
+                    if (uuidMainIndex < 0 && canonicalMainUuid != null &&
+                        string.Equals(uuidText, canonicalMainUuid, StringComparison.Ordinal))
+                    {
+                        uuidMainIndex = (long)i;
+                    }
+                    uuidTexts[i] = uuidText;
+                }
+
+                if (uuidMainIndex >= 0)
+                {
+                    mainIndex = uuidMainIndex;
+                }
+
+                for (UInt64 i = 0; i < count; i++)
+                {
+                    var nativeImage = nativeImages[i];
+                    var fileName    = fileNames[i];
+                    var uuidText    = uuidTexts[i];
+                    var isMainImage = (long)i == mainIndex;
 
                     var image = new LoadedImage(nativeImage.LoadAddress,
                                                 nativeImage.Size,
@@ -68,6 +109,7 @@ namespace BugsnagUnity
                     if (isMainImage)
                     {
                         mainLoadAddress = image.LoadAddress;
+                        mainImage = image;
                     }
                     images[i] = image;
                 }
@@ -75,8 +117,11 @@ namespace BugsnagUnity
                 // Update cache
                 Images = images;
                 MainImageLoadAddress = mainLoadAddress;
+                MainImage = mainImage;
                 LowestImageLoadAddress = images[0].LoadAddress;
                 LastLoadedNativeImagesAt = loadedNativeImagesAt;
+                LastMainImageFileName = mainImageFileName;
+                LastMainImageUuid = mainImageUuid;
             }
             finally
             {
@@ -107,10 +152,49 @@ namespace BugsnagUnity
             return Images[idx];
         }
 
+        /// <summary>
+        /// The main image as identified from the loaded image list (null if it could not be matched).
+        /// </summary>
+        public LoadedImage? MainImage { get; private set; }
+
         private LoadedImage[] Images = new LoadedImage[0];
         private UInt64 MainImageLoadAddress = 0;
         private UInt64 LowestImageLoadAddress = 0;
         private UInt64 LastLoadedNativeImagesAt = 0;
+        private string? LastMainImageFileName;
+        private string? LastMainImageUuid;
+
+        // Converts any UUID text ("<abcd...>", lowercase, with or without dashes) to the uppercase
+        // 8-4-4-4-12 form produced by UuidTextFromBigEndianBytes. Null if it is not a 32-hex-digit UUID.
+        private static string? CanonicalUuid(string? uuid)
+        {
+            if (string.IsNullOrEmpty(uuid))
+            {
+                return null;
+            }
+            var chars = new char[36];
+            var digits = 0;
+            foreach (var c in uuid!)
+            {
+                if (!Uri.IsHexDigit(c))
+                {
+                    continue;
+                }
+                if (digits == 32)
+                {
+                    return null;
+                }
+                var pos = digits + (digits >= 8 ? 1 : 0) + (digits >= 12 ? 1 : 0) + (digits >= 16 ? 1 : 0) + (digits >= 20 ? 1 : 0);
+                chars[pos] = char.ToUpperInvariant(c);
+                digits++;
+            }
+            if (digits != 32)
+            {
+                return null;
+            }
+            chars[8] = chars[13] = chars[18] = chars[23] = '-';
+            return new string(chars);
+        }
 
         private class AddressToImageComparator : IComparer
         {

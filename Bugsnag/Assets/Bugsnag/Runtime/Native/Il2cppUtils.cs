@@ -64,8 +64,11 @@ namespace BugsnagUnity
         }
 
         // il2cpp_native_stack_trace copies strings with strncpy(..., strlen) rather than strlen + 1, so the
-        // buffer is not NUL terminated and an unbounded read picks up trailing heap bytes. Valid image names
-        // and UUIDs never contain control characters, so stop at the first NUL or control byte.
+        // buffer is not NUL terminated and an unbounded read picks up trailing heap bytes. The real length
+        // is not knowable here, so this is a best-effort guard only: it stops at the first NUL or control
+        // byte and is capped. It can still return trailing printable bytes, so callers must not rely on it
+        // for identity. On Cocoa the main image name and UUID are taken from the loaded image list
+        // (see LoadedImages.MainImage) instead.
         private static string? ExtractSanitizedString(IntPtr pString, Int32 maxLength)
         {
             if (pString == IntPtr.Zero)

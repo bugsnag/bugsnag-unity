@@ -513,7 +513,15 @@ namespace BugsnagUnity
                 return unityTrace;
             }
 
-            loadedImages.Refresh(mainImageFileName);
+            loadedImages.Refresh(mainImageFileName, mainImageUuid);
+
+            // Prefer the identity from the loaded image list: il2cpp's strings are not reliably NUL terminated
+            var mainImage = loadedImages.MainImage;
+            if (mainImage != null)
+            {
+                mainImageFileName = mainImage.FileName;
+                mainImageUuid = mainImage.Uuid;
+            }
 
             var mainImageFormattedUuid = FormatImageUuid(mainImageUuid);
 
