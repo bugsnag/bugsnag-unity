@@ -16,6 +16,8 @@ namespace BugsnagUnity
 #if UNITY_ANDROID
         private const int IL2CPP_BUILD_ID_MAX_LENGTH = 40;
 #endif
+        private const int IMAGE_NAME_MAX_LENGTH = 1024;
+        private const int IMAGE_UUID_MAX_LENGTH = 40;
 
 #if ENABLE_IL2CPP && UNITY_2023_1_OR_NEWER
 
@@ -59,6 +61,33 @@ namespace BugsnagUnity
         private static string? ExtractString(IntPtr pString)
         {
             return (pString == IntPtr.Zero) ? null : Marshal.PtrToStringAnsi(pString);
+        }
+
+        // il2cpp_native_stack_trace copies strings with strncpy(..., strlen) rather than strlen + 1, so the
+        // buffer is not NUL terminated and an unbounded read picks up trailing heap bytes. The real length
+        // is not knowable here, so this is a best-effort guard only: it stops at the first NUL or control
+        // byte and is capped. It can still return trailing printable bytes, so callers must not rely on it
+        // for identity. On Cocoa the main image name and UUID are taken from the loaded image list
+        // (see LoadedImages.MainImage) instead.
+        private static string? ExtractSanitizedString(IntPtr pString, Int32 maxLength)
+        {
+            if (pString == IntPtr.Zero)
+            {
+                return null;
+            }
+
+            var length = 0;
+            while (length < maxLength)
+            {
+                var b = Marshal.ReadByte(pString, length);
+                if (b < 0x20 || b == 0x7F)
+                {
+                    break;
+                }
+                length++;
+            }
+
+            return length == 0 ? null : Marshal.PtrToStringAnsi(pString, length);
         }
 
         private static Int32 FindStringTerminator(IntPtr pString, string terminator)
@@ -150,8 +179,8 @@ namespace BugsnagUnity
 
 #else
 
-                 mainImageFileName = Il2cppUtils.ExtractString(pImageName);
-                 mainImageUuid = Il2cppUtils.ExtractString(pImageUuid);
+                 mainImageFileName = Il2cppUtils.ExtractSanitizedString(pImageName, IMAGE_NAME_MAX_LENGTH);
+                 mainImageUuid = Il2cppUtils.ExtractSanitizedString(pImageUuid, IMAGE_UUID_MAX_LENGTH);
 
 #endif
 
