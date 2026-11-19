@@ -35,7 +35,10 @@ namespace BugsnagUnity.Editor
 
                 var legacyPaths = AssetDatabase.FindAssets(LEGACY_LIBRARY)
                     .Select(AssetDatabase.GUIDToAssetPath)
-                    .Where(path => Path.GetFileName(path) == LEGACY_LIBRARY + ".a");
+                    .Where(path => Path.GetFileName(path) == LEGACY_LIBRARY + ".a")
+                    // Unity versions without xcframework support import the slices inside it as
+                    // assets with the same file name; those must not be deleted
+                    .Where(path => !BugsnagXCFrameworkSlices.IsSlice(path));
                 foreach (var path in legacyPaths)
                 {
                     if (AssetDatabase.DeleteAsset(path))
