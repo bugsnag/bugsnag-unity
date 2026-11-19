@@ -13,7 +13,7 @@ If you are using the `DiscardClasses` and `RedactedKeys` sections of the Bugsnag
 
 The iOS library is now supplied as an XCFramework. When upgrading an installation
 made with a Unity package, the editor automatically deletes the old
-`Assets/Bugsnag/Plugins/iOS/libbugsnag-ios.a` once `Bugsnag.xcframework` is present.
+`Assets/Bugsnag/Plugins/iOS/libbugsnag-ios.a` once `bugsnag-ios.xcframework` is present.
 If it remains (for example, the editor was not open), delete it manually to avoid
 duplicate symbol errors.
 

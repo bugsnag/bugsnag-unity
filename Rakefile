@@ -510,10 +510,10 @@ namespace :plugin do
               sh "lipo", device_library, "-verify_arch", "arm64"
               sh "lipo", simulator_library, "-verify_arch", "arm64", "x86_64"
               Dir.mktmpdir do |tmpdir|
-                xcframework = File.join(tmpdir, "Bugsnag.xcframework")
+                xcframework = File.join(tmpdir, "bugsnag-ios.xcframework")
                 sh "xcodebuild", "-create-xcframework", "-library", device_library,
                    "-library", simulator_library, "-output", xcframework
-                output = File.join(directory, "Bugsnag.xcframework")
+                output = File.join(directory, "bugsnag-ios.xcframework")
                 FileUtils.rm_rf(output)
                 FileUtils.mv(xcframework, output)
               end
