@@ -53,6 +53,10 @@ else
     mkdir -p "$builder_path/Packages"
     # Copy the contents of Packages/ into the builder project's Packages/
     cp -R "$example_source/Packages/." "$builder_path/Packages/" 2>/dev/null || true
+    # Bugsnag is imported from Bugsnag.unitypackage below. The released UPM package also ships
+    # its own native iOS library, which would be linked alongside the one just built.
+    sed -i '' '/"com.bugsnag.unitynotifier"/d' "$builder_path/Packages/manifest.json" 2>/dev/null || true
+    rm -f "$builder_path/Packages/packages-lock.json"
     echo "Packages copied:" && ls -la "$builder_path/Packages" || true
   else
     echo "No Packages/ found in example source"
