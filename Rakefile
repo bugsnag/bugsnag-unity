@@ -501,13 +501,27 @@ namespace :plugin do
 
           FileUtils.cp_r(File.join(build_type, "bugsnag-osx.bundle"), osx_dir)
 
-          # for ios and tvos we need to build a fat binary that includes architecture
-          # slices for both the device and the simulator
           [["iphone", "ios", ios_dir], ["appletv", "tvos", tvos_dir]].each do |long_name, short_name, directory|
             library = "libbugsnag-#{short_name}.a"
             device_library = File.join("#{build_type}-#{long_name}os", library)
             simulator_dir = "#{build_type}-#{long_name}simulator"
             simulator_library = File.join(simulator_dir, library)
+            if short_name == "ios"
+              sh "lipo", device_library, "-verify_arch", "arm64"
+              sh "lipo", simulator_library, "-verify_arch", "arm64", "x86_64"
+              Dir.mktmpdir do |tmpdir|
+                xcframework = File.join(tmpdir, "bugsnag-ios.xcframework")
+                sh "xcodebuild", "-create-xcframework", "-library", device_library,
+                   "-library", simulator_library, "-output", xcframework
+                output = File.join(directory, "bugsnag-ios.xcframework")
+                FileUtils.rm_rf(output)
+                FileUtils.mv(xcframework, output)
+              end
+              FileUtils.rm_f(File.join(directory, library))
+              FileUtils.rm_f(File.join(directory, "#{library}.meta"))
+              next
+            end
+
             simulator_x64 = File.join(simulator_dir, "libBugsnagStatic-x64.a")
             output_library = File.join(directory, library)
 
