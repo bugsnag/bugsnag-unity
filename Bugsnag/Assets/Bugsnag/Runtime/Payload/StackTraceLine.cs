@@ -314,4 +314,161 @@ namespace BugsnagUnity.Payload
         public string MachoVmAddress { get; set; }
         public string SymbolAddress { get; set; }
     }
+
+    /// <summary>
+    /// Decides whether managed (C#) stack frames belong to the app or to engine/third-party code.
+    /// Works on index ranges of the existing strings so it allocates nothing per frame.
+    /// </summary>
+    internal static class InProjectResolver
+    {
+        internal static void ApplyToErrors(IEnumerable<Error> errors, Configuration config)
+        {
+            if (errors == null || config == null)
+            {
+                return;
+            }
+            var include = config.ProjectNamespaces;
+            var exclude = config.ExcludedNamespaces;
+            var includeMode = HasAnyPrefix(include);
+            foreach (var error in errors)
+            {
+                // Java/Kotlin frames are handled by the Android SDK/server using ProjectPackages
+                if (error == null || error.IsAndroidJavaException || error.Stacktrace == null)
+                {
+                    continue;
+                }
+                foreach (var frame in error.Stacktrace)
+                {
+                    Apply(frame, include, exclude, includeMode);
+                }
+            }
+        }
+
+        internal static void Apply(IStackframe frame, string[] include, string[] exclude)
+        {
+            Apply(frame, include, exclude, HasAnyPrefix(include));
+        }
+
+        // A frame already marked as not in-project (e.g. an iOS frame from a non-main image) is never changed
+        private static void Apply(IStackframe frame, string[] include, string[] exclude, bool includeMode)
+        {
+            if (frame == null || frame.InProject == false)
+            {
+                return;
+            }
+            frame.InProject = Resolve(frame.Method, include, exclude, includeMode);
+        }
+
+        internal static bool IsInProject(string method, string[] include, string[] exclude)
+        {
+            return Resolve(method, include, exclude, HasAnyPrefix(include));
+        }
+
+        /// <summary>
+        /// The longest matching prefix wins. On a tie the project namespace wins. When nothing matches,
+        /// the frame is in-project unless project namespaces were configured.
+        /// </summary>
+        private static bool Resolve(string method, string[] include, string[] exclude, bool includeMode)
+        {
+            int start, end;
+            GetNameBounds(method, out start, out end);
+            if (end > start)
+            {
+                var includeLength = LongestMatch(method, start, end, include);
+                var excludeLength = LongestMatch(method, start, end, exclude);
+                if (includeLength > 0 || excludeLength > 0)
+                {
+                    return includeLength >= excludeLength;
+                }
+            }
+            return !includeMode;
+        }
+
+        // Finds the qualified name inside e.g. "(wrapper managed-to-native) UnityEngine.Debug:Log (Object)"
+        private static void GetNameBounds(string method, out int start, out int end)
+        {
+            start = 0;
+            end = 0;
+            if (string.IsNullOrEmpty(method))
+            {
+                return;
+            }
+            var length = method.Length;
+            while (start < length && char.IsWhiteSpace(method[start])) start++;
+            if (start < length && method[start] == '(')
+            {
+                var close = method.IndexOf(')', start);
+                if (close < 0 || close + 1 >= length || !char.IsWhiteSpace(method[close + 1]))
+                {
+                    return;
+                }
+                start = close + 1;
+                while (start < length && char.IsWhiteSpace(method[start])) start++;
+            }
+            var args = method.IndexOf('(', start);
+            end = args < 0 ? length : args;
+            while (end > start && char.IsWhiteSpace(method[end - 1])) end--;
+        }
+
+        private static bool HasAnyPrefix(string[] prefixes)
+        {
+            if (prefixes == null)
+            {
+                return false;
+            }
+            foreach (var prefix in prefixes)
+            {
+                int ps, pe;
+                if (GetPrefixBounds(prefix, out ps, out pe))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Trims whitespace and trailing dots without allocating
+        private static bool GetPrefixBounds(string prefix, out int start, out int end)
+        {
+            start = 0;
+            end = prefix == null ? 0 : prefix.Length;
+            while (start < end && char.IsWhiteSpace(prefix[start])) start++;
+            while (end > start && (char.IsWhiteSpace(prefix[end - 1]) || prefix[end - 1] == '.')) end--;
+            return end > start;
+        }
+
+        // "System" matches "System.IO.File.Open" but not "SystemShock.Player.Die"
+        private static int LongestMatch(string name, int start, int end, string[] prefixes)
+        {
+            if (prefixes == null)
+            {
+                return 0;
+            }
+            var longest = 0;
+            foreach (var prefix in prefixes)
+            {
+                int ps, pe;
+                if (!GetPrefixBounds(prefix, out ps, out pe))
+                {
+                    continue;
+                }
+                var length = pe - ps;
+                if (length <= longest || length > end - start
+                    || string.CompareOrdinal(name, start, prefix, ps, length) != 0)
+                {
+                    continue;
+                }
+                if (start + length == end || IsBoundary(name[start + length]))
+                {
+                    longest = length;
+                }
+            }
+            return longest;
+        }
+
+        private static bool IsBoundary(char c)
+        {
+            return c == '.' || c == ':' || c == '+' || c == '/' || c == '`' || c == '<';
+        }
+    }
 }
