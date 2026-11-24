@@ -178,6 +178,20 @@ namespace BugsnagUnityTests
         }
 
         [Test]
+        public void ApplyToErrors_SkipsUnprocessedAndroidJavaExceptionClass()
+        {
+            // Notify(exception, stacktrace) keeps the raw class but does not set IsAndroidJavaException
+            var config = new Configuration("api-key");
+            var javaFrame = Frame("java.lang.Thread.run");
+            var javaError = new Error("AndroidJavaException", "java.lang.RuntimeException: boom", new[] { javaFrame });
+            Assert.IsFalse(javaError.IsAndroidJavaException);
+
+            InProjectResolver.ApplyToErrors(new[] { javaError }, config);
+
+            Assert.IsNull(javaFrame.InProject);
+        }
+
+        [Test]
         public void ApplyToErrors_NullInputsDoNotThrow()
         {
             Assert.DoesNotThrow(() => InProjectResolver.ApplyToErrors(null, new Configuration("api-key")));

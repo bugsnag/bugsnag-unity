@@ -332,8 +332,13 @@ namespace BugsnagUnity.Payload
             var includeMode = HasAnyPrefix(include);
             foreach (var error in errors)
             {
-                // Java/Kotlin frames are handled by the Android SDK/server using ProjectPackages
-                if (error == null || error.IsAndroidJavaException || error.Stacktrace == null)
+                // Java/Kotlin frames are handled by the Android SDK/server using ProjectPackages.
+                // The error class check covers Notify(exception, stacktrace), which keeps the
+                // AndroidJavaException class without setting IsAndroidJavaException.
+                if (error == null
+                    || error.IsAndroidJavaException
+                    || error.ErrorClass == Error.ANDROID_JAVA_EXCEPTION_CLASS
+                    || error.Stacktrace == null)
                 {
                     continue;
                 }

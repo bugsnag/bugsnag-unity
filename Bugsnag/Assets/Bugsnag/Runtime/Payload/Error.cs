@@ -16,7 +16,7 @@ namespace BugsnagUnity.Payload
 
         internal bool IsAndroidJavaException;
 
-        private const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
+        internal const string ANDROID_JAVA_EXCEPTION_CLASS = "AndroidJavaException";
         private const string ERROR_CLASS_MESSAGE_PATTERN = @"^(?<errorClass>\S+):\s+(?<message>.*)";
         private const string NATIVE_ANDROID_ERROR_CLASS = "java.lang.Error";
         private const string NATIVE_ANDROID_MESSAGE_PATTERN = @"signal \d+ \(SIG\w+\)";
