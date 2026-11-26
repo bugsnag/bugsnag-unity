@@ -13,6 +13,11 @@ public class Builder : MonoBehaviour
         var opts = CommonOptions("edm4u.apk");
         opts.target = BuildTarget.Android;
 
+#if UNITY_2022_1_OR_NEWER
+        // Unity 2022+ blocks cleartext HTTP by default; maze-runner is reached over plain HTTP
+        PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
+#endif
+
         var result = BuildPipeline.BuildPlayer(opts);
         Debug.Log("Result: " + result);
     }
