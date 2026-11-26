@@ -1,5 +1,5 @@
 aliases:
-  - &2021 "2021.3.45f2"
+  - &6000 "6000.3.2f1"
 
 agents:
   queue: "macos-15"
@@ -9,7 +9,7 @@ steps:
   - label: "Verify code formatting"
     timeout_in_minutes: 5
     env:
-      UNITY_VERSION: *2021
+      UNITY_VERSION: *6000
     plugins:
       artifacts#v1.9.0:
         upload:
@@ -20,7 +20,7 @@ steps:
   - label: "Run Unit Tests"
     timeout_in_minutes: 5
     env:
-      UNITY_VERSION: *2021
+      UNITY_VERSION: *6000
     commands:
       - "rake test:run_editor_unit_tests"
       - |
@@ -94,7 +94,7 @@ steps:
     key: "build-unitypackage"
     timeout_in_minutes: 30
     env:
-      UNITY_VERSION: *2021
+      UNITY_VERSION: *6000
       JAVA_VERSION: "17"
     commands:
       - "bundle install"
@@ -117,8 +117,8 @@ steps:
     depends_on: "build-unitypackage"
     timeout_in_minutes: 10
     env:
-      UNITY_VERSION: *2021
-    key: "import-upm-2021"
+      UNITY_VERSION: *6000
+    key: "import-upm-6000"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -135,7 +135,7 @@ steps:
     depends_on: "build-unitypackage"
     timeout_in_minutes: 30
     env:
-      UNITY_VERSION: *2021
+      UNITY_VERSION: *6000
     plugins:
       'artifacts#v1.9.0':
         download:
@@ -143,13 +143,13 @@ steps:
     commands:
       - "features/scripts/do_size_test.sh"
 
-  - label: "Append Unity 2021 Pipeline"
+  - label: "Append Unity 2022 Pipeline"
     depends_on: "build-unitypackage"
     agents:
       queue: "macos"
     timeout_in_minutes: 2
     commands:
-      - "buildkite-agent pipeline upload .buildkite/unity.2021.yml"
+      - "buildkite-agent pipeline upload .buildkite/unity.2022.yml"
 
   #
   # Conditionally trigger full pipeline
