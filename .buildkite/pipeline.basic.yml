@@ -1,5 +1,5 @@
 aliases:
-  - &6000 "6000.3.2f1"
+  - &2022 "2022.3.62f3"
 
 agents:
   queue: "macos-15"
@@ -9,7 +9,7 @@ steps:
   - label: "Verify code formatting"
     timeout_in_minutes: 5
     env:
-      UNITY_VERSION: *6000
+      UNITY_VERSION: *2022
     plugins:
       artifacts#v1.9.0:
         upload:
@@ -20,7 +20,7 @@ steps:
   - label: "Run Unit Tests"
     timeout_in_minutes: 5
     env:
-      UNITY_VERSION: *6000
+      UNITY_VERSION: *2022
     commands:
       - "rake test:run_editor_unit_tests"
       - |
@@ -94,7 +94,7 @@ steps:
     key: "build-unitypackage"
     timeout_in_minutes: 30
     env:
-      UNITY_VERSION: *6000
+      UNITY_VERSION: *2022
       JAVA_VERSION: "17"
     commands:
       - "bundle install"
@@ -117,8 +117,8 @@ steps:
     depends_on: "build-unitypackage"
     timeout_in_minutes: 10
     env:
-      UNITY_VERSION: *6000
-    key: "import-upm-6000"
+      UNITY_VERSION: *2022
+    key: "import-upm-2022"
     plugins:
       artifacts#v1.9.0:
         download:
@@ -135,7 +135,7 @@ steps:
     depends_on: "build-unitypackage"
     timeout_in_minutes: 30
     env:
-      UNITY_VERSION: *6000
+      UNITY_VERSION: *2022
     plugins:
       'artifacts#v1.9.0':
         download:
