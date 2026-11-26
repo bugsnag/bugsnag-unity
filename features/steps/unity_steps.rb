@@ -164,6 +164,30 @@ Then('the stack frame methods should match:') do |expected_values|
   end
 end
 
+def current_error_stacktrace
+  Maze::Helper.read_key_path(Maze::Server.errors.current[:body], 'events.0.exceptions.0.stacktrace')
+end
+
+Then('every stack frame has a boolean inProject') do
+  stacktrace = current_error_stacktrace
+  flunk('The stacktrace is empty') if stacktrace.nil? || stacktrace.empty?
+  stacktrace.each_with_index do |frame, index|
+    Maze.check.true([true, false].include?(frame['inProject']),
+                    "Frame #{index} (#{frame['method']}) has inProject #{frame['inProject'].inspect}, expected a boolean")
+  end
+end
+
+Then('the stack frames with methods matching {string} have inProject {word}') do |pattern, expected|
+  expected_value = expected == 'true'
+  regex = Regexp.new(pattern)
+  frames = (current_error_stacktrace || []).select { |frame| frame['method'].to_s =~ regex }
+  flunk("No stack frames have a method matching #{pattern}") if frames.empty?
+  frames.each do |frame|
+    Maze.check.true(frame['inProject'] == expected_value,
+                    "Frame #{frame['method']} has inProject #{frame['inProject'].inspect}, expected #{expected_value}")
+  end
+end
+
 Then('the current error request events match one of:') do |table|
   events = Maze::Server.errors.all.map do |error|
     Maze::Helper.read_key_path(error[:body], 'events')

@@ -163,6 +163,40 @@ namespace BugsnagUnity
 
         public string[] ProjectPackages;
 
+        /// <summary>
+        /// Namespace prefixes that belong to your app's own managed (C#) code, for example "MyCompany.MyGame".
+        /// When set, a managed stack frame is only marked as in-project if its method belongs to one of these
+        /// namespaces (unless a longer matching prefix is listed in <see cref="ExcludedNamespaces"/>).
+        /// When null or empty, every managed frame that isn't excluded is treated as in-project.
+        /// This only affects managed frames, Java/Kotlin frames on Android continue to use <see cref="ProjectPackages"/>.
+        /// </summary>
+        public string[] ProjectNamespaces;
+
+        /// <summary>
+        /// Namespace prefixes of engine and third-party managed code that should never be marked as in-project,
+        /// for example "UnityEngine" or "DG.Tweening". Defaults to <see cref="DefaultExcludedNamespaces"/>.
+        /// Replace the array to override the defaults, or append to it to extend them.
+        /// </summary>
+        public string[] ExcludedNamespaces = DefaultExcludedNamespaces;
+
+        /// <summary>
+        /// The namespace prefixes excluded from in-project by default. Returns a new copy on each access.
+        /// </summary>
+        public static string[] DefaultExcludedNamespaces => new string[]
+        {
+            "UnityEngine",
+            "UnityEditor",
+            "Unity",
+            "System",
+            "Mono",
+            "Microsoft",
+            "TMPro",
+            "Cysharp",
+            "DG.Tweening",
+            "Newtonsoft",
+            "BugsnagUnity",
+        };
+
         public string AppVersion = Application.version;
 
         public EndpointConfiguration Endpoints = new EndpointConfiguration();

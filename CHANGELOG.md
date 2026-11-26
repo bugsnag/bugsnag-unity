@@ -11,6 +11,9 @@
 - Auto-detect `ScriptingBackend`, `DotnetScriptingRuntime`, and `DotnetApiCompatibility` on `Configuration` initialisation
 [#992](https://github.com/bugsnag/bugsnag-unity/pull/992)
 
+- Managed (C#) stack frames are now sent with an explicit `inProject` value on all platforms. Engine and third-party namespaces (e.g. `UnityEngine`, `System`, `Cysharp`, `DG.Tweening`) are marked as not in-project. Use the new `Configuration.ProjectNamespaces` and `Configuration.ExcludedNamespaces` options to customise this.
+[#1007](https://github.com/bugsnag/bugsnag-unity/pull/1007)
+
 
 ### Bug Fixes
 

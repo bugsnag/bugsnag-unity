@@ -68,3 +68,21 @@ Feature: csharp events on Android have a il2cpp addresses
     And expected device metadata is included in the event
     And expected app metadata is included in the event
     And the error payload field "events.0.severityReason.unhandledOverridden" is false
+
+  Scenario: Android managed frames have inProject set from the default namespaces
+    When I run the game in the "InProjectDefaults" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "InProjectDefaults"
+    And every stack frame has a boolean inProject
+    And the stack frames with methods matching "^InProjectDefaults" have inProject true
+    And the stack frames with methods matching "^System\.Linq" have inProject false
+
+  Scenario: Android managed frames have inProject set from configured namespaces
+    When I run the game in the "InProjectCustomConfig" state
+    And I wait to receive an error
+    Then the error is valid for the error reporting API sent by the Unity notifier
+    And the exception "message" equals "InProjectCustomConfig"
+    And every stack frame has a boolean inProject
+    And the stack frames with methods matching "^InProjectCustomConfig" have inProject false
+    And the stack frames with methods matching "^System\.Linq" have inProject true

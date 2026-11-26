@@ -429,6 +429,16 @@ namespace BugsnagUnity
                 featureFlags[entry.Key] = entry.Value;
             }
 
+            // Mark managed frames as in-project or not before user callbacks run, so callbacks can override it
+            try
+            {
+                InProjectResolver.ApplyToErrors(exceptions, Configuration);
+            }
+            catch
+            {
+                // Never let in-project resolution prevent an event from being sent
+            }
+
             var @event = new Payload.Event(
               Configuration.Context,
               eventMetadata,
