@@ -3,28 +3,27 @@
 ## TBD
 
 ### Enhancements
-- Add arm64 iOS simulator support using an XCFramework.
 
+- Add arm64 iOS simulator support using an XCFramework.
 - Added `State` property to `IThread` interface to expose thread state information from native error reports
 [#981](https://github.com/bugsnag/bugsnag-unity/pull/981)
-
 - Auto-detect `ScriptingBackend`, `DotnetScriptingRuntime`, and `DotnetApiCompatibility` on `Configuration` initialisation
 [#992](https://github.com/bugsnag/bugsnag-unity/pull/992)
-
 - Managed (C#) stack frames are now sent with an explicit `inProject` value on all platforms. Engine and third-party namespaces (e.g. `UnityEngine`, `System`, `Cysharp`, `DG.Tweening`) are marked as not in-project. Use the new `Configuration.ProjectNamespaces` and `Configuration.ExcludedNamespaces` options to customise this.
 [#1007](https://github.com/bugsnag/bugsnag-unity/pull/1007)
-
 
 ### Bug Fixes
 
 - Fix breadcrumb sanitization: emit bugsnag_unserializable_values as string[], preserve warnings
 [#975](https://github.com/bugsnag/bugsnag-unity/pull/975)
-
 - Fix Android context being overwritten by Activity
 [#977](https://github.com/bugsnag/bugsnag-unity/pull/977)
-
 - Added `DsymUUID` in managed event app metadata
 [#997](https://github.com/bugsnag/bugsnag-unity/pull/997)
+
+### Dependencies
+
+Update bugsnag-cocoa to [v7.1.0](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v7.1.0) [#1009](https://github.com/bugsnag/bugsnag-unity/pull/1009)
 
 ## 8.9.1 (2026-04-01)
 
@@ -32,10 +31,8 @@
 
 - Fix WebGL foreground/background state tracking with proper indentation
 [#968](https://github.com/bugsnag/bugsnag-unity/pull/968)
-
 - Fix launch detection to use a monotonic app-uptime clock on fallback platforms
 [#969](https://github.com/bugsnag/bugsnag-unity/pull/969)
-
 - (Cocoa) Fix JSON serialization errors when metadata contains large ulong values
 [#970](https://github.com/bugsnag/bugsnag-unity/pull/970)
 
@@ -74,7 +71,6 @@
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.33.1](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.33.1) [#934](https://github.com/bugsnag/bugsnag-unity/pull/934)
-
 - Update bugsnag-android to [v6.18.0](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.18.0) [#934](https://github.com/bugsnag/bugsnag-unity/pull/934)
 
 ## 8.7.1 (2025-09-08)
@@ -94,7 +90,6 @@
 ### Enhancements
 
 - Enable fallback support for linux builds [#916](https://github.com/bugsnag/bugsnag-unity/pull/916)
-
 - Add helper method for converting system stacktraces [#917](https://github.com/bugsnag/bugsnag-unity/pull/917)
 
 ## 8.6.1 (2025-07-10)
@@ -108,7 +103,6 @@
 ### Enhancements
 
 - Set default endpoints based on API key [#905](https://github.com/bugsnag/bugsnag-unity/pull/905)
-
 - Add compilation platform as `error.type` to event payloads to enable IL2CPP symbolication in future [#904](https://github.com/bugsnag/bugsnag-unity/pull/904)
 
 ## 8.5.2 (2025-03-31)
@@ -120,7 +114,6 @@
 ### Dependencies
 
 - Update bugsnag-cocoa to [v6.32.2](https://github.com/bugsnag/bugsnag-cocoa/releases/tag/v6.32.2) [#895](https://github.com/bugsnag/bugsnag-unity/pull/895)
-
 - Update bugsnag-android to [v6.12.1](https://github.com/bugsnag/bugsnag-android/releases/tag/v6.12.1) [#888](https://github.com/bugsnag/bugsnag-unity/pull/888)
 
 ## 8.5.1 (2025-03-03)
